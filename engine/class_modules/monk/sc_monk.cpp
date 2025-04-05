@@ -3666,14 +3666,13 @@ public:
     full_amount_targets = 1;
     cast_during_sck     = true;
 
-    // TODO: Figure out why this asserts in stagger.find(...)
-    // if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
-    //   add_parse_entry( da_multiplier_effects )
-    //     .set_value_func( [ & ] ( double value ) {
-    //       return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value;
-    //     })
-    //     .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
-    //     .set_eff( &effect );
+    if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+        .set_value_func( [ = ] ( double value ) {
+          return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value;
+        })
+        .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
+        .set_eff( &effect );
 
     if ( player->talent.brewmaster.dragonfire_brew->ok() )
       dragonfire_brew = new dragonfire_brew_t( player );
