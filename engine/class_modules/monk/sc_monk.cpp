@@ -1662,7 +1662,7 @@ struct charred_passions_t : base_action_t
                       player->talent.brewmaster.charred_passions_damage )
     {
       background = dual = proc = true;
-      base_multiplier          = data().effectN( 1 ).percent();
+      base_multiplier          = player->talent.brewmaster.charred_passions->effectN( 1 ).percent();
     }
 
     void init() override
@@ -1708,14 +1708,11 @@ struct charred_passions_t : base_action_t
       return;
 
     base_action_t::p()->proc.charred_passions->occur();
-    chp_damage->base_dd_min = chp_damage->base_dd_max = state->result_amount;
-    chp_damage->execute();
+    chp_damage->execute_on_target( state->target, state->result_amount );
 
     if ( monk_td_t *target_data = base_action_t::get_td( state->target );
          target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
-    {
       target_data->dot.breath_of_fire->refresh_duration();
-    }
   }
 };
 
