@@ -3720,7 +3720,7 @@ public:
     monk_spell_t::execute();
   }
 
-  void impact( action_state_t *sstate ) override
+  void impact( action_state_t *state ) override
   {
     monk_spell_t::impact( state );
 
