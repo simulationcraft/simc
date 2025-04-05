@@ -3720,14 +3720,14 @@ public:
     monk_spell_t::execute();
   }
 
-  void impact( action_state_t *s ) override
+  void impact( action_state_t *sstate ) override
   {
-    monk_spell_t::impact( s );
+    monk_spell_t::impact( state );
 
     propagate_const<action_t *> dot = p()->active_actions.breath_of_fire;
 
     auto dot_state    = debug_cast<custom_state_t *>( dot->get_state() );
-    dot_state->target = s->target;
+    dot_state->target = state->target;
 
     // blackout combo buffs only one of the breath of fire dot applications from
     // a single cast
