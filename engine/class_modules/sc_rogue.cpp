@@ -7383,9 +7383,7 @@ struct coup_de_grace_t : public rogue_attack_t
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
     trigger_tww2_set_bonus_removal();
 
-    // 2025-03-15 -- Currently the buff is not expired until the last impact
-    //               This allows re-casting of Coup de Grace when Adrenaline Rush is up
-    p()->buffs.escalating_blade->expire( p()->bugs && p()->options.double_coup ? 1.2_s : 0_s );
+    p()->buffs.escalating_blade->expire();
   }
 
   bool ready() override
