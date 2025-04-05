@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -626,7 +626,6 @@ Effects          :
 #9 (id=1034033)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
                    Affected Spells (Label): Energizing Flame (400006)
-Hotfixed         : Base Value (35 -> 5)
 #10 (id=1045262) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
                    Affected Spells: Living Flame (361509)
@@ -686,12 +685,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
-Hotfixed         : Base Value (0 -> 5)
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
-Hotfixed         : Base Value (0 -> 5)
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
@@ -738,7 +735,6 @@ Hotfixed         : Base Value (0 -> 5)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
-Hotfixed         : Base Value (0 -> 25)
 #18 (id=1091001) : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
@@ -761,7 +757,6 @@ Hotfixed         : Base Value (0 -> 25)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Living Flame (361500)
                    Family Flags: 50
-Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown Evoker (1465)
@@ -1876,7 +1871,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Dream Breath (355941), Spiritbloom (367230), Spiritbloom (367231), Dream Breath (376788)
                    Family Flags: 21, 27
-Hotfixed         : Base Value (10 -> 5)
 Description      : $@spelldesc362874
 Tooltip          : Empower spells reach maximum level in $s1% less time.$?e1[ Healing of next empower spell increased by $s2%.][]
 
@@ -2424,7 +2418,6 @@ Attributes       : No Aura Icon (60), Allow While Stunned (163), Allow While Fle
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.32 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (6.102 -> 7.32)
 #2 (id=915159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=982930)   : Dummy (3)
@@ -2445,7 +2438,6 @@ Attributes       : Allow While Stunned (163), Allow While Fleeing (177), Allow W
 Effects          :
 #1 (id=910754)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.32 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (6.102 -> 7.32)
 #2 (id=1017326)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc367226
@@ -7322,12 +7314,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (0 -> 15)
 #2 (id=1037189)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (0 -> 15)
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -7347,7 +7337,6 @@ Hotfixed         : Base Value (0 -> 15)
 #9 (id=1037196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
                    Affected Spells (Label): Energizing Flame (400006)
-Hotfixed         : Base Value (35 -> 5)
 #10 (id=1077084) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
                    Affected Spells: Living Flame (361509)
@@ -7548,7 +7537,6 @@ Attributes       : Passive (6), Do Not Log on Learn (355), Allow Class Ability P
 Effects          :
 #1 (id=1044554)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 80)
 Description      : Living Flame restores $s1% of its mana cost when striking an enemy.
 
 Name             : Draconic Attunements (id=403208) [Spell Family (224), Passive] 
@@ -12318,7 +12306,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1155674)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 5)
 Description      : Temporal Compression increases the healing of your next empower spell by $s1% per stack.
 
 Name             : Evoker Devastation 11.0 Class Set 4pc (id=453675) [Spell Family (224), Passive, Hidden] 
@@ -12337,7 +12324,6 @@ Effects          :
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.5 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Eternity Surge (359073), Shattering Star (370452), Eternity Surge (382411)
                    Family Flags: 16, 20
-Hotfixed         : Base Value (-4000 -> -1000)
 Description      : Eternity Surge and Shattering Star's cooldowns are decreased by ${$s1/-1000}.1 sec and Eternity Surge now grants Essence Burst.
 
 Name             : Evoker Devastation 11.0 Class Set 2pc (id=453676) [Spell Family (224), Passive, Hidden] 
@@ -12788,7 +12774,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198778)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 100)
 #2 (id=1202066)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Your damaging spells have a chance to hit a |cFFFFFFFFJackpot!|r, launching a Shattering Star at $s2 nearby enemies at $s1% effectiveness. Casting Dragonrage always hits a |cFFFFFFFFJackpot!|r
@@ -12860,7 +12845,6 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1202067)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 25)
 Description      : $@spelldesc1215692
 Tooltip          : Empower spell damage increased by $w1%.
 
@@ -12984,11 +12968,9 @@ Effects          :
 #4 (id=1227842)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Doses (31)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 31 | Misc Value 2: 4948 (Label) | Target: Self (1)
                    Affected Spells (Label): Titanic Wrath (397870), Iridescence: Blue (399370)
-Hotfixed         : NEW EFFECT
 #5 (id=1227843)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4948 (Label) | Target: Self (1)
                    Affected Spells (Label): Titanic Wrath (397870), Iridescence: Blue (399370)
-Hotfixed         : NEW EFFECT
 Description      : Disintegrate ticks $s3 additional time, but deals $s2% less damage.
 
 

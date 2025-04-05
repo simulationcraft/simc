@@ -5972,7 +5972,7 @@ void geargrinders_remote( special_effect_t& effect )
 // 1218712 extension driver
 void improvised_seaforium_pacemaker( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "maybe_stop_blowing_up" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "maybe_stop_blowing_up", "explosive_adrenaline" } ) )
     return;
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1218713 ) )

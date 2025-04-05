@@ -736,6 +736,8 @@ monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
 {
   special    = true;
   may_glance = false;
+  // Monk melee attacks do not have hasted GCD by default. Exceptions should be explicitly made.
+  gcd_type   = gcd_haste_type::NONE;
 }
 
 // Physical tick_action abilities need amount_type() override, so the

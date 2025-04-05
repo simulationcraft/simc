@@ -9,11 +9,14 @@
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat=snapshot_stats
 # Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon.
-actions.precombat+=/flametongue_weapon,if=talent.improved_flametongue_weapon.enabled
+actions.precombat+=/flametongue_weapon,if=talent.improved_flametongue_weapon
 actions.precombat+=/lightning_shield
 actions.precombat+=/thunderstrike_ward
-actions.precombat+=/variable,name=mael_cap,value=100+50*talent.swelling_maelstrom.enabled+25*talent.primordial_capacity.enabled
-actions.precombat+=/variable,name=special_items,value=trinket.1.is.spymasters_web|trinket.2.is.spymasters_web|(trinket.1.is.house_of_cards&!trinket.2.has_use_buff|trinket.2.is.house_of_cards&!trinket.1.has_use_buff)&talent.first_ascendant
+actions.precombat+=/variable,name=mael_cap,value=100+50*talent.swelling_maelstrom+25*talent.primordial_capacity
+actions.precombat+=/variable,name=trinket_1_buffs,value=(trinket.1.has_use_buff|trinket.1.is.funhouse_lens)
+actions.precombat+=/variable,name=trinket_2_buffs,value=(trinket.2.has_use_buff|trinket.2.is.funhouse_lens)
+actions.precombat+=/variable,name=special_trinket1,value=(trinket.1.is.house_of_cards|trinket.1.is.funhouse_lens)&!(trinket.2.has_use_buff|trinket.2.is.funhouse_lens)&talent.first_ascendant
+actions.precombat+=/variable,name=special_trinket2,value=(trinket.2.is.house_of_cards|trinket.2.is.funhouse_lens)&!(trinket.1.has_use_buff|trinket.1.is.funhouse_lens)&talent.first_ascendant
 actions.precombat+=/stormkeeper
 
 # Executed every time the actor is available.
@@ -21,22 +24,27 @@ actions.precombat+=/stormkeeper
 actions=spiritwalkers_grace,moving=1,if=movement.distance>6
 # Interrupt of casts.
 actions+=/wind_shear
-actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
-actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/blood_fury,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance|buff.ascendance.up
+actions+=/fireblood,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/ancestral_call,if=!talent.ascendance|buff.ascendance.up|cooldown.ascendance.remains>50
 # Spymaster's Web
-actions+=/use_item,slot=trinket1,if=trinket.1.is.spymasters_web&((fight_remains>180&buff.spymasters_report.stack>25|buff.spymasters_report.stack>35|fight_remains<80)&cooldown.ascendance.ready&(buff.fury_of_storms.up|!talent.fury_of_the_storms)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)|fight_remains<21)
-actions+=/use_item,slot=trinket2,if=trinket.2.is.spymasters_web&((fight_remains>180&buff.spymasters_report.stack>25|buff.spymasters_report.stack>35|fight_remains<80)&cooldown.ascendance.ready&(buff.fury_of_storms.up|!talent.fury_of_the_storms)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)|fight_remains<21)
+actions+=/use_item,name=spymasters_web,if=(fight_remains>180&buff.spymasters_report.stack>25|buff.spymasters_report.stack>35|fight_remains<80)&cooldown.ascendance.ready&(buff.fury_of_storms.up|!talent.fury_of_the_storms)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)|buff.ascendance.remains>12&buff.spymasters_report.stack>25|fight_remains<21
+actions+=/use_item,name=spymasters_web,use_off_gcd=1,if=buff.ascendance.remains>12&buff.spymasters_report.stack>25
 # Neural Synapse Enhancer
 actions+=/use_item,name=neural_synapse_enhancer,use_off_gcd=1,if=buff.ascendance.remains>12|cooldown.ascendance.remains>10
 # House of Cards + 2 minute Ascendance
-actions+=/use_item,name=house_of_cards,use_off_gcd=1,if=variable.special_items&(buff.ascendance.remains>12|cooldown.ascendance.remains>90)|fight_remains<21
-# Normal trinkets
-actions+=/use_item,slot=trinket1,use_off_gcd=1,if=!trinket.1.has_use_buff|!variable.special_items&((buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)&cooldown.ascendance.remains>15|fight_remains<21|buff.ascendance.remains>12)
-actions+=/use_item,slot=trinket2,use_off_gcd=1,if=!trinket.2.has_use_buff|!variable.special_items&((buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)&cooldown.ascendance.remains>15|fight_remains<21|buff.ascendance.remains>12)
+actions+=/use_item,name=house_of_cards,use_off_gcd=1,if=(variable.special_trinket1|variable.special_trinket2)&(buff.ascendance.remains>12|cooldown.ascendance.remains>90)|fight_remains<16
+# Funhouse Lens + 2 minute Ascendance
+actions+=/use_item,name=funhouse_lens,use_off_gcd=1,if=(variable.special_trinket1|variable.special_trinket2)&(buff.ascendance.remains>12|cooldown.ascendance.remains>90)|fight_remains<16
+# Normal buff trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1,if=!trinket.1.is.spymasters_web&!variable.special_trinket1&variable.trinket_1_buffs&((cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|buff.spymasters_report.stack>25)|buff.ascendance.remains>12|fight_remains<21)
+actions+=/use_item,slot=trinket2,use_off_gcd=1,if=!trinket.2.is.spymasters_web&!variable.special_trinket2&variable.trinket_2_buffs&((cooldown.primordial_wave.remains>25|!talent.primordial_wave|spell_targets.chain_lightning>=2)&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|buff.spymasters_report.stack>25)|buff.ascendance.remains>12|fight_remains<21)
 # Normal weapons
 actions+=/use_item,slot=main_hand,use_off_gcd=1,if=(buff.fury_of_storms.up|!talent.fury_of_the_storms|cooldown.stormkeeper.remains>10)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave)&cooldown.ascendance.remains>15|buff.ascendance.remains>12
+# Dmg trinkets
+actions+=/use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_buffs&(cooldown.ascendance.remains>20|trinket.2.cooldown.remains>20&cooldown.neural_synapse_enhancer.remains>20&cooldown.bestinslots.remains>20)
+actions+=/use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_buffs&(cooldown.ascendance.remains>20|trinket.1.cooldown.remains>20&cooldown.neural_synapse_enhancer.remains>20&cooldown.bestinslots.remains>20)
 actions+=/lightning_shield,if=buff.lightning_shield.down
 actions+=/natures_swiftness
 # Use Power Infusion on Cooldown.
@@ -53,8 +61,7 @@ actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!tal
 actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&!dot.flame_shock.ticking&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
 actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem
 actions.aoe+=/ancestral_swiftness
-# JUST DO IT! https://i.kym-cdn.com/entries/icons/mobile/000/018/147/Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___Turner)_0-4_screenshot.jpg
-actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<90&buff.stormkeeper.stack>=2|buff.spymasters_web.up|!(trinket.1.is.spymasters_web|trinket.2.is.spymasters_web))&(buff.fury_of_storms.up|!talent.fury_of_the_storms)
+actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|variable.trinket_1_buffs&!trinket.1.is.spymasters_web&trinket.1.ready_cooldown|variable.trinket_2_buffs&!trinket.2.is.spymasters_web&trinket.2.ready_cooldown|equipped.neural_synapse_enhancer&cooldown.neural_synapse_enhancer.remains=0|equipped.bestinslots&cooldown.bestinslots.remains=0)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)
 # Surge of Power is strong and should be used. ©
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.arc_discharge.stack<2&(buff.surge_of_power.up|!talent.surge_of_power)
 actions.aoe+=/lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2
@@ -98,7 +105,7 @@ actions.single_target+=/flame_shock,if=!dot.flame_shock.ticking&!buff.surge_of_p
 # Use Primordial Wave as much as possible.
 actions.single_target+=/primordial_wave
 actions.single_target+=/ancestral_swiftness
-actions.single_target+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|(trinket.1.has_use_buff&trinket.1.ready_cooldown|trinket.2.has_use_buff&trinket.2.ready_cooldown)&!variable.special_items)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave)
+actions.single_target+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|variable.trinket_1_buffs&!trinket.1.is.spymasters_web&trinket.1.ready_cooldown|variable.trinket_2_buffs&!trinket.2.is.spymasters_web&trinket.2.ready_cooldown|equipped.neural_synapse_enhancer&cooldown.neural_synapse_enhancer.remains=0|equipped.bestinslots&cooldown.bestinslots.remains=0)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)&(cooldown.primordial_wave.remains>25|!talent.primordial_wave)
 # Surge of Power is strong and should be used.©
 actions.single_target+=/tempest,if=buff.surge_of_power.up
 actions.single_target+=/lightning_bolt,if=buff.surge_of_power.up

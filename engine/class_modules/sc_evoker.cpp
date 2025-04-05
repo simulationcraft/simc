@@ -363,7 +363,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 660;
+    int item_level = 668;
     std::string variant = "default";
   } option;
   

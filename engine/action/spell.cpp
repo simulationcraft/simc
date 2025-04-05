@@ -29,7 +29,6 @@ spell_base_t::spell_base_t( action_e at, util::string_view token, player_t* p, c
   : action_t( at, token, p, s )
 {
   min_gcd = p->min_gcd;
-  gcd_type = gcd_haste_type::SPELL_CAST_SPEED;  // Hasten spell GCDs by default
   special = true;
 
   crit_bonus = 1.0;

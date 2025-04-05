@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -2367,7 +2367,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8728 | PvP Coefficient: 0.926 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.736 -> 2.8728)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -4279,7 +4278,6 @@ Effects          :
 #25 (id=1228424) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 33 | Misc Value 2: 4966 (Label) | Target: Self (1)
                    Affected Spells (Label): Empowered Shapeshifting (441689)
-Hotfixed         : NEW EFFECT
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -4415,17 +4413,14 @@ Effects          :
                    Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.58 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 1.58)
 #16 (id=1039291) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748), Adaptive Swarm (391889), Adaptive Swarm (391891)
                    Family Flags: 22
 #17 (id=1049694) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Base Value (-50 -> 0), Misc Value (3 -> 0), Affects Spells
 #18 (id=1049860) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Base Value (100 -> 0), Misc Value (3 -> 0), Affects Spells
 #19 (id=1049861) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #20 (id=1080082) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -4539,12 +4534,10 @@ Effects          :
                    Base Value: -37 | Scaled Value: -37 | PvP Coefficient: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
-Hotfixed         : NEW EFFECT
 #18 (id=1228207) : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
-Hotfixed         : NEW EFFECT
 
 Name             : Charged Bolt (id=137542) 
 Class            : Druid
@@ -5212,7 +5205,6 @@ Attributes       : Allow While Not Shapeshifted (caster form) (83), Not a Proc (
 Effects          :
 #1 (id=232409)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.212 | PvP Coefficient: 1.33 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.33)
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | Target: Enemy (6)
 #3 (id=363033)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -5256,7 +5248,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=232416)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.212 | PvP Coefficient: 1.33 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.33)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=840806)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -5471,7 +5462,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0608 | PvP Coefficient: 1.4 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.816 -> 1.0608)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -8897,7 +8887,6 @@ Effects          :
 Description      : Frenzied Regeneration and Barkskin increase all healing received by $s1%.
 
 Name             : Thorns (id=305496) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -17126,12 +17115,10 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Summoner (92)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1109829)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Summoner (92)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc428544
 Tooltip          : Spell damage increased by $s1%.
 
@@ -17461,7 +17448,6 @@ Effects          :
                    Base Value: 160 | Scaled Value: 160 | PvP Coefficient: 0.8 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
-Hotfixed         : Base Value (100 -> 160)
 #2 (id=1118640)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Thrash (77758), Thrash (106830), Thrash (192090), Thrash (405233)
@@ -18707,7 +18693,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
-Hotfixed         : Base Value (15 -> 25)
 Description      : Frenzied Regeneration can be cast in Cat Form for $s2 Energy.
 
 Bear Form reduces magic damage you take by ${-$s4}%.
@@ -18817,7 +18802,6 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
-Hotfixed         : Base Value (225 -> 200)
 Description      : $@spelldesc441691
 Tooltip          : Your next Ferocious Bite or Rip deals $s1% increased damage for its full duration.
 
@@ -19610,7 +19594,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=1151596)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.456 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.38 -> 0.456)
 #2 (id=1151597)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All

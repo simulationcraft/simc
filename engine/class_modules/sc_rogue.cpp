@@ -4231,7 +4231,12 @@ struct crimson_tempest_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str )
   {
     aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    // 2024-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
+    //               Value of 5 seems to only be used for the end of the bonus damage scaling
+    reduced_aoe_targets = p->bugs ? 8 : data().effectN( 3 ).base_value();
+    // 2024-04-01 -- Appears to now tick immediately on cast, not just on application
+    tick_zero = p->bugs;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
@@ -4247,6 +4252,15 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       add_child( p()->active.sanguine_blades.crimson_tempest );
     }
+  }
+
+  double calculate_tick_amount( action_state_t* s, double m ) const override
+  {
+    auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
+
+    m *= std::sqrt( reduced_aoe_targets / n );
+
+    return rogue_attack_t::calculate_tick_amount( s, m );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4268,11 +4282,10 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_ta_multiplier( state );
 
-    // Deals bonus damage per target with the DoT ticking, up to 5 targets
-    auto num_targets = std::min( p()->get_active_dots( td( state->target )->dots.crimson_tempest ),
-                                 as<unsigned>( reduced_aoe_targets ) );
-    if ( num_targets > 1 )
+    // Bonus damage from target count is snapshot into the action state at time of cast
+    if ( state->n_targets > 1 )
     {
+      auto num_targets = std::min( state->n_targets, as<unsigned>( data().effectN( 3 ).base_value() ) );
       m *= 1.0 + ( num_targets * data().effectN( 4 ).percent() );
     }
 

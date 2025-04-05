@@ -1445,11 +1445,16 @@ struct buff_raid_event_t final : public raid_event_t
   std::unordered_map<size_t, buff_t*> buff_list;
   std::string buff_str;
   unsigned stacks;
+  bool always_trigger;
 
-  buff_raid_event_t( sim_t* s, std::string_view options_str ) : raid_event_t( s, "buff" ), stacks( 1 )
+  buff_raid_event_t( sim_t* s, std::string_view options_str ) :
+    raid_event_t( s, "buff" ),
+    stacks( -1 ),
+    always_trigger( false )
   {
     add_option( opt_string( "buff_name", buff_str ) );
     add_option( opt_uint( "stacks", stacks ) );
+    add_option( opt_bool( "always_trigger", always_trigger ) );
     parse_options( options_str );
 
     players_only = true;
@@ -1468,7 +1473,10 @@ struct buff_raid_event_t final : public raid_event_t
 
       if ( b )
       {
-        b->trigger( stacks, duration.mean > 0_ms ? duration.mean : timespan_t::min() );
+        if ( always_trigger )
+          b->execute( stacks, buff_t::DEFAULT_VALUE(), duration.mean > 0_ms ? duration.mean : timespan_t::min() );
+        else
+          b->trigger( stacks, duration.mean > 0_ms ? duration.mean : timespan_t::min() );
       }
       else
       {

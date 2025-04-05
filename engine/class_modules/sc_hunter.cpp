@@ -5688,7 +5688,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     auto et = aimed_shot_base_t::execute_time_pct_multiplier();
 
-    double streamline_mod = p()->buffs.streamline->check_value();
+    double streamline_mod = p()->buffs.streamline->check_stack_value();
     
     if ( p()->buffs.trueshot->check() )
       streamline_mod *= 1 + p()->talents.tensile_bowstring->effectN( 2 ).percent();
