@@ -166,8 +166,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 
-  // 2025-03-28: The Expendables talent does not apply to Greater Dreadstalkers (maybe a bug?)
-  if ( ( pet_type != PET_FELHUNTER || !bugs ) && o()->talents.the_expendables.ok() )
+  if ( o()->talents.the_expendables.ok() )
     m *= 1.0 + buffs.the_expendables->check_stack_value();
 
   m *= 1.0 + buffs.demonic_power->check_value();
