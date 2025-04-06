@@ -3668,11 +3668,10 @@ public:
 
     if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
-        .set_value_func( [ = ] ( double value ) {
-          return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value;
-        })
-        .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
-        .set_eff( &effect );
+          .set_value_func(
+              [ = ]( double value ) { return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
+          .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
+          .set_eff( &effect );
 
     if ( player->talent.brewmaster.dragonfire_brew->ok() )
       dragonfire_brew = new dragonfire_brew_t( player );
@@ -3680,17 +3679,6 @@ public:
     add_child( player->active_actions.breath_of_fire );
     if ( dragonfire_brew )
       add_child( dragonfire_brew );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    // Currently the value is saved as 100 and each of the levels uses stagger_index / 3 * base_value
-    double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
-    am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
-
-    return am;
   }
 
   action_state_t *new_state() override
@@ -3705,18 +3693,15 @@ public:
     if ( no_bof_hit )
       return;
 
-    blackout_combo = p()->buff.blackout_combo->up();
-
-    if ( blackout_combo )
-    {
+    if ( blackout_combo = p()->buff.blackout_combo->up(); blackout_combo )
       p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
 
     if ( dragonfire_brew )
       dragonfire_brew->execute();
 
     monk_spell_t::execute();
+
+    p()->buff.blackout_combo->expire();
   }
 
   void impact( action_state_t *state ) override
