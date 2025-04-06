@@ -20,7 +20,7 @@ actions+=/lights_judgment
 
 # COOLDOWNS ACTIONLIST
 actions.cds=blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
-actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)
 actions.cds+=/harpoon,if=prev.kill_command
 actions.cds+=/ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
@@ -33,7 +33,7 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 # PACK LEADER | AOE ACTIONLIST
 actions.plcleave=spearhead,if=cooldown.coordinated_assault.remains
-actions.plcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains
+actions.plcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains|raid_event.adds.exists&raid_event.adds.remains<4
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1
 actions.plcleave+=/wildfire_bomb
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)

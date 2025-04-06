@@ -35,6 +35,9 @@ struct event_manager_t
   std::vector<event_t*> allocated_events;
 
   stopwatch_t<chrono::thread_clock> event_stopwatch;
+#ifndef NDEBUG
+  unsigned max_events;
+#endif
   bool monitor_cpu;
   bool canceled;
 #ifdef EVENT_QUEUE_DEBUG

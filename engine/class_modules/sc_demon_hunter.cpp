@@ -1443,6 +1443,13 @@ struct soul_fragment_t
     dh->buff.painbringer->trigger();
     dh->buff.art_of_the_glaive->trigger();
     dh->buff.tww1_vengeance_4pc->trigger();
+
+    // Warblade's hunger currently applies an additional stack on first buff application
+
+    if ( !dh->buff.warblades_hunger->up() )
+    {
+      dh->buff.warblades_hunger->trigger();
+    }
     dh->buff.warblades_hunger->trigger();
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
@@ -2301,7 +2308,7 @@ struct winning_streak_removal_trigger_t : public BASE
       if ( stacks >= residual_stacks )
       {
         BASE::p()->buff.winning_streak_residual->expire();
-        BASE::p()->buff.winning_streak_residual->trigger( stacks );
+        BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
       }
       else
       {

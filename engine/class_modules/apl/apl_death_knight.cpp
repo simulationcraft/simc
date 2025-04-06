@@ -110,14 +110,19 @@ void blood( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* high_prio_actions = p->get_action_priority_list( "high_prio_actions" );
   action_priority_list_t* deathbringer = p->get_action_priority_list( "deathbringer" );
+  action_priority_list_t* san_cds = p->get_action_priority_list( "san_cds" );
+  action_priority_list_t* san_drw = p->get_action_priority_list( "san_drw" );
   action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "deaths_caress" );
+  precombat->add_action( "variable,name=bone_shield_refresh_value,value=7" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
+  default_->add_action( "use_item,name=bestinslots,use_off_gcd=1" );
   default_->add_action( "use_items" );
   default_->add_action( "blood_fury,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "berserking,if=buff.dancing_rune_weapon.up" );
@@ -125,11 +130,20 @@ void blood( player_t* p )
   default_->add_action( "fireblood,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "vampiric_blood,if=!buff.vampiric_blood.up" );
-  default_->add_action( "raise_dead" );
-  default_->add_action( "blood_tap,if=(rune<=2&rune.time_to_3>gcd&charges_fractional>=1.8)" );
-  default_->add_action( "blood_tap,if=(rune<=1&rune.time_to_3>gcd)" );
-  default_->add_action( "run_action_list,name=deathbringer,if=hero_tree.deathbringer" );
+  default_->add_action( "call_action_list,name=high_prio_actions" );
+  default_->add_action( "run_action_list,name=san_drw,if=hero_tree.sanlayn&buff.dancing_rune_weapon.up" );
+  default_->add_action( "call_action_list,name=san_cds,if=hero_tree.sanlayn" );
   default_->add_action( "run_action_list,name=sanlayn,if=hero_tree.sanlayn" );
+  default_->add_action( "run_action_list,name=deathbringer,if=hero_tree.deathbringer" );
+
+  high_prio_actions->add_action( "blood_tap,use_off_gcd=1,if=(rune<=2&rune.time_to_3>gcd.max&charges_fractional>=1.8)" );
+  high_prio_actions->add_action( "blood_tap,use_off_gcd=1,if=(rune<=1&rune.time_to_3>gcd.max)" );
+  high_prio_actions->add_action( "raise_dead,use_off_gcd=1" );
+  high_prio_actions->add_action( "deaths_caress,if=buff.bone_shield.remains<gcd.max*2" );
+  high_prio_actions->add_action( "death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd.max*2" );
+  high_prio_actions->add_action( "death_and_decay,if=!buff.death_and_decay.up" );
+  high_prio_actions->add_action( "blood_boil,if=dot.blood_plague.remains<gcd.max*2" );
+  high_prio_actions->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)&(!hero_tree.sanlayn|pet.dancing_rune_weapon.remains<5)" );
 
   deathbringer->add_action( "rune_tap,if=rune>2" );
   deathbringer->add_action( "dancing_rune_weapon" );
@@ -162,42 +176,29 @@ void blood( player_t* p )
   deathbringer->add_action( "arcane_torrent,if=runic_power.deficit>20" );
   deathbringer->add_action( "deaths_caress,if=buff.bone_shield.stack<11" );
 
-  sanlayn->add_action( "variable,name=death_strike_dump_drw_amount,value=80" );
-  sanlayn->add_action( "variable,name=death_strike_dump_amount,value=35" );
-  sanlayn->add_action( "variable,name=death_strike_pre_essence_dump_amount,value=20" );
-  sanlayn->add_action( "variable,name=death_strike_sang_low_hp,value=40" );
-  sanlayn->add_action( "variable,name=death_strike_pre_essence_dump_amount_low_hp,value=70" );
-  sanlayn->add_action( "variable,name=bone_shield_refresh_value,value=7" );
-  sanlayn->add_action( "variable,name=heart_strike_rp_drw,value=(21+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
-  sanlayn->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd" );
-  sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up" );
-  sanlayn->add_action( "blood_boil,if=!dot.blood_plague.ticking|(dot.blood_plague.remains<10&buff.dancing_rune_weapon.up)" );
-  sanlayn->add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  sanlayn->add_action( "consumption,if=pet.dancing_rune_weapon.active&pet.dancing_rune_weapon.remains<=3" );
-  sanlayn->add_action( "bonestorm,if=(buff.death_and_decay.up)&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains" );
-  sanlayn->add_action( "death_strike,if=runic_power>=108" );
-  sanlayn->add_action( "heart_strike,if=buff.dancing_rune_weapon.up&rune>1" );
-  sanlayn->add_action( "death_and_decay,if=!buff.death_and_decay.up" );
-  sanlayn->add_action( "heart_strike,if=buff.infliction_of_sorrow.up&buff.death_and_decay.up" );
-  sanlayn->add_action( "raise_dead" );
-  sanlayn->add_action( "abomination_limb" );
-  sanlayn->add_action( "tombstone,if=(!buff.dancing_rune_weapon.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>=25&buff.coagulopathy.remains>2*gcd" );
-  sanlayn->add_action( "dancing_rune_weapon,if=buff.coagulopathy.remains>=2*gcd&(!buff.essence_of_the_blood_queen.up|buff.essence_of_the_blood_queen.remains>=3*gcd)&(!buff.dancing_rune_weapon.up|buff.dancing_rune_weapon.remains>=6*gcd)" );
-  sanlayn->add_action( "death_strike,if=!buff.vampiric_strike.up&cooldown.dancing_rune_weapon.remains<=10&(target.health.pct<variable.death_strike_sang_low_hp&runic_power>variable.death_strike_pre_essence_dump_amount_low_hp)&buff.essence_of_the_blood_queen.stack>=3" );
-  sanlayn->add_action( "death_strike,if=!buff.vampiric_strike.up&cooldown.dancing_rune_weapon.remains<=10&(target.health.pct>variable.death_strike_sang_low_hp&runic_power>variable.death_strike_pre_essence_dump_amount)&buff.essence_of_the_blood_queen.stack>=3" );
-  sanlayn->add_action( "marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20|buff.bone_shield.remains<=3)" );
-  sanlayn->add_action( "marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20&!cooldown.dancing_rune_weapon.up|buff.bone_shield.remains<=3)" );
-  sanlayn->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
-  sanlayn->add_action( "death_strike,if=buff.dancing_rune_weapon.up&(buff.coagulopathy.remains<2*gcd|(target.health.pct<variable.death_strike_sang_low_hp&runic_power>50))" );
-  sanlayn->add_action( "death_strike,if=buff.dancing_rune_weapon.up&(buff.coagulopathy.remains<2*gcd|(runic_power.deficit<=variable.heart_strike_rp_drw&debuff.incite_terror.stack>=3))" );
-  sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up|buff.infliction_of_sorrow.up&((talent.consumption.enabled&buff.consumption.up)|!talent.consumption.enabled)&dot.blood_plague.ticking&dot.blood_plague.remains>20" );
-  sanlayn->add_action( "dancing_rune_weapon,if=buff.coagulopathy.up" );
-  sanlayn->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw|runic_power>=variable.death_strike_dump_amount" );
-  sanlayn->add_action( "blood_boil,if=charges>=2|(full_recharge_time<=gcd.max)" );
-  sanlayn->add_action( "consumption,if=cooldown.dancing_rune_weapon.remains>20" );
+  san_cds->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
+  san_cds->add_action( "dancing_rune_weapon" );
+  san_cds->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>15" );
+  san_cds->add_action( "tombstone,if=(!buff.dancing_rune_weapon.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>25" );
+
+  san_drw->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5" );
+  san_drw->add_action( "death_strike,if=(active_enemies=1|buff.luck_of_the_draw.up)&runic_power.deficit<15+(10*talent.relish_in_blood.enabled)+(3*talent.runic_attenuation.enabled)+(spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  san_drw->add_action( "blood_boil,if=!drw.bp_ticking" );
+  san_drw->add_action( "heart_strike" );
+  san_drw->add_action( "death_strike" );
+  san_drw->add_action( "consumption" );
+  san_drw->add_action( "blood_boil" );
+
+  sanlayn->add_action( "heart_strike,if=buff.infliction_of_sorrow.up" );
+  sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
+  sanlayn->add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up&active_enemies<=2&buff.coagulopathy.remains>3" );
+  sanlayn->add_action( "death_strike,if=runic_power.deficit<15+(10*talent.relish_in_blood.enabled)+(3*talent.runic_attenuation.enabled)+(spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  sanlayn->add_action( "marrowrend,if=!dot.bonestorm.ticking&buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20" );
+  sanlayn->add_action( "death_strike" );
   sanlayn->add_action( "heart_strike,if=rune>1" );
-  sanlayn->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains" );
-  sanlayn->add_action( "tombstone,if=buff.death_and_decay.up&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains" );
+  sanlayn->add_action( "consumption" );
+  sanlayn->add_action( "blood_boil" );
+  sanlayn->add_action( "heart_strike" );
 }
 //blood_apl_end
 
@@ -296,10 +297,10 @@ void frost( player_t* p )
   cooldowns->add_action( "soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2" );
   cooldowns->add_action( "frostscythe,if=!buff.killing_machine.react&!buff.pillar_of_frost.up" );
   cooldowns->add_action( "any_dnd,if=hero_tree.deathbringer&!buff.death_and_decay.up&variable.st_planning&cooldown.reapers_mark.remains<gcd.max*2&rune>2" );
-  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
-  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2&cooldown.pillar_of_frost.remains))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
-  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=1&cooldown.pillar_of_frost.remains>(cooldown.death_and_decay.duration-(cooldown.death_and_decay.duration*(cooldown.death_and_decay.charges_fractional%%1)))))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
-  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
+  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
+  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2&cooldown.pillar_of_frost.remains))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
+  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=1&cooldown.pillar_of_frost.remains>(cooldown.death_and_decay.duration-(cooldown.death_and_decay.duration*(cooldown.death_and_decay.charges_fractional%%1)))))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
+  cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
 
   high_prio_actions->add_action( "mind_freeze,if=target.debuff.casting.react", "High Priority Actions" );
   high_prio_actions->add_action( "invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> is up, as well as <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> or on cooldown if <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> and <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> are not talented" );
@@ -539,9 +540,8 @@ void unholy( player_t* p )
   san_st->add_action( "any_dnd,if=!death_and_decay.ticking&talent.unholy_ground&cooldown.dark_transformation.remains<5", "Single Target San'layn" );
   san_st->add_action( "wound_spender,if=buff.infliction_of_sorrow.up" );
   san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<3&!buff.runic_corruption.up|set_bonus.tww2_4pc&runic_power>80|buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&set_bonus.tww2_4pc&buff.winning_streak.at_max_stacks&rune<=3&buff.essence_of_the_blood_queen.remains>3" );
-  san_st->add_action( "wound_spender,if=buff.gift_of_the_sanlayn.up&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd" );
+  san_st->add_action( "wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1|buff.gift_of_the_sanlayn.up|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd" );
   san_st->add_action( "soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5" );
-  san_st->add_action( "wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1" );
   san_st->add_action( "festering_strike,if=(debuff.festering_wound.stack=0&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1)" );
   san_st->add_action( "wound_spender,if=(!talent.apocalypse|cooldown.apocalypse.remains>variable.apoc_timing)&(debuff.festering_wound.stack>=3-pet.abomination.active|buff.vampiric_strike.react)" );
   san_st->add_action( "death_coil,if=!variable.pooling_runic_power&debuff.death_rot.remains<gcd|(buff.sudden_doom.react&debuff.festering_wound.stack>=1|rune<2)" );

@@ -1484,7 +1484,7 @@ sim_t::sim_t()
     pvp_rules(),
     pvp_mode( false ),
     auto_attacks_always_land( false ),
-    log_spell_id(),
+    log_spell_id( true ),
     active_enemies( 0 ),
     active_allies( 0 ),
     _rng(),

@@ -113,10 +113,10 @@ actions.cooldowns+=/raise_dead,use_off_gcd=1
 actions.cooldowns+=/soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2
 actions.cooldowns+=/frostscythe,if=!buff.killing_machine.react&!buff.pillar_of_frost.up
 actions.cooldowns+=/any_dnd,if=hero_tree.deathbringer&!buff.death_and_decay.up&variable.st_planning&cooldown.reapers_mark.remains<gcd.max*2&rune>2
-actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
-actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2&cooldown.pillar_of_frost.remains))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
-actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=1&cooldown.pillar_of_frost.remains>(cooldown.death_and_decay.duration-(cooldown.death_and_decay.duration*(cooldown.death_and_decay.charges_fractional%%1)))))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
-actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&raid_event.adds.remains>5&(!buff.pillar_of_frost.up&(!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
+actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
+actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2&cooldown.pillar_of_frost.remains))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
+actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=1&cooldown.pillar_of_frost.remains>(cooldown.death_and_decay.duration-(cooldown.death_and_decay.duration*(cooldown.death_and_decay.charges_fractional%%1)))))&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
+actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&(raid_event.adds.remains>5|!raid_event.adds.exists&active_enemies>1)&(!buff.pillar_of_frost.up&(!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
 
 # High Priority Actions
 actions.high_prio_actions=mind_freeze,if=target.debuff.casting.react

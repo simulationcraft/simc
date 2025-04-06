@@ -958,6 +958,7 @@ public:
     spell_data_ptr_t call_pet;
 
     // SV
+    spell_data_ptr_t aspect_of_the_eagle;
     spell_data_ptr_t harpoon;
 
     // MM
@@ -1616,34 +1617,30 @@ public:
   }
 };
 
+struct hunter_spell_t : public hunter_action_t<spell_t>
+{
+  hunter_spell_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s ) {}
+  bool usable_moving() const override { return true; }
+};
+
 struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
-  hunter_ranged_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s )
-  {
-  }
-
-  bool usable_moving() const override
-  {
-    return true;
-  }
+  hunter_ranged_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s ) {}
+  bool usable_moving() const override { return true; }
 };
 
 struct hunter_melee_attack_t : public hunter_action_t<melee_attack_t>
 {
-  hunter_melee_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s )
-  {
-  }
+  hunter_melee_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s ) {}
 
   void init() override
   {
     hunter_action_t::init();
 
-    if ( weapon && weapon -> group() != WEAPON_2H )
+    if ( weapon && weapon->group() != WEAPON_2H )
       background = true;
   }
 };
-
-using hunter_spell_t = hunter_ranged_attack_t;
 
 namespace pets
 {
@@ -4226,6 +4223,25 @@ struct arcane_shot_t : public arcane_shot_base_t
   }
 };
 
+// Counter Shot (Marksmanship/Beast Mastery Talent) ===========================================================
+
+struct counter_shot_t : public hunter_ranged_attack_t
+{
+  counter_shot_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "counter_shot", p, p->talents.counter_shot )
+  {
+    parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    is_interrupt = true;
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
+    return hunter_ranged_attack_t::target_ready( candidate_target );
+  }
+};
+
 // Serpent Sting (Beast Mastery/Survival) =====================================================================
 
 struct serpent_sting_t: public hunter_ranged_attack_t
@@ -4851,7 +4867,7 @@ struct boar_charge_t final : hunter_ranged_attack_t
   {
     double hogstrider_mongoose_fury_chance;
 
-    cleave_t( hunter_t* p ) : hunter_spell_t( "boar_charge_cleave", p, p->talents.howl_of_the_pack_leader_boar_charge_cleave ),
+    cleave_t( hunter_t* p ) : hunter_ranged_attack_t( "boar_charge_cleave", p, p->talents.howl_of_the_pack_leader_boar_charge_cleave ),
       hogstrider_mongoose_fury_chance( p->talents.hogstrider->effectN( 1 ).percent() )
     {
       background = dual = true;
@@ -4881,7 +4897,7 @@ struct boar_charge_t final : hunter_ranged_attack_t
 
   cleave_t* cleave;
 
-  boar_charge_t( hunter_t* p ) : hunter_spell_t( "boar_charge", p, p->talents.howl_of_the_pack_leader_boar_charge_impact ),
+  boar_charge_t( hunter_t* p ) : hunter_ranged_attack_t( "boar_charge", p, p->talents.howl_of_the_pack_leader_boar_charge_impact ),
     cleave( new cleave_t( p ) )
   {
     background = dual = true;
@@ -4889,7 +4905,7 @@ struct boar_charge_t final : hunter_ranged_attack_t
 
   void execute() override
   {
-    hunter_spell_t::execute();
+    hunter_ranged_attack_t::execute();
 
     cleave->execute_on_target( target );
   }
@@ -5672,7 +5688,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     auto et = aimed_shot_base_t::execute_time_pct_multiplier();
 
-    double streamline_mod = p()->buffs.streamline->check_value();
+    double streamline_mod = p()->buffs.streamline->check_stack_value();
     
     if ( p()->buffs.trueshot->check() )
       streamline_mod *= 1 + p()->talents.tensile_bowstring->effectN( 2 ).percent();
@@ -5766,7 +5782,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
 // Rapid Fire =========================================================================
 
-struct rapid_fire_t: public hunter_spell_t
+struct rapid_fire_t: public hunter_ranged_attack_t
 {
   struct rapid_fire_tick_t : public hunter_ranged_attack_t
   {
@@ -5824,8 +5840,7 @@ struct rapid_fire_t: public hunter_spell_t
     double chance = 0; 
   } deathblow;
 
-  rapid_fire_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "rapid_fire", p, p -> talents.rapid_fire ),
+  rapid_fire_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "rapid_fire", p, p -> talents.rapid_fire ),
     damage( p -> get_background_action<rapid_fire_tick_t>( "rapid_fire_tick" ) ),
     base_num_ticks( as<int>( data().effectN( 1 ).base_value() ) )
   {
@@ -5848,7 +5863,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   void init() override
   {
-    hunter_spell_t::init();
+    hunter_ranged_attack_t::init();
 
     damage -> gain = gain;
     damage -> stats = stats;
@@ -5857,7 +5872,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   void execute() override
   {
-    hunter_spell_t::execute();
+    hunter_ranged_attack_t::execute();
 
     p()->buffs.streamline->trigger();
 
@@ -5875,7 +5890,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   void tick( dot_t* d ) override
   {
-    hunter_spell_t::tick( d );
+    hunter_ranged_attack_t::tick( d );
 
     damage -> execute_on_target( d->target );
 
@@ -5886,7 +5901,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    hunter_spell_t::last_tick( d );
+    hunter_ranged_attack_t::last_tick( d );
 
     p()->consume_trick_shots();
     p()->buffs.in_the_rhythm->trigger();
@@ -5908,7 +5923,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    double m = hunter_spell_t::tick_time_pct_multiplier( s );
+    double m = hunter_ranged_attack_t::tick_time_pct_multiplier( s );
 
     m *= 1 + p()->buffs.double_tap->check_value();
 
@@ -5922,7 +5937,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
-    double m = hunter_spell_t::recharge_rate_multiplier( cd );
+    double m = hunter_ranged_attack_t::recharge_rate_multiplier( cd );
 
     if ( p() -> buffs.trueshot -> check() )
       m /= 1 + p() -> talents.trueshot -> effectN( 1 ).percent();
@@ -5969,9 +5984,28 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   }
 };
 
+// Muzzle =============================================================
+
+struct muzzle_t : public hunter_melee_attack_t
+{
+  muzzle_t( hunter_t* p, util::string_view options_str ) : hunter_melee_attack_t( "muzzle", p, p->talents.muzzle )
+  {
+    parse_options( options_str );
+
+    may_miss = may_block = may_dodge = may_parry = false;
+    is_interrupt = true;
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !candidate_target->debuffs.casting || !candidate_target->debuffs.casting->check() ) return false;
+    return hunter_melee_attack_t::target_ready( candidate_target );
+  }
+};
+
 // Harpoon ==================================================================
 
-struct harpoon_t : public hunter_melee_attack_t
+struct harpoon_t : public hunter_ranged_attack_t
 {
   struct terms_of_engagement_t final : hunter_ranged_attack_t
   {
@@ -5989,8 +6023,7 @@ struct harpoon_t : public hunter_melee_attack_t
   };
   terms_of_engagement_t* terms_of_engagement = nullptr;
 
-  harpoon_t( hunter_t* p, util::string_view options_str )
-    : hunter_melee_attack_t( "harpoon", p, p->specs.harpoon )
+  harpoon_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "harpoon", p, p->specs.harpoon )
   {
     parse_options( options_str );
 
@@ -6010,7 +6043,7 @@ struct harpoon_t : public hunter_melee_attack_t
 
   void execute() override
   {
-    hunter_melee_attack_t::execute();
+    hunter_ranged_attack_t::execute();
 
     if ( terms_of_engagement )
       terms_of_engagement->execute_on_target( target );
@@ -6022,7 +6055,7 @@ struct harpoon_t : public hunter_melee_attack_t
     // if ( p() -> current.distance_to_move < data().min_range() )
     //  return false;
 
-    return hunter_melee_attack_t::ready();
+    return hunter_ranged_attack_t::ready();
   }
 };
 
@@ -6225,7 +6258,7 @@ struct mongoose_bite_eagle_t : mongoose_bite_base_t
 
 // Flanking Strike =====================================================================
 
-struct flanking_strike_t: hunter_melee_attack_t
+struct flanking_strike_t: hunter_spell_t
 {
   struct damage_t final : hunter_melee_attack_t
   {
@@ -6271,8 +6304,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
   damage_t* damage;
 
-  flanking_strike_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "flanking_strike", p, p -> talents.flanking_strike ),
+  flanking_strike_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "flanking_strike", p, p -> talents.flanking_strike ),
     damage( p -> get_background_action<damage_t>( "flanking_strike_player" ) )
   {
     parse_options( options_str );
@@ -6293,12 +6325,12 @@ struct flanking_strike_t: hunter_melee_attack_t
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "flanking_strike" } );
 
-    hunter_melee_attack_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
   {
-    hunter_melee_attack_t::execute();
+    hunter_spell_t::execute();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
       damage -> execute_on_target( target );
@@ -6384,7 +6416,7 @@ struct butchery_t : public hunter_melee_attack_t
 
 // Fury of the Eagle ==============================================================
 
-struct fury_of_the_eagle_t : public hunter_melee_attack_t
+struct fury_of_the_eagle_t : public hunter_spell_t
 {
   bool procced_at_max_tip = false; 
 
@@ -6437,8 +6469,8 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
   fury_of_the_eagle_tick_t* fote_tick;
 
-  fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle ),
+  fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ) :
+    hunter_spell_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle ),
       fote_tick( p->get_background_action<fury_of_the_eagle_tick_t>( "fury_of_the_eagle_damage" ) )
   {
     parse_options( options_str );
@@ -6453,7 +6485,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
   void execute() override
   {
-    hunter_melee_attack_t::execute();
+    hunter_spell_t::execute();
 
     if ( p()->buffs.tip_of_the_spear->up() )
     {
@@ -6464,7 +6496,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
   void tick( dot_t* dot ) override
   {
-    hunter_melee_attack_t::tick( dot );
+    hunter_spell_t::tick( dot );
 
     fote_tick -> execute_on_target( dot -> target );
 
@@ -6477,7 +6509,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
   void last_tick( dot_t* dot ) override
   {
-    hunter_melee_attack_t::last_tick( dot );
+    hunter_spell_t::last_tick( dot );
 
     p()->buffs.tip_of_the_spear_fote->decrement();
     p()->buffs.ruthless_marauder->trigger();
@@ -6486,7 +6518,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
 // Coordinated Assault ==============================================================
 
-struct coordinated_assault_t: public hunter_melee_attack_t
+struct coordinated_assault_t: public hunter_spell_t
 {
   struct damage_t final : hunter_melee_attack_t
   {
@@ -6501,8 +6533,7 @@ struct coordinated_assault_t: public hunter_melee_attack_t
   };
   damage_t* damage;
 
-  coordinated_assault_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "coordinated_assault", p, p->talents.coordinated_assault )
+  coordinated_assault_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "coordinated_assault", p, p->talents.coordinated_assault )
   {
     parse_options( options_str );
 
@@ -6521,7 +6552,7 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     for ( auto pet : p()->pet_list )
       add_pet_stats( pet, { "coordinated_assault" } );
 
-    hunter_melee_attack_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -6530,7 +6561,7 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     if ( p()->talents.symbiotic_adrenaline.ok() )
       p()->buffs.tip_of_the_spear->trigger( as<int>( p()->talents.symbiotic_adrenaline->effectN( 2 ).base_value() ) );
 
-    hunter_melee_attack_t::execute();
+    hunter_spell_t::execute();
 
     p()->state.sentinel_watch_reduction = 0_s;
     p()->buffs.eyes_closed->trigger();
@@ -6565,28 +6596,6 @@ struct coordinated_assault_t: public hunter_melee_attack_t
 
 namespace spells
 {
-
-//==============================
-// Shared spells
-//==============================
-
-// Base Interrupt ===========================================================
-
-struct interrupt_base_t: public hunter_spell_t
-{
-  interrupt_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ):
-    hunter_spell_t( n, p, s )
-  {
-    may_miss = may_block = may_dodge = may_parry = false;
-    is_interrupt = true;
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( !candidate_target -> debuffs.casting || !candidate_target -> debuffs.casting -> check() ) return false;
-    return hunter_spell_t::target_ready( candidate_target );
-  }
-};
 
 // Summon Pet ===============================================================
 
@@ -6745,17 +6754,6 @@ struct implosive_trap_t : public trap_base_t
   }
 };
 
-// Counter Shot (Marksmanship/Beast Mastery Talent) ===========================================================
-
-struct counter_shot_t: public interrupt_base_t
-{
-  counter_shot_t( hunter_t* p, util::string_view options_str ):
-    interrupt_base_t( "counter_shot", p, p -> talents.counter_shot )
-  {
-    parse_options( options_str );
-  }
-};
-
 // Kill Command (Beast Mastery/Survival Talent) =============================================================
 
 struct kill_command_t: public hunter_spell_t
@@ -6831,8 +6829,7 @@ struct kill_command_t: public hunter_spell_t
   timespan_t wildfire_infusion_reduction = 0_s;
   timespan_t bloody_claws_extension = 0_s;
 
-  kill_command_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "kill_command", p, p -> talents.kill_command )
+  kill_command_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "kill_command", p, p -> talents.kill_command )
   {
     parse_options( options_str );
 
@@ -7129,13 +7126,12 @@ struct dire_command_summon_t final : hunter_spell_t
 
 // Bestial Wrath ============================================================
 
-struct bestial_wrath_t: public hunter_spell_t
+struct bestial_wrath_t: public hunter_ranged_attack_t
 {
   timespan_t precast_time = 0_ms;
   attacks::barbed_shot_tww_s2_bm_2pc_t* barbed_shot_tww_s2_bm_2pc = nullptr;
 
-  bestial_wrath_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "bestial_wrath", p, p -> talents.bestial_wrath )
+  bestial_wrath_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "bestial_wrath", p, p -> talents.bestial_wrath )
   {
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
@@ -7156,12 +7152,12 @@ struct bestial_wrath_t: public hunter_spell_t
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "bestial_wrath" } );
 
-    hunter_spell_t::init_finished();
+    hunter_ranged_attack_t::init_finished();
   }
 
   void execute() override
   {
-    hunter_spell_t::execute();
+    hunter_ranged_attack_t::execute();
 
     trigger_buff( p() -> buffs.bestial_wrath, precast_time );
 
@@ -7199,7 +7195,7 @@ struct bestial_wrath_t: public hunter_spell_t
     if ( !p() -> pets.main )
       return false;
 
-    return hunter_spell_t::ready();
+    return hunter_ranged_attack_t::ready();
   }
 };
 
@@ -7215,8 +7211,6 @@ struct call_of_the_wild_t: public hunter_spell_t
     harmful = false;
     // disable automatic generation of the dot from spell data
     dot_duration = 0_ms;
-
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void execute() override
@@ -7364,10 +7358,9 @@ struct harriers_cry_t: public hunter_spell_t
 
 // Trueshot =================================================================
 
-struct trueshot_t: public hunter_spell_t
+struct trueshot_t : public hunter_spell_t
 {
-  trueshot_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "trueshot", p, p -> talents.trueshot )
+  trueshot_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
   }
@@ -7506,7 +7499,7 @@ struct volley_t : public hunter_spell_t
 
 // Spearhead ==============================================================
 
-struct spearhead_t : public hunter_spell_t
+struct spearhead_t : public hunter_melee_attack_t
 {
   struct bleed_t : public hunter_melee_attack_t
   {
@@ -7528,7 +7521,7 @@ struct spearhead_t : public hunter_spell_t
 
   bleed_t* bleed;
 
-  spearhead_t( hunter_t* p, util::string_view options_str ) : hunter_spell_t( "spearhead", p, p->talents.spearhead ),
+  spearhead_t( hunter_t* p, util::string_view options_str ) : hunter_melee_attack_t( "spearhead", p, p->talents.spearhead ),
     bleed( p->get_background_action<bleed_t>( "spearhead_bleed" ) )
   {
     parse_options( options_str );
@@ -7541,7 +7534,7 @@ struct spearhead_t : public hunter_spell_t
 
   void execute() override
   {
-    hunter_spell_t::execute();
+    hunter_melee_attack_t::execute();
 
     bleed->execute_on_target( target );
 
@@ -7555,9 +7548,9 @@ struct spearhead_t : public hunter_spell_t
 
 // Wildfire Bomb ==============================================================
 
-struct wildfire_bomb_base_t: public hunter_spell_t
+struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 {
-  struct bomb_damage_t : public hunter_spell_t
+  struct bomb_damage_t : public hunter_ranged_attack_t
   {
     struct bomb_dot_t final : public hunter_spell_t
     {
@@ -7583,8 +7576,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
 
     bomb_dot_t* bomb_dot;
 
-    bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_base_t* a ) : 
-      hunter_spell_t( n, p, p->talents.wildfire_bomb_dmg ),
+    bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_base_t* a ) : hunter_ranged_attack_t( n, p, p->talents.wildfire_bomb_dmg ),
       bomb_dot( p->get_background_action<bomb_dot_t>( "wildfire_bomb_dot" ) )
     {
       background = dual = true;
@@ -7603,7 +7595,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
 
     void execute() override
     {
-      hunter_spell_t::execute();
+      hunter_ranged_attack_t::execute();
 
       if ( num_targets_hit > 0 )
       {
@@ -7625,7 +7617,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double am = hunter_spell_t::composite_da_multiplier( s );
+      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       if ( s->chain_target == 0 )
         am *= 1.0 + p()->talents.wildfire_bomb->effectN( 3 ).percent();
@@ -7634,7 +7626,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
     }
   };
 
-  wildfire_bomb_base_t( hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_spell_t( "wildfire_bomb", p, s )
+  wildfire_bomb_base_t( hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_ranged_attack_t( "wildfire_bomb", p, s )
   {
     may_miss = false;
     school = SCHOOL_FIRE; // for report coloring
@@ -7687,7 +7679,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 struct aspect_of_the_eagle_t: public hunter_spell_t
 {
   aspect_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
-    hunter_spell_t( "aspect_of_the_eagle", p, p -> find_spell( 186289 ) )
+    hunter_spell_t( "aspect_of_the_eagle", p, p->specs.aspect_of_the_eagle )
   {
     parse_options( options_str );
 
@@ -7698,18 +7690,7 @@ struct aspect_of_the_eagle_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.aspect_of_the_eagle -> trigger();
-  }
-};
-
-// Muzzle =============================================================
-
-struct muzzle_t: public interrupt_base_t
-{
-  muzzle_t( hunter_t* p, util::string_view options_str ):
-    interrupt_base_t( "muzzle", p, p -> talents.muzzle )
-  {
-    parse_options( options_str );
+    p()->buffs.aspect_of_the_eagle->trigger();
   }
 };
 
@@ -8319,6 +8300,7 @@ void hunter_t::init_spells()
     talents.bombardier_buff                   = talents.bombardier.ok() ? find_spell( 459859 ) : spell_data_t::not_found();
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
 
+    specs.aspect_of_the_eagle = find_spell( 186289 );
     specs.serpent_sting = find_spell( 259491 );
     specs.harpoon = find_spell( 190925 );
   }
@@ -8763,7 +8745,7 @@ void hunter_t::create_buffs()
       -> set_affects_regen( true );
 
   buffs.aspect_of_the_eagle =
-    make_buff( this, "aspect_of_the_eagle", find_spell( 186289 ) )
+    make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
       -> set_cooldown( 0_ms );
 
   buffs.coordinated_assault =

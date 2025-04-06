@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3060,18 +3060,14 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Glacial Advance (394500), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> 4)
 #7 (id=1131943)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Glacial Advance (394500), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501)
                    Family Flags: 43
-Hotfixed         : Base Value (0 -> 4)
 #8 (id=1131944)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 4)
 #9 (id=1131945)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 4)
 #10 (id=1203292) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
@@ -3798,7 +3794,6 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Erupts for $191685s1 damage split among all nearby enemies when the infected dies.
 
 Name             : Virulent Eruption (id=191685) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -10110,7 +10105,6 @@ Attributes       : No Active Defense (21), Allow While Mounted (24), Allow While
 Effects          :
 #1 (id=844986)   : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.0592 | PvP Coefficient: 1.75 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.75)
 Description      : $@spelldesc343294
 
 Name             : Apocalypse (id=343758) [Spell Family (15)] 
@@ -13733,7 +13727,6 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143)
 Effects          :
 #1 (id=1123513)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.144 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
@@ -13742,7 +13735,6 @@ Hotfixed         : PvP Coefficient (1 -> 1.3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #5 (id=1124444)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.755885 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : A vampiric strike that deals $?a137007[$s1][$s5] Shadow damage and heals you for $?a137007[$434422s2][$434422s3]% of your maximum health.
 
 Additionally grants you Essence of the Blood Queen for $433925d.

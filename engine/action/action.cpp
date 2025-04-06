@@ -610,11 +610,7 @@ bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
  */
 void action_t::parse_spell_data( const spell_data_t& spell_data )
 {
-  if ( !spell_data.ok() )
-  {
-    sim->errorf( "%s %s: parse_spell_data: no spell to parse.\n", player->name(), name() );
-    return;
-  }
+  assert( spell_data.ok() && "parse_spell_data: no spell to parse" );
 
   id                = spell_data.id();
   base_execute_time = spell_data.cast_time();
@@ -623,6 +619,10 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   min_travel_time   = spell_data.missile_min_duration();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
+
+  // generic (type==none) and spells (type==magic) have hasted gcd by default
+  if ( spell_data.dmg_class() == SPELL_TYPE_NONE || spell_data.dmg_class() == SPELL_TYPE_MAGIC )
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
   // parse attributes
   suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
@@ -5717,8 +5717,20 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
     switch ( effect.subtype() )
     {
       case A_HASTED_GCD:
-        gcd_type = gcd_haste_type::ATTACK_HASTE;
-        sim->print_debug( "{} gcd type set to attack_haste", *this );
+        switch ( data().dmg_class() )
+        {
+          case SPELL_TYPE_NONE:
+          case SPELL_TYPE_MAGIC:
+            gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
+            sim->print_debug( "{} gcd type set to spell_cast_speed", *this );
+            break;
+          case SPELL_TYPE_MELEE:
+          case SPELL_TYPE_RANGED:
+            gcd_type = gcd_haste_type::ATTACK_HASTE;
+            sim->print_debug( "{} gcd type set to attack_haste", *this );
+            break;
+          default: break;
+        }
         value_ = 1;
         break;
 

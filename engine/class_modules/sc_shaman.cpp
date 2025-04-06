@@ -6203,7 +6203,7 @@ struct thunderstrike_ward_t : public weapon_imbue_t
     weapon_imbue_t( "thunderstrike_ward", player, SLOT_OFF_HAND,
                     player->talent.thunderstrike_ward, options_str )
   {
-    if ( !player->has_shield_equipped() )
+    if ( !player->has_shield_equipped() && player->talent.thunderstrike_ward.enabled() )
     {
       sim->errorf( "%s: %s only usable with shield equipped in offhand\n", player->name(), name() );
     }

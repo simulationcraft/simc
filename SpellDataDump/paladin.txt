@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -52,7 +52,6 @@ Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1.5 -> 1.75)
 #2 (id=1183800)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -2014,16 +2013,13 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94)
 Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.48 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (4.32 -> 6.48)
 #2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.914 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (3.78 -> 4.914)
 #3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> To Area (8)
 Description      : $@spelldesc114165
 
 Name             : Holy Prism (id=114871) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -2045,10 +2041,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.34 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (7.56 -> 11.34)
 #2 (id=128397)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.457 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.89 -> 2.457)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
 Description      : $@spelldesc114165
@@ -2472,20 +2466,16 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
                    Family Flags: 40
-Hotfixed         : Sub Type (219 -> 107), Base Value (10 -> 5), Misc Value 2 (2628 -> 0), Affects Spells
 #30 (id=1077114) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
                    Family Flags: 40
-Hotfixed         : Sub Type (219 -> 107), Base Value (-10 -> -5), Misc Value 2 (2628 -> 0), Affects Spells
 #31 (id=1077116) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
-Hotfixed         : Base Value (10 -> 5)
 #32 (id=1077117) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
-Hotfixed         : Base Value (-10 -> -5)
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -2595,12 +2585,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Barrier of Faith (148039), Eternal Flame (156322), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 38, 46, 90
-Hotfixed         : Base Value (1 -> 4)
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 46
-Hotfixed         : Base Value (1 -> 4)
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Crusader Strike (132331), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Consecration (243597), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Execution Sentence (387200), Consecration (387881), Blade of Justice (404358), Shield of the Righteous (415091), Consecration (419810)
@@ -2638,7 +2626,6 @@ Hotfixed         : Base Value (1 -> 4)
                    Base Value: 129 | Scaled Value: 129 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
-Hotfixed         : Base Value (91 -> 129)
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
@@ -3371,7 +3358,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense 
 Effects          :
 #1 (id=267535)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.3311 | PvP Coefficient: 1.5 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.5)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
@@ -5147,7 +5133,6 @@ Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.85472 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (1.5456 -> 1.85472)
 Description      : $@spelldesc85222
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
@@ -9835,7 +9820,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase 
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93668 | PvP Coefficient: 1.1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.6139 -> 1.93668)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
@@ -12995,7 +12979,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense 
 Effects          :
 #1 (id=1051843)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.17039 | PvP Coefficient: 1.5 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1.25 -> 1.5)
 Description      : Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 Holy damage.
 
 Deals reduced damage beyond 5 targets.
@@ -14289,12 +14272,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
-Hotfixed         : Base Value (10 -> 5)
 #6 (id=1079866)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
-Hotfixed         : Base Value (-10 -> -5)
 #7 (id=1080083)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
@@ -14862,7 +14843,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.027 | Radius: 6 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (0.79 -> 1.027)
 #2 (id=1084763)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell w/ Value (142): Lightforged Blessing
@@ -15666,7 +15646,6 @@ Tooltip          : Dealing $w1 Radiant damage and radiating $431581s1% of this d
 Movement speed reduced by $w3%.][]
 
 Name             : Dawnlight (id=431381) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -15681,7 +15660,6 @@ Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173
 Effects          :
 #1 (id=1119127)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.3455 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (1.17 -> 1.3455)
 #2 (id=1119128)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=1119194)  : Apply Aura (6) | Increase Speed% (31)
@@ -15692,7 +15670,6 @@ Tooltip          : Healing $w1 and radiating $431581s1% of this healing to nearb
 Movement speed increased by $w3%.][]
 
 Name             : Dawnlight (id=431382) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -16357,7 +16334,6 @@ Effects          :
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=431939) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -16374,7 +16350,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120157)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 40 yards | Target: Unknown(87) -> Line to Friendly (133)
-Hotfixed         : SP Coefficient (0.162 -> 0.1863)
 Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
@@ -18643,7 +18618,6 @@ Description      : $@spelldesc431425
 Tooltip          : Linked with a Dawnlight, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.
 
 Name             : Sun's Avatar (id=463074) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -18660,7 +18634,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1173453)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 5 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (0.162 -> 0.1863)
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=463075) [Spell Family (10)] 
@@ -18940,7 +18913,6 @@ Effects          :
 Description      : $s1% of all healing done to you from other sources heals up to $s2 nearby allies, divided evenly among them.
 
 Name             : Lightbearer (id=469421) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -18952,7 +18924,6 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Co
 Effects          :
 #1 (id=1183775)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : Target 1 (21 -> 18), Target 2 (0 -> 31)
 Description      : $@spelldesc469416
 
 Name             : Selfless Healer (id=469434) [Spell Family (10), Passive, Hidden] 
