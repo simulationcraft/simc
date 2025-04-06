@@ -469,7 +469,7 @@ double warlock_t::composite_player_critical_damage_multiplier( const action_stat
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
   if ( specialization() == WARLOCK_DEMONOLOGY && talents.demonic_brutality.ok() )
-    m += talents.demonic_brutality->effectN( 1 ).percent();
+    m *= 1.0 + talents.demonic_brutality->effectN( 1 ).percent();
 
   return m;
 }

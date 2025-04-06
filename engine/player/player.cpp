@@ -3688,15 +3688,13 @@ void player_t::init_assessors()
 
   // Generic actor callbacks
   assessor_out_damage.add( assessor::CALLBACKS, [this]( result_amount_type, action_state_t* state ) {
-    if ( !state->action->callbacks )
+    if ( state->action->callbacks && state->action->caster_callbacks )
     {
-      return assessor::CONTINUE;
+      proc_types pt   = state->proc_type();
+      proc_types2 pt2 = state->impact_proc_type2();
+      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+        trigger_callbacks( pt, pt2, state->action, state );
     }
-
-    proc_types pt   = state->proc_type();
-    proc_types2 pt2 = state->impact_proc_type2();
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      trigger_callbacks( pt, pt2, state->action, state );
 
     return assessor::CONTINUE;
   } );
@@ -6736,6 +6734,9 @@ void player_t::enter_combat()
 
   for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
     callbacks_on_combat_state[ i ]( this, in_combat );
+
+  if ( race == RACE_NIGHT_ELF && buffs.shadowmeld->check() )
+    buffs.shadowmeld->expire();
 }
 
 void player_t::leave_combat()
@@ -7894,8 +7895,8 @@ void player_t::do_damage( action_state_t* incoming_state )
   }
 
   // New callback system; proc abilities on incoming events.
-  // TODO: How to express action causing/not causing incoming callbacks?
-  if ( incoming_state->action && incoming_state->action->callbacks && !incoming_state->action->suppress_target_procs )
+  if ( incoming_state->action && incoming_state->action->callbacks && incoming_state->action->target_callbacks &&
+       !incoming_state->action->suppress_target_procs )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )
@@ -8035,7 +8036,7 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   if ( buffs.blessing_of_spring->up() )
     s->result_total *= 1.0 + buffs.blessing_of_spring->data().effectN( 2 ).percent();
 
-  s->result_total *= 1.0 + composite_player_healing_received_multiplier();
+  s->result_total *= composite_player_healing_received_multiplier();
 
   // process heal
   s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, nullptr, s->action );
@@ -8299,13 +8300,13 @@ gain_t* player_t::get_gain( util::string_view name )
   return g;
 }
 
-proc_t* player_t::get_proc( util::string_view name )
+proc_t* player_t::get_proc( util::string_view name, unsigned flags )
 {
   proc_t* p = find_proc( name );
 
   if ( !p )
   {
-    p = new proc_t( *sim, name );
+    p = new proc_t( *sim, name, flags );
 
     proc_list.push_back( p );
   }
@@ -12913,6 +12914,7 @@ void player_t::create_options()
   add_option( opt_string( "thewarwithin.windsingers_passive_stat", thewarwithin_opts.windsingers_passive_stat ) );
   add_option( opt_string( "thewarwithin.mister_locknstalk_mode", thewarwithin_opts.mister_locknstalk_mode ) );
   add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat", thewarwithin_opts.jastor_diamond_ally_stat ) );
+  add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance", thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

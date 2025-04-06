@@ -157,7 +157,7 @@ struct evangelism_t final : public priest_heal_t
   timespan_t atonement_extend;
   evangelism_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "evangelism", p, p.talents.discipline.evangelism ),
-      atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 1 ).base_value() ) )
+      atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -373,7 +373,6 @@ protected:
 
 private:
   propagate_const<penance_damage_t*> damage;
-  timespan_t void_summoner_cdr;
   timespan_t heavens_wrath_cdr;
   unsigned max_spread_targets;
   double default_bolts;
@@ -383,10 +382,6 @@ public:
                   const spell_data_t* s_tick )
     : priest_spell_t( name, p, s ),
       damage( new penance_damage_t( p, std::string( name ) + "_tick", s_tick ) ),
-      void_summoner_cdr(
-          priest()
-              .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
-              .time_value() ),
       heavens_wrath_cdr(
           timespan_t::from_seconds( -priest().talents.discipline.heavens_wrath->effectN( 1 ).base_value() ) ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() +
@@ -463,7 +458,7 @@ public:
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     ab::snapshot_state( s, rt );
-    cast_state( s )->bolts         = as<int>( default_bolts + p().buffs.harsh_discipline->check_stack_value() );
+    cast_state( s )->bolts         = as<int>( default_bolts + p().buffs.harsh_discipline->check_value() );
     cast_state( s )->snapshot_mult = 1.0 + priest().buffs.power_of_the_dark_side->check_value();
 
     if ( ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
@@ -654,14 +649,9 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.discipline.void_summoner.enabled() )
-    {
-      priest().cooldowns.fiend->adjust( void_summoner_cdr );
-    }
-
     priest().buffs.power_of_the_dark_side->expire();
 
-    priest().buffs.harsh_discipline->expire();
+    priest().buffs.harsh_discipline->decrement();
 
     if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
       priest().buffs.darkness_from_light->trigger();
@@ -816,7 +806,7 @@ void priest_t::create_buffs_discipline()
   {
     double scov_amp          = 0;
     timespan_t scov_duration = 15_s;
-    if ( talents.shared.mindbender.enabled() && !talents.voidweaver.voidwraith.enabled() )
+    if ( talents.shared.mindbender.enabled() )
     {
       scov_amp      = 0.1;
       scov_duration = talents.shared.mindbender->duration();

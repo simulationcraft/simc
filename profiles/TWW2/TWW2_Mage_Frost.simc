@@ -23,8 +23,9 @@ temporary_enchant=main_hand:algari_mana_oil_3
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=arcane_intellect
 actions.precombat+=/snapshot_stats
-actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter
 actions.precombat+=/use_item,name=treacherous_transmitter
+actions.precombat+=/use_item,name=ingenious_mana_battery
 actions.precombat+=/blizzard,if=active_enemies>=3
 actions.precombat+=/frostbolt,if=active_enemies<=2
 
@@ -79,11 +80,13 @@ actions.cds+=/use_item,name=spymasters_web,if=fight_remains<20|buff.icy_veins.re
 actions.cds+=/use_item,name=house_of_cards,if=buff.icy_veins.remains>9|fight_remains<20
 actions.cds+=/use_item,name=imperfect_ascendancy_serum,if=buff.icy_veins.remains>15|fight_remains<20
 actions.cds+=/use_item,name=burst_of_knowledge,if=buff.icy_veins.remains>15|fight_remains<20
+actions.cds+=/use_item,name=ratfang_toxin,if=time>10
 actions.cds+=/potion,if=fight_remains<35|buff.icy_veins.remains>15
 actions.cds+=/icy_veins,if=buff.icy_veins.remains<1.5&(talent.frostfire_bolt|active_enemies>=3)
 actions.cds+=/frozen_orb,if=time=0&active_enemies>=3
 actions.cds+=/flurry,if=time=0&active_enemies<=2
 actions.cds+=/icy_veins,if=buff.icy_veins.remains<1.5&talent.splinterstorm
+actions.cds+=/use_item,name=neural_synapse_enhancer,if=active_enemies<=2|prev_gcd.1.comet_storm|fight_remains<20
 actions.cds+=/use_items
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
 actions.cds+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down

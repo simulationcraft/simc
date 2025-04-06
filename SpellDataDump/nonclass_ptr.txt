@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59571 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60067 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -36715,27 +36715,6 @@ Effects          :
 Description      : Increases your Agility by $s1, stacking up to $u times.
 Tooltip          : Increases Agility by $s1.
 
-Name             : Spirit Shell (id=109964) [Spell Family (6)] 
-School           : Holy
-Spell Type       : Magic
-Resource         : 2% Base Mana (0) (id=215334)
-Duration         : 10 seconds
-Cooldown         : 90 seconds
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
-                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Effects          :
-#1 (id=121670)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: 14 | Target: Self (1)
-#2 (id=870569)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47540), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400169), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522)
-                   Family Flags: 55, 72
-Description      : For $d, Penance, Power Word: Radiance, and Atonement create absorb shields for $s1% of their value, instead of healing.
-Tooltip          : Penance, Power Word: Radiance, and Atonement create absorb shields for $w1% of their healing.
-
 Name             : Master Pit Fighter (id=109993) 
 School           : Physical
 Spell Type       : None
@@ -37266,23 +37245,6 @@ Effects          :
 Description      : |CFF00F0FFWhen making this flask, you have a chance to learn additional recipes.
 
 The number of recipes you can learn is limited by your skill in Alchemy.|R
-
-Name             : Spirit Shell (id=114908) [Spell Family (6)] 
-School           : Holy
-Spell Type       : None
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 10 seconds
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Do Not Display Range (126), Aura Points On Client (268), Heal Prediction (280), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=128455)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friendly (21)
-                   Affected School(s): All
-Description      : $@spelldesc109964
-Tooltip          : Absorbing $w1 damage.
 
 Name             : Wisdom of the Four Winds (desc=Passive) (id=115913) [Passive, Hidden] 
 School           : Physical
@@ -43680,7 +43642,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Triggered By     : Touch of the Grave (5227)
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Not an Attack (194)
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126)
 Effects          :
 #1 (id=162610)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Enemy (6)
@@ -69855,7 +69817,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 46
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=291202)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -85402,6 +85364,7 @@ This effect is only active in the Broken Isles.
 Name             : Soul Flame of Insight (id=226326) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 70
 Duration         : 3600 seconds
 Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
@@ -109720,7 +109683,7 @@ Triggered By     : Razdunk's Big Red Button (271374)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=721595)   : School Damage (2): fire | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 394948 (coefficient=154.4116) | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 473935.8 (coefficient=185.2932) | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc271374
 
 Name             : Shell Game (id=271379) [Hidden] 
@@ -110747,7 +110710,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 418
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
 Family Flags     : 126
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -115394,7 +115357,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 417
-Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
+Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Mistweaver Monk (428200 effects: #27, #28), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
 Triggered By     : Sunrise Technique (273298)
 Family Flags     : 103
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -118988,7 +118951,7 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 313267 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 4603.97 (coefficient=1.8) | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Penance (47666), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543)
+                   Affected Spells: Penance (47666), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 47
 Description      : Penance deals an additional $s2 damage and extends your $?s204197[Purge the Wicked][Shadow Word: Pain] by ${$s1/1000} sec per bolt.
 
@@ -121162,7 +121125,7 @@ Stance Mask      : 0x00000001
 Affecting Spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Berserk: Heart of the Lion (391174 effect#1)
 Family Flags     : 70
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=735847)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -123440,7 +123403,7 @@ Labels           : 292
                  : 374
                  : 378
                  : 418
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
 Family Flags     : 126
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -125646,11 +125609,11 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=739962)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
                    Family Flags: 103
 #2 (id=739963)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
                    Family Flags: 103
 #3 (id=740221)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -125669,11 +125632,11 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=739969)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Penance (1232567), Dark Reprimand (1232615)
                    Family Flags: 74, 126
 #2 (id=739970)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Penance (1232567), Dark Reprimand (1232615)
                    Family Flags: 74, 126
 Description      : Increases healing done by $s1%.
 
@@ -125687,7 +125650,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Aren
 Effects          :
 #1 (id=739971)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47540), Penance (47750), Divine Hymn (64843), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Luminous Barrier (271466), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400169), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503)
+                   Affected Spells: Power Word: Shield (17), Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33076), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47540), Penance (47750), Divine Hymn (64843), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Luminous Barrier (271466), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400169), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Penance (1232567), Dark Reprimand (1232615)
                    Family Flags: 0, 37, 54, 55, 99, 126
 Description      : Reduces the cost of your healing spells by $s1%.
 
@@ -142650,6 +142613,7 @@ Name             : Shroud of Resolve (id=300470) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 732: Shroud of Resolve (317388 effect#1), Shroud of Resolve (317389 effect#1), Shroud of Resolve (317407 effect#1), Shroud of Resolve (317408 effect#1), Shroud of Resolve (317409 effect#1), Shroud of Resolve (317410 effect#1), Shroud of Resolve (317411 effect#1), Shroud of Resolve (317412 effect#1), Shroud of Resolve (317413 effect#1), Shroud of Resolve (317414 effect#1), Shroud of Resolve (317415 effect#1), Shroud of Resolve (317416 effect#1), Shroud of Resolve (317417 effect#1), Shroud of Resolve (317418 effect#1), Shroud of Resolve (317419 effect#1)
+                 : 4925
 Attributes       : Passive (6), Not In Arena or Rated Battleground (144), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
 #1 (id=773939)   : Apply Aura (6) | Dummy (4)
@@ -142725,7 +142689,7 @@ Category Cooldown: 20 seconds
 Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=774162)   : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 6861.514 (coefficient=1.792) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6861.514 (coefficient=1.792) | PvP Coefficient: 0.1 | Stat: Int | Target: Self (1)
 #2 (id=774163)   : School Damage (2): nature | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 100374.1 (coefficient=26.2144) | Target: Self (1)
 Description      : Zap yourself for $s2 Nature damage, gaining $s1 Intellect for $d.
@@ -153663,6 +153627,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153681,6 +153646,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153699,6 +153665,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 10 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153715,6 +153682,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153733,6 +153701,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -154216,6 +154185,7 @@ Name             : Shroud of Resolve (id=317388) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 858
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802536)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154227,6 +154197,7 @@ Name             : Shroud of Resolve (id=317389) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 858
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802537)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154238,6 +154209,7 @@ Name             : Shroud of Resolve (id=317407) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 858
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802561)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154249,6 +154221,7 @@ Name             : Shroud of Resolve (id=317408) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 858
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802562)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154260,6 +154233,7 @@ Name             : Shroud of Resolve (id=317409) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 859
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802563)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154271,6 +154245,7 @@ Name             : Shroud of Resolve (id=317410) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 859
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802564)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154282,6 +154257,7 @@ Name             : Shroud of Resolve (id=317411) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 859
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802565)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154293,6 +154269,7 @@ Name             : Shroud of Resolve (id=317412) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 859
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802566)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154304,6 +154281,7 @@ Name             : Shroud of Resolve (id=317413) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 859
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802567)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154315,6 +154293,7 @@ Name             : Shroud of Resolve (id=317414) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802568)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154326,6 +154305,7 @@ Name             : Shroud of Resolve (id=317415) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802569)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154337,6 +154317,7 @@ Name             : Shroud of Resolve (id=317416) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802570)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154348,6 +154329,7 @@ Name             : Shroud of Resolve (id=317417) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802571)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154359,6 +154341,7 @@ Name             : Shroud of Resolve (id=317418) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802572)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -154370,6 +154353,7 @@ Name             : Shroud of Resolve (id=317419) [Passive]
 School           : Physical
 Spell Type       : None
 Labels           : 860
+                 : 4925
 Attributes       : Passive (6)
 Effects          :
 #1 (id=802573)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -163760,7 +163744,7 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Labels           : 931
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
 Family Flags     : 126
 Effects          :
 #1 (id=833801)   : Direct Heal (10)
@@ -163829,7 +163813,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 931
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2)
 Family Flags     : 126
 Effects          :
 #1 (id=833988)   : Direct Heal (10)
@@ -164208,7 +164192,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 100 yards
 Labels           : 931
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -164617,7 +164601,7 @@ Attributes       : Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=835841)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091)
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309), Shield of the Righteous (415091), Execution Sentence (1234189)
                    Family Flags: 31, 49, 52, 55, 77, 78, 82, 88, 111
 Description      : Judgment has a $s1% chance to reduce the HP cost of your next spender by $s2.
 Tooltip          : Holy Power cost of your next Holy Power spender reduced by $s1.
@@ -164927,7 +164911,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=836304)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Target: Friendly (21)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Renewing Mist (115151), Soothing Mist (115175), Breath of Fire (115181), Revival (115310), Vivify (116670), Fists of Fury (117418), Crackling Jade Lightning (117952), Renewing Mist (119611), Keg Smash (121253), Flying Serpent Kick (123586), Chi Burst (123986), Zen Pulse (124081), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Healing Sphere (163212), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Zen Pulse (198487), Blackout Kick (205523), Soothing Mist (209525), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Revival (297850), Weapons of Order (310454), Expel Harm (322101), Exploding Keg (325153), Enveloping Breath (325209), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Enveloping Breath (358560), Weapons of Order (387184), Ancient Teachings (388024), Ancient Teachings (388025), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Renewing Mist (448430), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Courage of the White Tiger (457917), Chi Burst (461404), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Renewing Mist (115151), Soothing Mist (115175), Breath of Fire (115181), Revival (115310), Vivify (116670), Fists of Fury (117418), Crackling Jade Lightning (117952), Renewing Mist (119611), Keg Smash (121253), Flying Serpent Kick (123586), Chi Burst (123986), Zen Pulse (124081), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Healing Sphere (163212), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Zen Pulse (198487), Blackout Kick (205523), Soothing Mist (209525), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Revival (297850), Weapons of Order (310454), Expel Harm (322101), Exploding Keg (325153), Enveloping Breath (325209), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Enveloping Breath (358560), Weapons of Order (387184), Ancient Teachings (388024), Ancient Teachings (388025), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Renewing Mist (448430), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Courage of the White Tiger (457917), Chi Burst (461404), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
                    Family Flags: 17, 18, 23, 24, 25, 26, 38, 42, 43, 58, 59, 60, 77, 79, 85, 89, 90, 102, 103
 Description      : $@spelldesc337473
 Tooltip          : Healing from $@auracaster increased by $w2%.
@@ -167427,7 +167411,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Category Cooldown: 4.5 seconds
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 72, 106
 Attributes       : Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -168498,7 +168482,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 65, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), No Reflection (39), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Taps immediately (215), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -169662,12 +169646,13 @@ Effects          :
 #1 (id=871768)   : Direct Heal (10) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 2418.11 (coefficient=0.945401) | Target: Self (1)
 #2 (id=871769)   : School Damage (2): physical | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 52105.34 (coefficient=20.37147) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 62526.48 (coefficient=24.44579) | Target: Enemy (6)
 #3 (id=871771)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #4 (id=871778)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.
+Description      : Your abilities have a very high chance to lash out with a Hateful Strike, inflicting ${$s2*$<rolemult>} Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Spectral Transference (id=345701) 
 School           : Shadow
@@ -169978,9 +169963,9 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=872063)   : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 284362.3 (coefficient=111.1763) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 341234.8 (coefficient=133.4115) | Target: Self (1)
 #2 (id=872064)   : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 39494.8 (coefficient=15.44116) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47393.65 (coefficient=18.52935) | Target: Self (1)
 
 Name             : Kevin's Party Supplies (id=345899) 
 School           : Physical
@@ -222695,7 +222680,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120211)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Crit | Target: Self (1)
@@ -222710,7 +222695,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120212)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Haste | Target: Self (1)
@@ -222725,7 +222710,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120213)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Vers | Target: Self (1)
@@ -222740,7 +222725,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120214)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Mastery | Target: Self (1)
@@ -222860,7 +222845,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Extra Initial Period (169), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Extra Initial Period (169), Aura Points On Client (268), Not in Battleground (284), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120285)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -223605,6 +223590,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
+Cooldown         : 30 seconds
 Triggered By     : Brann's Epic Egg (432647)
 Effects          :
 #1 (id=1121510)  : Summon (28)
@@ -226719,7 +226705,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 9 yards | Mechanic: Stun | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc435510
 
-Name             : Enduring Bloodstone (id=435550) 
+Name             : Enduring Bloodstone (id=435550) [Hidden] 
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -226728,7 +226714,7 @@ Labels           : 609
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Allow Item Spell In PvP (13), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Can Proc From Procs (122), Aura Is Buff (140), Allow Entering Arena (149), Aura Unique Per Caster (189), Not an Attack (194), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Can Proc From Procs (122), Aura Is Buff (140), Allow Entering Arena (149), Aura Unique Per Caster (189), Not an Attack (194), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1126234)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 435551 | Target: Self (1)
@@ -231063,7 +231049,7 @@ Triggered By     : Charged Stormrook Plume (448892)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139182)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 296244.7 (coefficient=115.8219) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 355494 (coefficient=138.9864) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1147670)  : Unknown(254)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1057 | Target: Unknown(87) -> Unknown(87)
 #3 (id=1150837)  : Dummy (3)
@@ -231077,18 +231063,18 @@ Spell Type       : None
 Labels           : 3959: Item Effects
 Internal Cooldown: 15 seconds
 Proc Chance      : 101%
-Real PPM         : 0.5 (Haste multiplier)
+Real PPM         : 0.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1139244)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1153349)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 67026.13 (coefficient=26.205) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 80431.28 (coefficient=31.44597) | Target: Self (1)
 #3 (id=1153350)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 55855.36 (coefficient=21.8376) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 67026.32 (coefficient=26.20507) | Target: Self (1)
 #4 (id=1153351)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 95751.06 (coefficient=37.4355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 114901 (coefficient=44.9225) | Target: Self (1)
 #5 (id=1153352)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 100531.5 (coefficient=39.3045) | Target: Self (1)
 #6 (id=1153353)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -231098,9 +231084,9 @@ Effects          :
 #8 (id=1153355)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 156379.2 (coefficient=61.1391) | Target: Self (1)
 #9 (id=1153789)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 50269.47 (coefficient=19.6537) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 60323.65 (coefficient=23.58455) | Target: Self (1)
 #10 (id=1153790) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 10398.83 (coefficient=4.0656) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12478.57 (coefficient=4.878707) | Target: Self (1)
 Description      : Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.
 Tooltip          : Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.
 
@@ -231450,7 +231436,7 @@ Triggered By     : Candle Conductor's Collision (450429)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1139496)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 144749.1 (coefficient=56.5921) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 173698.8 (coefficient=67.91048) | Target: Self (1)
 Description      : Your attacks have a chance to direct a Kobold Cart towards your target, sending a careening troop that collides with enemies, inflicting ${$<rolemult>*$s1} Physical damage split between enemies impacted.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -231499,7 +231485,7 @@ Effects          :
 #1 (id=1139501)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 980.982 (coefficient=0.2562) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1139502)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 167341.5 (coefficient=65.425) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 200810.1 (coefficient=78.51009) | Target: Self (1)
 Description      : Your abilities have a chance to call the Darkness to you, increasing your $pri by $s1, up to ${$s1*$451369u}.
 
 Upon reaching full power, the Darkness is unleashed, inflicting ${$<rolemult>*$s2*$451602d/$451602t1} Shadow damage split between nearby enemies over $451602d before fading back into the remnant.
@@ -234220,13 +234206,16 @@ Attributes       : No Aura Icon (60), Cast When Learned (63), No Aura Log (202)
 Effects          :
 #1 (id=1142603)  : Unknown(226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1067210 | Target: Self (1)
-#2 (id=1190692)  : Apply Aura (6) | Modify Damage Done% (79)
+#2 (id=1190692)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#3 (id=1216088)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+#4 (id=1216218)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#3 (id=1216088)  : Apply Aura (6) | Threat (10)
+#5 (id=1225625)  : Apply Aura (6) | Threat (10)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
-#4 (id=1216218)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 Description      : $@spelldesc421373
 
 Name             : Arathi Demolition Charge (id=446015) [Hidden] 
@@ -235719,7 +235708,7 @@ Triggered By     : Ravenous Honey Buzzer (448903)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1147688)  : School Damage (2): fire | Scaling Class: -9 | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 354388 (coefficient=138.554) | PvP Coefficient: 0.3 | Radius: 15 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 425265.7 (coefficient=166.2648) | PvP Coefficient: 0.3 | Radius: 15 yards | Target: Unknown(129)
 Description      : $@spelldesc448904
 
 Name             : Wide-Eyed Wonder (id=448924) [Passive] 
@@ -237760,7 +237749,7 @@ Triggered By     : Bursting Light (450926), Bursting Lightshard (450930)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1151159)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 135291.2 (coefficient=52.8944) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 162349.3 (coefficient=63.47323) | PvP Coefficient: 0.4 | Target: Self (1)
 #2 (id=1151160)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1534657 (coefficient=600) | Target: Self (1)
 #3 (id=1176189)  : Apply Aura (6) | Dummy (4)
@@ -241924,7 +241913,8 @@ Triggered By     : Shining Arathor Insignia (455433), Shining Arathor Insignia (
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1158862)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 180734.7 (coefficient=70.66128) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 180734.7 (coefficient=70.66128) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : You are one of the devout. Your spells and abilities have a chance of burning a nearby enemy for $s1 Radiant damage and healing another devout ally for that amount.
 
 Name             : Shining Arathor Insignia (id=455433) 
@@ -241961,13 +241951,13 @@ Triggered By     : Light Up! (455443), Not-So-Gentle Flame (455447), Not-So-Gent
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1158867)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 34355.33 (coefficient=13.4318) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41226.7 (coefficient=16.11828) | Target: Self (1)
 #2 (id=1158932)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 41226.31 (coefficient=16.11813) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 49471.58 (coefficient=19.34175) | Target: Self (1)
 #3 (id=1158933)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 68710.27 (coefficient=26.86344) | Target: Self (1)
-#4 (id=1158934)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 82452.26 (coefficient=32.23611) | Target: Self (1)
+#4 (id=1158934)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
+                   Base Value: 0 | Scaled Value: 98942.78 (coefficient=38.68336) | Target: Self (1)
 Description      : Your spells have a chance to bring the candle to life, summoning a waxen ally to light up your enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -242040,7 +242030,7 @@ Triggered By     : Siphoning (455471)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1158888)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 24317.72 (coefficient=9.507423) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29181.33 (coefficient=11.40894) | Target: Self (1)
 #2 (id=1207279)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Taking damage has a high chance to brand your assailant dealing $s1 Holy Fire damage and healing you for $s2% of damage dealt.
@@ -242614,11 +242604,14 @@ Triggered By     : Shadowed Essence (455654), Dark Embrace (455656), Shadowed Es
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1159258)  : Apply Aura (6) | Proc Trigger Spell (42): Shadowed Essence | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 20624.36 (coefficient=8.063442) | Trigger Spell: 455643 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20624.36 (coefficient=8.063442) | PvP Coefficient: 0.5 | Trigger Spell: 455643 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1159831)  : Dummy (3) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1372.563 (coefficient=0.358468)
+                   Base Value: 0 | Scaled Value: 1372.563 (coefficient=0.358468) | PvP Coefficient: 0.5
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1159832)  : Dummy (3) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1372.15 (coefficient=0.35836)
+                   Base Value: 0 | Scaled Value: 1372.15 (coefficient=0.35836) | PvP Coefficient: 0.5
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Entering combat summons an orb of dark power to assist you.
 
 Name             : Shadowed Essence (id=455643) [Hidden] 
@@ -242848,7 +242841,7 @@ Triggered By     : Voltaic Stormstrike (455910), Voltaic Stormsurge (456652)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1159675)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 111516.8 (coefficient=43.5994) | Trigger Spell: 455888 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 133820.6 (coefficient=52.31943) | Trigger Spell: 455888 | Target: Self (1)
 #2 (id=1160999)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2927.251 (coefficient=0.764501) | Target: Self (1)
 Description      : Your spells have a chance to call down a Voltaic Stormrook, inflicting ${$<rolemult>*$s1} Nature damage split between nearby enemies and granting $s2 Haste, further increased for each enemy struck.
@@ -245970,7 +245963,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 25 yards | Target: At Self (18) -> At Friendly in Area (31)
 Tooltip          : Movement Speed increased by $w1%.
 
-Name             : Deployable Wind-Wrangling Spire (id=457916) 
+Name             : Deployable Wind-Wrangling Spire (id=457916) [Hidden] 
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -245978,7 +245971,7 @@ Duration         : 1 seconds
 Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
 Category Cooldown: 3600 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163530)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227482 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
@@ -246014,15 +246007,15 @@ Effects          :
 Description      : $@spelldesc457815
 Tooltip          : Deal Nature damage to your target upon reaching 5 stacks.
 
-Name             : Deployable Recovery Station (id=457926) 
+Name             : Deployable Recovery Station (id=457926) [Hidden] 
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Duration         : 1 seconds
-Cooldown         : 86400 seconds
+Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
-Category Cooldown: 86400 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Category Cooldown: 3600 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163546)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227490 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
@@ -251874,7 +251867,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1179367)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 213314.5 (coefficient=83.39891) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 255977.5 (coefficient=100.0788) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1189109)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 246620.2 (coefficient=96.42035) | Target: Self (1)
 #3 (id=1195731)  : Dummy (3)
@@ -251933,7 +251926,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=1190109)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : $@spelldesc433770
+Description      : $@spelldesc466671
 Tooltip          : Protected by whirling junk, absorbing $s2% of incoming damage until $W1 damage is prevented.
 
 Name             : House of Cards (id=466680) [Passive] 
@@ -251978,7 +251971,7 @@ Effects          :
 #1 (id=1179432)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 3812048 (coefficient=1490.385) | PvP Coefficient: 0.1 | Target: Self (1)
 #2 (id=1189174)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 161566.5 (coefficient=63.16715) | PvP Coefficient: 0.1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 193879.7 (coefficient=75.80054) | PvP Coefficient: 0.1 | Target: Self (1)
 
 Name             : Chromebustible Bomb Suit (id=466810) 
 School           : Physical
@@ -252190,7 +252183,7 @@ Proc Flags       : Yellow Melee, Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1180273)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 26387.73 (coefficient=10.31673) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23749.03 (coefficient=9.285087) | Target: Self (1)
 #2 (id=1194407)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1194408)  : Dummy (3)
@@ -252280,9 +252273,9 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1180646)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 399131.8 (coefficient=156.0473) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 478958.4 (coefficient=187.2569) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1180668)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 232826.6 (coefficient=91.0275) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 279392.2 (coefficient=109.2331) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?a467492[$@spelldesc467492]?a467497[$@spelldesc467497][$@spelldesc467492]
 
 
@@ -253182,7 +253175,7 @@ Effects          :
 #1 (id=1184853)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 4134.713 (coefficient=1.07985) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1185462)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 181526.3 (coefficient=70.97079) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 217831.6 (coefficient=85.16494) | PvP Coefficient: 0.2 | Target: Self (1)
 #3 (id=1191143)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 
@@ -253582,7 +253575,7 @@ Effects          :
 #1 (id=1187017)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 4134.717 (coefficient=1.079851) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1187018)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1008478 (coefficient=394.2816) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1210174 (coefficient=473.1382) | PvP Coefficient: 0.2 | Target: Self (1)
 #3 (id=1187194)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.3 | Target: Self (1)
 #4 (id=1192774)  : Dummy (3)
@@ -253596,7 +253589,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1187021)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 483432 (coefficient=189.006) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 580118.5 (coefficient=226.8071) | PvP Coefficient: 0.3 | Target: Self (1)
 
 Name             : Geargrinder's Remote (id=471059) [Hidden] 
 School           : Physical
@@ -253662,7 +253655,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1187323)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 21884.27 (coefficient=8.556026) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 26260.92 (coefficient=10.26715) | Target: Self (1)
 #2 (id=1205519)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1206486)  : Dummy (3)
@@ -253761,7 +253754,7 @@ Triggered By     : Noggenfogger Utimate Deluxe (470675)
 Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Item Cast With Owner Skill (88), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1188868)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 131724.7 (coefficient=51.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 189869.6 (coefficient=74.23274) | Target: Self (1)
 #2 (id=1188869)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233767 | Misc Value 2: 0x17e7 | Target: Unknown(87)
 Description      : $@spelldesc470675
@@ -253816,7 +253809,7 @@ Name             : Combo Attack (id=471633)
 School           : Physical
 Spell Type       : None
 Category         : 133 (Type 0x0)
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Skip Is Known Check (282), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1189310)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -253873,9 +253866,9 @@ Effects          :
 #1 (id=1190003)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 138658.3 (coefficient=54.21082) | Target: Self (1)
 #2 (id=1190004)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1765.794 (coefficient=0.461167) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3644.18 (coefficient=0.951739) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1190005)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 4127.951 (coefficient=1.078084) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10224.03 (coefficient=2.670178) | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1190006)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1526.779 (coefficient=0.398744) | Target: Self (1)
 #5 (id=1190193)  : Apply Aura (6) | Dummy (4)
@@ -253900,7 +253893,7 @@ Triggered By     : Turbo-Drain 5000 (472127)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1190016)  : Apply Aura (6) | Proc Trigger Spell (42): Turbo-Drain 5000 | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 71491.6 (coefficient=27.95085) | Trigger Spell: 472127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 85789.92 (coefficient=33.54102) | Trigger Spell: 472127 | Target: Self (1)
 Description      : Your harmful spells and abilities have a chance to drain your target's electrical power, dealing ${$s1*$<rolemult>} Nature damage over $472127d. If the target dies while being drained, you gain $472350s1% movement speed for $472350d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -253930,6 +253923,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1190107)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+Description      : $@spelldesc466671
 Tooltip          : Haste increased by $w1.
 
 Name             : Scrapfield 9001 Recharging (id=472170) 
@@ -254024,7 +254018,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Seamless Transfer (48)
 Effects          :
 #1 (id=1190141)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
@@ -254042,7 +254035,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Seamless Transfer (48)
 Effects          :
 #1 (id=1190144)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -254797,6 +254789,7 @@ Spell Type       : None
 Cast Time        : 2 seconds
 Duration         : Aura (infinite)
 Labels           : 3881
+Proc Chance      : 101%
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1191995)  : Apply Aura (6) | Dummy (4)
@@ -254840,6 +254833,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Duration         : 10 seconds
+Cooldown         : 3600 seconds
 Category         : 2353 (Type 0x0)
 Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), No Aura Log (202), Aura Points On Client (268)
 Effects          :
@@ -256368,7 +256362,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1195247)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215045s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.
+Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215045s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.
 
 Name             : Automatic Footbomb Dispenser (desc=Rank 1/4) (id=1213554) [Passive, Hidden] 
 School           : Physical
@@ -256664,7 +256658,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1196738)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1196739)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -256730,11 +256724,11 @@ Triggered By     : Goo-blin Grenade (1213436)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1196947)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 24727.06 (coefficient=9.667462) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29672.62 (coefficient=11.60101) | Target: Self (1)
 #2 (id=1196948)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 118484.3 (coefficient=46.32345) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 142181.3 (coefficient=55.58821) | Target: Self (1)
 #3 (id=1207613)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 247270.6 (coefficient=96.67462) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 296724.7 (coefficient=116.0095) | Target: Self (1)
 
 Name             : Kaja'Cola Carrier (id=1214698) 
 School           : Physical
@@ -256855,7 +256849,7 @@ Effects          :
 #1 (id=1197231)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 962.4599 (coefficient=0.37629) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1197232)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1277.965 (coefficient=0.499642) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1214.179 (coefficient=0.474704) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your harmful abilities have a chance to power the amplifier, randomly increasing either your highest secondary stat by $s1 or your lowest secondary stat by $s2 for $1214806d.
 
 Name             : Pinged Augment Chip (id=1214796) [Hidden] 
@@ -256877,7 +256871,7 @@ Range            : 100 yards
 Duration         : 20 seconds
 Labels           : 3957: Spatial Paradox (406732 effect#5)
 Triggered By     : Concussion (1214893)
-Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204)
+Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426), Unknown (465)
 Effects          :
 #1 (id=1197265)  : Apply Aura (6) | Unknown(128)
                    Base Value: 1 | Scaled Value: 1 | Target: Any Target (25)
@@ -257042,6 +257036,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Any Target (25)
 #3 (id=1197423)  : Unknown(203)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1214802 | Target: Any Target (25)
+#4 (id=1223920)  : Apply Aura (6) | Temporary Thread Reduction (103)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Mechanic: Stun | Target: Any Target (25)
 Description      : $@spelldesc467037
 Tooltip          : Stunned.
 
@@ -257097,7 +257093,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197450)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #2 (id=1197451)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257123,7 +257119,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197454)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #2 (id=1197455)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257149,7 +257145,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197458)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1197459)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257192,7 +257188,7 @@ Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1197538)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 98737 (coefficient=38.6029) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 118484.3 (coefficient=46.32346) | Target: Self (1)
 
 Name             : Blastmaster3000 (id=1214941) 
 School           : Physical
@@ -257299,6 +257295,8 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1197729)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
+#2 (id=1226422)  : Trigger Spell (64): Pacifist Rig
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7900 | Trigger Spell: 1233162 | Target: Friendly (21)
 Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
@@ -257309,6 +257307,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3957: Spatial Paradox (406732 effect#5)
                  : 4287
+Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -257677,7 +257676,7 @@ Triggered By     : Papa's Prized Putter (1215238)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1198201)  : School Damage (2): fire | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 39376.57 (coefficient=15.39494) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 47252.04 (coefficient=18.47399) | Target: Enemy (6)
 Description      : $@spelldesc1215238
 
 Name             : Comically Large Shield (id=1215331) [Hidden] 
@@ -258335,6 +258334,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3957: Spatial Paradox (406732 effect#5)
                  : 4287
+Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -258354,6 +258354,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3957: Spatial Paradox (406732 effect#5)
                  : 4287
+Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -258373,6 +258374,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3957: Spatial Paradox (406732 effect#5)
                  : 4287
+Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -258394,7 +258396,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1199211)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215959s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.
+Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215959s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.
 
 Name             : Pacifist Rig (desc=Rank 3/4) (id=1215963) [Passive, Hidden] 
 School           : Physical
@@ -258405,7 +258407,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1199212)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215958s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.
+Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215958s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.
 
 Name             : Pacifist Rig (desc=Rank 2/4) (id=1215964) [Passive, Hidden] 
 School           : Physical
@@ -258416,7 +258418,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1199213)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215960s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.
+Description      : During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215960s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.
 
 Name             : Impact Conversion Matrix (id=1216075) 
 School           : Nature
@@ -258498,7 +258500,7 @@ Description      : Brann's spells and abilities have a chance to drop $s1 footbo
 
 Running into a footbomb kicks it at your enemy target dealing tremendous Fire damage to all enemies in a $1214604a-yard radius.
 
-Name             : Echo of N'zoth (id=1216207) [Hidden] 
+Name             : Echo of N'Zoth (id=1216207) [Hidden] 
 School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Active Defense (21), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Can Target Untargetable (216), Ignore Caster Damage Modifiers (221), Can Hit AOE Untargetable (260), Allow While Charmed (261), Ignore Sanctuary (263), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Ignore Feign Death (346), Allow during spell override (404), Do Not Display Cast Time (441)
@@ -258543,7 +258545,7 @@ Effects          :
 Description      : $@spelldesc471567
 Tooltip          : Haste increased by $w1.
 
-Name             : Echo of N'zoth (id=1216213) [Hidden] 
+Name             : Echo of N'Zoth (id=1216213) [Hidden] 
 School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Active Defense (21), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Can Target Untargetable (216), Ignore Caster Damage Modifiers (221), Can Hit AOE Untargetable (260), Allow While Charmed (261), Ignore Sanctuary (263), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Ignore Feign Death (346), Allow during spell override (404), Do Not Display Cast Time (441)
@@ -258551,7 +258553,7 @@ Effects          :
 #1 (id=1199602)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
-Name             : Echo of N'zoth (id=1216214) [Hidden] 
+Name             : Echo of N'Zoth (id=1216214) [Hidden] 
 School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Active Defense (21), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Can Target Untargetable (216), Ignore Caster Damage Modifiers (221), Can Hit AOE Untargetable (260), Allow While Charmed (261), Ignore Sanctuary (263), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Ignore Feign Death (346), Allow during spell override (404), Do Not Display Cast Time (441)
@@ -258607,7 +258609,7 @@ Proc Flags       : Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1199824)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 20971.76 (coefficient=8.199264) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 25165.96 (coefficient=9.839057) | Target: Self (1)
 #2 (id=1199865)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 31460.48 (coefficient=12.30001) | Target: Self (1)
 #3 (id=1199866)  : Dummy (3)
@@ -258756,9 +258758,9 @@ Effects          :
 #1 (id=1200148)  : Apply Aura (6) | Proc Trigger Spell (42): Ratfang Toxin
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1216604 | Target: Self (1)
 #2 (id=1200153)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 216362.5 (coefficient=84.59059) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 259634.8 (coefficient=101.5086) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200154)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 24727.06 (coefficient=9.667462) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29672.62 (coefficient=11.60101) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your harmful spells and abilities apply Ratfang Toxin to your target, stacking up to $s1 times.
 
 Name             : Ratfang Toxin (id=1216604) 
@@ -259019,7 +259021,7 @@ Effects          :
 #2 (id=1200624)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 126599.7 (coefficient=49.49632) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200625)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 25331.49 (coefficient=9.903776) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 30397.79 (coefficient=11.88453) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Taking damage has a chance to erupt the ground, covering you in a layer of dark oil that absorbs $s2 damage for $1216921d1. When the shield is broken, it splatters nearby enemies for $s3 Shadow damage.
 
 Name             : Ominous Oil Residue (id=1216921) 
@@ -259067,15 +259069,15 @@ Triggered By     : Thwack! (1217638), Gutstab (1217675), Snipe (1217719)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1201371)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34874.46 (coefficient=13.63476) | Target: Self (1)
 #2 (id=1201372)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34874.46 (coefficient=13.63476) | Target: Self (1)
 #3 (id=1201373)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 36327.84 (coefficient=14.20298) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 43593.55 (coefficient=17.04364) | Target: Self (1)
 #4 (id=1202597)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 6054.576 (coefficient=2.367139) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7265.338 (coefficient=2.840507) | Target: Self (1)
 #5 (id=1202687)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 3633.049 (coefficient=1.420402) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4359.734 (coefficient=1.704512) | Target: Self (1)
 Description      : Your abilities have a chance to call a member of the Goon Squad to attack your target for $1217427d. Gaining Bloodlust or a similar effect summons the whole crew.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -259492,7 +259494,7 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1204552)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 6 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 7257.069 (coefficient=2.837274) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8708.46 (coefficient=3.40472) | Target: Self (1)
 #2 (id=1204553)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1204554)  : Apply Aura (6) | Dummy (4)
@@ -259557,7 +259559,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 50 yards/sec
-Duration         : 5 seconds
+Duration         : 2.5 seconds
 Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
@@ -259578,12 +259580,13 @@ Effects          :
 #1 (id=1204940)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 575514.6 (coefficient=225.0072) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1205003)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 
 Name             : Garbocalypse (id=1219299) 
 School           : Physical
 Spell Type       : Ranged
 Range            : 50000 yards
+Triggered By     : Garbagemancer's Last Resort (1219301)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1204945)  : School Damage (2): physical
@@ -259591,11 +259594,22 @@ Effects          :
 #2 (id=1204946)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219296
 
+Name             : Garbagemancer's Last Resort (id=1219301) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Velocity         : 8 yards/sec
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1204948)  : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219299 | Target: Unknown(87)
+Description      : Fashion nearby garbage into a sphere and launch into the sky. After $d of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.
+
 Name             : Garbagemancer's Last Resort (id=1219314) 
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
-Duration         : 10.1 seconds
+Duration         : 3.1 seconds
 Triggered By     : Garbagemancer's Last Resort (1219294)
 Effects          :
 #1 (id=1204983)  : Create Area Trigger (179)
@@ -259613,9 +259627,9 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1205126)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 184589.3 (coefficient=72.16832) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 221507 (coefficient=86.60193) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1205127)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 26330.78 (coefficient=10.29446) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31596.78 (coefficient=12.3533) | PvP Coefficient: 0.3 | Target: Self (1)
 Tooltip          : Roasting nearby enemies, inflicting Fire damage every $t1 sec.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -259825,7 +259839,7 @@ Triggered By     : Mud Echo (1221151)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1207485)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 30926.88 (coefficient=12.09139) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 37112.12 (coefficient=14.50961) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1207576)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.1 | Target: Self (1)
 #3 (id=1215567)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
@@ -259955,7 +259969,8 @@ Triggered By     : Hallowed Tome of the Abbot (1223887)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212176)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212184)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223887
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Haste for $1223887d.
@@ -260004,7 +260019,8 @@ Triggered By     : Hallowed Tome of the Zealot (1223898)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212198)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212199)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223898
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Critical Strike for $1223887d.
@@ -260037,7 +260053,8 @@ Triggered By     : Hallowed Tome of the Crusader (1223901)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212202)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212203)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223901
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Versatility for $1223887d.
@@ -260070,7 +260087,8 @@ Triggered By     : Hallowed Tome of the Cleric (1223903)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212205)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212206)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223903
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Mastery for $1223887d.
@@ -260103,7 +260121,8 @@ Proc Flags       : White Melee, White Ranged
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213105)  : Apply Aura (6) | Proc Trigger Damage (43) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your autoattacks do an additional $s1 Shadow damage.
 
 Name             : Shadow Quake (id=1224457) [Passive, Hidden] 
@@ -260115,7 +260134,8 @@ Triggered By     : Shadow Quake (1228149)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213106)  : Apply Aura (6) | Proc Trigger Spell (42): Shadow Quake | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 27806.93 (coefficient=10.87159) | Trigger Spell: 1228149 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27806.93 (coefficient=10.87159) | PvP Coefficient: 0.5 | Trigger Spell: 1228149 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218956)  : Dummy (3)
                    Base Value: 250 | Scaled Value: 250
 Description      : Your first melee strike against an enemy slams them and nearby enemies with a quake of shadow magic dealing up to ${$s1*($s2/100)} Shadow damage split between them.
@@ -260123,14 +260143,12 @@ Description      : Your first melee strike against an enemy slams them and nearb
 Name             : Draining Essence (id=1224458) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Drained Essence (1228086)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213107)  : Apply Aura (6) | Unknown(395) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 213.4651 (coefficient=0.05575) | Misc Value: 37169 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 213.4651 (coefficient=0.05575) | PvP Coefficient: 0.5 | Misc Value: 37169 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : When a nearby enemy or devout ally falls, you siphon a portion of their soul to gain $s1 Intellect for $1228086d.
 
 Name             : Shadowalker's Aegis (id=1224459) [Passive, Hidden] 
@@ -260139,7 +260157,8 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213108)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 50052.47 (coefficient=19.56886) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 50052.47 (coefficient=19.56886) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218364)  : Apply Party Aura (35) | Trigger Spell Based on Health% (468)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Trigger Spell: 1227803 | Radius: 40 yards | Target: Self (1)
 #3 (id=1218454)  : Dummy (3)
@@ -260147,15 +260166,6 @@ Effects          :
 Description      : When an ally falls below $s2% health you shield them in darkness absorbing the next $s1 damage taken.
 
 This effect can trigger once every $s3 sec and does not target devout allies.
-
-Name             : One of the Devout (id=1224463) [Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1213112)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 207.2047 (coefficient=0.054115) | Target: Self (1)
-Description      : $?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]
 
 Name             : Necklace of the Devout (id=1224775) [Passive] 
 School           : Holyfire
@@ -260175,7 +260185,8 @@ Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213822)  : Apply Party Aura (35) | Periodic Heal (8): every 5 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1795.454 (coefficient=0.701963) | Radius: 30 yards | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1795.454 (coefficient=0.701963) | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217985)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.
@@ -260188,7 +260199,7 @@ Internal Cooldown: 4 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Triggered By     : Twilight Devastation (1225042), Twilight Devastation (1225043), Twilight Devastation (1225045)
+Triggered By     : Twilight Devastation (1225042), Twilight Devastation (1225045)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1214026)  : Apply Aura (6) | Proc Trigger Spell (42): Twilight Devastation
@@ -260204,6 +260215,16 @@ Attributes       : Aura Points On Client (268), Check Required Target Aura By Ca
 Effects          :
 #1 (id=1214027)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36815 | Radius: 0 - 3 yards | Target: At Self (18) -> Unknown(78)
+Description      : $@spelldesc1225074
+
+Name             : Twilight Devastation (id=1225040) 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : Do Not Sheath (18), Do Not Display Range (126), Treat as Area Effect (175), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=1214028)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
 Description      : $@spelldesc1225074
 
 Name             : Twilight Devastation (id=1225042) [Passive] 
@@ -260223,23 +260244,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 366499.3 (coefficient=143.2891) | Trigger Spell: 1225038 | Target: Self (1)
 Description      : $@spelldesc1225074
 
-Name             : Twilight Devastation (id=1225043) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1214032)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 431175.7 (coefficient=168.5755) | Trigger Spell: 1225038 | Target: Self (1)
-Description      : $@spelldesc1225074
-
 Name             : Twilight Devastation (id=1225045) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -260257,27 +260261,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 507265.6 (coefficient=198.3241) | Trigger Spell: 1225038 | Target: Self (1)
 Description      : $@spelldesc1225074
 
-Name             : Twilight Devastation (id=1225074) 
+Name             : Lesser Rune of Twilight Devastation (id=1225074) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1214065)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2497 | Misc Value 2: 0xb
+#1 (id=1214065)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7912 | Misc Value 2: 0xb | Target: Self (1)
 #2 (id=1214399)  : Dummy (3)
                    Base Value: 2.5 | Scaled Value: 2.5
-Description      : |cnNORMAL_FONT_COLOR:Twilight Devastation|R
+Description      : Apply Lesser Rune of Twilight Devastation to a helm.
 
-Permanently enchants a weapon with Twilight Devastation. Your attacks have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} damage to enemies in front of you. Cannot be applied to items lower than level $ecim.
+Allows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Malefic Excerpt (id=1225126) 
@@ -260300,7 +260299,8 @@ Proc Flags       : Enter Combat
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214287)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 73631.71 (coefficient=28.78757) | Trigger Spell: 1227578 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 73631.71 (coefficient=28.78757) | PvP Coefficient: 0.5 | Trigger Spell: 1227578 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214288)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1227564
 Description      : Every $1227578t sec spent in combat pulls the shadows closer to you, granting Dark Whispers. After reaching $1227564u whispers, the shadows manifest and rip a creature out of the Twisting Nether to assist you in combat.
@@ -260314,7 +260314,8 @@ Triggered By     : Excerpt on Sacrificial Rituals (1227565)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214289)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1991.401 (coefficient=0.520088) | Trigger Spell: 1227584 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 664.0314 (coefficient=0.173423) | PvP Coefficient: 0.5 | Trigger Spell: 1227584 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214290)  : Dummy (3) | Scaling Class: -9
                    Base Value: 20 | Scaled Value: 1795.454 (coefficient=0.701963) | Trigger Spell: 1223887
 Description      : Every $1227584t sec spent in combat sacrifices $s2 of your health to gain $s1 $pri. This effect can stack up to $1227565u times and lasts until combat ends.
@@ -260328,7 +260329,8 @@ Triggered By     : Excerpt on Prophetic Death (1227551), Dark Whispers (1227564)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214291)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 49831.75 (coefficient=19.48257) | Trigger Spell: 1227585 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 49831.75 (coefficient=19.48257) | PvP Coefficient: 0.5 | Trigger Spell: 1227585 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214292)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1227551
 Description      : Every $1227585t sec spent in combat lashes a nearby enemy dealing $s1 Shadow damage. This deals up to $s2% additional damage based on the enemy's missing health.
@@ -260343,27 +260345,22 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 (delta=0.05) | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc386692
 
-Name             : Echoing Void (id=1225873) 
+Name             : Greater Rune of the Echoing Void (id=1225873) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1215369)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2500 | Misc Value 2: 0xb
+#1 (id=1215369)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7917 | Misc Value 2: 0xb
 #2 (id=1215370)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : |cnNORMAL_FONT_COLOR:Echoing Void|R
+Description      : Apply Greater Rune of the Echoing Void to a helm.
 
-Permanently enchants a weapon with Echoing Void. Your damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. Cannot be applied to items lower than level $ecim.
+Your damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Echoing Void (id=1225878) [Passive] 
@@ -260381,23 +260378,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 18324.96 (coefficient=7.164454) | Trigger Spell: 1225883 | Target: Self (1)
-Description      : $@spelldesc1225873
-
-Name             : Echoing Void (id=1225879) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1215378)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 21559 (coefficient=8.428857) | Trigger Spell: 1225883 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260424,7 +260404,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 20 (Haste multiplier)
 Proc Flags       : Cast Successful
-Triggered By     : Echoing Void (1225878), Echoing Void (1225879), Echoing Void (1225880)
+Triggered By     : Echoing Void (1225878), Echoing Void (1225880)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1215382)  : Apply Aura (6) | Proc Trigger Spell (42): Echoing Void
@@ -260550,27 +260530,22 @@ Effects          :
                    Base Value: 1.5 | Scaled Value: 1.5 | Target: Enemy (6)
 Description      : $@spelldesc1227124
 
-Name             : Infinite Stars (id=1227206) 
+Name             : Greater Rune of Infinite Stars (id=1227206) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1217481)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2519 | Misc Value 2: 0xb
+#1 (id=1217481)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7924 | Misc Value 2: 0xb
 #2 (id=1217482)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : |cnNORMAL_FONT_COLOR:Infinite Stars|R
+Description      : Apply Greater Rune of Infinite Stars to a helm. 
 
-Permanently enchants a weapon with Infinite Stars. Your spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. Cannot be applied to items lower than level $ecim.
+Your spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Infinite Stars (id=1227210) [Passive] 
@@ -260611,25 +260586,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 38044.92 (coefficient=14.87431) | Target: Self (1)
 Description      : $@spelldesc1227206
 
-Name             : Infinite Stars (id=1227212) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1217489)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 118573.5 (coefficient=46.35833) | Trigger Spell: 1227215 | Target: Self (1)
-#2 (id=1218065)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 32338.18 (coefficient=12.64316) | Trigger Spell: 1227215 | Target: Self (1)
-Description      : $@spelldesc1227206
-
 Name             : Infinite Stars (id=1227215) [Hidden] 
 School           : Shadow
 Spell Type       : None
@@ -260637,7 +260593,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Triggered By     : Infinite Stars (1227210), Infinite Stars (1227211), Infinite Stars (1227212)
+Triggered By     : Infinite Stars (1227210), Infinite Stars (1227211)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217494)  : Apply Aura (6) | Proc Trigger Spell (42): Infinite Stars
@@ -260679,27 +260635,22 @@ Effects          :
 Description      : $@spelldesc1227206
 Tooltip          : Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.
 
-Name             : Gushing Wound (id=1227288) 
+Name             : Greater Rune of Gushing Wound (id=1227288) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1217613)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2520 | Misc Value 2: 0xb
+#1 (id=1217613)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7927 | Misc Value 2: 0xb
 #2 (id=1217614)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : |cnNORMAL_FONT_COLOR:Gushing Wound|R
+Description      : Apply Greater Rune of Gushing Wound to a helm.
 
-Permanently enchants a weapon with Gushing Wound. Your damaging spells and abilities have a chance to cause your target to ooze blood, dealing ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. Cannot be applied to items lower than level $ecim.
+Your damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Gushing Wound (id=1227289) [Passive] 
@@ -260717,23 +260668,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217617)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 16380.11 (coefficient=6.404082) | Trigger Spell: 1227292 | Target: Self (1)
-Description      : $@spelldesc1225873
-
-Name             : Gushing Wound (id=1227290) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1217618)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 19271 (coefficient=7.534324) | Trigger Spell: 1227292 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227291) [Passive] 
@@ -260761,7 +260695,7 @@ Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Triggered By     : Gushing Wound (1227289), Gushing Wound (1227290), Gushing Wound (1227291)
+Triggered By     : Gushing Wound (1227289), Gushing Wound (1227291)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217620)  : Apply Aura (6) | Proc Trigger Spell (42): Gushing Wound
@@ -260787,27 +260721,22 @@ Description      : $@spelldesc1227288
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
-Name             : Twisted Appendage (id=1227294) 
+Name             : Greater Rune of the Twisted Appendage (id=1227294) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1217625)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2521 | Misc Value 2: 0xb
+#1 (id=1217625)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7930 | Misc Value 2: 0xb
 #2 (id=1217626)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : |cnNORMAL_FONT_COLOR:Twisted Appendage|R
+Description      : Apply Greater Rune of the Twisted Appendage to a helm. 
 
-Permanently enchants a weapon with Twisted Appendage. Your attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. Cannot be applied to items lower than level $ecim.
+Your attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Twisted Appendage (id=1227295) [Passive] 
@@ -260825,23 +260754,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 36649.94 (coefficient=14.32891) | Trigger Spell: 1227300 | Target: Self (1)
-Description      : $@spelldesc1227294
-
-Name             : Twisted Appendage (id=1227296) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1217629)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 43118 (coefficient=16.85771) | Trigger Spell: 1227300 | Target: Self (1)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260868,7 +260780,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 100%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Triggered By     : Twisted Appendage (1227295), Twisted Appendage (1227296), Twisted Appendage (1227297)
+Triggered By     : Twisted Appendage (1227295), Twisted Appendage (1227297)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217635)  : Apply Aura (6) | Proc Trigger Spell (42): Twisted Appendage
@@ -260887,27 +260799,38 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 241436 | Misc Value 2: 0x12c7 | Radius: 3 yards | Target: At Radius (73)
 Description      : $@spelldesc1227294
 
-Name             : Void Ritual (id=1227311) 
+Name             : Mind Flay (id=1227303) 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 10 seconds
+Cooldown         : 1 seconds
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No Caster Aura Icon (187), Do Not Consume Resources (197), Show Mechanic as Combat Text (213), Taps immediately (215), Ignore Caster Damage Modifiers (221), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
+Effects          :
+#1 (id=1217638)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
+#2 (id=1217639)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d.
+Tooltip          : Taking Shadow damage every $t1 sec.
+
+Name             : Greater Rune of the Void Ritual (id=1227311) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
-Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Dagger, Spear, Crossbow, Wand
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
 Effects          :
-#1 (id=1217650)  : Unknown(301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2522 | Misc Value 2: 0xb
+#1 (id=1217650)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7933 | Misc Value 2: 0xb
 #2 (id=1217651)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : |cnNORMAL_FONT_COLOR:Void Ritual|R
+Description      : Apply Greater Rune of the Void Ritual to a helm. 
 
-Permanently enchants a weapon with Void Ritual. Gain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. Cannot be applied to items lower than level $ecim.
+Gain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
 
 Name             : Void Ritual (id=1227312) [Passive] 
 School           : Physical
@@ -260924,23 +260847,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 72.93421 (coefficient=0.019048) | Trigger Spell: 1227315 | Target: Self (1)
-Description      : $@spelldesc1227311
-
-Name             : Void Ritual (id=1227313) [Passive] 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Labels           : 969
-                 : 974
-                 : 2855
-                 : 3232
-                 : 3405
-                 : 3411
-                 : 3412
-Attributes       : Passive (6)
-Effects          :
-#1 (id=1217653)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 85.99866 (coefficient=0.02246) | Trigger Spell: 1227315 | Target: Self (1)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260967,7 +260873,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Triggered By     : Void Ritual (1227312), Void Ritual (1227313), Void Ritual (1227314)
+Triggered By     : Void Ritual (1227312), Void Ritual (1227314)
 Attributes       : Check Required Target Aura By Caster (382), Aura Always Shown (438)
 Effects          :
 #1 (id=1217655)  : Apply Aura (6) | Proc Trigger Spell (42): The End Is Coming
@@ -261120,5 +261026,170 @@ Effects          :
 #2 (id=1218985)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1224457
 Description      : $@spelldesc1224457
+
+Name             : Forbidden Necromancy (id=1232556) [Hidden] 
+School           : Shadow
+Spell Type       : None
+Range            : 40 yards
+Duration         : Aura (infinite)
+Labels           : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Owner's Death (55), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Harmful on Friendly (373), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#2 (id=1225364)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1225365)  : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: -40 | Scaled Value: -40 | Target: Any Target (25)
+#4 (id=1225366)  : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Mechanic: Invulnerable | Target: Self (1)
+                   Affected School(s): All
+#5 (id=1225367)  : Apply Aura (6) | School Immunity (39)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Mechanic: Invulnerable | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#6 (id=1225368)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Mechanic: Invulnerable | Target: Self (1)
+#7 (id=1225369)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Mechanic: Invulnerable | Target: Self (1)
+#8 (id=1225370)  : Apply Aura (6) | Mechanic Immunity (77)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Mechanic: Invulnerable | Target: Self (1)
+#9 (id=1225399)  : Apply Aura (6) | Invisibility (18)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
+#11 (id=1225434) : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Invulnerable | Target: Self (1)
+#12 (id=1225475) : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Mechanic: Invulnerable | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc355312
+Tooltip          : $@auracaster's animated remains.
+
+Name             : Pacifist Rig (id=1233162) 
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Labels           : 292
+Proc Chance      : 101%
+Triggered By     : Pacifist Rig (1215044)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Owner's Death (55), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Harmful on Friendly (373), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1226406)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 80 | Points Per Level: 1 | Target: Any Target (25)
+Description      : $@spelldesc1213551
+Tooltip          : $@spelldesc1213551
+
+Name             : Greater Rune of Twilight Devastation (id=1233223) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226501)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7914 | Misc Value 2: 0xb
+#2 (id=1226502)  : Dummy (3)
+                   Base Value: 2.5 | Scaled Value: 2.5
+Description      : Apply Greater Rune of Twilight Devastation to a helm. 
+
+Allows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. 
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Lesser Rune of the Echoing Void (id=1233355) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226690)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7915 | Misc Value 2: 0xb
+#2 (id=1226691)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Apply Lesser Rune of the Echoing Void to a helm.
+
+Your damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Lesser Rune of Infinite Stars (id=1233375) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226719)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7922 | Misc Value 2: 0xb
+#2 (id=1226720)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Apply Lesser Rune of Infinite Stars to a helm. 
+
+Your spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Lesser Rune of Gushing Wound (id=1233385) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226731)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7925 | Misc Value 2: 0xb
+#2 (id=1226732)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Apply Lesser Rune of Gushing Wound to a helm.
+
+Your damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Lesser Rune of the Twisted Appendage (id=1233392) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226744)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7928 | Misc Value 2: 0xb
+#2 (id=1226745)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Apply Lesser Rune of the Twisted Appendage to a helm. 
+
+Your attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Lesser Rune of the Void Ritual (id=1233394) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 3.5 seconds
+Requires armor   : Head
+Attributes       : Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1226748)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 7931 | Misc Value 2: 0xb
+#2 (id=1226749)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Apply Lesser Rune of the Void Ritual to a helm. 
+
+Gain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. 
+
+Cannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.
+
+Name             : One of the Devout (id=1234212) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1228462)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
+                   Base Value: 0 | Scaled Value: 116.1173 (coefficient=0.030326) | PvP Coefficient: 0.5 | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
+Description      : $?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]
 
 

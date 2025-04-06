@@ -14,6 +14,8 @@
 #include "util/generic.hpp"
 #include "util/span.hpp"
 
+#include "wow_version.hpp"
+
 namespace dbc
 {
 
@@ -104,8 +106,10 @@ public:
 };
 
 // Return World of Warcraft client data version used to generate the current client data
+wowv_t client_data_version( bool ptr );
+// Return World of Warcraft client data version used to generate the current client data
 std::string client_data_version_str( bool ptr );
-// Return World of Warcraft client data build version used to generate the current client data
+// Return World of Warcraft client data build used to generate the current client data
 int client_data_build( bool ptr );
 // Return the modified timestamp of the hotfix cache file used to generated the current
 // client data.

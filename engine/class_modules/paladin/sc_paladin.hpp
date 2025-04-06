@@ -789,7 +789,6 @@ public:
 
   int holy_power_generators_used;
   int melee_swing_count;
-  int last_hammer_of_light_dawn_stacks;
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
@@ -2037,12 +2036,6 @@ public:
       {
         p->buffs.faiths_armor->trigger();
       }
-    }
-
-    // If you use another spender than Hammer of Light, the bugged Dawn stacks are reset.
-    if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light )
-    {
-      p->last_hammer_of_light_dawn_stacks = 0;
     }
 
     if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light_driver )

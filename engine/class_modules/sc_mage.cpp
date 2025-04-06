@@ -3076,12 +3076,6 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
     }
 
-    if ( last_hot_streak )
-    {
-      // For Fire, Spellfire Spheres are triggered before the spell actually casts.
-      p()->trigger_spellfire_spheres();
-    }
-
     custom_state_spell_t::execute();
 
     p()->buffs.sparking_cinders->decrement();
@@ -3100,6 +3094,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
       trigger_tracking_buff( p()->buffs.sun_kings_blessing, p()->buffs.fury_of_the_sun_king );
       p()->trigger_lit_fuse();
+      p()->trigger_spellfire_spheres();
       p()->trigger_mana_cascade();
     }
 

@@ -4166,6 +4166,7 @@ struct horseman_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       trigger_gcd = 1_s;
+      gcd_type    = gcd_haste_type::ATTACK_HASTE;  // spell is type melee
       harmful     = false;
     }
 
@@ -12258,8 +12259,12 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
         base_td->debuff.decomposition->extend_duration( target, extension );
       }
     }
+    if ( disease_remaining_damage > 0 )
+    {
+      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    }
   }
-  else if ( buffs.infliction_of_sorrow->check() )
+  if ( buffs.infliction_of_sorrow->check() )
   {
     // The talent itself references 100% damage done, and it's stored in the below effect
     // mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
@@ -12275,11 +12280,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
         base_td->debuff.decomposition->expire();
       }
     }
-  }
-
-  if ( disease_remaining_damage > 0 )
-  {
-    background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    if ( disease_remaining_damage > 0 )
+    {
+      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    }
   }
 }
 
@@ -12957,9 +12961,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
       return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
         return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
-               pets.dancing_rune_weapon_pet.active_pet()
-                   ->target->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )
-                   ->is_ticking();
+               pets.dancing_rune_weapon_pet.active_pet()->get_target_data( target )->dot.blood_plague->is_ticking();
       } );
   }
 
@@ -15314,7 +15316,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
   parse_effects( buffs.unholy_ground, talent.unholy_ground );
   parse_effects( buffs.stoneskin_gargoyle, talent.unholy_bond );
-  parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
+  parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight, spec.frost_death_knight, spec.unholy_death_knight );
   parse_effects( talent.runic_protection );
   parse_effects( talent.gloom_ward );
   parse_effects( buffs.antimagic_shell, talent.osmosis );
@@ -15620,12 +15622,33 @@ struct death_knight_module_t : public module_t
   /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2025-2-28", "Winning Streak Buffed to 4.5%", 1200456,
+    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Direct Damage Buffed by 4%", 179689,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.5 )
-        .verification_value( 3 );
+        .modifier( 4 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Periodic Damage Buffed by 4%", 191174,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Pet Damage Buffed by 4%", 844541,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
+
+    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Guardian Damage Buffed by 4%", 1032340,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 0 );
   }*/
 
   void init( player_t* ) const override

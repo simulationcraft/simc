@@ -166,7 +166,7 @@ def tokenize(str_):
     while len(str_) > 0 and str_[0] in ['_', '+']:
         str_ = str_[1:]
 
-    str_ = re.sub('[^A-z0-9_\+\.% ]', '', str_)
+    str_ = re.sub(r'[^A-z0-9_\+\.% ]', '', str_)
     str_ = str_.lower()
     str_ = str_.replace(' ', '_')
 

@@ -1,16 +1,16 @@
-shaman="TWW1_Shaman_Enhancement_Totemic"
+shaman="TWW2_Shaman_Enhancement_Stormbringer"
 source=default
 spec=enhancement
 level=80
-race=orc
+race=maghar_orc
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzM2GAAAAAAAAAAgFYBmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzwCmZmx2MzMD2mZsMbDAAAAAAAAAwGgFzYYjsAzwQDWAwsMZGYZZmZmZYmZGGLzMT2YZYYGAgxA
 
 # Default consumables
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
+food=chippy_tea
 augmentation=crystallized
 temporary_enchant=disabled
 
@@ -325,31 +325,32 @@ actions.single_totemic_open+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
 actions.single_totemic_open+=/stormstrike
 actions.single_totemic_open+=/lava_lash
 
-head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
-shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,crafted_stats=49/36
-chest=goresplattered_membrane,id=212421,ilevel=639,enchant=crystalline_radiance_3
-wrists=throne_defenders_bangles,id=212415,ilevel=639,gem_id=213482
-hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
-waist=cinch_of_lingering_influence,id=221168,ilevel=639,gem_id=213482
-legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant=stormbound_armor_kit_3
-feet=silksteel_striders,id=221152,ilevel=639
-finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,gem_id=228638/228639/228640,enchant=radiant_haste_3
-finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
-trinket1=skardyns_grace,id=133282,bonus_id=4786/11342/10299,ilevel=639
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
-main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
+head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
+neck=strapped_rescuekeg,id=221060,ilevel=678,gem_id=213491/213491
+shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,ilevel=675,crafted_stats=49/36
+chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant=crystalline_radiance_3
+wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant=chant_of_armored_avoidance_3
+hands=gale_sovereigns_grasps,id=229263,ilevel=678
+waist=gale_sovereigns_ritual_belt,id=229259,ilevel=678,gem_id=213491
+legs=chemical_blasters_legguards,id=158341,ilevel=678,enchant=stormbound_armor_kit_3
+feet=treads_of_the_galvanic_skysoarer,id=221035,ilevel=678,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant=radiant_mastery_3
+trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
+trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
+off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
 # Gear Summary
-# gear_ilvl=639.81
-# gear_agility=36181
-# gear_stamina=241189
-# gear_crit_rating=2730
-# gear_haste_rating=15472
-# gear_mastery_rating=13202
-# gear_versatility_rating=518
-# gear_armor=38044
-# set_bonus=thewarwithin_season_1_2pc=1
-# set_bonus=thewarwithin_season_1_4pc=1
+# gear_ilvl=677.63
+# gear_agility=51224
+# gear_stamina=392511
+# gear_crit_rating=3148
+# gear_haste_rating=24174
+# gear_mastery_rating=18005
+# gear_versatility_rating=1238
+# gear_avoidance_rating=1090
+# gear_armor=49063
+# set_bonus=thewarwithin_season_2_2pc=1
+# set_bonus=thewarwithin_season_2_4pc=1

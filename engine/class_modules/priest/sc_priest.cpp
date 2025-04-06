@@ -147,17 +147,11 @@ struct expiation_t final : public priest_spell_t
 struct mind_blast_base_t : public priest_spell_t
 {
 private:
-  timespan_t void_summoner_cdr;
   propagate_const<expiation_t*> child_expiation;
 
 public:
   mind_blast_base_t( priest_t& p, util::string_view options_str, const spell_data_t* s )
-    : priest_spell_t( s->name_cstr(), p, s ),
-      void_summoner_cdr(
-          priest()
-              .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
-              .time_value() ),
-      child_expiation( nullptr )
+    : priest_spell_t( s->name_cstr(), p, s ), child_expiation( nullptr )
   {
     parse_options( options_str );
     affected_by_shadow_weaving = true;
@@ -179,11 +173,6 @@ public:
   void execute() override
   {
     priest_spell_t::execute();
-
-    if ( priest().talents.discipline.void_summoner.enabled() )
-    {
-      priest().cooldowns.fiend->adjust( void_summoner_cdr );
-    }
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
     {
@@ -906,7 +895,6 @@ struct power_word_fortitude_t final : public priest_spell_t
 
 struct smite_base_t : public priest_spell_t
 {
-  timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
   timespan_t t31_2pc_extend;
   timespan_t divine_procession_extend;
@@ -916,10 +904,6 @@ struct smite_base_t : public priest_spell_t
   smite_base_t( priest_t& p, util::string_view name, const spell_data_t* s, bool bg = false,
                 util::string_view options_str = {} )
     : priest_spell_t( name, p, s ),
-      void_summoner_cdr(
-          priest()
-              .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
-              .time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() ),
       divine_procession_extend( priest().talents.discipline.divine_procession->effectN( 1 ).time_value() ),
@@ -974,8 +958,7 @@ struct smite_base_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    // Weal and Woe can be Spell Queue'd into another (instant) spell to get more effect.
-    priest().buffs.weal_and_woe->expire( 250_ms );
+    priest().buffs.weal_and_woe->expire();
 
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
@@ -1030,20 +1013,15 @@ struct smite_base_t : public priest_spell_t
         }
       }
 
-      
       if ( priest().talents.discipline.divine_procession.enabled() )
       {
         if ( p().allies_with_atonement.size() > 0 )
         {
-          /*auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
+          auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
                                          [ this ]( player_t* a, player_t* b ) {
                                            return a->health_percentage() < b->health_percentage() &&
                                                   priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
-                                         } ) );*/
-
-          auto idx = rng().range( 0U, as<unsigned>( p().allies_with_atonement.size() ) );
-
-          auto it = p().allies_with_atonement[ idx ];
+                                         } ) );
 
           auto atone = priest().find_target_data( it )->buffs.atonement;
           if ( atone->remains() < 30_s )
@@ -1126,7 +1104,7 @@ struct void_blast_disc_t final : public smite_base_t
   void impact( action_state_t* s ) override
   {
     smite_base_t::impact( s );
-    
+
     // This call contains the relevant talent checks, do not need to make them twice.
     p().extend_entropic_rift();
   }
@@ -2008,8 +1986,9 @@ struct entropic_rift_damage_t final : public priest_spell_t
     if ( priest().options.entropic_rift_miss_percent > 0.0 )
     {
       // Use Secondary miss chance on non primary target.
-      double miss_percent = t == target ? priest().options.entropic_rift_miss_percent : priest().options.entropic_rift_miss_percent_secondary;
-      
+      double miss_percent = t == target ? priest().options.entropic_rift_miss_percent
+                                        : priest().options.entropic_rift_miss_percent_secondary;
+
       sim->print_debug( "entropic_rift_damage sets miss_chance to {} with target count: {}", miss_percent,
                         target_list().size() );
 
@@ -2075,7 +2054,7 @@ struct entropic_rift_t final : public priest_spell_t
           priest().procs.mind_devourer->occur();
           break;
         case PRIEST_DISCIPLINE:
-            // TODO: Extend five shortest atonement.
+          // TODO: Extend five shortest atonement.
           break;
         default:
           break;
@@ -2392,7 +2371,8 @@ struct power_word_shield_t final : public priest_absorb_t
 
     if ( priest().buffs.darkness_from_light->check() )
     {
-      m *= 1 + priest().buffs.darkness_from_light->data().effectN( 2 ).percent() * priest().buffs.darkness_from_light->check();
+      m *= 1 + priest().buffs.darkness_from_light->data().effectN( 2 ).percent() *
+                   priest().buffs.darkness_from_light->check();
     }
 
     return m;
@@ -2489,8 +2469,8 @@ struct rapture_t : public priest_heal_t
   rapture_t( priest_t& p, util::string_view options_str ) : priest_heal_t( "rapture", p, p.talents.discipline.rapture )
   {
     parse_options( options_str );
-    power_word_shield = new power_word_shield_t( p, {} );
-    power_word_shield->background = true;
+    power_word_shield                              = new power_word_shield_t( p, {} );
+    power_word_shield->background                  = true;
     power_word_shield->base_costs[ RESOURCE_MANA ] = 0;
   }
 
@@ -2632,7 +2612,6 @@ struct divine_aegis_t final : public priest_absorb_t
     return buff;
   }
 
-
   void assess_damage( result_amount_type /*heal_type*/, action_state_t* s ) override
   {
     if ( target_specific[ s->target ] == nullptr )
@@ -2681,7 +2660,6 @@ struct cauterizing_shadows_t final : public priest_heal_t
 
 namespace buffs
 {
-
 // ==========================================================================
 // Desperate Prayer - Health Increase buff
 // ==========================================================================
@@ -3668,13 +3646,19 @@ void priest_t::init_special_effects()
   {
     callbacks.register_callback_execute_function(
         443393, [ this ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-          buffs.twist_of_fate->trigger();
+          if ( rng().roll( options.synergistic_brewterializer_tof_chance ) )
+          {
+            buffs.twist_of_fate->trigger();
+          }
 
-          cb->proc_action->set_target( cb->target( s ) );
-          auto proc_state    = cb->proc_action->get_state();
-          proc_state->target = cb->proc_action->target;
-          cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
-          cb->proc_action->schedule_execute( proc_state );
+          if ( rng().roll( options.synergistic_brewterializer_barrel_hit_chance ) )
+          {
+            cb->proc_action->set_target( cb->target( s ) );
+            auto proc_state    = cb->proc_action->get_state();
+            proc_state->target = cb->proc_action->target;
+            cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
+            cb->proc_action->schedule_execute( proc_state );
+          }
         } );
   }
 
@@ -3967,7 +3951,8 @@ void priest_t::create_buffs()
           {
             buffs.voidheart->expire();
             buffs.darkening_horizon->expire();
-            background_actions.collapsing_void->trigger( state.last_entropic_rift_target, buffs.collapsing_void->check() );
+            background_actions.collapsing_void->trigger( state.last_entropic_rift_target,
+                                                         buffs.collapsing_void->check() );
             buffs.collapsing_void->expire();
           }
         } );
@@ -4084,6 +4069,7 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.discipline.revel_in_darkness );
   action.apply_affecting_aura( talents.discipline.eternal_barrier );
   action.apply_affecting_aura( talents.discipline.inner_focus );
+  action.apply_affecting_aura( talents.discipline.void_summoner );
 
   // Holy Talents
   action.apply_affecting_aura( talents.holy.miracle_worker );
@@ -4361,12 +4347,18 @@ void priest_t::create_options()
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
-  add_option( opt_float( "priest.entropic_rift_miss_percent_secondary", options.entropic_rift_miss_percent_secondary, 0.0, 1.0 ) );
+  add_option( opt_float( "priest.entropic_rift_miss_percent_secondary", options.entropic_rift_miss_percent_secondary,
+                         0.0, 1.0 ) );
   add_option( opt_int( "priest.entropic_rift_miss_target_cap", options.entropic_rift_miss_target_cap, 0, 100 ) );
-  add_option( opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
   add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
   add_option( opt_bool( "priest.discipline_in_raid", options.discipline_in_raid ) );
   add_option( opt_bool( "priest.shadow_tww2_4pc_insanity", options.shadow_tww2_4pc_insanity ) );
+  add_option( opt_float( "priest.synergistic_brewterializer_tof_chance", options.synergistic_brewterializer_tof_chance,
+                         0.0, 1.0 ) );
+  add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
+                         options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

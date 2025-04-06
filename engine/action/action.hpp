@@ -187,7 +187,9 @@ public:
   bool dual;
 
   /// enables/disables proc callback system on the action, like trinkets, enchants, rppm. this supercedes all dbc-parsed flags.
-  bool callbacks;
+  /// * damage done callbacks require both ( callbacks == true && caster_callbacks == true )
+  /// * damage taken callbacks require both ( callbacks == true && target_callbacks == true )
+  bool callbacks, caster_callbacks, target_callbacks;
 
   /// if true, does not trigger callbacks on caster/target.
   bool suppress_caster_procs, suppress_target_procs;

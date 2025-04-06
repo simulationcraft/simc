@@ -516,10 +516,13 @@ double pet_t::composite_player_critical_damage_multiplier( const action_state_t*
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
+  // Pets inherit the owner's critical damage multiplier. 
+  m *= owner->composite_player_critical_damage_multiplier( s );
+
   // These effects apply to both the player and the pet via Apply Player/Pet Aura (202) and the pet inherits from the
   // player, effectively getting double the mod.
-  m *= 1.0 + 2.0 * owner -> racials.brawn -> effectN( 1 ).percent();
-  m *= 1.0 + 2.0 * owner -> racials.might_of_the_mountain -> effectN( 1 ).percent();
+  m *= 1.0 + owner -> racials.brawn -> effectN( 1 ).percent();
+  m *= 1.0 + owner -> racials.might_of_the_mountain -> effectN( 1 ).percent();
 
   return m;
 }

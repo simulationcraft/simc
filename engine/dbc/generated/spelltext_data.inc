@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.0.59538
-static const std::array<spelltext_data_t, 27228> __spelltext_data { {
+// Spell text, wow build 11.1.0.60037
+static const std::array<spelltext_data_t, 27237> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16041,7 +16041,7 @@ static const std::array<spelltext_data_t, 27228> __spelltext_data { {
   {  345690, "$@spelldesc336616", 0, 0 },
   {  345695, "Bind a spectral essence to an enemy for $d, causing allied attacks to heal for $s2% of damage dealt, up to $s1 total healing.\r\n\r\nWhen the essence expires or is removed early, the remaining healing bursts, healing up to $s3 allies within $345704a1 yds.", "Attacks heal for $s2% of damage dealt, with $w1 healing remaining.\r\n\r\nIf the essence expires or is removed early, the remaining healing is split between $s3 allies within $345704a1 yds.", 0 },
   {  345697, "$@spelldesc345698", 0, 0 },
-  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
+  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, inflicting ${$s2*$<rolemult>} Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
   {  345701, "$@spelldesc345695", 0, 0 },
   {  345702, "$@spelldesc327439", "Busy busy now! Will help again soon, yes?", 0 },
   {  345703, "$@spelldesc327439", "Hoo! Very busy, lots to do-hoo! Will help more later, yes?", 0 },
@@ -26152,6 +26152,7 @@ static const std::array<spelltext_data_t, 27228> __spelltext_data { {
   {  463816, "$@spelldesc5308", 0, 0 },
   {  463817, "$@spelldesc5308", 0, 0 },
   {  463865, "$@spelldesc200071", 0, 0 },
+  {  464047, "Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.", 0, 0 },
   {  464202, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
   {  464203, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
   {  464204, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
@@ -27171,6 +27172,7 @@ static const std::array<spelltext_data_t, 27228> __spelltext_data { {
   { 1219257, "$@spelldesc396286", 0, 0 },
   { 1219264, "$@spelldesc1215724", "|cFFFFFFFF Winning Streak!|r increased by $w1%. You cannot lose |cFFFFFFFF Winning Streak!|r", 0 },
   { 1219294, "Fashion nearby garbage into a sphere and launch it into the sky. After $1219296s2 sec of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.", 0, 0 },
+  { 1219301, "Fashion nearby garbage into a sphere and launch into the sky. After $d of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.", 0, 0 },
   { 1219304, "$@spelldesc405535", "Building up to Born of Flame.", 0 },
   { 1219305, "$@spelldesc405535", "Your next direct damage spell will grant Born of Flame.", 0 },
   { 1219307, "$@spelldesc405535", "Phoenix Flames refunds a charge on use and its damage is increased by $s1%.", 0 },
@@ -27228,14 +27230,21 @@ static const std::array<spelltext_data_t, 27228> __spelltext_data { {
   { 1226262, "$@spelldesc421373", "Heals $w2 every $t2 sec.", 0 },
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
+  { 1231772, "Elemental Shaman baseline passive", 0, 0 },
+  { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
+  { 1232567, "$@spelldesc47540", 0, 0 },
+  { 1232571, "$@spelldesc47540", 0, 0 },
+  { 1232592, "$@spelldesc373129", 0, 0 },
+  { 1232615, "$@spelldesc400169", 0, 0 },
+  { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.0.59538
+// spelltext hotfix entries, wow build 11.1.0.60037
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.0.59538
-static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
+// Spell description variables, wow build 11.1.0.60037
+static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27583,6 +27592,7 @@ static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
   {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
+  {  345698, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
   {  351094, "$pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}" },
@@ -27873,7 +27883,7 @@ static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
   { 1219410, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.0.59538
+// spelldesc_vars hotfix entries, wow build 11.1.0.60037
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

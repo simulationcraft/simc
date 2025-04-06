@@ -1779,9 +1779,14 @@ public:
     ab::apply_affecting_aura( p->talent.outlaw.dirty_tricks );
     ab::apply_affecting_aura( p->talent.outlaw.heavy_hitter );
     ab::apply_affecting_aura( p->talent.outlaw.devious_stratagem );
-    ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
     ab::apply_affecting_aura( p->talent.outlaw.underhanded_upper_hand );
     ab::apply_affecting_aura( p->talent.outlaw.precision_shot );
+
+    // 2025-04-01 -- Bonus damage is not applied to Blade Flurry
+    if ( !p->bugs )
+    {
+      ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
+    }
 
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
@@ -3754,7 +3759,11 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    trigger_unseen_blade( state );
+    if ( !is_secondary_action() )
+    {
+      trigger_unseen_blade( state );
+    }
+
     trigger_tww1_outlaw_set_bonus( execute_state );
 
     if ( p()->talent.outlaw.hidden_opportunity->ok() )
@@ -4226,7 +4235,12 @@ struct crimson_tempest_t : public rogue_attack_t
     rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str )
   {
     aoe = -1;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    // 2024-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
+    //               Value of 5 seems to only be used for the end of the bonus damage scaling
+    reduced_aoe_targets = p->bugs ? 8 : data().effectN( 3 ).base_value();
+    // 2024-04-01 -- Appears to now tick immediately on cast, not just on application
+    tick_zero = p->bugs;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
     {
@@ -4242,6 +4256,15 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       add_child( p()->active.sanguine_blades.crimson_tempest );
     }
+  }
+
+  double calculate_tick_amount( action_state_t* s, double m ) const override
+  {
+    auto n = std::clamp( as<double>( s->n_targets ), reduced_aoe_targets, 20.0 );
+
+    m *= std::sqrt( reduced_aoe_targets / n );
+
+    return rogue_attack_t::calculate_tick_amount( s, m );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -4263,11 +4286,10 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_ta_multiplier( state );
 
-    // Deals bonus damage per target with the DoT ticking, up to 5 targets
-    auto num_targets = std::min( p()->get_active_dots( td( state->target )->dots.crimson_tempest ),
-                                 as<unsigned>( reduced_aoe_targets ) );
-    if ( num_targets > 1 )
+    // Bonus damage from target count is snapshot into the action state at time of cast
+    if ( state->n_targets > 1 )
     {
+      auto num_targets = std::min( state->n_targets, as<unsigned>( data().effectN( 3 ).base_value() ) );
       m *= 1.0 + ( num_targets * data().effectN( 4 ).percent() );
     }
 
@@ -7253,9 +7275,6 @@ struct coup_de_grace_t : public rogue_attack_t
         bonus_attack->last_cp = cast_state( state )->get_combo_points();
         bonus_attack->execute_on_target( state->target );
       }
-
-      // 2025-03-01 -- All impacts of Coup de Grace have a chance to trigger set bonus removal
-      trigger_tww2_set_bonus_removal();
     }
 
     bool procs_main_gauche() const override
@@ -7323,15 +7342,6 @@ struct coup_de_grace_t : public rogue_attack_t
 
     rogue_attack_t::execute();
     
-    // ALPHA TOCHECK -- Consumption and triggering is a bit bugged on alpha servers
-    if ( p()->spec.finality_eviscerate_buff->ok() )
-    {
-      if ( p()->buffs.finality_eviscerate->check() )
-        p()->buffs.finality_eviscerate->expire();
-      else
-        p()->buffs.finality_eviscerate->trigger();
-    }
-
     if ( p()->talent.outlaw.summarily_dispatched->ok() )
     {
       int cp = cast_state( execute_state )->get_combo_points();
@@ -7348,22 +7358,34 @@ struct coup_de_grace_t : public rogue_attack_t
       p()->buffs.flawless_form->execute( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
     }
 
-    // 2024-10-17 -- On live, this does not work fully correctly, on PTR it uses snapshot_state() above
+    // Includes the adjusted bonus CP from snapshot_state above
     const int trigger_cp = cast_state( execute_state )->get_combo_points();
     attacks[ 0 ]->trigger_secondary_action( execute_state->target, trigger_cp );
     attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
     attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
 
-    if ( !is_secondary_action() )
+    // 2025-03-11 -- Similar to the Black Powder shadow damage timing, Finality affects every CdG additional attack
+    //               The initial hit will reapply the buff, causing the 2nd and 3rd impacts to always have it
+    if ( p()->spec.finality_eviscerate_buff->ok() )
     {
-      trigger_restless_blades( execute_state );
-      if ( !p()->bugs ) // Doesn't trigger CttC currently
+      if ( !p()->buffs.finality_eviscerate->check() )
       {
-        trigger_cut_to_the_chase( execute_state );
+        // Delay the application so it does not affect the first impact
+        make_event( *p()->sim, 1_ms, [ this ] {
+          p()->buffs.finality_eviscerate->trigger();
+        } );
+      }
+      else
+      {
+        // Delay the expiration so that it works on all three impacts
+        p()->buffs.finality_eviscerate->expire( 1.2_s );
       }
     }
 
+    trigger_restless_blades( execute_state );
+    trigger_cut_to_the_chase( execute_state );
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
+    trigger_tww2_set_bonus_removal();
 
     p()->buffs.escalating_blade->expire();
   }
@@ -8830,6 +8852,11 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
     double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value() +
                          p()->talent.subtlety.improved_shadow_techniques->effectN( 1 ).base_value();
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+    // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
+    if ( p()->bugs && p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+    }
     p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
   }
 }

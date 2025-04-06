@@ -703,7 +703,8 @@ public:
     const spell_data_t* warblades_hunger_damage;
     const spell_data_t* wounded_quarry_damage;
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
-    const spell_data_t* thrill_of_the_fight_damage_buff;
+    const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
+    const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
     double wounded_quarry_proc_rate;
 
     // Fel-scarred
@@ -931,6 +932,7 @@ public:
     attack_t* art_of_the_glaive = nullptr;
     attack_t* preemptive_strike = nullptr;
     attack_t* warblades_hunger  = nullptr;
+    attack_t* wounded_quarry    = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -1441,6 +1443,13 @@ struct soul_fragment_t
     dh->buff.painbringer->trigger();
     dh->buff.art_of_the_glaive->trigger();
     dh->buff.tww1_vengeance_4pc->trigger();
+
+    // Warblade's hunger currently applies an additional stack on first buff application
+
+    if ( !dh->buff.warblades_hunger->up() )
+    {
+      dh->buff.warblades_hunger->trigger();
+    }
     dh->buff.warblades_hunger->trigger();
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
@@ -2066,116 +2075,6 @@ private:
 // Demon Hunter Ability Classes
 // ==========================================================================
 
-struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
-{
-  demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                       util::string_view o = {} )
-    : base_t( n, p, s, o )
-  {
-    harmful = false;
-    set_target( p );
-  }
-};
-
-struct demon_hunter_spell_t : public demon_hunter_action_t<spell_t>
-{
-  demon_hunter_spell_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                        util::string_view o = {} )
-    : base_t( n, p, s, o )
-  {
-  }
-};
-
-struct demon_hunter_sigil_t : public demon_hunter_spell_t
-{
-  timespan_t sigil_delay;
-  timespan_t sigil_activates;
-  std::vector<cooldown_t*> sigil_cooldowns;
-  timespan_t sigil_cooldown_adjust;
-
-  demon_hunter_sigil_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
-    : demon_hunter_spell_t( n, p, s ), sigil_delay( delay ), sigil_activates( timespan_t::zero() )
-  {
-    aoe        = -1;
-    background = dual = ground_aoe = true;
-    assert( delay > timespan_t::zero() );
-
-    if ( p->talent.vengeance.cycle_of_binding->ok() )
-    {
-      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.sigil_of_spite, p->cooldown.sigil_of_misery,
-                          p->cooldown.sigil_of_silence };
-      sigil_cooldown_adjust =
-          -timespan_t::from_seconds( p->talent.vengeance.cycle_of_binding->effectN( 1 ).base_value() );
-    }
-  }
-
-  void place_sigil( player_t* target )
-  {
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( target )
-                                        .x( target->x_position )
-                                        .y( target->y_position )
-                                        .pulse_time( sigil_delay )
-                                        .duration( sigil_delay )
-                                        .action( this ) );
-
-    sigil_activates = sim->current_time() + sigil_delay;
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-
-    if ( hit_any_target && p()->talent.demon_hunter.soul_sigils->ok() )
-    {
-      unsigned num_souls = as<unsigned>( p()->talent.demon_hunter.soul_sigils->effectN( 1 ).base_value() );
-      p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false );
-      for ( unsigned i = 0; i < num_souls; i++ )
-      {
-        p()->proc.soul_fragment_from_soul_sigils->occur();
-      }
-    }
-  }
-
-  void trigger_cycle_of_binding_event()
-  {
-    p()->sim->print_debug( "triggering cycle of binding event" );
-    // this is an event so that cooldown tracking occurs correctly
-    make_event( *p()->sim, 0_ms, [ this ]() {
-      std::vector<cooldown_t*> sigils_on_cooldown;
-      range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                      []( cooldown_t* c ) { return c->down(); } );
-      for ( auto sigil_cooldown : sigils_on_cooldown )
-      {
-        sigil_cooldown->adjust( this->sigil_cooldown_adjust );
-      }
-    } );
-  }
-
-  std::unique_ptr<expr_t> create_sigil_expression( util::string_view name );
-};
-
-struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
-{
-  demon_hunter_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                         util::string_view o = {} )
-    : base_t( n, p, s, o )
-  {
-    special = true;
-  }
-};
-
-struct demon_hunter_ranged_attack_t : public demon_hunter_action_t<ranged_attack_t>
-{
-  demon_hunter_ranged_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
-                                util::string_view o = {} )
-    : base_t( n, p, s, o )
-  {
-    special = true;
-  }
-};
-
 template <demonsurge_ability ABILITY, typename BASE>
 struct demonsurge_trigger_t : public BASE
 {
@@ -2409,13 +2308,173 @@ struct winning_streak_removal_trigger_t : public BASE
       if ( stacks >= residual_stacks )
       {
         BASE::p()->buff.winning_streak_residual->expire();
-        BASE::p()->buff.winning_streak_residual->trigger( stacks );
+        BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
       }
       else
       {
         BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
       }
     }
+  }
+};
+
+template <typename BASE>
+struct wounded_quarry_accumulator_t : public BASE
+{
+  using base_t = wounded_quarry_accumulator_t<BASE>;
+
+  wounded_quarry_accumulator_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->talent.aldrachi_reaver.wounded_quarry->ok() || !BASE::p()->active.wounded_quarry )
+      return;
+
+    if ( BASE::school != SCHOOL_PHYSICAL )
+      return;
+
+    if ( s->target->is_sleeping() )
+      return;
+
+    if ( !BASE::p()->last_reavers_mark_applied ||
+         !BASE::p()->get_target_data( BASE::p()->last_reavers_mark_applied )->debuffs.reavers_mark->up() )
+      return;
+
+    double da = s->result_amount;
+    if ( da > 0 )
+    {
+      da *= BASE::p()->talent.aldrachi_reaver.wounded_quarry->effectN( 1 ).percent();
+      BASE::p()->wounded_quarry_accumulator += da;
+      BASE::p()->sim->print_debug( "{} accumulates Wounded Quarry from {} on target {}: da={} total={}",
+                                   BASE::p()->name(), s->action->name(), s->target->name(), da,
+                                   BASE::p()->wounded_quarry_accumulator );
+      if ( BASE::p()->cooldown.wounded_quarry_trigger_icd->up() )
+      {
+        BASE::p()->sim->print_debug( "{} triggers Wounded Quarry from {} on target {}: {}", BASE::p()->name(),
+                                     s->action->name(), BASE::p()->last_reavers_mark_applied->name(),
+                                     BASE::p()->wounded_quarry_accumulator );
+        BASE::p()->active.wounded_quarry->execute_on_target( BASE::p()->last_reavers_mark_applied,
+                                                             BASE::p()->wounded_quarry_accumulator );
+        BASE::p()->wounded_quarry_accumulator = 0.0;
+        // per dev communication, it's batched per second
+        BASE::p()->cooldown.wounded_quarry_trigger_icd->start( 1_s );
+      }
+    }
+  }
+};
+
+struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
+{
+  demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                       util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+    harmful = false;
+    set_target( p );
+  }
+};
+
+struct demon_hunter_spell_t : public wounded_quarry_accumulator_t<demon_hunter_action_t<spell_t>>
+{
+  demon_hunter_spell_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                        util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+  }
+};
+
+struct demon_hunter_sigil_t : public demon_hunter_spell_t
+{
+  timespan_t sigil_delay;
+  timespan_t sigil_activates;
+  std::vector<cooldown_t*> sigil_cooldowns;
+  timespan_t sigil_cooldown_adjust;
+
+  demon_hunter_sigil_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
+    : demon_hunter_spell_t( n, p, s ), sigil_delay( delay ), sigil_activates( timespan_t::zero() )
+  {
+    aoe        = -1;
+    background = dual = ground_aoe = true;
+    assert( delay > timespan_t::zero() );
+
+    if ( p->talent.vengeance.cycle_of_binding->ok() )
+    {
+      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.sigil_of_spite, p->cooldown.sigil_of_misery,
+                          p->cooldown.sigil_of_silence };
+      sigil_cooldown_adjust =
+          -timespan_t::from_seconds( p->talent.vengeance.cycle_of_binding->effectN( 1 ).base_value() );
+    }
+  }
+
+  void place_sigil( player_t* target )
+  {
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                    ground_aoe_params_t()
+                                        .target( target )
+                                        .x( target->x_position )
+                                        .y( target->y_position )
+                                        .pulse_time( sigil_delay )
+                                        .duration( sigil_delay )
+                                        .action( this ) );
+
+    sigil_activates = sim->current_time() + sigil_delay;
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( hit_any_target && p()->talent.demon_hunter.soul_sigils->ok() )
+    {
+      unsigned num_souls = as<unsigned>( p()->talent.demon_hunter.soul_sigils->effectN( 1 ).base_value() );
+      p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false );
+      for ( unsigned i = 0; i < num_souls; i++ )
+      {
+        p()->proc.soul_fragment_from_soul_sigils->occur();
+      }
+    }
+  }
+
+  void trigger_cycle_of_binding_event()
+  {
+    p()->sim->print_debug( "triggering cycle of binding event" );
+    // this is an event so that cooldown tracking occurs correctly
+    make_event( *p()->sim, 0_ms, [ this ]() {
+      std::vector<cooldown_t*> sigils_on_cooldown;
+      range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
+                      []( cooldown_t* c ) { return c->down(); } );
+      for ( auto sigil_cooldown : sigils_on_cooldown )
+      {
+        sigil_cooldown->adjust( this->sigil_cooldown_adjust );
+      }
+    } );
+  }
+
+  std::unique_ptr<expr_t> create_sigil_expression( util::string_view name );
+};
+
+struct demon_hunter_attack_t : public wounded_quarry_accumulator_t<demon_hunter_action_t<melee_attack_t>>
+{
+  demon_hunter_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                         util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+    special = true;
+  }
+};
+
+struct demon_hunter_ranged_attack_t : public wounded_quarry_accumulator_t<demon_hunter_action_t<ranged_attack_t>>
+{
+  demon_hunter_ranged_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+    special = true;
   }
 };
 
@@ -6680,6 +6739,47 @@ struct warblades_hunger_t : public demon_hunter_attack_t
   }
 };
 
+struct wounded_quarry_t : public demon_hunter_attack_t
+{
+  double chance;
+
+  wounded_quarry_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
+  {
+    chance = p->hero_spec.wounded_quarry_proc_rate;
+    if ( p->bugs )
+    {
+      // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
+      allow_class_ability_procs = true;
+    }
+
+    // WQ is affected by Havoc mastery
+    if ( p->mastery.demonic_presence->ok() )
+    {
+      affected_by.demonic_presence.direct   = true;
+      affected_by.demonic_presence.periodic = true;
+    }
+
+    // WQ is affected by Demon Hide
+    if ( p->talent.havoc.demon_hide->ok() )
+    {
+      affected_by.demon_hide.direct   = true;
+      affected_by.demon_hide.periodic = true;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    if ( rng().roll( chance ) )
+    {
+      p()->proc.soul_fragment_from_wounded_quarry->occur();
+      p()->spawn_soul_fragment( soul_fragment::LESSER );
+    }
+  }
+};
+
 }  // end namespace attacks
 
 }  // end namespace actions
@@ -7268,104 +7368,6 @@ void tww2_vengeance_2pc( const special_effect_t& e )
   new tww2_vengeance_2pc( e );
 }
 
-struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
-{
-  struct wounded_quarry_t : public actions::demon_hunter_attack_t
-  {
-    double chance;
-
-    wounded_quarry_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
-    {
-      chance = p->hero_spec.wounded_quarry_proc_rate;
-      if ( p->bugs )
-      {
-        // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
-        allow_class_ability_procs = true;
-      }
-
-      // WQ is affected by mastery
-      affected_by.demonic_presence.direct   = true;
-      affected_by.demonic_presence.periodic = true;
-
-      // WQ is affected by Demon Hide
-      affected_by.demon_hide.direct   = true;
-      affected_by.demon_hide.periodic = true;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_attack_t::impact( s );
-
-      if ( rng().roll( chance ) )
-      {
-        p()->proc.soul_fragment_from_wounded_quarry->occur();
-        p()->spawn_soul_fragment( soul_fragment::LESSER );
-      }
-    }
-  };
-
-  school_e school;
-
-  wounded_quarry_t* damage;
-  double damage_percent;
-
-  wounded_quarry_cb_t( const special_effect_t& e ) : demon_hunter_proc_callback_t( e ), school( SCHOOL_PHYSICAL )
-  {
-    damage_percent = p()->talent.aldrachi_reaver.wounded_quarry->effectN( 1 ).percent();
-    damage         = p()->get_background_action<wounded_quarry_t>( "wounded_quarry" );
-  }
-
-  void activate() override
-  {
-    if ( damage )
-      dbc_proc_callback_t::activate();
-  }
-
-  void trigger( action_t* a, action_state_t* state ) override
-  {
-    // WQ only procs off of pure physical damage
-    if ( state->action->school != school )
-      return;
-
-    if ( !damage )
-      return;
-
-    if ( state->action->id == damage->id )
-      return;
-
-    dbc_proc_callback_t::trigger( a, state );
-  }
-
-  void execute( action_t*, action_state_t* s ) override
-  {
-    if ( s->target->is_sleeping() )
-      return;
-
-    if ( !p()->last_reavers_mark_applied ||
-         !p()->get_target_data( p()->last_reavers_mark_applied )->debuffs.reavers_mark->up() )
-      return;
-
-    double da = s->result_amount;
-    if ( da > 0 )
-    {
-      da *= damage_percent;
-      p()->wounded_quarry_accumulator += da;
-      p()->sim->print_debug( "{} accumulates Wounded Quarry from {}: da={} total={}", p()->name(), s->action->name(),
-                             da, p()->wounded_quarry_accumulator );
-      if ( p()->cooldown.wounded_quarry_trigger_icd->up() )
-      {
-        p()->sim->print_debug( "{} triggers Wounded Quarry from {} on target {}: {}", p()->name(), s->action->name(),
-                               p()->last_reavers_mark_applied->name(), p()->wounded_quarry_accumulator );
-        damage->execute_on_target( p()->last_reavers_mark_applied, p()->wounded_quarry_accumulator );
-        p()->wounded_quarry_accumulator = 0.0;
-        // per dev communication, it's batched per second
-        p()->cooldown.wounded_quarry_trigger_icd->start( 1_s );
-      }
-    }
-  }
-};
-
 // ==========================================================================
 // Targetdata Definitions
 // ==========================================================================
@@ -7400,27 +7402,35 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   }
 
   // TODO: make this conditional on hero spec
-  debuffs.reavers_mark = make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_max_stack( 2 )
-                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                             ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
-                               if ( !new_ )
-                               {
-                                 p.wounded_quarry_accumulator = 0.0;
-                                 p.proc.wounded_quarry_accumulator_reset->occur();
-                               }
-                               else
-                               {
-                                 if ( p.last_reavers_mark_applied && p.last_reavers_mark_applied != b->player &&
-                                      p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->check() )
-                                 {
-                                   p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->expire();
-                                 }
-                                 p.last_reavers_mark_applied = b->player;
-                               }
-                             } );
+  debuffs.reavers_mark =
+      make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
+          ->set_default_value_from_effect( 1 )
+          ->set_max_stack( 2 )
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+          ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
+            if ( !new_ )
+            {
+              if ( p.active.wounded_quarry )
+              {
+                p.sim->print_debug( "{} triggers Wounded Quarry because Reaver's Mark was removed from target {}: {}",
+                                    p.name(), p.last_reavers_mark_applied->name(), p.wounded_quarry_accumulator );
+                p.active.wounded_quarry->execute_on_target( p.last_reavers_mark_applied, p.wounded_quarry_accumulator );
+              }
+              p.wounded_quarry_accumulator = 0.0;
+              p.proc.wounded_quarry_accumulator_reset->occur();
+              p.cooldown.wounded_quarry_trigger_icd->reset( false );
+            }
+            else
+            {
+              if ( p.last_reavers_mark_applied && p.last_reavers_mark_applied != b->player &&
+                   p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->check() )
+              {
+                p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->expire();
+              }
+              p.last_reavers_mark_applied = b->player;
+            }
+          } );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -7772,7 +7782,9 @@ void demon_hunter_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.thrill_of_the_fight_damage =
-      make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
+      make_buff( this, "thrill_of_the_fight_damage",
+                 specialization() == DEMON_HUNTER_HAVOC ? hero_spec.thrill_of_the_fight_damage_buff_havoc
+                                                        : hero_spec.thrill_of_the_fight_damage_buff_vengeance );
   buff.art_of_the_glaive_first = make_buff( this, "art_of_the_glaive_first", talent.aldrachi_reaver.art_of_the_glaive )
                                      ->set_duration( buff.glaive_flurry->buff_duration() );
   buff.art_of_the_glaive_second_glaive_flurry =
@@ -8665,8 +8677,10 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
   hero_spec.thrill_of_the_fight_attack_speed_buff =
       talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
-  hero_spec.thrill_of_the_fight_damage_buff =
-      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442688 ) : spell_data_t::not_found();
+  hero_spec.thrill_of_the_fight_damage_buff_havoc =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 442688 );
+  hero_spec.thrill_of_the_fight_damage_buff_vengeance =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 1227062 );
   hero_spec.burning_blades_debuff =
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =
@@ -8779,17 +8793,6 @@ void demon_hunter_t::init_spells()
 
     chaotic_disposition_cb->activate();
   }
-  if ( talent.aldrachi_reaver.wounded_quarry->ok() )
-  {
-    auto wounded_quarry_effect      = new special_effect_t( this );
-    wounded_quarry_effect->name_str = "wounded_quarry";
-    wounded_quarry_effect->type     = SPECIAL_EFFECT_EQUIP;
-    wounded_quarry_effect->spell_id = talent.aldrachi_reaver.wounded_quarry->id();
-    special_effects.push_back( wounded_quarry_effect );
-
-    auto wounded_quarry_cb = new wounded_quarry_cb_t( *wounded_quarry_effect );
-    wounded_quarry_cb->activate();
-  }
 
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
@@ -8848,6 +8851,10 @@ void demon_hunter_t::init_spells()
   if ( talent.aldrachi_reaver.warblades_hunger->ok() )
   {
     active.warblades_hunger = get_background_action<warblades_hunger_t>( "warblades_hunger" );
+  }
+  if ( talent.aldrachi_reaver.wounded_quarry->ok() )
+  {
+    active.wounded_quarry = get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
 
   if ( talent.felscarred.burning_blades->ok() )

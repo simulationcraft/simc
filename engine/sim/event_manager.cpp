@@ -28,6 +28,9 @@ event_manager_t::event_manager_t( sim_t* s )
     wheel_granularity( 0.0 ),
     wheel_time( timespan_t::zero() ),
     event_stopwatch(),
+#ifndef NDEBUG
+    max_events( 0U ),
+#endif
 #ifdef EVENT_QUEUE_DEBUG
     monitor_cpu( false ),
     max_queue_depth( 0 ),
@@ -204,7 +207,7 @@ bool event_manager_t::execute()
   unsigned n_events = 0U;
   std::vector<std::string> debug_list;
   static const unsigned MAX_EVENTS =
-      500U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) );
+      750U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) );
 
   while ( event_t* e = next_event() )
   {
@@ -215,6 +218,9 @@ bool event_manager_t::execute()
 #endif
       if ( ++n_events == MAX_EVENTS )
       {
+#ifndef NDEBUG
+        max_events = n_events;
+#endif
         cancel_stuck( debug_list );
       }
     }
@@ -222,6 +228,7 @@ bool event_manager_t::execute()
     {
 #ifndef NDEBUG
       debug_list.clear();
+      max_events = std::max( n_events, max_events );
 #endif
       n_events = 0U;
     }

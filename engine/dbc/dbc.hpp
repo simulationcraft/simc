@@ -80,7 +80,6 @@ specialization_e spec_by_idx( const player_e c, unsigned idx );
 int spec_idx( specialization_e spec );
 
 // Data Access
-const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, util::string_view spec_str );
 const char* specialization_string     ( specialization_e spec );
@@ -324,6 +323,9 @@ public:
 
   explicit dbc_t( bool ptr = false ) :
     ptr( ptr ) { }
+
+  wowv_t wowv() const
+  { return dbc::client_data_version( ptr ); }
 
   const char* wow_ptr_status() const
   { return dbc::wow_ptr_status( ptr ); }

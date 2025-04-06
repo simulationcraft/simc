@@ -41,6 +41,11 @@ spec=guardian
 load_default_gear=1
 load_default_talents=1
 
+druid=restoration_dru
+spec=restoration
+load_default_gear=1
+load_default_talents=1
+
 #evoker=augmentation
 #spec=augmentation
 #load_default_gear=1
@@ -91,7 +96,7 @@ spec=windwalker
 load_default_gear=1
 load_default_talents=1
 
-paladin=protection
+paladin=protection_pal
 spec=protection
 load_default_gear=1
 load_default_talents=1
@@ -126,10 +131,10 @@ spec=elemental
 load_default_gear=1
 load_default_talents=1
 
-#shaman=enhancement
-#spec=enhancement
-#load_default_gear=1
-#load_default_talents=1
+shaman=enhancement
+spec=enhancement
+load_default_gear=1
+load_default_talents=1
 
 warlock=affliction
 spec=affliction

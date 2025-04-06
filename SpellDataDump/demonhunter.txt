@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1724,7 +1724,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc203720
@@ -12757,7 +12757,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Real PPM         : 1.5
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1199257)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.5 | Trigger Spell: 1219012 | Target: Self (1)

@@ -18,6 +18,7 @@
 #include "player_stat_cache.hpp"
 #include "rating.hpp"
 #include "sc_enums.hpp"
+#include "sim/proc.hpp"
 #include "talent.hpp"
 #include "util/cache.hpp"
 #include "util/rng.hpp"
@@ -884,6 +885,7 @@ struct player_t : public actor_t
     // Mister Lock-n-Stalk mode of operation
     player_option_t<std::string> mister_locknstalk_mode = "dynamic";
     player_option_t<std::string> jastor_diamond_ally_stat = "none";
+    double suspicious_energy_drink_bonus_chance           = 0;
   } thewarwithin_opts;
 
 private:
@@ -1065,7 +1067,7 @@ public:
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
-  proc_t*     get_proc    ( util::string_view name );
+  proc_t*     get_proc    ( util::string_view name, unsigned flags = proc_report_e::REPORT_PROC_ALL );
   stats_t*    get_stats   ( util::string_view name, action_t* action = nullptr );
   benefit_t*  get_benefit ( util::string_view name );
   uptime_t*   get_uptime  ( util::string_view name );

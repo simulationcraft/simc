@@ -551,6 +551,291 @@ void daybreak_spellthread( special_effect_t& effect )
   effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
 }
 
+// Rune of Twilight Devastation
+// 1225038 Driver
+// 1225040 Damage
+// 1225042 Value Spell/Default Driver - Lesser
+// 1225045 Value Spell/Default Driver - Greater
+// 1225074 Role Mult Spell - Lesser
+// 1233223 Role Mult Spell - Greater
+void twilight_devastation( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct twilight_devastation_t : public generic_proc_t
+  {
+    double current_mult;
+    twilight_devastation_t( const special_effect_t& e )
+      : generic_proc_t( e, "twilight_devastation", e.player->find_spell( 1225040 ) ), current_mult( 1.0 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.player );
+      base_multiplier *= role_mult( e.player, e.player->find_spell( 1233223 ) );
+      aoe = 10;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      m *= current_mult;
+
+      return m;
+    }
+
+    void execute() override
+    {
+      current_mult = 1.0;
+      generic_proc_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( ( s->chain_target + 1 ) % 2 == 0 && s->chain_target <= 7 )
+        current_mult *= 0.5;
+
+      generic_proc_t::impact( s );
+    }
+  };
+
+  auto damage = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+
+  effect.execute_action = damage;
+  effect.spell_id       = effect.player->find_spell( 1225038 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Echoing Void
+// 1225883 Driver
+// 1225889 Damage
+// 1225886 Stacking Buff
+// 1225887 Periodic Buff
+// 1225878 Value Spell/Default Driver - Lesser
+// 1225880 Value Spell/Default Driver - Greater
+// 1233355 Role Mult Spell - Lesser
+// 1225873 Role Mult Spell - Greater
+// TODO: Check the chance to trigger void collapse is correct.
+void echoing_void( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "echoing_void_corruption", effect, 1225889, true );
+  damage->name_str_reporting = "Corruption";
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+  // Using the Greater version for the ID here, but, they should be the same.
+  damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1233355 ) );
+
+  auto new_driver = effect.player->find_spell( 1225883 );
+
+  auto stacking_buff =
+      create_buff<buff_t>( effect.player, "echoing_void_stacking", effect.player->find_spell( 1225886 ) );
+  stacking_buff->name_str_reporting = "Stacking";
+  auto ticking_buff =
+      create_buff<buff_t>( effect.player, "echoing_void_ticking", effect.player->find_spell( 1225887 ) );
+  ticking_buff->name_str_reporting = "Ticking";
+
+  stacking_buff->set_stack_change_callback( [ effect, ticking_buff, new_driver ]( buff_t* b, int old_, int new_ ) {
+    if ( new_ > old_ )
+    {
+      // Might not be correct, not seeing the % chance to trigger in the spell data, but seems to increase in chance the
+      // more stacks you have.
+      if ( effect.player->rng().roll( new_driver->effectN( 2 ).percent() * b->check() ) )
+        ticking_buff->trigger( 1_s + ( b->check() * 1_s ) );
+    }
+  } );
+
+  ticking_buff->set_tick_callback( [ stacking_buff, damage ]( buff_t*, int, timespan_t ) {
+    stacking_buff->decrement();
+    damage->execute();
+  } );
+
+  effect.custom_buff = stacking_buff;
+  effect.spell_id    = new_driver->id();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      new_driver->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ ticking_buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+        return !ticking_buff->up();
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Twisted Appendage
+// 1227300 Driver
+// 1227303 Damage
+// 1227301 Summon Spell
+// 1227295 Value Spell/Default Driver - Lesser
+// 1227297 Value Spell/Default Driver - Greater
+// 1233392 Role Mult Spell - Lesser
+// 1227294 Role Mult Spell - Greater
+// TODO: Implement slow effect on enemy targeted by mind flay if it ever matters for sims.
+void twisted_appendage( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct twisted_appendage_pet_t : unique_gear_pet_t
+  {
+    action_t* mind_flay;
+
+    twisted_appendage_pet_t( const special_effect_t& e, action_t* damage = nullptr, action_t* parent = nullptr )
+      : unique_gear_pet_t( "twisted_appendage", e, &parent->data() ), mind_flay( damage )
+    {
+      parent_action       = parent;
+      use_auto_attack     = false;
+      base_movement_speed = 0.0;
+    }
+
+    void arise() override
+    {
+      unique_gear_pet_t::arise();
+      mind_flay->execute_on_target( owner->target );
+    }
+  };
+
+  struct twisted_appendage_t : public generic_proc_t
+  {
+    spawner::pet_spawner_t<twisted_appendage_pet_t> appendage_spawner;
+
+    twisted_appendage_t( const special_effect_t& e )
+      : generic_proc_t( e, "twisted_appendage", e.driver() ), appendage_spawner( "twisted_appendage", e.player )
+    {
+      auto summon_spell = e.player->find_spell( 1227301 );
+      auto appendage    = new action_t( action_e::ACTION_OTHER, "twisted_appendage_summon", e.player, summon_spell );
+      appendage->name_str_reporting = "Summon";
+
+      auto mind_flay     = create_proc_action<generic_proc_t>( "twisted_appendage_mind_flay", e, 1227303 );
+      mind_flay->base_td = e.driver()->effectN( 1 ).average( e.player );
+      mind_flay->base_td_multiplier *= role_mult( e.player, e.player->find_spell( 1227294 ) );
+      mind_flay->name_str_reporting = "mind_flay";
+
+      appendage_spawner.set_creation_callback( [ &e, mind_flay, appendage ]( player_t* ) {
+        return new twisted_appendage_pet_t( e, mind_flay, appendage );
+      } );
+      appendage_spawner.set_default_duration( summon_spell->duration() );
+      add_child( appendage );
+      appendage->add_child( mind_flay );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      appendage_spawner.spawn();
+    }
+  };
+
+  // Name is currently typod in spell data, might need fixed if the data name changes.
+  effect.execute_action = create_proc_action<twisted_appendage_t>( "twisted_appendage", effect );
+  effect.spell_id       = effect.player->find_spell( 1227300 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Void Ritual
+// 1227315 Driver
+// 1227316 Buff
+// 1227312 Value Spell/Default Driver - Lesser
+// 1227314 Value Spell/Default Driver - Greater
+// TODO: Check if this still adheres to the increased chance if at least 2 players are wearing it. 
+void void_ritual( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "the_end_is_coming", effect.player->find_spell( 1227316 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  effect.custom_buff = buff;
+  effect.spell_id    = effect.player->find_spell( 1227315 )->id();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) { return !buff->up(); } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Gushing Wound
+// 1227292 Driver
+// 1227293 Damage
+// 1227289 Value Spell/Default Driver - Lesser
+// 1227291 Value Spell/Default Driver - Greater
+// 1233385 Role Mult Spell - Lesser
+// 1227288 Role Mult Spell - Greater
+void gushing_wound( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto damage     = create_proc_action<generic_proc_t>( "gushing_wound", effect, 1227293 );
+  damage->base_td = effect.driver()->effectN( 1 ).average( effect.player );
+  // Using the Greater version for the ID here, but, they should be the same.
+  damage->base_td_multiplier *= role_mult( effect.player, effect.player->find_spell( 1227288 ) );
+  damage->cooldown->duration = damage->data().internal_cooldown();
+
+  effect.execute_action = damage;
+  effect.spell_id       = effect.player->find_spell( 1227292 )->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of Infinite Stars
+// 1227215 Driver
+// 1227218 Damage/Debuff
+// 1227216 Missile?
+// 1227210 Value Spell/Default Driver - Lesser
+// 1227211 Value Spell/Default Driver - Greater
+// 1233375 Role Mult Spell - Lesser
+// 1227206 Role Mult Spell - Greater
+void infinite_stars( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct infinite_stars_t : public generic_proc_t
+  {
+    double bonus_damage;
+
+    infinite_stars_t( const special_effect_t& e )
+      : generic_proc_t( e, "infinite_stars", e.player->find_spell( 1227218 ) ), bonus_damage( 0 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.player );
+      base_multiplier *= role_mult( e.player, e.player->find_spell( 1227206 ) );
+
+      bonus_damage  = e.driver()->effectN( 2 ).average( e.player );
+      target_debuff = &data();
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = generic_proc_t::bonus_da( s );
+
+      auto debuff = find_debuff( s->target );
+      if ( debuff )
+        b += debuff->check() * bonus_damage;
+
+      return b;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      auto debuff = get_debuff( s->target );
+
+      if ( debuff->at_max_stacks() )
+        debuff->expire();
+      else
+        debuff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect );
+  effect.spell_id       = effect.player->find_spell( 1227215 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -2009,230 +2294,373 @@ void mad_queens_mandate( special_effect_t& effect )
 // 452514 Earthen Ire - One Time Spell Tank
 // 452890 Earthen Ire - Ticking Damage
 // 452325, 452457, and 452498 Periodic Triggers for pet actions
+namespace sigil_of_algari_concordance
+{
+struct algari_pet_cast_event_t : public event_t
+{
+  action_t* st_action;
+  action_t* aoe_action;
+  action_t* one_time_action;
+  unsigned tick;
+  pet_t* pet;
+  timespan_t period;
+
+  algari_pet_cast_event_t( pet_t* p, timespan_t time_to_execute, unsigned tick, action_t* st_action,
+                           action_t* aoe_action, action_t* one_time_action )
+    : event_t( *p, time_to_execute ),
+      st_action( st_action ),
+      aoe_action( aoe_action ),
+      one_time_action( one_time_action ),
+      tick( tick ),
+      pet( p ),
+      period( 0_ms )
+  {
+    period = pet->find_spell( 452325 )->effectN( 1 ).period();
+  }
+
+  const char* name() const override
+  {
+    return "algari_pet_cast";
+  }
+
+  void execute() override
+  {
+    if ( pet->is_active() )
+    {
+      tick++;
+      // Emulates the odd behavior where sometimes it will execute the one time action the first tick
+      // while other times it will execute it later. While still guarenteeing it will cast sometime in its duration.
+      if ( one_time_action != nullptr && rng().roll( 0.33 * tick ) )
+      {
+        one_time_action->execute();
+        one_time_action = nullptr;
+      }
+      else if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 2 )
+      {
+        aoe_action->execute();
+      }
+      else
+      {
+        st_action->execute();
+      }
+      make_event<algari_pet_cast_event_t>( sim(), pet, period, tick, st_action, aoe_action, one_time_action );
+    }
+  }
+};
+
+struct sigil_of_algari_concordance_pet_t : public unique_gear_pet_t
+{
+  action_t* st_action;
+  action_t* one_time_action;
+  action_t* aoe_action;
+
+  sigil_of_algari_concordance_pet_t( std::string_view name, const special_effect_t& e,
+                                     const spell_data_t* summon_spell )
+    : unique_gear_pet_t( name, e, summon_spell ),
+      st_action( nullptr ),
+      one_time_action( nullptr ),
+      aoe_action( nullptr )
+  {
+    npc_id = summon_spell->effectN( 1 ).misc_value1();
+  }
+
+  void arise() override
+  {
+    unique_gear_pet_t::arise();
+    make_event<algari_pet_cast_event_t>( *sim, this, 0_ms, 0, st_action, aoe_action, one_time_action );
+  }
+};
+
+struct algari_concodance_pet_spell_t : public spell_t
+{
+  unsigned max_scaling_targets;
+  bool scale_aoe_damage;
+  algari_concodance_pet_spell_t( std::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
+    : spell_t( n, p, s ), max_scaling_targets( 5 ), scale_aoe_damage( false )
+  {
+    background = true;
+    auto proxy = a;
+    auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+    if ( it != proxy->child_action.end() )
+      stats = ( *it )->stats;
+    else
+      proxy->add_child( this );
+
+    // TODO: determine if these are affected by role mult
+  }
+
+  player_t* p() const
+  {
+    return debug_cast<player_t*>( debug_cast<pet_t*>( this->player )->owner );
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    double am = spell_t::composite_aoe_multiplier( state );
+
+    if ( scale_aoe_damage )
+      am *= 1.0 + 0.3 * clamp( state->n_targets - 1u, 0u, max_scaling_targets );
+
+    return am;
+  }
+};
+
+struct algari_concodance_pet_heal_t : public heal_t
+{
+  unsigned max_scaling_targets;
+  bool scale_aoe_damage;
+  algari_concodance_pet_heal_t( std::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
+    : heal_t( n, p, s ), max_scaling_targets( 5 ), scale_aoe_damage( false )
+  {
+    background = true;
+    auto proxy = a;
+    auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+    if ( it != proxy->child_action.end() )
+      stats = ( *it )->stats;
+    else
+      proxy->add_child( this );
+
+    // TODO: determine if these are affected by role mult
+
+    if ( !target || target->is_enemy() )
+      target = debug_cast<pet_t*>( this->player )->owner;
+  }
+
+  player_t* p() const
+  {
+    return debug_cast<player_t*>( debug_cast<pet_t*>( this->player )->owner );
+  }
+
+  void activate() override
+  {
+    sim->player_no_pet_list.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+
+  int num_targets() const override
+  {
+    return as<int>( range::count_if( sim->player_no_pet_list, []( player_t* t ) {
+      if ( t->is_sleeping() )
+        return false;
+      return true;
+    } ) );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+    target_list.push_back( p() );
+
+    for ( const auto& t : sim->player_no_pet_list )
+    {
+      if ( t->is_sleeping() )
+        continue;
+
+      if ( t != p() && t->party == p()->party )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+};
+
+struct thunder_bolt_silvervein_t : public algari_concodance_pet_spell_t
+{
+  thunder_bolt_silvervein_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_spell_t( name, p, p->find_spell( 452335 ), a )
+  {
+    name_str_reporting = "thunder_bolt";
+    base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
+  }
+};
+
+struct bolt_rain_t : public algari_concodance_pet_spell_t
+{
+  bolt_rain_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
+  {
+    aoe              = -1;
+    split_aoe_damage = true;
+    scale_aoe_damage = true;
+    base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
+  }
+};
+
+struct thundering_bolt_t : public algari_concodance_pet_spell_t
+{
+  thundering_bolt_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_spell_t( name, p, p->find_spell( 452445 ), a )
+  {
+    aoe              = -1;
+    split_aoe_damage = true;
+    scale_aoe_damage = true;
+    base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e );
+  }
+};
+
+struct mighty_smash_t : public algari_concodance_pet_spell_t
+{
+  mighty_smash_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_spell_t( name, p, p->find_spell( 452545 ), a )
+  {
+    aoe              = -1;
+    split_aoe_damage = true;
+    scale_aoe_damage = true;
+    base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e );
+  }
+};
+
+struct earthen_ire_buff_t : public algari_concodance_pet_spell_t
+{
+  earthen_ire_buff_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_spell_t( name, p, e.player->find_spell( 452518 ), a )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    algari_concodance_pet_spell_t::execute();
+    p()->buffs.earthen_ire->trigger();
+  }
+};
+
+struct mending_the_cracks_heal_t : public algari_concodance_pet_heal_t
+{
+  mending_the_cracks_heal_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_heal_t( name, p, e.player->find_spell( 452469 ), a )
+  {
+    name_str_reporting = "mending_the_cracks";
+    background         = true;
+    aoe                = 5;
+    base_td            = e.driver()->effectN( 2 ).average( e ) / 5;
+  }
+};
+
+struct brightstone_pet_t : public sigil_of_algari_concordance_pet_t
+{
+  action_t* action;
+  const special_effect_t& effect;
+  target_specific_t<buff_t> stat_buffs;
+
+  brightstone_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+    : sigil_of_algari_concordance_pet_t( "brightstone", e, summon_spell ), action( a ), effect( e ), stat_buffs{ false }
+  {
+  }
+
+  buff_t* get_buff( player_t* buff_player )
+  {
+    if ( stat_buffs[ buff_player ] )
+      return stat_buffs[ buff_player ];
+
+    if ( auto buff = buff_t::find( buff_player, "earthen_might", owner ) )
+    {
+      stat_buffs[ buff_player ] = buff;
+      return buff;
+    }
+
+    auto stat_buff =
+        make_buff<stat_buff_t>( actor_pair_t{ buff_player, owner }, "earthen_might", owner->find_spell( 452472 ) )
+            ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 7 ).average( effect ) );
+
+    stat_buffs[ buff_player ] = stat_buff;
+
+    return stat_buff;
+  }
+
+  void create_actions() override;
+};
+
+struct earthen_might_spell_t : public algari_concodance_pet_heal_t
+{
+  earthen_might_spell_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    : algari_concodance_pet_heal_t( name, p, e.player->find_spell( 452472 ), a )
+  {
+    name_str_reporting = "earthen_might";
+    background         = true;
+    aoe                = 5;
+  }
+  
+  brightstone_pet_t* pet()
+  {
+    return debug_cast<brightstone_pet_t*>( player );
+  }
+
+  brightstone_pet_t* pet() const
+  {
+    return debug_cast<brightstone_pet_t*>( player );
+  }
+  
+  void impact( action_state_t* s ) override
+  {
+    algari_concodance_pet_heal_t::impact( s );
+
+    pet()->get_buff( s->target )->trigger();
+  }
+};
+
+void brightstone_pet_t::create_actions()
+{
+  sigil_of_algari_concordance_pet_t::create_actions();
+  st_action       = new mending_the_cracks_heal_t( "mending_the_cracks", this, effect, action );
+  one_time_action = new earthen_might_spell_t( "earthen_might", this, effect, action );
+}
+
+struct silvervein_pet_t : public sigil_of_algari_concordance_pet_t
+{
+  action_t* action;
+  const special_effect_t& effect;
+  silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+    : sigil_of_algari_concordance_pet_t( "silvervein", e, summon_spell ), action( a ), effect( e )
+  {
+  }
+
+  void create_actions() override
+  {
+    sigil_of_algari_concordance_pet_t::create_actions();
+    st_action       = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
+    aoe_action      = new bolt_rain_t( "bolt_rain", this, effect, action );
+    one_time_action = new thundering_bolt_t( "thundering_bolt", this, effect, action );
+  }
+};
+
+struct boulderbane_pet_t : public sigil_of_algari_concordance_pet_t
+{
+  action_t* action;
+  const special_effect_t& effect;
+  boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
+    : sigil_of_algari_concordance_pet_t( "boulderbane", e, summon_spell ), action( a ), effect( e )
+  {
+  }
+
+  void create_actions() override
+  {
+    sigil_of_algari_concordance_pet_t::create_actions();
+    st_action       = new mighty_smash_t( "mighty_smash", this, effect, action );
+    one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
+  }
+};
+
 void sigil_of_algari_concordance( special_effect_t& e )
 {
-  struct algari_pet_cast_event_t : public event_t
-  {
-    action_t* st_action;
-    action_t* aoe_action;
-    action_t* one_time_action;
-    unsigned tick;
-    pet_t* pet;
-    timespan_t period;
-
-    algari_pet_cast_event_t( pet_t* p, timespan_t time_to_execute, unsigned tick, action_t* st_action,
-                             action_t* aoe_action, action_t* one_time_action )
-      : event_t( *p, time_to_execute ),
-        st_action( st_action ),
-        aoe_action( aoe_action ),
-        one_time_action( one_time_action ),
-        tick( tick ),
-        pet( p ),
-        period( 0_ms )
-    {
-      period = pet->find_spell( 452325 )->effectN( 1 ).period();
-    }
-
-    const char* name() const override
-    {
-      return "algari_pet_cast";
-    }
-
-    void execute() override
-    {
-      if ( pet->is_active() )
-      {
-        tick++;
-        // Emulates the odd behavior where sometimes it will execute the one time action the first tick
-        // while other times it will execute it later. While still guarenteeing it will cast sometime in its duration.
-        if ( one_time_action != nullptr && rng().roll( 0.33 * tick ) )
-        {
-          one_time_action->execute();
-          one_time_action = nullptr;
-        }
-        else if ( aoe_action != nullptr && pet->sim->target_non_sleeping_list.size() > 2 )
-        {
-          aoe_action->execute();
-        }
-        else
-        {
-          st_action->execute();
-        }
-        make_event<algari_pet_cast_event_t>( sim(), pet, period, tick,
-                                             st_action, aoe_action, one_time_action );
-      }
-    }
-  };
-
-  struct sigil_of_algari_concordance_pet_t : public unique_gear_pet_t
-  {
-    action_t* st_action;
-    action_t* one_time_action;
-    action_t* aoe_action;
-
-    sigil_of_algari_concordance_pet_t( std::string_view name, const special_effect_t& e,
-                                       const spell_data_t* summon_spell )
-      : unique_gear_pet_t( name, e, summon_spell ),
-        st_action( nullptr ),
-        one_time_action( nullptr ),
-        aoe_action( nullptr )
-    {
-      npc_id = summon_spell->effectN( 1 ).misc_value1();
-    }
-
-    void arise() override
-    {
-      unique_gear_pet_t::arise();
-      make_event<algari_pet_cast_event_t>( *sim, this, 0_ms, 0, st_action, aoe_action, one_time_action );
-    }
-  };
-
-  struct algari_concodance_pet_spell_t : public spell_t
-  {
-    unsigned max_scaling_targets;
-    bool scale_aoe_damage;
-    algari_concodance_pet_spell_t( std::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
-      : spell_t( n, p, s ), max_scaling_targets( 5 ), scale_aoe_damage( false )
-    {
-      background = true;
-      auto proxy = a;
-      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
-      if ( it != proxy->child_action.end() )
-        stats = ( *it )->stats;
-      else
-        proxy->add_child( this );
-
-      // TODO: determine if these are affected by role mult
-    }
-
-    player_t* p() const
-    {
-      return debug_cast<player_t*>( debug_cast<pet_t*>( this->player )->owner );
-    }
-
-    double composite_aoe_multiplier( const action_state_t* state ) const override
-    {
-      double am = spell_t::composite_aoe_multiplier( state );
-
-      if( scale_aoe_damage )
-        am *= 1.0 + 0.15 * clamp( state->n_targets - 1u, 0u, max_scaling_targets );
-
-      return am;
-    }
-  };
-
-  struct thunder_bolt_silvervein_t : public algari_concodance_pet_spell_t
-  {
-
-    thunder_bolt_silvervein_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452335 ), a )
-    {
-      name_str_reporting = "thunder_bolt";
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
-    }
-  };
-
-  struct bolt_rain_t : public algari_concodance_pet_spell_t
-  {
-    bolt_rain_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-      scale_aoe_damage = true;
-      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
-    }
-  };
-
-  struct thundering_bolt_t : public algari_concodance_pet_spell_t
-  {
-    thundering_bolt_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452445 ), a )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-      scale_aoe_damage = true;
-      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e );
-    }
-  };
-
-  struct mighty_smash_t : public algari_concodance_pet_spell_t
-  {
-    mighty_smash_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : algari_concodance_pet_spell_t( name, p, p->find_spell( 452545 ), a )
-    {
-      aoe = -1;
-      split_aoe_damage = true;
-      scale_aoe_damage = true;
-      base_dd_min = base_dd_max = e.driver()->effectN( 9 ).average( e );
-    }
-  };
-
-  struct earthen_ire_buff_t : public algari_concodance_pet_spell_t
-  {
-    earthen_ire_buff_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
-      : algari_concodance_pet_spell_t( name, p, e.player->find_spell( 452518 ), a )
-    {
-      background = true;
-    }
-
-    void execute() override
-    {
-      algari_concodance_pet_spell_t::execute();
-      p()->buffs.earthen_ire->trigger();
-    }
-  };
-
-  struct silvervein_pet_t : public sigil_of_algari_concordance_pet_t
-  {
-    action_t* action;
-    const special_effect_t& effect;
-    silvervein_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
-      : sigil_of_algari_concordance_pet_t( "silvervein", e, summon_spell ), action( a ), effect( e )
-    {
-    }
-
-    void create_actions() override
-    {
-      sigil_of_algari_concordance_pet_t::create_actions();
-      st_action       = new thunder_bolt_silvervein_t( "thunder_bolt_silvervein", this, effect, action );
-      aoe_action      = new bolt_rain_t( "bolt_rain", this, effect, action );
-      one_time_action = new thundering_bolt_t( "thundering_bolt", this, effect, action );
-    }
-  };
-
-  struct boulderbane_pet_t : public sigil_of_algari_concordance_pet_t
-  {
-    action_t* action;
-    const special_effect_t& effect;
-    boulderbane_pet_t( const special_effect_t& e, action_t* a = nullptr, const spell_data_t* summon_spell = nullptr )
-      : sigil_of_algari_concordance_pet_t( "boulderbane", e, summon_spell ), action( a ), effect( e )
-    {
-    }
-
-    void create_actions() override
-    {
-      sigil_of_algari_concordance_pet_t::create_actions();
-      st_action       = new mighty_smash_t( "mighty_smash", this, effect, action );
-      one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
-    }
-  };
-
   struct sigil_of_algari_concordance_t : public generic_proc_t
   {
     const spell_data_t* summon_spell;
     spawner::pet_spawner_t<silvervein_pet_t> silvervein_spawner;
     spawner::pet_spawner_t<boulderbane_pet_t> boulderbane_spawner;
+    spawner::pet_spawner_t<brightstone_pet_t> brightstone_spawner;
     bool silvervein;
     bool boulderbane;
+    bool brightstone;
 
     sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
         summon_spell( nullptr ),
         silvervein_spawner( "silvervein", e.player ),
         boulderbane_spawner( "boulderbane", e.player ),
+        brightstone_spawner( "brighstone", e.player ),
         silvervein( false ),
-        boulderbane( false )
+        boulderbane( false ),
+        brightstone( false )
     {
       switch ( e.player->_spec )
       {
@@ -2266,6 +2694,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
         case MONK_MISTWEAVER:
         case DRUID_RESTORATION:
         case EVOKER_PRESERVATION:
+          brightstone = true;
           break;
         case WARRIOR_ARMS:
         case WARRIOR_FURY:
@@ -2288,15 +2717,24 @@ void sigil_of_algari_concordance( special_effect_t& e )
       if ( silvervein )
       {
         summon_spell = e.player->find_spell( 452310 );
-        silvervein_spawner.set_creation_callback( [ & ]( player_t* ) { return new silvervein_pet_t( e, this, summon_spell ); } );
+        silvervein_spawner.set_creation_callback(
+            [ & ]( player_t* ) { return new silvervein_pet_t( e, this, summon_spell ); } );
         silvervein_spawner.set_default_duration( summon_spell->duration() );
       }
       if ( boulderbane )
       {
         summon_spell = e.player->find_spell( 452496 );
-        boulderbane_spawner.set_creation_callback( [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
+        boulderbane_spawner.set_creation_callback(
+            [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
         boulderbane_spawner.set_default_duration( summon_spell->duration() );
         add_child( earthen_ire_damage );
+      }
+      if ( brightstone )
+      {
+        summon_spell = e.player->find_spell( 452459 );
+        brightstone_spawner.set_creation_callback(
+            [ & ]( player_t* ) { return new brightstone_pet_t( e, this, summon_spell ); } );
+        brightstone_spawner.set_default_duration( summon_spell->duration() );;
       }
 
       background = true;
@@ -2313,10 +2751,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
       {
         silvervein_spawner.spawn();
       }
+      if ( brightstone )
+      {
+        brightstone_spawner.spawn();
+      }
     }
   };
 
-  auto earthen_ire_damage = create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ), true );
+  auto earthen_ire_damage =
+      create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ), true );
 
   earthen_ire_damage->base_dd_min = earthen_ire_damage->base_dd_max = e.driver()->effectN( 10 ).average( e );
 
@@ -2329,6 +2772,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
       create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_damage );
   new dbc_proc_callback_t( e.player, e );
 }
+}  // namespace sigil_of_algari_concordance
 
 // Skarmorak Shard
 // 443407 Main Buff & Driver
@@ -3343,12 +3787,12 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
 
       // We don't want this counted towards our dps
+      // TODO: confirm this can trigger damage taken procs
+      // TODO: confirm this cannot trigger damage done procs
       self_damage->stats->type = stats_e::STATS_NEUTRAL;
-
-      // TODO: determine if self damage procs anything
-      self_damage->callbacks = false;
-      self_damage->target    = player;
-      self_damage_pct        = self_damage->data().effectN( 1 ).percent();
+      self_damage->caster_callbacks = false;
+      self_damage->target = player;
+      self_damage_pct = self_damage->data().effectN( 1 ).percent();
     }
 
     void start_symbiosis()
@@ -4194,6 +4638,12 @@ void candle_confidant( special_effect_t& effect )
     {
       // Currently their auto attacks dont seem to scale with player crit chance.
       return this->player->base.attack_crit_chance;
+    }
+
+    // They made these guys always miss... rather than fixing their AI.
+    double miss_chance( double, player_t* ) const override
+    {
+      return 1.0;
     }
 
     // Pet melee attacks seem to still scale with aura 380 and 531
@@ -5807,7 +6257,7 @@ void geargrinders_remote( special_effect_t& effect )
 // 1218712 extension driver
 void improvised_seaforium_pacemaker( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "maybe_stop_blowing_up" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "maybe_stop_blowing_up", "explosive_adrenaline" } ) )
     return;
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1218713 ) )
@@ -5879,14 +6329,15 @@ void reverb_radio( special_effect_t& effect )
   {
     timespan_t amped_duration;
     double amped_value;
+    double base_value;
     bool amped;
     hyped_buff_t( player_t* p, util::string_view name, const spell_data_t* s, const special_effect_t& e,
                   const item_t* item = nullptr )
       : stat_buff_t( p, name, s, item ), amped_duration( 0_ms ), amped_value( 0 ), amped( false )
     {
       amped_duration = timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() );
-      double value   = e.driver()->effectN( 1 ).average( e );
-      set_stat_from_effect_type( A_MOD_RATING, value );
+      base_value     = e.driver()->effectN( 1 ).average( e );
+      set_stat_from_effect_type( A_MOD_RATING, base_value );
       amped_value = 1.0 + e.driver()->effectN( 2 ).percent();
     }
 
@@ -5900,6 +6351,7 @@ void reverb_radio( special_effect_t& effect )
                              buff_duration() > timespan_t::zero() );
 
           buff_stat.current_value = 0;
+          buff_stat.amount        = base_value;
         }
         amped = false;
         set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -5917,32 +6369,29 @@ void reverb_radio( special_effect_t& effect )
 
     void amp_it_up()
     {
-      trigger( max_stack(), amped_duration );
       amped = true;
-      set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
       for ( auto& buff_stat : stats )
       {
         if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
           continue;
 
-        player->stat_gain( buff_stat.stat, buff_stat_stack_amount( buff_stat, current_stack ), stat_gain, nullptr,
-                           buff_duration() > timespan_t::zero() );
-
         buff_stat.current_value *= amped_value;
+        buff_stat.amount *= amped_value;
       }
+      trigger( max_stack(), amped_duration );
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
     }
 
     void bump( int stacks, double ) override
     {
-      if ( at_max_stacks() && !amped )
+      if ( at_max_stacks( stacks ) && !amped )
       {
         make_event( *sim, 0_ms, [ & ] { expire(); } );
         make_event( *sim, 0_ms, [ & ] { amp_it_up(); } );
         return;
       }
-
-      if ( !at_max_stacks() && !amped )
+      else
         stat_buff_t::bump( stacks );
     }
   };
@@ -6023,6 +6472,9 @@ void mechanocore_amplifier( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
+      for ( const auto& b : buffs )
+        b.second->expire();
+
       if ( rng().roll( 0.5 ) )
         buffs.at( util::highest_stat( listener, secondary_ratings ) )->trigger_high();
       else
@@ -6068,11 +6520,12 @@ void turbodrain_5000( special_effect_t& effect )
 // 471404 Summon Pet spell
 // 233767 Pet NPC ID
 // Pet currently only melee attacks.
+// TODO: Determine if the pet should scale with aura 380 and 531
 void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 {
   struct auto_attack_melee_t : public melee_attack_t
   {
-    auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr )
+    auto_attack_melee_t( pet_t* p, const special_effect_t& e, std::string_view name = "main_hand", action_t* a = nullptr )
       : melee_attack_t( name, p )
     {
       this->background = this->repeating = true;
@@ -6082,8 +6535,9 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
       this->trigger_gcd                 = 0_ms;
       this->school                      = SCHOOL_PHYSICAL;
       this->stats->school               = SCHOOL_PHYSICAL;
-      this->base_dd_min = this->base_dd_max = p->dbc->expected_stat( p->true_level ).creature_auto_attack_dps;
-      this->base_multiplier                 = p->main_hand_weapon.swing_time.total_seconds();
+      this->base_dd_min = this->base_dd_max = a->data().effectN( 1 ).average( e );
+      // Not in data, but the pet deals less damage on tank specs.
+      this->base_multiplier                 = role_mult( e.player );
 
       auto proxy = a;
       auto it    = range::find( proxy->child_action, name, &action_t::name );
@@ -6091,14 +6545,6 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
-    }
-
-    // Pet melee attacks seem to still scale with aura 380 and 531
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = melee_attack_t::composite_da_multiplier( s );
-      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, player->type == PLAYER_GUARDIAN );
-      return m;
     }
 
     double composite_target_multiplier( player_t* p ) const override
@@ -6119,8 +6565,10 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 
   struct blackwater_pirate_pet_t : public unique_gear_pet_t
   {
+    const special_effect_t& effect;
+
     blackwater_pirate_pet_t( const special_effect_t& e, action_t* parent = nullptr )
-      : unique_gear_pet_t( "blackwater_pirate", e, e.player->find_spell( 471404 ) )
+      : unique_gear_pet_t( "blackwater_pirate", e, &parent->data() ), effect( e )
     {
       parent_action               = parent;
       main_hand_weapon.type       = WEAPON_BEAST;
@@ -6128,9 +6576,20 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
       use_auto_attack             = true;
     }
 
+    void update_stats() override
+    {
+      unique_gear_pet_t::update_stats();
+      // TODO: Needs more testing to see if its just haste and attack speed that this no longer scales with. 
+      current_pet_stats.composite_melee_auto_attack_speed = 1.0;
+      current_pet_stats.composite_spell_cast_speed        = 1.0;
+      current_pet_stats.composite_melee_haste             = 1.0;
+      current_pet_stats.composite_spell_haste             = 1.0;
+      adjust_dynamic_cooldowns();
+    }
+
     attack_t* create_auto_attack() override
     {
-      auto a                = new auto_attack_melee_t( this, "main_hand", parent_action );
+      auto a                = new auto_attack_melee_t( this, effect, "main_hand", parent_action );
       a->name_str_reporting = "Melee";
       return a;
     }
@@ -6161,6 +6620,7 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 
   // Name is currently typod in spell data, might need fixed if the data name changes.
   effect.execute_action = create_proc_action<noggenfogger_ultimate_deluxe_t>( "noggenfogger_utimate_deluxe", effect );
+  effect.has_use_damage_override = true;
 }
 
 // Ratfang Toxin
@@ -6344,6 +6804,8 @@ void funhouse_lens( special_effect_t& effect )
     }
   };
 
+  effect.stat = STAT_ANY_DPS;
+  effect.disable_buff();
   effect.execute_action = create_proc_action<funhouse_lens_t>( "funhouse_lens", effect, "funhouse_lens",
                                                                effect.player->find_spell( 1214603 ) );
 }
@@ -6367,15 +6829,19 @@ void suspicious_energy_drink( special_effect_t& effect )
       hp_limit    = e.driver()->effectN( 3 ).base_value();
     }
 
-    void start( int s, double, timespan_t d ) override
+    void start( int s, double v, timespan_t d ) override
     {
-      double value = base_buff_value;
-      if ( player->health_percentage() < hp_limit )
+      for ( auto& s : stats )
       {
-        value += bonus_value;
+        s.amount = base_buff_value;
+        if ( player->health_percentage() < hp_limit ||
+             player->rng().roll( player->thewarwithin_opts.suspicious_energy_drink_bonus_chance ) )
+        {
+          s.amount += bonus_value;
+        }
       }
 
-      stat_buff_t::start( s, value, d );
+      stat_buff_t::start( s, v, d );
     }
   };
 
@@ -6499,64 +6965,34 @@ void flarendos_pilot_light( special_effect_t& effect )
 // 472185 Primary Buff
 void amorphous_relic( special_effect_t& effect )
 {
-  struct amorphous_relic_event_t : public event_t
-  {
-    player_t* player;
-    buff_t* haste_buff;
-    buff_t* crit_buff;
-    timespan_t period;
-    event_t* next_event;
+  buff_t* haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472184 ) )
+                           ->add_stat_from_effect( 2, effect.driver()->effectN( 4 ).average( effect ) )
+                           ->add_stat_from_effect( 3, effect.driver()->effectN( 3 ).average( effect ) )
+                           ->set_cooldown( 0_ms );
 
-    amorphous_relic_event_t( player_t* p, timespan_t time_to_execute, buff_t* haste, buff_t* crit )
-      : event_t( *p, time_to_execute ),
-        player( p ),
-        haste_buff( haste ),
-        crit_buff( crit ),
-        period( 0_ms ),
-        next_event( nullptr )
-    {
-      period = player->find_spell( 472195 )->effectN( 1 ).period();
-    }
+  buff_t* crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472185 ) )
+                          ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect ) )
+                          ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) )
+                          ->set_cooldown( 0_ms );
 
-    const char* name() const override
-    {
-      return "amorphous_relic_event";
-    }
+  buff_t* periodic = create_buff<buff_t>( effect.player, effect.player->find_spell( 472195 ) )
+                         ->set_tick_on_application( true )
+                         ->set_cooldown( 60_s ) // Not in data, but the ticking aura doesnt reapply if re-entering combat before 60s has passed.
+                         ->set_tick_callback( [ haste_buff, crit_buff ]( buff_t* b, int, timespan_t ) {
+                           if ( b->source->in_combat )
+                           {
+                             if ( b->source->rng().roll( 0.5 ) )
+                               haste_buff->trigger();
+                             else
+                               crit_buff->trigger();
+                           }
+                         } );
 
-    void execute() override
-    {
-      if ( next_event == nullptr )
-        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
-      else
-      {
-        // Reset the timer if combat was started again and the event triggered before the next secheduled time.
-        event_t::cancel( next_event );
-        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
-      }
-
-      if ( player->in_combat )
-      {
-        if ( rng().roll( 0.5 ) )
-          haste_buff->trigger();
-        else
-          crit_buff->trigger();
-      }
-    }
-  };
-
-  auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472184 ) )
-                        ->add_stat_from_effect( 2, effect.driver()->effectN( 4 ).average( effect ) )
-                        ->add_stat_from_effect( 3, effect.driver()->effectN( 3 ).average( effect ) );
-
-  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472185 ) )
-                       ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect ) )
-                       ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) );
-
-  effect.player->register_on_combat_state_callback( [ haste_buff, crit_buff ]( player_t* p, bool c ) {
-    if ( c )
-    {
-      make_event<amorphous_relic_event_t>( *p->sim, p, 0_ms, haste_buff, crit_buff );
-    }
+  effect.player->register_on_combat_state_callback( [ periodic ]( player_t* p, bool c ) {
+    if ( !c )
+      periodic->expire();
+    else
+      periodic->trigger();
   } );
 }
 
@@ -6609,12 +7045,12 @@ void zees_thug_hotline( special_effect_t& effect )
       this->background = this->repeating = true;
       this->not_a_proc = this->may_crit = true;
       this->special                     = false;
-      this->weapon_multiplier           = 1.0;
+      this->weapon_multiplier           = 0.7;
       this->trigger_gcd                 = 0_ms;
       this->school                      = SCHOOL_PHYSICAL;
       this->stats->school               = SCHOOL_PHYSICAL;
       this->base_multiplier = p->main_hand_weapon.swing_time.total_seconds();
-      this->base_dd_min = this->base_dd_max = e->driver()->effectN( 5 ).average( *e ) * 0.375;
+      this->base_dd_min = this->base_dd_max = e->driver()->effectN( 5 ).average( *e );
 
       auto proxy = a;
       auto it    = range::find( proxy->child_action, name, &action_t::name );
@@ -6664,10 +7100,7 @@ void zees_thug_hotline( special_effect_t& effect )
       parse_options( options_str );
 
       base_multiplier = role_mult( e );
-
-      // Not 100% confident this is correct. Just what it appeared to be at a glance.
-      cooldown->duration = 4_s;
-      cooldown->hasted = true;
+      cooldown->duration = 3.4_s;
     }
   };
 
@@ -6921,7 +7354,8 @@ void tome_of_lights_devotion( special_effect_t& effect )
     return;
 
   // Setup double value buff
-  auto radiance_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 443534 ) );
+  auto radiance_buff = create_buff<buff_t>( effect.player, "radiance_tome", effect.player->find_spell( 443534 ) )
+    ->set_name_reporting( "radiance" );
 
   struct inner_resilience_cb_t : public dbc_proc_callback_t
   {
@@ -7890,7 +8324,7 @@ void force_of_magma( special_effect_t& effect )
 void vile_contamination( special_effect_t& effect )
 {
   auto dot     = create_proc_action<generic_proc_t>( "vile_contamination", effect, effect.trigger() );
-  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_td += effect.driver()->effectN( 1 ).average( effect );
   // Setting a reasonably high non 0 duration so the DoT works as expected. Data contains no duration resulting in it
   // never applying.
   dot->dot_duration = 300_s;
@@ -8615,15 +9049,24 @@ void woven_dusk( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
                   ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
-  // Something *VERY* weird is going on here. It appears to work properly for Discipline Priest, but not Shadow.
-  if ( effect.player->specialization() == PRIEST_DISCIPLINE )
-  {
-    buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
-  }
+  // The buff has RPPM in spell data, but this is not used when it triggers from the driver.
+  buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
 
   effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  if ( effect.player->bugs )
+  {
+    // If the player is casting a spell, the buff does not seem to be applied.
+    effect.player->callbacks.register_callback_execute_function( effect.spell_id,
+      [ buff ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* )
+    {
+      if ( !cb->listener->executing )
+        buff->trigger();
+    } );
+  }
 }
 
 // Woven Dawn
@@ -8638,6 +9081,7 @@ void woven_dawn( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457627 ) )
                   ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
+  // The buff has RPPM in spell data, but this is not used when it triggers from the driver.
   buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
 
   effect.custom_buff = buff;
@@ -9938,7 +10382,12 @@ void register_special_effects()
   register_special_effect( 435500, enchants::culminating_blasphemite );
   register_special_effect( 435488, enchants::insightful_blasphemite );
   register_special_effect( { 457615, 457616, 457617 }, enchants::daybreak_spellthread );
-
+  register_special_effect( { 1225042, 1225045 }, enchants::twilight_devastation );
+  register_special_effect( { 1225878, 1225880 }, enchants::echoing_void );
+  register_special_effect( { 1227295, 1227297 }, enchants::twisted_appendage );
+  register_special_effect( { 1227312, 1227314 }, enchants::void_ritual );
+  register_special_effect( { 1227289, 1227291 }, enchants::gushing_wound );
+  register_special_effect( { 1227210, 1227211 }, enchants::infinite_stars );
 
   // Embellishments & Tinkers
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
@@ -9970,7 +10419,7 @@ void register_special_effects()
   register_special_effect( 446209, DISABLED_EFFECT );  // treacherous transmitter
   register_special_effect( 443124, items::mad_queens_mandate );
   register_special_effect( 443128, DISABLED_EFFECT );  // mad queen's mandate
-  register_special_effect( 443378, items::sigil_of_algari_concordance );
+  register_special_effect( 443378, items::sigil_of_algari_concordance::sigil_of_algari_concordance );
   register_special_effect( 443407, items::skarmorak_shard );
   register_special_effect( 443409, DISABLED_EFFECT );  // skarmorak's shard
   register_special_effect( 443537, items::void_pactstone );

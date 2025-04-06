@@ -22,9 +22,9 @@ actions.precombat+=/variable,name=first_tyrant_time,op=sub,value=action.summon_d
 actions.precombat+=/variable,name=first_tyrant_time,op=min,value=10
 actions.precombat+=/variable,name=in_opener,op=set,value=1
 # Defines if the the Trinket 1 is a buff Trinket in the trinket logic
-actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens
 # Defines if the the Trinket 2 is a buff Trinket in the trinket logic
-actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens
 # For On Use Trinkets on slot 1 with on use effects you dont want to use in combat
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell
 # For On Use Trinkets on slot 2 with on use effects you dont want to use in combat
@@ -34,9 +34,9 @@ actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.spymasters
 # Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.imperfect_ascendancy_serum
 # Defines the Duration of the buff or an expected time for value of the trinket
-actions.precombat+=/variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)
+actions.precombat+=/variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.funhouse_lens*15)+(trinket.1.is.signet_of_the_priory*20)
 # Defines the Duration of the buff or an expected time for value of the trinket
-actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)
+actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.funhouse_lens*15)+(trinket.2.is.signet_of_the_priory*20)
 # Trinket Automatic Logic for Trinket 1
 actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)
 # Trinket Automatic Logic for Trinket 2
@@ -96,7 +96,7 @@ actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs
 actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)
 actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)
 actions.items+=/use_item,use_off_gcd=1,name=spymasters_web,if=pet.demonic_tyrant.active&fight_remains<=80&buff.spymasters_report.stack>=30&(!variable.trinket_1_buffs&trinket.2.is.spymasters_web|!variable.trinket_2_buffs&trinket.1.is.spymasters_web)|fight_remains<=20&(trinket.1.cooldown.remains&trinket.2.is.spymasters_web|trinket.2.cooldown.remains&trinket.1.is.spymasters_web|!variable.trinket_1_buffs|!variable.trinket_2_buffs)
-actions.items+=/use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active&gcd.remains>0|fight_remains<=30
+actions.items+=/use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active|fight_remains<=30
 actions.items+=/use_item,name=mirror_of_fractured_tomorrows,if=trinket.1.is.mirror_of_fractured_tomorrows&variable.trinket_priority=2|trinket.2.is.mirror_of_fractured_tomorrows&variable.trinket_priority=1
 actions.items+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)
 actions.items+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)

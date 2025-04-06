@@ -143,6 +143,9 @@ static constexpr std::array<class_passives_entry_t, 51> _class_passives { {
 
 } // ANONYMOUS namespace ====================================================
 
+wowv_t wowv( bool ptr )
+{ return dbc::client_data_version( ptr ); }
+
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
 { (void)ptr; return SC_BETA_STR "-BETA"; }

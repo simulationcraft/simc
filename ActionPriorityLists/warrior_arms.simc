@@ -49,15 +49,14 @@ actions.colossus_aoe+=/thunder_clap,if=!dot.rend.remains
 actions.colossus_aoe+=/thunderous_roar
 actions.colossus_aoe+=/avatar
 actions.colossus_aoe+=/sweeping_strikes
-actions.colossus_aoe+=/ravager
 actions.colossus_aoe+=/warbreaker
+actions.colossus_aoe+=/ravager
 actions.colossus_aoe+=/champions_spear
 actions.colossus_aoe+=/colossus_smash
 actions.colossus_aoe+=/cleave
 actions.colossus_aoe+=/bladestorm,if=talent.unhinged|talent.merciless_bonegrinder
 actions.colossus_aoe+=/thunder_clap,if=dot.rend.remains<5
 actions.colossus_aoe+=/demolish,if=buff.colossal_might.stack=10&(debuff.colossus_smash.remains>=2|cooldown.colossus_smash.remains>=7)
-actions.colossus_aoe+=/overpower,if=talent.dreadnaught
 actions.colossus_aoe+=/mortal_strike
 actions.colossus_aoe+=/overpower
 actions.colossus_aoe+=/thunder_clap
@@ -77,7 +76,7 @@ actions.colossus_execute+=/warbreaker
 actions.colossus_execute+=/execute,if=buff.juggernaut.remains<=gcd&talent.juggernaut
 actions.colossus_execute+=/skullsplitter,if=rage<40
 actions.colossus_execute+=/demolish,if=debuff.colossus_smash.up
-actions.colossus_execute+=/mortal_strike,if=debuff.executioners_precision.stack=2&!dot.ravager.remains|!talent.executioners_precision|talent.battlelord&debuff.executioners_precision.stack>0
+actions.colossus_execute+=/mortal_strike,if=debuff.executioners_precision.stack=2&!buff.ravager.up|!talent.executioners_precision|talent.battlelord&debuff.executioners_precision.stack>0
 actions.colossus_execute+=/overpower,if=rage<90
 actions.colossus_execute+=/execute,if=rage>=40&talent.executioners_precision
 actions.colossus_execute+=/overpower
@@ -85,7 +84,6 @@ actions.colossus_execute+=/bladestorm
 actions.colossus_execute+=/execute
 
 actions.colossus_st=rend,if=dot.rend.remains<=gcd
-actions.colossus_st+=/sweeping_strikes
 actions.colossus_st+=/thunderous_roar
 actions.colossus_st+=/ravager,if=cooldown.colossus_smash.remains<=gcd
 actions.colossus_st+=/champions_spear
@@ -120,6 +118,7 @@ actions.colossus_sweep+=/rend,if=dot.rend.remains<=5
 actions.colossus_sweep+=/slam
 
 actions.slayer_aoe=thunder_clap,if=!dot.rend.remains
+actions.slayer_aoe+=/sweeping_strikes
 actions.slayer_aoe+=/thunderous_roar
 actions.slayer_aoe+=/avatar
 actions.slayer_aoe+=/champions_spear
@@ -155,7 +154,7 @@ actions.slayer_execute+=/execute,if=buff.juggernaut.remains<=gcd*2&talent.jugger
 actions.slayer_execute+=/bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision
 actions.slayer_execute+=/skullsplitter,if=rage<=40
 actions.slayer_execute+=/overpower,if=buff.martial_prowess.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)
-actions.slayer_execute+=/mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!dot.ravager.remains
+actions.slayer_execute+=/mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up
 actions.slayer_execute+=/overpower,if=rage<=40&buff.martial_prowess.stack<2&talent.fierce_followthrough
 actions.slayer_execute+=/execute
 actions.slayer_execute+=/overpower

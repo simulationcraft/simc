@@ -52,6 +52,8 @@ void shadow( player_t* p )
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
@@ -61,8 +63,8 @@ void shadow( player_t* p )
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)" );
-  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice&(!set_bonus.tier31_4pc|spell_targets.shadow_crash>1)" );
-  precombat->add_action( "vampiric_touch,if=!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|fight_style.dungeonslice|set_bonus.tier31_4pc&spell_targets.shadow_crash=1" );
+  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice" );
+  precombat->add_action( "vampiric_touch,if=!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|fight_style.dungeonslice" );
 
   default_->add_action( "variable,name=holding_crash,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up" );
@@ -88,7 +90,7 @@ void shadow( player_t* p )
   cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up|set_bonus.tww2_4pc)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
-  cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)&(cooldown.invoke_power_infusion_0.remains>=10|!set_bonus.tier31_4pc|cooldown.invoke_power_infusion_0.duration=0)", "Sync Power Infusion with Voidform or Dark Ascension" );
+  cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
   cds->add_action( "halo,if=talent.power_surge&(pet.fiend.active&cooldown.fiend.remains>=4&talent.mindbender|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment|!talent.dark_ascension)&(cooldown.mind_blast.charges=0|!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
   cds->add_action( "void_eruption,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting" );
   cds->add_action( "dark_ascension,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(active_dot.devouring_plague>=1|insanity>=(15+5*!talent.minds_eye+5*talent.distorted_reality-pet.fiend.active*6))" );
@@ -102,7 +104,7 @@ void shadow( player_t* p )
   filler->add_action( "power_word_shield,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.crystalline_reflection", "Use PWS with CR talented to trigger TOF if there are no better alternatives available to do this as we still get insanity for a PWS cast." );
   filler->add_action( "call_action_list,name=empowered_filler", "Consume empowered fillers" );
   filler->add_action( "vampiric_touch,target_if=min:remains,if=talent.unfurling_darkness&buff.unfurling_darkness_cd.remains<execute_time&talent.inner_quietus", "Cast Vampiric Touch to proc Unfurling Darkness" );
-  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
+  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|buff.deathspeaker.up&dot.devouring_plague.ticking" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=bugs&buff.voidform.up&cooldown.void_bolt.remains<=gcd.max*1.65738,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.remains>=gcd.max&gcd.remains<=0,interrupt_global=1", "Its literally a random number over 1.5 but less than 2" );
   filler->add_action( "devouring_plague,if=talent.empowered_surges&buff.surge_of_insanity.up|buff.voidform.up&talent.void_eruption" );
@@ -115,11 +117,10 @@ void shadow( player_t* p )
   filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   filler->add_action( "divine_star" );
-  filler->add_action( "shadow_crash,if=raid_event.adds.in>20&!set_bonus.tier31_4pc", "Use Shadow Crash while moving as a low-priority action when adds will not come in 20 seconds." );
+  filler->add_action( "shadow_crash,if=raid_event.adds.in>20", "Use Shadow Crash while moving as a low-priority action when adds will not spawn in 20 seconds." );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
   filler->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "shadow_word_pain,target_if=max:dot.devouring_plague.remains,if=set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action with T31 4pc" );
-  filler->add_action( "shadow_word_pain,target_if=min:remains,if=!set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action without T31 4pc" );
+  filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
   heal_for_tof->add_action( "divine_star", "Use Divine Star to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
@@ -146,7 +147,7 @@ void shadow( player_t* p )
   main->add_action( "devouring_plague,if=fight_remains<=duration+4", "Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s" );
   main->add_action( "devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=insanity.deficit<=35&talent.distorted_reality|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)&talent.mind_devourer|buff.entropic_rift.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 35 With Distorted Reality can maintain more than one at a time in multi-target." );
   main->add_action( "void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift&cooldown.mind_blast.full_recharge_time>=2,target_if=dot.devouring_plague.remains>=2.5", "Use Void Torrent if it will get near full Mastery Value and you have Cthun and Void Eruption. Prune this action for Entropic Rift Builds." );
-  main->add_action( "shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
+  main->add_action( "shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash&(!talent.unfurling_darkness|spell_targets.shadow_crash>1)", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
   main->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness_cd.remains<execute_time&talent.unfurling_darkness&!buff.dark_ascension.up&talent.inner_quietus&active_dot.vampiric_touch<=5", "Acquire UFD" );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
   main->add_action( "mind_blast,target_if=max:dot.devouring_plague.remains,if=(!buff.mind_devourer.up|!talent.mind_devourer|cooldown.void_eruption.up&talent.void_eruption)&!variable.pooling_mindblasts", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
@@ -155,11 +156,11 @@ void shadow( player_t* p )
 
   trinkets->add_action( "use_item,use_off_gcd=1,name=hyperthread_wristwraps,if=talent.void_blast&hyperthread_wristwraps.void_blast.count>=2&!cooldown.mind_blast.up|!talent.void_blast&((hyperthread_wristwraps.void_bolt.count>=1|!talent.void_eruption)&hyperthread_wristwraps.void_torrent.count>=1)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
-  trinkets->add_action( "use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)" );
+  trinkets->add_action( "use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up|variable.trinket_1_buffs|variable.trinket_2_buffs)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=flarendos_pilot_light,if=gcd.remains>0&(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up)|fight_remains<20" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=geargrinders_spare_keys,if=gcd.remains>0" );
   trinkets->add_action( "use_item,name=spymasters_web,if=(buff.power_infusion.remains>=10&buff.spymasters_report.stack>=36&fight_remains>240)&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|((buff.power_infusion.remains>=10&buff.bloodlust.up&buff.spymasters_report.stack>=10)|buff.power_infusion.remains>=10&(fight_remains<120))&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
-  trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
+  trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_apl_end
 //shadow_ptr_apl_start
@@ -178,6 +179,8 @@ void shadow_ptr( player_t* p )
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
@@ -187,8 +190,8 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)" );
-  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice&(!set_bonus.tier31_4pc|spell_targets.shadow_crash>1)" );
-  precombat->add_action( "vampiric_touch,if=!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|fight_style.dungeonslice|set_bonus.tier31_4pc&spell_targets.shadow_crash=1" );
+  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice" );
+  precombat->add_action( "vampiric_touch,if=!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|fight_style.dungeonslice" );
 
   default_->add_action( "variable,name=holding_crash,op=set,value=raid_event.adds.in<15" );
   default_->add_action( "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up" );
@@ -214,7 +217,7 @@ void shadow_ptr( player_t* p )
   cds->add_action( "cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up|set_bonus.tww2_4pc)&!buff.power_infusion.up" );
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
-  cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)&(cooldown.invoke_power_infusion_0.remains>=10|!set_bonus.tier31_4pc|cooldown.invoke_power_infusion_0.duration=0)", "Sync Power Infusion with Voidform or Dark Ascension" );
+  cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)", "Sync Power Infusion with Voidform or Dark Ascension" );
   cds->add_action( "halo,if=talent.power_surge&(pet.fiend.active&cooldown.fiend.remains>=4&talent.mindbender|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment|!talent.dark_ascension)&(cooldown.mind_blast.charges=0|!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
   cds->add_action( "void_eruption,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting" );
   cds->add_action( "dark_ascension,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(active_dot.devouring_plague>=1|insanity>=(15+5*!talent.minds_eye+5*talent.distorted_reality-pet.fiend.active*6))" );
@@ -228,7 +231,7 @@ void shadow_ptr( player_t* p )
   filler->add_action( "power_word_shield,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.crystalline_reflection", "Use PWS with CR talented to trigger TOF if there are no better alternatives available to do this as we still get insanity for a PWS cast." );
   filler->add_action( "call_action_list,name=empowered_filler", "Consume empowered fillers" );
   filler->add_action( "vampiric_touch,target_if=min:remains,if=talent.unfurling_darkness&buff.unfurling_darkness_cd.remains<execute_time&talent.inner_quietus", "Cast Vampiric Touch to proc Unfurling Darkness" );
-  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking" );
+  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|buff.deathspeaker.up&dot.devouring_plague.ticking" );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=bugs&buff.voidform.up&cooldown.void_bolt.remains<=gcd.max*1.65738,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.remains>=gcd.max&gcd.remains<=0,interrupt_global=1", "Its literally a random number over 1.5 but less than 2" );
   filler->add_action( "devouring_plague,if=talent.empowered_surges&buff.surge_of_insanity.up|buff.voidform.up&talent.void_eruption" );
@@ -241,11 +244,10 @@ void shadow_ptr( player_t* p )
   filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
   filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   filler->add_action( "divine_star" );
-  filler->add_action( "shadow_crash,if=raid_event.adds.in>20&!set_bonus.tier31_4pc", "Use Shadow Crash while moving as a low-priority action when adds will not come in 20 seconds." );
+  filler->add_action( "shadow_crash,if=raid_event.adds.in>20", "Use Shadow Crash while moving as a low-priority action when adds will not spawn in 20 seconds." );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
   filler->add_action( "shadow_word_death,target_if=max:dot.devouring_plague.remains", "Use Shadow Word: Death while moving as a low-priority action" );
-  filler->add_action( "shadow_word_pain,target_if=max:dot.devouring_plague.remains,if=set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action with T31 4pc" );
-  filler->add_action( "shadow_word_pain,target_if=min:remains,if=!set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action without T31 4pc" );
+  filler->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
   heal_for_tof->add_action( "divine_star", "Use Divine Star to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
@@ -272,7 +274,7 @@ void shadow_ptr( player_t* p )
   main->add_action( "devouring_plague,if=fight_remains<=duration+4", "Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s" );
   main->add_action( "devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=insanity.deficit<=35&talent.distorted_reality|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)&talent.mind_devourer|buff.entropic_rift.up", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 35 With Distorted Reality can maintain more than one at a time in multi-target." );
   main->add_action( "void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift&cooldown.mind_blast.full_recharge_time>=2,target_if=dot.devouring_plague.remains>=2.5", "Use Void Torrent if it will get near full Mastery Value and you have Cthun and Void Eruption. Prune this action for Entropic Rift Builds." );
-  main->add_action( "shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
+  main->add_action( "shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash&(!talent.unfurling_darkness|spell_targets.shadow_crash>1)", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
   main->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness_cd.remains<execute_time&talent.unfurling_darkness&!buff.dark_ascension.up&talent.inner_quietus&active_dot.vampiric_touch<=5", "Acquire UFD" );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
   main->add_action( "mind_blast,target_if=max:dot.devouring_plague.remains,if=(!buff.mind_devourer.up|!talent.mind_devourer|cooldown.void_eruption.up&talent.void_eruption)&!variable.pooling_mindblasts", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
@@ -281,11 +283,11 @@ void shadow_ptr( player_t* p )
 
   trinkets->add_action( "use_item,use_off_gcd=1,name=hyperthread_wristwraps,if=talent.void_blast&hyperthread_wristwraps.void_blast.count>=2&!cooldown.mind_blast.up|!talent.void_blast&((hyperthread_wristwraps.void_bolt.count>=1|!talent.void_eruption)&hyperthread_wristwraps.void_torrent.count>=1)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
-  trinkets->add_action( "use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)" );
+  trinkets->add_action( "use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up|variable.trinket_1_buffs|variable.trinket_2_buffs)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=flarendos_pilot_light,if=gcd.remains>0&(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up)|fight_remains<20" );
   trinkets->add_action( "use_item,use_off_gcd=1,name=geargrinders_spare_keys,if=gcd.remains>0" );
   trinkets->add_action( "use_item,name=spymasters_web,if=(buff.power_infusion.remains>=10&buff.spymasters_report.stack>=36&fight_remains>240)&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|((buff.power_infusion.remains>=10&buff.bloodlust.up&buff.spymasters_report.stack>=10)|buff.power_infusion.remains>=10&(fight_remains<120))&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
-  trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
+  trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_ptr_apl_end
 //discipline_apl_start

@@ -1,16 +1,16 @@
-shaman="TWW2_Shaman_Enhancement_Totemic"
+shaman="PR_Shaman_Enhancement_Stormbringer"
 source=default
 spec=enhancement
 level=80
-race=maghar_orc
+race=orc
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzMWGAAAAAAAAAAgFYBmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZGDzMzMYbmx2AAAAAAAAAAwGgFzYYjsAzwQDWAwsMZGYZZmZmZYmZGGLzMT2YZYYGAgBA
 
 # Default consumables
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=feast_of_the_divine_day
+food=chippy_tea
 augmentation=crystallized
 temporary_enchant=disabled
 
@@ -325,32 +325,29 @@ actions.single_totemic_open+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
 actions.single_totemic_open+=/stormstrike
 actions.single_totemic_open+=/lava_lash
 
-head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
-neck=gobfathers_gifted_bling,id=228842,ilevel=678,gem_id=213491/213491
-shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,ilevel=675,crafted_stats=49/36
-chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant=crystalline_radiance_3
-wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant=chant_of_armored_avoidance_3
-hands=gale_sovereigns_grasps,id=229263,ilevel=678
-waist=gale_sovereigns_ritual_belt,id=229259,ilevel=678,gem_id=213491
-legs=gale_sovereigns_pantaloons,id=229261,ilevel=678,enchant=stormbound_armor_kit_3
-feet=dubious_tablerunners,id=228883,ilevel=678,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant=radiant_mastery_3
-trinket1=house_of_cards,id=230027,ilevel=678
-trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
+head=cryptbound_headpiece,id=221156,ilevel=593
+neck=emergency_stop_keychain,id=221077,ilevel=593
+shoulders=wintersnap_shoulderguards,id=178695,ilevel=593
+back=anvilhide_cape,id=221088,ilevel=593
+chest=goliaths_chitinous_chainmail,id=221147,ilevel=593,enchant=crystalline_radiance_2
+wrists=hiveswarm_bracers,id=178703,ilevel=593
+hands=claws_of_tainted_ichor,id=221162,ilevel=593
+waist=reinforced_antiintruder_chainmail,id=221075,ilevel=593
+legs=entwined_chimeric_legguards,id=221186,ilevel=593,enchant=stormbound_armor_kit_2
+feet=silksteel_striders,id=221152,ilevel=593
+finger1=circle_of_bone,id=133299,ilevel=593,enchant=radiant_haste_2
+finger2=stitchfleshs_misplaced_signet,id=178736,ilevel=593,enchant=radiant_haste_2
+trinket1=arakara_sacbrood,id=219314,ilevel=593
+trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
+main_hand=eirichs_fist_of_deception,id=221090,ilevel=593,enchant=authority_of_the_depths_2
+off_hand=bainbridges_blackjack,id=159648,ilevel=593,enchant=authority_of_the_depths_2
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_agility=51224
-# gear_stamina=392511
-# gear_crit_rating=5308
-# gear_haste_rating=17642
-# gear_mastery_rating=21563
-# gear_versatility_rating=2055
-# gear_avoidance_rating=1090
-# gear_armor=49063
-# set_bonus=thewarwithin_season_2_2pc=1
-# set_bonus=thewarwithin_season_2_4pc=1
+# gear_ilvl=593.00
+# gear_agility=23854
+# gear_stamina=124235
+# gear_crit_rating=298
+# gear_haste_rating=14502
+# gear_mastery_rating=8200
+# gear_versatility_rating=4228
+# gear_armor=29302

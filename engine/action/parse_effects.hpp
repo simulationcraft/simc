@@ -20,10 +20,12 @@ enum parse_flag_e : uint16_t
   ALLOW_ZERO        = 0x0008,
   EXPIRE_BUFF       = 0x0010,
   DECREMENT_BUFF    = 0x0020,
+  ROUND_VALUE       = 0x0040,  // uses std::round (round to nearest integer, round half away from zero)
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
-  MANUAL_ENTRY      = 0x0400
+  MANUAL_ENTRY      = 0x0400,
+  VALUE_FUNCTION    = 0x0800
 };
 
 enum parse_callback_e
@@ -364,6 +366,7 @@ struct parse_base_t
                         is_detected_v<detect_value_func, U> )
     {
       pack.data.value_func = std::move( mod );
+      pack.data.type |= VALUE_FUNCTION;
     }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
@@ -391,6 +394,12 @@ struct parse_base_t
         if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( pack.data.type & VALUE_OVERRIDE ) )
         {
           pack.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+          pack.data.type |= mod;
+          return;
+        }
+
+        if ( mod == ROUND_VALUE )
+        {
           pack.data.type |= mod;
           return;
         }
@@ -816,7 +825,10 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> da_multiplier_effects;
   std::vector<player_effect_t> execute_time_effects;
   std::vector<player_effect_t> flat_execute_time_effects;
+  // TODO: currently gcd is NOT split into flat vs percent effects via parsed_value_t, and only percent multipliers are
+  // parsed. If flat gcd effects become more prevalent, they may need to be added to parsing.
   std::vector<player_effect_t> gcd_effects;
+  // std::vector<player_effect_t> flat_gcd_effects;
   std::vector<player_effect_t> dot_duration_effects;
   std::vector<player_effect_t> flat_dot_duration_effects;
   std::vector<player_effect_t> tick_time_effects;
@@ -1096,7 +1108,7 @@ public:
     for ( const auto& i : gcd_effects )
       g *= 1.0 + get_effect_value( i );
 
-    return std::max( BASE::min_gcd, g );
+    return g <= 0_ms ? 0_ms : std::max( BASE::min_gcd, g );
   }
 
   double tick_time_pct_multiplier( const action_state_t* s ) const override

@@ -347,6 +347,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    caster_callbacks( true ),
+    target_callbacks( true ),
     suppress_caster_procs(),
     suppress_target_procs(),
     enable_proc_from_suppressed(),
@@ -608,11 +610,7 @@ bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
  */
 void action_t::parse_spell_data( const spell_data_t& spell_data )
 {
-  if ( !spell_data.ok() )
-  {
-    sim->errorf( "%s %s: parse_spell_data: no spell to parse.\n", player->name(), name() );
-    return;
-  }
+  assert( spell_data.ok() && "parse_spell_data: no spell to parse" );
 
   id                = spell_data.id();
   base_execute_time = spell_data.cast_time();
@@ -621,6 +619,10 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   min_travel_time   = spell_data.missile_min_duration();
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
+
+  // generic (type==none) and spells (type==magic) have hasted gcd by default
+  if ( spell_data.dmg_class() == SPELL_TYPE_NONE || spell_data.dmg_class() == SPELL_TYPE_MAGIC )
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
   // parse attributes
   suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
@@ -1848,7 +1850,7 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    if ( callbacks )
+    if ( callbacks && caster_callbacks )
     {
       // Proc generic abilities on execute.
       proc_types pt;
@@ -2318,12 +2320,19 @@ bool action_t::select_target()
 {
   if ( target_if_mode != TARGET_IF_NONE )
   {
+    // Reset target for cases where we desire to check player target (priority target, highest health pull mob etc.)
+    // first in first mode or fall back to it in min or max mode if no other target is preferred.
+    player_t* action_target = target;
+    target = target->is_enemy() ? player->target : player;
+    if ( action_target != target )
+      sim->print_debug( "{} reset action target to player target for {}; player target: {} - action target: {}", *player, *this, *target, *action_target );
+
     player_t* potential_target = select_target_if_target();
     if ( potential_target )
     {
       // If the target changes, we need to regenerate the target cache to get the new primary target
       // as the first element of target_list. Only do this for abilities that are aoe.
-      if ( is_aoe() && potential_target != target )
+      if ( is_aoe() && ( potential_target != target || action_target != potential_target ) )
       {
         target_cache.is_valid = false;
       }
@@ -2336,7 +2345,12 @@ bool action_t::select_target()
       target = potential_target;
     }
     else
+    {
+      if ( is_aoe() && target != action_target )
+        target_cache.is_valid = false;
+
       return false;
+    }
   }
 
   if ( option.cycle_targets && sim->target_non_sleeping_list.size() > 1 )
@@ -5703,8 +5717,20 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
     switch ( effect.subtype() )
     {
       case A_HASTED_GCD:
-        gcd_type = gcd_haste_type::ATTACK_HASTE;
-        sim->print_debug( "{} gcd type set to attack_haste", *this );
+        switch ( data().dmg_class() )
+        {
+          case SPELL_TYPE_NONE:
+          case SPELL_TYPE_MAGIC:
+            gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
+            sim->print_debug( "{} gcd type set to spell_cast_speed", *this );
+            break;
+          case SPELL_TYPE_MELEE:
+          case SPELL_TYPE_RANGED:
+            gcd_type = gcd_haste_type::ATTACK_HASTE;
+            sim->print_debug( "{} gcd type set to attack_haste", *this );
+            break;
+          default: break;
+        }
         value_ = 1;
         break;
 
