@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60008 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60067 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -142689,7 +142689,7 @@ Category Cooldown: 20 seconds
 Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=774162)   : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 6861.514 (coefficient=1.792) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6861.514 (coefficient=1.792) | PvP Coefficient: 0.1 | Stat: Int | Target: Self (1)
 #2 (id=774163)   : School Damage (2): nature | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 100374.1 (coefficient=26.2144) | Target: Self (1)
 Description      : Zap yourself for $s2 Nature damage, gaining $s1 Intellect for $d.
@@ -153627,6 +153627,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153645,6 +153646,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153663,6 +153665,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 10 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153679,6 +153682,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -153697,6 +153701,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 47
 Duration         : 19 seconds
+Labels           : 4925
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -260212,6 +260217,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36815 | Radius: 0 - 3 yards | Target: At Self (18) -> Unknown(78)
 Description      : $@spelldesc1225074
 
+Name             : Twilight Devastation (id=1225040) 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : Do Not Sheath (18), Do Not Display Range (126), Treat as Area Effect (175), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=1214028)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
+Description      : $@spelldesc1225074
+
 Name             : Twilight Devastation (id=1225042) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -260783,6 +260798,22 @@ Effects          :
 #1 (id=1217636)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 241436 | Misc Value 2: 0x12c7 | Radius: 3 yards | Target: At Radius (73)
 Description      : $@spelldesc1227294
+
+Name             : Mind Flay (id=1227303) 
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 10 seconds
+Cooldown         : 1 seconds
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No Caster Aura Icon (187), Do Not Consume Resources (197), Show Mechanic as Combat Text (213), Taps immediately (215), Ignore Caster Damage Modifiers (221), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
+Effects          :
+#1 (id=1217638)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
+#2 (id=1217639)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d.
+Tooltip          : Taking Shadow damage every $t1 sec.
 
 Name             : Greater Rune of the Void Ritual (id=1227311) 
 School           : Physical

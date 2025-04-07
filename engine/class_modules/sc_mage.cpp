@@ -4819,17 +4819,22 @@ struct flamestrike_t final : public hot_streak_spell_t
     // TODO: description indicates it should consume all stacks, but currently only consumes 1
     p()->buffs.majesty_of_the_phoenix->decrement();
 
-    if ( p()->buffs.combustion->check() )
+    if ( p()->buffs.combustion->check() && p()->talents.unleashed_inferno.ok() )
     {
       double max_targets = p()->talents.unleashed_inferno->effectN( 3 ).base_value();
+      assert( max_targets > 0.0 );
       p()->cooldowns.combustion->adjust( -p()->talents.unleashed_inferno->effectN( 2 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 ) );
     }
 
-    double max_targets = p()->talents.kindling->effectN( 2 ).base_value();
-    timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 );
-    p()->cooldowns.combustion->adjust( -amount );
-    if ( !p()->buffs.combustion->check() )
-      p()->expression_support.kindling_reduction += amount;
+    if ( p()->talents.kindling.ok() )
+    {
+      double max_targets = p()->talents.kindling->effectN( 2 ).base_value();
+      assert( max_targets > 0.0 );
+      timespan_t amount = p()->talents.kindling->effectN( 1 ).time_value() * std::min( num_targets_crit / max_targets, 1.0 );
+      p()->cooldowns.combustion->adjust( -amount );
+      if ( !p()->buffs.combustion->check() )
+        p()->expression_support.kindling_reduction += amount;
+    }
 
     if ( hit_any_target )
       handle_hot_streak( execute_state->crit_chance, p()->spec.fuel_the_fire->ok() ? HS_CUSTOM : HS_HIT );

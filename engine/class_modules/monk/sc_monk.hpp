@@ -1004,6 +1004,7 @@ public:
       player_talent_t dragonfire_brew;
       const spell_data_t *dragonfire_brew_hit;
       player_talent_t charred_passions;
+      const spell_data_t *charred_passions_damage;
       player_talent_t high_tolerance;
       player_talent_t exploding_keg;
       player_talent_t improved_invoke_niuzao_the_black_ox;

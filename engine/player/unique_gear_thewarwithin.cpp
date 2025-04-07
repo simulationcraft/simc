@@ -551,6 +551,292 @@ void daybreak_spellthread( special_effect_t& effect )
   effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
 }
 
+// Rune of Twilight Devastation
+// 1225038 Driver
+// 1225040 Damage
+// 1225042 Value Spell/Default Driver - Lesser
+// 1225045 Value Spell/Default Driver - Greater
+// 1225074 Role Mult Spell - Lesser
+// 1233223 Role Mult Spell - Greater
+void twilight_devastation( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct twilight_devastation_t : public generic_proc_t
+  {
+    double current_mult;
+    twilight_devastation_t( const special_effect_t& e )
+      : generic_proc_t( e, "twilight_devastation", e.player->find_spell( 1225040 ) ), current_mult( 1.0 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.player );
+      base_multiplier *= role_mult( e.player, e.player->find_spell( 1233223 ) );
+      aoe = 10;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( s );
+
+      m *= current_mult;
+
+      return m;
+    }
+
+    void execute() override
+    {
+      current_mult = 1.0;
+      generic_proc_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( ( s->chain_target + 1 ) % 2 == 0 && s->chain_target <= 7 )
+        current_mult *= 0.5;
+
+      generic_proc_t::impact( s );
+    }
+  };
+
+  auto damage = create_proc_action<twilight_devastation_t>( "twilight_devastation", effect );
+
+  effect.execute_action = damage;
+  effect.spell_id       = effect.player->find_spell( 1225038 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Echoing Void
+// 1225883 Driver
+// 1225889 Damage
+// 1225886 Stacking Buff
+// 1225887 Periodic Buff
+// 1225878 Value Spell/Default Driver - Lesser
+// 1225880 Value Spell/Default Driver - Greater
+// 1233355 Role Mult Spell - Lesser
+// 1225873 Role Mult Spell - Greater
+// TODO: Check the chance to trigger void collapse is correct.
+void echoing_void( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto damage = create_proc_action<generic_aoe_proc_t>( "echoing_void_corruption", effect, 1225889, true );
+  damage->name_str_reporting = "Corruption";
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+  // Using the Greater version for the ID here, but, they should be the same.
+  damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1233355 ) );
+
+  auto new_driver = effect.player->find_spell( 1225883 );
+
+  auto stacking_buff =
+      create_buff<buff_t>( effect.player, "echoing_void_stacking", effect.player->find_spell( 1225886 ) );
+  stacking_buff->name_str_reporting = "Stacking";
+  auto ticking_buff =
+      create_buff<buff_t>( effect.player, "echoing_void_ticking", effect.player->find_spell( 1225887 ) );
+  ticking_buff->name_str_reporting = "Ticking";
+
+  stacking_buff->set_stack_change_callback( [ effect, ticking_buff, new_driver ]( buff_t* b, int old_, int new_ ) {
+    if ( new_ > old_ )
+    {
+      // Might not be correct, not seeing the % chance to trigger in the spell data, but seems to increase in chance the
+      // more stacks you have.
+      if ( effect.player->rng().roll( new_driver->effectN( 2 ).percent() * b->check() ) )
+        ticking_buff->trigger( 1_s + ( b->check() * 1_s ) );
+    }
+  } );
+
+  ticking_buff->set_tick_callback( [ stacking_buff, damage ]( buff_t* b, int, timespan_t ) {
+    stacking_buff->decrement();
+    if ( b->source->base.distance <= 15 )
+      damage->execute();
+  } );
+
+  effect.custom_buff = stacking_buff;
+  effect.spell_id    = new_driver->id();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      new_driver->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ ticking_buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+        return !ticking_buff->up();
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Twisted Appendage
+// 1227300 Driver
+// 1227303 Damage
+// 1227301 Summon Spell
+// 1227295 Value Spell/Default Driver - Lesser
+// 1227297 Value Spell/Default Driver - Greater
+// 1233392 Role Mult Spell - Lesser
+// 1227294 Role Mult Spell - Greater
+// TODO: Implement slow effect on enemy targeted by mind flay if it ever matters for sims.
+void twisted_appendage( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct twisted_appendage_pet_t : unique_gear_pet_t
+  {
+    action_t* mind_flay;
+
+    twisted_appendage_pet_t( const special_effect_t& e, action_t* damage = nullptr, action_t* parent = nullptr )
+      : unique_gear_pet_t( "twisted_appendage", e, &parent->data() ), mind_flay( damage )
+    {
+      parent_action       = parent;
+      use_auto_attack     = false;
+      base_movement_speed = 0.0;
+    }
+
+    void arise() override
+    {
+      unique_gear_pet_t::arise();
+      mind_flay->execute_on_target( owner->target );
+    }
+  };
+
+  struct twisted_appendage_t : public generic_proc_t
+  {
+    spawner::pet_spawner_t<twisted_appendage_pet_t> appendage_spawner;
+
+    twisted_appendage_t( const special_effect_t& e )
+      : generic_proc_t( e, "twisted_appendage", e.driver() ), appendage_spawner( "twisted_appendage", e.player )
+    {
+      auto summon_spell = e.player->find_spell( 1227301 );
+      auto appendage    = new action_t( action_e::ACTION_OTHER, "twisted_appendage_summon", e.player, summon_spell );
+      appendage->name_str_reporting = "Summon";
+
+      auto mind_flay     = create_proc_action<generic_proc_t>( "twisted_appendage_mind_flay", e, 1227303 );
+      mind_flay->base_td = e.driver()->effectN( 1 ).average( e.player );
+      mind_flay->base_td_multiplier *= role_mult( e.player, e.player->find_spell( 1227294 ) );
+      mind_flay->name_str_reporting = "mind_flay";
+
+      appendage_spawner.set_creation_callback( [ &e, mind_flay, appendage ]( player_t* ) {
+        return new twisted_appendage_pet_t( e, mind_flay, appendage );
+      } );
+      appendage_spawner.set_default_duration( summon_spell->duration() );
+      add_child( appendage );
+      appendage->add_child( mind_flay );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      appendage_spawner.spawn();
+    }
+  };
+
+  // Name is currently typod in spell data, might need fixed if the data name changes.
+  effect.execute_action = create_proc_action<twisted_appendage_t>( "twisted_appendage", effect );
+  effect.spell_id       = effect.player->find_spell( 1227300 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Void Ritual
+// 1227315 Driver
+// 1227316 Buff
+// 1227312 Value Spell/Default Driver - Lesser
+// 1227314 Value Spell/Default Driver - Greater
+// TODO: Check if this still adheres to the increased chance if at least 2 players are wearing it. 
+void void_ritual( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "the_end_is_coming", effect.player->find_spell( 1227316 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.player ) )
+                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  effect.custom_buff = buff;
+  effect.spell_id    = effect.player->find_spell( 1227315 )->id();
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) { return !buff->up(); } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of the Gushing Wound
+// 1227292 Driver
+// 1227293 Damage
+// 1227289 Value Spell/Default Driver - Lesser
+// 1227291 Value Spell/Default Driver - Greater
+// 1233385 Role Mult Spell - Lesser
+// 1227288 Role Mult Spell - Greater
+void gushing_wound( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  auto damage     = create_proc_action<generic_proc_t>( "gushing_wound", effect, 1227293 );
+  damage->base_td = effect.driver()->effectN( 1 ).average( effect.player );
+  // Using the Greater version for the ID here, but, they should be the same.
+  damage->base_td_multiplier *= role_mult( effect.player, effect.player->find_spell( 1227288 ) );
+  damage->cooldown->duration = damage->data().internal_cooldown();
+
+  effect.execute_action = damage;
+  effect.spell_id       = effect.player->find_spell( 1227292 )->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Rune of Infinite Stars
+// 1227215 Driver
+// 1227218 Damage/Debuff
+// 1227216 Missile?
+// 1227210 Value Spell/Default Driver - Lesser
+// 1227211 Value Spell/Default Driver - Greater
+// 1233375 Role Mult Spell - Lesser
+// 1227206 Role Mult Spell - Greater
+void infinite_stars( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+    return;
+
+  struct infinite_stars_t : public generic_proc_t
+  {
+    double bonus_damage;
+
+    infinite_stars_t( const special_effect_t& e )
+      : generic_proc_t( e, "infinite_stars", e.player->find_spell( 1227218 ) ), bonus_damage( 0 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.player );
+      base_multiplier *= role_mult( e.player, e.player->find_spell( 1227206 ) );
+
+      bonus_damage  = e.driver()->effectN( 2 ).average( e.player );
+      target_debuff = &data();
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = generic_proc_t::bonus_da( s );
+
+      auto debuff = find_debuff( s->target );
+      if ( debuff )
+        b += debuff->check() * bonus_damage;
+
+      return b;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      auto debuff = get_debuff( s->target );
+
+      if ( debuff->at_max_stacks() )
+        debuff->expire();
+      else
+        debuff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<infinite_stars_t>( "infinite_stars", effect );
+  effect.spell_id       = effect.player->find_spell( 1227215 )->id();
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace embellishments
@@ -10097,7 +10383,12 @@ void register_special_effects()
   register_special_effect( 435500, enchants::culminating_blasphemite );
   register_special_effect( 435488, enchants::insightful_blasphemite );
   register_special_effect( { 457615, 457616, 457617 }, enchants::daybreak_spellthread );
-
+  register_special_effect( { 1225042, 1225045 }, enchants::twilight_devastation );
+  register_special_effect( { 1225878, 1225880 }, enchants::echoing_void );
+  register_special_effect( { 1227295, 1227297 }, enchants::twisted_appendage );
+  register_special_effect( { 1227312, 1227314 }, enchants::void_ritual );
+  register_special_effect( { 1227289, 1227291 }, enchants::gushing_wound );
+  register_special_effect( { 1227210, 1227211 }, enchants::infinite_stars );
 
   // Embellishments & Tinkers
   register_special_effect( 443743, embellishments::blessed_weapon_grip );
