@@ -225,7 +225,7 @@ void outlaw( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)", "Cooldowns  Maintain Adrenaline Rush if it is not active. Use at low CPs with Improved AR." );
-  cds->add_action( "adrenaline_rush,if=buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)", "If using Improved AR, recast AR if it is already active at low CPs. Trickster builds should avoid recasting it during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active." );
+  cds->add_action( "adrenaline_rush,if=buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2", "If using Improved AR, recast AR if it is already active at low CPs." );
   cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1", "High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs." );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Sprint to further benefit from Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets." );
@@ -242,7 +242,7 @@ void outlaw( player_t* p )
   cds->add_action( "use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=5" );
   cds->add_action( "vanish,if=talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&!stealthed.all&buff.adrenaline_rush.remains<2&cooldown.adrenaline_rush.remains>30", "If necessary, standard builds prioritize using Vanish at any CP to prevent Adrenaline Rush downtime." );
   cds->add_action( "run_action_list,name=finish,if=!stealthed.all&(cooldown.killing_spree.ready&talent.killing_spree|buff.escalating_blade.stack>=4)&variable.finish_condition", "If not at risk of losing Adrenaline Rush, run finishers to use Killing Spree or Coup de Grace as a higher priority than Vanish." );
-  cds->add_action( "call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition&(buff.escalating_blade.stack!=3|!buff.disorienting_strikes.up)", "If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs. Trickster builds attempt to hold Vanish if at 3 stacks of Escalating Blades with Disorienting Strikes active." );
+  cds->add_action( "call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition", "If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs." );
   cds->add_action( "call_action_list,name=vanish_usage_off_meta,if=!stealthed.all&(!talent.underhanded_upper_hand|!talent.crackshot|!talent.subterfuge)" );
   cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready", "Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs." );
   cds->add_action( "blade_rush,if=energy.base_time_to_max>4&!stealthed.all", "Use Blade Rush at minimal energy outside of stealth." );

@@ -50,8 +50,8 @@ actions.build+=/sinister_strike
 # Cooldowns
 # Maintain Adrenaline Rush if it is not active. Use at low CPs with Improved AR.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)
-# If using Improved AR, recast AR if it is already active at low CPs. Trickster builds should avoid recasting it during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active.
-actions.cds+=/adrenaline_rush,if=buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)
+# If using Improved AR, recast AR if it is already active at low CPs.
+actions.cds+=/adrenaline_rush,if=buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2
 # High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs.
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1
 # Sprint to further benefit from Scroll of Momentum trinket.
@@ -83,8 +83,8 @@ actions.cds+=/use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=
 actions.cds+=/vanish,if=talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&!stealthed.all&buff.adrenaline_rush.remains<2&cooldown.adrenaline_rush.remains>30
 # If not at risk of losing Adrenaline Rush, run finishers to use Killing Spree or Coup de Grace as a higher priority than Vanish.
 actions.cds+=/run_action_list,name=finish,if=!stealthed.all&(cooldown.killing_spree.ready&talent.killing_spree|buff.escalating_blade.stack>=4)&variable.finish_condition
-# If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs. Trickster builds attempt to hold Vanish if at 3 stacks of Escalating Blades with Disorienting Strikes active.
-actions.cds+=/call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition&(buff.escalating_blade.stack!=3|!buff.disorienting_strikes.up)
+# If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs.
+actions.cds+=/call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition
 actions.cds+=/call_action_list,name=vanish_usage_off_meta,if=!stealthed.all&(!talent.underhanded_upper_hand|!talent.crackshot|!talent.subterfuge)
 # Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs.
 actions.cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready
