@@ -85,7 +85,7 @@ actions.core_dot=garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable
 # Maintain Rupture unless darkest night is up
 actions.core_dot+=/rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
 # Maintain Crimson Tempest unless it would remove a stronger cast
-actions.core_dot+=/crimson_tempest,if=combo_points>=variable.effective_spend_cp&refreshable&pmultiplier<=1&!buff.darkest_night.up&!talent.amplifying_poison
+actions.core_dot+=/crimson_tempest,if=combo_points>=variable.effective_spend_cp&refreshable&pmultiplier<=persistent_multiplier&!buff.darkest_night.up&!talent.amplifying_poison
 
 # Direct Damage Abilities Envenom at applicable cp if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe.
 actions.direct=envenom,if=!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)
@@ -132,7 +132,7 @@ actions.misc_cds+=/ancestral_call,if=debuff.deathmark.up
 actions.shiv=variable,name=shiv_condition,value=!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&spell_targets.fan_of_knives<=5
 actions.shiv+=/variable,name=shiv_kingsbane_condition,value=talent.kingsbane&buff.envenom.up&variable.shiv_condition
 # Shiv for aoe with Arterial Precision
-actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&spell_targets.fan_of_knives>=4&dot.crimson_tempest.ticking&(target.time_to_die<12&talent.zoldyck_recipe|cooldown.shiv.charges_fractional>=1.9)
+actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&spell_targets.fan_of_knives>=4&dot.crimson_tempest.ticking&(target.health.pct<=35&talent.zoldyck_recipe|cooldown.shiv.charges_fractional>=1.9)
 # Shiv cases for Kingsbane
 actions.shiv+=/shiv,if=!talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<8|!dot.kingsbane.ticking&cooldown.kingsbane.remains>=20)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 # Shiv for big Darkest Night Envenom during Lingering Darkness
