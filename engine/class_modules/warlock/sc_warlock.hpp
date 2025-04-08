@@ -918,6 +918,7 @@ public:
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count() const;
   void expendables_trigger_helper( warlock_pet_t* source ); // TODO: Move to helpers?
+  std::pair<timespan_t, timespan_t> dreadstalkers_delay_duration_adjustment_helper( const player_t& target ); // TODO: Move to helpers? or implement in call_dreadstalkers_t?
   bool min_version_check( version_check_e version ) const;
   void create_actions() override;
   void create_affliction_proc_actions();

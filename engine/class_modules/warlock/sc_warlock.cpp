@@ -455,6 +455,35 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
   }
 }
 
+std::pair<timespan_t, timespan_t> warlock_t::dreadstalkers_delay_duration_adjustment_helper( const player_t& target )
+{
+  std::pair<timespan_t, timespan_t> ret;
+  timespan_t& delay = ret.first;
+  timespan_t& dur_adjust = ret.second;
+  const double dist = get_player_distance( target );
+  // The summon is considered at melee range if the distance is less than or equal to 5 yards
+  if (dist > 5.0)
+  {
+    // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
+    delay = rng().range( 0_s, 1_s );
+    // Adjust the extra duration, that appear to be offset from the melee attack check in a correlated manner
+    // Despawn events appear to be offset from the melee attack check in a correlated manner
+    // Starting with this which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack, and taking into account the distance
+    // Last tested 2025-04-06
+    // The maximum despawn extra duration is 820ms. The initial offset point is 260ms, increasing 24ms with each yard
+    // There is some variance in the delay-duration_adj relation that can be modeled fairly closely using a normal distribution
+    dur_adjust = ( delay + timespan_t::from_millis( rng().gauss( 260.0, 25.0 ) + 24.0 * dist ) ) % 820_ms;
+  }
+  else
+  {
+    // There is no delay on the first melee attack when summoned from melee
+    delay = 0_ms;
+    // In this case the extra duration of the dreadstalkers can be assumed random between the minumum (0ms) and the maximum (820ms) (last tested 2025-04-06)
+    dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+  }
+  return ret;
+}
+
 // Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)
 // It must be adjusted manually over time, and any use of it should be removed once a patch goes live
 // Returns TRUE if actor's dbc version >= version specified

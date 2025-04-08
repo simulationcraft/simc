@@ -1144,7 +1144,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2024-11-16: Coefficient updated
@@ -1159,7 +1159,7 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
 dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pet_e pet_type )
   : warlock_pet_t( owner, pet_name, pet_type, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2024-11-16: Coefficient updated
@@ -1261,14 +1261,32 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
 {
   dreadstalker_leap_t( dreadstalker_t* p ) : warlock_pet_t::travel_t( p, "leap" )
   {
-    speed = 30.0; // Note: this is an approximation - leap may have some variation with distance. This could be updated with a function in the future by overriding execute_time()
+    speed = 33.17; // This speed value will be updated in the 'schedule_execute', since leap speed have some variation with distance
   }
 
   void schedule_execute( action_state_t* s ) override
   {
     debug_cast<warlock_pet_t*>( player )->melee_attack->cancel();
 
+    // The dreadstalkers' travel speed is not constant, since it has a certain acceleration
+    // The average speed for various distances is extracted from the ingame behavior and the rest is interpolated, thus obtaining a lookup table
+    // 2025-04-06: lookup_table for speeds in [5-40]yd TO 1yd range (there should be no distance values outside this range, but we will handle them just in case)
+    const size_t distance_st = static_cast<size_t>( player->current.distance + 0.5 );
+    const std::array<double, 36> lookup_table_speed = {
+                                  14.81, 15.50, 16.42, 18.89, 20.73, 22.19, // [ 5yd-10yd]
+      23.41, 24.45, 25.36, 26.17, 26.89, 27.55, 28.15, 28.70, 29.21, 29.69, // [11yd-20yd]
+      30.13, 30.54, 30.94, 31.31, 31.66, 31.99, 32.30, 32.61, 32.89, 33.17, // [21yd-30yd]
+      33.43, 33.69, 33.93, 34.17, 34.40, 34.61, 34.83, 35.03, 35.23, 35.42  // [31yd-40yd]
+    };
+    speed = lookup_table_speed[ std::min( std::max( distance_st, as<size_t>( 5 ) ), as<size_t>( 40 ) ) - as<size_t>( 5 ) ];
+
     warlock_pet_t::travel_t::schedule_execute( s );
+  }
+
+  bool ready() override
+  {
+    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once.
+    return ( ( !debug_cast<dreadstalker_t*>( player )->melee_on_summon ) && ( debug_cast<dreadstalker_t*>( player )->leap_executes > 0 ) && ( warlock_pet_t::travel_t::ready() ) );
   }
 
   void execute() override
@@ -1280,6 +1298,8 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
       debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
       debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
     } );
+
+    debug_cast<dreadstalker_t*>( player )->leap_executes--;
   }
 };
 
@@ -1293,6 +1313,11 @@ void dreadstalker_t::init_base_stats()
 
 void dreadstalker_t::arise()
 {
+  if ( o()->get_player_distance( *target ) <= 5.0 )
+  {
+    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
+
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
@@ -1302,8 +1327,7 @@ void dreadstalker_t::arise()
 
   dreadbite_executes = 1;
 
-  if ( position() == POSITION_NONE || position() == POSITION_FRONT )
-    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  leap_executes = 1;
 }
 
 void dreadstalker_t::demise()
@@ -1639,19 +1663,28 @@ void doomguard_t::arise()
 greater_dreadstalker_t::greater_dreadstalker_t( warlock_t* owner )
   : dreadstalker_t( owner, "greater_dreadstalker", PET_FELHUNTER )
 {
-  action_list_str = "dreadbite";
+  action_list_str = "leap/travel/dreadbite";
 
   owner_coeff.ap_from_sp = 0.825;
   owner_coeff.health = 0.4 * o()->tier.demonic_hunger->effectN( 2 ).percent();
+
+  melee_on_summon = false; // Greater Dreadstalkers leap from the player location to target, which has a non-negligible travel time
+  server_action_delay = 0_ms; // Will be set when spawning Greater Dreadstalkers
 }
 
 void greater_dreadstalker_t::arise()
 {
+  if ( o()->get_player_distance( *target ) <= 5.0 )
+  {
+    melee_on_summon = true; // Within this range, Greater Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
+
   warlock_pet_t::arise();
 
   vilefiend_present_on_summon = bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check();
 
   dreadbite_executes = 1;
+  leap_executes = 1;
 
   buffs.demonic_hunger->trigger();
 
