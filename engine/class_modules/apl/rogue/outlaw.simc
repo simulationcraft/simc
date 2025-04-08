@@ -40,8 +40,6 @@ actions.build+=/pistol_shot,if=talent.fan_the_hammer.rank=2&buff.opportunity.up&
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+(talent.quick_draw+buff.broadside.up)*(talent.fan_the_hammer.rank+1))|combo_points<=talent.ruthlessness)
 # If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw.
 actions.build+=/pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)
-# Use Coup de Grace at low CP if Sinister Strike would otherwise be used.
-actions.build+=/coup_de_grace,if=!stealthed.all
 # Fallback pooling just so Sinister Strike is never casted if Ambush is available for Hidden Opportunity builds.
 actions.build+=/pool_resource,for_next=1
 actions.build+=/ambush,if=talent.hidden_opportunity
