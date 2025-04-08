@@ -496,7 +496,8 @@ Family Flags     : 13, 43, 64, 78
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.669 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.49 -> 1.669)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -3778,7 +3779,8 @@ Family Flags     : 40, 43, 65, 78
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1725 | PvP Coefficient: 0.85 | Misc Value: 127 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1725 | PvP Coefficient: 0.952 | Misc Value: 127 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.85 -> 0.952)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
@@ -3807,7 +3809,8 @@ Family Flags     : 40, 43, 78
 Attributes       : Allow While Sitting (27), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.85 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.952 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.85 -> 0.952)
 Description      : $@spelldesc191587
 
 Name             : Runic Empowerment (id=193486) 
@@ -3864,7 +3867,8 @@ Family Flags     : 43, 78, 119
 Attributes       : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 3.34 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 3.74 | Target: Any Target (25)
+Hotfixed         : PvP Coefficient (3.34 -> 3.74)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc194310
