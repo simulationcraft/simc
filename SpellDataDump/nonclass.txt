@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60189 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -142728,7 +142728,6 @@ Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Po
 Effects          :
 #1 (id=774162)   : Apply Aura (6) | Attribute (29) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 6861.514 (coefficient=1.792) | PvP Coefficient: 0.1 | Stat: Int | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.1)
 #2 (id=774163)   : School Damage (2): nature | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 100374.1 (coefficient=26.2144) | Target: Self (1)
 Description      : Zap yourself for $s2 Nature damage, gaining $s1 Intellect for $d.
