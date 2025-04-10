@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60189 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60228 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -497,7 +497,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.669 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.49 -> 1.669)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -3780,7 +3779,6 @@ Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1725 | PvP Coefficient: 0.952 | Misc Value: 127 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.85 -> 0.952)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
@@ -3810,7 +3808,6 @@ Attributes       : Allow While Sitting (27), No Redirection (35), No Reflection 
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.952 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.85 -> 0.952)
 Description      : $@spelldesc191587
 
 Name             : Runic Empowerment (id=193486) 
@@ -3868,7 +3865,6 @@ Attributes       : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight 
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 3.74 | Target: Any Target (25)
-Hotfixed         : PvP Coefficient (3.34 -> 3.74)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc194310

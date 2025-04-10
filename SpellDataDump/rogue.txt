@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60189 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60228 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -2040,7 +2040,6 @@ Attributes       : Passive (6), Do Not Sheath (18), No Immunities (29), No Aura 
 Effects          :
 #1 (id=68363)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.8 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.
 
 Affected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Ghostly Strike, Grappling Hook, Keep it Rolling, Killing Spree, Roll the Bones, Sprint, and Vanish.
@@ -3282,7 +3281,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=269972)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | PvP Coefficient: 1.2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Resource: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -3379,7 +3377,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=283619)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88 | PvP Coefficient: 1.2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 #3 (id=283621)   : Dummy (3)
@@ -4058,7 +4055,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=290715)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88 | PvP Coefficient: 1.2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc193315
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 

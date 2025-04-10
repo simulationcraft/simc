@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60189 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60228 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -531,7 +531,6 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.574 | PvP Coefficient: 1.7825 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.55 -> 1.7825)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -3184,7 +3183,6 @@ Attributes       : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.8624 | PvP Coefficient: 1.62 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.35 -> 1.62)
 Description      : A quick shot that causes $sw2 Arcane damage.$?s260393[
 
 Arcane Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -5381,10 +5379,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.54)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.54)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
@@ -8252,7 +8248,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 0, 106
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=1201222)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Unknown(23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 4152 (Label) | Target: Self (1)
                    Affected Spells (Label): Streamline (342076)
@@ -15568,7 +15563,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
                    Family Flags: 17
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1197714)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
@@ -16346,7 +16340,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1186803)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Aimed Shot, Rapid Fire, and Arcane Shot now hit a second nearby target for $s1% of their damage.
 
 Name             : On Target (id=471348) [Spell Family (9), Passive, Hidden] 
