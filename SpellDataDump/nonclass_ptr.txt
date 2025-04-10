@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60067 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60179 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -167411,7 +167411,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Category Cooldown: 4.5 seconds
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 72, 106
 Attributes       : Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -168482,7 +168482,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Gathering Shadows (394961 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 65, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), No Reflection (39), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Taps immediately (215), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -241914,7 +241914,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1158862)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 180734.7 (coefficient=70.66128) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : You are one of the devout. Your spells and abilities have a chance of burning a nearby enemy for $s1 Radiant damage and healing another devout ally for that amount.
 
 Name             : Shining Arathor Insignia (id=455433) 
@@ -242605,13 +242604,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1159258)  : Apply Aura (6) | Proc Trigger Spell (42): Shadowed Essence | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 20624.36 (coefficient=8.063442) | PvP Coefficient: 0.5 | Trigger Spell: 455643 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1159831)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 1372.563 (coefficient=0.358468) | PvP Coefficient: 0.5
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1159832)  : Dummy (3) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1372.15 (coefficient=0.35836) | PvP Coefficient: 0.5
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Entering combat summons an orb of dark power to assist you.
 
 Name             : Shadowed Essence (id=455643) [Hidden] 
@@ -259291,11 +259287,11 @@ Triggered By     : Machine Gob's Hiccup (1218463), Machine Gob's Big Grin (12184
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1203315)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 136273.7 (coefficient=53.27851) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 136273.7 (coefficient=53.27851) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1203497)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 170342.1 (coefficient=66.59815) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 170342.1 (coefficient=66.59815) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1203498)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 204410.6 (coefficient=79.91777) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 204410.6 (coefficient=79.91777) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your harmful melee attacks and abilities have a chance to trigger the detonation mechanism, dealing up to $s3 Fire damage split between nearby enemies.
 
 Blast strength and radius may vary.
@@ -259970,7 +259966,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1212176)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212184)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223887
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Haste for $1223887d.
@@ -260020,7 +260015,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1212198)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212199)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223898
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Critical Strike for $1223887d.
@@ -260054,7 +260048,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1212202)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212203)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223901
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Versatility for $1223887d.
@@ -260088,7 +260081,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1212205)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212206)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223903
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Mastery for $1223887d.
@@ -260122,7 +260114,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1213105)  : Apply Aura (6) | Proc Trigger Damage (43) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your autoattacks do an additional $s1 Shadow damage.
 
 Name             : Shadow Quake (id=1224457) [Passive, Hidden] 
@@ -260135,7 +260126,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1213106)  : Apply Aura (6) | Proc Trigger Spell (42): Shadow Quake | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 27806.93 (coefficient=10.87159) | PvP Coefficient: 0.5 | Trigger Spell: 1228149 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218956)  : Dummy (3)
                    Base Value: 250 | Scaled Value: 250
 Description      : Your first melee strike against an enemy slams them and nearby enemies with a quake of shadow magic dealing up to ${$s1*($s2/100)} Shadow damage split between them.
@@ -260148,7 +260138,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1213107)  : Apply Aura (6) | Unknown(395) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 213.4651 (coefficient=0.05575) | PvP Coefficient: 0.5 | Misc Value: 37169 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : When a nearby enemy or devout ally falls, you siphon a portion of their soul to gain $s1 Intellect for $1228086d.
 
 Name             : Shadowalker's Aegis (id=1224459) [Passive, Hidden] 
@@ -260158,7 +260147,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1213108)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 50052.47 (coefficient=19.56886) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218364)  : Apply Party Aura (35) | Trigger Spell Based on Health% (468)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Trigger Spell: 1227803 | Radius: 40 yards | Target: Self (1)
 #3 (id=1218454)  : Dummy (3)
@@ -260186,7 +260174,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Update Passives on 
 Effects          :
 #1 (id=1213822)  : Apply Party Aura (35) | Periodic Heal (8): every 5 seconds | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 1795.454 (coefficient=0.701963) | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217985)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.
@@ -260300,7 +260287,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1214287)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 73631.71 (coefficient=28.78757) | PvP Coefficient: 0.5 | Trigger Spell: 1227578 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214288)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1227564
 Description      : Every $1227578t sec spent in combat pulls the shadows closer to you, granting Dark Whispers. After reaching $1227564u whispers, the shadows manifest and rip a creature out of the Twisting Nether to assist you in combat.
@@ -260315,7 +260301,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1214289)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 664.0314 (coefficient=0.173423) | PvP Coefficient: 0.5 | Trigger Spell: 1227584 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214290)  : Dummy (3) | Scaling Class: -9
                    Base Value: 20 | Scaled Value: 1795.454 (coefficient=0.701963) | Trigger Spell: 1223887
 Description      : Every $1227584t sec spent in combat sacrifices $s2 of your health to gain $s1 $pri. This effect can stack up to $1227565u times and lasts until combat ends.
@@ -260330,7 +260315,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1214291)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 49831.75 (coefficient=19.48257) | PvP Coefficient: 0.5 | Trigger Spell: 1227585 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214292)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1227551
 Description      : Every $1227585t sec spent in combat lashes a nearby enemy dealing $s1 Shadow damage. This deals up to $s2% additional damage based on the enemy's missing health.
@@ -261189,7 +261173,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1228462)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 116.1173 (coefficient=0.030326) | PvP Coefficient: 0.5 | Stat: StrAgiInt | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]
 
 

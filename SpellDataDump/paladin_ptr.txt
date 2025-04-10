@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60067 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60179 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3744,6 +3744,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 198137 | Target: Self (1)
 #2 (id=1144706)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Trigger Spell: 198137 | Target: Self (1)
+#3 (id=1233368)  : Apply Aura (6) | Unknown(395)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37932 | Target: Self (1)
 Description      : Divine Hammers spin around you, striking enemies nearby for $?s405289[${$198137sw1*1.05} Radiant][$198137sw1 Holy] damage every $t sec for $d.
 
 While active, each Holy Power spent increases the duration of Divine Hammer by ${$s2/1000}.1 sec. Deals reduced damage beyond 8 targets.
@@ -3753,7 +3755,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Range            : 50000 yards
-Duration         : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -3769,7 +3770,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.357 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=291194)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-#3 (id=1070951)  : Apply Aura (6) | Decrease Movement Speed% (33)
+#3 (id=1233370)  : Dummy (3)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc198034
 Tooltip          : Movement speed reduced by ${$s3*-1}%.
@@ -19530,5 +19531,22 @@ Tooltip          : Sentenced to suffer $s2% of the damage your abilities deal du
 Variables        : $Mastery=$?a267316[${1+$267316s1/100}][${1}]
 $DP=$?a223819[${1+$223819s2/100}][${1}]
 $mult=${$<Mastery>*$<DP>}
+
+Name             : Divine Hammer (id=1236942) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 50000 yards
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Mechanic         : Snare
+Attributes       : Do Not Log Immune Misses (3), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353), Don't close loot window (379), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1233358)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -30 | Scaled Value: -30 | Target: Enemy (6)
+Description      : $@spelldesc198034
+Tooltip          : Movement speed reduced by ${$s3*-1}%.
 
 
