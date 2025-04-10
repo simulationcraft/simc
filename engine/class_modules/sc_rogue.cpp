@@ -10574,7 +10574,22 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return return_value;
     } );
   }
-
+  else if ( util::str_compare_ci( name_str, "attack_haste" ) )
+  {
+    // Exposes the player's current melee/attack haste as an expression
+    return make_fn_expr( name_str, [this]()
+    {
+      return this->attack_haste;
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "spell_haste" ) )
+  {
+    // Exposes the player's current spell haste as an expression
+    return make_fn_expr( name_str, [this]()
+    {
+      return this->spell_haste;
+    } );
+  }
   return player_t::create_expression( name_str );
 }
 
