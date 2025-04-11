@@ -87,7 +87,7 @@ actions.cds+=/run_action_list,name=finish,if=!stealthed.all&(cooldown.killing_sp
 actions.cds+=/call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition
 actions.cds+=/call_action_list,name=vanish_usage_off_meta,if=!stealthed.all&(!talent.underhanded_upper_hand|!talent.crackshot|!talent.subterfuge)
 # Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs.
-actions.cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready
+actions.cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready&!stealthed.all
 # Use Blade Rush at minimal energy outside of stealth.
 actions.cds+=/blade_rush,if=energy.base_time_to_max>4&!stealthed.all
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up

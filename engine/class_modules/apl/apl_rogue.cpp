@@ -244,7 +244,7 @@ void outlaw( player_t* p )
   cds->add_action( "run_action_list,name=finish,if=!stealthed.all&(cooldown.killing_spree.ready&talent.killing_spree|buff.escalating_blade.stack>=4)&variable.finish_condition", "If not at risk of losing Adrenaline Rush, run finishers to use Killing Spree or Coup de Grace as a higher priority than Vanish." );
   cds->add_action( "call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition", "If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs." );
   cds->add_action( "call_action_list,name=vanish_usage_off_meta,if=!stealthed.all&(!talent.underhanded_upper_hand|!talent.crackshot|!talent.subterfuge)" );
-  cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready", "Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs." );
+  cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready&!stealthed.all", "Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs." );
   cds->add_action( "blade_rush,if=energy.base_time_to_max>4&!stealthed.all", "Use Blade Rush at minimal energy outside of stealth." );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
   cds->add_action( "blood_fury" );
