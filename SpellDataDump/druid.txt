@@ -14526,7 +14526,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
-Duration         : 5 seconds
+Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
