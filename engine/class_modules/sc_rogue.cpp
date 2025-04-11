@@ -2055,7 +2055,7 @@ public:
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitabile_end->ok() );
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
-                           nullptr, 1_ms ); // Works with WM
+                           nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.perforated_veins, p()->buffs.perforated_veins->is_affecting( &ab::data() ),
                            perforated_veins_consumed_proc, 1_ms ); // TOCHECK -- Ensure this still affects WM procs like it used to
@@ -7185,6 +7185,9 @@ struct unseen_blade_t : public rogue_attack_t
   }
 
   bool procs_main_gauche() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
   { return true; }
 
   bool procs_nimble_flurry() const override
