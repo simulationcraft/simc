@@ -60,8 +60,8 @@ actions.cds+=/sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_
 actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 # With Deft Maneuvers, build CPs with Blade Flurry at 5+ targets. Trickster builds should avoid this during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active.
 actions.cds+=/blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&spell_targets>=5&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)
-# With a natural 5 buff roll, use Keep it Rolling when you obtain the remaining buff from Count the Odds and all buffs are within 30s remaining.
-actions.cds+=/keep_it_rolling,if=rtb_buffs.normal>=5&rtb_buffs=6&rtb_buffs.max_remains<=30
+# With a natural 5 buff roll, use Keep it Rolling when you obtain the remaining buff from Count the Odds.
+actions.cds+=/keep_it_rolling,if=rtb_buffs.normal>=5&rtb_buffs=6
 # Without a natural 5 buff roll, use Keep it Rolling at any 4+ buffs.
 actions.cds+=/keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2
 # Without a natural 5 buff roll, use Keep it Rolling at 3 buffs if you have the combination of Ruthless Precision + Broadside + True Bearing.
