@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60228 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60257 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -14526,7 +14526,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 60
-Duration         : 5 seconds
+Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
