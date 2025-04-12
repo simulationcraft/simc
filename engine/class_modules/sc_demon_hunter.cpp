@@ -1885,6 +1885,12 @@ public:
       m *= 1.0 + da;
     }
 
+    // Chaos Brand applies to Felblade and Soulscar through a server side script
+    if ( ( s->action->id == 442808 || s->action->id == 390181 ) && s->target->debuffs.chaos_brand->up() )
+    {
+      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
+    } 
+
     return m;
   }
 
@@ -1923,6 +1929,12 @@ public:
       }
       m *= 1.0 + da;
     }
+
+    // Chaos Brand applies to Felblade and Soulscar through a server side script
+    if ( ( s->action->id == 442808 || s->action->id == 390181 ) && s->target->debuffs.chaos_brand->up() )
+    {
+      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
+    } 
 
     return m;
   }
