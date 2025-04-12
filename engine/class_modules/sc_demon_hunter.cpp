@@ -2326,8 +2326,10 @@ struct winning_streak_removal_trigger_t : public BASE
 {
   using base_t = winning_streak_removal_trigger_t<BASE>;
 
+  timespan_t winning_streak_removal_delay;
+
   winning_streak_removal_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o )
+    : BASE( n, p, s, o ), winning_streak_removal_delay()
   {
   }
 
@@ -2343,18 +2345,22 @@ struct winning_streak_removal_trigger_t : public BASE
       int stacks          = BASE::p()->buff.winning_streak->stack();
       int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
 
-      BASE::p()->buff.winning_streak->expire();
-      BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
+      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this, stacks, residual_stacks ] {
+        int new_stacks = BASE::p()->buff.winning_streak->stack();
+        int new_residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
+        BASE::p()->buff.winning_streak->expire();
+        BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
 
-      if ( stacks >= residual_stacks )
-      {
-        BASE::p()->buff.winning_streak_residual->expire();
-        BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
-      }
-      else
-      {
-        BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
-      }
+        if ( new_stacks >= new_residual_stacks )
+        {
+          BASE::p()->buff.winning_streak_residual->expire();
+          BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
+        }
+        else
+        {
+          BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
+        }
+      } );
     }
   }
 };
@@ -5215,6 +5221,7 @@ struct blade_dance_t : public blade_dance_base_t
   blade_dance_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "blade_dance_1", data().effectN( 2 ) ) );
@@ -5265,7 +5272,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
     {
@@ -5523,6 +5531,8 @@ struct chaos_strike_t : public chaos_strike_base_t
   chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -5560,6 +5570,7 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( name, p, p->spec.annihilation, options_str )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -8601,7 +8612,7 @@ void demon_hunter_t::init_spells()
   spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  spec.cycle_of_hatred_buff = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
 
   spec.demon_spikes_buff  = find_spell( 203819 );
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
