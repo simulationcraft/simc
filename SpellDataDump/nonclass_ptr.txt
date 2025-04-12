@@ -260228,7 +260228,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1214030)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 366499.3 (coefficient=143.2891) | Trigger Spell: 1225038 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 845195 (coefficient=330.4433) | Trigger Spell: 1225038 | Target: Self (1)
+Hotfixed         : Coefficient (143.289124 -> 330.443298)
 Description      : $@spelldesc1225074
 
 Name             : Twilight Devastation (id=1225045) [Passive] 
@@ -260244,8 +260245,9 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1214035)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 507265.6 (coefficient=198.3241) | Trigger Spell: 1225038 | Target: Self (1)
+#1 (id=1214035)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 1448900 (coefficient=566.472) | Trigger Spell: 1225038 | Target: Self (1)
+Hotfixed         : Coefficient (198.324081 -> 566.472046), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225074
 
 Name             : Lesser Rune of Twilight Devastation (id=1225074) 
@@ -260361,7 +260363,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 18324.96 (coefficient=7.164454) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42260 (coefficient=16.52226) | Trigger Spell: 1225883 | Target: Self (1)
+Hotfixed         : Coefficient (7.164454 -> 16.522263)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260378,7 +260381,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 25363 (coefficient=9.916095) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 72445 (coefficient=28.3236) | Trigger Spell: 1225883 | Target: Self (1)
+Hotfixed         : Coefficient (9.916095 -> 28.323601)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260545,10 +260549,12 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217487)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 100787.5 (coefficient=39.40458) | Trigger Spell: 1227215 | Target: Self (1)
-#2 (id=1218047)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 27487.45 (coefficient=10.74668) | Target: Self (1)
+#1 (id=1217487)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 211298 (coefficient=82.61053) | Trigger Spell: 1227215 | Target: Self (1)
+Hotfixed         : Coefficient (39.404579 -> 82.610535), Scaling Class (-9 -> -8)
+#2 (id=1218047)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 73954 (coefficient=28.91357) | Target: Self (1)
+Hotfixed         : Coefficient (10.746684 -> 28.913568), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227211) [Passive] 
@@ -260564,10 +260570,12 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217488)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 139498.3 (coefficient=54.53921) | Trigger Spell: 1227215 | Target: Self (1)
-#2 (id=1218066)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 38044.92 (coefficient=14.87431) | Target: Self (1)
+#1 (id=1217488)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 362226 (coefficient=141.6184) | Trigger Spell: 1227215 | Target: Self (1)
+Hotfixed         : Coefficient (54.539207 -> 141.618393), Scaling Class (-9 -> -8)
+#2 (id=1218066)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 126779 (coefficient=49.5664) | Target: Self (1)
+Hotfixed         : Coefficient (14.874307 -> 49.566399), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227215) [Hidden] 
@@ -260650,8 +260658,9 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217617)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 16380.11 (coefficient=6.404082) | Trigger Spell: 1227292 | Target: Self (1)
+#1 (id=1217617)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 37774 (coefficient=14.76839) | Trigger Spell: 1227292 | Target: Self (1)
+Hotfixed         : Coefficient (6.404082 -> 14.768386), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227291) [Passive] 
@@ -260667,15 +260676,16 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217619)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 22671 (coefficient=8.863611) | Trigger Spell: 1227292 | Target: Self (1)
+#1 (id=1217619)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 64756 (coefficient=25.31745) | Trigger Spell: 1227292 | Target: Self (1)
+Hotfixed         : Coefficient (8.863611 -> 25.317455), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227292) [Hidden] 
+Hotfixed         : Internal Cooldown (100 -> 0)
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
-Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -260736,8 +260746,9 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 36649.94 (coefficient=14.32891) | Trigger Spell: 1227300 | Target: Self (1)
+#1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 84520 (coefficient=33.04453) | Trigger Spell: 1227300 | Target: Self (1)
+Hotfixed         : Coefficient (14.328914 -> 33.044525), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260753,16 +260764,18 @@ Labels           : 969
                  : 3412
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 50727 (coefficient=19.83258) | Trigger Spell: 1227300 | Target: Self (1)
+#1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 144891 (coefficient=56.64759) | Trigger Spell: 1227300 | Target: Self (1)
+Hotfixed         : Coefficient (19.832581 -> 56.647594), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
+Hotfixed         : Proc Chance (100 -> 101)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Proc Chance      : 100%
-Real PPM         : 1
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Twisted Appendage (1227295), Twisted Appendage (1227297)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
@@ -260830,7 +260843,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 72.93421 (coefficient=0.019048) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 59.33371 (coefficient=0.015496) | Trigger Spell: 1227315 | Target: Self (1)
+Hotfixed         : Coefficient (0.019048 -> 0.015496)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260847,7 +260861,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 100.9316 (coefficient=0.02636) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 102.6662 (coefficient=0.026813) | Trigger Spell: 1227315 | Target: Self (1)
+Hotfixed         : Coefficient (0.02636 -> 0.026813)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 
@@ -260855,7 +260870,7 @@ School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Real PPM         : 1.5 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Void Ritual (1227312), Void Ritual (1227314)
 Attributes       : Check Required Target Aura By Caster (382), Aura Always Shown (438)
