@@ -10791,11 +10791,11 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     parse_player_effects_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
-  if ( c == CACHE_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
+  if ( c == CACHE_ARMOR && talents.warrior.armored_to_the_teeth->ok() )
   {
     parse_player_effects_t::invalidate_cache( CACHE_STRENGTH );
   }
-  if ( c == CACHE_BONUS_ARMOR && talents.warrior.armored_to_the_teeth->ok() && spec.vanguard->ok() )
+  if ( c == CACHE_BONUS_ARMOR && talents.warrior.armored_to_the_teeth->ok() )
   {
     parse_player_effects_t::invalidate_cache( CACHE_STRENGTH );
   }
