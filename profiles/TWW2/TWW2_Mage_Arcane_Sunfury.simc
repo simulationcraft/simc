@@ -162,31 +162,30 @@ actions.sunfury+=/arcane_blast
 actions.sunfury+=/arcane_barrage
 
 head=aspectral_emissarys_crystalline_cowl,id=229343,ilevel=678,gem_id=213743
-neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213485/213485
-shoulders=underbosss_tailored_mantle,id=228870,ilevel=678
+neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213494/213455
+shoulders=aspectral_emissarys_arcane_vents,id=229341,ilevel=678
 back=trashmasters_mantle,id=168970,ilevel=678,enchant_id=7415
-chest=aspectral_emissarys_primal_robes,id=229346,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=675,gem_id=213470,enchant_id=7397,crafted_stats=36/40
+chest=petticoat_of_the_selfstylized_azerite_baron,id=235420,ilevel=678,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10520/8960,ilevel=675,gem_id=213470,enchant_id=7397,crafted_stats=36/40
 hands=aspectral_emissarys_hardened_grasp,id=229344,ilevel=678
-waist=tuneup_toolbelt,id=228861,ilevel=678,gem_id=213494
-legs=aspectral_emissarys_trousers,id=229342,ilevel=678,enchant_id=7534
-feet=hyperthread_boots,id=168964,ilevel=678
-finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213455/213485,enchant_id=7340
-finger2=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213470/213470,enchant_id=7352,crafted_stats=40/36
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
-trinket2=spymasters_web,id=220202,ilevel=639
-main_hand=fleshcrafters_knife,id=178789,ilevel=678,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8792/11144,ilevel=675,crafted_stats=40/32
+waist=ringmasters_cummerbund,id=168958,ilevel=678,gem_id=213485
+legs=aspectral_emissarys_trousers,id=229342,ilevel=678,enchant_id=7531
+feet=consecrated_slippers,id=222814,bonus_id=10520/8960,ilevel=675,enchant_id=7424,crafted_stats=36/40
+finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213485/213485,enchant_id=7352
+finger2=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213485/213470,enchant_id=7352,crafted_stats=40/36
+trinket1=mugs_moxie_jug,id=230192,ilevel=678
+trinket2=eye_of_kezan,id=230198,ilevel=678
+main_hand=neural_synapse_enhancer,id=168973,ilevel=678,enchant_id=7460
 
 # Gear Summary
-# gear_ilvl=675.19
-# gear_stamina=391616
-# gear_intellect=64685
-# gear_crit_rating=6586
-# gear_haste_rating=17022
-# gear_mastery_rating=12949
-# gear_versatility_rating=11918
+# gear_ilvl=677.60
+# gear_stamina=391252
+# gear_intellect=62712
+# gear_crit_rating=4175
+# gear_haste_rating=16865
+# gear_mastery_rating=12939
+# gear_versatility_rating=13041
 # gear_speed_rating=1250
-# gear_armor=20744
+# gear_armor=20702
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

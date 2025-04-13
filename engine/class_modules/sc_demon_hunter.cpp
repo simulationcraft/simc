@@ -1828,7 +1828,8 @@ public:
                               effect_mask_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
 
     // Aldrachi Reaver
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark,
+                              USE_CURRENT );
 
     // Fel-scarred
   }
@@ -6785,7 +6786,7 @@ struct wounded_quarry_t : public demon_hunter_attack_t
     }
 
     // WQ is affected by Chaos Brand on the server side
-    affected_by.chaos_brand_server_side.direct = true;
+    affected_by.chaos_brand_server_side.direct   = true;
     affected_by.chaos_brand_server_side.periodic = true;
   }
 
@@ -7426,7 +7427,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.reavers_mark =
       make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
           ->set_default_value_from_effect( 1 )
-          ->set_max_stack( 2 )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
@@ -7451,7 +7451,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
               }
               p.last_reavers_mark_applied = b->player;
             }
-          } );
+          } )
+          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).percent() );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -8652,7 +8653,7 @@ void demon_hunter_t::init_spells()
   spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  spec.cycle_of_hatred_buff = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
 
   spec.demon_spikes_buff  = find_spell( 203819 );
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
