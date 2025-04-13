@@ -2369,21 +2369,19 @@ struct winning_streak_removal_trigger_t : public BASE
     {
       // 2025-02-08 -- Winning Streak! residual keeps the highest value of stacks and won't refresh if the stacks on
       //               the non-residual version are less than the stacks on the residual version.
-      int stacks          = BASE::p()->buff.winning_streak->stack();
-      int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
 
       // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
       //               damage
-      make_event(*BASE::p()->sim, winning_streak_removal_delay, [ this, stacks, residual_stacks ] {
-        int new_stacks = BASE::p()->buff.winning_streak->stack();
-        int new_residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
+      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this ] {
+        int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
+        int new_stacks      = BASE::p()->buff.winning_streak->stack();
         BASE::p()->buff.winning_streak->expire();
         BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
 
-        if ( new_stacks >= new_residual_stacks )
+        if ( new_stacks >= residual_stacks )
         {
           BASE::p()->buff.winning_streak_residual->expire();
-          BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
+          BASE::p()->buff.winning_streak_residual->trigger( new_stacks + residual_stacks );
         }
         else
         {
