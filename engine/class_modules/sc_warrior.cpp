@@ -1253,7 +1253,10 @@ public:
         parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
         // Update various talents
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
-        parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
+        if ( !p()->is_ptr() )
+          parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
+        else
+        parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 3 ), p()->talents.mountain_thane.crashing_thunder );
       }
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
     }
