@@ -222,6 +222,9 @@ int warlock_td_t::count_affliction_dots() const
   if ( dots_unstable_affliction->is_ticking() )
     count++;
 
+  if ( dots_jackpot_ua->is_ticking() )
+    count++;
+
   if ( dots_vile_taint->is_ticking() )
     count++;
 
