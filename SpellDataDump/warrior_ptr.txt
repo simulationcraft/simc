@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60008 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -10653,7 +10653,6 @@ Talent Entry     : Protection [tree=spec, row=9, col=1, max_rank=1, req_points=2
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 2
 Range            : 25 yards
 GCD              : 1.5 seconds
 Requires armor   : Shield 
@@ -10678,7 +10677,6 @@ Name             : Shield Charge (id=385953) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 3
 Range            : 25 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -15804,6 +15802,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
 #12 (id=1204818) : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 18 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
+#13 (id=1233016) : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 13 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
 Description      : $@spelldesc1219201
 Tooltip          : The duration of the next crowd control effect on you is reduced by $w1%.
 

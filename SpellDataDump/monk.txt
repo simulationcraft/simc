@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60257 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -18965,7 +18965,6 @@ Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
 Name             : Rushing Wind Kick (id=468179) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Nature
 Spell Type       : Magic

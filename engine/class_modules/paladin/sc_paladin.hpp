@@ -1785,7 +1785,7 @@ public:
     paladin_t* p = ab::p();
     ab::impact( s );
 
-    if ( ab::aoe == 0 && p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
+    if ( ab::aoe == 0 && !is_hammer_of_light_driver && p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
     {
       p->buffs.rush_of_light->trigger();
     }
@@ -1850,6 +1850,20 @@ public:
       p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
+    // Empyrean Legacy Divine Storms appear to extend Divine Hammer by 1.5s, so putting this before the
+    // Divine Storm early return
+    if ( p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() && ( num_hopo_spent > 0 || isFreeHoL || ( is_divine_storm && ab::background ) ) )
+    {
+      auto base_cost = isFreeHoL ? hol_cost : ( ( is_divine_storm && ab::background ) ? 3.0 : num_hopo_spent );
+      auto extra_time = timespan_t::from_millis( p->buffs.divine_hammer->data().effectN( 2 ).base_value() * base_cost );
+      auto new_duration = p->buffs.divine_hammer->remains() + extra_time;
+      if ( new_duration > p->buffs.divine_hammer->data().duration() )
+      {
+        extra_time = p->buffs.divine_hammer->data().duration() - p->buffs.divine_hammer->remains();
+      }
+      p->buffs.divine_hammer->extend_duration( p, extra_time );
+    }
+
     ab::execute();
 
     // if this is a vanq-hammer-based DS, don't do this stuff
@@ -1870,18 +1884,6 @@ public:
           break;
         }
       }
-    }
-
-    if ( p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() && ( num_hopo_spent > 0 || isFreeHoL ) )
-    {
-      auto base_cost = isFreeHoL ? hol_cost : num_hopo_spent;
-      auto extra_time = timespan_t::from_millis( p->buffs.divine_hammer->data().effectN( 2 ).base_value() * base_cost );
-      auto new_duration = p->buffs.divine_hammer->remains() + extra_time;
-      if ( new_duration > p->buffs.divine_hammer->data().duration() )
-      {
-        extra_time = p->buffs.divine_hammer->data().duration() - p->buffs.divine_hammer->remains();
-      }
-      p->buffs.divine_hammer->extend_duration( p, extra_time );
     }
 
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )

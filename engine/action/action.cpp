@@ -3326,6 +3326,16 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
       double evaluate() override
       {
         state->target = action.target;
+
+        int num_targets = action.n_targets();
+        if ( num_targets == -1 || num_targets > 1 )
+        {
+          action.target_cache.is_valid = false;
+          int max_targets = as<int>( action.target_list().size() );
+          num_targets = ( num_targets < 0 ) ? max_targets : std::min( max_targets, num_targets );
+        }
+        state->n_targets = std::max( 1, num_targets );
+
         action.snapshot_state( state, result_amount_type::NONE );
 
         return action.composite_persistent_multiplier( state );

@@ -1421,6 +1421,11 @@ struct press_the_advantage_t : base_action_t
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
       }
 
+      // Blackout Combo gets consumed by Keg Smash prior to the bonus attack, so if we make it here,
+      // we know it's a bonus Rising Sun Kick
+      if ( base_action_t::p()->buff.blackout_combo->up() )
+        base_action_t::p()->proc.blackout_combo_rising_sun_kick->occur();
+
       base_action_t::execute();
 
       base_action_t::p()->buff.blackout_combo->expire();
@@ -1655,11 +1660,11 @@ struct charred_passions_t : base_action_t
   struct damage_t : monk_spell_t
   {
     damage_t( monk_t *player, std::string_view name )
-      : monk_spell_t( player, fmt::format( "charred_passions_{}", name ), player->talent.brewmaster.charred_passions )
+      : monk_spell_t( player, fmt::format( "charred_passions_{}", name ),
+                      player->talent.brewmaster.charred_passions_damage )
     {
       background = dual = proc = true;
-      may_crit                 = false;
-      base_multiplier          = data().effectN( 1 ).percent();
+      base_multiplier          = player->talent.brewmaster.charred_passions->effectN( 1 ).percent();
     }
 
     void init() override
@@ -1686,6 +1691,17 @@ struct charred_passions_t : base_action_t
     // base_action_t::add_child( damage );
   }
 
+  void execute() override
+  {
+    base_action_t::execute();
+
+    if ( !base_action_t::p()->buff.charred_passions->up() )
+      return;
+
+    if ( chp_cooldown->up() )
+      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
+  }
+
   void impact( action_state_t *state ) override
   {
     base_action_t::impact( state );
@@ -1694,15 +1710,11 @@ struct charred_passions_t : base_action_t
       return;
 
     base_action_t::p()->proc.charred_passions->occur();
-    chp_damage->base_dd_min = chp_damage->base_dd_max = state->result_amount;
-    chp_damage->execute();
+    chp_damage->execute_on_target( state->target, state->result_amount );
 
     if ( monk_td_t *target_data = base_action_t::get_td( state->target );
          target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
-    {
       target_data->dot.breath_of_fire->refresh_duration();
-      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
-    }
   }
 };
 
@@ -3557,12 +3569,42 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // ==========================================================================
 // Breath of Fire
 // ==========================================================================
-struct breath_of_fire_dot_t : public monk_spell_t
+struct breath_of_fire_state_t : public action_state_t
 {
   bool blackout_combo;
 
-  breath_of_fire_dot_t( monk_t *p )
-    : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot ), blackout_combo( false )
+  breath_of_fire_state_t( action_t *a, player_t *t ) : action_state_t( a, t ), blackout_combo( false )
+  {
+  }
+
+  std::ostringstream &debug_str( std::ostringstream &s ) override
+  {
+    action_state_t::debug_str( s );
+    fmt::print( s, " blackout_combo={}", blackout_combo );
+    return s;
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    blackout_combo = false;
+  }
+
+  void copy_state( const action_state_t *o ) override
+  {
+    action_state_t::copy_state( o );
+    auto other_sa_state = debug_cast<const breath_of_fire_state_t *>( o );
+    blackout_combo      = other_sa_state->blackout_combo;
+  }
+};
+
+struct breath_of_fire_dot_t : public monk_spell_t
+{
+protected:
+  using custom_state_t = breath_of_fire_state_t;
+
+public:
+  breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
   {
     background    = true;
     tick_may_crit = may_crit = true;
@@ -3572,23 +3614,25 @@ struct breath_of_fire_dot_t : public monk_spell_t
   double composite_persistent_multiplier( const action_state_t *state ) const override
   {
     double cpm = monk_spell_t::composite_persistent_multiplier( state );
-    if ( blackout_combo )
+
+    if ( auto cs = debug_cast<const custom_state_t *>( state ); cs && cs->blackout_combo )
       cpm *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+
     return cpm;
   }
 
-  void execute() override
+  action_state_t *new_state() override
   {
-    // blackout combo buffs only one of the breath of fire dot applications from
-    // a single cast
-    monk_spell_t::execute();
-    blackout_combo = p()->buff.blackout_combo->up();
-    p()->buff.blackout_combo->expire();
+    return new custom_state_t( this, target );
   }
 };
 
 struct breath_of_fire_t : public monk_spell_t
 {
+protected:
+  using custom_state_t = breath_of_fire_state_t;
+
+public:
   struct dragonfire_brew_t : monk_spell_t
   {
     dragonfire_brew_t( monk_t *player )
@@ -3607,11 +3651,13 @@ struct breath_of_fire_t : public monk_spell_t
 
   dragonfire_brew_t *dragonfire_brew;
   bool no_bof_hit;
+  bool blackout_combo;
 
-  breath_of_fire_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "breath_of_fire", p->talent.brewmaster.breath_of_fire ),
+  breath_of_fire_t( monk_t *player, util::string_view options_str )
+    : monk_spell_t( player, "breath_of_fire", player->talent.brewmaster.breath_of_fire ),
       dragonfire_brew( nullptr ),
-      no_bof_hit( false )
+      no_bof_hit( false ),
+      blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
     parse_options( options_str );
@@ -3622,45 +3668,63 @@ struct breath_of_fire_t : public monk_spell_t
     full_amount_targets = 1;
     cast_during_sck     = true;
 
-    if ( p->talent.brewmaster.dragonfire_brew->ok() )
-      dragonfire_brew = new dragonfire_brew_t( p );
+    if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_value_func(
+              [ = ]( double value ) { return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
+          .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
+          .set_eff( &effect );
 
-    add_child( p->active_actions.breath_of_fire );
+    if ( player->talent.brewmaster.dragonfire_brew->ok() )
+      dragonfire_brew = new dragonfire_brew_t( player );
+
+    add_child( player->active_actions.breath_of_fire );
     if ( dragonfire_brew )
       add_child( dragonfire_brew );
   }
 
-  double action_multiplier() const override
+  action_state_t *new_state() override
   {
-    double am = monk_spell_t::action_multiplier();
-    // Currently the value is saved as 100% and each of the values is stagger_index / 3 * base_value
-    double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
-    am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
-
-    return am;
+    return new custom_state_t( this, target );
   }
 
   void execute() override
   {
     p()->buff.charred_passions->trigger();
+
     if ( no_bof_hit )
       return;
 
-    monk_spell_t::execute();
+    if ( blackout_combo = p()->buff.blackout_combo->up(); blackout_combo )
+      p()->proc.blackout_combo_breath_of_fire->occur();
+
     if ( dragonfire_brew )
       dragonfire_brew->execute();
 
-    if ( p()->buff.blackout_combo->up() )
-      p()->proc.blackout_combo_breath_of_fire->occur();
-    // defer boc consumption to be handled by bof dot
+    monk_spell_t::execute();
+
+    p()->buff.blackout_combo->expire();
   }
 
   void impact( action_state_t *state ) override
   {
     monk_spell_t::impact( state );
 
-    if ( get_td( state->target )->debuff.keg_smash->up() )
-      p()->active_actions.breath_of_fire->execute_on_target( state->target );
+    propagate_const<action_t *> dot = p()->active_actions.breath_of_fire;
+
+    auto dot_state    = debug_cast<custom_state_t *>( dot->get_state() );
+    dot_state->target = state->target;
+
+    // blackout combo buffs only one of the breath of fire dot applications from
+    // a single cast
+    if ( get_td( dot_state->target )->debuff.keg_smash->up() && blackout_combo )
+    {
+      dot_state->blackout_combo = true;
+      blackout_combo            = false;
+    }
+
+    dot->snapshot_state( dot_state, dot->amount_type( dot_state ) );
+    dot->schedule_execute( dot_state );
   }
 };
 
@@ -6826,6 +6890,7 @@ void monk_t::init_spells()
     talent.brewmaster.dragonfire_brew                     = _ST( "Dragonfire Brew" );
     talent.brewmaster.dragonfire_brew_hit                 = find_spell( 387621 );
     talent.brewmaster.charred_passions                    = _ST( "Charred Passions" );
+    talent.brewmaster.charred_passions_damage             = find_spell( 386959 );
     talent.brewmaster.high_tolerance                      = _ST( "High Tolerance" );
     talent.brewmaster.exploding_keg                       = _ST( "Exploding Keg" );
     talent.brewmaster.improved_invoke_niuzao_the_black_ox = _ST( "Improved Invoke Niuzao, the Black Ox" );

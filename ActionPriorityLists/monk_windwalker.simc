@@ -209,5 +209,4 @@ actions.fallback+=/tiger_palm,if=combo_strike&chi>5
 actions.normal_opener=tiger_palm,if=chi<6&combo_strike
 actions.normal_opener+=/rising_sun_kick,if=talent.ordered_elements
 
-actions.trinkets=use_item,name=epic_purple_shirt
-actions.trinkets+=/do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active|fight_remains<20
+actions.trinkets=do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active|fight_remains<20

@@ -1195,7 +1195,6 @@ public:
     int initial_supercharged_cp = 0;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
-    bool double_coup = false;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -1780,9 +1779,14 @@ public:
     ab::apply_affecting_aura( p->talent.outlaw.dirty_tricks );
     ab::apply_affecting_aura( p->talent.outlaw.heavy_hitter );
     ab::apply_affecting_aura( p->talent.outlaw.devious_stratagem );
-    ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
     ab::apply_affecting_aura( p->talent.outlaw.underhanded_upper_hand );
     ab::apply_affecting_aura( p->talent.outlaw.precision_shot );
+
+    // 2025-04-01 -- Bonus damage is not applied to Blade Flurry
+    if ( !p->bugs )
+    {
+      ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
+    }
 
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
@@ -2051,7 +2055,7 @@ public:
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitabile_end->ok() );
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
-                           nullptr, 1_ms ); // Works with WM
+                           nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
     register_consume_buff( p()->buffs.perforated_veins, p()->buffs.perforated_veins->is_affecting( &ab::data() ),
                            perforated_veins_consumed_proc, 1_ms ); // TOCHECK -- Ensure this still affects WM procs like it used to
@@ -4232,10 +4236,10 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
 
-    // 2024-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
+    // 2025-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
     //               Value of 5 seems to only be used for the end of the bonus damage scaling
     reduced_aoe_targets = p->bugs ? 8 : data().effectN( 3 ).base_value();
-    // 2024-04-01 -- Appears to now tick immediately on cast, not just on application
+    // 2025-04-01 -- Appears to now tick immediately on cast, not just on application
     tick_zero = p->bugs;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
@@ -4278,9 +4282,9 @@ struct crimson_tempest_t : public rogue_attack_t
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
   }
 
-  double composite_ta_multiplier( const action_state_t* state ) const override
+  double composite_persistent_multiplier( const action_state_t* state ) const override
   {
-    double m = rogue_attack_t::composite_ta_multiplier( state );
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
 
     // Bonus damage from target count is snapshot into the action state at time of cast
     if ( state->n_targets > 1 )
@@ -7180,6 +7184,12 @@ struct unseen_blade_t : public rogue_attack_t
     }
   }
 
+  bool procs_main_gauche() const override
+  { return true; }
+
+  bool procs_blade_flurry() const override
+  { return true; }
+
   bool procs_nimble_flurry() const override
   { return true; }
 };
@@ -7383,9 +7393,7 @@ struct coup_de_grace_t : public rogue_attack_t
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
     trigger_tww2_set_bonus_removal();
 
-    // 2025-03-15 -- Currently the buff is not expired until the last impact
-    //               This allows re-casting of Coup de Grace when Adrenaline Rush is up
-    p()->buffs.escalating_blade->expire( p()->bugs && p()->options.double_coup ? 1.2_s : 0_s );
+    p()->buffs.escalating_blade->expire();
   }
 
   bool ready() override
@@ -8467,10 +8475,12 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
   // TODO: Exact formula?
   unsigned full_ticks_remaining =
       (unsigned)( td->dots.rupture->remains() / td->dots.rupture->current_action->base_tick_time );
-  int replenish = as<int>( talent.assassination.venomous_wounds->effectN( 2 ).base_value() );
 
-  sim->print_debug( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
-                    *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
+  // 2025-04-12 -- The death effect was never updated to use the new VW value of 8 Energy, and still uses the old value of 10
+  int replenish = bugs ? 10 : as<int>( talent.assassination.venomous_wounds->effectN( 2 ).base_value() );
+  
+  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
+                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
 
   resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );
@@ -10381,10 +10391,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
   {
     return expr_t::create_constant( name_str, options.priority_rotation );
-  }
-  else if ( util::str_compare_ci( name_str, "double_coup" ) )
-  {
-    return expr_t::create_constant( name_str, options.double_coup );
   }
 
   // Split expressions
@@ -12329,7 +12335,6 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
-  add_option( opt_bool( "double_coup", options.double_coup ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -12359,7 +12364,6 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
-  options.double_coup = rogue->options.double_coup;
 }
 
 // rogue_t::create_profile  =================================================

@@ -457,6 +457,8 @@ struct doomguard_t : public warlock_simple_pet_t
 
 struct greater_dreadstalker_t : public dreadstalker_t
 {
+  bool vilefiend_present_on_summon;
+
   greater_dreadstalker_t( warlock_t* );
   void arise() override;
   void demise() override;

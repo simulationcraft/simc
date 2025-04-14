@@ -94,14 +94,14 @@ back=,id=222817,bonus_id=11303/8960/8790,enchant_id=7403,ilevel=675
 chest=,id=229274,bonus_id=4795,enchant_id=7364,ilevel=678
 wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7397,gem_id=213479,ilevel=675
 hands=,id=229272,bonus_id=4795,ilevel=678
-waist=,id=228877,bonus_id=1808/4795,gem_id=213455,ilevel=678
+waist=,id=234501,bonus_id=4795/1808,gem_id=213479,ilevel=678
 legs=,id=229270,bonus_id=4795,enchant_id=7601,ilevel=678
 feet=,id=228862,bonus_id=4795,enchant_id=7418,ilevel=678
-finger1=,id=228840,bonus_id=4795/8781,enchant_id=7334,gem_id=213455/213455,ilevel=678
-finger2=,id=231265,bonus_id=4795/8781,enchant_id=7334,gem_id=213455/213455,ilevel=678
-trinket1=,id=234217,ilevel=665
+finger1=,id=178871,bonus_id=4795/8781,enchant_id=7334,gem_id=213479/213479,ilevel=678
+finger2=,id=231265,bonus_id=4795/8781,enchant_id=7334,gem_id=213479/213458,ilevel=678
+trinket1=,id=230027,bonus_id=4795,ilevel=678
 trinket2=,id=232541,bonus_id=4795,ilevel=678
-main_hand=,id=228893,enchant_id=7463,ilevel=678
+main_hand=,id=228893,enchant_id=7439,ilevel=678
 
 # Gear Summary
 # gear_ilvl=676.73

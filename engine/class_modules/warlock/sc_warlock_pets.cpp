@@ -1786,6 +1786,8 @@ void greater_dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
+  vilefiend_present_on_summon = o()->buffs.vilefiend->check();
+
   dreadbite_executes = 1;
 
   buffs.demonic_hunger->trigger();
@@ -1805,7 +1807,12 @@ void greater_dreadstalker_t::demise()
 
 double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
-  double m = dreadstalker_t::composite_player_multiplier( school );
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  // 2025-03-28: Houndmasters Gambit talent is only applied to Greater Dreadstalkers if Vilefiend is present on summon
+  // Unlike normal Dreadstalkers, summoning Vilefiend when Greater Dreadstalkers are present does not apply the Houndmasters Gambit talent (maybe a bug?)
+  if ( ( vilefiend_present_on_summon || !bugs ) && o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+    m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
 
   m *= buffs.demonic_hunger->check_value();
 

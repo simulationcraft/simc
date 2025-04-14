@@ -199,7 +199,7 @@ jobs:
         if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} save_actions=${{ matrix.spec }}.simc
 

@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.5.60008
-static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.5.60253
+static const std::array<spelltext_data_t, 27315> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27244,6 +27244,7 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   { 1224902, "You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.", 0, 0 },
   { 1225038, "$@spelldesc1225074", 0, 0 },
   { 1225039, "$@spelldesc1225074", 0, 0 },
+  { 1225040, "$@spelldesc1225074", 0, 0 },
   { 1225042, "$@spelldesc1225074", 0, 0 },
   { 1225045, "$@spelldesc1225074", 0, 0 },
   { 1225074, "Apply Lesser Rune of Twilight Devastation to a helm.\r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
@@ -27284,6 +27285,7 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   { 1227297, "$@spelldesc1227294", 0, 0 },
   { 1227300, "$@spelldesc1227294", 0, 0 },
   { 1227301, "$@spelldesc1227294", 0, 0 },
+  { 1227303, "Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d.", "Taking Shadow damage every $t1 sec.", 0 },
   { 1227311, "Apply Greater Rune of the Void Ritual to a helm. \r\n\r\nGain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227312, "$@spelldesc1227311", 0, 0 },
   { 1227314, "$@spelldesc1227311", 0, 0 },
@@ -27312,13 +27314,14 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   { 1233394, "Apply Lesser Rune of the Void Ritual to a helm. \r\n\r\nGain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1234189, "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage.", 0 },
   { 1234212, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
+  { 1236942, "$@spelldesc198034", "Movement speed reduced by ${$s3*-1}%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.5.60008
+// spelltext hotfix entries, wow build 11.1.5.60253
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.5.60008
+// Spell description variables, wow build 11.1.5.60253
 static const std::array<spelldesc_vars_data_t, 648> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27970,7 +27973,7 @@ static const std::array<spelldesc_vars_data_t, 648> __ptr_spelldesc_vars_data { 
   { 1234189, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.5.60008
+// spelldesc_vars hotfix entries, wow build 11.1.5.60253
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

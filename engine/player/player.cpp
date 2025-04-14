@@ -3417,6 +3417,12 @@ void player_t::create_actions()
   if ( !action_list_str.empty() )
     get_action_priority_list( "default" )->action_list_str = action_list_str;
 
+  if ( is_player() && sim->enable_all_item_effects )
+  {
+    auto& def = get_action_priority_list( "default" )->action_list;
+    def.insert( def.begin(), { "use_item,slot=shirt", "" } );
+  }
+
   int j = 0;
 
   auto apls = sorted_action_priority_lists( this );

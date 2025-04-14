@@ -8290,6 +8290,19 @@ struct death_coil_damage_t final : public death_knight_spell_t
     }
   }
 
+  std::vector<player_t*>& target_list() const override
+  {
+    std::vector<player_t*>& current_targets = death_knight_spell_t::target_list();
+    // Don't bother ordering the list if all the valid targets will be hit
+    if (current_targets.size() <= as<size_t>( n_targets() ))
+      return current_targets;
+
+    // first target, the action target, needs to be left in place
+    rng().shuffle( current_targets.begin() + 1, current_targets.end() );
+
+    return current_targets;
+  }
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
@@ -10266,40 +10279,59 @@ private:
 };
 
 // Vile Contagion =============================================================
-
 struct vile_contagion_t final : public death_knight_spell_t
 {
+  unsigned max_targets;
+  int n_wounds;
   vile_contagion_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "vile_contagion", p, p->talent.unholy.vile_contagion )
+    : death_knight_spell_t( "vile_contagion", p, p->talent.unholy.vile_contagion ), max_targets( 0 ), n_wounds( 0 )
   {
     parse_options( options_str );
-    aoe = as<int>( p->talent.unholy.vile_contagion->effectN( 1 ).base_value() );
+    max_targets = as<unsigned>( p->talent.unholy.vile_contagion->effectN( 1 ).base_value() );
+    may_miss = may_crit = false;
+    aoe = 0;
   }
 
-  size_t available_targets( std::vector<player_t*>& tl ) const override
+  void apply_vc_wounds( vector_with_callback<player_t*>& tl )
   {
-    death_knight_spell_t::available_targets( tl );
+    int targets = 0;
+    if ( tl.size() > max_targets )
+      targets = max_targets;
+    else
+      targets = as<int>( tl.size() );
 
-    // Does not hit the main target
-    auto it = range::find( tl, target );
-    if ( it != tl.end() )
+    for ( int i = 0; i < targets; i++ )
     {
-      tl.erase( it );
+      player_t* this_target = tl[ i ];
+      p()->get_target_data( this_target )->debuff.festering_wound->trigger( n_wounds );
+      int n_applications = n_wounds;
+      while ( n_applications-- > 0 )
+      {
+        p()->procs.fw_vile_contagion->occur();
+        p()->background_actions.festering_wound_application->execute_on_target( this_target );
+      }
     }
+  }
 
-    return tl.size();
+  bool target_ready( player_t* candidate_target ) override
+  {
+    const death_knight_td_t* td = get_td( candidate_target );
+
+    if ( !td || !td->debuff.festering_wound->check() )
+      return false;
+
+    return death_knight_spell_t::target_ready( candidate_target );
   }
 
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && get_td( s->target )->debuff.festering_wound->check() )
-    {
-      unsigned n_stacks = get_td( s->target )->debuff.festering_wound->stack();
+    auto target_list = p()->sim->target_non_sleeping_list;
+    target_list.find_and_erase( s->target );
 
-      p()->trigger_festering_wound( s, n_stacks, p()->procs.fw_vile_contagion );
-    }
+    n_wounds = get_td( s->target )->debuff.festering_wound->check();
+    apply_vc_wounds( target_list );
   }
 };
 
@@ -14419,7 +14451,7 @@ void death_knight_t::create_buffs()
       make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), this, "icy_vigor", spell.icy_vigor );
 
   buffs.winning_streak_frost =
-      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak",
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak_frost",
                      spell.winning_streak_frost )
           ->set_chance( 1.01 )
           ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -14499,7 +14531,7 @@ void death_knight_t::create_buffs()
                                           "unholy_commander", spell.unholy_commander );
 
   buffs.winning_streak_unholy = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), this,
-                                               "winning_streak", spell.winning_streak_unholy )
+                                               "winning_streak_unholy", spell.winning_streak_unholy )
                                     ->set_chance( 1.01 );
 }
 
@@ -15619,37 +15651,78 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
-  /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Direct Damage Buffed by 4%", 179689,
+    hotfix::register_effect( "Death Knight", "2025-4-11", "The Blood Is Life(Blood) nerfed to 35%", 1124175,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 4 )
-        .verification_value( 0 );
+        .modifier( 35 )
+        .verification_value( 50 );
 
-    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Periodic Damage Buffed by 4%", 191174,
+    hotfix::register_effect( "Death Knight", "2025-4-11", "The Blood Is Life(Unholy) nerfed to 20%", 1124623,
                              hotfix::HOTFIX_FLAG_LIVE )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 0 );
+      .modifier( 20 )
+      .verification_value( 25 );
 
-    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Pet Damage Buffed by 4%", 844541,
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Exterminate(Blood) buffed by 30%", 1135880,
                              hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
+      .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 0 );
+      .modifier( 3.490695 )
+      .verification_value( 2.68515 );
 
-    hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Guardian Damage Buffed by 4%", 1032340,
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Exterminate(Frost) buffed by 30%", 1174046,
                              hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
+      .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 0 );
-  }*/
+      .modifier( 4.363359 )
+      .verification_value( 3.35643 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Exterminate(Blood) AoE buffed by 30%", 1135882,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.861704 )
+      .verification_value( 1.43208 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Exterminate(Frost) AoE buffed by 30%", 1174049,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.489358 )
+      .verification_value( 1.14566 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Wave of Souls(Blood) buffed by 25%", 1126738,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.8409375 )
+      .verification_value( 0.67275 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Wave of Souls(Frost) buffed by 25%", 1174044,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.96707875 )
+      .verification_value( 0.773663 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Reapers Mark(Blood) buffed by 30%", 1127543,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.138411 )
+      .verification_value( 0.10647 );
+
+    hotfix::register_effect( "Death Knight", "2025-4-11", "Reapers Mark(Frost) buffed by 30%", 1144448,
+                             hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.2491398 )
+      .verification_value( 0.191646 );
+  }
 
   void init( player_t* ) const override
   {
