@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.60257
-static const std::array<spelltext_data_t, 27237> __spelltext_data { {
+static const std::array<spelltext_data_t, 27238> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27237,6 +27237,7 @@ static const std::array<spelltext_data_t, 27237> __spelltext_data { {
   { 1232592, "$@spelldesc373129", 0, 0 },
   { 1232615, "$@spelldesc400169", 0, 0 },
   { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
+  { 1238052, "Holy Priest core passive", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.60257
@@ -27543,7 +27544,7 @@ static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
   {  321677, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321685, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  321686, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
-  {  322507, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
   {  322721, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
@@ -27730,7 +27731,7 @@ static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
   {  424564, "$dmg=${$57841s2+$57842s1}" },
   {  425529, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
   {  425804, "$healing=$?c2[${$s1*1.95}][${$s1}]" },
-  {  425965, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n" },
+  {  425965, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
   {  426516, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
   {  427031, "$apsp=${$cond($gt($SP,$AP),$SP,$AP)*(1)}" },
   {  427913, "$havocFury=${$s2}\r\n$vengeFury=${$s3+($258922s3*$d)}\r\n$havocTalentFury=${$s2+($258922s2*$d)}" },
@@ -27802,7 +27803,7 @@ static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
   {  451036, "$value=${($AP*$s3/100)*(1+$@versadmg)}" },
   {  451055, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451181, "$value=$?a137023[${($AP*$451017s1/100)*(1+$@versadmg)}][${($SP*$451017s1/100)*(1+$@versadmg)}]" },
-  {  451253, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n" },
+  {  451253, "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
   {  451299, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$s2/100*(1+$@versadmg)}" },
   {  451882, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  451901, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -27884,6 +27885,9 @@ static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 11.1.0.60257
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelldesc_vars_hotfix_data { {
+  {  322507,  0, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n", "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  425965,  0, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n", "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
+  {  451253,  0, "$absorb=${($AP*9.45)*(1+$@versadmg)}\r\n", "$absorb=${($AP*11.34)*(1+$@versadmg)}\r\n" },
 } };
 
