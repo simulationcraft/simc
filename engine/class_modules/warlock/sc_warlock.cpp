@@ -1021,7 +1021,18 @@ struct warlock_module_t : public module_t
   { return new warlock_t( sim, name, r ); }
 
   void register_hotfixes() const override
-  { }
+  {
+    // TODO: On average, the Dimension Ripper chance is 2.25% (maybe 2.26%?), not 5%.
+    // Dimension Ripper appears to use some sort of threshold-based accumulator, but further testing and tweaks are needed in its module.
+    // For now, we are setting this effect to 2.25%, which is the final average chance that has already been tested.
+    // Once this talent is properly implemented, it will likely be necessary to adjust or remove this hotfix.
+    hotfix::register_effect( "Warlock", "2025-4-15", "Dimension Ripper avg chance is 2.25%", 1161661,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2.25 )
+        .verification_value( 5.00 );
+  }
 
   bool valid() const override
   { return true; }
