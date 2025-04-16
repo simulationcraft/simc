@@ -5831,6 +5831,20 @@ struct crushing_blow_t : public warrior_attack_t
 
 // Shattering Throw ========================================================
 
+struct shattering_throw_damage_t : public warrior_attack_t
+{
+  shattering_throw_damage_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->talents.warrior.shattering_throw->effectN( 2 ).trigger() )
+  {
+    background = dual = true;
+    ignores_armor = true;
+    may_crit = false;
+    may_dodge = may_parry = may_block = false;
+    if ( ! p->is_ptr() )
+      attack_power_mod.direct = 1.0;
+  }
+};
+
 struct shattering_throw_t : public warrior_attack_t
 {
   shattering_throw_t( warrior_t* p, util::string_view options_str )
@@ -5838,7 +5852,10 @@ struct shattering_throw_t : public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
-    attack_power_mod.direct = 1.0;
+
+    execute_action = get_action<shattering_throw_damage_t>( "shattering_throw_damage", p );
+    execute_action->stats = stats;
+    stats->action_list.push_back( execute_action );
   }
   //add absorb shield bonus (are those even in SimC?), add cast time?
 };
@@ -7590,6 +7607,20 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
 
 // Wrecking Throw ========================================================
 
+struct wrecking_throw_damage_t : public warrior_attack_t
+{
+  wrecking_throw_damage_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->talents.warrior.wrecking_throw->effectN( 1 ).trigger() )
+  {
+    background = dual = true;
+    ignores_armor = true;
+    may_crit = false;
+    may_dodge = may_parry = may_block = false;
+    if ( ! p->is_ptr() )
+      attack_power_mod.direct = 1.0;
+  }
+};
+
 struct wrecking_throw_t : public warrior_attack_t
 {
   wrecking_throw_t( warrior_t* p, util::string_view options_str )
@@ -7598,7 +7629,10 @@ struct wrecking_throw_t : public warrior_attack_t
     parse_options( options_str );
     may_crit = may_parry = may_dodge = may_block = false;
     weapon = &( player->main_hand_weapon );
-    attack_power_mod.direct = 1.0;
+
+    execute_action = get_action<wrecking_throw_damage_t>( "wrecking_throw_damage", p );
+    execute_action->stats = stats;
+    stats->action_list.push_back( execute_action );
   }
   // add absorb shield bonus (are those even in SimC?)
 };
