@@ -213,12 +213,15 @@ void outlaw( player_t* p )
   default_->add_action( "lights_judgment" );
   default_->add_action( "bag_of_tricks" );
 
-  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders   High priority Ambush for Hidden Opportunity builds." );
+  build->add_action( "variable,name=deft_condition,value=cooldown.blade_flurry.ready&talent.deft_maneuvers&spell_targets>=5&(combo_points<=2-buff.broadside.up|!buff.adrenaline_rush.up)", "Builders  With Deft Maneuvers, build CPs with Blade Flurry at 5+ targets, only at 2 CPs or lower (1 CP with Broadside) unless AR isn't active." );
+  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "High priority Ambush for Hidden Opportunity builds." );
   build->add_action( "sinister_strike,if=buff.disorienting_strikes.up&!stealthed.all&(buff.escalating_blade.stack>2&buff.opportunity.stack<buff.opportunity.max_stack|!talent.hidden_opportunity)&buff.escalating_blade.stack<4", "Trickster builds should prioritize Sinister Strike during Disorienting Strikes. HO builds prefer to do this only at 3 Escalating Blade stacks and not at max Opportunity stacks." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available." );
-  build->add_action( "pistol_shot,if=talent.fan_the_hammer.rank=2&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With 2 ranks in Fan the Hammer, consume Opportunity as a higher priority if at max stacks or if it will expire." );
+  build->add_action( "blade_flurry,if=variable.deft_condition&(talent.fan_the_hammer.rank=1|!talent.nimble_flurry&!talent.surprising_strikes)", "With Fatebound or 1 rank in Fan the Hammer, and without Hidden Opportunity, build CP with Blade Flurry as a higher priority than Opportunity procs." );
+  build->add_action( "pistol_shot,if=talent.fan_the_hammer.rank=2&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With 2 ranks in Fan the Hammer, consume Opportunity as if at max stacks or if it will expire." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+(talent.quick_draw+buff.broadside.up)*(talent.fan_the_hammer.rank+1))|combo_points<=talent.ruthlessness)", "With Fan the Hammer, consume Opportunity if it will not overcap CPs, or with 1 CP at minimum." );
   build->add_action( "pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw." );
+  build->add_action( "blade_flurry,if=variable.deft_condition", "With Hidden Opportunity or 2 ranks in Fan the Hammer, building CPs with Blade Flurry is lower priority than Opportunity procs and Ambush." );
   build->add_action( "coup_de_grace,if=!stealthed.all", "Use Coup de Grace at low CP if Sinister Strike would otherwise be used." );
   build->add_action( "pool_resource,for_next=1", "Fallback pooling just so Sinister Strike is never casted if Ambush is available for Hidden Opportunity builds." );
   build->add_action( "ambush,if=talent.hidden_opportunity" );
@@ -229,7 +232,6 @@ void outlaw( player_t* p )
   cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1", "High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs." );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Sprint to further benefit from Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets." );
-  cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&spell_targets>=5&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)", "With Deft Maneuvers, build CPs with Blade Flurry at 5+ targets. Trickster builds should avoid this during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs.normal>=5&rtb_buffs=6", "With a natural 5 buff roll, use Keep it Rolling when you obtain the remaining buff from Count the Odds." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2", "Without a natural 5 buff roll, use Keep it Rolling at any 4+ buffs." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=3&rtb_buffs.normal<=2&buff.broadside.up&buff.ruthless_precision.up&buff.true_bearing.up", "Without a natural 5 buff roll, use Keep it Rolling at 3 buffs if you have the combination of Ruthless Precision + Broadside + True Bearing." );
