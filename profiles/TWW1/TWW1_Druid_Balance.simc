@@ -30,8 +30,7 @@ actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment
 actions.precombat+=/variable,name=on_use_trinket,value=0
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg&!trinket.1.is.spymasters_web
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff&!trinket.2.is.ovinaxs_mercurial_egg&!trinket.2.is.spymasters_web)*2
-actions.precombat+=/bear_form,if=talent.lycaras_meditation&talent.fluid_form&(!fight_style.dungeonroute|!fight_style.dungeonslice)
-actions.precombat+=/moonkin_form,if=!talent.lycaras_meditation|!talent.fluid_form
+actions.precombat+=/moonkin_form
 actions.precombat+=/wrath
 actions.precombat+=/wrath
 actions.precombat+=/starfire,if=!talent.stellar_flare

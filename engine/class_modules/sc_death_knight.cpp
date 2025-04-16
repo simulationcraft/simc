@@ -10292,18 +10292,17 @@ struct vile_contagion_t final : public death_knight_spell_t
     aoe = 0;
   }
 
-  void apply_vc_wounds()
+  void apply_vc_wounds( vector_with_callback<player_t*>& tl )
   {
     int targets = 0;
-    if ( ( p()->sim->target_non_sleeping_list.size() - 1 ) > max_targets )
+    if ( tl.size() > max_targets )
       targets = max_targets;
     else
-      targets = ( p()->sim->target_non_sleeping_list.size() - 1 );
+      targets = as<int>( tl.size() );
 
     for ( int i = 0; i < targets; i++ )
     {
-      // Dont hit the main target
-      player_t* this_target = p()->sim->target_non_sleeping_list[ i + 1 ];
+      player_t* this_target = tl[ i ];
       p()->get_target_data( this_target )->debuff.festering_wound->trigger( n_wounds );
       int n_applications = n_wounds;
       while ( n_applications-- > 0 )
@@ -10328,8 +10327,11 @@ struct vile_contagion_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
+    auto target_list = p()->sim->target_non_sleeping_list;
+    target_list.find_and_erase( s->target );
+
     n_wounds = get_td( s->target )->debuff.festering_wound->check();
-    apply_vc_wounds();
+    apply_vc_wounds( target_list );
   }
 };
 
@@ -14449,7 +14451,7 @@ void death_knight_t::create_buffs()
       make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), this, "icy_vigor", spell.icy_vigor );
 
   buffs.winning_streak_frost =
-      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak",
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak_frost",
                      spell.winning_streak_frost )
           ->set_chance( 1.01 )
           ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -14529,7 +14531,7 @@ void death_knight_t::create_buffs()
                                           "unholy_commander", spell.unholy_commander );
 
   buffs.winning_streak_unholy = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), this,
-                                               "winning_streak", spell.winning_streak_unholy )
+                                               "winning_streak_unholy", spell.winning_streak_unholy )
                                     ->set_chance( 1.01 );
 }
 
@@ -15649,6 +15651,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2025-4-11", "The Blood Is Life(Blood) nerfed to 35%", 1124175,
@@ -15721,7 +15724,7 @@ struct death_knight_module_t : public module_t
       .modifier( 0.2491398 )
       .verification_value( 0.191646 );
   }
-
+  */
   void init( player_t* ) const override
   {
   }

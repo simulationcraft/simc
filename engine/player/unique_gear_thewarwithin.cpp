@@ -591,7 +591,7 @@ void twilight_devastation( special_effect_t& effect )
 
     void impact( action_state_t* s ) override
     {
-      if ( ( s->chain_target + 1 ) % 2 == 0 )
+      if ( s->chain_target >= 1 )
         current_mult *= 0.65;
 
       generic_proc_t::impact( s );
@@ -656,7 +656,7 @@ void echoing_void( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       new_driver->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ ticking_buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+      [ ticking_buff ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
         return !ticking_buff->up();
       } );
 
@@ -733,19 +733,16 @@ void twisted_appendage( special_effect_t& effect )
   {
     spawner::pet_spawner_t<twisted_appendage_pet_t> appendage_spawner;
 
-    twisted_appendage_cb_t( special_effect_t& e )
+    twisted_appendage_cb_t( const special_effect_t& e, const int original_id )
       : dbc_proc_callback_t( e.player, e ), appendage_spawner( "twisted_appendage", e.player )
     {
-      auto summon_spell      = e.player->find_spell( 1227301 );
-      auto appendage         = new action_t( action_e::ACTION_OTHER, "twisted_appendage", e.player, summon_spell );
-      int original_driver_id = e.driver()->id();
+      auto summon_spell = e.player->find_spell( 1227301 );
+      auto appendage    = new action_t( action_e::ACTION_OTHER, "twisted_appendage", e.player, summon_spell );
 
-      appendage_spawner.set_creation_callback( [ &e, appendage, original_driver_id ]( player_t* ) {
-        return new twisted_appendage_pet_t( e, original_driver_id, appendage );
+      appendage_spawner.set_creation_callback( [ &e, original_id, appendage ]( player_t* ) {
+        return new twisted_appendage_pet_t( e, original_id, appendage );
       } );
       appendage_spawner.set_default_duration( summon_spell->duration() );
-
-      e.spell_id = 1227300;
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -754,7 +751,9 @@ void twisted_appendage( special_effect_t& effect )
     }
   };
 
-  new twisted_appendage_cb_t( effect );
+  int original_driver_id = effect.driver()->id();
+  effect.spell_id        = 1227300;
+  new twisted_appendage_cb_t( effect, original_driver_id );
 }
 
 // Rune of the Void Ritual
@@ -777,7 +776,7 @@ void void_ritual( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ buff ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) { return !buff->up(); } );
+      [ buff ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) { return !buff->up(); } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -7012,7 +7011,7 @@ void amorphous_relic( special_effect_t& effect )
                            }
                          } );
 
-  effect.player->register_on_combat_state_callback( [ periodic ]( player_t* p, bool c ) {
+  effect.player->register_on_combat_state_callback( [ periodic ]( player_t*, bool c ) {
     if ( !c )
       periodic->expire();
     else

@@ -1250,7 +1250,7 @@ public:
     unsigned dre_enhancement_forced_failures = 0;
 
     // Surging totem whiff
-    double surging_totem_miss_chance = 0.1;
+    double surging_totem_miss_chance = 0.0;
 
     // 11.1 Flowing Spirits proc modeling tweaks
     unsigned flowing_spirits_procs = 3;  // Number of Flowing Spirits procs in a shuffled rng

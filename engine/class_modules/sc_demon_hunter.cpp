@@ -1583,6 +1583,9 @@ public:
 
   struct
   {
+    // General
+    affect_flags chaos_brand_server_side;
+
     // Havoc
     affect_flags a_fire_inside;
     affect_flags demonic_presence;
@@ -1825,7 +1828,8 @@ public:
                               effect_mask_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
 
     // Aldrachi Reaver
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark );
+    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::reavers_mark ), p()->hero_spec.reavers_mark,
+                              USE_CURRENT );
 
     // Fel-scarred
   }
@@ -1888,6 +1892,18 @@ public:
     return m;
   }
 
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = ab::composite_target_da_multiplier( t );
+
+    if ( affected_by.chaos_brand_server_side.direct && t->debuffs.chaos_brand->up() )
+    {
+      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_ta_multiplier( s );
@@ -1922,6 +1938,18 @@ public:
         }
       }
       m *= 1.0 + da;
+    }
+
+    return m;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double m = ab::composite_target_ta_multiplier( t );
+
+    if ( affected_by.chaos_brand_server_side.periodic && t->debuffs.chaos_brand->up() )
+    {
+      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
     }
 
     return m;
@@ -2326,8 +2354,10 @@ struct winning_streak_removal_trigger_t : public BASE
 {
   using base_t = winning_streak_removal_trigger_t<BASE>;
 
+  timespan_t winning_streak_removal_delay;
+
   winning_streak_removal_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : BASE( n, p, s, o )
+    : BASE( n, p, s, o ), winning_streak_removal_delay( 0_ms )
   {
   }
 
@@ -2340,21 +2370,25 @@ struct winning_streak_removal_trigger_t : public BASE
     {
       // 2025-02-08 -- Winning Streak! residual keeps the highest value of stacks and won't refresh if the stacks on
       //               the non-residual version are less than the stacks on the residual version.
-      int stacks          = BASE::p()->buff.winning_streak->stack();
-      int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
 
-      BASE::p()->buff.winning_streak->expire();
-      BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
+      // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
+      //               damage
+      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this ] {
+        int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
+        int new_stacks      = BASE::p()->buff.winning_streak->stack();
+        BASE::p()->buff.winning_streak->expire();
+        BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
 
-      if ( stacks >= residual_stacks )
-      {
-        BASE::p()->buff.winning_streak_residual->expire();
-        BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
-      }
-      else
-      {
-        BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
-      }
+        if ( new_stacks >= residual_stacks )
+        {
+          BASE::p()->buff.winning_streak_residual->expire();
+          BASE::p()->buff.winning_streak_residual->trigger( new_stacks + residual_stacks );
+        }
+        else
+        {
+          BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
+        }
+      } );
     }
   }
 };
@@ -6475,12 +6509,26 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
   soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
   {
     dual = true;
+
+    affected_by.chaos_brand_server_side.periodic = true;
   }
 
   void init() override
   {
     base_t::init();
     update_flags = 0;  // Snapshots on refresh, does not update dynamically
+  }
+
+  double base_ta( const action_state_t* s ) const override
+  {
+    double amount = base_t::base_ta( s );
+
+    if ( affected_by.chaos_brand_server_side.periodic && s->target->debuffs.chaos_brand->up() )
+    {
+      amount *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
+    }
+
+    return amount;
   }
 };
 
@@ -6736,6 +6784,10 @@ struct wounded_quarry_t : public demon_hunter_attack_t
       affected_by.demon_hide.direct   = true;
       affected_by.demon_hide.periodic = true;
     }
+
+    // WQ is affected by Chaos Brand on the server side
+    affected_by.chaos_brand_server_side.direct   = true;
+    affected_by.chaos_brand_server_side.periodic = true;
   }
 
   void impact( action_state_t* s ) override
@@ -7375,7 +7427,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.reavers_mark =
       make_buff( *this, "reavers_mark", p.hero_spec.reavers_mark )
           ->set_default_value_from_effect( 1 )
-          ->set_max_stack( 2 )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
           ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
@@ -7400,7 +7451,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
               }
               p.last_reavers_mark_applied = b->player;
             }
-          } );
+          } )
+          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).percent() );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -8601,7 +8653,7 @@ void demon_hunter_t::init_spells()
   spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  spec.cycle_of_hatred_buff = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
 
   spec.demon_spikes_buff  = find_spell( 203819 );
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();

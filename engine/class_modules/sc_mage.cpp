@@ -1270,6 +1270,9 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     // base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( 9 ).percent();
     crit_bonus_multiplier *= 1.0 + o()->talents.overflowing_energy->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + o()->talents.wildfire->effectN( 2 ).percent();
+    // TODO: Does this work with the unbugged meteorite (which isn't a mage spell)?
+    if ( data().affected_by_label( o()->spec.arcane_mage->effectN( 11 ) ) )
+      base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( 11 ).percent();
   }
 
   double action_multiplier() const override
@@ -4546,6 +4549,8 @@ struct fireball_t final : public fire_mage_spell_t
     {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 5 ).percent();
+      base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 8 ).percent();
+      base_td_multiplier *= 1.0 + p->spec.fire_mage->effectN( 9 ).percent();
       enable_calculate_on_impact( 468655 );
       triggers.frostfire_mastery = false; // Manually triggered on impact
     }
@@ -6951,6 +6956,7 @@ struct frostfire_infusion_t final : public mage_spell_t
   {
     background = proc = true;
     triggers.frostfire_infusion = false;
+    base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 10 ).percent();
   }
 
   void execute() override

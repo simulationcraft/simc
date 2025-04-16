@@ -363,7 +363,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 668;
+    int item_level = 672;
     std::string variant = "default";
   } option;
   
@@ -4196,13 +4196,430 @@ struct melt_armor_dot_t : public evoker_spell_t
   }
 };
 
+
+struct eruption_t : public essence_spell_t
+{
+  struct eruption_4pc_t : public evoker_spell_t
+  {
+    timespan_t extend_ebon;
+
+    eruption_4pc_t( evoker_t* p, std::string_view n )
+      : evoker_spell_t( n, p, p->find_spell( 424428 ) ),
+        extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
+    {
+      aoe              = -1;
+      split_aoe_damage = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = evoker_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.ricocheting_pyroclast.ok() )
+      {
+        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                            p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                      p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+      }
+
+      return da;
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+
+      p()->extend_ebon( extend_ebon );
+    }
+  };
+
+  struct eruption_mass_eruption_t : public evoker_spell_t
+  {
+    double tww2_4pc_mult;
+
+    eruption_mass_eruption_t( evoker_t* p, std::string_view n )
+      : evoker_spell_t( n, p, p->talent.scalecommander.mass_eruption_damage ),
+        tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
+                           ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
+                           : 0.0 )
+    {
+      aoe              = -1;
+      split_aoe_damage = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = evoker_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.ricocheting_pyroclast.ok() )
+      {
+        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                            p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                      p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+      }
+
+      if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
+        da *= 1.0 + tww2_4pc_mult;
+
+      return da;
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+    }
+  };
+
+  timespan_t extend_ebon;
+  timespan_t upheaval_cdr;
+  action_t* t31_4pc_eruption;
+  action_t* mass_eruption;
+  double mass_eruption_mult;
+  int mass_eruption_max_targets;
+  double motes_chance;
+  bool is_overlord;
+  bool is_overlord_deep_breath;
+  double tww2_4pc_mult;
+
+  eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
+  {
+  }
+
+  eruption_t( evoker_t* p, std::string_view name, std::string_view options_str )
+    : essence_spell_t( name, p, p->talent.eruption, options_str ),
+      extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
+      upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() ),
+      t31_4pc_eruption( nullptr ),
+      mass_eruption( nullptr ),
+      mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
+      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
+      motes_chance( p->talent.motes_of_possibility->proc_chance() ),
+      is_overlord( false ),
+      is_overlord_deep_breath( false ),
+      tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
+                         ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
+                         : 0.0 )
+  {
+    aoe              = -1;
+    split_aoe_damage = true;
+
+    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
+    {
+      t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
+      add_child( t31_4pc_eruption );
+    }
+
+    if ( p->talent.scalecommander.mass_eruption.enabled() )
+    {
+      mass_eruption = p->get_secondary_action<eruption_mass_eruption_t>( "mass_" + name_str, "mass_" + name_str );
+      add_child( mass_eruption );
+    }
+  }
+
+  int mass_eruption_targets() const
+  {
+    std::vector<player_t*>& tl = target_list();
+    const int tl_size          = as<int>( tl.size() );
+
+    return std::min( mass_eruption_max_targets, tl_size );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = essence_spell_t::composite_da_multiplier( s );
+
+    if ( p()->talent.ricocheting_pyroclast.ok() )
+    {
+      da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                          p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                    p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+    }
+
+    if ( p()->buff.mass_eruption_stacks->check() && ( !is_overlord || is_overlord_deep_breath && p()->bugs ) )
+    {
+      da *= 1 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
+    }
+
+    if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
+      da *= 1.0 + tww2_4pc_mult;
+
+    return da;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    essence_spell_t::impact( s );
+
+    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() &&
+         ( !is_overlord && s->chain_target == 0 || is_overlord_deep_breath && p()->bugs ) )
+    {
+      p()->apply_bombardments( s->target );
+    }
+  }
+
+  void execute() override
+  {
+    essence_spell_t::execute();
+
+    p()->extend_ebon( extend_ebon );
+
+    if ( p()->buff.trembling_earth->check() && t31_4pc_eruption )
+    {
+      for ( int i = 0; i < p()->buff.trembling_earth->check(); i++ )
+      {
+        t31_4pc_eruption->execute_on_target( p()->target );
+      }
+      p()->buff.trembling_earth->expire();
+    }
+
+    if ( p()->talent.accretion.ok() )
+    {
+      p()->cooldown.upheaval->adjust( upheaval_cdr );
+    }
+
+    if ( p()->talent.motes_of_possibility.ok() && rng().roll( motes_chance ) )
+    {
+      p()->spawn_mote_of_possibility();
+    }
+
+    if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
+         p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
+    {
+      p()->get_target_data( p()->last_scales_target )
+          ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
+    }
+
+    if ( ( !is_overlord || is_overlord_deep_breath && p()->bugs ) )
+    {
+      if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
+           execute_state )
+      {
+        int eruptions = 1;
+        for ( auto potential_target : target_list() )
+        {
+          if ( potential_target == execute_state->target )
+            continue;
+
+          mass_eruption->execute_on_target( potential_target );
+
+          if ( ++eruptions >= mass_eruption_max_targets )
+            break;
+        }
+      }
+
+      p()->buff.volcanic_upsurge->decrement();
+      if ( !is_overlord_deep_breath )
+        p()->buff.mass_eruption_stacks->decrement();
+    }
+  }
+};
+
+
+struct upheaval_t : public empowered_charge_spell_t
+{
+  using periodic_base_t = residual_action::residual_periodic_action_t<evoker_spell_t>;
+  struct reverberations_t : public periodic_base_t
+  {
+    reverberations_t( evoker_t* p, std::string_view n )
+      : residual_action_t( n, p, p->talent.chronowarden.reverberations_upheaval )
+    {
+    }
+
+    // Return Spell_t's multiplier as evoker's contains our mastery amp.
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      return spell_t::composite_target_multiplier( t );
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      periodic_base_t::trigger_dot( s );
+
+      p()->buff.primacy->trigger();
+    }
+  };
+
+  struct upheaval_damage_t : public empowered_release_spell_t
+  {
+    reverberations_t* reverberations;
+    double reverb_mul;
+    int repeats;
+    upheaval_damage_t* rumbling_earth;
+    action_t* chrono_flames;
+    int max_afterimage_targets;
+    bool is_rumbling_earth;
+    bool is_tierset;
+
+    upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth, bool is_tierset )
+      : base_t( name, p, p->find_spell( 396288 ) ),
+        reverberations( nullptr ),
+        reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
+        repeats( as<int>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
+        rumbling_earth( nullptr ),
+        chrono_flames( nullptr ),
+        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) ),
+        is_rumbling_earth( is_rumbling_earth ),
+        is_tierset( is_tierset )
+    {
+      aoe = -1;
+
+      if ( p->talent.chronowarden.reverberations.enabled() )
+      {
+        auto reverb_name = fmt::format( "{}_dot", name );
+        reverberations   = p->get_secondary_action<reverberations_t>( reverb_name, reverb_name );
+      }
+
+      if ( is_rumbling_earth )
+      {
+        sands           = nullptr;
+        threads_of_fate = nullptr;
+        base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
+        extend_ebon = 0_s;
+      }
+      else if ( p->talent.rumbling_earth.enabled() )
+      {
+        rumbling_earth = p->get_secondary_action<upheaval_damage_t>(
+            fmt::format( "{}_rumbling_earth", name ), fmt::format( "{}_rumbling_earth", name ), true, is_tierset );
+      }
+
+      if ( p->talent.chronowarden.afterimage.enabled() && !is_rumbling_earth )
+      {
+        chrono_flames = p->get_secondary_action<living_flame_damage_t>( fmt::format( "afterimage_{}", name ),
+                                                                        fmt::format( "afterimage_{}", name ), true );
+      }
+
+      if ( is_tierset )
+      {
+        base_dd_multiplier *= p->sets->set( EVOKER_AUGMENTATION, TWW2, B2 )->effectN( 1 ).percent();
+        sands           = nullptr;
+        threads_of_fate = nullptr;
+        extend_ebon     = 0_s;
+      }
+
+      if ( is_tierset && !is_rumbling_earth )
+      {
+        if ( rumbling_earth )
+        {
+          add_child( rumbling_earth );
+        }
+        if ( chrono_flames )
+        {
+          add_child( chrono_flames );
+        }
+        if ( reverberations )
+        {
+          add_child( reverberations );
+        }
+      }
+    }
+
+    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage", false, false )
+    {
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = empowered_release_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.tectonic_locus.ok() && s->chain_target == 0 )
+      {
+        da *= 1 + p()->talent.tectonic_locus->effectN( 1 ).percent();
+      }
+
+      return da;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      empowered_release_spell_t::impact( s );
+
+      if ( reverberations )
+      {
+        residual_action::trigger( reverberations, s->target, s->result_amount * reverb_mul );
+      }
+
+      if ( chrono_flames && s->chain_target < max_afterimage_targets )
+      {
+        chrono_flames->execute_on_target( s->target );
+      }
+    }
+
+    void execute() override
+    {
+      if ( rumbling_earth )
+      {
+        empower_e empower_level  = cast_state( pre_execute_state )->empower;
+        player_t* current_target = pre_execute_state->target;
+
+        for ( int i = 0; i < repeats; i++ )
+        {
+          // First repeat is 200ms, 2nd repeat was 400ms delay from the first. Maybe triangular?
+          make_event( sim, 200_ms * ( i + 1 ) * ( i + 2 ) / 2, [ this, current_target, empower_level ] {
+            auto emp_state         = rumbling_earth->get_state();
+            emp_state->target      = current_target;
+            rumbling_earth->target = current_target;
+            rumbling_earth->snapshot_state( emp_state, rumbling_earth->amount_type( emp_state ) );
+            rumbling_earth->cast_state( emp_state )->empower = empower_level;
+
+            rumbling_earth->schedule_execute( emp_state );
+          } );
+        }
+      }
+
+      empowered_release_spell_t::execute();
+
+      if ( !is_rumbling_earth )
+      {
+        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
+          p()->buff.volcanic_upsurge->trigger();
+
+        if ( p()->talent.rockfall.enabled() && rng().roll( p()->talent.rockfall->effectN( 2 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.rockfall->occur();
+        }
+
+        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) &&
+             rng().roll( p()->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 1 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.tww2_4pc->occur();
+        }
+      }
+    }
+  };
+
+  upheaval_t( evoker_t* p, std::string_view options_str ) : base_t( "upheaval", p, p->talent.upheaval, options_str )
+  {
+    create_release_spell<upheaval_damage_t>( "upheaval_damage" );
+
+    if ( p->talent.chronowarden.reverberations.enabled() )
+    {
+      add_child( p->get_secondary_action<reverberations_t>( "upheaval_damage_dot", "upheaval_damage_dot" ) );
+    }
+
+    if ( p->talent.rumbling_earth.enabled() )
+    {
+      add_child( p->get_secondary_action<upheaval_damage_t>( "upheaval_damage_rumbling_earth",
+                                                             "upheaval_damage_rumbling_earth", true, false ) );
+    }
+
+    if ( p->talent.chronowarden.afterimage.enabled() )
+    {
+      add_child( p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval_damage",
+                                                                 "afterimage_upheaval_damage", true ) );
+    }
+  }
+};
+
 struct deep_breath_t : public evoker_spell_t
 {
   struct deep_breath_dot_t : public evoker_spell_t
   {
-    deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
+    deep_breath_dot_t( evoker_t* p )
+      : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
     {
-      aoe = -1;
+      aoe  = 0;
       dual = true;
     }
 
@@ -4214,6 +4631,7 @@ struct deep_breath_t : public evoker_spell_t
     void impact( action_state_t* s ) override
     {
       evoker_spell_t::impact( s );
+
       if ( p()->talent.scalecommander.melt_armor.ok() )
       {
         auto td = p()->get_target_data( s->target );
@@ -4236,6 +4654,8 @@ struct deep_breath_t : public evoker_spell_t
   action_t* ebon;
   action_t* melt_armor_dot;
   timespan_t plot_duration;
+  eruption_t* eruption;
+  upheaval_t::upheaval_damage_t* upheaval_set;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "deep_breath", p,
@@ -4243,10 +4663,11 @@ struct deep_breath_t : public evoker_spell_t
                       options_str ),
       damage( nullptr ),
       ebon( nullptr ),
-      melt_armor_dot( nullptr )
+      melt_armor_dot( nullptr ),
+      eruption( nullptr ),
+      upheaval_set( nullptr )
   {
-    damage        = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
-    damage->stats = stats;
+    aoe = -1;
 
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
@@ -4256,6 +4677,18 @@ struct deep_breath_t : public evoker_spell_t
 
     if ( data().ok() )
     {
+      damage        = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
+      damage->stats = stats;
+
+      if ( p->talent.overlord.ok() )
+      {
+        eruption              = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+        eruption->is_overlord = true;
+        eruption->is_overlord_deep_breath = true;
+        eruption->motes_chance            = p->talent.overlord->effectN( 2 ).percent();
+        add_child( eruption );
+      }
+
       if ( p->talent.scalecommander.maneuverability.ok() )
       {
         melt_armor_dot = p->get_secondary_action<melt_armor_dot_t>( "melt_armor_dot" );
@@ -4264,7 +4697,15 @@ struct deep_breath_t : public evoker_spell_t
 
       if ( p->specialization() == EVOKER_AUGMENTATION && p->talent.ebon_might.ok() )
         ebon = p->get_secondary_action<ebon_might_t>(
-            "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
+            "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );      
+    }
+
+    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )
+    {
+      upheaval_set = p->get_secondary_action<spells::upheaval_t::upheaval_damage_t>(
+          "upheaval_tww2_2pc_db", "upheaval_tww2_2pc_db", false, true );
+
+      add_child( upheaval_set );
     }
 
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
@@ -4274,17 +4715,15 @@ struct deep_breath_t : public evoker_spell_t
   {
     evoker_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.melt_armor.ok() )
+    damage->execute_on_target( s->target );
+
+    if ( eruption && s->chain_target < p()->talent.overlord->effectN( 1 ).base_value() )
     {
-      auto td = p()->get_target_data( s->target );
-      td->debuffs.melt_armor->trigger();
+      make_event( sim, 200_ms, [ this, s ] { eruption->execute_on_target( s->target ); } );
     }
 
     if ( melt_armor_dot && s->chain_target == 0 )
       melt_armor_dot->execute_on_target( s->target );
-
-    if ( s->chain_target == 0 )
-      damage->execute_on_target( s->target );
   }
 
   void execute() override
@@ -4293,6 +4732,16 @@ struct deep_breath_t : public evoker_spell_t
 
     if ( ebon )
       ebon->execute();
+
+    if ( upheaval_set )
+    {
+      auto emp_state       = upheaval_set->get_state();
+      emp_state->target    = target;
+      upheaval_set->target = target;
+      upheaval_set->snapshot_state( emp_state, upheaval_set->amount_type( emp_state ) );
+      upheaval_set->cast_state( emp_state )->empower = EMPOWER_4;
+      upheaval_set->schedule_execute( emp_state );
+    }
 
     if ( is_precombat )
     {
@@ -4327,6 +4776,13 @@ struct deep_breath_t : public evoker_spell_t
         }
       } );
     }
+    
+    if ( p()->talent.imminent_destruction.ok() )
+    {
+      make_event( sim, player->gcd_ready - sim->current_time() - 1_ms,
+                  [ this ] { p()->buff.imminent_destruction->trigger(); } );
+    }
+
 
     if ( p()->talent.scalecommander.slipstream.ok() )
     {
@@ -5579,418 +6035,6 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
-struct eruption_t : public essence_spell_t
-{
-  struct eruption_4pc_t : public evoker_spell_t
-  {
-    timespan_t extend_ebon;
-
-    eruption_4pc_t( evoker_t* p, std::string_view n )
-      : evoker_spell_t( n, p, p->find_spell( 424428 ) ),
-        extend_ebon( p->sets->set( EVOKER_AUGMENTATION, T31, B4 )->effectN( 1 ).time_value() * 100 )
-    {
-      aoe              = -1;
-      split_aoe_damage = true;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double da = evoker_spell_t::composite_da_multiplier( s );
-
-      if ( p()->talent.ricocheting_pyroclast.ok() )
-      {
-        da *= 1 + std::min( static_cast<double>( s->n_targets ),
-                            p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
-                      p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
-      }
-
-      return da;
-    }
-
-    void execute() override
-    {
-      evoker_spell_t::execute();
-
-      p()->extend_ebon( extend_ebon );
-    }
-  };
-
-  struct eruption_mass_eruption_t : public evoker_spell_t
-  {
-    double tww2_4pc_mult;
-
-    eruption_mass_eruption_t( evoker_t* p, std::string_view n )
-      : evoker_spell_t( n, p, p->talent.scalecommander.mass_eruption_damage ),
-        tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
-                           ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
-                           : 0.0 )
-    {
-      aoe              = -1;
-      split_aoe_damage = true;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double da = evoker_spell_t::composite_da_multiplier( s );
-
-      if ( p()->talent.ricocheting_pyroclast.ok() )
-      {
-        da *= 1 + std::min( static_cast<double>( s->n_targets ),
-                            p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
-                      p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
-      }
-
-    if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
-        da *= 1.0 + tww2_4pc_mult;
-
-      return da;
-    }
-
-    void execute() override
-    {
-      evoker_spell_t::execute();
-    }
-  };
-  
-  timespan_t extend_ebon;
-  timespan_t upheaval_cdr;
-  action_t* t31_4pc_eruption;
-  action_t* mass_eruption;
-  double mass_eruption_mult;
-  int mass_eruption_max_targets;
-  double motes_chance;
-  bool is_overlord;
-  double tww2_4pc_mult;
-
-  eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
-  {
-  }
-
-  eruption_t( evoker_t* p, std::string_view name, std::string_view options_str )
-    : essence_spell_t( name, p, p->talent.eruption, options_str ),
-      extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
-      upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() ),
-      t31_4pc_eruption( nullptr ),
-      mass_eruption( nullptr ),
-      mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
-      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
-      motes_chance( p->talent.motes_of_possibility->proc_chance() ),
-      is_overlord( false ),
-      tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
-                         ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
-                         : 0.0 )
-  {
-    aoe              = -1;
-    split_aoe_damage = true;
-
-    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, T31, B4 ) )
-    {
-      t31_4pc_eruption = p->get_secondary_action<eruption_4pc_t>( name_str + "_4pc", name_str + "_4pc" );
-      add_child( t31_4pc_eruption );
-    }
-
-    if ( p->talent.scalecommander.mass_eruption.enabled() )
-    {
-      mass_eruption = p->get_secondary_action<eruption_mass_eruption_t>( "mass_" + name_str, "mass_" + name_str );
-      add_child( mass_eruption );
-    }
-  }
-
-  int mass_eruption_targets() const
-  {
-    std::vector<player_t*>& tl = target_list();
-    const int tl_size          = as<int>( tl.size() );
-
-    return std::min( mass_eruption_max_targets, tl_size );
-  }
-
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double da = essence_spell_t::composite_da_multiplier( s );
-
-    if ( p()->talent.ricocheting_pyroclast.ok() )
-    {
-      da *= 1 + std::min( static_cast<double>( s->n_targets ),
-                          p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
-                    p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
-    }
-
-    if ( p()->buff.mass_eruption_stacks->check() && !is_overlord )
-    {
-      da *= 1 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
-    }
-
-    if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
-      da *= 1.0 + tww2_4pc_mult;
-
-    return da;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    essence_spell_t::impact( s );
-
-    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && !is_overlord &&
-         s->chain_target == 0 )
-    {
-      p()->apply_bombardments( s->target );
-    }
-  }
-
-  void execute() override
-  {
-    essence_spell_t::execute();
-
-    p()->extend_ebon( extend_ebon );
-
-    if ( p()->buff.trembling_earth->check() && t31_4pc_eruption )
-    {
-      for ( int i = 0; i < p()->buff.trembling_earth->check(); i++ )
-      {
-        t31_4pc_eruption->execute_on_target( p()->target );
-      }
-      p()->buff.trembling_earth->expire();
-    }
-
-    if ( p()->talent.accretion.ok() )
-    {
-      p()->cooldown.upheaval->adjust( upheaval_cdr );
-    }
-
-    if ( p()->talent.motes_of_possibility.ok() && rng().roll( motes_chance ) )
-    {
-      p()->spawn_mote_of_possibility();
-    }
-
-    if ( p()->talent.regenerative_chitin.ok() && p()->last_scales_target &&
-         p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
-    {
-      p()->get_target_data( p()->last_scales_target )
-          ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
-    }
-
-    if ( !is_overlord )
-    {
-      if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
-           execute_state )
-      {
-        int eruptions = 1;
-        for ( auto potential_target : target_list() )
-        {
-          if ( potential_target == execute_state->target )
-            continue;
-
-          mass_eruption->execute_on_target( potential_target );
-
-          if ( ++eruptions >= mass_eruption_max_targets )
-            break;
-        }
-      }
-
-      p()->buff.volcanic_upsurge->decrement();
-      p()->buff.mass_eruption_stacks->decrement();
-    }
-  }
-};
-
-struct upheaval_t : public empowered_charge_spell_t
-{
-  using periodic_base_t = residual_action::residual_periodic_action_t<evoker_spell_t>;
-  struct reverberations_t : public periodic_base_t
-  {
-    reverberations_t( evoker_t* p, std::string_view n )
-      : residual_action_t( n, p, p->talent.chronowarden.reverberations_upheaval )
-    {
-    }
-
-    // Return Spell_t's multiplier as evoker's contains our mastery amp.
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      return spell_t::composite_target_multiplier( t );
-    }
-
-    void trigger_dot( action_state_t* s ) override
-    {
-      periodic_base_t::trigger_dot( s );
-
-      p()->buff.primacy->trigger();
-    }
-  };
-
-  struct upheaval_damage_t : public empowered_release_spell_t
-  {
-    reverberations_t* reverberations;
-    double reverb_mul;
-    int repeats;
-    upheaval_damage_t* rumbling_earth;
-    action_t* chrono_flames;
-    int max_afterimage_targets;
-    bool is_rumbling_earth;
-    bool is_tierset;
-
-    upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth, bool is_tierset )
-      : base_t( name, p, p->find_spell( 396288 ) ),
-        reverberations( nullptr ),
-        reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
-        repeats( as<int>( p->talent.rumbling_earth->effectN( 2 ).base_value() ) ),
-        rumbling_earth( nullptr ),
-        chrono_flames( nullptr ),
-        max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) ),
-        is_rumbling_earth( is_rumbling_earth ),
-        is_tierset( is_tierset )
-    {
-      aoe = -1;
-
-      if ( p->talent.chronowarden.reverberations.enabled() )
-      {
-        auto reverb_name = fmt::format( "{}_dot", name );
-        reverberations = p->get_secondary_action<reverberations_t>( reverb_name, reverb_name );
-      }
-
-      if ( is_rumbling_earth )
-      {
-        sands           = nullptr;
-        threads_of_fate = nullptr;
-        base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
-        extend_ebon = 0_s;
-      }
-      else if ( p->talent.rumbling_earth.enabled() )
-      {
-        rumbling_earth = p->get_secondary_action<upheaval_damage_t>(
-            fmt::format( "{}_rumbling_earth", name ), fmt::format( "{}_rumbling_earth", name ), true, is_tierset );
-      }
-
-      if ( p->talent.chronowarden.afterimage.enabled() && !is_rumbling_earth )
-      {
-        chrono_flames = p->get_secondary_action<living_flame_damage_t>( fmt::format( "afterimage_{}", name ),
-                                                                        fmt::format( "afterimage_{}", name ), true );
-      }
-
-      if ( is_tierset )
-      {
-        base_dd_multiplier *= p->sets->set( EVOKER_AUGMENTATION, TWW2, B2 )->effectN( 1 ).percent();
-        sands           = nullptr;
-        threads_of_fate = nullptr;
-        extend_ebon     = 0_s;
-      }
-
-      if ( is_tierset && !is_rumbling_earth )
-      {
-        if ( rumbling_earth )
-        {
-          add_child( rumbling_earth );
-        }
-        if ( chrono_flames )
-        {
-          add_child( chrono_flames );
-        }
-        if ( reverberations )
-        {
-          add_child( reverberations );
-        }
-      }
-    }
-
-    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage", false, false )
-    {
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double da = empowered_release_spell_t::composite_da_multiplier( s );
-
-      if ( p()->talent.tectonic_locus.ok() && s->chain_target == 0 )
-      {
-        da *= 1 + p()->talent.tectonic_locus->effectN( 1 ).percent();
-      }
-
-      return da;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      empowered_release_spell_t::impact( s );
-
-      if ( reverberations )
-      {
-        residual_action::trigger( reverberations, s->target, s->result_amount * reverb_mul );
-      }
-
-      if ( chrono_flames && s->chain_target < max_afterimage_targets )
-      {
-        chrono_flames->execute_on_target( s->target );
-      }
-    }
-
-    void execute() override
-    {
-      if ( rumbling_earth )
-      {
-        empower_e empower_level  = cast_state( pre_execute_state )->empower;
-        player_t* current_target = pre_execute_state->target;
-
-        for ( int i = 0; i < repeats; i++ )
-        {
-          // First repeat is 200ms, 2nd repeat was 400ms delay from the first. Maybe triangular?
-          make_event( sim, 200_ms * ( i + 1 ) * ( i + 2 ) / 2, [ this, current_target, empower_level ] {
-            auto emp_state         = rumbling_earth->get_state();
-            emp_state->target      = current_target;
-            rumbling_earth->target = current_target;
-            rumbling_earth->snapshot_state( emp_state, rumbling_earth->amount_type( emp_state ) );
-            rumbling_earth->cast_state( emp_state )->empower = empower_level;
-
-            rumbling_earth->schedule_execute( emp_state );
-          } );
-        }
-      }
-
-      empowered_release_spell_t::execute();
-
-      if ( !is_rumbling_earth )
-      {
-        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
-          p()->buff.volcanic_upsurge->trigger();
-
-        if ( p()->talent.rockfall.enabled() && rng().roll( p()->talent.rockfall->effectN( 2 ).percent() ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.rockfall->occur();
-        }
-
-        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) &&
-             rng().roll( p()->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 1 ).percent() ) )
-        {
-          p()->buff.essence_burst->trigger();
-          p()->proc.tww2_4pc->occur();
-        }
-      }
-    }
-  };
-
-  upheaval_t( evoker_t* p, std::string_view options_str )
-    : base_t( "upheaval", p, p->talent.upheaval, options_str )
-  {
-    create_release_spell<upheaval_damage_t>( "upheaval_damage" );
-
-    if ( p->talent.chronowarden.reverberations.enabled() )
-    {
-      add_child( p->get_secondary_action<reverberations_t>( "upheaval_damage_dot", "upheaval_damage_dot" ) );
-    }
-
-    if ( p->talent.rumbling_earth.enabled() )
-    {
-      add_child(
-          p->get_secondary_action<upheaval_damage_t>( "upheaval_damage_rumbling_earth", "upheaval_damage_rumbling_earth", true, false ) );
-    }
-
-    if ( p->talent.chronowarden.afterimage.enabled() )
-    {
-      add_child( p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval_damage", "afterimage_upheaval_damage", true ) );
-    }
-  }
-};
-
 struct fate_mirror_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
@@ -6399,30 +6443,33 @@ struct breath_of_eons_t : public evoker_spell_t
 
     aoe = -1;
 
-    if ( p->specialization() == EVOKER_AUGMENTATION )
-      ebon = p->get_secondary_action<ebon_might_t>(
-          "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
-
-    if ( p->talent.overlord.ok() )
+    if ( data().ok() )
     {
-      eruption               = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
-      eruption->is_overlord  = true;
-      eruption->motes_chance = p->talent.overlord->effectN( 2 ).percent();
-      add_child( eruption );
-    }
+      if ( p->specialization() == EVOKER_AUGMENTATION )
+        ebon = p->get_secondary_action<ebon_might_t>(
+            "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
 
-    if ( p->talent.scalecommander.maneuverability.ok() )
-    {
-      melt_armor_dot = p->get_secondary_action<melt_armor_dot_t>( "melt_armor_dot" );
-      add_child( melt_armor_dot );
-    }
+      if ( p->talent.overlord.ok() )
+      {
+        eruption               = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+        eruption->is_overlord  = true;
+        eruption->motes_chance = p->talent.overlord->effectN( 2 ).percent();
+        add_child( eruption );
+      }
 
-    if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )
-    {
-      upheaval_set = p->get_secondary_action<spells::upheaval_t::upheaval_damage_t>(
-          "upheaval_tww2_2pc_eons", "upheaval_tww2_2pc_eons", false, true );
+      if ( p->talent.scalecommander.maneuverability.ok() )
+      {
+        melt_armor_dot = p->get_secondary_action<melt_armor_dot_t>( "melt_armor_dot" );
+        add_child( melt_armor_dot );
+      }
 
-      add_child( upheaval_set );
+      if ( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )
+      {
+        upheaval_set = p->get_secondary_action<spells::upheaval_t::upheaval_damage_t>(
+            "upheaval_tww2_2pc_eons", "upheaval_tww2_2pc_eons", false, true );
+
+        add_child( upheaval_set );
+      }
     }
 
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );

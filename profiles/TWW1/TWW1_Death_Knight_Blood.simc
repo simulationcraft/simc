@@ -36,32 +36,25 @@ actions+=/ancestral_call,if=buff.dancing_rune_weapon.up
 actions+=/fireblood,if=buff.dancing_rune_weapon.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/vampiric_blood,if=!buff.vampiric_blood.up
+actions+=/call_action_list,name=variables
 actions+=/call_action_list,name=high_prio_actions
 actions+=/run_action_list,name=san_drw,if=hero_tree.sanlayn&buff.dancing_rune_weapon.up
 actions+=/call_action_list,name=san_cds,if=hero_tree.sanlayn
 actions+=/run_action_list,name=sanlayn,if=hero_tree.sanlayn
+actions+=/call_action_list,name=db_cds,if=hero_tree.deathbringer
 actions+=/run_action_list,name=deathbringer,if=hero_tree.deathbringer
 
-actions.deathbringer=rune_tap,if=rune>2
-actions.deathbringer+=/dancing_rune_weapon
-actions.deathbringer+=/death_strike,if=buff.coagulopathy.remains<=gcd
-actions.deathbringer+=/marrowrend,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
-actions.deathbringer+=/marrowrend,if=(buff.exterminate.up)&(cooldown.reapers_mark.up|cooldown.reapers_mark.remains<3)
-actions.deathbringer+=/deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
-actions.deathbringer+=/blood_boil,if=dot.blood_plague.remains<3
-actions.deathbringer+=/bonestorm,if=buff.bone_shield.stack>=5&(!talent.shattering_bone.enabled|death_and_decay.ticking)&!buff.dancing_rune_weapon.remains
-actions.deathbringer+=/soul_reaper,if=active_enemies<=2&buff.reaper_of_souls.up&target.time_to_die>(dot.soul_reaper.remains+5)
-actions.deathbringer+=/soul_reaper,if=active_enemies<=2&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)
-actions.deathbringer+=/death_and_decay,if=((dot.reapers_mark.ticking)&!death_and_decay.ticking)|!buff.death_and_decay.up
-actions.deathbringer+=/marrowrend,if=buff.exterminate.up
-actions.deathbringer+=/bonestorm,if=buff.bone_shield.stack>=5&(!talent.shattering_bone.enabled|death_and_decay.ticking)&buff.dancing_rune_weapon.remains
-actions.deathbringer+=/death_strike,if=(runic_power.deficit<35|(runic_power.deficit<41&buff.dancing_rune_weapon.up))
-actions.deathbringer+=/reapers_mark
+actions.db_cds=reapers_mark
+actions.db_cds+=/dancing_rune_weapon
+actions.db_cds+=/bonestorm,if=buff.bone_shield.stack>=5&(!talent.shattering_bone.enabled|death_and_decay.ticking)
+actions.db_cds+=/tombstone,if=buff.bone_shield.stack>=8&(!talent.shattering_bone.enabled|death_and_decay.ticking)&cooldown.dancing_rune_weapon.remains>=25
+actions.db_cds+=/abomination_limb,if=!buff.dancing_rune_weapon.up
+
+actions.deathbringer=death_strike,if=runic_power.deficit<variable.rp_deficit_threshold+(pet.dancing_rune_weapon.active*3)+(talent.everlasting_bond*3)
+actions.deathbringer+=/marrowrend,if=buff.exterminate.react
 actions.deathbringer+=/marrowrend,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking
-actions.deathbringer+=/tombstone,if=buff.bone_shield.stack>=8&(!talent.shattering_bone.enabled|death_and_decay.ticking)&cooldown.dancing_rune_weapon.remains>=25
-actions.deathbringer+=/abomination_limb,if=!buff.dancing_rune_weapon.up
 actions.deathbringer+=/blood_boil,if=pet.dancing_rune_weapon.active&!drw.bp_ticking
-actions.deathbringer+=/any_dnd,if=!buff.death_and_decay.remains
+actions.deathbringer+=/soul_reaper,if=buff.reaper_of_souls.up&cooldown.dancing_rune_weapon.remains
 actions.deathbringer+=/blooddrinker,if=!buff.dancing_rune_weapon.up&active_enemies<=2&buff.coagulopathy.remains>3
 actions.deathbringer+=/death_strike
 actions.deathbringer+=/consumption
@@ -69,7 +62,6 @@ actions.deathbringer+=/blood_boil,if=charges_fractional>=1.5
 actions.deathbringer+=/heart_strike,if=rune>=1|rune.time_to_2<gcd
 actions.deathbringer+=/blood_boil
 actions.deathbringer+=/heart_strike
-actions.deathbringer+=/soul_reaper,if=buff.reaper_of_souls.up
 actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
 actions.deathbringer+=/deaths_caress,if=buff.bone_shield.stack<11
 
@@ -78,9 +70,10 @@ actions.high_prio_actions+=/blood_tap,use_off_gcd=1,if=(rune<=1&rune.time_to_3>g
 actions.high_prio_actions+=/raise_dead,use_off_gcd=1
 actions.high_prio_actions+=/deaths_caress,if=buff.bone_shield.remains<gcd.max*2
 actions.high_prio_actions+=/death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd.max*2
-actions.high_prio_actions+=/death_and_decay,if=!buff.death_and_decay.up
+actions.high_prio_actions+=/any_dnd,if=!buff.death_and_decay.up
 actions.high_prio_actions+=/blood_boil,if=dot.blood_plague.remains<gcd.max*2
-actions.high_prio_actions+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)&(!hero_tree.sanlayn|pet.dancing_rune_weapon.remains<5)
+actions.high_prio_actions+=/soul_reaper,if=active_enemies=1&(target.time_to_pct_35<5)&target.time_to_die>(dot.soul_reaper.remains+5)&(!hero_tree.sanlayn|pet.dancing_rune_weapon.remains<5)
+actions.high_prio_actions+=/rune_tap,use_off_gcd=1,if=rune>3
 
 actions.san_cds=abomination_limb,if=!buff.dancing_rune_weapon.up
 actions.san_cds+=/dancing_rune_weapon
@@ -88,7 +81,7 @@ actions.san_cds+=/bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&
 actions.san_cds+=/tombstone,if=(!buff.dancing_rune_weapon.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>25
 
 actions.san_drw=bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5
-actions.san_drw+=/death_strike,if=(active_enemies=1|buff.luck_of_the_draw.up)&runic_power.deficit<15+(10*talent.relish_in_blood.enabled)+(3*talent.runic_attenuation.enabled)+(spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.san_drw+=/death_strike,if=(active_enemies=1|buff.luck_of_the_draw.up)&runic_power.deficit<variable.rp_deficit_threshold
 actions.san_drw+=/blood_boil,if=!drw.bp_ticking
 actions.san_drw+=/heart_strike
 actions.san_drw+=/death_strike
@@ -98,13 +91,15 @@ actions.san_drw+=/blood_boil
 actions.sanlayn=heart_strike,if=buff.infliction_of_sorrow.up
 actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
 actions.sanlayn+=/blooddrinker,if=!buff.dancing_rune_weapon.up&active_enemies<=2&buff.coagulopathy.remains>3
-actions.sanlayn+=/death_strike,if=runic_power.deficit<15+(10*talent.relish_in_blood.enabled)+(3*talent.runic_attenuation.enabled)+(spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.sanlayn+=/death_strike,if=runic_power.deficit<variable.rp_deficit_threshold
 actions.sanlayn+=/marrowrend,if=!dot.bonestorm.ticking&buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20
 actions.sanlayn+=/death_strike
 actions.sanlayn+=/heart_strike,if=rune>1
 actions.sanlayn+=/consumption
 actions.sanlayn+=/blood_boil
 actions.sanlayn+=/heart_strike
+
+actions.variables=variable,name=rp_deficit_threshold,value=15+(10*talent.relish_in_blood.enabled)+(3*talent.runic_attenuation.enabled)+(spell_targets.heart_strike*talent.heartbreaker.enabled*2)
 
 head=exhumed_centurions_galea,id=212002,bonus_id=1540/10299/1808,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213482/213482

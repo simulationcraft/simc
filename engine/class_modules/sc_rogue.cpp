@@ -4236,10 +4236,10 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
 
-    // 2024-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
+    // 2025-04-01 -- Reduced AoE targets appear to be set at 8 despite the tooltip saying 5
     //               Value of 5 seems to only be used for the end of the bonus damage scaling
     reduced_aoe_targets = p->bugs ? 8 : data().effectN( 3 ).base_value();
-    // 2024-04-01 -- Appears to now tick immediately on cast, not just on application
+    // 2025-04-01 -- Appears to now tick immediately on cast, not just on application
     tick_zero = p->bugs;
 
     if ( p->talent.deathstalker.follow_the_blood->ok() )
@@ -8475,10 +8475,12 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
   // TODO: Exact formula?
   unsigned full_ticks_remaining =
       (unsigned)( td->dots.rupture->remains() / td->dots.rupture->current_action->base_tick_time );
-  int replenish = as<int>( talent.assassination.venomous_wounds->effectN( 2 ).base_value() );
 
-  sim->print_debug( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
-                    *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
+  // 2025-04-12 -- The death effect was never updated to use the new VW value of 8 Energy, and still uses the old value of 10
+  int replenish = bugs ? 10 : as<int>( talent.assassination.venomous_wounds->effectN( 2 ).base_value() );
+  
+  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
+                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
 
   resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );

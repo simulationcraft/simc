@@ -8,8 +8,7 @@ precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_align
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg&!trinket.1.is.spymasters_web" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff&!trinket.2.is.ovinaxs_mercurial_egg&!trinket.2.is.spymasters_web)*2" );
-precombat->add_action( "bear_form,if=talent.lycaras_meditation&talent.fluid_form&(!fight_style.dungeonroute|!fight_style.dungeonslice)" );
-precombat->add_action( "moonkin_form,if=!talent.lycaras_meditation|!talent.fluid_form" );
+precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
 precombat->add_action( "starfire,if=!talent.stellar_flare" );
