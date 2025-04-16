@@ -6750,14 +6750,14 @@ struct shield_charge_damage_t : public warrior_attack_t
 
     if ( p()->talents.protection.champions_bulwark->ok() )
     {
-    if ( p()->buff.shield_block->check() )
-    {
-      p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
-    }
-    else
-    {
-      p()->buff.shield_block->trigger();
-    }
+      if ( p()->buff.shield_block->check() )
+      {
+        p()->buff.shield_block->extend_duration( p(), p() -> buff.shield_block->buff_duration() );
+      }
+      else
+      {
+        p()->buff.shield_block->trigger();
+      }
       p()->buff.revenge->trigger();
     }
 
@@ -8975,7 +8975,10 @@ void warrior_t::init_spells()
       talents.protection.sudden_death->internal_cooldown();
   cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
-  cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
+  if ( !is_ptr() )
+    cooldown.tough_as_nails_icd -> duration = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
+  else
+    cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
