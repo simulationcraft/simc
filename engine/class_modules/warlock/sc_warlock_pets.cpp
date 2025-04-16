@@ -2341,6 +2341,17 @@ namespace diabolist
       if ( p()->o()->hero.cloven_souls.ok() )
         owner_td( s->target )->debuffs_cloven_soul->trigger();
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = spell_t::composite_target_multiplier( target );
+
+      // TOCHECK: 2025-04-16 Wicked Cleave spell from Overlord does not benefit from Shadowtouched talent even though its damage school is Shadowflame (bug?)
+      if ( !p()->bugs && p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
+        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+
+      return m;
+    }
   };
 
   void overlord_t::arise()
