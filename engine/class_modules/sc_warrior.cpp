@@ -3068,6 +3068,7 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
          p()->cooldown.cold_steel_hot_blood_icd->up() )
     {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
       p()->cooldown.cold_steel_hot_blood_icd->start();
     }
 
@@ -6630,7 +6631,7 @@ struct revenge_t : public warrior_attack_t
 
     if ( p()->talents.warrior.frothing_berserker->ok() && !background && rng().roll( frothing_berserker_chance ) )
     {
-      p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
+      p()->resource_gain( RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker );
     }
 
     if ( !background && p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
