@@ -399,7 +399,7 @@ using namespace helpers;
           p()->procs.reverse_entropy->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() ) )
+      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() / ( p()->bugs ? 2.0 : 1.0 ) ) )
       {
         int rift = rng().range( 3 );
 
