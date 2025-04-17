@@ -731,7 +731,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
       warlock_pet_melee_attack_t::init_finished();
 
       // TOCHECK: 2025-04-17 Although this spell is not supposed to be affected by modifiers, it is currently affected by them (bug?)
-      if (!p()->bugs)
+      if ( !p()->bugs )
         snapshot_flags &= STATE_NO_MULTIPLIER;
 
     }
