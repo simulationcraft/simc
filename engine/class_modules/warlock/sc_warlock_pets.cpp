@@ -722,7 +722,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       background = dual = true;
       aoe = -1;
-      ignores_armor = true;
+      ignores_armor = !p->bugs; // TOCHECK: 2025-04-17 This spell currently does not ignore armor (bug?)
       base_dd_min = base_dd_max = 0;
     }
 
@@ -730,7 +730,10 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       warlock_pet_melee_attack_t::init_finished();
 
-      snapshot_flags &= STATE_NO_MULTIPLIER;
+      // TOCHECK: 2025-04-17 Although this spell is not supposed to be affected by modifiers, it is currently affected by them (bug?)
+      if (!p()->bugs)
+        snapshot_flags &= STATE_NO_MULTIPLIER;
+
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
