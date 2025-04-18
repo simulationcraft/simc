@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 11.1.5.60253
-static const std::array<specialization_spell_entry_t, 519> __ptr_specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 520> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -197,6 +197,7 @@ static const std::array<specialization_spell_entry_t, 519> __ptr_specialization_
   {  5,  257,  440006,      0, "Purify Disease"                    , 0 },
   {  5,  257,  462097,      0, "Priest"                            , 0 },
   {  5,  257,  462099,      0, "Holy Priest"                       , 0 },
+  {  5,  257, 1238052,      0, "Holy Priest"                       , 0 },
   {  5,  258,   15407,    585, "Mind Flay"                         , 0 },
   {  5,  258,   34914,      0, "Vampiric Touch"                    , 0 },
   {  5,  258,  137033,      0, "Shadow Priest"                     , 0 },
