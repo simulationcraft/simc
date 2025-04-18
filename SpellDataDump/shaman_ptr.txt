@@ -376,7 +376,8 @@ Family Flags     : 20, 39, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.0886 | PvP Coefficient: 0.85 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.49569 | PvP Coefficient: 0.787 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (5.0886 -> 5.49569), PvP Coefficient (0.85 -> 0.787)
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.$?a190493[
 
 Earth Shock will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -3059,9 +3060,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2077 (Category) | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
 #9 (id=1007176)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645)
                    Family Flags: 98, 108
+Hotfixed         : Base Value (12 -> 21)
 #10 (id=1012733) : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Chain Lightning (188443)
@@ -11439,7 +11441,8 @@ Family Flags     : 20, 39, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012742)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.0886 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.49569 | PvP Coefficient: 0.787 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (5.0886 -> 5.49569), PvP Coefficient (1 -> 0.787)
 Description      : Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1} Nature damage.
 
 Name             : Mountains Will Fall (id=381726) [Passive, Hidden] 
@@ -15015,11 +15018,13 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1145367)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.51294 | PvP Coefficient: 0.44 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.73988 | PvP Coefficient: 0.38 | Target: Any Target (25)
+Hotfixed         : SP Coefficient (1.51294 -> 1.73988), PvP Coefficient (0.44 -> 0.38)
 #2 (id=1146251)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1146252)  : Dummy (3)
-                   Base Value: 44 | Scaled Value: 44
+                   Base Value: 38 | Scaled Value: 38
+Hotfixed         : Base Value (44 -> 38)
 Description      : Hurls molten lava at the target, critically dealing $?a134735[${$s1*(1+$s3/100)}][${$s1*(1+$s2/100)}] Fire damage.
 
 Name             : Chain Lightning (id=447425) [Spell Family (11)] 
@@ -15395,6 +15400,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+                 : 5149: Enhancement Shaman (1214207 effect#16), Enhancement Shaman (1214207 effect#17)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1156264)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -15774,7 +15780,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3924: Elemental Fury (60188 effect#2)
                  : 4013: Stormcaller (454021 effect#3)
-                 : 4065: Enhancement Shaman (137041 effect#30)
+                 : 4065: Enhancement Shaman (137041 effect#30), Enhancement Shaman (1214207 effect#14), Enhancement Shaman (1214207 effect#15)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Awakening Storms (455129)
 Family Flags     : 39, 56, 126
@@ -17399,7 +17405,8 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1177886)  : School Damage (2): elemental
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60489 | PvP Coefficient: 0.44 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.99562 | PvP Coefficient: 0.38 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.60489 -> 2.99562), PvP Coefficient (0.44 -> 0.38)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.
 
 Name             : Windfury (id=466440) [Spell Family (11), Hidden] 
@@ -18257,9 +18264,10 @@ Effects          :
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #5 (id=1196254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (-10 -> 17)
 #6 (id=1213820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
@@ -18273,19 +18281,37 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #10 (id=1213848) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (-15 -> 0)
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (0 -> -2)
 #12 (id=1215591) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 4700 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455129)
 #13 (id=1215592) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4701 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (462131)
+#14 (id=1235101) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4065 (Label) | Target: Self (1)
+                   Affected Spells (Label): Awakening Storms (455130)
+Hotfixed         : NEW EFFECT
+#15 (id=1235102) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 4065 (Label) | Target: Self (1)
+                   Affected Spells (Label): Awakening Storms (455130)
+Hotfixed         : NEW EFFECT
+#16 (id=1235103) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 5149 (Label) | Target: Self (1)
+                   Affected Spells (Label): Stormcaller (454021)
+Hotfixed         : NEW EFFECT
+#17 (id=1235104) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Misc Value 2: 5149 (Label) | Target: Self (1)
+                   Affected Spells (Label): Stormcaller (454021)
+Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman

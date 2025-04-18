@@ -310,7 +310,8 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bo
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02741 | PvP Coefficient: 0.85 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.030151 | PvP Coefficient: 0.772727 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.02741 -> 0.030151), PvP Coefficient (0.85 -> 0.772727)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1524,7 +1525,8 @@ Family Flags     : 49, 92
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.333936 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41742 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.333936 -> 0.41742)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -2335,7 +2337,8 @@ Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.118628 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.142354 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.118628 -> 0.142354)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -3599,7 +3602,8 @@ Family Flags     : 49, 72
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=210584)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.7 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.645 | Radius: 8 yards | Target: At Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.7 -> 3.645)
 Description      : Calls forth a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?a445465[Wither][Immolate].
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
@@ -5870,7 +5874,8 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.44925 | PvP Coefficient: 1.4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.9391 | PvP Coefficient: 1.16667 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.44925 -> 2.9391), PvP Coefficient (1.4 -> 1.16667)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -10194,7 +10199,8 @@ Family Flags     : 49, 85
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1021380)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.283594 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.397032 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.283594 -> 0.397032)
 Description      : $@spelldesc278350
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -10254,7 +10260,8 @@ Effects          :
 #1 (id=1021492)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #2 (id=1021493)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.484 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.6292 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (0.484 -> 0.6292)
 #3 (id=1021494)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Enemy (6)
 #4 (id=1021495)  : Dummy (3)

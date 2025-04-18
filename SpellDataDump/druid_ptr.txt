@@ -2366,7 +2366,8 @@ Family Flags     : 18, 89
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8728 | PvP Coefficient: 0.926 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.96 | PvP Coefficient: 0.926 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.8728 -> 2.96)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -4476,15 +4477,18 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
+Hotfixed         : Base Value (6 -> 9)
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
+Hotfixed         : Base Value (6 -> 9)
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 9)
 #4 (id=191148)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4500,7 +4504,8 @@ Effects          :
 #7 (id=260778)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 #8 (id=872569)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 9)
 #9 (id=1080967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -5520,7 +5525,8 @@ Family Flags     : 18, 55
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Not a Proc (105), Allow Aura While Dead (116), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.249 | PvP Coefficient: 0.8333 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.224 | PvP Coefficient: 0.8333 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.249 -> 0.224)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -14797,7 +14803,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2445 (Label) | Target: Self (1)
                    Affected Spells (Label): Goldrinn's Fang (394047)
 #3 (id=1109174)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | PvP Coefficient: 0.4
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.545 | PvP Coefficient: 0.4
+Hotfixed         : SP Coefficient (1.5 -> 1.545)
 Description      : Starsurge has a chance to summon the Spirit of Goldrinn, which immediately deals ${$s3*$<mastery>} Astral damage to the target.
 Variables        : $mastery=${(1+$393014s1/100)*(1+$393014s3/100)}
 
@@ -14818,7 +14825,8 @@ Family Flags     : 18
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033385)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | PvP Coefficient: 0.4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.545 | PvP Coefficient: 0.4 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.5 -> 1.545)
 Description      : $@spelldesc394046
 
 Name             : Balance of All Things (id=394048) [Spell Family (7), Passive] 
@@ -16814,7 +16822,8 @@ Family Flags     : 18
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1101681)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.4486 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.204 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.4486 -> 2.204)
 #2 (id=1101682)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: astral_power | Target: Self (1)
 #3 (id=1169121)  : Dummy (3)
@@ -17073,7 +17082,8 @@ Family Flags     : 18
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1109706)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.81 | Radius: 0 - 6 yards | Target: At Target (63) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.53 | Radius: 0 - 6 yards | Target: At Target (63) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.81 -> 2.53)
 #2 (id=1119703)  : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Resource: astral_power | Target: Self (1)
 #3 (id=1119704)  : Energize Power (30)
