@@ -8007,6 +8007,7 @@ void ringing_ritual_mud( special_effect_t& effect )
 
     void execute() override
     {
+      target = player;
       action_t::execute();
       damage_buff->trigger();
     }
