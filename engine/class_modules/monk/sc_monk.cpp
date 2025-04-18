@@ -144,9 +144,9 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.master_of_harmony.manifestation, p()->baseline.brewmaster.aura );
 
   // Shado-Pan
-  parse_effects( p()->talent.shado_pan.efficient_training, p()->specialization() == MONK_WINDWALKER
-                                                               ? effect_mask_t( true ).disable( 5 )
-                                                               : effect_mask_t( true ) );
+  parse_effects( p()->talent.shado_pan.efficient_training,
+                 p()->specialization() == MONK_WINDWALKER ? effect_mask_t( true ).disable( 5 ) : effect_mask_t( true ),
+                 p()->baseline.windwalker.aura_3 );
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
   apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
@@ -737,7 +737,7 @@ monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
   special    = true;
   may_glance = false;
   // Monk melee attacks do not have hasted GCD by default. Exceptions should be explicitly made.
-  gcd_type   = gcd_haste_type::NONE;
+  gcd_type = gcd_haste_type::NONE;
 }
 
 // Physical tick_action abilities need amount_type() override, so the
