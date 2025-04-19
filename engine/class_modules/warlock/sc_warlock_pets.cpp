@@ -472,12 +472,15 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
 
+ if ( owner->talents.soul_strike.ok() )
+    action_list_str += "/soul_strike,if=movement.remains";   // Soulstrike have a lower priority than Felstorm and Legionstrike, it does have a 50yard cast-range meaning on pull/while moving, he will cast this first.
+  
   action_list_str += "/felstorm_demonic_strength";
   if ( !owner->disable_auto_felstorm )
     action_list_str += "/felstorm";
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
-  if ( owner->talents.soul_strike.ok() )
+  if ( owner->talents.soul_strike.ok() )   // Soulstrike Priority is lower than Legion Strike, this means while in range of the target, it will only cast Soulstrike while bellow the max energy threshold.
     action_list_str += "/soul_strike";
 
   felstorm_cd = get_cooldown( "felstorm" );
