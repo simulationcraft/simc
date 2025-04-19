@@ -502,9 +502,19 @@ struct felguard_melee_t : public warlock_pet_melee_t
     {
       warlock_pet_melee_attack_t::init_finished();
 
+      // Disable multipliers: its base damage comes from its parent felguard's melee base damage after modifiers and should not be applied again
+      // Its crit roll is independent of its parent felguard's melee crit roll. Keep STATE_CRIT and STATE_TGT_CRIT flags: required to be able to crit
+      // Keep STATE_TGT_ARMOR flag to be affected by armor
+      snapshot_flags &= ~STATE_AP;
+      snapshot_flags &= ~STATE_MUL_SPELL_DA;
+      snapshot_flags &= ~STATE_MUL_SPELL_TA;
+      snapshot_flags &= ~STATE_VERSATILITY;
+      snapshot_flags &= ~STATE_MUL_PERSISTENT;
+      snapshot_flags &= ~STATE_TGT_MUL_DA;
+      snapshot_flags &= ~STATE_TGT_MUL_TA;
+      snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
       snapshot_flags &= ~STATE_MUL_PET;
       snapshot_flags &= ~STATE_TGT_MUL_PET;
-      snapshot_flags &= ~STATE_VERSATILITY;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
