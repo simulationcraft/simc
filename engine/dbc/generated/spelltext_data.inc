@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.60257
-static const std::array<spelltext_data_t, 27238> __spelltext_data { {
+static const std::array<spelltext_data_t, 27239> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27110,6 +27110,7 @@ static const std::array<spelltext_data_t, 27238> __spelltext_data { {
   { 1217676, "$@spelldesc1217356", 0, 0 },
   { 1217723, "$@spelldesc1217356", 0, 0 },
   { 1217731, "$@spelldesc1215680", 0, 0 },
+  { 1217750, 0, "Fireball damage increased by $s1%.", 0 },
   { 1217769, "$@spelldesc1215692", "Empower spell damage increased by $w1%.", 0 },
   { 1217771, "$@spelldesc196447", 0, 0 },
   { 1217786, "$@spelldesc196447", 0, 0 },
