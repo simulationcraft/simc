@@ -10616,7 +10616,8 @@ struct primordial_wave_t : public shaman_spell_t
     primordial_wave_damage_t( shaman_t* player ) :
       shaman_spell_t( "primordial_wave_damage", player, player->find_spell( 375984 )  )
     {
-      background = true;
+      background                = true;
+      maelstrom_gain_per_target = false;
     }
 
     void init() override
