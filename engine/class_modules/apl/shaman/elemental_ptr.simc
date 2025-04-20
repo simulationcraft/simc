@@ -57,7 +57,7 @@ actions.aoe+=/stormkeeper
 actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!talent.primordial_wave)&(active_dot.flame_shock<=active_enemies-3|active_dot.flame_shock<(active_enemies>?3))
 actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&active_dot.flame_shock=0&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
 
-actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem
+actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|(cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem)&cooldown.ascendance.remains>15
 actions.aoe+=/ancestral_swiftness
 
 actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|variable.trinket_1_buffs&!trinket.1.is.spymasters_web&trinket.1.ready_cooldown|variable.trinket_2_buffs&!trinket.2.is.spymasters_web&trinket.2.ready_cooldown|equipped.neural_synapse_enhancer&cooldown.neural_synapse_enhancer.remains=0|equipped.bestinslots&cooldown.bestinslots.remains=0)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)
