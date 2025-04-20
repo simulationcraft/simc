@@ -41,17 +41,18 @@ head=,id=229262,bonus_id=4800/4786/1527/11996/523,gem_id=213743
 neck=,id=228841,bonus_id=4800/4786/1527/11996/8781,gem_id=213473/213494
 shoulder=,id=229260,bonus_id=4800/4786/1527/11996
 back=,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/10520/8960,enchant_id=7403,crafted_stats=40/36
-chest=,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3
+chest=,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364
 wrist=,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/1808/10520/8960,enchant_id=7385,gem_id=213494,crafted_stats=40/36
 hands=,id=229263,bonus_id=4800/4786/1527/11996
 waist=,id=221101,bonus_id=3170/11996/11964/1808,gem_id=213494
-legs=,id=158341,bonus_id=4786/11359/11996,enchant_id=7534,enchant=sunset_spellthread_3
+legs=,id=158341,bonus_id=4786/11359/11996,enchant_id=7534
 feet=,id=168982,bonus_id=10067/11996/11964,enchant_id=7424
-finger1=,id=231265,bonus_id=4800/4786/1527/11996/8781,enchant_id=7346,enchant=radiant_mastery_3,gem_id=213482/213458
+finger1=,id=231265,bonus_id=4800/4786/1527/11996/8781,enchant_id=7346,gem_id=213482/213458
 finger2=,id=228411,bonus_id=1511/11988/11964,enchant_id=7346,gem_id=228639/228638/228646
 trinket1=,id=230027,bonus_id=4800/4786/1527/11996
 trinket2=,id=230192,bonus_id=1527/11996/11964
-main_hand=,id=232805,bonus_id=4800/4786/1527/11996,enchant_id=7463,enchant=authority_of_radiant_power_3
+main_hand=,id=228901,bonus_id=1527/11996/11964,enchant_id=7460
+off_hand=,id=228889,bonus_id=1527/11996/11964
 
 save=TWW2_Shaman_Elemental.simc
 
