@@ -121111,6 +121111,7 @@ Effects          :
 Description      : $@spelldesc279524
 
 Name             : Berserk (id=279526) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
@@ -121125,7 +121126,7 @@ Stance Mask      : 0x00000001
 Affecting Spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Berserk: Heart of the Lion (391174 effect#1)
 Family Flags     : 70
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=735847)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
