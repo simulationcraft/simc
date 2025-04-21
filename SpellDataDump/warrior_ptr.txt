@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -316,6 +316,7 @@ Description      : Maims the enemy for $s2 Physical damage, reducing movement sp
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Recklessness (id=1719) [Spell Family (4)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Fury [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -328,7 +329,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Warrior (137047 effect#2), Depths of Insanity (337162 effect#1), Depths of Insanity (383922 effect#1), Reckless Abandon (396749 effect#1)
 Family Flags     : 4, 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=524)      : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -1988,6 +1989,7 @@ Effects          :
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.$?s436162[ Also hits 2 additional nearby targets, stunning for 2 sec.][]
 
 Name             : Avatar (id=107574) [Spell Family (4)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -2003,7 +2005,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448), Unknown (465)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2190,6 +2190,7 @@ Description      : Shift partially into the elemental planes, taking $s1% less d
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Healing Tide Totem (id=108280) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Restoration [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Nature
@@ -2207,7 +2208,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Current Control (404015 effect#1)
 Family Flags     : 29, 113
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=119337)   : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 59764 | Misc Value 2: 0x1454 | Target: Unknown(42)
@@ -2305,6 +2306,7 @@ Effects          :
 Description      : Relocates your active totems to the specified location.
 
 Name             : Ascendance (id=114050) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Elemental [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Fire
@@ -2319,7 +2321,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=127153)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
@@ -2328,6 +2330,7 @@ Effects          :
 Description      : $@spelldesc1219480
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Enhancement [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Nature
@@ -2343,7 +2346,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=127154)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 59347 | Misc Value 2: 0x6 | Target: Self (1)
@@ -2386,6 +2389,7 @@ Tooltip          : Transformed into a powerful Air Ascendant. Auto attacks have 
 Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $384437t1 sec.][]
 
 Name             : Ascendance (id=114052) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
@@ -2403,7 +2407,7 @@ Proc Flags       : Magic Heal, Helpful Periodic
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=127155)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 232187 | Misc Value 2: 0x6 | Target: Self (1)
@@ -18791,6 +18795,7 @@ Effects          :
 Description      : $@spelldesc187880
 
 Name             : Ascendance (id=1219480) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -18804,7 +18809,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=1205233)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

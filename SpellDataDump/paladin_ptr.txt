@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -734,6 +734,7 @@ The next attack that would otherwise kill you will instead bring you to $w2% of 
 Healing taken increased by $w4%.][]
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Avenging Wrath" (id=31884)]
                  : Retribution [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=0, override="Avenging Wrath" (id=31884)]
                  : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100, override="Avenging Wrath" (id=31884)]
@@ -751,7 +752,7 @@ Category Cooldown: 120 seconds
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: -7
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -1887,6 +1888,7 @@ Effects          :
 Description      : Decreases damage taken by $s1%, increases your chance to dodge by $s3%, and reduces the chance for your attacks to be parried by $s4%.
 
 Name             : Holy Avenger (id=105809) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -1897,7 +1899,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=115804)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 9 | Target: Self (1)
@@ -4746,6 +4748,7 @@ Description      : Focuses Holy energy to deliver a powerful weapon strike that 
 Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4761,7 +4764,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Divine Purpose (408458 effect#1)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=321878)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -14578,6 +14581,7 @@ Effects          :
 Description      : After casting Daybreak, your next $414204u Holy Shocks cast $414204s1 additional times.
 
 Name             : Rising Sunlight (id=414204) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14589,7 +14593,7 @@ Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Cast While Channeling (308)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1083062)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -17902,6 +17906,7 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Avenging Wrath (id=454351) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -17914,7 +17919,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156816)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)

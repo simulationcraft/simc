@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -981,6 +981,7 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -998,7 +999,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=6149)     : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
@@ -3295,6 +3296,7 @@ Tooltip          : Movement speed reduced by $s3%$?a428377[ and dealing $s4% les
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Adrenaline Rush (id=186286) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3309,7 +3311,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=271233)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 3 | Target: Self (1)
@@ -3391,6 +3393,7 @@ Has a $s3% chance to hit an additional time, making your next Pistol Shot half c
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Broadside (id=193356) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3400,7 +3403,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283680)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
@@ -3430,6 +3433,7 @@ Description      : Your combo-point generating abilities generate $s1 additional
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3439,7 +3443,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
@@ -3454,6 +3458,7 @@ Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3462,7 +3467,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -3486,6 +3491,7 @@ Tooltip          : Damage increased by $w1%.
 Blade Flurry deals $w2% additional damage to nearby enemies.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3495,7 +3501,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
@@ -4088,6 +4094,7 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4097,7 +4104,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
@@ -4105,6 +4112,7 @@ Description      : Your base Energy regeneration is increased by ${$s1/5} per se
 Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Skull and Crossbones (id=199603) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4114,7 +4122,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
@@ -5885,6 +5893,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5901,7 +5910,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -8263,6 +8272,7 @@ Effects          :
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -8280,7 +8290,7 @@ Mechanic         : Bleed
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 59
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Spell Haste Affects Periodic (173), Taps immediately (215), No Attack Parry (248), Periodic Can Crit (265), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=897169)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.4 | Mechanic: Bleed | Target: Enemy (6)
@@ -11255,6 +11265,7 @@ Description      : $@spelldesc381664
 Tooltip          : Envenom consumes stacks to amplify its damage.
 
 Name             : Deathmark (id=394331) [Spell Family (8), Hidden] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -11266,7 +11277,7 @@ Affecting Spells : Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalke
 Triggered By     : Deathmark (360194)
 Family Flags     : 59
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1033883)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2352 (Label) | Target: Self (1)

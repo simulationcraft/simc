@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60253 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -492,6 +492,7 @@ While channeling Evocation, your Intellect is increased by $384267s1% every $120
 Tooltip          : Mana regeneration increased by $s1%.
 
 Name             : Icy Veins (id=12472) [Spell Family (3)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Frost [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
@@ -505,7 +506,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 46, 67, 105
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=5358)     : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Target: Self (1)
