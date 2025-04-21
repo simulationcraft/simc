@@ -494,27 +494,9 @@ struct felguard_melee_t : public warlock_pet_melee_t
   {
     fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->o()->talents.fiendish_wrath_dmg )
     {
+      weapon_multiplier = 1.0;
       background = dual = true;
       aoe = -1;
-    }
-
-    void init_finished() override
-    {
-      warlock_pet_melee_attack_t::init_finished();
-
-      // Disable multipliers: its base damage comes from its parent felguard's melee base damage after modifiers and should not be applied again
-      // Its crit roll is independent of its parent felguard's melee crit roll. Keep STATE_CRIT and STATE_TGT_CRIT flags: required to be able to crit
-      // Keep STATE_TGT_ARMOR flag to be affected by armor
-      snapshot_flags &= ~STATE_AP;
-      snapshot_flags &= ~STATE_MUL_SPELL_DA;
-      snapshot_flags &= ~STATE_MUL_SPELL_TA;
-      snapshot_flags &= ~STATE_VERSATILITY;
-      snapshot_flags &= ~STATE_MUL_PERSISTENT;
-      snapshot_flags &= ~STATE_TGT_MUL_DA;
-      snapshot_flags &= ~STATE_TGT_MUL_TA;
-      snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
-      snapshot_flags &= ~STATE_MUL_PET;
-      snapshot_flags &= ~STATE_TGT_MUL_PET;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -543,12 +525,10 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
   void impact( action_state_t* s ) override
   {
-    auto amount = s->result_raw;
-
     warlock_pet_melee_t::impact( s );
 
     if ( p()->buffs.fiendish_wrath->check() )
-      fiendish_wrath->execute_on_target( s->target, amount );
+      fiendish_wrath->execute_on_target( s->target );
   }
 };
 
@@ -905,6 +885,7 @@ void felguard_pet_t::init_base_stats()
   owner_coeff.sp_from_sp = 1.4519;
 
   melee_attack->base_dd_multiplier *= 1.42;
+  debug_cast<felguard_melee_t*>( melee_attack )->fiendish_wrath->base_dd_multiplier = melee_attack->base_dd_multiplier;
 
   special_action = new axe_toss_t( this, "" );
 
