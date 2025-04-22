@@ -5802,6 +5802,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
     {
       background = dual = true;
       gain              = p->get_gain( "felblade" );
+      affected_by.chaotic_disposition = p->talent.havoc.chaotic_disposition->ok();
     }
 
     double action_multiplier() const override
@@ -6060,8 +6061,6 @@ struct ragefire_t : public demon_hunter_spell_t
   ragefire_t( util::string_view name, demon_hunter_t* p ) : demon_hunter_spell_t( name, p, p->spec.ragefire_damage )
   {
     aoe = -1;
-
-    affected_by.chaotic_disposition = p->talent.havoc.chaotic_disposition->ok();
   }
 };
 
