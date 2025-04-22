@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60257 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -7092,7 +7092,21 @@ bonus_id={ 12161 }, desc={ Rank 1/4 }, effects={ Adding (id=474599, index=0, typ
 bonus_id={ 12162 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474627, index=0, type=use) }
 bonus_id={ 12163 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474628, index=0, type=use) }
 bonus_id={ 12164 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474629, index=0, type=use) }
+bonus_id={ 12169 }, effects={ Unknown Effect (id=205093) }
+bonus_id={ 12170 }, effects={ Unknown Effect (id=205094) }
+bonus_id={ 12171 }, effects={ Unknown Effect (id=205095) }
+bonus_id={ 12172 }, effects={ Unknown Effect (id=205096) }
 bonus_id={ 12173 }, effects={ C.H.E.T.T. List (id=1217214, index=0, type=use) }
 bonus_id={ 12174 }, effects={ C.H.E.T.T. List (id=1219241, index=0, type=unknown) }
+bonus_id={ 12180 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 12215 }, suffix={ of the Abbot }, effects={ Hallowed Tome of the Abbot (id=1223886, index=0, type=equip) }
+bonus_id={ 12216 }, suffix={ of the Zealot }, effects={ Hallowed Tome of the Zealot (id=1223899, index=0, type=equip) }
+bonus_id={ 12217 }, suffix={ of the Crusader }, effects={ Hallowed Tome of the Crusader (id=1223902, index=0, type=equip) }
+bonus_id={ 12218 }, suffix={ of the Cleric }, effects={ Hallowed Tome of the Cleric (id=1223904, index=0, type=equip) }
+bonus_id={ 12219 }, suffix={ on Dark Summons }, stats={ 100% Mastery [0.6666] }, effects={ Excerpt on Dark Summons (id=1225232, index=0, type=equip) }
+bonus_id={ 12220 }, suffix={ on Sacrificial Rituals }, stats={ 100% Haste [0.6666] }, effects={ Excerpt on Sacrificial Rituals (id=1225233, index=0, type=equip) }
+bonus_id={ 12221 }, suffix={ on Prophetic Death }, stats={ 100% Crit [0.6666] }, effects={ Excerpt on Prophetic Death (id=1225234, index=0, type=equip) }
+bonus_id={ 12222 }, suffix={ of the Savage }, effects={ Darktide Wavebender's Orb (id=468034, index=0, type=equip) }
 bonus_id={ 12263 }, ilevel={ 24 @plvl 1 - 623 @plvl 80 }
 bonus_id={ 12264 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 587 @plvl 80 }
+bonus_id={ 12542 }, quality={ uncommon }

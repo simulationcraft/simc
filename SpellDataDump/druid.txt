@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60257 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1476,6 +1476,7 @@ Effects          :
 Description      : Magical damage and healing increased by $s1%.
 
 Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
@@ -2443,7 +2444,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000010
 Affecting Spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Druid (137009 effect#4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4, #5), Overpowering Aura (395944 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Tear Down the Mighty (441846 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Family Flags     : 77, 123
-Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=68522)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.35702 | Target: Enemy (6)
@@ -2988,6 +2989,7 @@ Effects          :
 Description      : Leap forward $s2 yards.
 
 Name             : Incarnation: Avatar of Ashamane (desc=Shapeshift) (id=102543) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100, replace="Berserk" (id=106951)]
 Class            : Druid
 School           : Physical
@@ -3236,7 +3238,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 3034
-Affecting Spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting Spells : Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 41
 Attributes       : Is Ability (4), No Aura Icon (60), Suppress Target Procs (113), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
@@ -3263,7 +3265,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 110
 Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), Requires Main-Hand Weapon (106), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=111705)   : Dummy (3)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Snare | Target: Unknown(87) -> At Enemy in Area (16)
@@ -3476,6 +3478,7 @@ Effects          :
                    Family Flags: 27
 
 Name             : Berserk (id=106951) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3545,6 +3548,7 @@ Effects          :
 Description      : Instantly heals you for $s1% of maximum health. Usable in all shapeshift forms.
 
 Name             : Heart of the Wild (desc=Talent) (id=108291) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3575,6 +3579,7 @@ Description      : $@spelldesc319454
 Tooltip          : Damage of your Balance spells increased by $s1%, and Starsurge is instant.
 
 Name             : Heart of the Wild (desc=Talent) (id=108292) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3608,6 +3613,7 @@ Description      : $@spelldesc319454
 Tooltip          : Damage of your Feral abilities increased by $s1%, and critical strikes with attacks that generate a combo point generate an additional combo point.
 
 Name             : Heart of the Wild (desc=Talent) (id=108293) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3637,6 +3643,7 @@ Description      : $@spelldesc319454
 Tooltip          : Bear Form gives an additional $s1% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration gains an extra charge.
 
 Name             : Heart of the Wild (desc=Talent) (id=108294) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3809,6 +3816,7 @@ Effects          :
 Description      : Your Moonkin Form now appears as Astral Form, conferring all the same benefits, but appearing as an astrally enhanced version of your normal humanoid form.
 
 Name             : Incarnation (desc=Passive) (id=117679) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3865,7 +3873,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Allow Low Level Buff (67), Can Proc From Procs (122), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=158318)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 127 | Target: Self (1)
@@ -4052,7 +4060,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=171566)   : Trigger Spell (64): Typhoon
                    Base Value: 400 | Scaled Value: 400 | Trigger Spell: 61391
-Description      : Blasts targets within $61391a1 yards in front of you with a violent Typhoon, knocking them back and reducing their movement speed by $61391s3% for $61391d. Usable in all shapeshift forms.
+Description      : Blasts targets within ${$61391r1} yards in front of you with a violent Typhoon, knocking them back and reducing their movement speed by $61391s3% for $61391d. Usable in all shapeshift forms.
 
 Name             : Tooth and Claw (id=135286) [Spell Family (7)] 
 Class            : Druid
@@ -4178,8 +4186,8 @@ Effects          :
                    Family Flags: 11, 38, 40, 52, 62, 91
 #4 (id=191164)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Stampeding Roar (106898), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Incarnation: Chosen of Elune (390414), Raze (400254), Minor Cenarion Ward (429222), Ravage (441605)
-                   Family Flags: 3, 11, 13, 25, 27, 29, 30, 31, 32, 38, 40, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
+                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Grove Guardians (102693), Skull Bash (106839), Stampeding Roar (106898), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Force of Nature (205636), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Aquatic Form (276012), Flight Form (276029), Incarnation: Chosen of Elune (390414), Raze (400254), Minor Cenarion Ward (429222), Ravage (441605)
+                   Family Flags: 3, 11, 13, 25, 27, 29, 30, 31, 32, 38, 40, 41, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #6 (id=1072297)  : Apply Aura (6) | Unknown(320)
@@ -5211,7 +5219,7 @@ Effects          :
 #1 (id=232409)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.212 | PvP Coefficient: 1.33 | Target: Enemy (6)
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | PvP Coefficient: 1.33 | Target: Enemy (6)
 #3 (id=363033)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Starfall (50286), Starsurge (78674), Moonfire (164812), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Starfall (359399), Fury of Elune (365640), Fury of Elune (394111), Crashing Star (408310), Crashing Star (468981)
@@ -5254,7 +5262,7 @@ Effects          :
 #1 (id=232416)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.212 | PvP Coefficient: 1.33 | Target: Enemy (6)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.184 | PvP Coefficient: 1.33 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=840806)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Sunfire (164815), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Star Burst (356474), Starfall (359399), Fury of Elune (365640), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Star Burst (421072), Crashing Star (468981)
@@ -6911,7 +6919,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 3035: Early Spring (428937 effect#1)
-Affecting Spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting Spells : Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 41
 Attributes       : No Aura Icon (60), Suppress Target Procs (113), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
@@ -7879,7 +7887,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting Spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
+Affecting Spells : Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Triggered By     : Force of Nature (205636)
 Family Flags     : 41
 Attributes       : No Aura Icon (60), Suppress Target Procs (113), No Aura Log (202), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
@@ -7902,6 +7910,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Incarnation: Avatar of Ashamane (id=252071) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -8980,6 +8989,7 @@ Effects          :
 Description      : When you use $s2 different combo point-generating abilities within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1% for their full duration.
 
 Name             : Heart of the Wild (id=319454) [Spell Family (7)] 
+Hotfixed         : Aura Interrupt
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Nature
@@ -9074,7 +9084,7 @@ Stacks           : 99 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Summon (30), Encounter Start (55)
+Aura Interrupt   : Leave World (19), Summon (30), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=812538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15240,7 +15250,7 @@ Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1035340)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -20532,7 +20542,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | Target: Self (1)
 #2 (id=1222964)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2900 | Scaled Value: 2900 | Target: Self (1)
-Description      : You retain Lycara's Teachings' bonus from your most recent shapeshift form for ${$s1/1000} sec after shifting out of it.
+Description      : You retain Lycara's Teachings' bonus from your most recent shapeshift form for ${$s1/1000} sec after shifting out of it, provided you remained in that form for ${$s2/1000}.1 sec, reduced by Haste.
 
 Name             : Symbiotic Relationship (id=474750) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
@@ -20542,7 +20552,7 @@ Spell Type       : None
 Resource         : 2% Base Mana (0) (id=308975)
 Range            : 40 yards
 Max Targets      : 1
-Cast Time        : 2.5 seconds
+Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
 Labels           : 16: Class Spells
@@ -20738,7 +20748,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198836)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1217236 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Ferocious Bite, Rip, and Primal Wrath by $1217236s1% stacking up to $1217236u times. Ferocious Bite, Rip, and Primal Wrath have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r. Free Ferocious Bites are exempt from this chance.
+Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r, increasing the damage of your Ferocious Bite, Rip, and Primal Wrath by $1217236s1%, stacking up to $1217236u times. Ferocious Bite, Rip, and Primal Wrath have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r. Free Ferocious Bites are exempt from this chance.
 
 Name             : Druid Feral 11.1 Class Set 4pc (id=1215735) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -20753,7 +20763,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198837)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : When you consume Apex Predator's Craving, become a Big Winner, dealing $1217245s2 Physical damage to Apex Predator's primary target and increasing the damage of your periodic effects by $1217245s1% for 6 sec.
+Description      : When you consume Apex Predator's Craving, become a Big Winner, dealing $1217245s2 Physical damage to Apex Predator's primary target and increasing the damage of your periodic effects by $1217245s1% for $1217245d.
 
 Name             : Druid Guardian 11.1 Class Set 2pc (id=1215986) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -20819,7 +20829,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1200581)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -20929,7 +20939,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1202836)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
                    Family Flags: 9
 #2 (id=1202850)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
@@ -20939,7 +20949,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1204386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
                    Family Flags: 9
 #5 (id=1215741)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
