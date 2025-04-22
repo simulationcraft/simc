@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.1.0.60257
-static const std::array<item_name_description_t, 949> __item_name_description_data { {
+// Item name descriptions, wow build 11.1.5.60428
+static const std::array<item_name_description_t, 963> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -947,7 +947,21 @@ static const std::array<item_name_description_t, 949> __item_name_description_da
   { 14227, "Luck"                                        },
   { 14229, "C.H.E.T.T. List"                             },
   { 14230, "Timewalking Vendor - Yellow"                 },
+  { 14243, "Lingering Corruption"                        },
+  { 14244, "Horrific Visions Revisited"                  },
+  { 14245, "Grey"                                        },
   { 14246, "Priceless?"                                  },
+  { 14249, "of the Crusader"                             },
+  { 14250, "of the Cleric"                               },
+  { 14251, "of the Zealot"                               },
+  { 14252, "of the Abbot"                                },
+  { 14253, "on Prophetic Death"                          },
+  { 14254, "on Sacrificial Rituals"                      },
+  { 14255, "on Dark Summons"                             },
   { 14256, "The War Within Season 1"                     },
+  { 14258, "Nightfall"                                   },
+  { 14259, "Flame's Radiance"                            },
+  { 14260, "Season 3 Crafted"                            },
+  { 14261, "Voidfire Deathcycle"                         },
 } };
 
