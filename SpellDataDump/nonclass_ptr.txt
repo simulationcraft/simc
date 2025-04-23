@@ -260497,6 +260497,7 @@ School           : Holyfire
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
+Real PPM         : 8 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Only Outdoors (15), Allow Cast While Dead (23), Ignore Line of Sight (66), Not an Action (92), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Do Not Display Duration (170), Not In Raid Instances (203), Absorb Cannot Be Ignore (214), Aura Points On Client (268), Allow Cast While Channeling (308), Not in Mythic+ Mode (Challenge Mode) (368), Recompute Aura On Level Scale (446)
 Effects          :
