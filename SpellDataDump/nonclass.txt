@@ -183163,10 +183163,11 @@ Effects          :
 Description      : Create a broker's ring appropriate for your loot specialization ($@lootspec).
 
 Name             : Firim's Specimen Container (id=368121) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Attributes       : Not In Combat (Only Peaceful) (28), Visible only to caster (conversations only) (343)
+Attributes       : Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not in Battleground (284), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=912320)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -185434,6 +185435,7 @@ Description      : The imbiber gains invisibility.
 Tooltip          : Invisible.
 
 Name             : Potion of the Hushed Zephyr (id=371125) 
+Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -185442,13 +185444,14 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982828)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Trigger Spell: 371124
 Description      : Drink to gain invisibility for $M seconds.
 
 Name             : Potion of the Hushed Zephyr (id=371133) 
+Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -185457,13 +185460,14 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982836)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 371124
 Description      : Drink to gain invisibility for $M seconds.
 
 Name             : Potion of the Hushed Zephyr (id=371134) 
+Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -185472,7 +185476,7 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982837)   : Dummy (3)
                    Base Value: 18 | Scaled Value: 18 | Trigger Spell: 371124
@@ -260896,7 +260900,8 @@ Triggered By     : Void Ritual (1227315)
 Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217658)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.5 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217659)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227311
