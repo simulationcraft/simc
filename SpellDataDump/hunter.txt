@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.60428 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60490 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -15547,7 +15547,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1179783)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Radius: 50000 yards | Target: Raid in Area (56)
+Hotfixed         : Target 1 (1 -> 56)
 #2 (id=1179784)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Radius: 50000 yards | Target: Raid in Area (56)
 Description      : Your Eagle descends from the skies with a screech, giving the signal to attack.
