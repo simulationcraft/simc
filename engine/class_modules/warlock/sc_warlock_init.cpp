@@ -853,49 +853,92 @@ namespace warlock
   void warlock_t::create_buffs_diabolist()
   {
     buffs.ritual_overlord = make_buff( this, "diabolic_ritual_overlord", hero.ritual_overlord )
+                                ->set_can_cancel( false )
                                 ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
                                     {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_overlord->trigger(); } );
+                                      // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
+                                      const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
+                                      make_event( sim, buff_delay, [ this ] {
+                                        if ( buffs.art_mother->check() || buffs.art_pit_lord->check() )
+                                        {
+                                          // Expire other Demonic Art buffs without triggering their effect
+                                          demonic_art_buff_replaced = true;
+                                          buffs.art_mother->expire();
+                                          buffs.art_pit_lord->expire();
+                                          demonic_art_buff_replaced = false;
+                                        }
+                                        buffs.art_overlord->trigger();
+                                      } );
                                       diabolic_ritual = 1;
                                     }
                                   } );
 
     buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
+                              ->set_can_cancel( false )
                               ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                 {
                                   if ( cur == 0 )
                                   {
-                                    make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
+                                    // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
+                                    const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
+                                    make_event( sim, buff_delay, [ this ] {
+                                      if ( buffs.art_overlord->check() || buffs.art_pit_lord->check() )
+                                      {
+                                        // Expire other Demonic Art buffs without triggering their effect
+                                        demonic_art_buff_replaced = true;
+                                        buffs.art_overlord->expire();
+                                        buffs.art_pit_lord->expire();
+                                        demonic_art_buff_replaced = false;
+                                      }
+                                      buffs.art_mother->trigger();
+                                    } );
                                     diabolic_ritual = 2;
                                   }
                                 } );
 
     buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
+                                ->set_can_cancel( false )
                                 ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
                                 ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                   {
                                     if ( cur == 0 )
                                     {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
+                                      // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
+                                      const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
+                                      make_event( sim, buff_delay, [ this ] {
+                                        if ( buffs.art_mother->check() || buffs.art_overlord->check() )
+                                        {
+                                          // Expire other Demonic Art buffs without triggering their effect
+                                          demonic_art_buff_replaced = true;
+                                          buffs.art_mother->expire();
+                                          buffs.art_overlord->expire();
+                                          demonic_art_buff_replaced = false;
+                                        }
+                                        buffs.art_pit_lord->trigger();
+                                      } );
                                       diabolic_ritual = 0;
                                     }
                                   } );
 
     buffs.art_overlord = make_buff( this, "demonic_art_overlord", hero.art_overlord )
+                             ->set_can_cancel( false )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
-                                 if ( cur == 0 )
+                                 if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
+                                 {
                                    warlock_pet_list.overlords.spawn();
+                                 }
                                } );
 
     buffs.art_mother = make_buff( this, "demonic_art_mother_of_chaos", hero.art_mother )
+                           ->set_can_cancel( false )
                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                              {
-                               if ( cur == 0 )
+                               if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                {
                                  warlock_pet_list.mothers.spawn();
 
@@ -905,9 +948,10 @@ namespace warlock
                              } );
 
     buffs.art_pit_lord = make_buff( this, "demonic_art_pit_lord", hero.art_pit_lord )
+                             ->set_can_cancel( false )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
-                                 if ( cur == 0 )
+                                 if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                  {
                                    warlock_pet_list.pit_lords.spawn();
 
@@ -1251,5 +1295,6 @@ namespace warlock
     corruption_accumulator = rng().range( 0.0, 0.99 );
     wild_imp_spawns.clear();
     diabolic_ritual = as<int>( rng().range( 0, 3 ) );
+    demonic_art_buff_replaced = false;
   }
 }

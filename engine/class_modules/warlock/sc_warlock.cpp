@@ -259,6 +259,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
     diabolic_ritual( 0 ),
+    demonic_art_buff_replaced( false ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),

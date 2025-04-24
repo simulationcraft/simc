@@ -50,6 +50,8 @@ using namespace helpers;
 
       // Diabolist
       bool touch_of_rancora = false;
+      bool touch_of_rancora_casted = false;
+      bool rancora_empowered_dd = false;
       bool flames_of_xoroth_dd = false;
       bool flames_of_xoroth_td = false;
 
@@ -82,6 +84,7 @@ using namespace helpers;
       // Diabolist
       bool diabolic_ritual = false;
       bool demonic_art = false;
+      bool demonic_art_buff = false;
       bool rancora_cb_bonus = false;
     } triggers;
 
@@ -265,7 +268,8 @@ using namespace helpers;
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
         p()->buffs.rolling_havoc->trigger();
 
-      if ( diabolist() && triggers.demonic_art )
+      // NOTE: Casted spells do not consume any Demonic Art buff if none were active at the start of the cast
+      if ( diabolist() && triggers.demonic_art && triggers.demonic_art_buff )
       {
         // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
@@ -512,13 +516,9 @@ using namespace helpers;
       // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
       if ( diabolist() && destruction() && affected_by.touch_of_rancora )
       {
-        if ( p()->buffs.art_overlord->check() )
-          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
-
-        if ( p()->buffs.art_mother->check() )
-          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
-
-        if ( p()->buffs.art_pit_lord->check() )
+        // An incoming empowered rancora spell (rancora_empowered_dd) will remain empowered even if the Demonic Art buff falls off
+        // Spells with 'affected_by.touch_of_rancora_casted == true' need 'affected_by.rancora_empowered_dd' to be empowered
+        if ( affected_by.rancora_empowered_dd || ( !affected_by.touch_of_rancora_casted && ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() ) ) )
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
       }
 
@@ -605,13 +605,7 @@ using namespace helpers;
 
       if ( diabolist() && affected_by.touch_of_rancora )
       {
-        if ( p()->buffs.art_overlord->check() )
-          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
-
-        if ( p()->buffs.art_mother->check() )
-          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
-
-        if ( p()->buffs.art_pit_lord->check() )
+        if ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() )
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
       }
 
@@ -2587,20 +2581,22 @@ using namespace helpers;
     {
       int shards_used;
       timespan_t meteor_time;
+      int rancora_random_target;
       umbral_blaze_dot_t* blaze;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
         shards_used( 0 ),
-        meteor_time( 400_ms )
+        meteor_time( 400_ms ),
+        rancora_random_target( 0 )
       {
         aoe = -1;
         dual = true;
 
-        affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+        affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
+        affected_by.rancora_empowered_dd = false;  // Will be set to true in hand_of_guldan_t::execute() if the spell is rancora empowered
         
         triggers.shadow_invocation = true;
-        triggers.demonic_art = p->hero.diabolic_ritual.ok();
 
         if ( p->talents.umbral_blaze.ok() )
         {
@@ -2611,6 +2607,44 @@ using namespace helpers;
 
       timespan_t travel_time() const override
       { return meteor_time; }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        // Touch of Rancora only affects one of HoG's hits in AoE, randomly selected (bug?)
+        if ( diabolist() && affected_by.touch_of_rancora && affected_by.rancora_empowered_dd && ( !p()->bugs || s->chain_target == rancora_random_target ) )
+        {
+          // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER (bug?), we currently believe this must be done at the end of action_multiplier() calculation
+          if ( p()->bugs )
+          {
+            // At this point, this 'm *= ( X + A ) / A' adjustment is equivalent to ADDITIVELY applying the multiplier 'X' to 'm' just after A
+            // (a.k.a. action_multiplier) but before action_da_multiplier and the subsequent multipliers of warlock_spell_t::composite_da_multiplier
+            const double mult_am = action_multiplier();
+            m *= ( mult_am != 0.0 ) ? ( ( p()->hero.touch_of_rancora->effectN( 1 ).percent() + mult_am ) / mult_am ) : 0.0;
+          }
+          else
+          {
+            m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+          }
+        }
+
+        return m;
+      }
+
+      void execute() override
+      {
+        if ( diabolist() && affected_by.touch_of_rancora && affected_by.rancora_empowered_dd )
+        {
+          // NOTE: Touch of Rancora only affects one of HoG's hits in AoE, randomly selected (bug?)
+          const std::vector<player_t*>& tl = target_list();
+          rancora_random_target = rng().range( as<int>( tl.size() ) );
+        }
+
+        warlock_spell_t::execute();
+
+        affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
+      }
 
       double action_multiplier() const override
       {
@@ -2625,19 +2659,6 @@ using namespace helpers;
 
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
           m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
-
-        // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER, we currently believe this must be done at the end of calculation
-        if ( diabolist() && affected_by.touch_of_rancora )
-        {
-          if ( p()->buffs.art_overlord->check() )
-            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
-
-          if ( p()->buffs.art_mother->check() )
-            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
-
-          if ( p()->buffs.art_pit_lord->check() )
-            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
-        }
 
         return m;
       }
@@ -2687,9 +2708,12 @@ using namespace helpers;
       : warlock_spell_t( "Hand of Gul'dan", p, p->warlock_base.hand_of_guldan, options_str ),
       impact_spell( new hog_impact_t( p ) )
     {
-      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+      affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
+      affected_by.rancora_empowered_dd = false;  // Will be set to true in schedule_execute() if the spell is rancora empowered
+
+      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.demonic_art_buff = false;  // Will be set to true in schedule_execute() if any demonic art buff is present
       triggers.jackpot_demonology = true;
 
       add_child( impact_spell );
@@ -2709,10 +2733,30 @@ using namespace helpers;
       return warlock_spell_t::ready();
     }
 
+    void schedule_execute( action_state_t* s ) override
+    {
+      // NOTE: Any of the Demonic Art buffs must be present when the cast begins for the spell to be empowered by Touch of Rancora
+      // and/or for the Demonic Art buff to be consumed upon executing the spell
+      if ( diabolist() && triggers.demonic_art )
+      {
+        const bool demonic_art_buff_up = p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check();
+        triggers.demonic_art_buff = demonic_art_buff_up;
+        affected_by.rancora_empowered_dd = affected_by.touch_of_rancora && demonic_art_buff_up;
+      }
+      else
+      {
+        triggers.demonic_art_buff = false;
+        affected_by.rancora_empowered_dd = false;
+      }
+
+      warlock_spell_t::schedule_execute( s );
+    }
+
     void execute() override
     {
       int shards_used = as<int>( cost() );
       impact_spell->shards_used = shards_used;
+      impact_spell->affected_by.rancora_empowered_dd = affected_by.rancora_empowered_dd;
 
       warlock_spell_t::execute();
 
@@ -2750,6 +2794,9 @@ using namespace helpers;
           }
         }
       }
+
+      affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
+      triggers.demonic_art_buff = false;  // Reset triggers.demonic_art_buff state after execute()
     }
 
     void consume_resource() override
@@ -3804,9 +3851,11 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
-      affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
+      affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
+      affected_by.rancora_empowered_dd = false;  // Will be set to true in schedule_execute() if the spell is rancora empowered
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.demonic_art_buff = false;  // Will be set to true in schedule_execute() if any demonic art buff is present
       triggers.rancora_cb_bonus = true;
       triggers.jackpot_destruction = true;
 
@@ -3881,6 +3930,25 @@ using namespace helpers;
         td( s->target )->debuffs_eradication->trigger();
     }
 
+    void schedule_execute( action_state_t* s ) override
+    {
+      // NOTE: Any of the Demonic Art buffs must be present when the cast begins for the spell to be empowered by Touch of Rancora
+      // and/or for the Demonic Art buff to be consumed upon executing the spell
+      if ( diabolist() && triggers.demonic_art )
+      {
+        const bool demonic_art_buff_up = p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check();
+        triggers.demonic_art_buff = demonic_art_buff_up;
+        affected_by.rancora_empowered_dd = affected_by.touch_of_rancora && demonic_art_buff_up;
+      }
+      else
+      {
+        triggers.demonic_art_buff = false;
+        affected_by.rancora_empowered_dd = false;
+      }
+
+      warlock_spell_t::schedule_execute( s );
+    }
+
     void execute() override
     {
       warlock_spell_t::execute();
@@ -3901,6 +3969,9 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
+
+      affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
+      triggers.demonic_art_buff = false;  // Reset triggers.demonic_art_buff state after execute()
     }
 
     double composite_crit_chance() const override
@@ -4047,7 +4118,7 @@ using namespace helpers;
 
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
 
       base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
@@ -4163,7 +4234,7 @@ using namespace helpers;
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-      triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
       triggers.jackpot_destruction = true;
 
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();

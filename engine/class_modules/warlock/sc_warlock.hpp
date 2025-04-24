@@ -103,7 +103,8 @@ public:
   double agony_accumulator;
   double corruption_accumulator;
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
-  int diabolic_ritual;
+  int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
+  bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
 
   unsigned active_pets;
 
