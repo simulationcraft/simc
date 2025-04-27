@@ -339,7 +339,6 @@ public:
     buff_t* high_voltage;
     buff_t* impetus;
     buff_t* intuition;
-    buff_t* intuition_tracker;
     buff_t* leydrinker;
     buff_t* nether_precision;
     buff_t* presence_of_mind;
@@ -575,6 +574,7 @@ public:
     bool heat_shimmer;
     int embedded_splinters;
     int magis_spark_spells;
+    int intuition_BLP_count;
   } state;
 
   struct expression_support_t
@@ -2275,16 +2275,9 @@ public:
     if ( triggers.frostfire_mastery && harmful && !background )
       trigger_frostfire_mastery();
 
-    // Needs to be triggered with a delay so that ABar doesn't eat its own proc
-    if ( !background && harmful ) {
-      if ( p()->buffs.intuition_tracker->at_max_stacks() ||  rng().roll( p()->talents.intuition->effectN( 1 ).percent() )  ) {
-        make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
-        p()->buffs.intuition_tracker->expire();
-      } else {
-        p()->buffs.intuition_tracker->increment(); 
-      }
-    }
-  } 
+    if ( !background && harmful ) 
+      trigger_intuition( false );
+  }
 
   void impact( action_state_t* s ) override
   {
@@ -2470,6 +2463,24 @@ public:
       as<int>( p()->talents.glorious_incandescence->effectN( 1 ).base_value() ) - 1 );
 
     p()->state.trigger_glorious_incandescence = false;
+  }
+
+  void trigger_intuition( bool BLP_exclude_initial )
+  {
+    if ( !p()->talents.intuition.ok() )
+      return;
+
+    const int BLP_threshold { 11 };
+    // If an action and it's direct after-effect can increment intuition's BLP,
+    // exclude the second incoming incrementation if it already gained intuition from its previous associated action
+    if ( p()->state.intuition_BLP_count > 0 || !BLP_exclude_initial )
+      p()->state.intuition_BLP_count += 1;
+    
+    if ( p()->state.intuition_BLP_count >= BLP_threshold || ( !background && harmful && rng().roll( p()->talents.intuition->effectN( 1 ).percent() ) ) ) 
+    {
+      make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } ); // Needs to be triggered with a delay so that ABar doesn't eat its own proc
+      p()->state.intuition_BLP_count = 0;
+    }
   }
 };
 
@@ -3405,8 +3416,11 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
 struct arcane_orb_t final : public arcane_mage_spell_t
 {
-  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type = ao_type::NORMAL ) :
-    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) )
+  ao_type type;
+
+  arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
+    arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) ),
+    type( type_ )
   {
     parse_options( options_str );
     may_miss = false;
@@ -3446,6 +3460,9 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
+
+    if ( background ) 
+      trigger_intuition( type == ao_type::ORB_BARRAGE );
   }
 
   void impact( action_state_t* s ) override
@@ -3520,19 +3537,9 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
     snapshot_charges = p()->buffs.arcane_charge->check();
-    if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) ) {
+    if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
       orb_barrage->execute_on_target( target );
-
-      //so i had to repeat this block of code three times (ae echo, orb barrage, sft orb), which is pretty ugly, and i think its preferable to leave it within mage_spell's execute, 
-      //but i don't know how to cleanly refer to those three as theyre considered within the background. please lemme know if there's a way to refer to a specific action being executed within mage_spell.
-      if ( p()->buffs.intuition_tracker->up() )  // it's possible, on 10count (for intuition blp), if you barrage + proc orb, without this it'll barr > intuition gained + 0count > orb barrage registers + 1count, but in game, it'll barr at 10count > orb barrage > intuition gained from blp + 0count. same story with ae echo.
-        p()->buffs.intuition_tracker->increment();
       
-      if ( p()->buffs.intuition_tracker->at_max_stacks() ) {
-        make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
-        p()->buffs.intuition_tracker->expire();
-      }
-    }
     p()->benefits.arcane_charge.arcane_barrage->update();
 
     dematerialize_spell_t::execute();
@@ -3768,15 +3775,8 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       p()->buffs.static_cloud->expire();
     p()->buffs.static_cloud->trigger();
 
-    if ( background )  { // echo and recon increments blp, might be clearer to write "type == ae_type::ECHO || type == ae_type::ENERGY_RECON", but "background" is neater, i dunno
-      if ( p()->buffs.intuition_tracker->up() || type == ae_type::ENERGY_RECON )  
-        p()->buffs.intuition_tracker->increment();
-
-      if ( p()->buffs.intuition_tracker->at_max_stacks() ) { 
-        make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
-        p()->buffs.intuition_tracker->expire();
-      }
-    }
+    if ( background ) 
+      trigger_intuition( type == ae_type::ECHO );
 
     if ( type == ae_type::ENERGY_RECON )
       return;
@@ -7218,15 +7218,8 @@ struct splinter_t final : public mage_spell_t
     if ( p()->accumulated_rng.spellfrost_teachings->trigger() )
     {
       p()->cooldowns.frozen_orb->reset( true );
-      if ( p()->action.spellfrost_arcane_orb && p()->target ) {
+      if ( p()->action.spellfrost_arcane_orb && p()->target )
         p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
-
-        p()->buffs.intuition_tracker->increment();
-        if ( p()->buffs.intuition_tracker->at_max_stacks() ) { 
-          make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
-          p()->buffs.intuition_tracker->expire();
-        }
-      }
       p()->buffs.spellfrost_teachings->trigger();
     }
   }
@@ -8487,8 +8480,6 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->modify_default_value( talents.aether_fragment->effectN( 1 ).percent() )
                                       ->set_chance( talents.intuition.ok() );
-  buffs.intuition_tracker         = make_buff( this, "intuition_tracker", find_spell( 384455 ) ) //uses arcane harmony's id, scuffed but works well enough (i think, but it's a HUGE hack-job), im not sure how to set up an imaginary buff without literally adding it into spelldata. previously did use intuition's id, had to change its duration as to not have it expire, but it's also way neater within the html report -- i dunno
-                                     ->set_max_stack (11);
   buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
                                       ->set_chance( talents.leydrinker.ok() );
   buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
