@@ -574,7 +574,7 @@ public:
     bool heat_shimmer;
     int embedded_splinters;
     int magis_spark_spells;
-    int intuition_BLP_count;
+    int intuition_blp_count;
   } state;
 
   struct expression_support_t
@@ -2465,21 +2465,23 @@ public:
     p()->state.trigger_glorious_incandescence = false;
   }
 
-  void trigger_intuition( bool BLP_exclude_initial )
+
+  // If an action and it's direct after-effect can increment intuition's BLP,
+  // exclude the second incoming incrementation if we already gained intuition from its previous associated action
+  void trigger_intuition( bool blp_exclude_initial )
   {
     if ( !p()->talents.intuition.ok() )
       return;
 
-    const int BLP_threshold { 11 };
-    // If an action and it's direct after-effect can increment intuition's BLP,
-    // exclude the second incoming incrementation if it already gained intuition from its previous associated action
-    if ( p()->state.intuition_BLP_count > 0 || !BLP_exclude_initial )
-      p()->state.intuition_BLP_count += 1;
+    constexpr int blp_threshold { 11 };
+
+    if ( p()->state.intuition_blp_count > 0 || !blp_exclude_initial )
+      p()->state.intuition_blp_count += 1;
     
-    if ( p()->state.intuition_BLP_count >= BLP_threshold || ( !background && harmful && rng().roll( p()->talents.intuition->effectN( 1 ).percent() ) ) ) 
+    if ( p()->state.intuition_blp_count >= blp_threshold || ( !background && harmful && rng().roll( p()->talents.intuition->effectN( 1 ).percent() ) ) ) 
     {
       make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } ); // Needs to be triggered with a delay so that ABar doesn't eat its own proc
-      p()->state.intuition_BLP_count = 0;
+      p()->state.intuition_blp_count = 0;
     }
   }
 };
@@ -3416,7 +3418,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 
 struct arcane_orb_t final : public arcane_mage_spell_t
 {
-  ao_type type;
+  const ao_type type;
 
   arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
     arcane_mage_spell_t( n, p, p->find_specialization_spell( "Arcane Orb" ) ),
@@ -3539,7 +3541,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     snapshot_charges = p()->buffs.arcane_charge->check();
     if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
       orb_barrage->execute_on_target( target );
-      
+
     p()->benefits.arcane_charge.arcane_barrage->update();
 
     dematerialize_spell_t::execute();
