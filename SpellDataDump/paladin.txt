@@ -16052,8 +16052,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119289)  : Apply Aura (6) | Dummy (4)
@@ -16064,7 +16062,7 @@ Name             : Gleaming Rays (id=431481) [Spell Family (10)]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
-Duration         : 30 seconds
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
