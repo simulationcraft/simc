@@ -252,7 +252,7 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
   default_->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14" );
-  default_->add_action( "hand_of_guldan,if=(pet.greater_dreadstalker.remains&pet.greater_dreadstalker.remains>gcd.max&pet.greater_dreadstalker.remains<gcd.max*3)&cooldown.call_dreadstalkers.remains>gcd.max*3&cooldown.summon_vilefiend.remains>gcd.max*2" );
+  default_->add_action( "hand_of_guldan,if=active_enemies>3&(pet.greater_dreadstalker.remains&pet.greater_dreadstalker.remains>gcd.max&pet.greater_dreadstalker.remains<gcd.max*3)&cooldown.call_dreadstalkers.remains>gcd.max*3&cooldown.summon_vilefiend.remains>gcd.max*2" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25" );
   default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30" );
   default_->add_action( "demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.react&(!talent.doom|buff.demonic_core.react>1|debuff.doom.remains>10|debuff.doom.down)&(((!talent.fel_invocation|pet.felguard.cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4))&!prev_gcd.1.demonbolt&!variable.pool_cores_for_tyrant" );
