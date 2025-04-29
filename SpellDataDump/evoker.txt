@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -7314,12 +7314,10 @@ Effects          :
                    Base Value: 24 | Scaled Value: 24 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (15 -> 24)
 #2 (id=1037189)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 24 | Scaled Value: 24 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (15 -> 24)
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -8730,7 +8728,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Unknown(78) -> At Enemy in Area (16)
-Hotfixed         : Base Value (8 -> 10)
 #2 (id=1075735)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Radius: 6 yards | Target: At Enemy in Area (16)
 Description      : $@spelldesc403631

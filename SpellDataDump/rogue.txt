@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -981,7 +981,6 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -3296,7 +3295,6 @@ Tooltip          : Movement speed reduced by $s3%$?a428377[ and dealing $s4% les
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Adrenaline Rush (id=186286) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3393,7 +3391,6 @@ Has a $s3% chance to hit an additional time, making your next Pistol Shot half c
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Broadside (id=193356) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3433,7 +3430,6 @@ Description      : Your combo-point generating abilities generate $s1 additional
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3458,7 +3454,6 @@ Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3491,7 +3486,6 @@ Tooltip          : Damage increased by $w1%.
 Blade Flurry deals $w2% additional damage to nearby enemies.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4094,7 +4088,6 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4112,7 +4105,6 @@ Description      : Your base Energy regeneration is increased by ${$s1/5} per se
 Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Skull and Crossbones (id=199603) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5893,7 +5885,6 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -8272,7 +8263,6 @@ Effects          :
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -11265,7 +11255,6 @@ Description      : $@spelldesc381664
 Tooltip          : Envenom consumes stacks to amplify its damage.
 
 Name             : Deathmark (id=394331) [Spell Family (8), Hidden] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None

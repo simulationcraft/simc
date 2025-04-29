@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -316,7 +316,6 @@ Description      : Maims the enemy for $s2 Physical damage, reducing movement sp
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Recklessness (id=1719) [Spell Family (4)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Fury [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -1989,7 +1988,6 @@ Effects          :
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.$?s436162[ Also hits 2 additional nearby targets, stunning for 2 sec.][]
 
 Name             : Avatar (id=107574) [Spell Family (4)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical

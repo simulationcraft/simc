@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -311,7 +311,6 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.030151 | PvP Coefficient: 0.772727 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.02741 -> 0.030151), PvP Coefficient (0.85 -> 0.772727)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1526,7 +1525,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41742 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.333936 -> 0.41742)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -2338,7 +2336,6 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.142354 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.118628 -> 0.142354)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -3603,7 +3600,6 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=210584)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.645 | Radius: 8 yards | Target: At Enemy in Area (16)
-Hotfixed         : SP Coefficient (2.7 -> 3.645)
 Description      : Calls forth a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?a445465[Wither][Immolate].
 
 Name             : Immolate (id=157736) [Spell Family (5)] 
@@ -5875,7 +5871,6 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.9391 | PvP Coefficient: 1.16667 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.44925 -> 2.9391), PvP Coefficient (1.4 -> 1.16667)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -10200,7 +10195,6 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), C
 Effects          :
 #1 (id=1021380)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.397032 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.283594 -> 0.397032)
 Description      : $@spelldesc278350
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -10261,7 +10255,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #2 (id=1021493)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.6292 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.484 -> 0.6292)
 #3 (id=1021494)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Enemy (6)
 #4 (id=1021495)  : Dummy (3)
@@ -13649,7 +13642,6 @@ Effects          :
 Description      : $@spelldesc428517
 
 Name             : Wicked Cleave (id=432120) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Melee
@@ -13665,7 +13657,6 @@ Attributes       : Allow Dead Target (64), Ignore Line of Sight (66), Do Not Dis
 Effects          :
 #1 (id=1120432)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.8053 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
-Hotfixed         : Target 1 (53 -> 63)
 Description      : $@spelldesc428514
 
 Name             : Wicked Cleave (id=432220) [Spell Family (5), Hidden] 
@@ -16821,7 +16812,6 @@ Attributes       : Ignore Line of Sight (66)
 Effects          :
 #1 (id=1185791)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : Type (32 -> 3), Base Value (432120 -> 0), Target 1 (87 -> 53)
 Description      : $@spelldesc428514
 
 Name             : Demonfire Infusion (id=1214442) [Spell Family (5), Passive] 

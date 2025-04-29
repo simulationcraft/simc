@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -121111,7 +121111,6 @@ Effects          :
 Description      : $@spelldesc279524
 
 Name             : Berserk (id=279526) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
@@ -183163,7 +183162,6 @@ Effects          :
 Description      : Create a broker's ring appropriate for your loot specialization ($@lootspec).
 
 Name             : Firim's Specimen Container (id=368121) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -185435,7 +185433,6 @@ Description      : The imbiber gains invisibility.
 Tooltip          : Invisible.
 
 Name             : Potion of the Hushed Zephyr (id=371125) 
-Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -185451,7 +185448,6 @@ Effects          :
 Description      : Drink to gain invisibility for $M seconds.
 
 Name             : Potion of the Hushed Zephyr (id=371133) 
-Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -185467,7 +185463,6 @@ Effects          :
 Description      : Drink to gain invisibility for $M seconds.
 
 Name             : Potion of the Hushed Zephyr (id=371134) 
-Hotfixed         : Attributes
 School           : None
 Spell Type       : Magic
 Cooldown         : 600 seconds
@@ -260234,7 +260229,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1214030)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 845195 (coefficient=330.4433) | Trigger Spell: 1225038 | Target: Self (1)
-Hotfixed         : Coefficient (143.289124 -> 330.443298)
 Description      : $@spelldesc1225074
 
 Name             : Twilight Devastation (id=1225045) [Passive] 
@@ -260252,7 +260246,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1214035)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1448900 (coefficient=566.472) | Trigger Spell: 1225038 | Target: Self (1)
-Hotfixed         : Coefficient (198.324081 -> 566.472046), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225074
 
 Name             : Lesser Rune of Twilight Devastation (id=1225074) 
@@ -260369,7 +260362,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 42260 (coefficient=16.52226) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (7.164454 -> 16.522263)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260387,7 +260379,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 72445 (coefficient=28.3236) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (9.916095 -> 28.323601)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260557,10 +260548,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217487)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 211298 (coefficient=82.61053) | Trigger Spell: 1227215 | Target: Self (1)
-Hotfixed         : Coefficient (39.404579 -> 82.610535), Scaling Class (-9 -> -8)
 #2 (id=1218047)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 73954 (coefficient=28.91357) | Target: Self (1)
-Hotfixed         : Coefficient (10.746684 -> 28.913568), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227211) [Passive] 
@@ -260578,10 +260567,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217488)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 362226 (coefficient=141.6184) | Trigger Spell: 1227215 | Target: Self (1)
-Hotfixed         : Coefficient (54.539207 -> 141.618393), Scaling Class (-9 -> -8)
 #2 (id=1218066)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 126779 (coefficient=49.5664) | Target: Self (1)
-Hotfixed         : Coefficient (14.874307 -> 49.566399), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227215) [Hidden] 
@@ -260666,7 +260653,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217617)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 37774 (coefficient=14.76839) | Trigger Spell: 1227292 | Target: Self (1)
-Hotfixed         : Coefficient (6.404082 -> 14.768386), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227291) [Passive] 
@@ -260684,11 +260670,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217619)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 64756 (coefficient=25.31745) | Trigger Spell: 1227292 | Target: Self (1)
-Hotfixed         : Coefficient (8.863611 -> 25.317455), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227292) [Hidden] 
-Hotfixed         : Internal Cooldown (100 -> 0)
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260754,7 +260738,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 84520 (coefficient=33.04453) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (14.328914 -> 33.044525), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260772,11 +260755,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 144891 (coefficient=56.64759) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (19.832581 -> 56.647594), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
-Hotfixed         : Proc Chance (100 -> 101)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260850,7 +260831,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 59.33371 (coefficient=0.015496) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.019048 -> 0.015496)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260868,7 +260848,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 102.6662 (coefficient=0.026813) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.02636 -> 0.026813)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 
@@ -260901,7 +260880,6 @@ Attributes       : Aura Points On Client (268), Check Required Target Aura By Ca
 Effects          :
 #1 (id=1217658)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.5 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217659)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227311

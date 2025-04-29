@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1476,7 +1476,6 @@ Effects          :
 Description      : Magical damage and healing increased by $s1%.
 
 Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
@@ -2368,7 +2367,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.96 | PvP Coefficient: 0.926 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.8728 -> 2.96)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -2989,7 +2987,6 @@ Effects          :
 Description      : Leap forward $s2 yards.
 
 Name             : Incarnation: Avatar of Ashamane (desc=Shapeshift) (id=102543) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100, replace="Berserk" (id=106951)]
 Class            : Druid
 School           : Physical
@@ -3478,7 +3475,6 @@ Effects          :
                    Family Flags: 27
 
 Name             : Berserk (id=106951) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3548,7 +3544,6 @@ Effects          :
 Description      : Instantly heals you for $s1% of maximum health. Usable in all shapeshift forms.
 
 Name             : Heart of the Wild (desc=Talent) (id=108291) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3579,7 +3574,6 @@ Description      : $@spelldesc319454
 Tooltip          : Damage of your Balance spells increased by $s1%, and Starsurge is instant.
 
 Name             : Heart of the Wild (desc=Talent) (id=108292) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3613,7 +3607,6 @@ Description      : $@spelldesc319454
 Tooltip          : Damage of your Feral abilities increased by $s1%, and critical strikes with attacks that generate a combo point generate an additional combo point.
 
 Name             : Heart of the Wild (desc=Talent) (id=108293) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3643,7 +3636,6 @@ Description      : $@spelldesc319454
 Tooltip          : Bear Form gives an additional $s1% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration gains an extra charge.
 
 Name             : Heart of the Wild (desc=Talent) (id=108294) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3816,7 +3808,6 @@ Effects          :
 Description      : Your Moonkin Form now appears as Astral Form, conferring all the same benefits, but appearing as an astrally enhanced version of your normal humanoid form.
 
 Name             : Incarnation (desc=Passive) (id=117679) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4488,15 +4479,12 @@ Effects          :
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
-Hotfixed         : Base Value (6 -> 9)
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Fey Missile (188046), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Fury of Elune (365640), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Minor Moon (424588), Boundless Moonlight (428682), Dream Burst (433850), Crashing Star (468981)
                    Family Flags: 18
-Hotfixed         : Base Value (6 -> 9)
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 9)
 #4 (id=191148)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4513,7 +4501,6 @@ Hotfixed         : Base Value (6 -> 9)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 #8 (id=872569)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (6 -> 9)
 #9 (id=1080967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -5534,7 +5521,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.224 | PvP Coefficient: 0.8333 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.249 -> 0.224)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -7910,7 +7896,6 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Incarnation: Avatar of Ashamane (id=252071) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -8989,7 +8974,6 @@ Effects          :
 Description      : When you use $s2 different combo point-generating abilities within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1% for their full duration.
 
 Name             : Heart of the Wild (id=319454) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Nature
@@ -14814,7 +14798,6 @@ Effects          :
                    Affected Spells (Label): Goldrinn's Fang (394047)
 #3 (id=1109174)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.545 | PvP Coefficient: 0.4
-Hotfixed         : SP Coefficient (1.5 -> 1.545)
 Description      : Starsurge has a chance to summon the Spirit of Goldrinn, which immediately deals ${$s3*$<mastery>} Astral damage to the target.
 Variables        : $mastery=${(1+$393014s1/100)*(1+$393014s3/100)}
 
@@ -14836,7 +14819,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033385)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.545 | PvP Coefficient: 0.4 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.5 -> 1.545)
 Description      : $@spelldesc394046
 
 Name             : Balance of All Things (id=394048) [Spell Family (7), Passive] 
@@ -16833,7 +16815,6 @@ Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always
 Effects          :
 #1 (id=1101681)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.204 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (2.4486 -> 2.204)
 #2 (id=1101682)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: astral_power | Target: Self (1)
 #3 (id=1169121)  : Dummy (3)
@@ -17093,7 +17074,6 @@ Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always
 Effects          :
 #1 (id=1109706)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.53 | Radius: 0 - 6 yards | Target: At Target (63) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (2.81 -> 2.53)
 #2 (id=1119703)  : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Resource: astral_power | Target: Self (1)
 #3 (id=1119704)  : Energize Power (30)
