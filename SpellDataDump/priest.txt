@@ -13319,6 +13319,7 @@ Tooltip          : Healing done increased by $w1%.
 $w3% of overhealing is being redistributed to up to $s4 nearby allies.
 
 Name             : Premonition of Insight (id=428933) [Spell Family (6)] 
+Hotfixed         : Proc Flags 1 (0 -> 81920), Proc Flags 2 (4 -> 0)
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -13334,7 +13335,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 1 seconds
 Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Fatebender (440743 effect#1)
 Family Flags     : 17
 Attributes       : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
