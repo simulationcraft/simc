@@ -12907,7 +12907,8 @@ Family Flags     : 13, 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1114574)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.5 -> 1.1)
 Description      : $@spelldesc13877
 
 Name             : Ambush (id=430023) [Spell Family (8)] 
