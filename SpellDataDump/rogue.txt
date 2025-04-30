@@ -10152,6 +10152,7 @@ Effects          :
 Description      : Garrote damage increased by $s1%. Garrote generates $s2 additional combo points when used from Stealth.
 
 Name             : Kingsbane (id=385627) [Spell Family (8)] 
+Hotfixed         : Attributes
 Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Rogue
 School           : Nature
@@ -10169,7 +10170,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Kingsbane (394095 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 85, 119
-Attributes       : Do Not Sheath (18), Can Proc From Procs (122), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Do Not Sheath (18), Can Proc From Procs (122), No Caster Aura Icon (187), No Attack Parry (248), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1019022)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
