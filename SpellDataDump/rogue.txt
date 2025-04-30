@@ -1184,6 +1184,7 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Blade Flurry (id=22482) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -1194,10 +1195,11 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Dancing Steel (272026 effect#3), Deft Maneuvers (385835 effects: #1, #4)
 Family Flags     : 93
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=12763)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 25 | Target: Enemy (6)
+Hotfixed         : Chain Targets (5 -> 25)
 Description      : $@spelldesc319606
 
 Name             : Arcane Torrent (desc=Racial) (id=25046) 
@@ -14986,7 +14988,8 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166346)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 28 | Target: Enemy (6)
+Hotfixed         : Chain Targets (8 -> 28)
 Description      : $@spelldesc441367
 
 Name             : Fazed (id=460927) [Spell Family (8)] 
