@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -316,7 +316,6 @@ Description      : Maims the enemy for $s2 Physical damage, reducing movement sp
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Recklessness (id=1719) [Spell Family (4)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Fury [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -1989,7 +1988,6 @@ Effects          :
 Description      : Hurls your weapon at an enemy, causing $s1 Physical damage and stunning for $132169d.$?s436162[ Also hits 2 additional nearby targets, stunning for 2 sec.][]
 
 Name             : Avatar (id=107574) [Spell Family (4)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -15474,7 +15472,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198815)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1216561 | Target: Self (1)
-Description      : Your abilities have a chance to start a |cFFFFFFFFWinning Streak!|r increasing the damage of Rampage by $1216561s1%, stacking up to $1216561U times.
+Description      : Your abilities have a chance to start a |cFFFFFFFFWinning Streak!|r, increasing the damage of Rampage by $1216561s1%, stacking up to $1216561U times.
 Rampage has a $1216561H% chance to end your |cFFFFFFFFWinning Streak!|r
 
 Name             : Warrior Fury 11.1 Class Set 4pc (id=1215715) [Spell Family (4), Passive, Hidden] 
@@ -15808,5 +15806,19 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 13 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
 Description      : $@spelldesc1219201
 Tooltip          : The duration of the next crowd control effect on you is reduced by $w1%.
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 

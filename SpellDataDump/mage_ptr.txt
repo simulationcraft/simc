@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -492,7 +492,6 @@ While channeling Evocation, your Intellect is increased by $384267s1% every $120
 Tooltip          : Mana regeneration increased by $s1%.
 
 Name             : Icy Veins (id=12472) [Spell Family (3)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Frost [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
@@ -2506,17 +2505,14 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
-Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> 15), Affects Spells
 #9 (id=260860)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
-Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> 15), Misc Value (0 -> 22), Affects Spells
 #10 (id=260861)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Frostfire Infusion (431171)
                    Family Flags: 84
-Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> 30), Affects Spells
 #11 (id=260862)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=260863)  : Apply Aura (6) | Dummy (4)
@@ -2623,15 +2619,12 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.667 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Frostbolt Volley (1216910)
                    Family Flags: 3
-Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.667 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Frostbolt Volley (1216910)
                    Family Flags: 3
-Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.667 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -3 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -2640,7 +2633,6 @@ Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
                    Family Flags: 36
 #6 (id=1032357)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.667 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
 #7 (id=1122160)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
@@ -2655,11 +2647,9 @@ Hotfixed         : Base Value (8 -> 12), PvP Coefficient (1 -> 0.667)
 #10 (id=1187019) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -5 | Scaled Value: -5 | Misc Value 2: 4137 (Label) | Target: Self (1)
                    Affected Spells (Label): Meteorite (449569)
-Hotfixed         : Base Value (-15 -> -5)
 #11 (id=1234348) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 5133 (Label) | Target: Self (1)
                    Affected Spells (Label): Flamestrike (450462), Arcane Surge (453326), Meteorite (456139)
-Hotfixed         : NEW EFFECT
 
 Name             : Arcane Missiles (id=139678) 
 Class            : Mage
@@ -12308,7 +12298,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #2 (id=1131295)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.8334 | Target: Self (1)
-Hotfixed         : Base Value (250 -> 300), PvP Coefficient (1 -> 0.8334)
 Description      : Comet Storm now also calls down a Meteor at $s1% effectiveness onto your target's location.
 
 Meteor now also calls down a Comet Storm at $s2% effectiveness onto your target location.
@@ -12612,7 +12601,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1131326)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.65 | Radius: 0 - 6 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.375 -> 1.65)
 Description      : $@spelldesc153595
 
 Name             : Excess Frost (id=438611) [Spell Family (3)] 
@@ -16547,5 +16535,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 

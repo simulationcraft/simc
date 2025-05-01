@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -7109,4 +7109,16 @@ bonus_id={ 12221 }, suffix={ on Prophetic Death }, stats={ 100% Crit [0.6666] },
 bonus_id={ 12222 }, suffix={ of the Savage }, effects={ Darktide Wavebender's Orb (id=468034, index=0, type=equip) }
 bonus_id={ 12263 }, ilevel={ 24 @plvl 1 - 623 @plvl 80 }
 bonus_id={ 12264 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 587 @plvl 80 }
+bonus_id={ 12371 }, quality={ epic }
+bonus_id={ 12372 }, quality={ epic }
+bonus_id={ 12373 }, ilevel_adjust={ 6 }
+bonus_id={ 12374 }, ilevel_adjust={ 3 }
+bonus_id={ 12375 }, quality={ epic }
+bonus_id={ 12376 }, quality={ epic }
+bonus_id={ 12504 }, quality={ epic }
+bonus_id={ 12517 }, quality={ epic }
+bonus_id={ 12530 }, quality={ epic }
+bonus_id={ 12531 }, quality={ epic }
+bonus_id={ 12532 }, quality={ epic }
+bonus_id={ 12533 }, quality={ epic }
 bonus_id={ 12542 }, quality={ uncommon }

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -15520,7 +15520,7 @@ Family Flags     : 117
 Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1179729)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
                    Family Flags: 17
 #2 (id=1197714)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
@@ -17860,7 +17860,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 4325: Born to Kill (1217434 effect#2), Born to Kill (1217434 effect#3)
-Attributes       : DoT Stacking Rule (103)
+Attributes       : DoT Stacking Rule (103), Do Not Display Range (126)
 Effects          :
 #1 (id=1201497)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
@@ -17868,6 +17868,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
                    Family Flags: 11
+Description      : $@spelldesc1217429
 Tooltip          : Taking $s1% increased damage from your Bleed effects$?a1217434[ and $s2% increased damage from your Kill Shot][].
 
 Name             : Born to Kill (id=1217434) [Spell Family (9), Passive, Hidden] 
@@ -18199,5 +18200,19 @@ Effects          :
 #1 (id=1215326)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 

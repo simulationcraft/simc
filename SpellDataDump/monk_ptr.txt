@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1842,7 +1842,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.924 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Elusive Brawler (195630)
                    Family Flags: 109
-Hotfixed         : SP Coefficient (0.88 -> 0.924)
 #2 (id=217538)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
 #3 (id=287196)   : Apply Aura (6) | Proc Trigger Spell (42): Elusive Brawler
@@ -3456,7 +3455,6 @@ Effects          :
                    Base Value: 175 | Scaled Value: 175 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10
-Hotfixed         : Base Value (139 -> 175)
 #8 (id=260839)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
@@ -3517,7 +3515,6 @@ Hotfixed         : Base Value (139 -> 175)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-Hotfixed         : Base Value (47 -> 70)
 #27 (id=1080997) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
@@ -5860,7 +5857,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=372570)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 55 | Scaled Value: 55 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 55)
 #2 (id=884935)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -6817,7 +6813,6 @@ Description      : Niuzao's teachings allow you to shuffle during combat, increa
 Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.
 
 Name             : Celestial Brew (id=322507) [Spell Family (53)] 
-Hotfixed         : Variables
 Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
@@ -10887,7 +10882,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Friendly (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545)
                    Family Flags: 48, 102
-Hotfixed         : Affects Spells
 Description      : $@spelldesc388509
 Tooltip          : Healing received from the Monk increased by $w2%.
 
@@ -12145,7 +12139,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395519 | Target: Self (1)
 #4 (id=1031603)  : Trigger Spell (64): Strike of the Windlord
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 395521 | Target: Self (1)
-Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d.
+Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d. Deals reduced damage to secondary targets.
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Thunderfist (id=392985) [Spell Family (53), Passive] 
@@ -13077,7 +13071,6 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1043545)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.38966 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (1.2084 -> 1.38966)
 #2 (id=1043548)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=1043953)  : Dummy (3)
@@ -14120,7 +14113,6 @@ Tooltip          : $@spelldesc274586
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
 Name             : Celestial Brew (id=425965) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -16533,7 +16525,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Fists of Fury (117418)
                    Family Flags: 20
-Hotfixed         : Base Value (15 -> 20)
 #3 (id=1151623)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Keg Smash (121253)
@@ -17013,7 +17004,6 @@ Effects          :
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
-Hotfixed         : Variables
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -18949,14 +18939,12 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.625 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-Hotfixed         : Base Value (2500 -> 2000), PvP Coefficient (0.5 -> 0.625)
 #3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #4 (id=1200765)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 25), PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc467316
 Tooltip          : Crackling Jade Lightning deals $w2% increased damage and cleaves to $m1 $lenemy:enemies; at $w4% effectiveness.
 
@@ -18974,7 +18962,6 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
-Hotfixed         : Base Value (150 -> 200)
 Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
@@ -19238,7 +19225,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198818)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216182 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Rising Sun Kick and Spinning Crane Kick by $1216182s1% stacking up to $1216182u times. Rising Sun Kick and Spinning Crane Kick have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r, increasing the damage of your Rising Sun Kick and Spinning Crane Kick by $1216182s1%, stacking up to $1216182u times. Rising Sun Kick and Spinning Crane Kick have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Monk Windwalker 11.1 Class Set 4pc (id=1215718) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -19253,7 +19240,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Fists of Fury applies $s1 $Lstack:stacks; of |cFFFFFFFF Winning Streak!|r when cast and when finished channeling completely. The damage of your next Fists of Fury is increased by $1216498s1% per stack when |cFFFFFFFF Winning Streak!|r is removed.
+Description      : Fists of Fury applies $s1 $Lstack:stacks; of|cFFFFFFFF Winning Streak!|r when cast and when finished channeling completely. The damage of your next Fists of Fury is increased by $1216498s1% per stack when|cFFFFFFFF Winning Streak!|r is removed.
 
 Your |cFFFFFFFF Winning Streak!|r is always removed once it reaches max stacks.
 
@@ -19490,10 +19477,22 @@ Effects          :
 #2 (id=1234989)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 5146 (Label) | Target: Self (1)
                    Affected Spells (Label): Efficient Training (450989)
-Hotfixed         : NEW EFFECT
 #3 (id=1234990)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 5146 (Label) | Target: Self (1)
                    Affected Spells (Label): Efficient Training (450989)
-Hotfixed         : NEW EFFECT
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 

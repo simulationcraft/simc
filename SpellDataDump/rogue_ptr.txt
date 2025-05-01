@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -113,7 +113,6 @@ Description      : Garrote the enemy, causing $o1 Bleed damage over $d.$?a196861
 Tooltip          : Suffering $w1 damage every $t1 seconds.
 
 Name             : Mutilate (id=1329) [Spell Family (8)] 
-Replaces         : Sinister Strike (id=1752)
 Class            : Assassination Rogue
 School           : Physical
 Spell Type       : Melee
@@ -981,7 +980,6 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -1358,7 +1356,6 @@ Description      : $@spelldesc31223
 Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Envenom (id=32645) [Spell Family (8)] 
-Replaces         : Eviscerate (id=196819)
 Class            : Assassination Rogue
 School           : Nature
 Spell Type       : Melee
@@ -3296,7 +3293,6 @@ Tooltip          : Movement speed reduced by $s3%$?a428377[ and dealing $s4% les
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Adrenaline Rush (id=186286) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3393,7 +3389,6 @@ Has a $s3% chance to hit an additional time, making your next Pistol Shot half c
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Broadside (id=193356) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3433,7 +3428,6 @@ Description      : Your combo-point generating abilities generate $s1 additional
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3458,7 +3452,6 @@ Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3491,7 +3484,6 @@ Tooltip          : Damage increased by $w1%.
 Blade Flurry deals $w2% additional damage to nearby enemies.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4094,7 +4086,6 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4112,7 +4103,6 @@ Description      : Your base Energy regeneration is increased by ${$s1/5} per se
 Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Skull and Crossbones (id=199603) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5893,7 +5883,6 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -8272,7 +8261,6 @@ Effects          :
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
@@ -11265,7 +11253,6 @@ Description      : $@spelldesc381664
 Tooltip          : Envenom consumes stacks to amplify its damage.
 
 Name             : Deathmark (id=394331) [Spell Family (8), Hidden] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -16202,5 +16189,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.025 | Target: Enemy (6)
 Description      : $@spelldesc457066
 Tooltip          : $@auracaster's Rupture corrupts your blood, dealing $s2 Plague damage.
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 

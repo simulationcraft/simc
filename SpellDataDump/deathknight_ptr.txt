@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60428 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1460,6 +1460,7 @@ Labels           : 16: Class Spells
                  : 881
 Stance Mask      : 0x01000000
 Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Rotten Touch (390276 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Vampiric Strike (433899 effect#1), Gift of the San'layn (434153 effect#3), Mawsworn Menace (444099 effect#3), Luck of the Draw! (1218601 effects: #1, #2)
+Triggered By     : Festering Wound (1227017)
 Family Flags     : 43, 59, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Use Spell Base Level For Scaling (332), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
@@ -14175,10 +14176,8 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spel
 Effects          :
 #1 (id=1124175)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 35)
 #2 (id=1124623)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 #3 (id=1176842)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Vampiric Strike has a chance to summon a Blood Beast to attack your enemy for $434237d.
@@ -14414,10 +14413,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1126738)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.840937 | PvP Coefficient: 1.54 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.67275 -> 0.840937)
 #2 (id=1174044)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.967079 | PvP Coefficient: 1.54 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.773663 -> 0.967079)
 Description      : $@spelldesc434711
 
 Name             : Reaper's Mark (id=436304) [Spell Family (15)] 
@@ -14437,10 +14434,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.138411 | PvP Coefficient: 0.72 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.10647 -> 0.138411)
 #2 (id=1144448)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.24914 | PvP Coefficient: 0.72 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.191646 -> 0.24914)
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 
@@ -15020,10 +15015,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.49069 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.68515 -> 3.49069)
 #2 (id=1174046)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.36336 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (3.35643 -> 4.36336)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -15042,10 +15035,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1135882)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.8617 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.43208 -> 1.8617)
 #2 (id=1174049)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.48936 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.14566 -> 1.48936)
 Description      : $@spelldesc441378
 
 Name             : Death's Messenger (id=441511) 
@@ -17062,7 +17053,7 @@ Effects          :
                    Base Value: 20000 | Scaled Value: 20000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707), Anti-Magic Shell (444740), Anti-Magic Shell (444741), Lesser Anti-Magic Shell (454863)
                    Family Flags: 17
-Description      : Anti-Magic shell now removes all harmful magical effects when activated, but it's cooldown is increased by ${$s2/1000}  sec.
+Description      : Anti-Magic Shell now removes all harmful magical effects when activated, but its cooldown is increased by ${$s2/1000} sec.
 
 Name             : Unyielding Will (id=457575) [Hidden] 
 Class            : Death Knight
@@ -17675,7 +17666,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216813 | Target: Self (1)
 #2 (id=1216606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Trigger Spell: 1216813 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r, increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Frost 11.1 Class Set 2pc (id=1215727) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17693,7 +17684,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198828)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 7 | Scaled Value: 7 | Trigger Spell: 1217897 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Frost Strike and Glacial Advance by $1217897s1% stacking up to $1217897u times. Frost Strike and Glacial Advance have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r, increasing the damage of your Frost Strike and Glacial Advance by $1217897s1%, stacking up to $1217897u times. Frost Strike and Glacial Advance have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Unholy 11.1 Class Set 4pc (id=1215728) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17870,8 +17861,8 @@ Attributes       : Aura Points On Client (268), Mastery Affects Points (285), Do
 Effects          :
 #1 (id=1210171)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : $@spelldesc1215727
-Tooltip          : Your Mastery is increased by $w1%.
+Description      : $@spelldesc1215729
+Tooltip          : Your Mastery is increased by ${$w1*$mastery}%.
 
 Name             : Breath of Sindragosa (id=1226969) [Spell Family (15)] 
 Class            : Death Knight
@@ -17886,5 +17877,36 @@ Effects          :
 #1 (id=1217096)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc152279
+
+Name             : Festering Wound (id=1227017) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1217174)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55090 | Target: Self (1)
+Description      : $@spelldesc194310
+Tooltip          : All targets nearby have Festering Wound applied.
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
+Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
 
 
