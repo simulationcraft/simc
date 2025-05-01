@@ -1,5 +1,5 @@
-// Item effects, wow build 11.1.5.60428
-static const std::array<item_effect_t, 9994> __ptr_item_effect_data { {
+// Item effects, wow build 11.1.7.60520
+static const std::array<item_effect_t, 10011> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9964,7 +9964,6 @@ static const std::array<item_effect_t, 9994> __ptr_item_effect_data { {
   { 205132, 1219296, 235984,   1,   1,    0,      -1,      -1 }, // Garbagemancer's Last Resort
   { 205147, 1219422, 236003,   0,   0,    0,      -1,      -1 }, // Fate Weaver
   { 205148, 443568, 236003,   1,   1,    0,      -1,      -1 }, // Fate Weaver
-  { 206212, 1221007, 236939,   0,   5,    0,      -1,      -1 }, // Mysterious Tremorshards
   { 207880, 1234212, 237394,   0,   1,    0,      -1,      -1 }, // One of the Devout
   { 207889, 1234212, 237403,   0,   1,    0,      -1,      -1 }, // One of the Devout
   { 207898, 1234212, 237411,   0,   1,    0,      -1,      -1 }, // One of the Devout
@@ -9994,9 +9993,27 @@ static const std::array<item_effect_t, 9994> __ptr_item_effect_data { {
   { 207400, 1224902, 238391,   1,   1,    0,      -1,      -1 }, // Arathor Minister's Receptacle
   { 209286, 1231936, 242260,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Stormwind Guard Weapon Set
   { 209287, 1231938, 242265,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Orgrimmar Guard Weapon Set
+  { 211229, 1233515, 242664,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 211234, 1236138, 242664,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 211235, 1233262, 242664,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 211236, 1236137, 242664,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 210077, 1234338, 243051,   0,   0,    0,      -1,      -1 }, // Glyph of the Strix
+  { 211635, 1238016, 244828,   0,   1,    0,      -1,      -1 }, // Spellblade Sear
+  { 212252, 1233515, 245964,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212253, 1236138, 245964,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212254, 1233262, 245964,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212255, 1236137, 245964,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212256, 1233515, 245965,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212257, 1236138, 245965,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212258, 1233262, 245965,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212259, 1236137, 245965,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212260, 1233515, 245966,   0,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212261, 1236138, 245966,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212262, 1233262, 245966,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212263, 1236137, 245966,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
 } };
 
-static const std::array<uint16_t, 9994> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 10011> __ptr_item_effect_id_index { {
     924,   925,   926,   927,   928,   929,   930,   933,
     934,   935,   936,   937,   938,   939,   940,   941,
     942,   943,   944,   945,   948,   949,   950,   951,
@@ -11239,13 +11256,15 @@ static const std::array<uint16_t, 9994> __ptr_item_effect_id_index { {
    9856,  9857,  9927,  9928,  9945,  9946,  9947,  9948,
    9949,  9950,  9951,  9952,  9953,  9954,  9955,  9956,
    9862,  9863,  9957,  9958,  9959,  9901,   842,   843,
-   9960,  9961,  9908,  9962,  9963,  9903,  9964,  9905,
-   9822,  9817,  9819,  9821,  9815,  9813,  9811,  9803,
-   9801,  9799,  9809,  9807,  9805,   844,   845,   846,
-    847,  9776,  9971,  9969,  9970,  9990,  9991,  9973,
-    848,   849,   850,  9974,  9981,  9980,  9986,  9985,
-   9987,  9978,  9979,  9975,  9976,  9984,  9983,  9982,
-   9977,  9989,  9988,  9972,  9965,  9966,  9967,  9968,
-   9992,  9993,
+   9960,  9961,  9908,  9962,  9963,  9903,  9905,  9822,
+   9817,  9819,  9821,  9815,  9813,  9811,  9803,  9801,
+   9799,  9809,  9807,  9805,   844,   845,   846,   847,
+   9776,  9970,  9968,  9969,  9989,  9990,  9972,   848,
+    849,   850,  9973,  9980,  9979,  9985,  9984,  9986,
+   9977,  9978,  9974,  9975,  9983,  9982,  9981,  9976,
+   9988,  9987,  9971,  9964,  9965,  9966,  9967,  9991,
+   9992,  9997,  9993,  9994,  9995,  9996,  9998,  9999,
+  10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007,
+  10008, 10009, 10010,
 } };
 
