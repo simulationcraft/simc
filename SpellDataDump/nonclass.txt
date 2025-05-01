@@ -169847,9 +169847,11 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871958)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5267.525 (coefficient=1.375703) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5794.38 (coefficient=1.5133) | Misc Value: 1792 | Target: Self (1)
+Hotfixed         : Coefficient (1.375703 -> 1.5133)
 #2 (id=871962)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 6438.424 (coefficient=1.681503) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7082.445 (coefficient=1.8497) | Misc Value: 1792 | Target: Self (1)
+Hotfixed         : Coefficient (1.681503 -> 1.8497)
 
 Name             : Call Steward (id=345837) 
 School           : Physical
@@ -231453,7 +231455,8 @@ Effects          :
 #1 (id=1139498)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4092.05 (coefficient=1.068708) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1146187)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 429.9397 (coefficient=0.112286) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1075.175 (coefficient=0.2808) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.112286 -> 0.2808)
 Description      : Your spells have a chance to imbue the wax, causing it to form into a blazing candle for $451367d which increases your Versatility by $s1, further increased by $s2 while you remain within its light.
 
 Name             : Burin of the Candle King (id=443529) 
