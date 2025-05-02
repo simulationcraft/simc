@@ -51,7 +51,6 @@ using namespace helpers;
       // Diabolist
       bool touch_of_rancora = false;
       bool touch_of_rancora_casted = false;
-      bool rancora_empowered_dd = false;
       bool flames_of_xoroth_dd = false;
       bool flames_of_xoroth_td = false;
 
@@ -514,12 +513,11 @@ using namespace helpers;
       double m = spell_t::composite_persistent_multiplier( s );
 
       // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
-      if ( diabolist() && destruction() && affected_by.touch_of_rancora )
+      // Spells affected by touch_of_rancora_casted use a custom action_state_t and require special handling
+      if ( diabolist() && destruction() && affected_by.touch_of_rancora && !affected_by.touch_of_rancora_casted )
       {
-        // An incoming empowered rancora spell (rancora_empowered_dd) will remain empowered even if the Demonic Art buff falls off
-        // Spells with 'affected_by.touch_of_rancora_casted == true' need 'affected_by.rancora_empowered_dd' to be empowered
-        if ( affected_by.rancora_empowered_dd || ( !affected_by.touch_of_rancora_casted && ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() ) ) )
-          m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+        if ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() )
+            m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
       }
 
       return m;
@@ -2166,8 +2164,9 @@ using namespace helpers;
 
       std::ostringstream& debug_str( std::ostringstream& s ) override
       {
-        action_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
-        action_state_t::debug_str( s ) << " td_multiplier=" << td_multiplier;
+        action_state_t::debug_str( s );
+        s << " tick_time_multiplier=" << tick_time_multiplier;
+        s << " td_multiplier=" << td_multiplier;
         return s;
       }
 
@@ -2566,6 +2565,40 @@ using namespace helpers;
 
   struct hand_of_guldan_t : public warlock_spell_t
   {
+    struct hand_of_guldan_state_t : public action_state_t
+    {
+      bool demonic_art_buffed;
+      bool rancora_empowered;
+
+      hand_of_guldan_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        demonic_art_buffed( false ),
+        rancora_empowered( false )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        demonic_art_buffed = false;
+        rancora_empowered = false;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s );
+        s << " demonic_art_buffed=" << demonic_art_buffed;
+        s << " rancora_empowered=" << rancora_empowered;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        demonic_art_buffed = debug_cast<const hand_of_guldan_state_t*>( s )->demonic_art_buffed;
+        rancora_empowered = debug_cast<const hand_of_guldan_state_t*>( s )->rancora_empowered;
+      }
+    };
+
     struct umbral_blaze_dot_t : public warlock_spell_t
     {
       umbral_blaze_dot_t( warlock_t* p )
@@ -2581,6 +2614,7 @@ using namespace helpers;
     {
       int shards_used;
       timespan_t meteor_time;
+      bool rancora_empowered;
       int rancora_random_target;
       umbral_blaze_dot_t* blaze;
 
@@ -2588,14 +2622,14 @@ using namespace helpers;
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
         shards_used( 0 ),
         meteor_time( 400_ms ),
+        rancora_empowered( false ),
         rancora_random_target( 0 )
       {
         aoe = -1;
         dual = true;
 
         affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
-        affected_by.rancora_empowered_dd = false;  // Will be set to true in hand_of_guldan_t::execute() if the spell is rancora empowered
-        
+
         triggers.shadow_invocation = true;
 
         if ( p->talents.umbral_blaze.ok() )
@@ -2612,8 +2646,8 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        // Touch of Rancora only affects one of HoG's hits in AoE, randomly selected (bug?)
-        if ( diabolist() && affected_by.touch_of_rancora && affected_by.rancora_empowered_dd && ( !p()->bugs || s->chain_target == rancora_random_target ) )
+        // Touch of Rancora only affects one of HoG's hits in AoE (bug?), randomly selected
+        if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered && ( !p()->bugs || s->chain_target == rancora_random_target ) )
         {
           // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER (bug?), we currently believe this must be done at the end of action_multiplier() calculation
           if ( p()->bugs )
@@ -2634,16 +2668,14 @@ using namespace helpers;
 
       void execute() override
       {
-        if ( diabolist() && affected_by.touch_of_rancora && affected_by.rancora_empowered_dd )
+        if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered )
         {
-          // NOTE: Touch of Rancora only affects one of HoG's hits in AoE, randomly selected (bug?)
+          // NOTE: Touch of Rancora only affects one of HoG's hits in AoE (bug?), randomly selected
           const std::vector<player_t*>& tl = target_list();
           rancora_random_target = rng().range( as<int>( tl.size() ) );
         }
 
         warlock_spell_t::execute();
-
-        affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
       }
 
       double action_multiplier() const override
@@ -2710,14 +2742,14 @@ using namespace helpers;
     {
       affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
 
-      affected_by.rancora_empowered_dd = false;  // Will be set to true in schedule_execute() if the spell is rancora empowered
-
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
-      triggers.demonic_art_buff = false;  // Will be set to true in schedule_execute() if any demonic art buff is present
       triggers.jackpot_demonology = true;
 
       add_child( impact_spell );
     }
+
+    action_state_t* new_state() override
+    { return new hand_of_guldan_state_t( this, target ); }
 
     timespan_t travel_time() const override
     { return 0_ms; }
@@ -2739,14 +2771,13 @@ using namespace helpers;
       // and/or for the Demonic Art buff to be consumed upon executing the spell
       if ( diabolist() && triggers.demonic_art )
       {
+        action_state_t*& action_state = s ? s : pre_execute_state;
+        if ( !action_state )
+          action_state = get_state();
+
         const bool demonic_art_buff_up = p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check();
-        triggers.demonic_art_buff = demonic_art_buff_up;
-        affected_by.rancora_empowered_dd = affected_by.touch_of_rancora && demonic_art_buff_up;
-      }
-      else
-      {
-        triggers.demonic_art_buff = false;
-        affected_by.rancora_empowered_dd = false;
+        debug_cast<hand_of_guldan_state_t*>( action_state )->demonic_art_buffed = demonic_art_buff_up;
+        debug_cast<hand_of_guldan_state_t*>( action_state )->rancora_empowered = affected_by.touch_of_rancora && demonic_art_buff_up;
       }
 
       warlock_spell_t::schedule_execute( s );
@@ -2756,7 +2787,19 @@ using namespace helpers;
     {
       int shards_used = as<int>( cost() );
       impact_spell->shards_used = shards_used;
-      impact_spell->affected_by.rancora_empowered_dd = affected_by.rancora_empowered_dd;
+      if ( pre_execute_state )
+      {
+        snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+        // An incoming rancora empowered casted spell will remain empowered even if the Demonic Art buff falls off during cast
+        impact_spell->rancora_empowered = debug_cast<hand_of_guldan_state_t*>( pre_execute_state )->rancora_empowered;
+        // Casted spells do not consume any Demonic Art buff if none were active at the start of the cast
+        triggers.demonic_art_buff = debug_cast<hand_of_guldan_state_t*>( pre_execute_state )->demonic_art_buffed;
+      }
+      else
+      {
+        impact_spell->rancora_empowered = false;
+        triggers.demonic_art_buff = false;
+      }
 
       warlock_spell_t::execute();
 
@@ -2794,9 +2837,6 @@ using namespace helpers;
           }
         }
       }
-
-      affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
-      triggers.demonic_art_buff = false;  // Reset triggers.demonic_art_buff state after execute()
     }
 
     void consume_resource() override
@@ -2818,7 +2858,10 @@ using namespace helpers;
 
       if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
       {
-        make_event( *sim, 0_ms, [this, t = target ]{ impact_spell->execute_on_target( t ); } );
+        make_event( *sim, 0_ms, [this, t = target ] {
+          impact_spell->rancora_empowered = false;  // Pact of the Imp Mother extra HoG is never rancora empowered
+          impact_spell->execute_on_target( t );
+        } );
         p()->procs.pact_of_the_imp_mother->occur();
       }
     }
@@ -3842,6 +3885,40 @@ using namespace helpers;
 
   struct chaos_bolt_t : public warlock_spell_t
   {
+    struct chaos_bolt_state_t : public action_state_t
+    {
+      bool demonic_art_buffed;
+      bool rancora_empowered;
+
+      chaos_bolt_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        demonic_art_buffed( false ),
+        rancora_empowered( false )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        demonic_art_buffed = false;
+        rancora_empowered = false;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s );
+        s << " demonic_art_buffed=" << demonic_art_buffed;
+        s << " rancora_empowered=" << rancora_empowered;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        demonic_art_buffed = debug_cast<const chaos_bolt_state_t*>( s )->demonic_art_buffed;
+        rancora_empowered = debug_cast<const chaos_bolt_state_t*>( s )->rancora_empowered;
+      }
+    };
+
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
@@ -3852,10 +3929,8 @@ using namespace helpers;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
       affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
       affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
-      affected_by.rancora_empowered_dd = false;  // Will be set to true in schedule_execute() if the spell is rancora empowered
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
-      triggers.demonic_art_buff = false;  // Will be set to true in schedule_execute() if any demonic art buff is present
       triggers.rancora_cb_bonus = true;
       triggers.jackpot_destruction = true;
 
@@ -3867,6 +3942,9 @@ using namespace helpers;
         add_child( internal_combustion );
       }
     }
+
+    action_state_t* new_state() override
+    { return new chaos_bolt_state_t( this, target ); }
 
     timespan_t execute_time_flat_modifier() const override
     {
@@ -3936,14 +4014,13 @@ using namespace helpers;
       // and/or for the Demonic Art buff to be consumed upon executing the spell
       if ( diabolist() && triggers.demonic_art )
       {
+        action_state_t*& action_state = s ? s : pre_execute_state;
+        if ( !action_state )
+          action_state = get_state();
+
         const bool demonic_art_buff_up = p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check();
-        triggers.demonic_art_buff = demonic_art_buff_up;
-        affected_by.rancora_empowered_dd = affected_by.touch_of_rancora && demonic_art_buff_up;
-      }
-      else
-      {
-        triggers.demonic_art_buff = false;
-        affected_by.rancora_empowered_dd = false;
+        debug_cast<chaos_bolt_state_t*>( action_state )->demonic_art_buffed = demonic_art_buff_up;
+        debug_cast<chaos_bolt_state_t*>( action_state )->rancora_empowered = affected_by.touch_of_rancora && demonic_art_buff_up;
       }
 
       warlock_spell_t::schedule_execute( s );
@@ -3951,6 +4028,17 @@ using namespace helpers;
 
     void execute() override
     {
+      if ( pre_execute_state )
+      {
+        snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+        // Casted spells do not consume any Demonic Art buff if none were active at the start of the cast
+        triggers.demonic_art_buff = debug_cast<chaos_bolt_state_t*>( pre_execute_state )->demonic_art_buffed;
+      }
+      else
+      {
+        triggers.demonic_art_buff = false;
+      }
+
       warlock_spell_t::execute();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
@@ -3969,9 +4057,17 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 3 ).base_value() ) );
+    }
 
-      affected_by.rancora_empowered_dd = false;  // Reset the affected_by.rancora_empowered_dd state after execute()
-      triggers.demonic_art_buff = false;  // Reset triggers.demonic_art_buff state after execute()
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_persistent_multiplier( s );
+
+      // An incoming rancora empowered casted spell will remain empowered even if the Demonic Art buff falls off during cast
+      if ( debug_cast<const chaos_bolt_state_t*>( s )->rancora_empowered )
+        m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+      return m;
     }
 
     double composite_crit_chance() const override
