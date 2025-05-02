@@ -231103,7 +231103,8 @@ Triggered By     : Entropic Reclamation (449254)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139246)  : Apply Aura (6) | Proc Trigger Spell (42): Entropic Skardyn Core | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 4305.431 (coefficient=1.124436) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4951.241 (coefficient=1.2931) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
+Hotfixed         : Coefficient (1.124436 -> 1.2931)
 Description      : Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.
 
 Name             : Cinderbrew Stein (id=443381) 
