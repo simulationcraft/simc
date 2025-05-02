@@ -846,8 +846,9 @@ struct player_t : public actor_t
     timespan_t entropic_skardyn_core_pickup_delay = 4_s;
     timespan_t entropic_skardyn_core_pickup_stddev = 1_s;
     // when to enter and how long to stay in light for carved blazikon wax
-    timespan_t carved_blazikon_wax_enter_light_delay = 4_s;
-    timespan_t carved_blazikon_wax_enter_light_stddev = 1_s;
+    // as of at least 11.1.5, the candle always spawns in range, so enter immediately
+    timespan_t carved_blazikon_wax_enter_light_delay = 0_s;
+    timespan_t carved_blazikon_wax_enter_light_stddev = 0_s;
     timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
     timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
     // allies with signet of the priory
