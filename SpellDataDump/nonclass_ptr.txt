@@ -261382,10 +261382,24 @@ Effects          :
 Description      : Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
+Name             : Charged Bolts (id=1236109) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1231808)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolts
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236110 | Target: Self (1)
+Description      : $@spelldesc1236108
+
 Name             : Charged Bolts (id=1236110) [Hidden] 
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
+Triggered By     : Charged Bolts (1236109)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231809)  : Apply Aura (6) | Periodic Trigger Spell (23): Lightning Strike every 3 seconds
@@ -261434,10 +261448,24 @@ Name             : Cauterizing Bolts (id=1236118) [Hidden]
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
+Triggered By     : Cauterizing Bolts (1236122)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1231820)  : Apply Aura (6) | Periodic Trigger Spell (23): Cauterizing Bolt every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236116 | Target: Self (1)
+Description      : $@spelldesc1236115
+
+Name             : Cauterizing Bolts (id=1236122) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1231826)  : Apply Aura (6) | Proc Trigger Spell (42): Cauterizing Bolts
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236118 | Target: Self (1)
 Description      : $@spelldesc1236115
 
 Name             : Critical Chain (id=1236123) [Passive] 
@@ -261506,7 +261534,7 @@ Description      : Your spells and attacks have a chance to send a Charged Bolt 
 Name             : Durable Information Securing Container (id=1236137) [Passive] 
 School           : Physical
 Spell Type       : None
-Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Spark Burst (1236936), Electric Current (1236937), Static Charge (1236938), Energy Shield (1236993)
+Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Critical Overload (1236935), Spark Burst (1236936), Electric Current (1236937), Static Charge (1236938), Energy Shield (1236993), Charged Bolt (1237033)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -261544,11 +261572,199 @@ Effects          :
 #1 (id=1231850)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
 
+Name             : Charged Bolts (id=1236140) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231853)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : destroying an Electric Pylon will trigger your current Lightning Rod effect. Cannot occur more than once per minute. 
+
+Name             : Cauterizing Bolts (id=1236141) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231854)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : destroying an Electric Pylon will trigger your current Lightning Rod effect. Cannot occur more than once per minute. 
+
+Name             : Critical Chain (id=1236142) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231855)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Titanic Frenzy has a chance to trigger a Critical Overload.
+
+Name             : Spark Burst (id=1236144) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231857)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Titanic Frenzy has a chance to trigger a Spark Burst.
+
+Name             : Static Charge (id=1236146) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231862)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Titanic Frenzy has a chance to trigger a Static Charge.
+
+Name             : Electric Current (id=1236148) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231864)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Titanic Frenzy has a chance to pause your Electric Current at its currently level for $d.
+
+Name             : Charged Touch (id=1236161) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Sparks triggered when healing Brann deal the healing amount as damage to an enemy target within 40yds. 
+
+Name             : Energy Shield (id=1236165) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231887)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : the Titan Force Shield will also explode dealing $s2% of the remaining absorb as Arcane damage when it expires. 
+
+Name             : Charged Crystal (id=1236169) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1231892)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : when you destroy a Titanic Storm Crystal you immediately send a Charged Bolt at an enemy within 40yds. 
+
+Name             : Critical Chain (id=1236272) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : Cast Successful
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1232105)  : Apply Aura (6) | Proc Trigger Spell (42): Critical Overload
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236940 | Target: Self (1)
+Description      : $@spelldesc1236123
+
+Name             : Spark Burst (id=1236273) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : Cast Successful
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1232106)  : Apply Aura (6) | Proc Trigger Spell (42): Spark Burst
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236936 | Target: Self (1)
+Description      : $@spelldesc1236124
+
+Name             : Static Charge (id=1236275) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Internal Cooldown: 29 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1232108)  : Apply Aura (6) | Proc Trigger Spell (42): Static Charge
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236938 | Target: Self (1)
+Description      : $@spelldesc1236128
+
+Name             : Electric Current (id=1236276) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1232109)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1236129
+
+Name             : Charged Touch (id=1236277) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 2 (Haste multiplier)
+Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1232110)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1236132
+
+Name             : Energy Shield (id=1236278) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : White Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Effects          :
+#1 (id=1232111)  : Apply Aura (6) | Proc Trigger Spell (42): Energy Shield
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236993 | Target: Self (1)
+Description      : $@spelldesc1236134
+
+Name             : Charged Crystal (id=1236279) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1.5 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1232112)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolt
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237033 | Target: Self (1)
+Description      : $@spelldesc1236135
+
+Name             : Critical Overload (id=1236935) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Stacks           : 99 maximum
+Proc Chance      : 101%
+Triggered By     : Critical Overload (1236940)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=1233341)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#2 (id=1233342)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
+Description      : $@spelldesc1236123
+Tooltip          : Critical Strike increased by $w1.
+
 Name             : Spark Burst (id=1236936) 
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Labels           : 292
+Triggered By     : Spark Burst (1236273)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1233343)  : Apply Aura (6) | Modify Rating (189)
@@ -261584,6 +261800,7 @@ Internal Cooldown: 1 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Static Charge (1236275)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Only Proc From Class Abilities (415), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1233347)  : Apply Aura (6) | Modify Rating (189)
@@ -261594,6 +261811,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236128
 Tooltip          : Versatility increased by $w1.
+
+Name             : Critical Overload (id=1236940) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Triggered By     : Critical Chain (1236272)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1233356)  : Apply Aura (6) | Periodic Trigger Spell (23): Critical Overload every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236935 | Target: Self (1)
+Description      : $@spelldesc1236123
 
 Name             : Electric Current (id=1236961) [Hidden] 
 School           : Physical
@@ -261610,6 +261838,7 @@ Name             : Energy Shield (id=1236993)
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
+Triggered By     : Energy Shield (1236278)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1233479)  : Apply Aura (6) | Absorb Damage (69)
@@ -261619,6 +261848,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
 Description      : $@spelldesc1236134
 Tooltip          : Absorb $w1 damage.
+
+Name             : Charged Bolt (id=1237033) 
+School           : Nature
+Spell Type       : Magic
+Range            : 50000 yards
+Velocity         : 40 yards/sec
+Triggered By     : Charged Crystal (1236279)
+Effects          :
+#1 (id=1233543)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#2 (id=1233547)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
+Description      : $@spelldesc1236135
 
 Name             : Spellblade Sear (id=1238015) [Hidden] 
 School           : Frost
