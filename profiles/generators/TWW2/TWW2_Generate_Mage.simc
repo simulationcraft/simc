@@ -134,7 +134,7 @@ level=80
 race=tauren
 role=spell
 position=ranged_back
-talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzwYWMYmZ0YMzYGGmxMMzMzMzYmZmZmZmBzABAAmZ2WWWmZaDAAAAAADAAAAAAAA
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzwYWMYmZ0YMzYGGmZmhZMzMzYmZmZmZmBzABAAmZ2WWWmZaDAAAAAADAAAAAAAA
 
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
@@ -155,7 +155,7 @@ feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,ench
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213470/213455,enchant_id=7340
 finger2=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,ilevel=678,gem_id=213485/213485,enchant_id=7340
 trinket1=candle_confidant,id=225648,bonus_id=3194/11990
-trinket2=mister_locknstalk,id=230193,ilevel=678
+trinket2=house_of_cards,id=230027,ilevel=678 
 main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8795/11144,ilevel=675,crafted_stats=40/32
 
