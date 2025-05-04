@@ -5800,8 +5800,8 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
     felblade_damage_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_attack_t( name, p, p->spell.felblade_damage )
     {
-      background = dual               = true;
-      gain                            = p->get_gain( "felblade" );
+      background = dual = true;
+      gain              = p->get_gain( "felblade" );
       affected_by.chaotic_disposition = p->talent.havoc.chaotic_disposition->ok();
     }
 
@@ -6503,8 +6503,6 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
   soulscar_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.soulscar_debuff )
   {
     dual = true;
-
-    affected_by.chaos_brand_server_side.periodic = true;
   }
 
   void init() override
@@ -6517,7 +6515,7 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
   {
     double amount = base_t::base_ta( s );
 
-    if ( affected_by.chaos_brand_server_side.periodic && s->target->debuffs.chaos_brand->up() )
+    if ( s->target->debuffs.chaos_brand->up() )
     {
       amount *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
     }
@@ -6531,8 +6529,7 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
 {
   burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
   {
-    dual                                         = true;
-    affected_by.chaos_brand_server_side.periodic = true;
+    dual = true;
   }
 
   void init() override
@@ -6545,7 +6542,7 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
   {
     double amount = base_t::base_ta( s );
 
-    if ( affected_by.chaos_brand_server_side.periodic && s->target->debuffs.chaos_brand->up() )
+    if ( s->target->debuffs.chaos_brand->up() )
     {
       amount *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
     }
@@ -6772,6 +6769,11 @@ struct wounded_quarry_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
   {
     chance = p->hero_spec.wounded_quarry_proc_rate;
+    if ( p->bugs )
+    {
+      // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
+      allow_class_ability_procs = true;
+    }
 
     // WQ is affected by Havoc mastery
     if ( p->mastery.demonic_presence->ok() )
@@ -6922,7 +6924,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
           p()->active.ragefire->execute_on_target( p()->target, ragefire_accumulator );
           ragefire_accumulator      = 0;
           ragefire_crit_accumulator = 0;
-        } );
+        });
       }
     }
 
@@ -7802,7 +7804,8 @@ void demon_hunter_t::create_buffs()
           } );
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
-  buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff );
+  buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff )
+      ->set_max_stack( 6 );
   buff.thrill_of_the_fight_attack_speed =
       make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
@@ -9019,14 +9022,14 @@ std::string demon_hunter_t::default_temporary_enchant() const
 void demon_hunter_t::create_cooldowns()
 {
   // General
-  cooldown.sigil_of_spite  = get_cooldown( "sigil_of_spite" );
-  cooldown.felblade        = get_cooldown( "felblade" );
-  cooldown.immolation_aura = get_cooldown( "immolation_aura" );
-  cooldown.the_hunt        = get_cooldown( "the_hunt" );
-  cooldown.sigil_of_flame  = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery = get_cooldown( "sigil_of_misery" );
-  cooldown.throw_glaive    = get_cooldown( "throw_glaive" );
-  cooldown.metamorphosis   = get_cooldown( "metamorphosis" );
+  cooldown.sigil_of_spite   = get_cooldown( "sigil_of_spite" );
+  cooldown.felblade         = get_cooldown( "felblade" );
+  cooldown.immolation_aura  = get_cooldown( "immolation_aura" );
+  cooldown.the_hunt         = get_cooldown( "the_hunt" );
+  cooldown.sigil_of_flame   = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
+  cooldown.throw_glaive     = get_cooldown( "throw_glaive" );
+  cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
