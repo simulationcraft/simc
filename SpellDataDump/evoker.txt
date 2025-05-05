@@ -2925,7 +2925,7 @@ Effects          :
                    Family Flags: 6
 #3 (id=1055987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : Disintegrate channels $s1% faster$?c3[ and Eruption's cast time is reduced by $s3%][].
 
@@ -6941,15 +6941,15 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1030355)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160)
+                   Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160), Eruption (438653)
                    Family Flags: 10, 54
 #2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 #3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 #4 (id=1084518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
@@ -8273,7 +8273,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1070005)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : Eruption's Essence cost is reduced by $s1.
 
@@ -11248,6 +11248,7 @@ Description      : $@spelldesc438587
 Tooltip          : Next Eruption strikes up to ${$s1+1} targets.
 
 Name             : Eruption (desc=Black) (id=438653) [Spell Family (224)] 
+Hotfixed         : Affecting Spells
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -11256,8 +11257,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Fire Breath (357209 effect#6), Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2)
-Family Flags     : 0
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Natural Convergence (369913 effect#3), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Essence Burst (392268 effects: #1, #2, #3), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effects: #1, #2, #3)
+Family Flags     : 0, 3, 38, 54
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131385)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
@@ -11357,7 +11358,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Enemy (6)
 #2 (id=1135463)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-                   Affected Spells: Emerald Blossom (355916), Disintegrate (356995), Pyre (357212), Echo (364343), Emerald Blossom (373766), Eruption (395160), Bombardments (434481), Bombardments (441661), Bombardments (442161)
+                   Affected Spells: Emerald Blossom (355916), Disintegrate (356995), Pyre (357212), Echo (364343), Emerald Blossom (373766), Eruption (395160), Bombardments (434481), Eruption (438653), Bombardments (441661), Bombardments (442161)
                    Family Flags: 38, 78
 Description      : $@spelldesc357210
 Tooltip          : $?e0[Suffering $w1 Volcanic damage every $t1 sec.][]$?e1[ Damage taken from Essence abilities and bombardments increased by $s2%.][]
@@ -11528,13 +11529,13 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
 #1 (id=1135590)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 12, 50, 54
 #2 (id=1135591)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1168513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 12, 50, 54
 Description      : $@spelldesc441246
 Tooltip          : Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $w1% increased damage.
@@ -12407,7 +12408,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : $@spelldesc453672
 Tooltip          : Eruption damage increased by $w1%.
@@ -12508,15 +12509,15 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166492)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 54
 #2 (id=1166493)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Pyre (357211), Pyre (357212), Eruption (395160)
+                   Affected Spells: Pyre (357211), Pyre (357212), Eruption (395160), Eruption (438653)
                    Family Flags: 5, 54
 #3 (id=1166494)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : $@spelldesc370781
 Tooltip          : Eruption essence cost reduced by $s1 and its damage increased by $s2%.
