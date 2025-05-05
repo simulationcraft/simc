@@ -260365,7 +260365,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 42260 (coefficient=16.52226) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 71842 (coefficient=28.08785) | Trigger Spell: 1225883 | Target: Self (1)
+Hotfixed         : Coefficient (16.522263 -> 28.087847)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260382,7 +260383,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 72445 (coefficient=28.3236) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 123156.5 (coefficient=48.15012) | Trigger Spell: 1225883 | Target: Self (1)
+Hotfixed         : Coefficient (28.323601 -> 48.15012)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260741,7 +260743,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 84520 (coefficient=33.04453) | Trigger Spell: 1227300 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 95085 (coefficient=37.17509) | Trigger Spell: 1227300 | Target: Self (1)
+Hotfixed         : Coefficient (33.044525 -> 37.175091)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260758,7 +260761,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 144891 (coefficient=56.64759) | Trigger Spell: 1227300 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 163002.4 (coefficient=63.72854) | Trigger Spell: 1227300 | Target: Self (1)
+Hotfixed         : Coefficient (56.647594 -> 63.728542)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
@@ -260834,7 +260838,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 59.33371 (coefficient=0.015496) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47.46774 (coefficient=0.012397) | Trigger Spell: 1227315 | Target: Self (1)
+Hotfixed         : Coefficient (0.015496 -> 0.012397)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260851,7 +260856,8 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 102.6662 (coefficient=0.026813) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82.13523 (coefficient=0.021451) | Trigger Spell: 1227315 | Target: Self (1)
+Hotfixed         : Coefficient (0.026813 -> 0.021451)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 
