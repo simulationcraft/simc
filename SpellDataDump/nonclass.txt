@@ -260607,6 +260607,7 @@ Effects          :
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227218) 
+Hotfixed         : Tooltip
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
@@ -260624,7 +260625,7 @@ Effects          :
 #3 (id=1217501)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
 Description      : $@spelldesc1227206
-Tooltip          : Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.
+Tooltip          : Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].
 
 Name             : Greater Rune of Gushing Wound (id=1227288) 
 School           : Physical
