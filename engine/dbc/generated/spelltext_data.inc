@@ -27275,7 +27275,7 @@ static const std::array<spelltext_data_t, 27317> __spelltext_data { {
   { 1227211, "$@spelldesc1227206", 0, 0 },
   { 1227215, "$@spelldesc1227206", 0, 0 },
   { 1227216, "$@spelldesc1227206", 0, 0 },
-  { 1227218, "$@spelldesc1227206", "Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.", 0 },
+  { 1227218, "$@spelldesc1227206", "Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].", 0 },
   { 1227288, "Apply Greater Rune of Gushing Wound to a helm.\r\n\r\nYour damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227289, "$@spelldesc1225873", 0, 0 },
   { 1227291, "$@spelldesc1225873", 0, 0 },
@@ -27320,7 +27320,8 @@ static const std::array<spelltext_data_t, 27317> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.1.5.60568
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1227218,  1, "Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.", "Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}]." },
 } };
 
 // Spell description variables, wow build 11.1.5.60568
