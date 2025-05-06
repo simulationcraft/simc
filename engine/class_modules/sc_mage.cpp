@@ -1924,6 +1924,7 @@ struct mage_spell_t : public spell_t
   {
     bool chill = false;
     bool clearcasting = false;
+    bool intuition_blp = false;
     bool from_the_ashes = false;
     bool frostfire_infusion = true;
     bool frostfire_mastery = true;
@@ -2274,9 +2275,6 @@ public:
 
     if ( triggers.frostfire_mastery && harmful && !background )
       trigger_frostfire_mastery();
-
-    if ( !background && harmful ) 
-      trigger_intuition( false );
   }
 
   void impact( action_state_t* s ) override
@@ -2464,28 +2462,6 @@ public:
 
     p()->state.trigger_glorious_incandescence = false;
   }
-
-
-  // The blp_exclude_initial param controls whether the spell is allowed to start a new BLP "chain"
-  // by itself. Some spells (orbs from Orb Barrage, AE echoes) only contribute to ongoing chains.
-  void trigger_intuition( bool blp_exclude_initial )
-  {
-    if ( !p()->talents.intuition.ok() || p()->buffs.intuition->check() )
-      return;
-
-    constexpr int blp_threshold = 11;
-
-    if ( p()->state.intuition_blp_count > 0 || !blp_exclude_initial )
-      p()->state.intuition_blp_count += 1;
-    
-    if ( p()->state.intuition_blp_count >= blp_threshold
-      || ( !background && harmful && rng().roll( p()->talents.intuition->effectN( 1 ).percent() ) ) )
-    {
-      // Needs to be triggered with a delay so that ABar doesn't eat its own proc
-      make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
-      p()->state.intuition_blp_count = 0;
-    }
-  }
 };
 
 double mage_spell_state_t::composite_crit_chance() const
@@ -2618,6 +2594,25 @@ struct arcane_mage_spell_t : public mage_spell_t
     mastery *= 1.0 + p()->talents.prodigious_savant->effectN( arcane_barrage ? 2 : 1 ).percent();
 
     return 1.0 + p()->buffs.arcane_charge->check() * ( base + mastery );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition_blp )
+    {
+      constexpr int blp_threshold = 11;
+
+      p()->state.intuition_blp_count += 1;
+      if ( p()->state.intuition_blp_count >= blp_threshold
+        || ( !background && rng().roll( p()->bugs ? 0.01 : p()->talents.intuition->effectN( 1 ).percent() ) ) )
+      {
+        // Needs to be triggered with a delay so that ABar doesn't eat its own proc
+        make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
+        p()->state.intuition_blp_count = 0;
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3431,6 +3426,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
     triggers.clearcasting = type == ao_type::NORMAL;
+    triggers.intuition_blp = true;
 
     std::string_view bolt_name;
     switch ( type )
@@ -3464,9 +3460,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
-
-    if ( background ) 
-      trigger_intuition( type == ao_type::ORB_BARRAGE );
   }
 
   void impact( action_state_t* s ) override
@@ -3511,6 +3504,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.arcane_debilitation = true;
     triggers.clearcasting = true;
+    triggers.intuition_blp = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
@@ -3634,6 +3628,7 @@ struct arcane_blast_t final : public dematerialize_spell_t
     parse_options( options_str );
     affected_by.arcane_debilitation = true;
     triggers.clearcasting = true;
+    triggers.intuition_blp = true;
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
@@ -3752,6 +3747,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     aoe = -1;
     affected_by.savant = true;
     triggers.clearcasting = type != ae_type::ENERGY_RECON;
+    triggers.intuition_blp = true;
 
     if ( type == ae_type::NORMAL )
     {
@@ -3778,9 +3774,6 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     if ( p()->buffs.static_cloud->at_max_stacks() )
       p()->buffs.static_cloud->expire();
     p()->buffs.static_cloud->trigger();
-
-    if ( background ) 
-      trigger_intuition( type == ae_type::ECHO );
 
     if ( type == ae_type::ENERGY_RECON )
       return;
@@ -3955,6 +3948,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
     triggers.clearcasting = true;
+    triggers.intuition_blp = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
     if ( p->talents.slipstream.ok() )
@@ -4100,6 +4094,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     // TODO 11.1: Applies to Arcane Surge instead of Arcane Orb
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent();
+    triggers.intuition_blp = true;
   }
 
   timespan_t travel_time() const override
@@ -4575,8 +4570,6 @@ struct fireball_t final : public fire_mage_spell_t
     triggers.phoenix_reborn = triggers.unleashed_inferno = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = true;
     affected_by.unleashed_inferno = affected_by.flame_accelerant = true;
-    if ( p->bugs && sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_dd_multiplier *= 1.0 + p->talents.master_of_flame->effectN( 3 ).percent();
 
     if ( frostfire )
     {
@@ -6762,6 +6755,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.clearcasting = true;
+    triggers.intuition_blp = true;
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
