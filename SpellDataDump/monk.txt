@@ -3089,8 +3089,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=165615)   : Apply Aura (6) | Unknown(321)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=1226124)  : Apply Aura (6) | Disable Abilities (263)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You fly through the air at a quick speed on a meditative cloud.
 Tooltip          : Flying.
 

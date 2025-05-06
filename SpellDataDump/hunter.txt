@@ -17611,9 +17611,10 @@ Family Flags     : 117
 Attributes       : Aura Is Debuff (26), Allow While Sitting (27), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1197753)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
                    Family Flags: 17
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1197754)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
