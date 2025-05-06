@@ -5308,9 +5308,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294502)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.667 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
+Hotfixed         : PvP Coefficient (0.667 -> 1)
 #2 (id=1172085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Riptide's initial heal is increased $s1% and has a $s2% increased critical strike chance.
@@ -12493,9 +12494,10 @@ Effects          :
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
 #2 (id=1015161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.25 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
+Hotfixed         : PvP Coefficient (0.25 -> 0.5)
 #3 (id=1076485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)

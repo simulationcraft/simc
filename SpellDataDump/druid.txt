@@ -4194,13 +4194,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 139 | Scaled Value: 139 | Target: Self (1)
+                   Base Value: 151 | Scaled Value: 151 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
+Hotfixed         : Base Value (139 -> 151)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 139 | Scaled Value: 139 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 151 | Scaled Value: 151 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
+Hotfixed         : Base Value (139 -> 151)
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4256,13 +4258,15 @@ Effects          :
 #18 (id=1088946) : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #19 (id=1091200) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 46 | Scaled Value: 46 | Target: Self (1)
+                   Base Value: 53 | Scaled Value: 53 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
+Hotfixed         : Base Value (46 -> 53)
 #20 (id=1091201) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 46 | Scaled Value: 46 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 53 | Scaled Value: 53 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
+Hotfixed         : Base Value (46 -> 53)
 #21 (id=1176394) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -70 | Scaled Value: -70 | Misc Value 2: 3880 (Label) | Target: Self (1)
                    Affected Spells (Label): Boundless Moonlight (428682)
