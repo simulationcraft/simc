@@ -8781,10 +8781,10 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     }
   }
 
-  // 2025-06-05 Grand Melee is 20% multiplicative, used to be 10% additive, not in spell data
+  // 2025-05-06 Grand Melee is 20% multiplicative, used to be 10% additive, spell data is hotfixed manually
   if ( p()->buffs.grand_melee->up() )
   {
-    multiplier *= 1.2;
+    multiplier *= 1.0 + p()->spec.grand_melee->effectN( 2 ).percent();
   }
 
   // 2024-08-12 -- This effect is multiplicative, even though it uses the same tooltip as additive mods
@@ -13098,6 +13098,12 @@ public:
 
   void register_hotfixes() const override
   {
+    // 2025-05-06 Grand Melee is 20% multiplicative
+    hotfix::register_effect( "Rogue", "2025-05-06", "Grand Melee Blade Flurry Bonus", 1107258 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 10 );
   }
 
   void init( player_t* ) const override {}
