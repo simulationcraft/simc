@@ -8582,6 +8582,53 @@ void capos_molten_knuckles( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Nightfall Shadow Quake
+// 1224457 driver
+//   e1: damage
+// 1228149 aoe
+void shadow_quake( special_effect_t& effect )
+{
+  struct shadow_quake_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    std::vector<int> target_list;
+
+    shadow_quake_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list()
+    {
+      damage = create_proc_action<generic_aoe_proc_t>( "shadow_quake", e, 1228149, true );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+
+      // Leaving combat will reset the first-hit limit (e.g. Vanish or Shadowmeld in DungeonSlice/DungeonRoute)
+      e.player->register_on_combat_state_callback( [ & ]( player_t*, bool c ) {
+        if ( !c )
+          target_list.clear();
+      } );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->harmful )
+        return;
+
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      damage->execute_on_target( s->target );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new shadow_quake_cb_t( effect );
+}
+
 // Armor
 
 // 457815 driver
@@ -10560,6 +10607,7 @@ void register_special_effects()
   register_special_effect( 471063, DISABLED_EFFECT );  // best in slots equip driver
   register_special_effect( 1218442, items::machine_gobs_iron_grin );
   register_special_effect( 467774, items::capos_molten_knuckles );
+  register_special_effect( 1224457, items::shadow_quake );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
