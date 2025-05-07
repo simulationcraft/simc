@@ -6073,7 +6073,7 @@ bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance,
   pool = aspect_of_harmony->accumulator->check_value();
   aspect_of_harmony->accumulator->expire();
   sim->print_debug( "Aspect of Harmony +P: {}", pool );
-  return monk_buff_t::trigger( stacks, 100'000, chance, duration );
+  return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
