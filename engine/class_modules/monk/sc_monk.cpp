@@ -6073,7 +6073,7 @@ bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance,
   pool = aspect_of_harmony->accumulator->check_value();
   aspect_of_harmony->accumulator->expire();
   sim->print_debug( "Aspect of Harmony +P: {}", pool );
-  return monk_buff_t::trigger( stacks, pool, chance, duration );
+  return monk_buff_t::trigger( stacks, 100'000, chance, duration );
 }
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
@@ -6125,9 +6125,9 @@ aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::purified_spiri
     monk_t *player, const spell_data_t *spell_data, aspect_of_harmony_t *aspect_of_harmony )
   : base_action_t( player, "purified_spirit", spell_data ), aspect_of_harmony( aspect_of_harmony )
 {
-  base_action_t::aoe              = -1;
-  base_action_t::split_aoe_damage = true;
-  base_action_t::dot_behavior     = DOT_CLIP;
+  base_action_t::aoe = -1;
+  // base_action_t::split_aoe_damage = true; this does not work for dots
+  base_action_t::dot_behavior = DOT_CLIP;
 }
 
 template <class base_action_t>
@@ -6140,7 +6140,7 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = aspect_of_harmony->spender->pool / 4.0;
+  base_action_t::base_td = aspect_of_harmony->spender->pool / 4.0 / as<double>( base_action_t::num_targets() );
   base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}",
                                    aspect_of_harmony->spender->pool, aspect_of_harmony->spender->pool / 4.0 );
   aspect_of_harmony->spender->pool = 0.0;
