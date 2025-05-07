@@ -160522,6 +160522,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Momentum Redistributor Boots (id=330914) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 60
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
