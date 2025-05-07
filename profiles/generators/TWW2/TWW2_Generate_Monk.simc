@@ -34,22 +34,22 @@ role=attack
 position=back
 talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBjZYWmZGzMAAAAAAAAAAAwyywImZYMYYzMjtZmZY2YmBLzEAALjZGmZMbzAAYZZWWmlZmJIAAA
 
-head=ageless_serpents_mane,id=229298,bonus_id=1563/11307,ilevel=678,gem_id=213743
-neck=gobfathers_gifted_bling,id=228842,bonus_id=4822/4786/1494/11980/8781,ilevel=678,gem_id=213473/213458
-shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=1563,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=3524/10520/8960,ilevel=675,crafted_stats=36/49
-chest=ageless_serpents_inked_coils,id=229301,bonus_id=1563,ilevel=678,enchant=crystalline_radiance_3
-wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=675,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=36/49
-hands=ageless_serpents_handguards,id=229299,bonus_id=1563,ilevel=678
-waist=hitmans_holster,id=228880,bonus_id=4822/4786/1494/11980/11307,ilevel=678,gem_id=213482
-legs=flameseared_leggings,id=168968,bonus_id=4786/10067/11996,enchant=stormbound_armor_kit_3
-feet=backbreaking_bootstrappers,id=221071,bonus_id=4786/3170/11996,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,bonus_id=4822/4786/1501/11982/8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
-finger2=cyrces_circlet,id=228411,bonus_id=1511/10376,gem_id=228639/228638/228640,enchant=radiant_haste_3
-trinket1=house_of_cards,id=230027,bonus_id=4822/4786/1491/11979,ilevel=678
-trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=1514/11996/11964
-main_hand=capos_molten_knuckles,id=232804,bonus_id=4822/4786/1504/11983,ilevel=678,enchant=authority_of_the_depths_3
-off_hand=gallywixs_iron_thumb,id=228899,bonus_id=4822/4786/1494/11980,ilevel=678,enchant=authority_of_the_depths_3
+head=ageless_serpents_mane,id=229298,bonus_id=1563/11307,ilevel=684,gem_id=213743,enchant_id=7933
+neck=gobfathers_gifted_bling,id=228842,bonus_id=4822/4786/1494/11980/8781,ilevel=684,gem_id=213470/213485
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=1563,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=3524/10520/8960,ilevel=681,crafted_stats=36/49
+chest=ageless_serpents_inked_coils,id=229301,bonus_id=1563,ilevel=684,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=681,gem_id=213485,enchant=chant_of_armored_avoidance_3,crafted_stats=36/49
+hands=ageless_serpents_handguards,id=229299,bonus_id=1563,ilevel=684
+waist=hitmans_holster,id=228880,bonus_id=4822/4786/1494/11980/11307,ilevel=684,gem_id=213485
+legs=flameseared_leggings,id=168968,bonus_id=4786/10067/11996,ilevel=684,enchant=stormbound_armor_kit_3
+feet=backbreaking_bootstrappers,id=221071,bonus_id=4786/3170/11996,ilevel=684,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=4822/4786/1501/11982/8781,ilevel=684,gem_id=213482/213455,enchant=radiant_haste_3
+finger2=ritual_bone_band,id=178870,bonus_id=4786/9993/11996/8781,ilevel=684,gem_id=213461/213494,enchant=radiant_haste_3
+trinket1=house_of_cards,id=230027,bonus_id=4822/4786/1491/11979,ilevel=684
+trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=1514/11996/11964,ilevel=684
+main_hand=capos_molten_knuckles,id=232804,bonus_id=4822/4786/1504/11983,ilevel=684,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=4822/4786/1494/11980,ilevel=684,enchant=authority_of_the_depths_3
 
 save=TWW2_Monk_Windwalker.simc
 
