@@ -213,7 +213,7 @@ void demonology( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* fight_end = p->get_action_priority_list( "fight_end" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );z
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
