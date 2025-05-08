@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -5308,7 +5308,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294502)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.667 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #2 (id=1172085)  : Apply Aura (6) | Dummy (4)
@@ -11201,7 +11201,7 @@ Labels           : 16: Class Spells
                  : 2676: Overflowing Shores (383222 effect#2), Surging Totem (455630 effect#9)
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 126
-Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Target Procs (113), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Not an Action (92), Suppress Target Procs (113), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1007012)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6725 | PvP Coefficient: 1.3 | Radius: 0 - 11 yards | Target: Unknown(87) -> At Enemy in Area (16)
@@ -12492,7 +12492,7 @@ Effects          :
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
 #2 (id=1015161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.25 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
 #3 (id=1076485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)

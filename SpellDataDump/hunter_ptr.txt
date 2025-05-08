@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2512,10 +2512,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-#12 (id=1222797) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 4826 (Label) | Target: Self (1)
-                   Affected Spells (Label): Potent Mutagen (1218004)
-#13 (id=1228003) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+#12 (id=1222797) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Misc Value 2: 4949 (Label) | Target: Self (1)
                    Affected Spells (Label): Withering Fire (466990)
 
@@ -15616,7 +15613,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
-                 : 4949: Beast Mastery Hunter (137015 effect#13)
+                 : 4949: Beast Mastery Hunter (137015 effect#12)
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
@@ -17675,7 +17672,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198715)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Hitting a |cFFFFFFFFJackpot!|r infuses your pet with a mutagen, causing its auto-attacks to deal $1218004s1 Nature damage to its target and up to $1218004i enemies within $1218004a1 yds for $1218003d. Mutagenic attacks reduce the cooldown of Bestial Wrath by ${$1218004s2/2}.1 sec.
+Description      : Hitting a |cFFFFFFFFJackpot!|r infuses your pet with a mutagen, causing its auto-attacks to deal $1218004s1 Nature damage to its target and up to ${$1218004i-1} enemies within $1218004a1 yds for $1218003d. Mutagenic attacks reduce the cooldown of Bestial Wrath by ${$1218004s2/100}.2 sec.
 
 Name             : Hunter Marksmanship 11.1 Class Set 4pc (id=1215645) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -18033,7 +18030,7 @@ Effects          :
 Description      : $@spelldesc1215644
 Tooltip          : Infused with a powerful mutagen, causing auto-attacks to deal $1218004s1 Nature damage to up to $1218004i nearby enemies. 
 
-Each strike reduces the cooldown of Bestial Wrath by $1218004s2 sec.
+Each strike reduces the cooldown of Bestial Wrath by $${1218004s2/100}.2 sec.
 
 Name             : Potent Mutagen (id=1218004) [Spell Family (9)] 
 Class            : Hunter
@@ -18045,7 +18042,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 295
-                 : 4826: Beast Mastery Hunter (137015 effect#12)
+                 : 4826
 Proc Chance      : 100%
 Triggered By     : Potent Mutagen (1218003)
 Attributes       : Do Not Display Range (126)
@@ -18053,7 +18050,7 @@ Effects          :
 #1 (id=1202494)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.181407 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1202496)  : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 25 | Scaled Value: 25
 Description      : $@spelldesc1215644
 
 Name             : Jackpot! (id=1218033) [Spell Family (9)] 

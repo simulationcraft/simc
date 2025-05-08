@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12756,7 +12756,7 @@ Family Flags     : 3
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.312 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Enemy (6)
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Frost Splinters embed themselves into their target, dealing $443740o1 Frost damage over $443740d. This effect stacks.
@@ -12804,7 +12804,7 @@ Family Flags     : 3
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139841)  : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01728 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.019 | Target: Enemy (6)
 Description      : $@spelldesc443722
 Tooltip          : Dealing $s1 Frost damage every $t1 sec.
 
@@ -12868,7 +12868,7 @@ Family Flags     : 3
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139848)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.312 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Enemy (6)
 Description      : $@spelldesc443722
 
 Name             : Arcane Splinter (id=443763) [Spell Family (3)] 
@@ -12974,7 +12974,7 @@ Effects          :
 #3 (id=1141441)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Trigger Spell: 114923 | Target: Self (1)
 #4 (id=1141731)  : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #5 (id=1141732)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $?c1[For 8 seconds after being struck by an Arcane Orb][While a target is under the effects of Blizzard], $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
@@ -13216,7 +13216,7 @@ Family Flags     : 3
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Allow Dead Target (64), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141664)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc444968
 
 Name             : Volatile Magic (id=444968) [Spell Family (3), Passive, Hidden] 

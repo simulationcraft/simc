@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -154053,6 +154053,7 @@ Name             : Coifcurl's Close Shave Kit (id=317204)
 School           : Physical
 Spell Type       : None
 Range            : 3 yards
+Cast Time        : 1 seconds
 Duration         : 120 seconds
 Cooldown         : 3600 seconds
 Effects          :
@@ -169847,9 +169848,9 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871958)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5267.525 (coefficient=1.375703) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5794.38 (coefficient=1.5133) | Misc Value: 1792 | Target: Self (1)
 #2 (id=871962)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 6438.424 (coefficient=1.681503) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7082.445 (coefficient=1.8497) | Misc Value: 1792 | Target: Self (1)
 
 Name             : Call Steward (id=345837) 
 School           : Physical
@@ -200529,7 +200530,9 @@ Effects          :
 #3 (id=1037361)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Roasted over a bed of anchor weed, siren's pollen, and fresh vorquin coal of a hearty flavor that courses through your very being! Increases Stamina by $s1% for $d.
-Tooltip          : Stamina increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Stamina increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Charred Porter (id=391590) 
 School           : Physical
@@ -200545,7 +200548,9 @@ Effects          :
 #3 (id=1037359)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : A loa-blessed mug of charred porter to settle your meal of meats. Increases $pri by $s1% for $d.
-Tooltip          : $pri increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : $pri increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Lemon Silverleaf Tea (id=391594) 
 School           : Physical
@@ -200572,7 +200577,9 @@ Effects          :
 #3 (id=1037357)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Steeped from Hyjal's sparking flower petals, this brew is sure to put a pep or two in your step. Increases movement speed by $s1% for $d.
-Tooltip          : Movement speed increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Movement speed increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Aruunem Berrytart (id=391603) 
 School           : Froststrike
@@ -200589,7 +200596,9 @@ Effects          :
 #3 (id=1037355)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : A tart made of wild berries growing along the Orunai Coast. Sharp enough to keep the cold away! Reduces Frost damage taken by $s1% for $d.
-Tooltip          : Reduces Frost damage taken by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Reduces Frost damage taken by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Create Concentrated Primal Infusion (id=391609) 
 School           : Physical
@@ -200635,7 +200644,9 @@ Effects          :
 #3 (id=1037363)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : A skewer of lightly grilled and freshly seasoned vegetables straight from the Bloodhoof farms of Kalimdor. Increases mana regen by $s1% for $d.
-Tooltip          : Mana regen increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Mana regen increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Druidic Dreamsalad (id=391618) 
 School           : Physical
@@ -200662,7 +200673,9 @@ Effects          :
 #4 (id=1037365)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Kick back and relax with a cup of the finest Dragon Isles fruits and berries this side of the Cascades. Reduces fall speed.
-Tooltip          : Reduces fall speed. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Reduces fall speed. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Azsunian Poached Lobster (id=391620) 
 School           : Physical
@@ -200678,7 +200691,9 @@ Effects          :
 #3 (id=1037367)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Bold, Nor'danil lobster brined & poached in the traditional Broken Isles method. Increases all stats by $s1% for $d.
-Tooltip          : All stats increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : All stats increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Ancient Poison Cloud (id=391621) 
 School           : Nature
@@ -200715,8 +200730,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396184 | Target: Self (1)
 #3 (id=1037369)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
-Description      : The sweet, tannic notes of this arcwine sing of Suramar while sharpening your senses. Increases critical damage by $s1% for $d.
-Tooltip          : Critical damage increased by $s1%. Does not function in raids, dungeons, or other instances.
+Description      : The sweet, tannic notes of this arcwine sing of Suramar while sharpening your senses. Increases critical damage by $s1% for $d.
+
+Only active while in the Dragon Isles.
+Tooltip          : Critical damage increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Captain's Caramelized Catfish (id=391626) 
 School           : Physical
@@ -200732,7 +200749,9 @@ Effects          :
 #3 (id=1037371)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Crispy baked Bridgeport catfish fit for a Proudmoore. Increases armor by $s1% for $d.
-Tooltip          : Armor increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Armor increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Mantis Shrimp Cocktail (id=391628) 
 School           : Physical
@@ -200746,7 +200765,9 @@ Effects          :
 #3 (id=1037373)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Lemon-brined Mantis Shrimp from Binan Village, dipped in tangy cindergut sauce. Grants water breathing.
-Tooltip          : Grants water breathing. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Grants water breathing. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Venrik's Goat Milk (id=391635) 
 School           : Physical
@@ -200781,7 +200802,9 @@ Effects          :
 #3 (id=1037375)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Hot Sea Mist noodles straight from the pan garnished with cute cubed Paw'don roots and vegetables. Increases haste by $s1% for $d.
-Tooltip          : Haste increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Haste increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Fried Emperor Wraps (id=391643) 
 School           : Physical
@@ -200797,7 +200820,9 @@ Effects          :
 #3 (id=1037377)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Emperor salmon crispy-fried in Pandaren oils and spices, housed in wraps made from freshly-milled Zandalari flour. Increases mastery by $s1% for $d.
-Tooltip          : Mastery increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Mastery increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Roquefort-Stuffed Peppers (id=391645) 
 School           : Physical
@@ -200836,8 +200861,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396184 | Target: Self (1)
 #3 (id=1037379)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
-Description      : A silky-sweet treat made of baked Mildenhall honey and cheeses, drenched in a heavy ravenberry syrup.  Increases attack power by $s1% for $d.
-Tooltip          : Attack power increased by $s1%. Does not function in raids, dungeons, or other instances.
+Description      : A silky-sweet treat made of baked Mildenhall honey and cheeses, drenched in a heavy ravenberry syrup.  Increases attack power by $s1% for $d.
+
+Only active while in the Dragon Isles.
+Tooltip          : Attack power increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Moira's Choice Espresso (id=391664) 
 School           : Physical
@@ -200853,7 +200880,9 @@ Effects          :
 #3 (id=1037381)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396277 | Target: Self (1)
 Description      : Roasted over a molten flame, brewed with blackberries, and mixed with malt, there's no wonder it's the Queen Regent's favorite blend! Increases attack speed by $s1% for $d.
-Tooltip          : Attack speed increased by $s1%. Does not function in raids, dungeons, or other instances.
+
+Only active while in the Dragon Isles.
+Tooltip          : Attack speed increased by $s1%. Does not function in raids, dungeons, other instances, or outside the Dragon Isles.
 
 Name             : Create Primal Infusion (id=391682) 
 School           : Physical
@@ -231088,7 +231117,7 @@ Triggered By     : Entropic Reclamation (449254)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139246)  : Apply Aura (6) | Proc Trigger Spell (42): Entropic Skardyn Core | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 4305.431 (coefficient=1.124436) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4951.241 (coefficient=1.2931) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
 Description      : Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.
 
 Name             : Cinderbrew Stein (id=443381) 
@@ -231440,7 +231469,7 @@ Effects          :
 #1 (id=1139498)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4092.05 (coefficient=1.068708) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1146187)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 429.9397 (coefficient=0.112286) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1075.175 (coefficient=0.2808) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your spells have a chance to imbue the wax, causing it to form into a blazing candle for $451367d which increases your Versatility by $s1, further increased by $s2 while you remain within its light.
 
 Name             : Burin of the Candle King (id=443529) 
@@ -241537,23 +241566,6 @@ Description      : Taking damage has a chance to imbue you with Sanctified Swift
 
 After receiving $s1 stacks, release the stored energy dealing ${$<rolemult>*$s3} Holy damage split between all enemies within $455214r yards.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
-
-Name             : Sanctified Steps (id=455212) 
-School           : Physical
-Spell Type       : None
-Max Scaling Level: 80
-Duration         : Aura (infinite)
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Encounter Start (55)
-Effects          :
-#1 (id=1158472)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1178702)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 51.00188 (coefficient=0.01332) | Rating: RunSpeed | Target: Self (1)
-Description      : $@spelldesc455211
-Tooltip          : Granting $w2 speed.
 
 Name             : Hellsteel Impact Buckler (id=455213) [Hidden] 
 School           : Physical
@@ -252288,6 +252300,7 @@ Effects          :
 #1 (id=1180680)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your spells and abilities have a high chance to lase your target for $@spellname467492, calling in Mister Lock-N-Stalk to deal ${$467469s1*$<rolemult>} Physical damage to your target. 
+Tooltip          : Your Mister Lock-N-Stalk is configured for Precision Blasting.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) 
@@ -252301,6 +252314,7 @@ Effects          :
 #1 (id=1180685)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your spells and abilities have a high chance to lase enemies for $@spellname467497, calling in Mister Lock-N-Stalk to deal ${$467469s2*$<rolemult>} Fire damage split between your target and nearby enemies.
+Tooltip          : Your Mister Lock-N-Stalk is configured for Mass Destruction.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Doubling Down (id=467635) 
@@ -260351,7 +260365,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 42260 (coefficient=16.52226) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 71842 (coefficient=28.08785) | Trigger Spell: 1225883 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260368,7 +260382,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 72445 (coefficient=28.3236) | Trigger Spell: 1225883 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 123156.5 (coefficient=48.15012) | Trigger Spell: 1225883 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260395,7 +260409,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Proc Flags       : Encounter Start
 Triggered By     : Echoing Void (1225883)
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Points On Client (268), Check Required Target Aura By Caster (382)
+Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1215386)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -260734,7 +260748,7 @@ Effects          :
 #3 (id=1217501)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
 Description      : $@spelldesc1227206
-Tooltip          : Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.
+Tooltip          : Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].
 
 Name             : Greater Rune of Gushing Wound (id=1227288) 
 School           : Physical
@@ -260853,7 +260867,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 84520 (coefficient=33.04453) | Trigger Spell: 1227300 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 95085 (coefficient=37.17509) | Trigger Spell: 1227300 | Target: Self (1)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260870,7 +260884,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 144891 (coefficient=56.64759) | Trigger Spell: 1227300 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 163002.4 (coefficient=63.72854) | Trigger Spell: 1227300 | Target: Self (1)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
@@ -260946,7 +260960,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 59.33371 (coefficient=0.015496) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47.46774 (coefficient=0.012397) | Trigger Spell: 1227315 | Target: Self (1)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260963,7 +260977,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 102.6662 (coefficient=0.026813) | Trigger Spell: 1227315 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 82.13523 (coefficient=0.021451) | Trigger Spell: 1227315 | Target: Self (1)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 
@@ -261321,7 +261335,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1227015)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@switch<$@cdataelem116>[$@spelldesc1236108][$@spelldesc1236115][$@spelldesc1236123][$@spelldesc1236124][$@spelldesc1236128][$@spelldesc1236129][$@spelldesc1236132][$@spelldesc1236134][$@spelldesc1236135]
+Description      : $@switch<$@cdataelem116>[$@spelldesc1241244][$@spelldesc1241245][$@spelldesc1241246][$@spelldesc1241251][$@spelldesc1241250][$@spelldesc1241243][$@spelldesc1241242][$@spelldesc1241241][$@spelldesc1241240]
 
 
 
@@ -261379,7 +261393,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231807)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.
+Description      : Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Charged Bolts (id=1236109) [Hidden] 
@@ -261427,7 +261441,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231817)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1yds for ${$<rolemult>*$1236137w2} every $1236118t sec for $1236118d.
+Description      : Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for ${$<rolemult>*$1236137w2} every $1236118t sec for $1236118d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Cauterizing Bolt (id=1236116) 
@@ -261475,7 +261489,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231827)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137w3 every $t for $d sec. 
+Description      : Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137w3 every $1236940t sec for $1236940d. 
 
 Name             : Spark Burst (id=1236124) [Passive] 
 School           : Physical
@@ -261493,7 +261507,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231836)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137w5 for $1236938d. Your spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.
+Description      : Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137w5 for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.
 
 Name             : Electric Current (id=1236129) [Passive] 
 School           : Physical
@@ -261511,7 +261525,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231842)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your heals have a chance to Spark jumping to the lowest health target within 20 yds, healing them for $1236137w10.
+Description      : Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137w10.
 
 Name             : Energy Shield (id=1236134) [Passive] 
 School           : Physical
@@ -261520,7 +261534,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231845)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137w11 damage for $1236993d. When the shield expires it deals $1236137w12% of the remaining absorb as Arcane damage split between enemies within 8 yds. 
+Description      : When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137w11 damage for $1236993d. When the shield expires it deals $1236137w12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. 
 
 Name             : Charged Crystal (id=1236135) [Passive] 
 School           : Physical
@@ -261529,12 +261543,12 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231846)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137w13 Nature damage split between targets within 8yds.
+Description      : Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137w13 Nature damage split between targets within $1237033A1 yds.
 
 Name             : Durable Information Securing Container (id=1236137) [Passive] 
 School           : Physical
 Spell Type       : None
-Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Critical Overload (1236935), Spark Burst (1236936), Electric Current (1236937), Static Charge (1236938), Energy Shield (1236993), Charged Bolt (1237033)
+Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Critical Overload (1236935), Spark Burst (1236936), Electric Current (1236937), Static Charge (1236938), Vibrant Spark (1236983), Energy Shield (1236993), Charged Bolt (1237033)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -261571,24 +261585,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231850)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-
-Name             : Charged Bolts (id=1236140) [Passive, Hidden] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1231853)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : destroying an Electric Pylon will trigger your current Lightning Rod effect. Cannot occur more than once per minute. 
-
-Name             : Cauterizing Bolts (id=1236141) [Passive] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1231854)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : destroying an Electric Pylon will trigger your current Lightning Rod effect. Cannot occur more than once per minute. 
 
 Name             : Critical Chain (id=1236142) [Passive, Hidden] 
 School           : Physical
@@ -261634,15 +261630,6 @@ Effects          :
 #1 (id=1231881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
 Description      : Sparks triggered when healing Brann deal the healing amount as damage to an enemy target within 40yds. 
-
-Name             : Energy Shield (id=1236165) [Passive] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1231887)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : the Titan Force Shield will also explode dealing $s2% of the remaining absorb as Arcane damage when it expires. 
 
 Name             : Charged Crystal (id=1236169) [Passive] 
 School           : Physical
@@ -261834,6 +261821,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
 
+Name             : Vibrant Spark (id=1236974) 
+School           : Nature
+Spell Type       : Magic
+Range            : 50000 yards
+Max Targets      : 1
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1233442)  : Trigger Spell (64): Vibrant Spark
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236983 | Radius: 0 - 40 yards | Target: At Self (22) -> Unknown(33)
+Description      : $@spelldesc1236132
+
+Name             : Vibrant Spark (id=1236983) 
+School           : Nature
+Spell Type       : None
+Range            : 50000 yards
+Velocity         : 20 yards/sec
+Triggered By     : Vibrant Spark (1236974)
+Effects          :
+#1 (id=1233458)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
+#2 (id=1233467)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
+Description      : $@spelldesc1236132
+
 Name             : Energy Shield (id=1236993) 
 School           : Physical
 Spell Type       : None
@@ -261848,6 +261859,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
 Description      : $@spelldesc1236134
 Tooltip          : Absorb $w1 damage.
+
+Name             : Energy Wave (id=1237011) 
+School           : Arcane
+Spell Type       : Magic
+Range            : 50000 yards
+Attributes       : Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1233518)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
+Description      : $@spelldesc1236134
 
 Name             : Charged Bolt (id=1237033) 
 School           : Nature
@@ -261890,5 +261911,88 @@ Effects          :
 #2 (id=1238241)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Increases your reputation with the Rajani by $s1.
+
+Name             : Charged Crystal (id=1241240) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240116)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137s13 Nature damage split between targets within $1237033A1 yds.
+
+Name             : Energy Shield (id=1241241) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240118)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137s11 damage for $1236993d. When the shield expires it deals $1236137s12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. 
+
+Name             : Charged Touch (id=1241242) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240119)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137s10.
+
+Name             : Electric Current (id=1241243) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240120)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : You gain Electric Current upon entering combat, increasing your Mastery by $1236137s7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137s7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.
+
+Name             : Charged Bolts (id=1241244) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240121)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137s1} Nature damage every $1236110t sec for $1236110d.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Cauterizing Bolts (id=1241245) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240122)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for ${$<rolemult>*$1236137s2} every $1236118t sec for $1236118d.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Critical Chain (id=1241246) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240123)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. 
+
+Name             : Static Charge (id=1241250) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240133)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137s5 for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.
+
+Name             : Spark Burst (id=1241251) [Passive] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1240134)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
+Description      : Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. 
 
 

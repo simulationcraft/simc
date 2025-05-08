@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -241,7 +241,7 @@ Family Flags     : 52
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=849)      : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.8148 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.6296 | Target: Enemy (6)
 #2 (id=850)      : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: -100 | Scaled Value: -100 | Target: Enemy (6)
 #3 (id=1087985)  : Trigger Spell w/ Value (142): Lightforged Blessing
@@ -3363,7 +3363,7 @@ Family Flags     : 27, 65, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267535)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.3311 | PvP Coefficient: 1.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.39598 | PvP Coefficient: 1.5 | Target: Enemy (6)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
@@ -9828,7 +9828,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93668 | PvP Coefficient: 1.1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.13035 | PvP Coefficient: 1.1 | Target: Enemy (6)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
@@ -13827,9 +13827,9 @@ Family Flags     : 27, 65
 Attributes       : Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070163)  : School Damage (2): holystrike
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.75 | PvP Coefficient: 0.75 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.625 | PvP Coefficient: 0.5 | Target: Enemy (6)
 #2 (id=1070182)  : School Damage (2): holystrike
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.75 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.125 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc404306
 
 Name             : Final Stand (id=406984) [Spell Family (10), Hidden] 
@@ -14331,7 +14331,7 @@ Effects          :
                    Affected Spells: Dawnlight (431380), Dawnlight (431381)
                    Family Flags: 1
 #30 (id=1235112) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 5151 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 5151 (Label) | Target: Self (1)
                    Affected Spells (Label): Gleaming Rays (431481)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
@@ -16004,8 +16004,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119289)  : Apply Aura (6) | Dummy (4)
@@ -16016,7 +16014,7 @@ Name             : Gleaming Rays (id=431481) [Spell Family (10)]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
-Duration         : 30 seconds
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60520 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3061,11 +3061,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 16
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
@@ -3109,6 +3109,12 @@ Effects          :
 #15 (id=1222470) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 8 | Misc Value 2: 4821 (Label) | Target: Self (1)
                    Affected Spells (Label): Reaver's Mark (442624)
+#16 (id=1240428) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value 2: 3367 (Label) | Target: Self (1)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+#17 (id=1240429) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
+                   Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -10818,7 +10824,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
@@ -10848,7 +10854,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3349: Keen Engagement (442497 effect#1)
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 4215
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2)
 Family Flags     : 5, 16, 32, 70
@@ -10921,7 +10927,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1137759)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -10957,7 +10963,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
@@ -10979,7 +10985,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3351: Warblade's Hunger (442503 effect#1)
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 4215
 Attributes       : Aura Points On Client (268)
 Effects          :
@@ -10990,14 +10996,14 @@ Description      : $@spelldesc442502
 Name             : Reaver's Mark (id=442624) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Spell Type       : Melee
+Spell Type       : None
 Range            : 5 yards
 Max Targets      : 1
 Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 4821: Havoc Demon Hunter (212612 effect#15)
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 maximum
@@ -11021,7 +11027,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138061)  : Apply Aura (6) | Dummy (4)
@@ -11038,7 +11044,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138066)  : Apply Aura (6) | Dummy (4)
@@ -11053,7 +11059,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138069)  : Apply Aura (6) | Dummy (4)
@@ -11068,7 +11074,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
@@ -11097,7 +11103,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1138082)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
@@ -11113,7 +11119,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138115)  : Apply Aura (6) | Dummy (4)
@@ -11128,7 +11134,7 @@ Duration         : 5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Effects          :
 #1 (id=1138116)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self (1)
@@ -11144,7 +11150,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138123)  : Apply Aura (6) | Dummy (4)
@@ -11163,7 +11169,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 5145: Vengeance Demon Hunter (212613 effect#18)
 Proc Chance      : 101%
 Proc Flags       : Generic Heal, Magic Heal
@@ -11181,7 +11187,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Absorb Modifiers (370)
 Effects          :
 #1 (id=1138226)  : Apply Aura (6) | Absorb Damage (69)
@@ -11198,7 +11204,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
@@ -11232,7 +11238,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Stacks           : 80 maximum
 Proc Chance      : 101%
 Triggered By     : Art of the Glaive (442290)
@@ -11255,7 +11261,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3349: Keen Engagement (442497 effect#1)
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
@@ -11272,7 +11278,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3349: Keen Engagement (442497 effect#1)
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : No Aura Icon (60), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
@@ -11287,7 +11293,7 @@ Spell Type       : Melee
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 4215
 Triggered By     : Art of the Glaive (444810)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
@@ -11304,7 +11310,7 @@ Range            : 8 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1141412)  : Dummy (3)
@@ -11325,7 +11331,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
@@ -11343,7 +11349,7 @@ Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Evasive Action (444926)
@@ -11363,7 +11369,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
@@ -11380,7 +11386,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
                  : 4215
 Triggered By     : Preemptive Strike (444997)
 Attributes       : Do Not Log Immune Misses (3), Always Line of Sight (185), Always AOE Line of Sight (186), Do Not Log Spell Miss (397)
@@ -11397,7 +11403,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1141710)  : Apply Aura (6) | Proc Trigger Spell (42): Preemptive Strike
@@ -12649,7 +12655,7 @@ Velocity         : 25 yards/sec
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Effects          :
 #1 (id=1193901)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.2 | Target: Enemy (6)
@@ -12912,7 +12918,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
