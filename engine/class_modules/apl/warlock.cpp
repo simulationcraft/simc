@@ -213,21 +213,13 @@ void demonology( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* fight_end = p->get_action_priority_list( "fight_end" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );
-  action_priority_list_t* opener = p->get_action_priority_list( "opener" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );z
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12", "Sets the expected Tyrant Setup on pull to take a total 12 seconds long" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled", "Accounts for the execution time of Grimoire Felguard in the setup of Tyrant on Pull" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.summon_vilefiend.execute_time,if=talent.summon_vilefiend.enabled", "Accounts for the execution time of Vilefiend in the the setup of Tyrant on Pull" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=add,value=gcd.max,if=talent.grimoire_felguard.enabled|talent.summon_vilefiend.enabled", "Accounts for the execution time of both Grimoire Felguard and Vilefiend in the tyrant Setup on Pull" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time", "Accounts for Tyrant own Cast Time and an additional Shadowbolt cast time" );
-  precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10", "Sets an absolute minimum of 10s for the First Tyrant Setup" );
-  precombat->add_action( "variable,name=in_opener,op=set,value=1" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Defines if the the Trinket 1 is a buff Trinket in the trinket logic" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Defines if the the Trinket 2 is a buff Trinket in the trinket logic" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
@@ -249,7 +241,6 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=racials,if=pet.demonic_tyrant.active|fight_remains<22,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=items,use_off_gcd=1" );
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
-  default_->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14" );
   default_->add_action( "hand_of_guldan,if=active_enemies>3&(pet.greater_dreadstalker.remains&pet.greater_dreadstalker.remains>gcd.max&pet.greater_dreadstalker.remains<gcd.max*3)&cooldown.call_dreadstalkers.remains>gcd.max*3&cooldown.summon_vilefiend.remains>gcd.max*2" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25" );
@@ -301,12 +292,6 @@ void demonology( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(pet.demonic_tyrant.active|fight_remains<=15|trinket.2.cooldown.remains>cooldown.summon_demonic_tyrant.remains)&variable.trinket_2_buffs" );  
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(pet.demonic_tyrant.active|fight_remains<=15|trinket.1.cooldown.remains>cooldown.summon_demonic_tyrant.remains)&variable.trinket_1_buffs" );
 
-  opener->add_action( "grimoire_felguard,if=soul_shard>=5-talent.fel_invocation" );
-  opener->add_action( "summon_vilefiend,if=soul_shard=5" );
-  opener->add_action( "shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up" );
-  opener->add_action( "call_dreadstalkers,if=soul_shard=5" );
-  opener->add_action( "Ruination" );
-
   racials->add_action( "berserking,use_off_gcd=1" );
   racials->add_action( "blood_fury" );
   racials->add_action( "fireblood" );
@@ -339,7 +324,6 @@ void demonology( player_t* p )
 
   
   variables->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected" );
-  variables->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
   variables->add_action( "variable,name=imp_despawn,op=set,value=2*spell_haste*6+0.58+time,if=prev_gcd.1.hand_of_guldan&buff.dreadstalkers.up&cooldown.summon_demonic_tyrant.remains<13&variable.imp_despawn=0", "Sets an expected duration of valid Wild Imps on a tyrant Setup for the sake of casting Tyrant before expiration of Imps" );
   variables->add_action( "variable,name=imp_despawn,op=set,value=(variable.imp_despawn>?buff.dreadstalkers.remains+time),if=variable.imp_despawn", "Checks the Wild Imps in a Tyrant Setup alongside Dreadstalkers for the sake of casting Tyrant before Expiration Dreadstalkers or Imps" );
   variables->add_action( "variable,name=imp_despawn,op=set,value=variable.imp_despawn>?buff.grimoire_felguard.remains+time,if=variable.imp_despawn&buff.grimoire_felguard.up", "Checks The Wild Imps in a Tyrant Setup alongside Grimoire Felguard for the sake of casting Tyrant before Expiration of Grimoire Felguard or Imps" );
