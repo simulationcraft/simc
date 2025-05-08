@@ -260405,6 +260405,7 @@ Effects          :
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225886) 
+Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260412,7 +260413,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Proc Flags       : Encounter Start
 Triggered By     : Echoing Void (1225883)
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Points On Client (268), Check Required Target Aura By Caster (382)
+Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1215386)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
