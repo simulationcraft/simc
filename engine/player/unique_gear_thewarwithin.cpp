@@ -6895,6 +6895,7 @@ void mugs_moxie_jug( special_effect_t& effect )
   auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
   second_proc->activate_with_buff( crit_buff, true );
 
+  effect.cooldown_    = effect.duration();
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL | PF2_LANDED;
   effect.custom_buff  = crit_buff;
