@@ -1924,7 +1924,7 @@ struct mage_spell_t : public spell_t
   {
     bool chill = false;
     bool clearcasting = false;
-    bool intuition_blp = false;
+    bool intuition = false;
     bool from_the_ashes = false;
     bool frostfire_infusion = true;
     bool frostfire_mastery = true;
@@ -2600,13 +2600,14 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition_blp )
+    if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition )
     {
       constexpr int blp_threshold = 11;
+      constexpr int base_proc_chance = 0.01;
 
       p()->state.intuition_blp_count += 1;
       if ( p()->state.intuition_blp_count >= blp_threshold
-        || ( !background && rng().roll( p()->bugs ? 0.01 : p()->talents.intuition->effectN( 1 ).percent() ) ) )
+        || ( !background && rng().roll( base_proc_chance ) ) )
       {
         // Needs to be triggered with a delay so that ABar doesn't eat its own proc
         make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
@@ -3426,7 +3427,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     aoe = -1;
     cooldown->charges += as<int>( p->talents.charged_orb->effectN( 1 ).base_value() );
     triggers.clearcasting = type == ao_type::NORMAL;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
 
     std::string_view bolt_name;
     switch ( type )
@@ -3504,7 +3505,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     base_aoe_multiplier *= p->talents.arcing_cleave->effectN( 2 ).percent();
     affected_by.arcane_debilitation = true;
     triggers.clearcasting = true;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
@@ -3628,7 +3629,7 @@ struct arcane_blast_t final : public dematerialize_spell_t
     parse_options( options_str );
     affected_by.arcane_debilitation = true;
     triggers.clearcasting = true;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
     base_multiplier *= 1.0 + p->talents.consortiums_bauble->effectN( 2 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
     base_costs[ RESOURCE_MANA ] *= 1.0 + p->talents.consortiums_bauble->effectN( 1 ).percent();
@@ -3747,7 +3748,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
     aoe = -1;
     affected_by.savant = true;
     triggers.clearcasting = type != ae_type::ENERGY_RECON;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
 
     if ( type == ae_type::NORMAL )
     {
@@ -3948,7 +3949,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     // In the game, the tick zero of Arcane Missiles actually happens after 100 ms
     tick_zero = channeled = true;
     triggers.clearcasting = true;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
     if ( p->talents.slipstream.ok() )
@@ -4094,7 +4095,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     // TODO 11.1: Applies to Arcane Surge instead of Arcane Orb
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent();
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
   }
 
   timespan_t travel_time() const override
@@ -6755,7 +6756,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.clearcasting = true;
-    triggers.intuition_blp = true;
+    triggers.intuition = true;
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
