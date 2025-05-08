@@ -2603,6 +2603,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition )
     {
       constexpr int blp_threshold = 11;
+      // Tooltip claims there's a 5% chance to proc Intuition, yet seemingly, it's 1%
       constexpr double base_proc_chance = 0.01;
 
       p()->state.intuition_blp_count += 1;
