@@ -6919,7 +6919,7 @@ void flarendos_pilot_light( special_effect_t& effect )
       : spell_t( util::tokenize_fn( damage_spell->name_cstr() ), effect.player, damage_spell ),
         secondary_target_multiplier( driver_spell->effectN( 3 ).percent() )
     {
-      aoe         = as<int>( driver_spell->effectN( 2 ).base_value() );
+      aoe         = as<int>( driver_spell->effectN( 4 ).base_value() );
       base_dd_min = base_dd_max = driver_spell->effectN( 2 ).average( effect );
     }
 
@@ -6969,8 +6969,10 @@ void flarendos_pilot_light( special_effect_t& effect )
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->effectN( 2 ).trigger_spell_id(),
       [ charging_buff, damage_action ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        if ( charging_buff->check() )
-          charging_buff->decrement();
+        if ( !charging_buff->check() )
+          return;
+
+        charging_buff->decrement();
 
         if ( !charging_buff->check() )
         {
