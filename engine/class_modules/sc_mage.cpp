@@ -2603,7 +2603,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition )
     {
       constexpr int blp_threshold = 11;
-      constexpr int base_proc_chance = 0.01;
+      constexpr double base_proc_chance = 0.01;
 
       p()->state.intuition_blp_count += 1;
       if ( p()->state.intuition_blp_count >= blp_threshold
