@@ -5040,6 +5040,7 @@ Skullsplitter causes your Rend and Deep Wounds on the target to bleed out $42704
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
@@ -5054,6 +5055,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Warrior (137047 effect#2), Improved Sweeping Strikes (383155 effect#1)
 Family Flags     : 8, 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Can Proc From Procs (122), Allow Cast While Casting (135), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Cast While Channeling (308), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
 #1 (id=486061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
