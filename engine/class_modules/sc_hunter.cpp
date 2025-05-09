@@ -4728,7 +4728,7 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( p->talents.withering_fire.ok() )
     {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( 13 ).base_value() );
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( p->is_ptr() ? 12 : 13 ).base_value() );
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
