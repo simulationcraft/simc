@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.5.60568
-static const std::array<spelltext_data_t, 27317> __spelltext_data { {
+static const std::array<spelltext_data_t, 27318> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27317,6 +27317,7 @@ static const std::array<spelltext_data_t, 27317> __spelltext_data { {
   { 1234212, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
   { 1236942, "$@spelldesc198034", "Movement speed reduced by ${$s3*-1}%.", 0 },
   { 1238052, "Holy Priest core passive", 0, 0 },
+  { 1241871, "$@spelldesc53271", 0, "Command Pet Ability" },
 } };
 
 // spelltext hotfix entries, wow build 11.1.5.60568
