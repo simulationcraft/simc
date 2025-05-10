@@ -23,7 +23,7 @@ std::string flask_vengeance( const player_t* p )
 
 std::string food_havoc( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "feast_of_the_divine_day" : "fated_fortune_cookie";
+  return ( p->true_level >= 71 ) ? "authentic_undermine_clam_chowder" : "fated_fortune_cookie";
 }
 
 std::string food_vengeance( const player_t* p )
@@ -38,7 +38,7 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant_havoc( const player_t* p )
 {
-  return ( p->true_level >= 71 ) ? "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3"
+  return ( p->true_level >= 71 ) ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
                                  : "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
 }
 
