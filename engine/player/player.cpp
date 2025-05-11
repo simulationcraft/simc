@@ -3428,7 +3428,7 @@ void player_t::create_actions()
   auto apls = sorted_action_priority_lists( this );
   for ( auto apl : apls )
   {
-    assert( !( !apl->action_list_str.empty() && !apl->action_list.empty() ) );
+    assert( apl->action_list_str.empty() || apl->action_list.empty() );
 
     // Convert old style action list to new style, all lines are without comments
     if ( !apl->action_list_str.empty() )
