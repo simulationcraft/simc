@@ -10416,6 +10416,70 @@ void roaring_warqueens_citrine( special_effect_t& effect )
 }
 }  // namespace singing_citrines
 
+namespace durable_information_securing_chamber
+{
+/*
+ * TODO:
+ *  - Use belt
+ */
+void charged_bolts( special_effect_t& effect )
+{
+  constexpr unsigned driver_id = 1236109;
+  auto driver                  = effect.player->find_spell( driver_id );
+  auto trigger                 = driver->effectN( 1 ).trigger();
+  auto damage                  = trigger->effectN( 1 ).trigger();
+
+  struct charged_bolts_t : public buff_t
+  {
+    action_t* damage;
+
+    charged_bolts_t( player_t* player, std::string_view name, special_effect_t& effect )
+      : buff_t( player, name, effect.driver()->effectN( 1 ).trigger() ), damage( nullptr )
+    {
+      auto damage_spell_data  = effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+      auto hit_scaling_effect = damage_spell_data->effectN( 2 ).trigger()->effectN( 1 );
+      damage = create_proc_action<generic_proc_t>( util::tokenize_fn( damage_spell_data->name_cstr() ), effect,
+                                                   damage_spell_data );
+      damage->base_dd_min = damage->base_dd_max = hit_scaling_effect.average( effect.player->items[ SLOT_WAIST ] );
+      damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1236108 ) );
+      tick_callback = [ & ]( buff_t*, int, timespan_t ) { damage->execute(); };
+    }
+  };
+
+  effect.spell_id     = driver_id;
+  effect.proc_flags_  = driver->proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.ppm_         = driver->_rppm;
+  effect.custom_buff = create_buff<charged_bolts_t>( effect.player, util::tokenize_fn( trigger->name_cstr() ), effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+void cauterizing_bolts( special_effect_t& effect )
+{
+}
+void critical_chain( special_effect_t& effect )
+{
+}
+void spark_burst( special_effect_t& effect )
+{
+}
+void static_charge( special_effect_t& effect )
+{
+}
+void electric_current( special_effect_t& effect )
+{
+}
+void charged_touch( special_effect_t& effect )
+{
+}
+void energy_shield( special_effect_t& effect )
+{
+}
+void charged_crystal( special_effect_t& effect )
+{
+}
+}  // namespace durable_information_securing_chamber
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -10642,6 +10706,17 @@ void register_special_effects()
   register_special_effect( singing_citrines::MARINERS_HALLOWED_CITRINE,         singing_citrines::mariners_hallowed_citrine );
   register_special_effect( singing_citrines::STORM_SEWERS_CITRINE,              singing_citrines::storm_sewers_citrine );
   register_special_effect( singing_citrines::SEABED_LEVIATHANS_CITRINE,         singing_citrines::seabed_leviathans_citrine );
+
+  // durable_information_securing_chamber
+  register_special_effect( 999999 - 1, durable_information_securing_chamber::charged_bolts );
+  // register_special_effect( 999999 - 2, durable_information_securing_chamber::cauterizing_bolts );
+  // register_special_effect( 999999 - 3, durable_information_securing_chamber::critical_chain );
+  // register_special_effect( 999999 - 4, durable_information_securing_chamber::spark_burst );
+  // register_special_effect( 999999 - 5, durable_information_securing_chamber::static_charge );
+  // register_special_effect( 999999 - 6, durable_information_securing_chamber::electric_current );
+  // register_special_effect( 999999 - 7, durable_information_securing_chamber::charged_touch );
+  // register_special_effect( 999999 - 8, durable_information_securing_chamber::energy_shield );
+  // register_special_effect( 999999 - 9, durable_information_securing_chamber::charged_crystal );
 }
 
 void register_target_data_initializers( sim_t& )
