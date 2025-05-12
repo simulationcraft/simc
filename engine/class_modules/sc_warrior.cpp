@@ -930,16 +930,12 @@ public:
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  // double composite_melee_attack_power() const override;
   double composite_mastery() const override;
   double composite_damage_versatility() const override;
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
-  double composite_melee_crit_rating() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double composite_spell_crit_chance() const override;
   double composite_leech() const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
@@ -10169,7 +10165,7 @@ double warrior_t::composite_parry_rating() const
   // TODO: remove the spec check once riposte is pulled from spelldata
   if ( spec.riposte -> ok() || specialization() == WARRIOR_PROTECTION )
   {
-    p += composite_melee_crit_rating();
+    p += warrior_t::composite_melee_crit_rating();
   }
   return p;
 }
@@ -10226,31 +10222,6 @@ double warrior_t::composite_melee_crit_chance() const
   return c;
 }
 
-// warrior_t::composite_melee_crit_rating =========================================
-
-double warrior_t::composite_melee_crit_rating() const
-{
-  double c = parse_player_effects_t::composite_melee_crit_rating();
-
-  return c;
-}
-
-// warrior_t::composite_player_critical_damage_multiplier ==================
-double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double cdm = parse_player_effects_t::composite_player_critical_damage_multiplier( s );
-
-  return cdm;
-}
-
-// warrior_t::composite_spell_crit_chance =========================================
-double warrior_t::composite_spell_crit_chance() const
-{
-  double c = parse_player_effects_t::composite_spell_crit_chance();
-
-  return c;
-}
-
 // warrior_t::composite_leech ==============================================
 
 double warrior_t::composite_leech() const
@@ -10261,7 +10232,6 @@ double warrior_t::composite_leech() const
 
   return m;
 }
-
 
 // warrior_t::resource_gain =================================================
 
