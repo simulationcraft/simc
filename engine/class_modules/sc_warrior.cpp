@@ -10664,11 +10664,8 @@ double warrior_t::composite_melee_crit_chance() const
   double c = parse_player_effects_t::composite_melee_crit_chance();
 
   c += buff.conquerors_frenzy->check_value();
-  c += buff.battle_stance->check_value();
 
   c += buff.strike_vulnerabilities->check_value();
-
-  c += talents.protection.focused_vigor->effectN( 2 ).percent();
 
   return c;
 }
@@ -10694,10 +10691,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 double warrior_t::composite_spell_crit_chance() const
 {
   double c = parse_player_effects_t::composite_spell_crit_chance();
-
-  c += buff.battle_stance->check_value();
-
-  c += talents.protection.focused_vigor->effectN( 2 ).percent();
 
   return c;
 }
@@ -10994,6 +10987,7 @@ void warrior_t::parse_player_effects()
   parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
   parse_effects( talents.warrior.cruel_strikes );
+  parse_effects( buff.battle_stance );
 
   if ( specialization() == WARRIOR_ARMS )
   {
@@ -11020,6 +11014,8 @@ void warrior_t::parse_player_effects()
     parse_effects( buff.battering_ram );
     parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
     parse_effects( buff.into_the_fray );
+    // Str and armor are handled manually.
+    parse_effects( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
   }
 
   // Colossus
