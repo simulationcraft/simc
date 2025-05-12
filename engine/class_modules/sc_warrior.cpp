@@ -10668,15 +10668,6 @@ double warrior_t::composite_melee_crit_chance() const
 
   c += buff.strike_vulnerabilities->check_value();
 
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    c += talents.arms.critical_thinking->effectN( 1 ).percent();
-  }
-  else if ( specialization() == WARRIOR_FURY )
-  {
-    c += talents.fury.critical_thinking->effectN( 1 ).percent();
-  }
-
   c += talents.protection.focused_vigor->effectN( 2 ).percent();
 
   return c;
@@ -10705,15 +10696,6 @@ double warrior_t::composite_spell_crit_chance() const
   double c = parse_player_effects_t::composite_spell_crit_chance();
 
   c += buff.battle_stance->check_value();
-
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    c += talents.arms.critical_thinking->effectN( 1 ).percent();
-  }
-  else if ( specialization() == WARRIOR_FURY )
-  {
-    c += talents.fury.critical_thinking->effectN( 1 ).percent();
-  }
 
   c += talents.protection.focused_vigor->effectN( 2 ).percent();
 
@@ -11018,6 +11000,7 @@ void warrior_t::parse_player_effects()
     parse_effects( spec.arms_warrior );
     parse_effects( buff.in_for_the_kill, USE_CURRENT );
     parse_effects( buff.pay_them_back );
+    parse_effects( talents.arms.critical_thinking );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
@@ -11028,6 +11011,8 @@ void warrior_t::parse_player_effects()
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
+
+    parse_effects( talents.fury.critical_thinking );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
