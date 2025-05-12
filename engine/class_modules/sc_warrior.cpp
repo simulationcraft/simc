@@ -282,11 +282,6 @@ public:
     buff_t* seeing_red_tracking;
     buff_t* violent_outburst;
 
-    // Covenant
-    buff_t* conquerors_banner;
-    buff_t* conquerors_frenzy;
-    buff_t* conquerors_mastery;
-
     // Colossus
     buff_t* colossal_might;
 
@@ -369,7 +364,6 @@ public:
     cooldown_t* tough_as_nails_icd;
     cooldown_t* thunder_clap;
     cooldown_t* warbreaker;
-    cooldown_t* conquerors_banner;
     cooldown_t* champions_spear;
     cooldown_t* berserkers_torment;
     cooldown_t* cold_steel_hot_blood_icd;
@@ -421,7 +415,6 @@ public:
     gain_t* valarjar_berserking;
     gain_t* lord_of_war;
     gain_t* simmering_rage;
-    gain_t* conquerors_banner;
 
     // TWW2 Tier
     gain_t* double_down;
@@ -858,12 +851,6 @@ public:
     } shared;
 
   } talents;
-
-  // Covenant Powers
-  struct covenant_t
-  {
-    const spell_data_t* conquerors_banner;
-  } covenant;
 
   struct warrior_options_t
   {
@@ -7280,32 +7267,6 @@ struct wrecking_throw_t : public warrior_attack_t
   // add absorb shield bonus (are those even in SimC?)
 };
 
-// ==========================================================================
-// Covenant Abilities
-// ==========================================================================
-
-// Conquerors Banner=========================================================
-
-struct conquerors_banner_t : public warrior_spell_t
-{
-  conquerors_banner_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "conquerors_banner", p, p->covenant.conquerors_banner )
-  {
-    parse_options( options_str );
-    energize_resource       = RESOURCE_NONE;
-    harmful = false;
-    target  = p;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    p()->buff.conquerors_banner->trigger();
-    p()->buff.conquerors_mastery->trigger();
-  }
-};
-
 // Champion's Spear==========================================================
 
 struct champions_spear_damage_t : public warrior_attack_t
@@ -8017,8 +7978,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new cleave_t( this, options_str );
   if ( name == "colossus_smash" )
     return new colossus_smash_t( this, options_str );
-  if ( name == "conquerors_banner" )
-    return new conquerors_banner_t( this, options_str );
   if ( name == "defensive_stance" )
     return new defensive_stance_t( this, options_str );
   if ( name == "demoralizing_shout" )
@@ -8535,9 +8494,6 @@ void warrior_t::init_spells()
   talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
 
-  // Convenant Abilities
-  covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
-
   // Active spells
   active.deep_wounds_ARMS = nullptr;
   active.deep_wounds_PROT = nullptr;
@@ -8582,7 +8538,6 @@ void warrior_t::init_spells()
 
   cooldown.cleave                           = get_cooldown( "cleave" );
   cooldown.colossus_smash                   = get_cooldown( "colossus_smash" );
-  cooldown.conquerors_banner                = get_cooldown( "conquerors_banner" );
   cooldown.demoralizing_shout               = get_cooldown( "demoralizing_shout" );
   cooldown.thunderous_roar                  = get_cooldown( "thunderous_roar" );
   cooldown.enraged_regeneration             = get_cooldown( "enraged_regeneration" );
@@ -9280,21 +9235,6 @@ void warrior_t::create_buffs()
                          -> set_default_value( talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 1 ).percent() )
                          -> set_initial_stack( 1 );
 
-  // Covenant Abilities====================================================================================================
-
-  buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
-    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      resource_gain( RESOURCE_RAGE, (specialization() == WARRIOR_FURY ? 6 : 4), gain.conquerors_banner );
-    } );
-
-  buff.conquerors_frenzy    = make_buff( this, "conquerors_frenzy", find_spell( 325862 ) )
-                               ->set_default_value( find_spell( 325862 )->effectN( 2 ).percent() )
-                               ->add_invalidate( CACHE_CRIT_CHANCE );
-
-  buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
-
   buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
                            ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
 
@@ -9437,7 +9377,6 @@ void warrior_t::init_gains()
   gain.battlelord                       = get_gain( "battlelord" );
   gain.bloodsurge                       = get_gain( "bloodsurge" );
   gain.charge                           = get_gain( "charge" );
-  gain.conquerors_banner                = get_gain( "conquerors_banner" );
   gain.critical_block                   = get_gain( "critical_block" );
   gain.execute                          = get_gain( "execute" );
   gain.frothing_berserker               = get_gain( "frothing_berserker" );
@@ -10217,8 +10156,6 @@ double warrior_t::composite_melee_crit_chance() const
 {
   double c = parse_player_effects_t::composite_melee_crit_chance();
 
-  c += buff.conquerors_frenzy->check_value();
-
   return c;
 }
 
@@ -10761,7 +10698,6 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-        p->buffs.conquerors_banner = make_buff<stat_buff_t>( p, "conquerors_banner_external", p->find_spell( 325862 ) );
         p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
   }
   void combat_begin( sim_t* ) const override
