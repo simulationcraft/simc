@@ -10420,6 +10420,9 @@ namespace durable_information_securing_chamber
 {
 void charged_bolts( special_effect_t& effect )
 {
+  if ( !effect.player->ptr() )
+    return;
+
   constexpr unsigned driver_id = 1236109;
   auto driver                  = effect.player->find_spell( driver_id );
   auto trigger                 = driver->effectN( 1 ).trigger();
@@ -10458,6 +10461,9 @@ void cauterizing_bolts( special_effect_t& effect )
 
 void critical_chain( special_effect_t& effect )
 {
+  if ( !effect.player->ptr() )
+    return;
+
   constexpr unsigned driver_id = 1236272;
   auto driver                  = effect.player->find_spell( driver_id );
   auto trigger_buff = driver->effectN( 1 ).trigger();
@@ -10498,6 +10504,9 @@ void critical_chain( special_effect_t& effect )
 
 void spark_burst( special_effect_t& effect )
 {
+  if ( !effect.player->ptr() )
+    return;
+
   constexpr unsigned driver_id = 1236273;
   auto driver                  = effect.player->find_spell( driver_id );
   auto stat_buff = driver->effectN( 1 ).trigger();
@@ -10514,6 +10523,9 @@ void spark_burst( special_effect_t& effect )
 
 void static_charge( special_effect_t& effect )
 {
+  if ( !effect.player->ptr() )
+    return;
+
   constexpr unsigned driver_id = 1236275;
   auto driver                  = effect.player->find_spell( driver_id );
   auto stat_buff = driver->effectN( 1 ).trigger();
