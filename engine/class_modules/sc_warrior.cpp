@@ -10664,7 +10664,6 @@ double warrior_t::composite_melee_crit_chance() const
   double c = parse_player_effects_t::composite_melee_crit_chance();
 
   c += buff.conquerors_frenzy->check_value();
-  c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
   c += buff.battle_stance->check_value();
 
   c += buff.strike_vulnerabilities->check_value();
@@ -10705,7 +10704,6 @@ double warrior_t::composite_spell_crit_chance() const
 {
   double c = parse_player_effects_t::composite_spell_crit_chance();
 
-  c += talents.warrior.cruel_strikes->effectN( 1 ).percent();
   c += buff.battle_stance->check_value();
 
   if ( specialization() == WARRIOR_ARMS )
@@ -11013,6 +11011,7 @@ void warrior_t::parse_player_effects()
   parse_effects( spec.warrior );
   parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
+  parse_effects( talents.warrior.cruel_strikes );
 
   if ( specialization() == WARRIOR_ARMS )
   {
