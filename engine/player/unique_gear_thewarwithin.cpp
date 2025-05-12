@@ -10420,7 +10420,7 @@ namespace durable_information_securing_chamber
 {
 void charged_bolts( special_effect_t& effect )
 {
-  if ( !effect.player->ptr() )
+  if ( !effect.player->is_ptr() )
     return;
 
   constexpr unsigned driver_id = 1236109;
@@ -10461,7 +10461,7 @@ void cauterizing_bolts( special_effect_t& effect )
 
 void critical_chain( special_effect_t& effect )
 {
-  if ( !effect.player->ptr() )
+  if ( !effect.player->is_ptr() )
     return;
 
   constexpr unsigned driver_id = 1236272;
@@ -10504,7 +10504,7 @@ void critical_chain( special_effect_t& effect )
 
 void spark_burst( special_effect_t& effect )
 {
-  if ( !effect.player->ptr() )
+  if ( !effect.player->is_ptr() )
     return;
 
   constexpr unsigned driver_id = 1236273;
@@ -10523,7 +10523,7 @@ void spark_burst( special_effect_t& effect )
 
 void static_charge( special_effect_t& effect )
 {
-  if ( !effect.player->ptr() )
+  if ( !effect.player->is_ptr() )
     return;
 
   constexpr unsigned driver_id = 1236275;
