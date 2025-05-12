@@ -918,7 +918,6 @@ public:
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
-  double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -9894,20 +9893,6 @@ void warrior_t::trigger_movement( double distance, movement_direction_type direc
   }
 }
 
-// warrior_t::composite_player_multiplier ===================================
-
-double warrior_t::composite_player_multiplier( school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_multiplier( school );
-
-  if ( buff.defensive_stance->check() )
-  {
-    m *= 1.0 + talents.warrior.defensive_stance->effectN( 2 ).percent() + spec.protection_warrior->effectN( 18 ).percent();
-  }
-
-  return m;
-}
-
 // warrior_t::composite_player_target_multiplier ==============================
 double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
@@ -10506,6 +10491,7 @@ void warrior_t::parse_player_effects()
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
   parse_effects( talents.warrior.cruel_strikes );
   parse_effects( buff.battle_stance );
+  parse_effects( buff.defensive_stance, spec.protection_warrior, talents.protection.fight_through_the_flames );
 
   if ( specialization() == WARRIOR_ARMS )
   {
