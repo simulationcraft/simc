@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1204,7 +1204,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (1.39766 -> 1.81696), PvP Coefficient (1 -> 0.77)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: At Self (22)
 #3 (id=1134341)  : Energize Power (30)
@@ -1836,7 +1835,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (1.39766 -> 1.81696), PvP Coefficient (1 -> 0.77)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -2740,7 +2738,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 27 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-Hotfixed         : PvP Coefficient (14 -> 27)
 #13 (id=261054)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 3306 (Label) | Target: Self (1)
                    Affected Spells (Label): Colossal Might (440989)
@@ -3050,7 +3047,6 @@ Effects          :
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Arms [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
@@ -5040,7 +5036,6 @@ Skullsplitter causes your Rend and Deep Wounds on the target to bleed out $42704
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
@@ -12162,8 +12157,8 @@ Effects          :
 #2 (id=1222673)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222674)  : Dummy (3)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.7 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.7 -> 0.25)
 Description      : $@spelldesc64382
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -12186,8 +12181,8 @@ Effects          :
 #2 (id=1222646)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222647)  : Dummy (3)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.7 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.7 -> 0.25)
 Description      : $@spelldesc384110
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -13676,7 +13671,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Bloodbath (335096)
                    Family Flags: 42, 108
-Hotfixed         : PvP Coefficient (1.5 -> 1)
 Description      : Shield Slam damage increased by $s1%.$?a137048[
 
 Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%.][
@@ -14455,12 +14449,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33334 | Target: Enemy (6)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29, 115, 116
-Hotfixed         : PvP Coefficient (1 -> 0.33334)
 #3 (id=1142884)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33334 | Target: Enemy (6)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29, 115, 116
-Hotfixed         : PvP Coefficient (1 -> 0.33334)
 Description      : $@spelldesc444767
 
 Tooltip          : Execute damage$?e1[, critical strike chance, and critical strike damage][] from $@auracaster increased by $w1%.
@@ -14530,7 +14522,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1143165)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.7111 | PvP Coefficient: 0.615 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (2.85469 -> 3.7111), PvP Coefficient (0.8 -> 0.615)
 Description      : $@spelldesc444775
 
 Name             : Bladestorm (id=446035) [Spell Family (4)] 

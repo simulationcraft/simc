@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12757,7 +12757,6 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.312 -> 0.3432)
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Frost Splinters embed themselves into their target, dealing $443740o1 Frost damage over $443740d. This effect stacks.
@@ -12806,7 +12805,6 @@ Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking 
 Effects          :
 #1 (id=1139841)  : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.019 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.01728 -> 0.019)
 Description      : $@spelldesc443722
 Tooltip          : Dealing $s1 Frost damage every $t1 sec.
 
@@ -12871,7 +12869,6 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1139848)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.312 -> 0.3432)
 Description      : $@spelldesc443722
 
 Name             : Arcane Splinter (id=443763) [Spell Family (3)] 
@@ -12978,7 +12975,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Trigger Spell: 114923 | Target: Self (1)
 #4 (id=1141731)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 40)
 #5 (id=1141732)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $?c1[For 8 seconds after being struck by an Arcane Orb][While a target is under the effects of Blizzard], $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
@@ -13221,7 +13217,6 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1141664)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.1 -> 0.125)
 Description      : $@spelldesc444968
 
 Name             : Volatile Magic (id=444968) [Spell Family (3), Passive, Hidden] 

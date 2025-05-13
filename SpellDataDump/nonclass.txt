@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -169849,10 +169849,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=871958)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5794.38 (coefficient=1.5133) | Misc Value: 1792 | Target: Self (1)
-Hotfixed         : Coefficient (1.375703 -> 1.5133)
 #2 (id=871962)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 7082.445 (coefficient=1.8497) | Misc Value: 1792 | Target: Self (1)
-Hotfixed         : Coefficient (1.681503 -> 1.8497)
 
 Name             : Call Steward (id=345837) 
 School           : Physical
@@ -231105,7 +231103,6 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139246)  : Apply Aura (6) | Proc Trigger Spell (42): Entropic Skardyn Core | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 4951.241 (coefficient=1.2931) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
-Hotfixed         : Coefficient (1.124436 -> 1.2931)
 Description      : Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.
 
 Name             : Cinderbrew Stein (id=443381) 
@@ -231458,7 +231455,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4092.05 (coefficient=1.068708) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1146187)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1075.175 (coefficient=0.2808) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.112286 -> 0.2808)
 Description      : Your spells have a chance to imbue the wax, causing it to form into a blazing candle for $451367d which increases your Versatility by $s1, further increased by $s2 while you remain within its light.
 
 Name             : Burin of the Candle King (id=443529) 
@@ -259805,6 +259801,7 @@ Tooltip          : Damage done increased by $s1%
 Damage taken reduced by $s2%.
 
 Name             : Conqueror's Prized Varnish (id=1221088) 
+Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Effects          :
@@ -259813,12 +259810,14 @@ Effects          :
 #2 (id=1207395)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207396)  : Dummy (3)
-                   Base Value: 678 | Scaled Value: 678
-Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to 678 in Arenas and Battlegrounds. 
+                   Base Value: 684 | Scaled Value: 684
+Hotfixed         : Base Value (678 -> 684)
+Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Prized Jeweler's Settings.
 
 Name             : Conqueror's Prized Lacquer (id=1221091) 
+Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Effects          :
@@ -259827,8 +259826,9 @@ Effects          :
 #2 (id=1207402)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207403)  : Dummy (3)
-                   Base Value: 678 | Scaled Value: 678
-Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to 678 in Arenas and Battlegrounds. 
+                   Base Value: 684 | Scaled Value: 684
+Hotfixed         : Base Value (678 -> 684)
+Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Ringing Ritual Mud (id=1221145) [Passive] 
 School           : Physical
@@ -260367,7 +260367,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 71842 (coefficient=28.08785) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (16.522263 -> 28.087847)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260385,7 +260384,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 123156.5 (coefficient=48.15012) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (28.323601 -> 48.15012)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260405,7 +260403,6 @@ Effects          :
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225886) 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260609,7 +260606,6 @@ Effects          :
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227218) 
-Hotfixed         : Tooltip
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
@@ -260747,7 +260743,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 95085 (coefficient=37.17509) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (33.044525 -> 37.175091)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260765,7 +260760,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 163002.4 (coefficient=63.72854) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (56.647594 -> 63.728542)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
@@ -260842,7 +260836,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 47.46774 (coefficient=0.012397) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.015496 -> 0.012397)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260860,7 +260853,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 82.13523 (coefficient=0.021451) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.026813 -> 0.021451)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3157,7 +3157,6 @@ Effects          :
 #18 (id=1240431) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Misc Value 2: 5220 (Label) | Target: Self (1)
                    Affected Spells (Label): Pact of the San'layn (434261)
-Hotfixed         : NEW EFFECT
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -8180,7 +8179,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=803166)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.836035 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.597168 -> 0.836035)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.

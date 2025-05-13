@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1635,7 +1635,6 @@ Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sit
 Effects          :
 #1 (id=898900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.016 | PvP Coefficient: 1.15 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc360995
 
 Name             : Fluttering Seedlings (id=361361) [Spell Family (224)] 
@@ -3924,7 +3923,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
                    Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | Resource: mana | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.75 -> 1)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -7316,12 +7314,10 @@ Effects          :
                    Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.85 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (24 -> 43), PvP Coefficient (1 -> 0.85)
 #2 (id=1037189)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.85 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (24 -> 43), PvP Coefficient (1 -> 0.85)
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -11252,7 +11248,6 @@ Description      : $@spelldesc438587
 Tooltip          : Next Eruption strikes up to ${$s1+1} targets.
 
 Name             : Eruption (desc=Black) (id=438653) [Spell Family (224)] 
-Hotfixed         : Affecting Spells
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
