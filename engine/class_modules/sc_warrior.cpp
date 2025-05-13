@@ -922,7 +922,6 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
-  double composite_base_armor_multiplier() const override;
   double composite_block() const override;
   double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
@@ -9348,7 +9347,7 @@ void warrior_t::create_buffs()
 // warrior_t::init_special_effects() ====================================
 void warrior_t::init_special_effects()
 {
-  player_t::init_special_effects();
+  parse_player_effects_t::init_special_effects();
 
   if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW2, B2 ) )
   {
@@ -9914,7 +9913,7 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
 
 double warrior_t::composite_player_target_crit_chance( player_t* target ) const
 {
-  double c = player_t::composite_player_target_crit_chance( target );
+  double c = parse_player_effects_t::composite_player_target_crit_chance( target );
   return c;
 }
 
@@ -10082,15 +10081,6 @@ double warrior_t::composite_bonus_armor() const
   //  ba += spec.vanguard -> effectN( 1 ).percent() * cache.strength();
 
   return ba;
-}
-
-// warrior_t::composite_base_armor_multiplier ================================
-double warrior_t::composite_base_armor_multiplier() const
-{
-  // Generally Modify Base Resistance (142)
-  double a = parse_player_effects_t::composite_base_armor_multiplier();
-
-  return a;
 }
 
 // warrior_t::composite_block ================================================
