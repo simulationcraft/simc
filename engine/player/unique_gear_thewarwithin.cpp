@@ -10534,15 +10534,43 @@ void static_charge( special_effect_t& effect )
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
-  effect.cooldown_ = driver->cooldown();
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
     ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 5 ).average( effect.player->items[ SLOT_WAIST ] ) )
     ->set_reverse( true )
     ->set_reverse_stack_count( 1 );
 
-  // TODO: dbc_proc_callback_t on PF2_ALL_DAMAGE/PF2_ALL_HIT with 1s cd that decrements effect.custom_buff
-
   new dbc_proc_callback_t( effect.player, effect );
+
+  auto decrement_stack = new special_effect_t( effect.player );
+  decrement_stack->spell_id = stat_buff->id();
+  decrement_stack->proc_flags_ = stat_buff->proc_flags();
+  decrement_stack->proc_flags2_ = PF2_ALL_HIT;
+  decrement_stack->proc_chance_ = stat_buff->proc_chance();
+  decrement_stack->cooldown_ = stat_buff->internal_cooldown();
+
+  struct decrement_proc_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    decrement_proc_callback_t( player_t* player, const special_effect_t& effect, buff_t* buff )
+      : dbc_proc_callback_t( player, effect ),
+        buff( buff )
+    {
+      activate_with_buff( buff );
+    }
+
+    void execute( action_t* action, action_state_t* state ) override
+    {
+      if ( state && state->target->is_sleeping() )
+        return;
+
+      dbc_proc_callback_t::execute( action, state );
+
+      buff->decrement();
+    }
+  };
+
+  new decrement_proc_callback_t( effect.player, *decrement_stack, effect.custom_buff );
 }
 
 void electric_current( special_effect_t& effect )
