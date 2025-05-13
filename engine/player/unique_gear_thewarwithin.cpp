@@ -10466,8 +10466,8 @@ void critical_chain( special_effect_t& effect )
 
   constexpr unsigned driver_id = 1236272;
   auto driver                  = effect.player->find_spell( driver_id );
-  auto trigger_buff = driver->effectN( 1 ).trigger();
-  auto stack_buff = trigger_buff->effectN( 1 ).trigger();
+  auto trigger_buff            = driver->effectN( 1 ).trigger();
+  auto stack_buff              = trigger_buff->effectN( 1 ).trigger();
 
   struct critical_overload_t : public buff_t
   {
@@ -10478,18 +10478,18 @@ void critical_chain( special_effect_t& effect )
     {
       auto stack_buff_data = spell_data->effectN( 1 ).trigger();
 
-      stacking_crit = create_buff<stat_buff_t>( player, stack_buff_data )
-        ->add_stat_from_effect_type( A_MOD_RATING, stack_buff_data->effectN( 2 ).trigger()->effectN( 3 ).average( player->items[ SLOT_WAIST ] ) );
+      stacking_crit =
+          create_buff<stat_buff_t>( player, stack_buff_data )
+              ->add_stat_from_effect_type( A_MOD_RATING, stack_buff_data->effectN( 2 ).trigger()->effectN( 3 ).average(
+                                                             player->items[ SLOT_WAIST ] ) );
 
-      quiet = true;
-      tick_callback = [ & ](buff_t*, int current_tick, timespan_t ){
+      quiet         = true;
+      tick_callback = [ & ]( buff_t*, int current_tick, timespan_t ) {
         if ( current_tick == 0 )
           stacking_crit->expire();
         stacking_crit->increment();
       };
-      expire_callback = [ & ]( buff_t*, int, timespan_t ) {
-        stacking_crit->expire();
-      };
+      expire_callback = [ & ]( buff_t*, int, timespan_t ) { stacking_crit->expire(); };
     }
   };
 
@@ -10497,7 +10497,8 @@ void critical_chain( special_effect_t& effect )
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
-  effect.custom_buff = create_buff<critical_overload_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), trigger_buff );
+  effect.custom_buff =
+      create_buff<critical_overload_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), trigger_buff );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10509,14 +10510,16 @@ void spark_burst( special_effect_t& effect )
 
   constexpr unsigned driver_id = 1236273;
   auto driver                  = effect.player->find_spell( driver_id );
-  auto stat_buff = driver->effectN( 1 ).trigger();
+  auto stat_buff               = driver->effectN( 1 ).trigger();
 
   effect.spell_id     = driver_id;
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
-    ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 4 ).average( effect.player->items[ SLOT_WAIST ] ) );
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
+          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 4 ).average(
+                                                         effect.player->items[ SLOT_WAIST ] ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10528,33 +10531,34 @@ void static_charge( special_effect_t& effect )
 
   constexpr unsigned driver_id = 1236275;
   auto driver                  = effect.player->find_spell( driver_id );
-  auto stat_buff = driver->effectN( 1 ).trigger();
+  auto stat_buff               = driver->effectN( 1 ).trigger();
 
   effect.spell_id     = driver_id;
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
-    ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 5 ).average( effect.player->items[ SLOT_WAIST ] ) )
-    ->set_reverse( true )
-    ->set_reverse_stack_count( 1 );
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
+          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 5 ).average(
+                                                         effect.player->items[ SLOT_WAIST ] ) )
+          ->set_reverse( true )
+          ->set_reverse_stack_count( 1 );
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  auto decrement_stack = new special_effect_t( effect.player );
-  decrement_stack->spell_id = stat_buff->id();
-  decrement_stack->proc_flags_ = stat_buff->proc_flags();
+  auto decrement_stack          = new special_effect_t( effect.player );
+  decrement_stack->spell_id     = stat_buff->id();
+  decrement_stack->proc_flags_  = stat_buff->proc_flags();
   decrement_stack->proc_flags2_ = PF2_ALL_HIT;
   decrement_stack->proc_chance_ = stat_buff->proc_chance();
-  decrement_stack->cooldown_ = stat_buff->internal_cooldown();
+  decrement_stack->cooldown_    = stat_buff->internal_cooldown();
 
   struct decrement_proc_callback_t : public dbc_proc_callback_t
   {
     buff_t* buff;
 
     decrement_proc_callback_t( player_t* player, const special_effect_t& effect, buff_t* buff )
-      : dbc_proc_callback_t( player, effect ),
-        buff( buff )
+      : dbc_proc_callback_t( player, effect ), buff( buff )
     {
       activate_with_buff( buff );
     }
@@ -10594,10 +10598,9 @@ void electric_current( special_effect_t& effect )
             if ( new_ == 1 )
               self->set_reverse( false );
           } )
-    ->set_period( driver->effectN( 1 ).period() );
-          // ->set_tick_callback( []( buff_t* self, int, timespan_t ) { self->increment(); } );
+          ->set_period( driver->effectN( 1 ).period() );
 
-  effect.player->register_on_arise_callback( effect.player, [ buff = effect.custom_buff ]{ buff->trigger(); });
+  effect.player->register_on_arise_callback( effect.player, [ buff = effect.custom_buff ] { buff->trigger(); } );
 }
 
 void charged_touch( special_effect_t& effect )
