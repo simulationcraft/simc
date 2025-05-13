@@ -10842,15 +10842,13 @@ void register_special_effects()
   register_special_effect( singing_citrines::SEABED_LEVIATHANS_CITRINE,         singing_citrines::seabed_leviathans_citrine );
 
   // durable_information_securing_chamber
-  register_special_effect( 999999 - 1, durable_information_securing_chamber::charged_bolts );
-  // register_special_effect( 999999 - 2, durable_information_securing_chamber::cauterizing_bolts );
-  register_special_effect( 999999 - 3, durable_information_securing_chamber::critical_chain );
-  register_special_effect( 999999 - 4, durable_information_securing_chamber::spark_burst );
-  register_special_effect( 999999 - 5, durable_information_securing_chamber::static_charge );
-  register_special_effect( 999999 - 6, durable_information_securing_chamber::electric_current );
-  // register_special_effect( 999999 - 7, durable_information_securing_chamber::charged_touch );
-  // register_special_effect( 999999 - 8, durable_information_securing_chamber::energy_shield );
-  // register_special_effect( 999999 - 9, durable_information_securing_chamber::charged_crystal );
+  register_special_effect( 1236109, durable_information_securing_chamber::charged_bolts );
+  register_special_effect( 1236272, durable_information_securing_chamber::critical_chain );
+  register_special_effect( 1236273, durable_information_securing_chamber::spark_burst );
+  register_special_effect( 1236275, durable_information_securing_chamber::static_charge );
+  register_special_effect( 1236961, durable_information_securing_chamber::electric_current );
+  // register_special_effect( 1236278, durable_information_securing_chamber::energy_shield );
+  // register_special_effect( 1236279, durable_information_securing_chamber::charged_crystal );
 }
 
 void register_target_data_initializers( sim_t& )
