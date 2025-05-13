@@ -10575,6 +10575,29 @@ void static_charge( special_effect_t& effect )
 
 void electric_current( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
+  constexpr unsigned driver_id = 1236961;
+  auto driver                  = effect.player->find_spell( driver_id );
+  auto stat_buff               = effect.player->find_spell( 1236937 );
+
+  effect.spell_id = driver_id;
+  effect.custom_buff =
+      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
+          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 7 ).average(
+                                                         effect.player->items[ SLOT_WAIST ] ) )
+          ->set_reverse_stack_count( 1 )
+          ->set_stack_change_callback( []( buff_t* self, int, int new_ ) {
+            if ( new_ == self->max_stack() )
+              self->set_reverse( true );
+            if ( new_ == 1 )
+              self->set_reverse( false );
+          } )
+    ->set_period( driver->effectN( 1 ).period() );
+          // ->set_tick_callback( []( buff_t* self, int, timespan_t ) { self->increment(); } );
+
+  effect.player->register_on_arise_callback( effect.player, [ buff = effect.custom_buff ]{ buff->trigger(); });
 }
 
 void charged_touch( special_effect_t& effect )
@@ -10824,7 +10847,7 @@ void register_special_effects()
   register_special_effect( 999999 - 3, durable_information_securing_chamber::critical_chain );
   register_special_effect( 999999 - 4, durable_information_securing_chamber::spark_burst );
   register_special_effect( 999999 - 5, durable_information_securing_chamber::static_charge );
-  // register_special_effect( 999999 - 6, durable_information_securing_chamber::electric_current );
+  register_special_effect( 999999 - 6, durable_information_securing_chamber::electric_current );
   // register_special_effect( 999999 - 7, durable_information_securing_chamber::charged_touch );
   // register_special_effect( 999999 - 8, durable_information_securing_chamber::energy_shield );
   // register_special_effect( 999999 - 9, durable_information_securing_chamber::charged_crystal );
