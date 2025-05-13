@@ -10426,7 +10426,6 @@ void charged_bolts( special_effect_t& effect )
   constexpr unsigned driver_id = 1236109;
   auto driver                  = effect.player->find_spell( driver_id );
   auto trigger                 = driver->effectN( 1 ).trigger();
-  auto damage                  = trigger->effectN( 1 ).trigger();
 
   struct charged_bolts_t : public buff_t
   {
@@ -10436,11 +10435,13 @@ void charged_bolts( special_effect_t& effect )
       : buff_t( player, name, effect.driver()->effectN( 1 ).trigger() ), damage( nullptr )
     {
       auto damage_spell_data  = effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+      auto tooltip_spell_data = player->find_spell( 1236108 );
       auto hit_scaling_effect = damage_spell_data->effectN( 2 ).trigger()->effectN( 1 );
+
       damage = create_proc_action<generic_proc_t>( util::tokenize_fn( damage_spell_data->name_cstr() ), effect,
                                                    damage_spell_data );
       damage->base_dd_min = damage->base_dd_max = hit_scaling_effect.average( player->items[ SLOT_WAIST ] );
-      damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1236108 ) );
+      damage->base_multiplier *= role_mult( player, tooltip_spell_data );
       tick_callback = [ & ]( buff_t*, int, timespan_t ) { damage->execute(); };
     }
   };
@@ -10467,7 +10468,6 @@ void critical_chain( special_effect_t& effect )
   constexpr unsigned driver_id = 1236272;
   auto driver                  = effect.player->find_spell( driver_id );
   auto trigger_buff            = driver->effectN( 1 ).trigger();
-  auto stack_buff              = trigger_buff->effectN( 1 ).trigger();
 
   struct critical_overload_t : public buff_t
   {
@@ -10614,6 +10614,23 @@ void energy_shield( special_effect_t& effect )
 
 void charged_crystal( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto driver             = effect.player->find_spell( effect.spell_id );
+  auto trigger            = driver->effectN( 1 ).trigger();
+  auto hit_scaling_effect = trigger->effectN( 2 ).trigger()->effectN( 13 );
+
+  effect.proc_flags_  = driver->proc_flags();
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.ppm_         = driver->_rppm;
+  effect.execute_action =
+      create_proc_action<generic_proc_t>( util::tokenize_fn( trigger->name_cstr() ), effect, trigger );
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
+      hit_scaling_effect.average( effect.player->items[ SLOT_WAIST ] );
+  // effect.execute_action->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1236135 ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace durable_information_securing_chamber
 
@@ -10851,7 +10868,7 @@ void register_special_effects()
   register_special_effect( 1236275, durable_information_securing_chamber::static_charge );
   register_special_effect( 1236961, durable_information_securing_chamber::electric_current );
   // register_special_effect( 1236278, durable_information_securing_chamber::energy_shield );
-  // register_special_effect( 1236279, durable_information_securing_chamber::charged_crystal );
+  register_special_effect( 1236279, durable_information_securing_chamber::charged_crystal );
 }
 
 void register_target_data_initializers( sim_t& )
