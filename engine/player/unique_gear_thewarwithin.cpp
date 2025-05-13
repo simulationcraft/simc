@@ -10416,6 +10416,63 @@ void roaring_warqueens_citrine( special_effect_t& effect )
 }
 }  // namespace singing_citrines
 
+namespace durable_information_securing_chamber
+{
+  enum titan_disc_effect_e
+  {
+    CHARGED_BOLTS = 1236109
+  };
+  void charged_bolts( special_effect_t& effect )
+  {
+    if (!effect.player->is_ptr())
+      return;
+
+    constexpr unsigned driver_id = 1236109;
+    auto driver = effect.player->find_spell( driver_id );
+    auto trigger = driver->effectN( 1 ).trigger();
+
+    struct charged_bolts_t : public buff_t
+    {
+      action_t* damage;
+
+      charged_bolts_t( player_t* player, std::string_view name, special_effect_t& effect )
+        : buff_t( player, name, effect.driver()->effectN( 1 ).trigger() ), damage( nullptr )
+      {
+        auto damage_spell_data = effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+        auto tooltip_spell_data = player->find_spell( 1236108 );
+        auto hit_scaling_effect = damage_spell_data->effectN( 2 ).trigger()->effectN( 1 );
+        auto value_driver = effect.player->find_spell( 1236137 );
+
+        damage = create_proc_action<generic_proc_t>( util::tokenize_fn( damage_spell_data->name_cstr() ), effect,
+                                                     damage_spell_data );
+        damage->base_dd_min = damage->base_dd_max = value_driver->effectN( 1 ).average( effect );
+        damage->base_multiplier *= role_mult( player, tooltip_spell_data );
+        tick_callback = [ & ]( buff_t*, int, timespan_t ) { damage->execute(); };
+      }
+    };
+
+    effect.spell_id = driver_id;
+    effect.proc_flags_ = driver->proc_flags();
+    effect.proc_flags2_ = PF2_ALL_HIT;
+    effect.ppm_ = driver->_rppm;
+    effect.custom_buff = create_buff<charged_bolts_t>( effect.player, util::tokenize_fn( trigger->name_cstr() ), effect );
+
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+
+  void titan_disc_replaced_effect( special_effect_t& effect )
+  {
+    switch (effect.item->parsed.titan_disc_driver_id)
+    {
+      case CHARGED_BOLTS:
+        charged_bolts( effect );
+        break;
+      default:
+        break;
+    }
+  }
+}  // namespace durable_information_securing_chamber
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -10642,6 +10699,9 @@ void register_special_effects()
   register_special_effect( singing_citrines::MARINERS_HALLOWED_CITRINE,         singing_citrines::mariners_hallowed_citrine );
   register_special_effect( singing_citrines::STORM_SEWERS_CITRINE,              singing_citrines::storm_sewers_citrine );
   register_special_effect( singing_citrines::SEABED_LEVIATHANS_CITRINE,         singing_citrines::seabed_leviathans_citrine );
+
+  // Durable Information Securing Container
+  register_special_effect( 1236138, durable_information_securing_chamber::titan_disc_replaced_effect );
 }
 
 void register_target_data_initializers( sim_t& )
