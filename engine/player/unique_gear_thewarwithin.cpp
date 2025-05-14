@@ -10465,8 +10465,7 @@ void critical_chain( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  constexpr unsigned driver_id = 1236272;
-  auto driver                  = effect.player->find_spell( driver_id );
+  auto driver                  = effect.player->find_spell( effect.spell_id);
   auto trigger_buff            = driver->effectN( 1 ).trigger();
 
   struct critical_overload_t : public buff_t
@@ -10493,7 +10492,6 @@ void critical_chain( special_effect_t& effect )
     }
   };
 
-  effect.spell_id     = driver_id;
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
@@ -10508,11 +10506,9 @@ void spark_burst( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  constexpr unsigned driver_id = 1236273;
-  auto driver                  = effect.player->find_spell( driver_id );
+  auto driver                  = effect.player->find_spell( effect.spell_id );
   auto stat_buff               = driver->effectN( 1 ).trigger();
 
-  effect.spell_id     = driver_id;
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
@@ -10529,11 +10525,9 @@ void static_charge( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  constexpr unsigned driver_id = 1236275;
-  auto driver                  = effect.player->find_spell( driver_id );
+  auto driver                  = effect.player->find_spell( effect.spell_id );
   auto stat_buff               = driver->effectN( 1 ).trigger();
 
-  effect.spell_id     = driver_id;
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
@@ -10583,11 +10577,9 @@ void electric_current( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  constexpr unsigned driver_id = 1236961;
-  auto driver                  = effect.player->find_spell( driver_id );
+  auto driver                  = effect.player->find_spell( effect.spell_id );
   auto stat_buff               = effect.player->find_spell( 1236937 );
 
-  effect.spell_id = driver_id;
   effect.custom_buff =
       create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
           ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 7 ).average(
@@ -10611,6 +10603,7 @@ void charged_touch( special_effect_t& effect )
 
 void energy_shield( special_effect_t& effect )
 {
+  // NYI: Tank effect lol
 }
 
 void charged_crystal( special_effect_t& effect )
