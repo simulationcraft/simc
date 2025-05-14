@@ -10544,7 +10544,6 @@ void static_charge( special_effect_t& effect )
           ->set_reverse( true )
           ->set_reverse_stack_count( 1 );
 
-  new dbc_proc_callback_t( effect.player, effect );
 
   auto decrement_stack          = new special_effect_t( effect.player );
   decrement_stack->spell_id     = stat_buff->id();
@@ -10552,6 +10551,7 @@ void static_charge( special_effect_t& effect )
   decrement_stack->proc_flags2_ = PF2_ALL_HIT;
   decrement_stack->proc_chance_ = stat_buff->proc_chance();
   decrement_stack->cooldown_    = stat_buff->internal_cooldown();
+  effect.player->special_effects.push_back( decrement_stack );
 
   struct decrement_proc_callback_t : public dbc_proc_callback_t
   {
@@ -10574,6 +10574,7 @@ void static_charge( special_effect_t& effect )
     }
   };
 
+  new dbc_proc_callback_t( effect.player, effect );
   new decrement_proc_callback_t( effect.player, *decrement_stack, effect.custom_buff );
 }
 
