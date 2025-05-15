@@ -10577,23 +10577,65 @@ void electric_current( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  auto driver                  = effect.player->find_spell( effect.spell_id );
-  auto stat_buff               = effect.player->find_spell( 1236937 );
+  /*
+   * This is implementable strictly as a repeating `event_t`, but that introduces
+   * a fair bit of complexity. Given that deriving from `buff_t` should be a bit
+   * more clear, we'll just use that instead.
+   */
 
-  effect.custom_buff =
-      create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
-          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 7 ).average(
-                                                         effect.player->items[ SLOT_WAIST ] ) )
-          ->set_reverse_stack_count( 1 )
-          ->set_stack_change_callback( []( buff_t* self, int, int new_ ) {
-            if ( new_ == self->max_stack() )
-              self->set_reverse( true );
-            if ( new_ == 1 )
-              self->set_reverse( false );
-          } )
-          ->set_period( driver->effectN( 1 ).period() );
+  struct driver_buff_t : public buff_t
+  {
+    buff_t* child;
+    int previous_stack;
+    bool reverse;
 
-  effect.player->register_on_arise_callback( effect.player, [ buff = effect.custom_buff ] { buff->trigger(); } );
+    driver_buff_t( player_t* player, std::string_view name, special_effect_t& effect )
+      : buff_t( player, name, spell_data_t::nil() ), child( nullptr ), previous_stack( 0 ), reverse( true )
+    {
+      auto driver    = effect.player->find_spell( effect.spell_id );
+      auto stat_buff = effect.player->find_spell( 1236937 );
+
+      child =
+          create_buff<stat_buff_t>( player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
+              ->add_stat_from_effect_type(
+                  A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 7 ).average( player->items[ SLOT_WAIST ] ) )
+              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+      quiet = true;
+      set_period( driver->effectN( 1 ).period() );
+      set_duration( 8_s );
+      tick_on_application = true;
+
+      tick_callback = [ & ]( buff_t* self, int, timespan_t ) {
+        self->refresh();
+
+        int current_stack = child->check();
+        if ( current_stack == previous_stack )
+          reverse = !reverse;
+
+        if ( reverse && current_stack > 1 )
+          child->decrement();
+
+        if ( !reverse )
+          child->increment();
+
+        previous_stack = current_stack;
+      };
+
+      expire_callback = [ & ]( buff_t*, int, timespan_t ) { child->expire(); };
+    }
+  };
+  effect.custom_buff = create_buff<driver_buff_t>( effect.player, "electric_current_driver", effect );
+
+  effect.player->register_on_combat_state_callback( [ & ]( player_t* player, bool in_combat ) {
+    if ( player != effect.player )
+      return;
+
+    if ( in_combat )
+      effect.custom_buff->trigger();
+    else
+      effect.custom_buff->expire();
+  } );
 }
 
 void charged_touch( special_effect_t& effect )
