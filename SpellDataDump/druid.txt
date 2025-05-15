@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4197,12 +4197,10 @@ Effects          :
                    Base Value: 151 | Scaled Value: 151 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
-Hotfixed         : Base Value (139 -> 151)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 151 | Scaled Value: 151 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
-Hotfixed         : Base Value (139 -> 151)
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4261,12 +4259,10 @@ Hotfixed         : Base Value (139 -> 151)
                    Base Value: 53 | Scaled Value: 53 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (46 -> 53)
 #20 (id=1091201) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 53 | Scaled Value: 53 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (46 -> 53)
 #21 (id=1176394) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -70 | Scaled Value: -70 | Misc Value 2: 3880 (Label) | Target: Self (1)
                    Affected Spells (Label): Boundless Moonlight (428682)
@@ -4293,13 +4289,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
+Hotfixed         : Base Value (11 -> 14), PvP Coefficient (1 -> 0.79)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 11 | Scaled Value: 11 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
+Hotfixed         : Base Value (11 -> 14), PvP Coefficient (1 -> 0.79)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
@@ -4313,9 +4311,11 @@ Effects          :
 #6 (id=260767)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
+Hotfixed         : Base Value (11 -> 14), PvP Coefficient (1 -> 0.79)
 #8 (id=260769)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
+Hotfixed         : Base Value (11 -> 14), PvP Coefficient (1 -> 0.79)
 #9 (id=260770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -4346,7 +4346,8 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 3962 (Label) | Target: Self (1)
                    Affected Spells (Label): Harmonious Constitution (440116)
 #17 (id=1177947) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 62 | Scaled Value: 62 | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | PvP Coefficient: 0.93 | Target: Self (1)
+Hotfixed         : Base Value (62 -> 67), PvP Coefficient (1 -> 0.93)
 #18 (id=1222119) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
                    Affected Spells: Sunfire (164815)

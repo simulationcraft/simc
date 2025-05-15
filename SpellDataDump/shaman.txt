@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60568 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -5311,7 +5311,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
-Hotfixed         : PvP Coefficient (0.667 -> 1)
 #2 (id=1172085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Riptide's initial heal is increased $s1% and has a $s2% increased critical strike chance.
@@ -11192,7 +11191,6 @@ Effects          :
 Description      : $@spelldesc378443
 
 Name             : Acid Rain (id=378597) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -12497,7 +12495,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
-Hotfixed         : PvP Coefficient (0.25 -> 0.5)
 #3 (id=1076485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
