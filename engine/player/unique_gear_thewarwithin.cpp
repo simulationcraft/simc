@@ -10690,30 +10690,39 @@ void titan_disc_replaced_effect( special_effect_t& effect )
   switch (effect.item->parsed.titan_disc_driver_id)
   {
     case CHARGED_BOLTS:
+      effect.spell_id = CHARGED_BOLTS;
       charged_bolts( effect );
       break;
     case CAUTERIZING_BOLTS:
+      effect.spell_id = CAUTERIZING_BOLTS;
       cauterizing_bolts( effect );
       break;
     case CRITICAL_CHAIN:
+      effect.spell_id = CRITICAL_CHAIN;
       critical_chain( effect );
       break;
     case SPARK_BURST:
+      effect.spell_id = SPARK_BURST;
       spark_burst( effect );
       break;
     case STATIC_CHARGE:
+      effect.spell_id = STATIC_CHARGE;
       static_charge( effect );
       break;
     case CHARGED_TOUCH:
+      effect.spell_id = CHARGED_TOUCH;
       charged_touch( effect );
       break;
     case ENERGY_SHIELD:
+      effect.spell_id = ENERGY_SHIELD;
       energy_shield( effect );
       break;
     case CHARGED_CRYSTAL:
+      effect.spell_id = CHARGED_CRYSTAL;
       charged_crystal( effect );
       break;
     case ELECTRIC_CURRENT:
+      effect.spell_id = ELECTRIC_CURRENT;
       electric_current( effect );
       break;
     default:
