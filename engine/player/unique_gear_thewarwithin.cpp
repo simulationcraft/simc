@@ -10421,7 +10421,16 @@ namespace durable_information_securing_chamber
 {
 enum titan_disc_effect_e
 {
-  CHARGED_BOLTS = 1236109
+  TITAN_DISC_VALUE_SPELL = 1236137,
+  CHARGED_BOLTS = 1236109,
+  CAUTERIZING_BOLTS = 1236122,
+  CRITICAL_CHAIN = 1236272,
+  SPARK_BURST    = 1236273,
+  STATIC_CHARGE  = 1236275,
+  CHARGED_TOUCH    = 1236277,
+  ENERGY_SHIELD = 1236278,
+  CHARGED_CRYSTAL = 1236279,
+  ELECTRIC_CURRENT = 1236961,
 };
 
 void charged_bolts( special_effect_t& effect )
@@ -10429,8 +10438,7 @@ void charged_bolts( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  constexpr unsigned driver_id = 1236109;
-  auto driver                  = effect.player->find_spell( driver_id );
+  auto driver                  = effect.player->find_spell( titan_disc_effect_e::CHARGED_BOLTS );
   auto trigger                 = driver->effectN( 1 ).trigger();
 
   struct charged_bolts_t : public buff_t
@@ -10443,16 +10451,17 @@ void charged_bolts( special_effect_t& effect )
       auto damage_spell_data  = effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
       auto tooltip_spell_data = player->find_spell( 1236108 );
       auto hit_scaling_effect = damage_spell_data->effectN( 2 ).trigger()->effectN( 1 );
+      auto value_spell        = player->find_spell( TITAN_DISC_VALUE_SPELL );
 
       damage = create_proc_action<generic_proc_t>( util::tokenize_fn( damage_spell_data->name_cstr() ), effect,
                                                    damage_spell_data );
-      damage->base_dd_min = damage->base_dd_max = hit_scaling_effect.average( player->items[ SLOT_WAIST ] );
+      damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
       damage->base_multiplier *= role_mult( player, tooltip_spell_data );
       tick_callback = [ & ]( buff_t*, int, timespan_t ) { damage->execute(); };
     }
   };
 
-  effect.spell_id     = driver_id;
+  effect.spell_id     = CHARGED_BOLTS;
   effect.proc_flags_  = driver->proc_flags();
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
@@ -10471,22 +10480,22 @@ void critical_chain( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  auto driver                  = effect.player->find_spell( effect.spell_id);
+  auto driver                  = effect.player->find_spell( titan_disc_effect_e::CRITICAL_CHAIN );
   auto trigger_buff            = driver->effectN( 1 ).trigger();
 
   struct critical_overload_t : public buff_t
   {
     buff_t* stacking_crit;
 
-    critical_overload_t( player_t* player, std::string_view name, const spell_data_t* spell_data )
+    critical_overload_t( player_t* player, std::string_view name, const spell_data_t* spell_data, const special_effect_t& effect )
       : buff_t( player, name, spell_data ), stacking_crit( nullptr )
     {
       auto stack_buff_data = spell_data->effectN( 1 ).trigger();
+      auto value_spell     = player->find_spell( TITAN_DISC_VALUE_SPELL );
 
       stacking_crit =
           create_buff<stat_buff_t>( player, stack_buff_data )
-              ->add_stat_from_effect_type( A_MOD_RATING, stack_buff_data->effectN( 2 ).trigger()->effectN( 3 ).average(
-                                                             player->items[ SLOT_WAIST ] ) );
+              ->add_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 3 ).average( effect ) );
 
       quiet         = true;
       tick_callback = [ & ]( buff_t*, int current_tick, timespan_t ) {
@@ -10502,7 +10511,7 @@ void critical_chain( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
   effect.custom_buff =
-      create_buff<critical_overload_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), trigger_buff );
+      create_buff<critical_overload_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), trigger_buff, effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10512,16 +10521,16 @@ void spark_burst( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  auto driver                  = effect.player->find_spell( effect.spell_id );
+  auto driver                  = effect.player->find_spell( titan_disc_effect_e::SPARK_BURST );
   auto stat_buff               = driver->effectN( 1 ).trigger();
+  auto value_spell             = effect.player->find_spell( TITAN_DISC_VALUE_SPELL );
 
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
   effect.custom_buff =
       create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
-          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 4 ).average(
-                                                         effect.player->items[ SLOT_WAIST ] ) );
+          ->add_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 4 ).average( effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10531,16 +10540,16 @@ void static_charge( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  auto driver                  = effect.player->find_spell( effect.spell_id );
+  auto driver                  = effect.player->find_spell( titan_disc_effect_e::STATIC_CHARGE );
   auto stat_buff               = driver->effectN( 1 ).trigger();
+  auto value_spell             = effect.player->find_spell( TITAN_DISC_VALUE_SPELL );
 
   effect.proc_flags_  = driver->proc_flags() | PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
   effect.custom_buff =
       create_buff<stat_buff_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
-          ->add_stat_from_effect_type( A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 5 ).average(
-                                                         effect.player->items[ SLOT_WAIST ] ) )
+          ->add_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 5 ).average( effect ) )
           ->set_reverse( true )
           ->set_reverse_stack_count( 1 );
 
@@ -10598,13 +10607,14 @@ void electric_current( special_effect_t& effect )
     driver_buff_t( player_t* player, std::string_view name, special_effect_t& effect )
       : buff_t( player, name, spell_data_t::nil() ), child( nullptr ), previous_stack( 0 ), reverse( true )
     {
-      auto driver    = effect.player->find_spell( effect.spell_id );
+      auto driver    = effect.player->find_spell( titan_disc_effect_e::ELECTRIC_CURRENT );
       auto stat_buff = effect.player->find_spell( 1236937 );
+      auto value_spell = effect.player->find_spell( TITAN_DISC_VALUE_SPELL );
 
       child =
           create_buff<stat_buff_t>( player, util::tokenize_fn( driver->name_cstr() ), stat_buff )
               ->add_stat_from_effect_type(
-                  A_MOD_RATING, stat_buff->effectN( 2 ).trigger()->effectN( 7 ).average( player->items[ SLOT_WAIST ] ) )
+                  A_MOD_RATING, value_spell->effectN( 7 ).average( effect )  )
               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
       quiet = true;
@@ -10659,17 +10669,17 @@ void charged_crystal( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  auto driver             = effect.player->find_spell( effect.spell_id );
+  auto driver             = effect.player->find_spell( titan_disc_effect_e::CHARGED_CRYSTAL );
   auto trigger            = driver->effectN( 1 ).trigger();
   auto hit_scaling_effect = trigger->effectN( 2 ).trigger()->effectN( 13 );
+  auto value_spell        = effect.player->find_spell( TITAN_DISC_VALUE_SPELL );
 
   effect.proc_flags_  = driver->proc_flags();
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
   effect.execute_action =
       create_proc_action<generic_proc_t>( util::tokenize_fn( trigger->name_cstr() ), effect, trigger );
-  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
-      hit_scaling_effect.average( effect.player->items[ SLOT_WAIST ] );
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max = value_spell->effectN( 13 ).average( effect );
   // effect.execute_action->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1236135 ) );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -10681,6 +10691,30 @@ void titan_disc_replaced_effect( special_effect_t& effect )
   {
     case CHARGED_BOLTS:
       charged_bolts( effect );
+      break;
+    case CAUTERIZING_BOLTS:
+      cauterizing_bolts( effect );
+      break;
+    case CRITICAL_CHAIN:
+      critical_chain( effect );
+      break;
+    case SPARK_BURST:
+      spark_burst( effect );
+      break;
+    case STATIC_CHARGE:
+      static_charge( effect );
+      break;
+    case CHARGED_TOUCH:
+      charged_touch( effect );
+      break;
+    case ENERGY_SHIELD:
+      energy_shield( effect );
+      break;
+    case CHARGED_CRYSTAL:
+      charged_crystal( effect );
+      break;
+    case ELECTRIC_CURRENT:
+      electric_current( effect );
       break;
     default:
       break;
