@@ -5284,3 +5284,52 @@ class TraitLoadoutGenerator(DataGenerator):
             self.output_record(fields)
 
         self.output_footer()
+
+class AssistedCombatStepGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatStep').values(),
+                          key = lambda e: (e.ref('id_assisted_combat').id_spec, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Step data',
+            type = 'assisted_combat_step_data_t',
+            array = 'assisted_combat_step',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.ref('id_assisted_combat').field('id_spec')
+            fields += entry.field('order_index', 'id_spell')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
+
+        self.output_footer()
+
+class AssistedCombatRuleGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatRule').values(), key = lambda e: (e.id_parent, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Rule data',
+            type = 'assisted_combat_rule_data_t',
+            array = 'assisted_combat_rule',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.field('id_parent', 'order_index', 'condition_type',
+                                  'condition_value_1', 'condition_value_2', 'condition_value_3')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
+
+        self.output_footer()
