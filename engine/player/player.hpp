@@ -886,6 +886,16 @@ struct player_t : public actor_t
     player_option_t<std::string> mister_locknstalk_mode = "dynamic";
     player_option_t<std::string> jastor_diamond_ally_stat = "none";
     double suspicious_energy_drink_bonus_chance           = 0;
+    // Which method to use to determine Moxie Frenzy buff stack gain. Accepts "normal" (default) or "timed"
+    // "Normal": Most casts, damage effects and healing effects increase the buff stack
+    // "Timed": The buff gain a stack periodically based on custom 'interval' and 'first_tick' times
+    // Whichever method is selected, the ICD of buff stack gain will always be respected
+    player_option_t<std::string> moxie_frenzy_buff_stack_mode = "normal";
+    timespan_t moxie_frenzy_buff_stack_gain_interval          = 900_ms;
+    timespan_t moxie_frenzy_buff_stack_gain_interval_stddev   = 250_ms;
+    timespan_t moxie_frenzy_buff_stack_first_tick             = 25_ms;
+    timespan_t moxie_frenzy_buff_stack_first_tick_stddev      = 350_ms;
+    // Additional GCD time
     timespan_t additional_gcd_time                        = 0_s;
   } thewarwithin_opts;
 

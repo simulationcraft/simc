@@ -12922,6 +12922,11 @@ void player_t::create_options()
   add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat", thewarwithin_opts.jastor_diamond_ally_stat ) );
   add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance",
                          thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
+  add_option( opt_string( "thewarwithin.moxie_frenzy_buff_stack_mode", thewarwithin_opts.moxie_frenzy_buff_stack_mode ) );
+  add_option( opt_timespan( "thewarwithin.moxie_frenzy_buff_stack_gain_interval", thewarwithin_opts.moxie_frenzy_buff_stack_gain_interval, 0_ms, 14_s ) );
+  add_option( opt_timespan( "thewarwithin.moxie_frenzy_buff_stack_gain_interval_stddev", thewarwithin_opts.moxie_frenzy_buff_stack_gain_interval_stddev, 0_ms, 14_s ) );
+  add_option( opt_timespan( "thewarwithin.moxie_frenzy_buff_stack_first_tick", thewarwithin_opts.moxie_frenzy_buff_stack_first_tick, 0_ms, 14_s ) );
+  add_option( opt_timespan( "thewarwithin.moxie_frenzy_buff_stack_first_tick_stddev", thewarwithin_opts.moxie_frenzy_buff_stack_first_tick_stddev, 0_ms, 14_s ) );
   add_option( opt_timespan( "thewarwithin.additional_gcd_time", thewarwithin_opts.additional_gcd_time, 0_s, 10_s ) );
 }
 

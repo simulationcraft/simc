@@ -6885,15 +6885,46 @@ void mugs_moxie_jug( special_effect_t& effect )
                        ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
                        ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  auto buff_driver          = new special_effect_t( effect.player );
-  buff_driver->name_str     = util::tokenize_fn( effect.driver()->effectN( 1 ).trigger()->name_cstr() );
-  buff_driver->spell_id     = effect.driver()->effectN( 1 ).trigger_spell_id();
-  buff_driver->proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
-  buff_driver->custom_buff  = crit_buff;
-  effect.player->special_effects.push_back( buff_driver );
+  if ( !( effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_mode == "timed" ) )
+  {
+    auto buff_driver          = new special_effect_t( effect.player );
+    buff_driver->name_str     = util::tokenize_fn( effect.driver()->effectN( 1 ).trigger()->name_cstr() );
+    buff_driver->spell_id     = effect.driver()->effectN( 1 ).trigger_spell_id();
+    buff_driver->proc_flags2_ = PF2_ALL_HIT | PF2_ALL_CAST | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+    buff_driver->custom_buff  = crit_buff;
+    effect.player->special_effects.push_back( buff_driver );
 
-  auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
-  second_proc->activate_with_buff( crit_buff, true );
+    auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
+    second_proc->activate_with_buff( crit_buff, true );
+  }
+  else
+  {
+    const timespan_t opt_s_interval = effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_gain_interval > effect.trigger()->internal_cooldown()
+                                          ? effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_gain_interval
+                                          : effect.trigger()->internal_cooldown();
+    const timespan_t opt_s_interval_stddev = effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_gain_interval_stddev;
+    const timespan_t opt_s_first_tick = effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_first_tick;
+    const timespan_t opt_s_first_tick_stddev = effect.player->thewarwithin_opts.moxie_frenzy_buff_stack_first_tick_stddev;
+
+    crit_buff->set_tick_behavior( buff_tick_behavior::CLIP )
+             ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
+             ->set_tick_time_callback( [ &effect, opt_s_interval, opt_s_interval_stddev, opt_s_first_tick, opt_s_first_tick_stddev ] ( const buff_t*, unsigned current_tick ) {
+               timespan_t period;
+               if ( current_tick == 0 )
+               {
+                 // For the first tick using a Left-Censored Gaussian Distribution is more appropriate
+                 period = timespan_t::from_millis( effect.player->rng().gauss( opt_s_first_tick.total_millis(), opt_s_first_tick_stddev.total_millis() ) );
+                 if ( period <= 0_ms )
+                   period = 1_ms;
+               }
+               else
+               {
+                 // For the rest of the ticks we use a Left-Truncated Gaussian Distribution
+                 period = effect.player->rng().gauss_a( opt_s_interval, opt_s_interval_stddev, effect.trigger()->internal_cooldown() );
+               }
+               return period;
+             } );
+  }
 
   effect.cooldown_    = effect.duration();
   effect.proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
