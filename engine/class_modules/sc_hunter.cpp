@@ -3231,7 +3231,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   {
     hunter_pet_attack_t::tick( d );
 
-    if ( rng().roll( ursine_fury.chance ) )
+    if ( ursine_fury.cooldown && rng().roll( ursine_fury.chance ) )
       ursine_fury.cooldown->adjust( ursine_fury.reduction );
   }
 
