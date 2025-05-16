@@ -947,6 +947,7 @@ public:
   void create_buffs() override;
   void create_options() override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
   std::string default_potion() const override { return mage_apl::potion( this ); }
   std::string default_flask() const override { return mage_apl::flask( this ); }
   std::string default_food() const override { return mage_apl::food( this ); }
@@ -8876,6 +8877,28 @@ void mage_t::init_action_list()
   }
 
   player_t::init_action_list();
+}
+
+void mage_t::init_blizzard_action_list()
+{
+  player_t::init_blizzard_action_list();
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  switch ( specialization() )
+  {
+    case MAGE_ARCANE:
+      cooldowns->add_action( "arcane_surge" );
+      break;
+    case MAGE_FIRE:
+      cooldowns->add_action( "combustion" );
+      break;
+    case MAGE_FROST:
+      cooldowns->add_action( "icy_veins" );
+      break;
+    default:
+      break;
+  }
 }
 
 double mage_t::resource_regen_per_second( resource_e rt ) const

@@ -9,6 +9,7 @@
 
 #include "actor.hpp"
 #include "assessor.hpp"
+#include "dbc/assisted_combat.hpp"
 #include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
 #include "gear_stats.hpp"
@@ -324,6 +325,7 @@ struct player_t : public actor_t
   std::string modify_action;
   std::string use_apl;
   bool use_default_action_list;
+  bool use_blizzard_action_list;
   auto_dispose< std::vector<dot_t*> > dot_list;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
@@ -1116,6 +1118,11 @@ public:
   virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
+  virtual void init_blizzard_action_list();
+  virtual std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const;
+  virtual std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const;
+  virtual std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                  const assisted_combat_step_data_t& step ) const;
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
