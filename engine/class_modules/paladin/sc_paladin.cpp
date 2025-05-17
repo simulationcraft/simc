@@ -2480,7 +2480,8 @@ void paladin_t::trigger_greater_judgment(paladin_td_t* targetdata, int num_stack
   {
     num_stacks += as<int>( talents.highlords_wrath->effectN( 1 ).base_value() );
   }
-  targetdata->debuff.judgment->trigger( num_stacks );
+  if ( num_stacks )
+    targetdata->debuff.judgment->trigger( num_stacks );
 }
 
 // Holy Armaments
