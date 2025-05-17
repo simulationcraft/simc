@@ -87,7 +87,7 @@ void affliction( player_t* p )
   default_->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<4|fight_remains<cooldown.soul_rot.remains)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&dot.unstable_affliction.remains" );
   default_->add_action( "malevolence,if=variable.vt_ps_up" );
   default_->add_action( "soul_rot,if=variable.vt_ps_up" );
-  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack)" );
+  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack|!talent.shadow_embrace)" );
   default_->add_action( "call_action_list,name=se_maintenance,if=talent.demonic_soul" );
   default_->add_action( "malefic_rapture,if=soul_shard>4&(talent.demonic_soul&buff.nightfall.react<2|!talent.demonic_soul)|buff.tormented_crescendo.react>1" );
   default_->add_action( "drain_soul,if=talent.demonic_soul&buff.nightfall.react&buff.tormented_crescendo.react<2&target.health.pct<20" );
