@@ -154,7 +154,7 @@ legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579
 feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=684,enchant_id=7424
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=684,gem_id=213470/213455,enchant_id=7340
 finger2=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,ilevel=684,gem_id=213485/213485,enchant_id=7340
-trinket1=candle_confidant,id=225648,ilevel=684
+trinket1=candle_confidant,id=225648,ilevel=671
 trinket2=house_of_cards,id=230027,ilevel=684
 main_hand=blastfurious_machete,id=231268,ilevel=684,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8795/11144,ilevel=681,crafted_stats=40/32
@@ -186,8 +186,8 @@ waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=684,gem_id
 legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=684,enchant_id=7534
 feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=684,enchant_id=7424
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=684,gem_id=213467/213467,enchant_id=7352
-finger2=bloodoath_signet,id=178871,bonus_id=4786/9987/11996/8781,gem_id=213467/213467,enchant_id=7352
-trinket1=candle_confidant,id=225648,ilevel=684
+finger2=bloodoath_signet,id=178871,ilevel=684,gem_id=213467/213467,enchant_id=7352
+trinket1=candle_confidant,id=225648,ilevel=671
 trinket2=mister_locknstalk,id=230193,ilevel=684
 main_hand=blastfurious_machete,id=231268,ilevel=684,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/11144/8792,ilevel=681,crafted_stats=40/32
