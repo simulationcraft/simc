@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60799 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -63078,7 +63078,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46, 124
 Attributes       : Not Shapeshifted (16), Exclude Caster (51), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -88217,6 +88217,7 @@ Name             : Holy Empowerment (id=232067)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Cooldown         : 10 seconds
 Effects          :
 #1 (id=350162)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -112709,7 +112710,7 @@ Labels           : 292
                  : 375
                  : 412
                  : 881
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
 Triggered By     : Expurgation (273476)
 Family Flags     : 27, 65
 Attributes       : Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -117658,7 +117659,7 @@ Labels           : 292
                  : 375
                  : 412
                  : 881
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
 Triggered By     : Radiant Incandescence (278138)
 Family Flags     : 65
 Attributes       : Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -117679,7 +117680,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered By     : Radiant Incandescence (278142)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -119499,7 +119500,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered By     : Grace of the Justicar (278784)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -160523,6 +160524,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Momentum Redistributor Boots (id=330914) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 60
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
@@ -164680,7 +164682,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 931
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Limit N (165), Not On Player Controlled NPC (168), Extra Initial Period (169), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -261148,7 +261150,7 @@ Spell Type       : None
 Velocity         : 10 yards/sec
 Duration         : 30 seconds
 Labels           : 4874
-Attributes       : Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Aura Icon (60), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
+Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Aura Icon (60), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
@@ -261156,7 +261158,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 38187 | Radius: 1.5 yards | Target: Unknown(47)
 #3 (id=1238524)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$d}% of your maximum health over $d.
+Description      : Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$1231418d}% of your maximum health over $1231418d.
 
 Name             : Recuperate (id=1231418) 
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
@@ -261165,7 +261167,7 @@ Spell Type       : None
 Duration         : 10 seconds
 Labels           : 4874
 Triggered By     : Recuperate (1231411)
-Attributes       : Allow While Sitting (27), Is Channelled (34), Allow While Stealthed (37), Is Self Channelled (38), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), Allow Cast While Channeling (308)
+Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Is Channelled (34), Allow While Stealthed (37), Is Self Channelled (38), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), Allow Cast While Channeling (308)
 Aura Interrupt   : Hostile Action Received (0), Damage (1), Moving (3), Under Water (7), Attacking (12), Use Item (13), Mount (17), Enter Combat (28), Falling (32), Jump (37)
 Effects          :
 #1 (id=1223445)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds

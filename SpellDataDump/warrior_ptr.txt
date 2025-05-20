@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60799 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1203,7 +1203,7 @@ Family Flags     : 9, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: At Self (22)
 #3 (id=1134341)  : Energize Power (30)
@@ -1834,7 +1834,7 @@ Family Flags     : 9, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Requires Off-Hand Weapon (120), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.81696 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -5050,6 +5050,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Warrior (137047 effect#2), Improved Sweeping Strikes (383155 effect#1)
 Family Flags     : 8, 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Can Proc From Procs (122), Allow Cast While Casting (135), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Cast While Channeling (308), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
 #1 (id=486061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
@@ -12156,7 +12157,7 @@ Effects          :
 #2 (id=1222673)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222674)  : Dummy (3)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.7 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
 Description      : $@spelldesc64382
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -12179,7 +12180,7 @@ Effects          :
 #2 (id=1222646)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222647)  : Dummy (3)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.7 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
 Description      : $@spelldesc384110
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -13532,7 +13533,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Protection Warrior (137048 effect#26), Colossal Might (440989 effect#1)
 Family Flags     : 126
-Attributes       : Is Ability (4), Track Target in Cast (Player Only) (22), Is Channelled (34), Track Target in Channel (46), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Do Not Reset Combat Timers (81), Allow Aura While Dead (116), Can Proc From Procs (122), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Casting (337), Allow Defense While Channeling (338)
+Attributes       : Is Ability (4), Track Target in Cast (Player Only) (22), Is Channelled (34), Track Target in Channel (46), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Do Not Reset Combat Timers (81), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore For Mod Time Rate (196), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Casting (337), Allow Defense While Channeling (338)
 Channel Interrupt: Looting (11), Mount (17), Jump (37)
 Effects          :
 #1 (id=1127631)  : Apply Aura (6) | Periodic Dummy (226): every 0.1 seconds
@@ -14518,7 +14519,7 @@ Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1143165)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.7111 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.7111 | PvP Coefficient: 0.615 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc444775
 
 Name             : Bladestorm (id=446035) [Spell Family (4)] 
@@ -15818,7 +15819,9 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
-Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
+                   Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
+Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
+
+The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
 

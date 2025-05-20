@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60672 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60799 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4289,11 +4289,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -4309,9 +4309,9 @@ Effects          :
 #6 (id=260767)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
 #8 (id=260769)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
+                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 0.79 | Target: Self (1)
 #9 (id=260770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -4342,7 +4342,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 3962 (Label) | Target: Self (1)
                    Affected Spells (Label): Harmonious Constitution (440116)
 #17 (id=1177947) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 67 | Scaled Value: 67 | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | PvP Coefficient: 0.93 | Target: Self (1)
 #18 (id=1222119) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
@@ -21130,7 +21130,9 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Any Target (25)
-Description      : Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.
+                   Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
+Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
+
+The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
 
