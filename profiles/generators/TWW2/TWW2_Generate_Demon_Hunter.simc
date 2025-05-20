@@ -6,7 +6,7 @@ role=attack
 position=back
 talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjZmJmZGAAAAAAwsNzMMwMbzMzmtZZMMzMMW2mtZwwYZjJZYmZGYB
 
-head=,id=229316,bonus_id=1808,gem_id=213743,ilevel=684
+head=,id=229316,bonus_id=1808,gem_id=213743,ilevel=684,enchant_id=7917
 neck=,id=232663,bonus_id=8781,gem_id=213467/213482,ilevel=684
 shoulder=,id=229314,ilevel=684
 back=,id=221054,enchant_id=7403,ilevel=684
@@ -33,7 +33,7 @@ role=attack
 position=back
 talents=CEkAAAAAAAAAAAAAAAAAAAAAAYAzMzYMzMjZmJmZGAAAAAAwsNmhBGLzMzmtZZegZmZmZZwGsNLmxwsppBzMzMYD
 
-head=,id=228848,bonus_id=1808,gem_id=213743,ilevel=684
+head=,id=228848,bonus_id=1808,gem_id=213743,ilevel=684,enchant_id=7917
 neck=,id=232663,bonus_id=8781,gem_id=213473/213482,ilevel=684
 shoulder=,id=229314,ilevel=684
 back=,id=221054,enchant_id=7403,ilevel=684
