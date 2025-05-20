@@ -13402,6 +13402,7 @@ $@spellicon448659  $@spellname448659
 Your Arcane Phoenix aids you for the duration of your $?c1[Arcane Surge][Combustion], casting random Arcane and Fire spells.
 
 Name             : Arcane Phoenix (id=448659) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Spellfire
 Spell Type       : None
@@ -13410,7 +13411,7 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Allow While Banished Aura State (299), Do Not Display Cast Time (441)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Allow While Banished Aura State (299), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1147289)  : Summon (28)
@@ -13493,6 +13494,7 @@ Effects          :
 Description      : Your $?c1[Prismatic Barrier][Blazing Barrier] now grants $s1% avoidance while active and $449331s1% leech for $449331d when it breaks or expires.
 
 Name             : Merely a Setback (id=449331) [Spell Family (3)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13500,6 +13502,7 @@ Duration         : 5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1148362)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -13507,6 +13510,7 @@ Description      : $@spelldesc449330
 Tooltip          : Leech increased by $s1%.
 
 Name             : Merely a Setback (id=449336) [Spell Family (3), Hidden] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13515,6 +13519,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknown (467)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1148372)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
