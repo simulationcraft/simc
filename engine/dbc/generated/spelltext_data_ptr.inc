@@ -1,4 +1,4 @@
-// Spell text, wow build 11.1.7.60672
+// Spell text, wow build 11.1.7.60799
 static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18846,7 +18846,6 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   {  384411, "$s2% chance to refund Maelstrom Weapon stacks spent on Lightning Bolt$?a454009[, Tempest,][] or Chain Lightning.\r\n\r\nWhile Ascendance is active, generate $s1 Maelstrom Weapon $lstack:stacks; every $384437t1 sec.", 0, 0 },
   {  384434, "$@spelldesc384382", 0, 0 },
   {  384437, "$@spelldesc384411", "Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $t1 sec.", 0 },
-  {  384442, "Call upon the Light and become an avatar of retribution, increasing your critical strike chance by $s1% for $31884d.\r\n\r\n|cFFFFFFFFCombines with other Avenging Wrath abilities.|r", 0, 0 },
   {  384444, "Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].\r\n\r\nWhile Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.", 0, 0 },
   {  384447, "Increases the chance to gain a stack of Maelstrom Weapon by $s1%, and whenever you gain a stack of Maelstrom Weapon, the cooldown of Feral Spirits is reduced by ${$m2/1000}.1 sec.", 0, 0 },
   {  384450, "Consuming $s2 stacks of Maelstrom Weapon will reset the cooldown of Stormstrike and increases the damage of your Physical and Frost abilities by $s1% for $384451d.", 0, 0 },
@@ -27319,8 +27318,8 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1228149, "$@spelldesc1224457", 0, 0 },
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   { 1228455, "$@spelldesc433106", 0, 0 },
-  { 1229376, "Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.", 0, 0 },
-  { 1231411, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$d}% of your maximum health over $d.", 0, 0 },
+  { 1229376, "Casts damaging abilities for use in combat, rotating through them based on priority.\r\n\r\nThe global cooldown of abilities used through the Single-Button Assistant is $s1% longer.", 0, 0 },
+  { 1231411, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$1231418d}% of your maximum health over $1231418d.", 0, 0 },
   { 1231418, "$@spelldesc1231411", "Restoring $s1% health every sec.", 0 },
   { 1231772, "Elemental Shaman baseline passive", 0, 0 },
   { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
@@ -27391,13 +27390,14 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1241246, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137s5 for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
   { 1241251, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. ", 0, 0 },
+  { 1241871, "$@spelldesc53271", 0, "Command Pet Ability" },
 } };
 
-// spelltext hotfix entries, wow build 11.1.7.60672
+// spelltext hotfix entries, wow build 11.1.7.60799
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.7.60672
+// Spell description variables, wow build 11.1.7.60799
 static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28053,7 +28053,7 @@ static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { 
   { 1241245, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.7.60672
+// spelldesc_vars hotfix entries, wow build 11.1.7.60799
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
