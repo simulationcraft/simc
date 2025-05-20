@@ -260110,12 +260110,13 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 125 | Mechanic: Knockback | Target: Self (1)
 Description      : $@spelldesc1218417
 
-Name             : Cut of the Curseblade (id=1224456) [Passive, Hidden] 
+Name             : Cut of the Curseblade (id=1224456) [Passive] 
+Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : White Melee, White Ranged
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213105)  : Apply Aura (6) | Proc Trigger Damage (43) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | PvP Coefficient: 0.5 | Target: Self (1)
@@ -260387,12 +260388,13 @@ Effects          :
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
+Hotfixed         : Proc Flags 1 (0 -> 69904)
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 20 (Haste multiplier)
-Proc Flags       : Cast Successful
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Cast Successful
 Triggered By     : Echoing Void (1225878), Echoing Void (1225880)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
