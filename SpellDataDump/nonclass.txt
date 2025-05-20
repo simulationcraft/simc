@@ -260884,7 +260884,8 @@ Triggered By     : Void Ritual (1227315)
 Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217658)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.5 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.25 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 #2 (id=1217659)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227311
