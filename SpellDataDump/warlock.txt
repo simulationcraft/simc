@@ -12739,6 +12739,7 @@ Effects          :
 Description      : Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.
 
 Name             : Crashing Chaos (id=417282) [Spell Family (5)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -12750,6 +12751,7 @@ Stacks           : 1 initial, 8 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.2 | Target: Self (1)
