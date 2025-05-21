@@ -1,5 +1,5 @@
-// Item effects, wow build 11.1.7.60799
-static const std::array<item_effect_t, 10011> __ptr_item_effect_data { {
+// Item effects, wow build 11.1.7.60915
+static const std::array<item_effect_t, 10023> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9822,7 +9822,7 @@ static const std::array<item_effect_t, 10011> __ptr_item_effect_data { {
   { 206241, 1221476, 228647,   1,   5,    0,      -1,      -1 }, // Tracking Quest
   { 189949, 462526, 228648,   0,   1,    0,      -1,      -1 }, // Roaring War-Queen's Citrine
   { 206242, 1221476, 228648,   1,   5,    0,      -1,      -1 }, // Tracking Quest
-  { 206236, 1221429, 228843,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 206236, 1243749, 228843,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
   { 193003, 471383, 228844,   1,   0,    0,      -1,      -1 }, // Test Pilot's Go-Pack
   { 192993, 471316, 228889,   0,   1,    0,      -1,      -1 }, // Vile Contamination
   { 192991, 471316, 228891,   0,   1,    0,      -1,      -1 }, // Vile Contamination
@@ -10011,9 +10011,21 @@ static const std::array<item_effect_t, 10011> __ptr_item_effect_data { {
   { 212261, 1236138, 245966,   1,   1,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212262, 1233262, 245966,   2,   0,    0,      -1,      -1 }, // Durable Information Securing Container
   { 212263, 1236137, 245966,   3,   1,    0,      -1,      -1 }, // Durable Information Securing Container
+  { 212821, 1221429, 246757,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212822, 1221429, 246758,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212823, 1221429, 246759,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212824, 1221429, 246760,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212825, 1221429, 246761,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212826, 1221429, 246762,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212827, 1221429, 246763,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212828, 1221429, 246764,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212829, 1221429, 246765,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212830, 1221429, 246766,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212831, 1221429, 246767,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
+  { 212832, 1221429, 246768,   0,   1,    0,      -1,      -1 }, // Feeling Lucky
 } };
 
-static const std::array<uint16_t, 10011> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 10023> __ptr_item_effect_id_index { {
     924,   925,   926,   927,   928,   929,   930,   933,
     934,   935,   936,   937,   938,   939,   940,   941,
     942,   943,   944,   945,   948,   949,   950,   951,
@@ -11265,6 +11277,7 @@ static const std::array<uint16_t, 10011> __ptr_item_effect_id_index { {
    9988,  9987,  9971,  9964,  9965,  9966,  9967,  9991,
    9992,  9997,  9993,  9994,  9995,  9996,  9998,  9999,
   10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007,
-  10008, 10009, 10010,
+  10008, 10009, 10010, 10011, 10012, 10013, 10014, 10015,
+  10016, 10017, 10018, 10019, 10020, 10021, 10022,
 } };
 

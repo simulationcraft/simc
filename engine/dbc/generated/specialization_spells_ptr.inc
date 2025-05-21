@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.1.7.60799
-static const std::array<specialization_spell_entry_t, 559> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.1.7.60915
+static const std::array<specialization_spell_entry_t, 560> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -361,6 +361,7 @@ static const std::array<specialization_spell_entry_t, 559> __ptr_specialization_
   {  9,  266,  462112,      0, "Warlock"                           , 0 },
   {  9,  266,  462113,      0, "Demonology Warlock"                , 0 },
   {  9,  266, 1229376,      0, "Single-Button Assistant"           , 0 },
+  {  9,  267,     348,      0, "Immolate"                          , 0 },
   {  9,  267,   77220,      0, "Mastery: Chaotic Energies"         , 0 },
   {  9,  267,  116858,      0, "Chaos Bolt"                        , 0 },
   {  9,  267,  137046,      0, "Destruction Warlock"               , 0 },
