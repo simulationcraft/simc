@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60799 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60915 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -50,7 +50,7 @@ Effects          :
 Description      : Corrupts the target, causing $s3 Shadow damage and $?a196103[$146739s1 Shadow damage every $146739t1 sec.][an additional $146739o1 Shadow damage over $146739d.]
 
 Name             : Immolate (id=348) [Spell Family (5)] 
-Class            : Warlock
+Class            : Destruction Warlock
 School           : Fire
 Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=43)

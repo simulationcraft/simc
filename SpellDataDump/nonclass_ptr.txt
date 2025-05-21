@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60799 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.60915 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -250551,18 +250551,15 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172033)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 3990.777 (coefficient=1.560262) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 #2 (id=1172251)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 7691.975 (coefficient=2.008889) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1172345)  : Dummy (3)
                    Base Value: 10779 | Scaled Value: 10779 | PvP Coefficient: 0.25 | Target: Self (1)
 #4 (id=1172536)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 #5 (id=1181037)  : Dummy (3)
                    Base Value: 5663 | Scaled Value: 5663 | PvP Coefficient: 0.25 | Target: Self (1)
-Description      : $@cdataelem115
-
-${$cond($eq($@cdataelem115,4),$STR,$AGI)}
 
 Name             : Severed Strands (id=462513) 
 School           : Physical
@@ -256610,7 +256607,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Cast When Learned (63), No Target Aura Icon (188), No Aura Log (202)
+Attributes       : No Aura Cancel (31), Cast When Learned (63), Can Proc From Procs (122), No Target Aura Icon (188), No Aura Log (202), Aura Points On Client (268)
 Effects          :
 #1 (id=1196453)  : Apply Aura (6) | Proc Trigger Spell (42): Porcelain Arrowhead Idol
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 458441 | Target: Self (1)
@@ -257655,6 +257652,7 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
+                 : 5268
 Triggered By     : Impact Conversion Matrix (467029), Impact Conversion Matrix (1215861), Impact Conversion Matrix (1215863)
 Attributes       : Aura Unique (43), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), No Target Aura Icon (188), Aura Points On Client (268)
 Effects          :
@@ -259869,12 +259867,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1221145
 Description      : $@spelldesc1219102
 
-Name             : Feeling Lucky (id=1221429) [Passive, Hidden] 
+Name             : Feeling Lucky (id=1221429) [Hidden] 
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : Proc on jump
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Aura Required by Client (262), Don't Cancel When All Effects are Disabled (353), Do Not Re-apply Area Aura if it Persists Through Update (391)
+Triggered By     : Feeling Lucky (1243749)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Aura Required by Client (262), Don't Cancel When All Effects are Disabled (353), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Effects          :
 #1 (id=1208054)  : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1056 | Target: Self (1)
@@ -261150,7 +261150,7 @@ Spell Type       : None
 Velocity         : 10 yards/sec
 Duration         : 30 seconds
 Labels           : 4874
-Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Aura Icon (60), Allow Cast While Casting (135), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
+Attributes       : Cancels Auto Attack Combat (20), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Force Display Castbar (155), No Cooldown On Tooltip (192), No Aura Log (202), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1223435)  : Trigger Spell (64): Recuperate
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1231418 | Target: Self (1)
@@ -261405,7 +261405,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1231808)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolts
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236110 | Target: Self (1)
@@ -261478,7 +261478,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1231826)  : Apply Aura (6) | Proc Trigger Spell (42): Cauterizing Bolts
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236118 | Target: Self (1)
@@ -261649,7 +261649,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : Cast Successful
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232105)  : Apply Aura (6) | Proc Trigger Spell (42): Critical Overload
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236940 | Target: Self (1)
@@ -261662,7 +261662,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : Cast Successful
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232106)  : Apply Aura (6) | Proc Trigger Spell (42): Spark Burst
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236936 | Target: Self (1)
@@ -261676,7 +261676,7 @@ Internal Cooldown: 29 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232108)  : Apply Aura (6) | Proc Trigger Spell (42): Static Charge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236938 | Target: Self (1)
@@ -261686,7 +261686,7 @@ Name             : Electric Current (id=1236276) [Hidden]
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Aura Points On Client (268), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232109)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -261699,7 +261699,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Aura Points On Client (268), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232110)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -261712,7 +261712,7 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Aura Points On Client (268), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232111)  : Apply Aura (6) | Proc Trigger Spell (42): Energy Shield
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236993 | Target: Self (1)
@@ -261996,5 +261996,14 @@ Effects          :
 #1 (id=1240134)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
 Description      : Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. 
+
+Name             : Feeling Lucky (id=1243749) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Aura Required by Client (262), Don't Cancel When All Effects are Disabled (353), Do Not Re-apply Area Aura if it Persists Through Update (391)
+Effects          :
+#1 (id=1244138)  : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1221429 | Target: Self (1)
+Tooltip          : You now flip on every jump! Yay!
 
 
