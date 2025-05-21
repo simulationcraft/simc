@@ -3163,6 +3163,7 @@ Arcane damage increased by $w14%.][]$?$w7>0[
 Immune to effects that cause loss of control of your character.][]
 
 Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
+Hotfixed         : Category Flags (16 -> 144)
 Replaces         : Celestial Alignment (id=194223)
 Class            : Druid
 School           : Physical
@@ -3172,7 +3173,7 @@ Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5647,6 +5648,7 @@ Description      : Call down a burst of energy, causing $s1 Arcane damage to the
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
+Hotfixed         : Category Flags (16 -> 144)
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -5655,7 +5657,7 @@ Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -12715,6 +12717,7 @@ Effects          :
 Description      : Maximum Energy increased by $s1 and Energy regeneration increased by $s2%.
 
 Name             : Celestial Alignment (id=383410) [Spell Family (7)] 
+Hotfixed         : Category Flags (16 -> 144)
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -12724,7 +12727,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -12874,6 +12877,7 @@ Reduces the cooldown of $?s102560[Incarnation: Chosen of Elune][Celestial Alignm
 Variables        : $mastery=${(1+$393014s1/100)*(1+$393014s3/100)}
 
 Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=390414) [Spell Family (7)] 
+Hotfixed         : Category Flags (16 -> 144)
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -12883,7 +12887,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
