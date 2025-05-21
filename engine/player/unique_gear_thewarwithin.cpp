@@ -574,27 +574,14 @@ void twilight_devastation( special_effect_t& effect )
       aoe = 10;
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    double composite_aoe_multiplier( const action_state_t* s ) const override
     {
-      double m = generic_proc_t::composite_da_multiplier( s );
+      double m = generic_proc_t::composite_aoe_multiplier( s );
 
-      m *= current_mult;
+      if ( s->chain_target > 0 )
+        m *= pow( 0.65, s->chain_target );
 
       return m;
-    }
-
-    void execute() override
-    {
-      current_mult = 1.0;
-      generic_proc_t::execute();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      if ( s->chain_target >= 1 )
-        current_mult *= 0.65;
-
-      generic_proc_t::impact( s );
     }
   };
 
