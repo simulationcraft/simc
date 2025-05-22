@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60915 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61032 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue

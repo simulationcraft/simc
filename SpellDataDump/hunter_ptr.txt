@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.60915 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61032 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
