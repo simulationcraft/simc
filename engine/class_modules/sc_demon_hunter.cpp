@@ -6551,6 +6551,11 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
       amount *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
     }
 
+    // Currently double dips off Demon Hide
+    if ( p()->bugs && p()->talent.havoc.demon_hide->ok() )
+    {
+      amount *= 1.0 + p()->talent.havoc.demon_hide->effectN( 1 ).percent();
+    }
     return amount;
   }
 };
@@ -6573,7 +6578,12 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
   {
     double amount = base_t::base_ta( s );
 
-    if ( s->target->debuffs.chaos_brand->up() )
+    // Burning Blades is supposed to benefit off Chaos Brand through a server side script,
+    // but this only happens off pure auto attack and throw glaive refreshes. Refreshing
+    // or applying burning blades with chaos strike does not all burning blades and any
+    // future refreshes to benefit from chaos brand, although this is somewhat inconsisent.
+
+    if ( !p()->bugs && s->target->debuffs.chaos_brand->up() )
     {
       amount *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
     }
