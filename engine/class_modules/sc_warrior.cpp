@@ -927,9 +927,6 @@ public:
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
   double composite_mastery() const override;
-  double composite_damage_versatility() const override;
-  double composite_heal_versatility() const override;
-  double composite_mitigation_versatility() const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
@@ -9926,39 +9923,6 @@ double warrior_t::composite_mastery() const
   return y;
 }
 
-// warrior_t::composite_damage_versatility =============================================
-
-double warrior_t::composite_damage_versatility() const
-{
-  double cdv = parse_player_effects_t::composite_damage_versatility();
-
-  cdv += talents.arms.valor_in_victory->effectN( 1 ).percent();
-
-  return cdv;
-}
-
-// warrior_t::composite_heal_versatility ==============================
-
-double warrior_t::composite_heal_versatility() const
-{
-  double chv = parse_player_effects_t::composite_heal_versatility();
-
-  chv += talents.arms.valor_in_victory->effectN( 1 ).percent();
-
-  return chv;
-}
-
-// warrior_t::composite_mitigation_versatility ========================
-
-double warrior_t::composite_mitigation_versatility() const
-{
-  double cmv = parse_player_effects_t::composite_mitigation_versatility();
-
-  cmv += talents.arms.valor_in_victory->effectN( 1 ).percent();
-
-  return cmv;
-}
-
 // warrior_t::composite_attribute ================================
 
 double warrior_t::composite_attribute( attribute_e attr ) const
@@ -10472,6 +10436,7 @@ void warrior_t::parse_player_effects()
     parse_effects( buff.in_for_the_kill, USE_CURRENT );
     parse_effects( buff.pay_them_back );
     parse_effects( talents.arms.critical_thinking );
+    parse_effects( talents.arms.valor_in_victory );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
