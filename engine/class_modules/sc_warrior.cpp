@@ -918,7 +918,6 @@ public:
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
@@ -9907,14 +9906,6 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
   }
 
   return m;
-}
-
-// warrior_t::composite_player_target_crit_chance =============================
-
-double warrior_t::composite_player_target_crit_chance( player_t* target ) const
-{
-  double c = parse_player_effects_t::composite_player_target_crit_chance( target );
-  return c;
 }
 
 // warrior_t::composite_mastery =============================================
