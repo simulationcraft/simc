@@ -5467,7 +5467,8 @@ Family Flags     : 0, 18
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0608 | PvP Coefficient: 1.4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0608 | PvP Coefficient: 1.61 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.4 -> 1.61)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -17415,9 +17416,10 @@ Effects          :
                    Affected Spells: Entangling Roots (339), Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2, 9
 #2 (id=1113724)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
+Hotfixed         : PvP Coefficient (1 -> 0.25)
 Description      : $@spelldesc429433
 Tooltip          : Your next Wrath, Starfire, or Entangling Roots is instant and deals $w2% increased damage.
 

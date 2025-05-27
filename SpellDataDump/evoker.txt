@@ -682,13 +682,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
+Hotfixed         : Base Value (5 -> 9), PvP Coefficient (1 -> 0.5556)
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
+Hotfixed         : Base Value (5 -> 9), PvP Coefficient (1 -> 0.5556)
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
@@ -1721,9 +1723,11 @@ Family Flags     : 1, 7, 22
 Attributes       : Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=899463)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.588 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.66 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (3.588 -> 4.66)
 #2 (id=907224)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.13 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (0.1 -> 0.13)
 Description      : $@spelldesc361469
 Tooltip          : Healing for $w2 every $t2 sec.
 
@@ -2158,7 +2162,8 @@ Family Flags     : 1, 2, 3, 11, 38
 Attributes       : Not Shapeshifted (16), Aura Expires Offline (130), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904256)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (1.2 -> 2.4)
 #2 (id=904257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Friendly (21)
 Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next healing spell to cast an additional time on that ally at $s2% of normal healing. Essence spells cannot be Echoed.
@@ -2417,7 +2422,8 @@ Family Flags     : 1, 27
 Attributes       : No Aura Icon (60), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.32 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.78 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (7.32 -> 8.78)
 #2 (id=915159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=982930)   : Dummy (3)
@@ -2437,7 +2443,8 @@ Family Flags     : 1, 27
 Attributes       : Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910754)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.32 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.78 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (7.32 -> 8.78)
 #2 (id=1017326)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc367226
@@ -12261,9 +12268,10 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1155672)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Upheaval (396288)
                    Family Flags: 58
+Hotfixed         : Base Value (30 -> 15)
 #2 (id=1160139)  : Apply Aura (6) | Proc Trigger Spell (42): Volcanic Upsurge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 456142 | Target: Self (1)
 Description      : Upheaval deals $s1% increased damage and increases the damage of your next $456142u Eruption casts by $456142s1%.
@@ -12406,9 +12414,10 @@ Triggered By     : Evoker Augmentation 11.0 Class Set 2pc (453672)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
+Hotfixed         : Base Value (30 -> 15)
 Description      : $@spelldesc453672
 Tooltip          : Eruption damage increased by $w1%.
 

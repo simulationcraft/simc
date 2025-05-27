@@ -2611,9 +2611,10 @@ Effects          :
 #7 (id=260878)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
 #8 (id=260879)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Explosive Shot (212680), Explosive Shot (269850)
                    Family Flags: 73
+Hotfixed         : Base Value (5 -> 20)
 #9 (id=260880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
@@ -4221,7 +4222,8 @@ Family Flags     : 101, 106
 Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.375 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
+Hotfixed         : AP Coefficient (1.9 -> 2.375)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 

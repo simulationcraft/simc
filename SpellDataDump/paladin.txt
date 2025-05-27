@@ -15596,6 +15596,10 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Dawnlight (431380), Dawnlight (431381)
                    Family Flags: 1
+#21 (id=1240022) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 5328 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sacred Word (447246)
+Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
@@ -17093,7 +17097,8 @@ Family Flags     : 41, 46
 Attributes       : Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1123227)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | AP Coefficient: 2 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | AP Coefficient: 2.4 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+Hotfixed         : SP Coefficient (2 -> 2.4), AP Coefficient (2 -> 2.4)
 Description      : $@spelldesc433718
 
 Name             : Light's Deliverance (id=433732) [Spell Family (10)] 
@@ -17445,6 +17450,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3465
+                 : 5328: Holy Paladin (428076 effect#21)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)

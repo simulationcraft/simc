@@ -9392,7 +9392,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012995)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 2.4 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 3.6 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : PvP Coefficient (2.4 -> 3.6)
 #2 (id=1092655)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Stamina increased by $<stam>%.
