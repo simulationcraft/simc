@@ -926,7 +926,6 @@ public:
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_mastery() const override;
   double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
@@ -9905,24 +9904,6 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
   return m;
 }
 
-// warrior_t::composite_mastery =============================================
-
-double warrior_t::composite_mastery() const
-{
-  double y = parse_player_effects_t::composite_mastery();
-
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    y += talents.arms.deft_experience->effectN( 1 ).base_value();
-  }
-  else
-  {
-    y += talents.fury.deft_experience->effectN( 1 ).base_value();
-  }
-
-  return y;
-}
-
 // warrior_t::composite_attribute ================================
 
 double warrior_t::composite_attribute( attribute_e attr ) const
@@ -10437,6 +10418,7 @@ void warrior_t::parse_player_effects()
     parse_effects( buff.pay_them_back );
     parse_effects( talents.arms.critical_thinking );
     parse_effects( talents.arms.valor_in_victory );
+    parse_effects( talents.arms.deft_experience, talents.arms.deft_experience->effectN( 1 ).base_value() );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
@@ -10449,6 +10431,7 @@ void warrior_t::parse_player_effects()
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
 
     parse_effects( talents.fury.critical_thinking );
+    parse_effects( talents.fury.deft_experience );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
