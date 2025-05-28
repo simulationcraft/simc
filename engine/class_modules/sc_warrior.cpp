@@ -4474,7 +4474,11 @@ struct thunder_blast_t : public warrior_attack_t
           state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
       // Seismic Reverb deals 70% reduced Thunder Blast damage, despite only listing Whirlwind/Cleave as affected spells
-      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
+      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
+      if ( p()->bugs )
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
+      else
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
       seismic_action->execute_on_target( target );
     }
   }
@@ -4665,7 +4669,11 @@ struct thunder_clap_t : public warrior_attack_t
           state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
       // Seismic Reverb deals 70% reduced Thunder Clap damage, despite only listing Whirlwind/Cleave as affected spells
-      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
+      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
+      if ( p()->bugs )
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
+      else
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
       seismic_action->execute_on_target( target );
     }
   }
