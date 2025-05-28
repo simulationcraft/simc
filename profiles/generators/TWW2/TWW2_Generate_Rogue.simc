@@ -32,24 +32,24 @@ race=dwarf
 role=attack
 position=back
 spec=outlaw
-talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAM2mxMjZMzMzYYGGjZMMzMz0yMmtZAAAAAAw2yMzgZmxCsMbDAAAAzMADsBzY0Y2AsNhFzA
+talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAM2mZmZMjZYGDzwgZMzMmZmWmxsMDAAAAAA22mZmhZmxCsMLDAAAAzMDAGzmhhMwswCtwmB
 
-head=spectral_gamblers_damned_visage,id=229289,bonus_id=1527/11996,gem_id=213743
-neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/10878/12043/12040/1485/10520/8960,crafted_stats=40/36,gem_id=213467/213497
-shoulder=spectral_gamblers_bladed_mantle,bonus_id=1527/11996,id=229287
-back=trashmasters_mantle,id=199921,bonus_id=10067/11996/11964,ilevel=678
-chest=seraphic_wraps_of_the_ordained,id=221130,bonus_id=10067/11996/11964,enchant=crystalline_radiance_3,ilevel=678
-wrist=servoarm_bindings,id=158353,bonus_id=10067/11996/11964,gem_id=213485,ilevel=678
-hands=spectral_gamblers_gloves,id=229290,bonus_id=1527/11996
-waist=hitmans_holster,id=228880,bonus_id=1527/11996,gem_id=213485
-legs=spectral_gamblers_pantaloons,id=229288,bonus_id=1527/11996,enchant=stormbound_armor_kit_3
-feet=dragsters_last_stride,id=228876,bonus_id=10067/11996/11964,ilevel=678
-finger1=miniature_roulette_wheel,id=228843,bonus_id=1527/11996/11964/8781,enchant=cursed_versatility_3,gem_id=213485/213485,crafted_stats=40/36
-finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10878/12043/12040/1485/10520/8960,enchant=cursed_versatility_3,gem_id=213485/213461,crafted_stats=32/40
-trinket1=junkmaestros_mega_magnet,id=230189,bonus_id=1527/11996
-trinket2=zees_thug_hotline,id=230199,bonus_id=1527/11996
-main_hand=gallywixs_iron_thumb,id=228899,bonus_id=1527/11996,enchant=authority_of_the_depths_3
-off_hand=capos_molten_knuckles,id=232804,bonus_id=1527/11996,enchant=authority_of_the_depths_3
+head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,enchant_id=7927,gem_id=213743,ilevel=684
+neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/8792/8781/10520/8960,gem_id=213461/213461,ilevel=681
+shoulder=spectral_gamblers_bladed_mantle,id=229287,ilevel=684
+back=trashmasters_mantle,id=199921,ilevel=684
+chest=seraphic_wraps_of_the_ordained,id=221130,enchant_id=7364,ilevel=684
+wrist=killer_queens_wristflickers,id=228869,bonus_id=1808,gem_id=213461,ilevel=684
+hands=spectral_gamblers_gloves,id=229290,ilevel=684
+waist=spectral_gamblers_pocket_ace,id=229286,bonus_id=1808,gem_id=213461,ilevel=684
+legs=spectral_gamblers_pantaloons,id=229288,enchant_id=7654,ilevel=684
+feet=spectral_gamblers_cavaliers,id=229291,ilevel=684
+finger1=miniature_roulette_wheel,id=228843,bonus_id=1533/12376/11964,crafted_stats=40/32,enchant_id=7352,gem_id=213461/213461
+finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/8792/8781/10520/8960,enchant_id=7352,gem_id=213461/213461,ilevel=681
+trinket1=zees_thug_hotline,id=230199,ilevel=684
+trinket2=junkmaestros_mega_magnet,id=230189,ilevel=684
+main_hand=gallywixs_iron_thumb,id=228899,enchant_id=7460,ilevel=684
+off_hand=capos_molten_knuckles,id=232804,enchant_id=7460,ilevel=684
 
 save=TWW2_Rogue_Outlaw.simc
 
