@@ -61,21 +61,21 @@ position=back
 spec=subtlety
 talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAgZZMWmGzYMmxYMjHYmZmhxsNMzMbbzMjZmZAjlZbAAAAYGMAGzmhBGYW0CtYDG
 
-head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=678,gem_id=213743
-neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=678,gem_id=213461/213461
-shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=675
-chest=spectral_gamblers_vest,id=229292,ilevel=678,enchant_id=7364
-wrists=hustlers_anteuppers,id=228885,bonus_id=1808,ilevel=678,gem_id=213473
-hands=enforcers_sticky_fingers,id=228863,ilevel=678
-waist=competitors_battle_cord,id=228856,bonus_id=1808,ilevel=678,gem_id=213473
-legs=spectral_gamblers_pantaloons,id=229288,ilevel=678,enchant_id=7601
-feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=675
-finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213473/213473,enchant_id=7352
-finger2=ritual_bone_band,id=178870,bonus_id=8781,ilevel=678,gem_id=213497/213497,enchant_id=7352
-trinket1=zees_thug_hotline,id=230199,ilevel=678
-trinket2=house_of_cards,id=230027,ilevel=678
-main_hand=pyrotechnic_needledropper,id=228897,ilevel=678,enchant_id=7460
-off_hand=pyrotechnic_needledropper,id=228897,ilevel=678,enchant_id=7460
+head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=684,gem_id=213743,enchant_id=7927
+neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=684,gem_id=213473/213473
+shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=681
+chest=spectral_gamblers_vest,id=229292,ilevel=684,enchant_id=7364
+wrists=hustlers_anteuppers,id=228885,bonus_id=1808,ilevel=684,gem_id=213473
+hands=enforcers_sticky_fingers,id=228863,ilevel=684
+waist=competitors_battle_cord,id=228856,bonus_id=1808,ilevel=684,gem_id=213473
+legs=spectral_gamblers_pantaloons,id=229288,ilevel=684,enchant_id=7601
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=681
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=684,gem_id=213473/213473,enchant_id=7352
+finger2=ritual_bone_band,id=178870,bonus_id=8781,ilevel=684,gem_id=213473/213473,enchant_id=7352
+trinket1=house_of_cards,id=230027,ilevel=684
+trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=1520/12376/11964
+main_hand=pyrotechnic_needledropper,id=228897,ilevel=684,enchant_id=7463
+off_hand=pyrotechnic_needledropper,id=228897,ilevel=684,enchant_id=7463
 
 save=TWW2_Rogue_Subtlety.simc
