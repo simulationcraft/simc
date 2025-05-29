@@ -948,6 +948,8 @@ public:
   void create_options() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
+  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                          const assisted_combat_step_data_t& step ) const override;
   std::string default_potion() const override { return mage_apl::potion( this ); }
   std::string default_flask() const override { return mage_apl::flask( this ); }
   std::string default_food() const override { return mage_apl::food( this ); }
@@ -8899,6 +8901,21 @@ void mage_t::init_blizzard_action_list()
     default:
       break;
   }
+}
+
+std::string mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                const assisted_combat_step_data_t& step ) const
+{
+  if ( rule.condition_type == TARGET_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
+  {
+    if ( bugs )
+      // Right now, this will never trigger because it checks for Arcane Harmony stacks on the target.
+      return "0";
+
+    return fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 );
+  }
+
+  return player_t::parse_assisted_combat_rule( rule, step );
 }
 
 double mage_t::resource_regen_per_second( resource_e rt ) const

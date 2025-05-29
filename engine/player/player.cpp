@@ -3594,10 +3594,10 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
     case MANA_GREATER:
       assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "mana.pct>={}", v1 ); // TODO: Is this correct?
+      return fmt::format( "mana.pct>={}", v1 / 10.0 ); // TODO: Double check this
     case MANA_LESS:
       assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "mana.pct<={}", v1 ); // TODO: Is this correct?
+      return fmt::format( "mana.pct<={}", v1 / 10.0 ); // TODO: Double check this
     case RAGE_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rage>={}", v1 ); // TODO: Does this need a multiplier?
