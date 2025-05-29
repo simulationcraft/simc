@@ -3494,6 +3494,7 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
   switch ( rule.condition_type )
   {
     case SPELL_LEARNED:
+      assert( v2 == 0 && v3 == 0 );
       if ( v1 )
       {
         for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
@@ -3507,39 +3508,50 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       }
       return "";
     case SPELL_ON_COOLDOWN:
+      assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "!cooldown.{}.ready", tokenize_spell( v1 ) );
       return "";
     case SPELL_OFF_COOLDOWN:
+      assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "cooldown.{}.ready", tokenize_spell( v1 ) );
       return "";
     case TARGET_DISTANCE_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance<{}", v1 );
     case TARGET_DISTANCE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance>{}", v1 );
     case HOSTILE_TARGET:
     case FRIENDLY_TARGET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "";
     case HEALTH_PCT_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.health.pct>={}", v1 );
     case HEALTH_PCT_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.health.pct<={}", v1 );
     case AURA_ON_PLAYER:
+      assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where a passive here would not be a talent?
       if ( expr_str.find( "talent." ) == 0 )
         return expr_str;
       return fmt::format( "{}.up", expr_str );
     case AURA_ON_TARGET:
+      assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "{}.ticking", expr_str );
       return fmt::format( "{}.up", expr_str );
     case TARGET_COUNT_NEAR_TARGET_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies>{}", v1 );
     case TARGET_COUNT_NEAR_PLAYER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies>{}", v1 );
     case AURA_COUNT_NEAR_PLAYER_GREATER:
@@ -3551,94 +3563,131 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       // TODO: support debuffs
       throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_GREATER." );
     case AFFORD_COST:
+      assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         // TODO: implement this expression
         return fmt::format( "action.{}.cost_affordable", tokenize_spell( v1 ) );
       return "";
     case AURA_MISSING_TARGET:
+      assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "!{}.ticking", expr_str );
       return fmt::format( "{}.down", expr_str );
     case AURA_MISSING_PLAYER:
+      assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where a passive here would not be a talent?
       if ( expr_str.find( "talent." ) == 0 )
         return "!" + expr_str;
       return fmt::format( "{}.down", expr_str );
     case AURA_DURATION_PLAYER:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where these would be talents we should worry about?
       if ( expr_str.find( "talent." ) == 0 )
         throw std::runtime_error( fmt::format( "Talents are unsupported for assisted combat condition AURA_DURATION_PLAYER.", rule.condition_type ) );
       return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
     case AURA_DURATION_TARGET:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
     case MANA_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "mana.pct>={}", v1 ); // TODO: Is this correct?
     case MANA_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "mana.pct<={}", v1 ); // TODO: Is this correct?
     case RAGE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rage>={}", v1 ); // TODO: Does this need a multiplier?
     case RAGE_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rage<={}", v1 ); // TODO: Does this need a multiplier?
     case FOCUS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "focus>={}", v1 );
     case FOCUS_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "focus<={}", v1 );
     case ENERGY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "energy>={}", v1 );
     case ENERGY_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "energy<={}", v1 );
     case COMBO_POINTS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "combo_points>={}", v1 );
     case COMBO_POINTS_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "combo_points<={}", v1 );
     case RUNES_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rune>={}", v1 );
     case RUNES_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "rune<={}", v1 );
     case RUNIC_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "runic_power>={:g}", v1 / 10.0 );
     case RUNIC_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "runic_power<={:g}", v1 / 10.0 );
     case SOUL_SHARDS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "soul_shard>={:g}", v1 / 10.0 );
     case SOUL_SHARDS_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "soul_shard<={:g}", v1 / 10.0 );
     case LUNAR_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "astral_power>={:g}", v1 / 10.0 );
     case LUNAR_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "astral_power<={:g}", v1 / 10.0 );
     case HOLY_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "holy_power>={}", v1 );
     case HOLY_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "holy_power<={}", v1 );
     case MAELSTROM_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "maelstrom>={}", v1 );
     case MAELSTROM_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "maelstrom<={}", v1 );
     case CHI_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "chi>={}", v1 );
     case CHI_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "chi<={}", v1 );
     case INSANITY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "insanity>={:g}", v1 / 100.0 );
     case INSANITY_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "insanity<={:g}", v1 / 100.0 );
     case ESSENCE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "essence>={}", v1 );
     case ESSENCE_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "essence<={}", v1 );
     case ARCANE_CHARGES_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "buff.arcane_charge.stack>={}", v1 );
     case ARCANE_CHARGES_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "buff.arcane_charge.stack<={}", v1 );
     case TARGET_COUNT_NEAR_TARGET_LESS:
+      assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies<={}", v1 );
     case TARGET_COUNT_NEAR_PLAYER_LESS:
+      assert( v3 == 0 );
       // TODO: add distance targeting
       return fmt::format( "active_enemies<={}", v1 );
     case AURA_COUNT_NEAR_PLAYER_LESS:
@@ -3649,32 +3698,43 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       // TODO: support debuffs
       throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_LESS." );
     case TARGET_AURA_APPLICATION_GREATER:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.stack>={}", expr_str, v2 );
     case TARGET_AURA_APPLICATION_LESS:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
       return fmt::format( "{}.stack<={}", expr_str, v2 );
     case PLAYER_AURA_APPLICATION_GREATER:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       return fmt::format( "{}.stack>={}", expr_str, v2 );
     case PLAYER_AURA_APPLICATION_LESS:
+      assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       return fmt::format( "{}.stack<={}", expr_str, v2 );
     case SPELL_IN_RANGE:
+      assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
       return "spell_targets>0";
     case HAS_PET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "pet.any.active";
     case HAS_NO_PET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "!pet.any.active";
     case FURY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "fury>={}", v1 );
     case FURY_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "fury<={}", v1 );
     case PAIN_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "pain>={}", v1 );
     case PAIN_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "pain<={}", v1 );
     case SPELL_CHARGES_GREATER:
       assert( v2 == 0 && v3 == 0 );
@@ -3683,15 +3743,20 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "charges<={}", v1 );
     case COOLDOWN_REMAINING_GREATER:
+      assert( v3 == 0 );
       return fmt::format( "cooldown.{}.remains>={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
     case COOLDOWN_REMAINING_LESS:
+      assert( v3 == 0 );
       return fmt::format( "cooldown.{}.remains<={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
     case COOLDOWN_ALLOW_CASTING_SUCCESS:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
       // TODO: figure out exactly what this does and implement it if necessary
       return "";
     case PLAYER_HEALTH_PCT_GREATER:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct>={}", v1 );
     case PLAYER_HEALTH_PCT_LESS:
+      assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct<={}", v1 );
     default:
       throw std::runtime_error( fmt::format( "unknown assisted combat condition type '{}'", rule.condition_type ) );
