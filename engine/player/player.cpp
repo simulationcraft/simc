@@ -3677,9 +3677,11 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
     case PAIN_LESS:
       return fmt::format( "pain<={}", v1 );
     case SPELL_CHARGES_GREATER:
-      return fmt::format( "action.{}.charges>={}", tokenize_spell( v1 ), v2 );
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "charges>={}", v1 );
     case SPELL_CHARGES_LESS:
-      return fmt::format( "action.{}.charges<={}", tokenize_spell( v1 ), v2 );
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "charges<={}", v1 );
     case COOLDOWN_REMAINING_GREATER:
       return fmt::format( "cooldown.{}.remains>={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
     case COOLDOWN_REMAINING_LESS:
