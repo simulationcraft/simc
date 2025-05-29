@@ -3665,10 +3665,8 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
         return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
       return "spell_targets>0";
     case HAS_PET:
-      // TODO: implement this expression or let class modules override it
       return "pet.any.active";
     case HAS_NO_PET:
-      // TODO: implement this expression or let class modules override it
       return "!pet.any.active";
     case FURY_GREATER:
       return fmt::format( "fury>={}", v1 );
@@ -3687,7 +3685,12 @@ std::string player_t::parse_assisted_combat_rule( const assisted_combat_rule_dat
     case COOLDOWN_REMAINING_LESS:
       return fmt::format( "cooldown.{}.remains<={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
     case COOLDOWN_ALLOW_CASTING_SUCCESS:
-      throw std::runtime_error( "Assisted combat condition COOLDOWN_ALLOW_CASTING_SUCCESS it not supported." );
+      // TODO: figure out exactly what this does and implement it if necessary
+      return "";
+    case PLAYER_HEALTH_PCT_GREATER:
+      return fmt::format( "health.pct>={}", v1 );
+    case PLAYER_HEALTH_PCT_LESS:
+      return fmt::format( "health.pct<={}", v1 );
     default:
       throw std::runtime_error( fmt::format( "unknown assisted combat condition type '{}'", rule.condition_type ) );
   }

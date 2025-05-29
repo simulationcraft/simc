@@ -1482,6 +1482,8 @@ enum assisted_combat_rule_e : unsigned
   COOLDOWN_REMAINING_GREATER       = 65,
   COOLDOWN_REMAINING_LESS          = 66,
   COOLDOWN_ALLOW_CASTING_SUCCESS   = 67,
+  PLAYER_HEALTH_PCT_GREATER        = 68,
+  PLAYER_HEALTH_PCT_LESS           = 69,
 };
 
 #endif
