@@ -8908,6 +8908,7 @@ std::string mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_
 {
   if ( rule.condition_type == TARGET_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
   {
+    assert( rule.condition_value_3 == 0 );
     if ( bugs )
       // Right now, this will never trigger because it checks for Arcane Harmony stacks on the target.
       return "0";
