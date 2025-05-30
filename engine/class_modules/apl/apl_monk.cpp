@@ -7,6 +7,7 @@
 struct player_t;
 using monk::monk_t;
 
+// Per Specialization Defaults
 namespace
 {
 namespace brewmaster
@@ -847,6 +848,106 @@ void default_apl( monk_t* player )
 };  // namespace windwalker
 };  // namespace
 
+// Shared Defaults
+namespace monk
+{
+void monk_t::validate_actor()
+{
+  if ( specialization() == MONK_MISTWEAVER && !sim->allow_experimental_specializations )
+  {
+    if ( !quiet )
+      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
+    quiet = true;
+    return;
+  }
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
+    quiet = true;
+    return;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
+    quiet = true;
+    return;
+  }
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+    case MONK_MISTWEAVER:
+    case MONK_WINDWALKER:
+      return;
+    default:
+      sim->error( "No specialization was selected for {}.", *this );
+      quiet = true;
+      return;
+  }
+}
+
+void monk_t::init_blizzard_action_list()
+{
+  validate_actor();
+
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+    case MONK_MISTWEAVER:
+    case MONK_WINDWALKER:
+      default_->add_action( "auto_attack", "Overridden" );
+      break;
+    default:
+      assert( false );
+      break;
+  }
+
+  base_t::init_blizzard_action_list();
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      cooldowns->add_action( "weapons_of_order" );
+      cooldowns->add_action( "invoke_niuzao_the_black_ox" );
+      break;
+    case MONK_MISTWEAVER:
+      break;
+    case MONK_WINDWALKER:
+      cooldowns->add_action( "invoke_xuen_the_white_tiger" );
+      cooldowns->add_action( "celestial_conduit,if=cooldown.strike_of_the_windlord.remains" );
+      break;
+    default:
+      assert( false );
+      break;
+  }
+}
+
+std::string monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                const assisted_combat_step_data_t& step ) const
+{
+  if ( step.spell_id == 152175 && rule.condition_type == TARGET_DISTANCE_LESS )
+  {
+    assisted_combat_rule_data_t rule_copy = rule;
+    rule_copy.condition_value_1           = 10;
+
+    return base_t::parse_assisted_combat_rule( rule_copy, step );
+  }
+
+  if ( step.spell_id == 205523 && rule.condition_type == AURA_ON_PLAYER )
+    return "";
+
+  return base_t::parse_assisted_combat_rule( rule, step );
+}
+};  // namespace monk
+
 namespace monk
 {
 std::string monk_t::default_potion() const
@@ -926,29 +1027,7 @@ std::string monk_t::default_temporary_enchant() const
 
 void monk_t::init_action_list()
 {
-  if ( specialization() == MONK_MISTWEAVER && !sim->allow_experimental_specializations )
-  {
-    if ( !quiet )
-      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
-    quiet = true;
-    return;
-  }
-
-  if ( main_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( !quiet )
-      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
-    quiet = true;
-    return;
-  }
-
-  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
-    quiet = true;
-    return;
-  }
+  validate_actor();
 
   if ( action_list_str.empty() )
   {
@@ -966,9 +1045,8 @@ void monk_t::init_action_list()
         windwalker::default_apl( this );
         break;
       default:
-        sim->error( "No default apl can be provided as no specialization was selected for {}.", *this );
-        quiet = true;
-        return;
+        assert( false );
+        break;
     }
 
     use_default_action_list = true;

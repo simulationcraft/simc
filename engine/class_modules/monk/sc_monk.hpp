@@ -1399,6 +1399,11 @@ public:
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void validate_actor();
+  bool validate_fight_style( fight_style_e style ) const override;
+  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
+                                          const assisted_combat_step_data_t &step ) const override;
 
   // Init / Reset
   void create_pets() override;
@@ -1432,7 +1437,6 @@ public:
   // Stats
   role_e primary_role() const override;
   resource_e primary_resource() const override;
-  bool validate_fight_style( fight_style_e style ) const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
