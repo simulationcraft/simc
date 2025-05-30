@@ -4,7 +4,6 @@
 
 #include <string>
 
-struct player_t;
 using monk::monk_t;
 
 // Per Specialization Defaults
