@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2614,7 +2614,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Explosive Shot (212680), Explosive Shot (269850)
                    Family Flags: 73
-Hotfixed         : Base Value (5 -> 20)
 #9 (id=260880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
@@ -4223,7 +4222,6 @@ Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Not 
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.375 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
-Hotfixed         : AP Coefficient (1.9 -> 2.375)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -5301,7 +5299,6 @@ Effects          :
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -13028,7 +13025,6 @@ Effects          :
 Description      : $@spelldesc34026
 
 Name             : Hunter's Mark (id=428402) [Spell Family (9), Hidden] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : None

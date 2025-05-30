@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1110,7 +1110,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=36871)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
@@ -2694,7 +2693,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Whirlwind (411547)
                    Family Flags: 34
-Hotfixed         : NEW EFFECT
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior
@@ -2744,7 +2742,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 15 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-Hotfixed         : PvP Coefficient (27 -> 15)
 #13 (id=261054)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 3306 (Label) | Target: Self (1)
                    Affected Spells (Label): Colossal Might (440989)
@@ -2815,7 +2812,6 @@ Effects          :
                    Base Value: 146 | Scaled Value: 146 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
-Hotfixed         : Base Value (117 -> 146)
 #11 (id=1155238) : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
@@ -3499,7 +3495,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=293808)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.62996 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.31498 -> 0.62996)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3517,7 +3512,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=293819)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
@@ -3535,7 +3529,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=294125)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.62996 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.31498 -> 0.62996)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind Off-Hand (id=199851) [Spell Family (4)] 
@@ -3554,7 +3547,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=294127)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199852) [Spell Family (4)] 
@@ -3573,7 +3565,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=294129)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Tactician (id=199854) [Spell Family (4)] 
@@ -10381,10 +10372,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018080)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.82598 | PvP Coefficient: 0.8 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.4046 -> 1.82598)
 #2 (id=1018081)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.533048 | PvP Coefficient: 0.8 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.410037 -> 0.533048)
 Description      : $@spelldesc385059
 Tooltip          : Suffering $o3 Physical damage over $d.
 
@@ -10404,7 +10393,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018083)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.82598 | PvP Coefficient: 0.8 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.4046 -> 1.82598)
 Description      : $@spelldesc385059
 
 Name             : Odyn's Fury (id=385062) [Spell Family (4)] 
@@ -10423,7 +10411,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018088)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.82598 | PvP Coefficient: 0.8 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.4046 -> 1.82598)
 Description      : $@spelldesc385059
 Tooltip          : Suffering $o3 Physical damage over $d.
 
@@ -10442,7 +10429,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018337)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.62996 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.31498 -> 0.62996)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=385233) [Spell Family (4)] 
@@ -10461,7 +10447,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018344)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind Off-Hand (id=385234) [Spell Family (4)] 
@@ -10480,7 +10465,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1018345)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.38181 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.17355 -> 0.38181)
 Description      : $@spelldesc190411
 
 Name             : Spell Reflection (id=385391) [Spell Family (4)] 
@@ -11255,7 +11239,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.380931 | PvP Coefficient: 1.3225 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.15 -> 1.3225)
 Description      : $@spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -12179,7 +12162,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222674)  : Dummy (3)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.7 -> 0.25)
 Description      : $@spelldesc64382
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -12203,7 +12185,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6 | Target: Enemy (6)
 #3 (id=1222647)  : Dummy (3)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.7 -> 0.25)
 Description      : $@spelldesc384110
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 
@@ -12762,7 +12743,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1078200)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.62996 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.31498 -> 0.62996)
 Description      : $@spelldesc1680
 
 Name             : Crushing Advance (id=411703) [Spell Family (4)] 

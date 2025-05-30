@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3537,7 +3537,6 @@ Effects          :
 #25 (id=1246028) : Apply Party Aura (35) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 5326 (Label) | Target: Self (1)
                    Affected Spells (Label): Ruination (434636)
-Hotfixed         : NEW EFFECT
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock
@@ -5153,7 +5152,6 @@ Effects          :
                    Family Flags: 13
 #4 (id=1104809)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.3 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : Your Soul Leech absorption now passively recharges at a rate of ${$s1/10}.1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.
 
 Increases your armor by $m4%.
@@ -12744,7 +12742,6 @@ Effects          :
 Description      : Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.
 
 Name             : Crashing Chaos (id=417282) [Spell Family (5)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -13562,7 +13559,6 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Havoc (80240), Bane of Havoc (200546), Bane of Havoc (200548)
                    Family Flags: 20
-Hotfixed         : Base Value (5 -> 7)
 Description      : $?s137044[Hand of Gul'dan deals $s1% increased damage for each Soul Shard spent.][Enemies marked by your Havoc take $s2% increased damage from your single target spells.]
 
 Name             : Cruelty of Kerxan (id=429902) [Spell Family (5), Passive, Hidden] 

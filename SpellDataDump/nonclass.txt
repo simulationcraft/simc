@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -259801,7 +259801,6 @@ Tooltip          : Damage done increased by $s1%
 Damage taken reduced by $s2%.
 
 Name             : Conqueror's Prized Varnish (id=1221088) 
-Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Effects          :
@@ -259811,13 +259810,11 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207396)  : Dummy (3)
                    Base Value: 684 | Scaled Value: 684
-Hotfixed         : Base Value (678 -> 684)
 Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Prized Jeweler's Settings.
 
 Name             : Conqueror's Prized Lacquer (id=1221091) 
-Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Effects          :
@@ -259827,7 +259824,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207403)  : Dummy (3)
                    Base Value: 684 | Scaled Value: 684
-Hotfixed         : Base Value (678 -> 684)
 Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Ringing Ritual Mud (id=1221145) [Passive] 
@@ -260111,7 +260107,6 @@ Effects          :
 Description      : $@spelldesc1218417
 
 Name             : Cut of the Curseblade (id=1224456) [Passive] 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
@@ -260388,7 +260383,6 @@ Effects          :
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
-Hotfixed         : Proc Flags 1 (0 -> 69904)
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260887,7 +260881,6 @@ Attributes       : Aura Points On Client (268), Check Required Target Aura By Ca
 Effects          :
 #1 (id=1217658)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
                    Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.25 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 #2 (id=1217659)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227311

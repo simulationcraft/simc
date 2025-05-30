@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1751,7 +1751,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3411 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: Unknown(87) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1.2 -> 1.38)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -2964,12 +2963,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
-Hotfixed         : Sub Type (218 -> 108), Base Value (-50 -> 20), Misc Value (12 -> 0), Misc Value 2 (1739 -> 0), Affects Spells
 #13 (id=1006576) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
-Hotfixed         : Sub Type (218 -> 108), Base Value (-50 -> -17), Misc Value (23 -> 0), Misc Value 2 (1739 -> 0), Affects Spells, PvP Coefficient (1 -> 0)
 #14 (id=1014668) : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0
 #15 (id=1014669) : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -11806,7 +11803,6 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), D
 Effects          :
 #1 (id=1013214)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.315 | PvP Coefficient: 1.2 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc382021
 Tooltip          : Heals $w1 every $t1 sec.
 
@@ -14278,12 +14274,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
-Hotfixed         : Base Value (10 -> 20), PvP Coefficient (1 -> 0.5)
 #4 (id=1144387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
-Hotfixed         : Base Value (10 -> 20), PvP Coefficient (1 -> 0.5)
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
@@ -14464,7 +14458,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Wellspring (197995), Wellspring (197997), Downpour (207778), Downpour (462603)
                    Family Flags: 7, 8, 33, 51, 80
-Hotfixed         : Base Value (15 -> 25), PvP Coefficient (1 -> 0.6)
 Description      : $?a137040[Increases the damage of Earth Shock, Elemental Blast, and Earthquake by $s1%.
 
 Increases the healing of Healing Surge and Chain Heal by $s2%.][Increases the healing done by Healing Wave, Healing Surge, Wellspring, Downpour, and Chain Heal by $s2%.]
@@ -14484,7 +14477,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Resource: maelstrom | Target: Self (1)
 #2 (id=1144361)  : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 10), PvP Coefficient (1 -> 0.5)
 #3 (id=1159296)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Tidal Waves (53390)
@@ -14548,7 +14540,6 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
 #2 (id=1142670)  : Apply Aura (6) | Dummy (4)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.6667 | Target: Self (1)
-Hotfixed         : Base Value (-2000 -> -3000), PvP Coefficient (1 -> 0.6667)
 Description      : When an Ancestor is called, they reduce the cooldown of $?a137040[Fire Elemental and Storm Elemental by ${$s1/-1000} sec.][Riptide by ${$s2/-1000} sec.]
 
 Name             : Ancestral Swiftness (id=443454) [Spell Family (11)] 
@@ -14615,7 +14606,6 @@ Effects          :
 #1 (id=1140967)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.875 | PvP Coefficient: 0.8 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-Hotfixed         : SP Coefficient (6.3 -> 7.875), PvP Coefficient (1 -> 0.8)
 #2 (id=1145390)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Chain Friendly (45)
 #3 (id=1145492)  : Apply Aura (6) | Dummy (4)
@@ -16154,7 +16144,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1164066)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : $@spelldesc445034
 
 Name             : Chain Heal (id=458235) [Spell Family (11), Hidden] 

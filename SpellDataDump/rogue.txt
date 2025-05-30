@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60822 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61122 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -9412,7 +9412,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1012995)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 3.6 | Misc Value 2: 0x4 | Target: Self (1)
-Hotfixed         : PvP Coefficient (2.4 -> 3.6)
 #2 (id=1092655)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Stamina increased by $<stam>%.
