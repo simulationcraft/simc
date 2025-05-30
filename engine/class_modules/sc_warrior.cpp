@@ -10193,34 +10193,7 @@ void warrior_t::parse_assisted_combat_step( const assisted_combat_step_data_t& s
 // warrior_t::action_names_from_spell_id ===============================
 std::vector<std::string> warrior_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  // if ( spell_id == 316239 )  // Rune Strike
-  // {
-  //   switch ( specialization() )
-  //   {
-  //     case DEATH_KNIGHT_BLOOD:
-  //       spell_id = talent.blood.heart_strike->id();
-  //       break;
-  //     case DEATH_KNIGHT_FROST:
-  //       spell_id = talent.frost.frost_strike->id();  // Yes, Frost Strike replaces Rune Strike as Frost. Makes no sense to me either.
-  //       break;
-  //     case DEATH_KNIGHT_UNHOLY:
-  //       spell_id = talent.unholy.festering_strike->id();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
-
-  // // This is incredibly ugly, and not the proper way to do this at all.
-  // // 
-  // // TODO: Figure out why the parse_assisted_combat_step() function is not functioning right and remove
-  // // this hack.
-  // if ( spell_id == talent.unholy.scourge_strike->id() || spell_id == talent.unholy.clawing_shadows->id() )
-  // {
-  //   std::vector<std::string> names = { "wound_spender" };
-  //   return names;
-  // }
-
+  // If we need to do spell id replacements for blizz apl, see DK module for an example
   return player_t::action_names_from_spell_id( spell_id );
 }
 
