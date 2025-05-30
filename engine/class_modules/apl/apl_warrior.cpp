@@ -376,6 +376,7 @@ void protection( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "charge,if=time=0" );
+  default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   default_->add_action( "use_items" );
   default_->add_action( "avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2" );
   default_->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
