@@ -13882,8 +13882,6 @@ void death_knight_t::init_blizzard_action_list()
       cooldowns->add_action( "vampiric_blood" );
       cooldowns->add_action( "tombstone,if=buff.bone_shield.stack>5" );
       cooldowns->add_action( "abomination_limb" );
-      cooldowns->add_action( "consumption" );
-      cooldowns->add_action( "bonestorm,if=buff.bone_shield.stack>5" );
       cooldowns->add_action( "raise_dead" );
       break;
     case DEATH_KNIGHT_FROST:
@@ -13906,6 +13904,14 @@ void death_knight_t::init_blizzard_action_list()
 std::string death_knight_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                         const assisted_combat_step_data_t& step ) const
 {
+  // Blizz uses 5 in their apl, making the condition <5, however, this should be <6 to align with
+  // distance targeting, as well, this makes it work correctly in simc
+  if ( rule.condition_type == TARGET_DISTANCE_LESS && rule.condition_value_1 == 5 )
+  {
+    assisted_combat_rule_data_t rule_copy = rule;
+    rule_copy.condition_value_1 = 6;
+    return player_t::parse_assisted_combat_rule( rule_copy, step );
+  }
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
