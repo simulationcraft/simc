@@ -10155,7 +10155,13 @@ void warrior_t::init_blizzard_action_list()
       cooldowns->add_action( "avatar" );
       break;
     case WARRIOR_PROTECTION:
+      cooldowns->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
+      cooldowns->add_action( "shield_charge" );
+      cooldowns->add_action( "avatar" );
+      cooldowns->add_action( "shield_block,if=buff.shield_block.remains<=10" );
+      cooldowns->add_action( "last_stand" );
       cooldowns->add_action( "shield_wall" );
+      cooldowns->add_action( "ignore_pain,if=rage>=65" );
       break;
     default:
       break;
