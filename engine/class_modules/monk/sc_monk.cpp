@@ -31,7 +31,6 @@ BREWMASTER:
 
 #include "action/action_callback.hpp"
 #include "action/parse_effects.hpp"
-#include "class_modules/apl/apl_monk.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/charts.hpp"
@@ -9011,95 +9010,6 @@ void monk_t::assess_heal( school_e school, result_amount_type dmg_type, action_s
 
   if ( specialization() == MONK_BREWMASTER )
     trigger_celestial_fortune( s );
-}
-
-// =========================================================================
-// Monk APL
-// =========================================================================
-
-// monk_t::default_flask ===================================================
-std::string monk_t::default_flask() const
-{
-  return monk_apl::flask( this );
-}
-
-// monk_t::default_potion ==================================================
-std::string monk_t::default_potion() const
-{
-  return monk_apl::potion( this );
-}
-
-// monk_t::default_food ====================================================
-std::string monk_t::default_food() const
-{
-  return monk_apl::food( this );
-}
-
-// monk_t::default_rune ====================================================
-std::string monk_t::default_rune() const
-{
-  return monk_apl::rune( this );
-}
-
-// monk_t::temporary_enchant ===============================================
-std::string monk_t::default_temporary_enchant() const
-{
-  return monk_apl::temporary_enchant( this );
-}
-
-// monk_t::init_action_list =====================================================
-void monk_t::init_action_list()
-{
-  // Mistweaver isn't supported atm
-  if ( !sim->allow_experimental_specializations && specialization() == MONK_MISTWEAVER && role != ROLE_ATTACK )
-  {
-    if ( !quiet )
-      sim->error( "Monk mistweaver healing for {} is not currently supported.", *this );
-
-    quiet = true;
-    return;
-  }
-  if ( main_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( !quiet )
-      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
-    quiet = true;
-    return;
-  }
-  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error( "{} has a 1-Hand weapon equipped in the Off-Hand while a 2-Hand weapon is equipped in the Main-Hand.",
-                  *this );
-    quiet = true;
-    return;
-  }
-  if ( !action_list_str.empty() )
-  {
-    base_t::init_action_list();
-    return;
-  }
-  clear_action_priority_lists();
-
-  // Combat
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:
-      monk_apl::brewmaster( this );
-      break;
-    case MONK_WINDWALKER:
-      monk_apl::windwalker( this );
-      break;
-    case MONK_MISTWEAVER:
-      monk_apl::mistweaver( this );
-      break;
-    default:
-      monk_apl::no_spec( this );
-      break;
-  }
-  use_default_action_list = true;
-
-  base_t::init_action_list();
 }
 
 // monk_t::create_actions =======================================================

@@ -21,7 +21,6 @@ HEADERS += engine/class_modules/apl/apl_death_knight.hpp
 HEADERS += engine/class_modules/apl/apl_demon_hunter.hpp
 HEADERS += engine/class_modules/apl/apl_evoker.hpp
 HEADERS += engine/class_modules/apl/apl_hunter.hpp
-HEADERS += engine/class_modules/apl/apl_monk.hpp
 HEADERS += engine/class_modules/apl/apl_paladin.hpp
 HEADERS += engine/class_modules/apl/apl_priest.hpp
 HEADERS += engine/class_modules/apl/apl_rogue.hpp

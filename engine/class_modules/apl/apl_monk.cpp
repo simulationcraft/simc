@@ -1,183 +1,59 @@
-#include "class_modules/apl/apl_monk.hpp"
-
 #include "class_modules/monk/sc_monk.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
 
-namespace monk_apl
-{
-std::string potion( const player_t *p )
-{
-  switch ( p->specialization() )
-  {
-    case MONK_BREWMASTER:
-      if ( p->true_level > 70 )
-        return "tempered_potion_3";
-      else
-        return "disabled";
-      break;
-    case MONK_MISTWEAVER:
-      if ( p->true_level > 70 )
-        return "tempered_potion_3";
-      else if ( p->true_level > 60 )
-        return "elemental_potion_of_ultimate_power_3";
-      else if ( p->true_level > 50 )
-        return "potion_of_spectral_intellect";
-      else if ( p->true_level > 45 )
-        return "superior_battle_potion_of_intellect";
-      else
-        return "disabled";
-      break;
-    case MONK_WINDWALKER:
-      if ( p->true_level > 70 )
-        return "tempered_potion_3";
-      else if ( p->true_level > 60 )
-        return "elemental_potion_of_ultimate_power_3";
-      else if ( p->true_level > 50 )
-        return "potion_of_spectral_agility";
-      else if ( p->true_level > 45 )
-        return "unbridled_fury";
-      else
-        return "disabled";
-      break;
-    default:
-      return "disabled";
-      break;
-  }
-}
+#include <string>
 
-std::string flask( const player_t *p )
-{
-  switch ( p->specialization() )
-  {
-    case MONK_BREWMASTER:
-      if ( p->true_level > 70 )
-        return "flask_of_alchemical_chaos_3";
-      else
-        return "disabled";
-      break;
-    case MONK_MISTWEAVER:
-      if ( p->true_level > 70 )
-        return "flask_of_alchemical_chaos_3";
-      else if ( p->true_level > 60 )
-        return "phial_of_elemental_chaos_3";
-      else if ( p->true_level > 50 )
-        return "spectral_flask_of_power";
-      else if ( p->true_level > 45 )
-        return "greater_flask_of_endless_fathoms";
-      else
-        return "disabled";
-      break;
-    case MONK_WINDWALKER:
-      if ( p->true_level > 70 )
-        return "flask_of_alchemical_chaos_3";
-      else if ( p->true_level > 60 )
-        return "iced_phial_of_corrupting_rage_3";
-      else if ( p->true_level > 50 )
-        return "spectral_flask_of_power";
-      else if ( p->true_level > 45 )
-        return "greater_flask_of_the_currents";
-      else
-        return "disabled";
-      break;
-    default:
-      return "disabled";
-      break;
-  }
-}
+struct player_t;
+using monk::monk_t;
 
-std::string food( const player_t *p )
+namespace
 {
-  switch ( p->specialization() )
-  {
-    case MONK_BREWMASTER:
-      if ( p->true_level > 70 )
-        return "feast_of_the_midnight_masquerade";
-      else
-        return "disabled";
-      break;
-    case MONK_MISTWEAVER:
-      if ( p->true_level > 70 )
-        return "feast_of_the_midnight_masquerade";
-      else if ( p->true_level > 60 )
-        return "roast_duck_delight";
-      else if ( p->true_level > 50 )
-        return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level > 45 )
-        return "famine_evaluator_and_snack_table";
-      else
-        return "disabled";
-      break;
-    case MONK_WINDWALKER:
-      if ( p->true_level > 70 )
-        return "feast_of_the_midnight_masquerade";
-      else if ( p->true_level > 60 )
-        return "aromatic_seafood_platter";
-      else if ( p->true_level > 50 )
-        return "feast_of_gluttonous_hedonism";
-      else if ( p->true_level > 45 )
-        return "mechdowels_big_mech";
-      else
-        return "disabled";
-      break;
-    default:
-      return "disabled";
-      break;
-  }
-}
-
-std::string rune( const player_t *p )
+namespace brewmaster
 {
-  if ( p->true_level > 70 )
-    return "crystallized";
-  else if ( p->true_level > 60 )
-    return "draconic";
-  else if ( p->true_level > 50 )
-    return "veiled";
-  else if ( p->true_level > 45 )
-    return "battle_scarred";
-  else if ( p->true_level > 40 )
-    return "defiled";
+std::string default_potion( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "tempered_potion_3";
   return "disabled";
 }
 
-std::string temporary_enchant( const player_t *p )
+std::string default_flask( const monk_t* player )
 {
-  switch ( p->specialization() )
-  {
-    case MONK_BREWMASTER:
-      if ( p->true_level > 70 )
-        return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
-      else
-        return "disabled";
-      break;
-    case MONK_MISTWEAVER:
-      return "disabled";
-      break;
-    case MONK_WINDWALKER:
-      if ( p->true_level > 70 )
-        return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
-      else if ( p->true_level > 60 )
-        return "main_hand:howling_rune_3/off_hand:howling_rune_3";
-      else if ( p->true_level > 50 )
-        return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
-      else
-        return "disabled";
-      break;
-    default:
-      return "disabled";
-      break;
-  }
+  if ( player->true_level >= 80 )
+    return "flask_of_alchemical_chaos_3";
+  return "disabled";
 }
 
-void brewmaster( player_t *p )
+std::string default_food( const monk_t* player )
 {
-  std::vector<std::string> racial_actions = p->get_racial_actions();
-  action_priority_list_t *precombat       = p->get_action_priority_list( "precombat" );
-  action_priority_list_t *default_        = p->get_action_priority_list( "default" );
+  if ( player->true_level >= 80 )
+    return "feast_of_the_midnight_masquerade";
+  return "disabled";
+}
 
-  action_priority_list_t *item_actions = p->get_action_priority_list( "item_actions" );
-  action_priority_list_t *race_actions = p->get_action_priority_list( "race_actions" );
+std::string default_rune( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "crystallized";
+  return "disabled";
+}
+
+std::string default_temporary_enchant( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
+  return "disabled";
+}
+
+void default_apl( monk_t* player )
+{
+  std::vector<std::string> racial_actions = player->get_racial_actions();
+  action_priority_list_t* precombat       = player->get_action_priority_list( "precombat" );
+  action_priority_list_t* default_        = player->get_action_priority_list( "default" );
+
+  action_priority_list_t* item_actions = player->get_action_priority_list( "item_actions" );
+  action_priority_list_t* race_actions = player->get_action_priority_list( "race_actions" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "potion" );
   precombat->add_action( "chi_burst" );
@@ -231,17 +107,53 @@ void brewmaster( player_t *p )
   default_->add_action( "tiger_palm,if=energy>40-cooldown.keg_smash.remains*energy.regen" );
   default_->add_action( "spinning_crane_kick,if=energy>40-cooldown.keg_smash.remains*energy.regen" );
 }
+};  // namespace brewmaster
 
-void mistweaver( player_t *p )
+namespace mistweaver
 {
-  action_priority_list_t *pre     = p->get_action_priority_list( "precombat" );
-  action_priority_list_t *def     = p->get_action_priority_list( "default" );
-  action_priority_list_t *racials = p->get_action_priority_list( "race_actions" );
+std::string default_potion( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "tempered_potion_3";
+  return "disabled";
+}
+
+std::string default_flask( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "flask_of_alchemical_chaos_3";
+  return "disabled";
+}
+
+std::string default_food( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "feast_of_the_midnight_masquerade";
+  return "disabled";
+}
+
+std::string default_rune( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "crystallized";
+  return "disabled";
+}
+
+std::string default_temporary_enchant( const monk_t* )
+{
+  return "disabled";
+}
+
+void default_apl( monk_t* player )
+{
+  action_priority_list_t* pre     = player->get_action_priority_list( "precombat" );
+  action_priority_list_t* def     = player->get_action_priority_list( "default" );
+  action_priority_list_t* racials = player->get_action_priority_list( "race_actions" );
 
   pre->add_action( "snapshot_stats" );
   pre->add_action( "potion" );
 
-  for ( const auto &racial_action : p->get_racial_actions() )
+  for ( const auto& racial_action : player->get_racial_actions() )
     racials->add_action( racial_action );
 
   def->add_action( "auto_attack" );
@@ -255,10 +167,8 @@ void mistweaver( player_t *p )
   def->add_action( "invoke_chiji,if=talent.invokers_delight" );
   def->add_action( "invoke_yulon,if=talent.invokers_delight" );
   def->add_action(
-      "sheiluns_gift,if=talent.shaohaos_lessons&("
-      "buff.sheiluns_gift.stack>=10"
-      "|(buff.sheiluns_gift.stack*4>=fight_remains&buff.sheiluns_gift.stack>=3)"
-      "|(fight_style.dungeonslice&buff.sheiluns_gift.stack>=5&active_enemies>=4)"
+      "sheiluns_gift,if=talent.shaohaos_lessons&(buff.sheiluns_gift.stack>=10|(buff.sheiluns_gift.stack*4>=fight_"
+      "remains&buff.sheiluns_gift.stack>=3)|(fight_style.dungeonslice&buff.sheiluns_gift.stack>=5&active_enemies>=4)"
       ")" );
   def->add_action( "celestial_conduit" );
   def->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
@@ -272,17 +182,55 @@ void mistweaver( player_t *p )
   def->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
   def->add_action( "rising_sun_kick,if=active_enemies<=2" );
   def->add_action(
-      "blackout_kick,if=buff.teachings_of_the_monastery.stack>=3"
-      "&(active_enemies>=2|cooldown.rising_sun_kick.remains>gcd)" );
+      "blackout_kick,if=buff.teachings_of_the_monastery.stack>=3&(active_enemies>=2|cooldown.rising_sun_kick.remains>"
+      "gcd)" );
   def->add_action( "tiger_palm" );
 }
+};  // namespace mistweaver
 
-void windwalker_live( player_t *p )
+namespace windwalker
+{
+std::string default_potion( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "tempered_potion_3";
+  return "disabled";
+}
+
+std::string default_flask( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "flask_of_alchemical_chaos_3";
+  return "disabled";
+}
+
+std::string default_food( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "feast_of_the_midnight_masquerade";
+  return "disabled";
+}
+
+std::string default_rune( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "crystallized";
+  return "disabled";
+}
+
+std::string default_temporary_enchant( const monk_t* player )
+{
+  if ( player->true_level >= 80 )
+    return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
+  return "disabled";
+}
+
+void live_apl( monk_t* player )
 {
   //============================================================================
   // On-use Items
   //============================================================================
-  auto _WW_ON_USE = []( const item_t &item ) {
+  auto _WW_ON_USE = []( const item_t& item ) {
     //-------------------------------------------
     // SEF item map
     //-------------------------------------------
@@ -307,8 +255,7 @@ void windwalker_live( player_t *p )
           ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
           "cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<5" },
         // Signet of the Priory is not properly detected as ITEM_STAT_BUFF
-        { "signet_of_the_priory",
-          ",if=pet.xuen_the_white_tiger.active|fight_remains<20" },
+        { "signet_of_the_priory", ",if=pet.xuen_the_white_tiger.active|fight_remains<20" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
@@ -357,16 +304,16 @@ void windwalker_live( player_t *p )
     return concat;
   };
 
-  action_priority_list_t *pre            = p->get_action_priority_list( "precombat" );
-  action_priority_list_t *def            = p->get_action_priority_list( "default" );
-  action_priority_list_t *trinkets       = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t *aoe_opener     = p->get_action_priority_list( "aoe_opener" );
-  action_priority_list_t *normal_opener  = p->get_action_priority_list( "normal_opener" );
-  action_priority_list_t *cooldowns      = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t *default_aoe    = p->get_action_priority_list( "default_aoe" );
-  action_priority_list_t *default_cleave = p->get_action_priority_list( "default_cleave" );
-  action_priority_list_t *default_st     = p->get_action_priority_list( "default_st" );
-  action_priority_list_t *fallback       = p->get_action_priority_list( "fallback" );
+  action_priority_list_t* pre            = player->get_action_priority_list( "precombat" );
+  action_priority_list_t* def            = player->get_action_priority_list( "default" );
+  action_priority_list_t* trinkets       = player->get_action_priority_list( "trinkets" );
+  action_priority_list_t* aoe_opener     = player->get_action_priority_list( "aoe_opener" );
+  action_priority_list_t* normal_opener  = player->get_action_priority_list( "normal_opener" );
+  action_priority_list_t* cooldowns      = player->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* default_aoe    = player->get_action_priority_list( "default_aoe" );
+  action_priority_list_t* default_cleave = player->get_action_priority_list( "default_cleave" );
+  action_priority_list_t* default_st     = player->get_action_priority_list( "default_st" );
+  action_priority_list_t* fallback       = player->get_action_priority_list( "fallback" );
 
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   pre->add_action( "use_item,name=imperfect_ascendancy_serum" );
@@ -465,7 +412,7 @@ void windwalker_live( player_t *p )
   def->add_action( "arcane_pulse,if=buff.storm_earth_and_fire.down" );
 
   // Trinkets
-  for ( const auto &item : p->items )
+  for ( const auto& item : player->items )
   {
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       trinkets->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
@@ -538,9 +485,11 @@ void windwalker_live( player_t *p )
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.chi_energy.stack>29&cooldown.fists_of_"
       "fury.remains<5" );
   default_aoe->add_action(
-      "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_chiji.stack<2" );
+      "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_"
+      "chiji.stack<2" );
   default_aoe->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack<2" );
-  default_aoe->add_action( "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+  default_aoe->add_action(
+      "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
   default_aoe->add_action(
       "celestial_conduit,if=buff.storm_earth_and_fire.up&cooldown.strike_of_the_"
       "windlord.remains&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force.remains<5)&(talent.xuens_bond|!"
@@ -556,7 +505,8 @@ void windwalker_live( player_t *p )
       "blackout_kick,if=combo_strike&buff.bok_proc.up&chi<2&talent."
       "energy_burst&energy<55" );
   default_aoe->add_action(
-      "strike_of_the_windlord,target_if=max:target.time_to_die,if=(time>5|buff.invokers_delight.up&buff.storm_earth_and_fire.up)&(cooldown.invoke_xuen_the_white_tiger.remains>"
+      "strike_of_the_windlord,target_if=max:target.time_to_die,if=(time>5|buff.invokers_delight.up&buff.storm_earth_"
+      "and_fire.up)&(cooldown.invoke_xuen_the_white_tiger.remains>"
       "15|talent.flurry_strikes)" );
   default_aoe->add_action( "slicing_winds" );
   default_aoe->add_action(
@@ -649,9 +599,11 @@ void windwalker_live( player_t *p )
   default_cleave->add_action(
       "touch_of_death,if=!buff.heart_of_the_jade_serpent_cdr.up&!buff.heart_of_the_jade_serpent_cdr_celestial.up" );
   default_cleave->add_action(
-      "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_chiji.stack<2" );
+      "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_"
+      "chiji.stack<2" );
   default_cleave->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack<2" );
-  default_cleave->add_action( "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+  default_cleave->add_action(
+      "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
   default_cleave->add_action(
       "celestial_conduit,if=buff.storm_earth_and_fire.up&cooldown.strike_of_the_"
       "windlord.remains&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force.remains<5)&(talent.xuens_bond|!"
@@ -759,9 +711,13 @@ void windwalker_live( player_t *p )
       "fists_of_fury,if=buff.heart_of_the_jade_serpent_cdr_celestial.up|buff.heart_of_the_jade_serpent_cdr.up",
       "1 target" );
   default_st->add_action(
-      "rising_sun_kick,if=buff.pressure_point.up&!buff.heart_of_the_jade_serpent_cdr.up&buff.heart_of_the_jade_serpent_cdr_celestial.up|buff.invokers_delight.up|buff.bloodlust.up|buff.pressure_point.up&cooldown.fists_of_fury.remains|buff.power_infusion.up" );
-  default_st->add_action( "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2" );
-  default_st->add_action( "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+      "rising_sun_kick,if=buff.pressure_point.up&!buff.heart_of_the_jade_serpent_cdr.up&buff.heart_of_the_jade_serpent_"
+      "cdr_celestial.up|buff.invokers_delight.up|buff.bloodlust.up|buff.pressure_point.up&cooldown.fists_of_fury."
+      "remains|buff.power_infusion.up" );
+  default_st->add_action(
+      "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2" );
+  default_st->add_action(
+      "slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
   default_st->add_action(
       "celestial_conduit,if=buff.storm_earth_and_fire.up&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force."
       "remains<5)&cooldown.strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight."
@@ -803,7 +759,10 @@ void windwalker_live( player_t *p )
   default_st->add_action(
       "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.heart_of_the_jade_serpent_cdr.up&!buff."
       "heart_of_the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target.time_to_die>20)&"
-      "cooldown.invoke_xuen_the_white_tiger.remains>10|buff.the_emperors_capacitor.stack>15&!buff.heart_of_the_jade_serpent_cdr.up&!buff.heart_of_the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target.time_to_die>20)&cooldown.invoke_xuen_the_white_tiger.remains<10&cooldown.invoke_xuen_the_white_tiger.remains>2" );
+      "cooldown.invoke_xuen_the_white_tiger.remains>10|buff.the_emperors_capacitor.stack>15&!buff.heart_of_the_jade_"
+      "serpent_cdr.up&!buff.heart_of_the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target."
+      "time_to_die>20)&cooldown.invoke_xuen_the_white_tiger.remains<10&cooldown.invoke_xuen_the_white_tiger.remains>"
+      "2" );
   default_st->add_action( "slicing_winds,if=target.time_to_die>10" );
   default_st->add_action(
       "fists_of_fury,if=(talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_the_windlord.remains>1|"
@@ -873,34 +832,148 @@ void windwalker_live( player_t *p )
   fallback->add_action( "tiger_palm,if=combo_strike&chi>5" );
 }
 
-void windwalker_ptr( player_t *p )
+void ptr_apl( monk_t* player )
 {
-  // no ptr apl exists at this time
-  windwalker_live( p );
+  live_apl( player );
 }
 
-void windwalker( player_t *p )
+void default_apl( monk_t* player )
 {
-  if ( p->is_ptr() )
-    windwalker_ptr( p );
+  if ( !player->is_ptr() )
+    live_apl( player );
   else
-    windwalker_live( p );
+    ptr_apl( player );
 }
+};  // namespace windwalker
+};  // namespace
 
-void no_spec( player_t *p )
+namespace monk
 {
-  action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
-  action_priority_list_t *def = p->get_action_priority_list( "default" );
-
-  pre->add_action( "flask" );
-  pre->add_action( "food" );
-  pre->add_action( "augmentation" );
-  pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  pre->add_action( "potion" );
-
-  def->add_action( "roll,if=movement.distance>5", "Move to target" );
-  def->add_action( "chi_torpedo,if=movement.distance>5" );
-  def->add_action( "Tiger Palm" );
+std::string monk_t::default_potion() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      return brewmaster::default_potion( this );
+    case MONK_MISTWEAVER:
+      return mistweaver::default_potion( this );
+    case MONK_WINDWALKER:
+      return windwalker::default_potion( this );
+    default:
+      return "disabled";
+  }
 }
 
-}  // namespace monk_apl
+std::string monk_t::default_flask() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      return brewmaster::default_flask( this );
+    case MONK_MISTWEAVER:
+      return mistweaver::default_flask( this );
+    case MONK_WINDWALKER:
+      return windwalker::default_flask( this );
+    default:
+      return "disabled";
+  }
+}
+
+std::string monk_t::default_food() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      return brewmaster::default_food( this );
+    case MONK_MISTWEAVER:
+      return mistweaver::default_food( this );
+    case MONK_WINDWALKER:
+      return windwalker::default_food( this );
+    default:
+      return "disabled";
+  }
+}
+
+std::string monk_t::default_rune() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      return brewmaster::default_rune( this );
+    case MONK_MISTWEAVER:
+      return mistweaver::default_rune( this );
+    case MONK_WINDWALKER:
+      return windwalker::default_rune( this );
+    default:
+      return "disabled";
+  }
+}
+
+std::string monk_t::default_temporary_enchant() const
+{
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+      return brewmaster::default_temporary_enchant( this );
+    case MONK_MISTWEAVER:
+      return mistweaver::default_temporary_enchant( this );
+    case MONK_WINDWALKER:
+      return windwalker::default_temporary_enchant( this );
+    default:
+      return "disabled";
+  }
+}
+
+void monk_t::init_action_list()
+{
+  if ( specialization() == MONK_MISTWEAVER && !sim->allow_experimental_specializations )
+  {
+    if ( !quiet )
+      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
+    quiet = true;
+    return;
+  }
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
+    quiet = true;
+    return;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
+    quiet = true;
+    return;
+  }
+
+  if ( action_list_str.empty() )
+  {
+    clear_action_priority_lists();
+
+    switch ( specialization() )
+    {
+      case MONK_BREWMASTER:
+        brewmaster::default_apl( this );
+        break;
+      case MONK_MISTWEAVER:
+        mistweaver::default_apl( this );
+        break;
+      case MONK_WINDWALKER:
+        windwalker::default_apl( this );
+        break;
+      default:
+        sim->error( "No default apl can be provided as no specialization was selected for {}.", *this );
+        quiet = true;
+        return;
+    }
+
+    use_default_action_list = true;
+  }
+
+  base_t::init_action_list();
+}
+};  // namespace monk
