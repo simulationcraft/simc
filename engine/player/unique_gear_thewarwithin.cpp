@@ -6883,30 +6883,87 @@ void mugs_moxie_jug( special_effect_t& effect )
   auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
 
   auto CT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
+  auto HT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::HERO, n ); };
   auto ST = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   switch ( effect.player->type )
   {
     case WARLOCK:
-      // Pretend everything is triggering soul leech which is triggering the trinket. This is not quite true in practice
-      // though.
-      second_proc->allow_pet_procs = true;
-      buff_driver->proc_flags_ |= PF_PERIODIC | PF_HELPFUL_PERIODIC;
-      buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+      switch( effect.player->specialization() )
+      {
+        case WARLOCK_DEMONOLOGY:
+        {
+          const bool soul_harvester = HT( effect.player, "Demonic Soul" ).ok();
 
-      effect.player->callbacks.register_callback_trigger_function(
-          buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
-            if ( s->action->player->type == PLAYER_GUARDIAN || s->action->player->type == PLAYER_PET )
-            {
-              // Allowing every pet to hit it grants far too high of an uptime
-              return s->action->player->rng().roll( 0.1 );
-            }
-            // Dots probably do the same. Probably.
-            if ( s->result_type == result_amount_type::DMG_OVER_TIME )
-              return s->action->player->rng().roll( 0.15 );
-            return true;
-          } );
+          if ( soul_harvester )
+          {
+            buff_driver->proc_flags_ |= PF_PERIODIC | PF_HELPFUL_PERIODIC;
+            buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+          }
+
+          effect.player->callbacks.register_callback_trigger_function(
+            buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ soul_harvester ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+              if ( soul_harvester )
+                return true;  // Soul Harverser allows procs from all player (non-pet) damage (including DoTs and items dmg effects)
+
+              if ( s->proc_type() == PROC1_PERIODIC )
+                return false; // only Soul Harverser allows procs from DoTs
+
+              return true;
+            } );
+          break;
+        }
+        case WARLOCK_DESTRUCTION:
+        {
+          buff_driver->proc_flags_ |= PF_PERIODIC | PF_HELPFUL_PERIODIC;
+          buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+
+          effect.player->callbacks.register_callback_trigger_function(
+            buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            []( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+              if ( s->proc_type() == PROC1_PERIODIC )
+              {
+                if ( s->action->id == 157736 || s->action->id == 445474 )
+                  return true;  // Only Immolate DoT (157736) and Wither DoT (445474) allow procs
+
+                return false;
+              }
+              return true;
+            } );
+          break;
+        }
+        case WARLOCK_AFFLICTION:
+        {
+          const bool soul_harvester = HT( effect.player, "Demonic Soul" ).ok();
+          const bool siphon_life = ST( effect.player, "Siphon Life" ).ok();
+
+          const auto tal_seeds_of_their_demise = HT( effect.player, "Seeds of Their Demise" );
+          const bool seeds_demise = tal_seeds_of_their_demise.ok();
+          const double seeds_demise_effectn2 = tal_seeds_of_their_demise->effectN( 2 ).base_value();
+
+          buff_driver->proc_flags_ |= PF_PERIODIC | PF_HELPFUL_PERIODIC;
+          buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+
+          effect.player->callbacks.register_callback_trigger_function(
+            buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ soul_harvester, siphon_life, seeds_demise, seeds_demise_effectn2 ] ( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+              if ( soul_harvester )
+                return true;  // Soul Harverser allows procs from all player (non-pet) damage (including DoTs and items dmg effects)
+
+              if ( s->proc_type() == PROC1_PERIODIC )
+              {
+                // Wither DoT (445474) only allows procs with Siphon Life talent or with Seeds of Their Demise talent (if it ticks on low HP targets)
+                if ( s->action->id == 445474 && ( siphon_life || ( seeds_demise && s->target->health_percentage() <= seeds_demise_effectn2 ) ) )
+                  return true;
+
+                return false;
+              }
+              return true;
+            } );
+          break;
+        }
+      }
       break;
     case EVOKER:
       // Heals trigger Scarlet, which triggers the trinket. Otherwise burnout procs do. Hooking these would be ideal but

@@ -220,7 +220,7 @@ using namespace helpers;
               }
               else
               {
-                p()->buffs.ritual_overlord->trigger();
+                p()->buff_apply_action->trigger_buff( p()->buffs.ritual_overlord );
                 make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment ); } );
               }
               break;
@@ -231,7 +231,7 @@ using namespace helpers;
               }
               else
               {
-                p()->buffs.ritual_mother->trigger();
+                p()->buff_apply_action->trigger_buff( p()->buffs.ritual_mother );
                 make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment ); } );
               }
               break;
@@ -242,7 +242,7 @@ using namespace helpers;
               }
               else
               {
-                p()->buffs.ritual_pit_lord->trigger();
+                p()->buff_apply_action->trigger_buff( p()->buffs.ritual_pit_lord );
                 make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment ); } );
               }
               break;
@@ -296,7 +296,7 @@ using namespace helpers;
 
       if ( affliction() && active_2pc( TWW2 ) && triggers.jackpot_affliction )
       {
-        bool success = p()->buffs.jackpot_affliction->trigger();
+        bool success = p()->buff_apply_action->trigger_buff( p()->buffs.jackpot_affliction );
 
         if ( success )
         {
@@ -309,16 +309,7 @@ using namespace helpers;
       {
         if ( p()->jackpot_demonology_rng->trigger() )
         {
-          auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
-
-          for ( auto d : dogs )
-          {
-            if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
-              d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
-          }
-
-          p()->procs.jackpot_demonology->occur();
-          p()->buffs.dread_calling->expire();
+          p()->pet_summon_actions.greater_dreadstalker->execute();
         }
       }
 
@@ -349,7 +340,7 @@ using namespace helpers;
           p()->procs.jackpot_destruction->occur();
 
           if ( active_4pc( TWW2 ) )
-            p()->buffs.jackpot_destruction->trigger();
+            p()->buff_apply_action->trigger_buff( p()->buffs.jackpot_destruction );
         }
       }
     }
@@ -360,7 +351,7 @@ using namespace helpers;
 
       if ( affliction() && triggers.ravenous_afflictions && d->state->result == RESULT_CRIT && p()->ravenous_afflictions_rng->trigger() )
       {
-        p()->buffs.nightfall->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.nightfall );
         p()->procs.ravenous_afflictions->occur();
       }
 
@@ -1033,10 +1024,10 @@ using namespace helpers;
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          td( target )->debuffs_shared_fate->trigger();
+          p()->buff_apply_action->trigger_buff( td( target )->debuffs_shared_fate );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
-          p()->feast_of_souls_gain();;
+          p()->feast_of_souls_gain();
       }
 
       if ( time_to_execute == 0_ms )
@@ -1071,7 +1062,7 @@ using namespace helpers;
           if ( crescendo_check( p(), s->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
-            p()->buffs.tormented_crescendo->trigger();
+            p()->buff_apply_action->trigger_buff( p()->buffs.tormented_crescendo );
           }
         }
 
@@ -1437,7 +1428,7 @@ using namespace helpers;
 
       if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
-        p()->buffs.tormented_crescendo->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.tormented_crescendo );
         p()->procs.seeds_of_their_demise->occur();
         seeds_triggered = true;
       }
@@ -1558,7 +1549,7 @@ using namespace helpers;
     wicked_reaping_t( warlock_t* p )
       : warlock_spell_t( "Wicked Reaping", p, p->hero.wicked_reaping_dmg )
     {
-      background = dual = true;
+      harmful = background = dual = true;
 
       affected_by.master_demonologist_dd = demonology();
 
@@ -1992,7 +1983,7 @@ using namespace helpers;
 
       if ( p()->agony_accumulator >= 1 )
       {
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
+        p()->energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, p()->warlock_base.agony_energize->effectN( 1 ).base_value() / 10.0, p()->gains.agony );
         p()->agony_accumulator -= 1.0;
       }
 
@@ -2209,7 +2200,7 @@ using namespace helpers;
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          td( target )->debuffs_shared_fate->trigger();
+          p()->buff_apply_action->trigger_buff( td( target )->debuffs_shared_fate );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
           p()->feast_of_souls_gain();
@@ -2231,7 +2222,7 @@ using namespace helpers;
           if ( crescendo_check( p(), d->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
-            p()->buffs.tormented_crescendo->trigger();
+            p()->buff_apply_action->trigger_buff( p()->buffs.tormented_crescendo );
           }
         }
 
@@ -2319,14 +2310,14 @@ using namespace helpers;
         warlock_spell_t::impact( s );
 
         if ( p()->talents.infirmity.ok() && !td( s->target )->debuffs_infirmity->check() )
-          td( s->target )->debuffs_infirmity->trigger();
+          p()->buff_apply_action->trigger_buff( td( s->target )->debuffs_infirmity );
       }
     };
 
     phantom_singularity_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Phantom Singularity", p, p->talents.phantom_singularity, options_str )
     {
-      callbacks = false;
+      callbacks = true;
       hasted_ticks = true;
       tick_action = new phantom_singularity_tick_t( p );
 
@@ -2345,7 +2336,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->talents.infirmity.ok() )
-        td( s->target )->debuffs_infirmity->trigger();
+        p()->buff_apply_action->trigger_buff( td( s->target )->debuffs_infirmity );
     }
 
     void last_tick( dot_t* d ) override
@@ -2387,7 +2378,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       if ( soul_harvester() && p()->hero.sataiels_volition.ok() )
-        p()->buffs.nightfall->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.nightfall );
     }
 
     void impact( action_state_t* s ) override
@@ -2436,7 +2427,7 @@ using namespace helpers;
 
       if ( active_2pc( TWW2 ) )
       {
-        p()->buffs.jackpot_affliction->execute();
+        p()->buff_apply_action->execute_buff( p()->buffs.jackpot_affliction );
         p()->buffs.jackpot_affliction->predict();
         p()->procs.jackpot_affliction->occur();
         helpers::trigger_jackpot_ua( p() );
@@ -2496,7 +2487,7 @@ using namespace helpers;
       if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
-        p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
+        p()->buff_apply_action->trigger_buff( p()->buffs.succulent_soul, as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
       }
     }
 
@@ -2819,7 +2810,7 @@ using namespace helpers;
       {
         if ( p()->talents.spiteful_reconstitution.ok() && rng().roll( p()->rng_settings.spiteful_reconstitution.setting_value ) )
         {
-          p()->warlock_pet_list.wild_imps.spawn( 1u );
+          p()->pet_summon_actions.wild_imp->execute();
           p()->procs.spiteful_reconstitution->occur();
         }
 
@@ -2857,7 +2848,7 @@ using namespace helpers;
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          td( target )->debuffs_shared_fate->trigger();
+          p()->buff_apply_action->trigger_buff( td( target )->debuffs_shared_fate );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && rng().roll( p()->rng_settings.feast_of_souls.setting_value ) )
           p()->feast_of_souls_gain();
@@ -2901,7 +2892,7 @@ using namespace helpers;
       {
         aoe = -1;
         background = dual = true;
-        callbacks = false;
+        callbacks = true;
 
         affected_by.wicked_maw = p->talents.shadowtouched.ok(); // 2024-08-01: Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Implosion
 
@@ -3076,6 +3067,33 @@ using namespace helpers;
     }
   };
 
+  struct call_greater_dreadstalker_t : public warlock_spell_t
+  {
+    call_greater_dreadstalker_t( warlock_t* p )
+      : warlock_spell_t( "Call Greater Dreadstalker", p, p->tier.greater_dreadstalker )
+    {
+      may_crit = may_miss = false;
+      background = dual = true;
+      harmful = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+
+      for ( auto d : dogs )
+      {
+        if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+          d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+      }
+
+      p()->procs.jackpot_demonology->occur();
+      p()->buffs.dread_calling->expire();
+    }
+  };
+
   struct bilescourge_bombers_t : public warlock_spell_t
   {
     struct bilescourge_bombers_tick_t : public warlock_spell_t
@@ -3201,7 +3219,7 @@ using namespace helpers;
       if ( is_precombat )
       {
         p()->buffs.power_siphon->trigger( 2, p()->talents.power_siphon_buff->duration() );
-        p()->buffs.demonic_core->trigger( 2, p()->talents.demonic_core_buff->duration() );
+        p()->buff_apply_action->trigger_buff( p()->buffs.demonic_core, 2, p()->talents.demonic_core_buff->duration() );
         
         return;
       }
@@ -3241,7 +3259,7 @@ using namespace helpers;
       while ( !imps.empty() )
       {
         p()->buffs.power_siphon->trigger();
-        p()->buffs.demonic_core->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.demonic_core );
         pets::demonology::wild_imp_pet_t* imp = imps.front();
         imps.erase( imps.begin() );
         imp->power_siphon = true;
@@ -3268,16 +3286,7 @@ using namespace helpers;
 
       if ( active_2pc( TWW2 ) )
       {
-        auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
-
-        for ( auto d : dogs )
-        {
-          if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
-            d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
-        }
-
-        p()->procs.jackpot_demonology->occur();
-        p()->buffs.dread_calling->expire();
+        p()->pet_summon_actions.greater_dreadstalker->execute();
       }
       
       // Last tested 2021-07-13
@@ -3329,7 +3338,7 @@ using namespace helpers;
       p()->buffs.tyrant->trigger();
 
       if ( p()->hero.abyssal_dominion.ok() )
-        p()->buffs.abyssal_dominion->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.abyssal_dominion );
 
       if ( p()->buffs.dreadstalkers->check() )
         p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
@@ -3361,7 +3370,7 @@ using namespace helpers;
       if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
-        p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
+        p()->buff_apply_action->trigger_buff( p()->buffs.succulent_soul, as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
       }
     }
   };
@@ -3391,6 +3400,7 @@ using namespace helpers;
       : warlock_spell_t( "Summon Vilefiend", p, p->talents.summon_vilefiend, options_str )
     {
       harmful = may_crit = false;
+      callbacks = false;
 
       triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
     }
@@ -3404,12 +3414,100 @@ using namespace helpers;
     }
   };
 
+  struct summon_wild_imp_t : public warlock_spell_t
+  {
+    summon_wild_imp_t( warlock_t* p )
+      : warlock_spell_t( "Wild Imp", p, p->warlock_base.wild_imp )
+    {
+      may_crit = may_miss = false;
+      background = dual = true;
+      harmful = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.wild_imps.spawn();
+    }
+  };
+
+  struct summon_inner_demons_wild_imp_t : public warlock_spell_t
+  {
+    summon_inner_demons_wild_imp_t( warlock_t* p )
+      : warlock_spell_t( "Wild Imp (Inner Demons)", p, p->talents.inner_demons_wild_imp )
+    {
+      may_crit = may_miss = false;
+      background = dual = true;
+      harmful = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.wild_imps.spawn( s_data->duration(), s_data->effectN( 1 ).base_value() );
+    }
+  };
+  
+  struct summon_overlord_t : public warlock_spell_t
+  {
+    summon_overlord_t( warlock_t* p )
+      : warlock_spell_t( "Summon Overlord", p, p->hero.summon_overlord )
+    {
+      harmful = may_crit = may_miss = false;
+      background = dual = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.overlords.spawn();
+    }
+  };
+
+  struct summon_mother_of_chaos_t : public warlock_spell_t
+  {
+    summon_mother_of_chaos_t( warlock_t* p )
+      : warlock_spell_t( "Summon Mother of Chaos", p, p->hero.summon_mother )
+    {
+      harmful = may_crit = may_miss = false;
+      background = dual = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.mothers.spawn();
+    }
+  };
+
+  struct summon_pit_lord_t : public warlock_spell_t
+  {
+    summon_pit_lord_t( warlock_t* p )
+      : warlock_spell_t( "Summon Pit Lord", p, p->hero.summon_pit_lord )
+    {
+      harmful = may_crit = may_miss = false;
+      background = dual = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.pit_lords.spawn();
+    }
+  };
+
   struct guillotine_t : public warlock_spell_t
   {
     guillotine_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Guillotine", p, p->talents.guillotine, options_str )
     {
-      may_crit = false;
+      harmful = may_crit = false;
+      callbacks = false;
       internal_cooldown = p->get_cooldown( "felstorm_icd" );
     }
 
@@ -3460,11 +3558,16 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       if ( p()->talents.impending_doom.ok() )
-        p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
+      {
+        for ( int i = 0; i < as<const int>( p()->talents.impending_doom->effectN( 2 ).base_value() ); i++ )
+        {
+          p()->pet_summon_actions.wild_imp->execute();
+        }
+      }
 
       if ( p()->talents.doom_eternal.ok() && p()->min_version_check( VERSION_11_1_0 ) )
       {
-        bool success = p()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), p()->talents.doom_eternal->effectN( 1 ).percent() );
+        bool success = p()->buff_apply_action->trigger_buff( p()->buffs.demonic_core, 1, buff_t::DEFAULT_VALUE(), p()->talents.doom_eternal->effectN( 1 ).percent() );
 
         if ( success )
           p()->procs.doom_eternal->occur();
@@ -3991,7 +4094,7 @@ using namespace helpers;
         warlock_spell_t::impact( s );
 
         if ( p()->talents.pyrogenics.ok() )
-          td( s->target )->debuffs_pyrogenics->trigger();
+          p()->buff_apply_action->trigger_buff( td( s->target )->debuffs_pyrogenics );
       }
 
       double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -4069,7 +4172,7 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       if ( p()->talents.pyrogenics.ok() )
-        td( s->target )->debuffs_pyrogenics->trigger();
+        p()->buff_apply_action->trigger_buff( td( s->target )->debuffs_pyrogenics );
     }
   };
 
@@ -4397,6 +4500,7 @@ using namespace helpers;
     {
       may_crit = false;
       resource_current = RESOURCE_SOUL_SHARD; // For Cruelty of Kerxan proccing
+      callbacks = false;
 
       triggers.diabolic_ritual = p->hero.cruelty_of_kerxan.ok();
 
@@ -4409,10 +4513,10 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       if ( p()->talents.crashing_chaos.ok() )
-        p()->buffs.crashing_chaos->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.crashing_chaos );
 
       if ( p()->talents.rain_of_chaos.ok() )
-        p()->buffs.rain_of_chaos->trigger();
+        p()->buff_apply_action->trigger_buff( p()->buffs.rain_of_chaos );
 
       if ( p()->hero.cruelty_of_kerxan.ok() )
       {
@@ -4429,7 +4533,7 @@ using namespace helpers;
         p()->procs.jackpot_destruction->occur();
 
         if ( active_4pc( TWW2 ) )
-          p()->buffs.jackpot_destruction->trigger();
+          p()->buff_apply_action->trigger_buff( p()->buffs.jackpot_destruction );
       }
     }
   };
@@ -4631,6 +4735,7 @@ using namespace helpers;
     {
       triggers.jackpot_demonology = true;
       triggers.jackpot_destruction = true;
+      callbacks = false;
 
       impact_action = new ruination_impact_t( p );
       add_child( impact_action );
@@ -4685,7 +4790,7 @@ using namespace helpers;
       if ( rng().roll( soul_conduit_rng ) )
       {
         pl->sim->print_log( "Soul Conduit proc occurred for Warlock {}, refunding 1.0 soul shards.", pl->name() );
-        pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, shard_gain );
+        pl->energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, pl->talents.soul_conduit_energize->effectN( 1 ).base_value() / 10.0, shard_gain );
         pl->procs.soul_conduit->occur();
       }
     }
@@ -4730,7 +4835,7 @@ using namespace helpers;
     if ( p->corruption_accumulator >= 1 )
     {
       p->procs.nightfall->occur();
-      p->buffs.nightfall->trigger();
+      p->buff_apply_action->trigger_buff( p->buffs.nightfall );
       p->corruption_accumulator -= 1.0;
     }
   }
@@ -4820,7 +4925,7 @@ using namespace helpers;
   {
     warlock_t* p = static_cast<warlock_t*>( player() );
 
-    p->warlock_pet_list.wild_imps.spawn();
+    p->pet_summon_actions.wild_imp->execute();
 
     // Remove this event from the vector
     auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
@@ -5038,7 +5143,10 @@ using namespace helpers;
       create_affliction_proc_actions();
 
     if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
       create_demonology_proc_actions();
+      create_demonology_pet_summon_actions();
+    }
 
     if ( specialization() == WARLOCK_DESTRUCTION )
       create_destruction_proc_actions();
@@ -5048,6 +5156,10 @@ using namespace helpers;
     create_hellcaller_proc_actions();
 
     create_soul_harvester_proc_actions();
+
+    create_diabolist_pet_summon_actions();
+
+    create_helper_actions();
 
     player_t::create_actions();
   }
@@ -5083,6 +5195,26 @@ using namespace helpers;
     proc_actions.demonic_soul = new demonic_soul_t( this );
     proc_actions.shared_fate = new shared_fate_t( this );
     proc_actions.wicked_reaping = new wicked_reaping_t( this );
+  }
+
+  void warlock_t::create_demonology_pet_summon_actions()
+  {
+    pet_summon_actions.wild_imp = new summon_wild_imp_t( this );
+    pet_summon_actions.inner_demons_wild_imp = new summon_inner_demons_wild_imp_t( this );
+    pet_summon_actions.greater_dreadstalker = new call_greater_dreadstalker_t( this );
+  }
+
+  void warlock_t::create_diabolist_pet_summon_actions()
+  {
+    pet_summon_actions.overlord = new summon_overlord_t( this );
+    pet_summon_actions.mother_of_chaos = new summon_mother_of_chaos_t( this );
+    pet_summon_actions.pit_lord = new summon_pit_lord_t( this );
+  }
+
+  void warlock_t::create_helper_actions()
+  {
+    buff_apply_action = new buff_apply_action_t( "Buff Apply Action", this );
+    energize_action = new energize_action_t( "Energize Action", this );
   }
 
   void warlock_t::init_special_effects()

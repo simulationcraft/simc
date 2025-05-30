@@ -143,21 +143,21 @@ void warlock_td_t::target_demise()
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
+    warlock.energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
 
   if ( dots_jackpot_ua->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
+    warlock.energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
 
   if ( dots_drain_soul->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 1.0, warlock.gains.drain_soul );
+    warlock.energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, 1.0, warlock.gains.drain_soul );
   }
 
   if ( debuffs_haunt->check() )
@@ -175,7 +175,7 @@ void warlock_td_t::target_demise()
    
     warlock.sim->print_log( "Player {} demised. Warlock {} gains 1 shard from Shadowburn.", target->name(), warlock.name() );
 
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
+    warlock.energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, debuffs_shadowburn->check_value(), warlock.gains.shadowburn_refund );
   }
 
   if ( warlock.hero.demonic_soul.ok() && warlock.hero.shared_fate.ok() )
@@ -192,7 +192,7 @@ void warlock_td_t::target_demise()
 
       warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on {}.", target->name(), warlock.name(), t->name() );
 
-      tdata->debuffs_shared_fate->trigger();
+      warlock.buff_apply_action->trigger_buff( tdata->debuffs_shared_fate );
 
       break;
     }
@@ -994,7 +994,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
       if ( rng().roll( chance ) )
       {
-        buffs.succulent_soul->trigger();
+        buff_apply_action->trigger_buff( buffs.succulent_soul );
         procs.succulent_soul->occur();
       }
     }
@@ -1005,9 +1005,9 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 void warlock_t::feast_of_souls_gain()
 {
-  player_t::resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
+  player_t::resource_gain( RESOURCE_SOUL_SHARD, hero.feast_of_souls_energize->effectN( 1 ).base_value() / 10.0, gains.feast_of_souls );
 
-  buffs.succulent_soul->trigger();
+  buff_apply_action->trigger_buff( buffs.succulent_soul );
   procs.succulent_soul->occur();
   procs.feast_of_souls->occur();
 }

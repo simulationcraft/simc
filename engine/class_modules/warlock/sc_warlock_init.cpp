@@ -25,6 +25,7 @@ namespace warlock
     // Affliction
     warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
     warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
+    warlock_base.agony_energize = find_spell( 17941 );
     warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
     warlock_base.malefic_rapture = find_specialization_spell( "Malefic Rapture", WARLOCK_AFFLICTION ); // Should be ID 324536
     warlock_base.malefic_rapture_dmg = find_spell( 324540 );
@@ -36,6 +37,7 @@ namespace warlock
     warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
     warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
     warlock_base.fel_firebolt_2 = find_spell( 334591 ); // 20% cost reduction for Wild Imps
+    warlock_base.infernal_command_buff = find_spell( 387552 ); // Buff of an old talent that still applies but with 0 value
     warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY ); // Should be ID 77219
     warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock", WARLOCK_DEMONOLOGY ); // Should be ID 137044
 
@@ -71,6 +73,7 @@ namespace warlock
     talents.demonic_tactics = find_talent_spell( talent_tree::CLASS, "Demonic Tactics" ); // Should be ID 452894
 
     talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
+    talents.soul_conduit_energize = find_spell( 215942 );
 
     talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
     talents.soulburn_buff = find_spell( 387626 );
@@ -220,10 +223,12 @@ namespace warlock
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194
 
     talents.inner_demons = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demons" ); // Should be ID 267216
+    talents.inner_demons_wild_imp = find_spell( 279910 );
 
     talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 428344
     talents.soul_strike_pet = find_spell( 264057 );
     talents.soul_strike_dmg = find_spell( 267964 );
+    talents.soul_strike_energize = find_spell( 270557 );
 
     talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
     talents.bilescourge_bombers_aoe = find_spell( 267213 );
@@ -616,6 +621,7 @@ namespace warlock
     hero.shared_fate_dmg = find_spell( 450593 );
 
     hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
+    hero.feast_of_souls_energize = find_spell( 450752 );
 
     hero.wicked_reaping = find_talent_spell( talent_tree::HERO, "Wicked Reaping" ); // Should be ID 449631
     hero.wicked_reaping_dmg = find_spell( 449826 );
@@ -726,7 +732,7 @@ namespace warlock
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_zero( true )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                               warlock_pet_list.wild_imps.spawn();
+                               pet_summon_actions.inner_demons_wild_imp->execute();
                              } );
 
     buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", talents.dread_calling_buff )
@@ -858,7 +864,7 @@ namespace warlock
                                   {
                                     if ( cur == 0 )
                                     {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_overlord->trigger(); } );
+                                      make_event( sim, 0_ms, [ this ] { buff_apply_action->trigger_buff( buffs.art_overlord ); } );
                                       diabolic_ritual = 1;
                                     }
                                   } );
@@ -869,7 +875,7 @@ namespace warlock
                                 {
                                   if ( cur == 0 )
                                   {
-                                    make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
+                                    make_event( sim, 0_ms, [ this ] { buff_apply_action->trigger_buff( buffs.art_mother ); } );
                                     diabolic_ritual = 2;
                                   }
                                 } );
@@ -880,7 +886,7 @@ namespace warlock
                                   {
                                     if ( cur == 0 )
                                     {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
+                                      make_event( sim, 0_ms, [ this ] { buff_apply_action->trigger_buff( buffs.art_pit_lord ); } );
                                       diabolic_ritual = 0;
                                     }
                                   } );
@@ -889,7 +895,7 @@ namespace warlock
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
                                  if ( cur == 0 )
-                                   warlock_pet_list.overlords.spawn();
+                                   pet_summon_actions.overlord->execute();
                                } );
 
     buffs.art_mother = make_buff( this, "demonic_art_mother_of_chaos", hero.art_mother )
@@ -897,10 +903,10 @@ namespace warlock
                              {
                                if ( cur == 0 )
                                {
-                                 warlock_pet_list.mothers.spawn();
+                                 pet_summon_actions.mother_of_chaos->execute();
 
                                  if ( hero.secrets_of_the_coven.ok() )
-                                      buffs.infernal_bolt->trigger();
+                                   buff_apply_action->trigger_buff( buffs.infernal_bolt );
                                }
                              } );
 
@@ -909,10 +915,10 @@ namespace warlock
                                {
                                  if ( cur == 0 )
                                  {
-                                   warlock_pet_list.pit_lords.spawn();
+                                   pet_summon_actions.pit_lord->execute();
 
                                    if ( hero.ruination.ok() )
-                                     buffs.ruination->trigger();
+                                     buff_apply_action->trigger_buff( buffs.ruination );
                                  }
                                } );
 

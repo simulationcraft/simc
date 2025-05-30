@@ -47,6 +47,9 @@ void warlock_pet_t::create_buffs()
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
                             ->set_default_value_from_effect( 2 );
 
+  buffs.infernal_command = make_buff( this, "infernal_command", o()->warlock_base.infernal_command_buff )
+                              ->set_default_value( o()->warlock_base.infernal_command_buff->effectN( 1 ).percent() );
+
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", o()->talents.antoran_armaments_buff )
                                 ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
 
@@ -94,6 +97,7 @@ void warlock_pet_t::create_buffs()
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
   buffs.imp_gang_boss->quiet = true;
+  buffs.infernal_command->quiet = true;
   buffs.demonic_strength->quiet = true;
   buffs.grimoire_of_service->quiet = true;
   buffs.annihilan_training->quiet = true;
@@ -621,7 +625,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       warlock_pet_melee_attack_t::impact( s );
 
       if ( applies_fel_sunder )
-        owner_td( s->target )->debuffs_fel_sunder->trigger();
+        p()->o()->buff_apply_action->trigger_buff( owner_td( s->target )->debuffs_fel_sunder ); // this debuff is applied from the player, not the pet
     }
   };
 
@@ -752,7 +756,6 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
-    // TOCHECK: As of 2023-10-16 PTR, Soul Cleave appears to be double-dipping on both Annihilan Training and Antoran Armaments multipliers. Not currently implemented
 
     base_multiplier *= 1.0 + p->o()->talents.fel_invocation->effectN( 1 ).percent();
   }
@@ -762,7 +765,13 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::execute();
 
     if ( p()->o()->talents.fel_invocation.ok() )
-      p()->o()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->o()->gains.soul_strike );
+    {
+      // Soul Strike soul shard generation only procs trinket and effects with the Demonic Soul talent and when uncapped
+      if ( p()->o()->hero.demonic_soul.ok() && p()->o()->resources.current[ RESOURCE_SOUL_SHARD ] < 5.0 )
+        p()->o()->energize_action->execute_resource_gain( RESOURCE_SOUL_SHARD, p()->o()->talents.soul_strike_energize->effectN( 1 ).base_value() / 10.0, p()->o()->gains.soul_strike );
+      else
+        p()->o()->resource_gain( RESOURCE_SOUL_SHARD, p()->o()->talents.soul_strike_energize->effectN( 1 ).base_value() / 10.0, p()->o()->gains.soul_strike );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1004,7 +1013,7 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    warlock_pet_t::demise();
 
    if ( o()->talents.fiendish_oblation.ok() )
-     o()->buffs.demonic_core->trigger();
+     o()->buff_apply_action->trigger_buff( o()->buffs.demonic_core );
  }
 
  double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
@@ -1089,6 +1098,25 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 {
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health = 0.15;
+
+  // 2025-05-30: The Infernal Command buff is applied and faded periodically every approximately 5.25 seconds (with some variance)
+  // In-game testing found this can be modelled fairly closely using a continuous uniform distribution
+  // The current value of this buff is 0, so it does not provide any damage increase
+  // However, it is relevant because applying this buff can procs trinket and effects
+  inf_comm_ev_func = [ this ]() {
+    if ( !is_sleeping() )
+    {
+      if ( buffs.infernal_command->up() )
+        buffs.infernal_command->decrement();
+      else
+        o()->buff_apply_action->trigger_buff( buffs.infernal_command );
+
+      const timespan_t next_tick_mean = inf_comm_period - inf_comm_mdiff;
+      const timespan_t next_tick_time = rng().range( next_tick_mean-inf_comm_period_range, next_tick_mean+inf_comm_period_range );
+      inf_comm_mdiff += next_tick_time - inf_comm_period;
+      inf_comm_ev = make_event( sim, next_tick_time, inf_comm_ev_func );
+    }
+  };
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
@@ -1214,6 +1242,11 @@ void wild_imp_pet_t::arise()
     o()->procs.imp_gang_boss->occur();
   }
 
+  // Start Infernal Command buff sequence of events
+  const timespan_t next_tick_time = rng().range( inf_comm_period-inf_comm_period_range, inf_comm_period+inf_comm_period_range );
+  inf_comm_mdiff = next_tick_time - inf_comm_period;
+  inf_comm_ev = make_event( sim, next_tick_time, inf_comm_ev_func );
+
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -1235,7 +1268,7 @@ void wild_imp_pet_t::demise()
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;
 
-      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
+      bool success = o()->buff_apply_action->trigger_buff( o()->buffs.demonic_core, 1, buff_t::DEFAULT_VALUE(), core_chance );
 
       if ( success )
         o()->procs.demonic_core_imps->occur();
@@ -1243,6 +1276,9 @@ void wild_imp_pet_t::demise()
 
     if ( expiration )
       event_t::cancel( expiration );
+
+    if ( inf_comm_ev )
+      event_t::cancel( inf_comm_ev );
 
     if ( o()->talents.the_expendables.ok() )
       o()->expendables_trigger_helper( this );
@@ -1327,7 +1363,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::impact( s );
 
     if ( p()->o()->talents.wicked_maw.ok() )
-      owner_td( s->target )->debuffs_wicked_maw->trigger();
+      p()->o()->buff_apply_action->trigger_buff( owner_td( s->target )->debuffs_wicked_maw ); // this debuff is applied from the player, not the pet
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1433,7 +1469,7 @@ void dreadstalker_t::demise()
 
     if ( o()->talents.demoniac.ok() )
     {
-      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+      bool success = o()->buff_apply_action->trigger_buff( o()->buffs.demonic_core, 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
       if ( success )
         o()->procs.demonic_core_dogs->occur();
     }
@@ -1559,7 +1595,7 @@ struct bile_spit_t : public warlock_pet_spell_t
     warlock_pet_spell_t::impact( s );
 
     if ( p()->o()->talents.foul_mouth.ok() )
-      owner_td( s->target )->debuffs_wicked_maw->trigger();
+      p()->o()->buff_apply_action->trigger_buff( owner_td( s->target )->debuffs_wicked_maw ); // this debuff is applied from the player, not the pet
   }
 };
 
@@ -1781,7 +1817,7 @@ void greater_dreadstalker_t::demise()
 {
   if ( !current.sleeping && o()->talents.demoniac.ok() )
   {
-    bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    bool success = o()->buff_apply_action->trigger_buff( o()->buffs.demonic_core, 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
     if ( success )
       o()->procs.demonic_core_big_dogs->occur();
   }
@@ -2323,7 +2359,7 @@ namespace diabolist
       warlock_pet_spell_t::impact( s );
 
       if ( p()->o()->hero.cloven_souls.ok() )
-        owner_td( s->target )->debuffs_cloven_soul->trigger();
+        p()->o()->buff_apply_action->trigger_buff( owner_td( s->target )->debuffs_cloven_soul ); // this debuff is applied from the player, not the pet
     }
   };
 

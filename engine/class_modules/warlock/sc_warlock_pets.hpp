@@ -36,6 +36,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
+    propagate_const<buff_t*> infernal_command; // Aura applied to WIld Imps periodically
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
     propagate_const<buff_t*> reign_of_tyranny;
@@ -391,6 +392,11 @@ struct wild_imp_pet_t : public warlock_pet_t
   action_t* firebolt;
   bool power_siphon;
   bool imploded;
+  std::function<void()> inf_comm_ev_func;
+  event_t* inf_comm_ev;
+  timespan_t inf_comm_mdiff;
+  static constexpr timespan_t inf_comm_period = 5250_ms;
+  static constexpr timespan_t inf_comm_period_range = 450_ms;
 
   wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;

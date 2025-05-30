@@ -119,6 +119,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
+    const spell_data_t* agony_energize; // Agony soul shard generation proc
     const spell_data_t* xavian_teachings; // Passive granted only to Affliction. Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
     const spell_data_t* malefic_rapture; // This contains an old sp_coeff value, but it is most likely no longer in use
     const spell_data_t* malefic_rapture_dmg;
@@ -130,6 +131,7 @@ public:
     const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
     const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
+    const spell_data_t* infernal_command_buff; // This still applies but with 0 value
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
     const spell_data_t* demonology_warlock; // Spec aura
 
@@ -191,6 +193,7 @@ public:
     player_talent_t sargerei_technique;
     player_talent_t demonic_tactics;
     player_talent_t soul_conduit;
+    const spell_data_t* soul_conduit_energize;  // Soul Shard refund spell effect
     player_talent_t soulburn;
     const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
@@ -291,9 +294,11 @@ public:
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
 
     player_talent_t inner_demons;
+    const spell_data_t* inner_demons_wild_imp; // Data for pet summoning (spawned from Inner Demons talent)
     player_talent_t soul_strike;
     const spell_data_t* soul_strike_pet;
     const spell_data_t* soul_strike_dmg;
+    const spell_data_t* soul_strike_energize;
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
@@ -552,6 +557,7 @@ public:
     const spell_data_t* shared_fate_debuff;
     const spell_data_t* shared_fate_dmg;
     player_talent_t feast_of_souls;
+    const spell_data_t* feast_of_souls_energize;
 
     player_talent_t wicked_reaping;
     const spell_data_t* wicked_reaping_dmg;
@@ -577,6 +583,147 @@ public:
     action_t* jackpot_ua;
     action_t* jackpot_cdf;
   } proc_actions;
+
+  // Action that applies a buff
+  // Useful for allowing trinket and spells procs to occur when a buff/debuff is applied
+  struct buff_apply_action_t : public spell_t
+  {
+  private:
+    bool is_trigger_call;
+    bool result;
+    buff_t* buff;
+    int stacks;
+    double value;
+    double chance;
+    timespan_t duration;
+  public:
+    buff_apply_action_t( util::string_view n, warlock_t* p )
+      : spell_t( n, p )
+    {
+      may_crit = may_miss = false;
+      background = dual = quiet = true;
+      harmful = true;
+      weapon_multiplier = 0.0;
+    }
+
+    bool trigger_buff( propagate_const<buff_t*> tbuff, timespan_t tduration )
+    {
+      return trigger_buff( tbuff, -1, tduration );
+    }
+
+    bool trigger_buff( propagate_const<buff_t*> tbuff, int tstacks, timespan_t tduration )
+    {
+      return trigger_buff( tbuff, tstacks, buff_t::DEFAULT_VALUE(), -1, tduration );
+    }
+
+    bool trigger_buff( propagate_const<buff_t*> tbuff, action_t* taction, int tstacks = -1, double tvalue = buff_t::DEFAULT_VALUE(), double tchance = -1.0, timespan_t tduration = timespan_t::min() )
+    {
+      if ( tbuff->can_trigger( taction ) )
+        return trigger_buff( tbuff, tstacks, tvalue, tchance, tduration );
+
+      return false;
+    }
+
+    // Triggers a buff doing a dummy action to allow procs
+    bool trigger_buff( propagate_const<buff_t*> tbuff, int tstacks = -1, double tvalue = buff_t::DEFAULT_VALUE(), double tchance = -1.0, timespan_t tduration = timespan_t::min() )
+    {
+      // Set func mode
+      is_trigger_call = true;
+      // Set buff and buff->trigger call args
+      buff = tbuff;
+      stacks = tstacks;
+      value = tvalue;
+      chance = tchance;
+      duration = tduration;
+      // Execute action that triggers the buff
+      execute();
+      // Return the result of the buff trigger call
+      return result;
+    }
+
+    // Execute a buff doing a dummy action to allow procs
+    void execute_buff( propagate_const<buff_t*> tbuff, int tstacks = -1, double tvalue = buff_t::DEFAULT_VALUE(), timespan_t tduration = timespan_t::min() ) {
+      // Set func mode
+      is_trigger_call = false;
+      // Set buff and buff->execute call args
+      buff = tbuff;
+      stacks = tstacks;
+      value = tvalue;
+      duration = tduration;
+      // Execute action that execute the buff
+      execute();
+    }
+
+    void execute() override
+    {
+      if ( is_trigger_call )
+      {
+        result = buff->trigger( stacks, value, chance, duration );
+        if ( result )
+          spell_t::execute(); // only on sucesfull buff triggers
+      }
+      else
+      {
+        buff->execute( stacks, value, duration );
+        spell_t::execute();
+      }
+    }
+  } *buff_apply_action;
+  
+  // Action for energize (resource gain) effects
+  // Useful for allowing energizing effects to proc trinkets and spells
+  struct energize_action_t : public spell_t
+  {
+  private:
+    double result;
+    resource_e resource_type;
+    double amount;
+    gain_t* source;
+    action_t* action;
+  public:
+    energize_action_t( util::string_view n, warlock_t* p )
+      : spell_t( n, p )
+    {
+      may_crit = may_miss = false;
+      background = dual = quiet = true;
+      harmful = true;
+      weapon_multiplier = 0.0;
+    }
+
+    // Execute a resource_gain doing a dummy action to allow procs
+    double execute_resource_gain( resource_e tresource_type, double tamount, gain_t* tsource = nullptr, action_t* taction = nullptr )
+    {
+      // Set resource_gain call args
+      resource_type = tresource_type;
+      amount = tamount;
+      source = tsource;
+      action = taction;
+      // Execute action that does the resource_gain call
+      execute();
+      // Return the result of the resource_gain call
+      return result;
+    }
+
+    void execute() override
+    {
+      result = static_cast<warlock_t*>( player )->resource_gain( resource_type, amount, source, action );
+
+      spell_t::execute();
+    }
+  } *energize_action;
+
+  struct pet_summon_actions_t
+  {
+    // Diabolist
+    propagate_const<action_t*> overlord;
+    propagate_const<action_t*> mother_of_chaos;
+    propagate_const<action_t*> pit_lord;
+
+    // Demonology
+    propagate_const<action_t*> wild_imp;
+    propagate_const<action_t*> inner_demons_wild_imp;
+    propagate_const<action_t*> greater_dreadstalker;
+  } pet_summon_actions;
 
   struct tier_sets_t
   {
@@ -860,6 +1007,9 @@ public:
   void create_diabolist_proc_actions();
   void create_hellcaller_proc_actions();
   void create_soul_harvester_proc_actions();
+  void create_demonology_pet_summon_actions();
+  void create_diabolist_pet_summon_actions();
+  void create_helper_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
