@@ -10137,7 +10137,6 @@ void warrior_t::init_blizzard_action_list()
     default:
       break;
   }
-    //pre_c->add_action( "raise_dead" );
 
   action_priority_list_t* default_ = get_action_priority_list( "default" );
   default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
