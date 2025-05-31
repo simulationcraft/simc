@@ -3460,6 +3460,7 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   std::string expr = "";
   std::string base_expr = "";
   std::string comment = "";
+  bool show_diff = false;
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
     parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
@@ -3471,10 +3472,12 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
       comment += comment.empty() ? derived_combat_rule.comment : ", " + derived_combat_rule.comment;
     if ( !base_combat_rule.expr.empty() )
       base_expr += base_expr.empty() ? base_combat_rule.expr : "&" + base_combat_rule.expr;
+
+    show_diff |= derived_combat_rule.show_diff;
   }
 
-  if ( base_expr != expr )
-    comment += comment.empty() ? fmt::format( "({} -> {})", base_expr, expr ) : fmt::format( " ({} -> {})", base_expr, expr );
+  if ( base_expr != expr && show_diff )
+    comment += ( comment.empty() ? ""  : " " ) + fmt::format( "('{}' -> '{}')", base_expr, expr );
 
   for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
   {
