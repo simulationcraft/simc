@@ -1402,8 +1402,8 @@ public:
   void init_blizzard_action_list() override;
   void validate_actor();
   bool validate_fight_style( fight_style_e style ) const override;
-  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
-                                          const assisted_combat_step_data_t &step ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
+                                                            const assisted_combat_step_data_t &step ) const override;
 
   // Init / Reset
   void create_pets() override;

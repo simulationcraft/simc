@@ -929,19 +929,19 @@ void monk_t::init_blizzard_action_list()
   }
 }
 
-std::string monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
-                                                const assisted_combat_step_data_t& step ) const
+parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                  const assisted_combat_step_data_t& step ) const
 {
   if ( step.spell_id == 152175 && rule.condition_type == TARGET_DISTANCE_LESS )
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1           = 10;
 
-    return base_t::parse_assisted_combat_rule( rule_copy, step );
+    return { base_t::parse_assisted_combat_rule( rule_copy, step ), "Extended range check to 10 yards (from 5)." };
   }
 
   if ( step.spell_id == 205523 && rule.condition_type == AURA_ON_PLAYER )
-    return "";
+    return { "", "Remove talent.blackout_combo check." };
 
   return base_t::parse_assisted_combat_rule( rule, step );
 }

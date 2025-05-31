@@ -1775,7 +1775,7 @@ public:
   void init_action_list() override;
   void init_blizzard_action_list() override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
-  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_rng() override;
@@ -13901,7 +13901,7 @@ void death_knight_t::init_blizzard_action_list()
 }
 
 // death_knight_t::parse_assisted_combat_rule ===============================
-std::string death_knight_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                         const assisted_combat_step_data_t& step ) const
 {
   // Blizz uses 5 in their apl, making the condition <5, however, this should be <6 to align with
@@ -13910,7 +13910,7 @@ std::string death_knight_t::parse_assisted_combat_rule( const assisted_combat_ru
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1 = 6;
-    return player_t::parse_assisted_combat_rule( rule_copy, step );
+    return { player_t::parse_assisted_combat_rule( rule_copy, step ), "TODO: Fill comment." };
   }
   return player_t::parse_assisted_combat_rule( rule, step );
 }
@@ -13940,12 +13940,14 @@ void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data
                                                  action_priority_list_t* assisted_combat )
 {
   std::string options = "";
-  std::string rule_str;
+  std::string comment = "";
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
-    std::string rule_str = parse_assisted_combat_rule( rule, step );
-    if ( !rule_str.empty() )
-      options += options.empty() ? rule_str : "&" + rule_str;
+    parsed_assisted_combat_rule_t rule_str = parse_assisted_combat_rule( rule, step );
+    if ( !rule_str.expr.empty() )
+      options += options.empty() ? rule_str.expr : "&" + rule_str.expr;
+    if ( !rule_str.comment.empty() )
+      comment += comment.empty() ? rule_str.comment : ", " + rule_str.comment;
   }
 
   // This is kinda ugly, maybe find a better way to do this?
@@ -13954,7 +13956,7 @@ void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data
     std::string name = blizzard_apl_action_replace( options );
     if ( name != "" )
     {
-      assisted_combat->add_action( name + ",if=" + options );
+      assisted_combat->add_action( name + ",if=" + options, comment );
       return;
     }
   }
@@ -13964,9 +13966,9 @@ void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data
     if ( !name.empty() )
     {
       if ( options.empty() )
-        assisted_combat->add_action( name );
+        assisted_combat->add_action( name, comment );
       else
-        assisted_combat->add_action( name + ",if=" + options );
+        assisted_combat->add_action( name + ",if=" + options, comment );
     }
   }
 }

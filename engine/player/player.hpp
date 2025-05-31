@@ -110,6 +110,23 @@ public:
   virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
+struct parsed_assisted_combat_rule_t
+{
+  std::string expr;
+  std::string comment;
+
+  parsed_assisted_combat_rule_t( std::string expr )
+    : expr( expr ), comment( {} ) {}
+
+  parsed_assisted_combat_rule_t( const char* expr )
+    : expr( expr ), comment( {} ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, std::string comment )
+    : expr( expr ), comment( comment ) {}
+
+  operator std::string() { return expr; }
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = MAX_LEVEL;
@@ -1124,7 +1141,8 @@ public:
   virtual std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const;
   virtual std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const;
   virtual void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat );
-  virtual std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+
+  virtual parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                   const assisted_combat_step_data_t& step ) const;
   virtual void init_gains();
   virtual void init_procs();

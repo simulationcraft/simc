@@ -1071,7 +1071,7 @@ public:
   void init_assessors() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
-  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   void init_special_effects() override;
   void init_finished() override;
@@ -9092,7 +9092,7 @@ void hunter_t::init_blizzard_action_list()
   }
 }
 
-std::string hunter_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                 const assisted_combat_step_data_t& step ) const
 {
   return player_t::parse_assisted_combat_rule( rule, step );

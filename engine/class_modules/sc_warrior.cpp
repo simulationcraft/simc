@@ -995,7 +995,7 @@ public:
   void init_action_list() override;
   void init_blizzard_action_list() override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
-  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
 
   action_t* create_action( util::string_view name, util::string_view options ) override;
@@ -10168,7 +10168,7 @@ void warrior_t::init_blizzard_action_list()
 }
 
 // warrior_t::parse_assisted_combat_rule ===============================
-std::string warrior_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                         const assisted_combat_step_data_t& step ) const
 {
   // Blizz uses 5 in their apl, making the condition <5, however, this should be <6 to align with
@@ -10177,7 +10177,7 @@ std::string warrior_t::parse_assisted_combat_rule( const assisted_combat_rule_da
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1 = 6;
-    return player_t::parse_assisted_combat_rule( rule_copy, step );
+    return { player_t::parse_assisted_combat_rule( rule_copy, step ), "TODO: Fill comment." };
   }
   return player_t::parse_assisted_combat_rule( rule, step );
 }

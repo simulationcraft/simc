@@ -948,7 +948,7 @@ public:
   void create_options() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
-  std::string parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                           const assisted_combat_step_data_t& step ) const override;
   std::string default_potion() const override { return mage_apl::potion( this ); }
   std::string default_flask() const override { return mage_apl::flask( this ); }
@@ -8903,7 +8903,7 @@ void mage_t::init_blizzard_action_list()
   }
 }
 
-std::string mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                 const assisted_combat_step_data_t& step ) const
 {
   if ( rule.condition_type == TARGET_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
@@ -8911,9 +8911,9 @@ std::string mage_t::parse_assisted_combat_rule( const assisted_combat_rule_data_
     assert( rule.condition_value_3 == 0 );
     if ( bugs )
       // Right now, this will never trigger because it checks for Arcane Harmony stacks on the target.
-      return "0";
+      return { "0", "TODO: Fill comment." };
 
-    return fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 );
+    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ), "TODO: Fill comment." };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
