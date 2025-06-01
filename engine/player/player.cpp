@@ -3477,7 +3477,7 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   }
 
   if ( base_expr != expr && show_diff )
-    comment += ( comment.empty() ? ""  : " " ) + fmt::format( "('{}' -> '{}')", base_expr, expr );
+    comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
   for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
   {
