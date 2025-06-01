@@ -13910,7 +13910,7 @@ parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule( const 
   {
     assisted_combat_rule_data_t rule_copy = rule;
     rule_copy.condition_value_1 = 6;
-    return { player_t::parse_assisted_combat_rule( rule_copy, step ), "TODO: Fill comment." };
+    return { player_t::parse_assisted_combat_rule( rule_copy, step ), true };
   }
   return player_t::parse_assisted_combat_rule( rule, step );
 }

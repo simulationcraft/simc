@@ -8911,9 +8911,9 @@ parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted
     assert( rule.condition_value_3 == 0 );
     if ( bugs )
       // Right now, this will never trigger because it checks for Arcane Harmony stacks on the target.
-      return { "0", "TODO: Fill comment." };
+      return { "0", "This will never trigger because it checks for Arcane Harmony stacks on the target." };
 
-    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ), "TODO: Fill comment." };
+    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ), "Checking Arcane Harmony stacks on player instead of target is likely the intended condition." };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
