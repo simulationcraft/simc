@@ -125,7 +125,7 @@ struct parsed_assisted_combat_rule_t
   parsed_assisted_combat_rule_t( std::string expr, bool show_diff )
     : expr( expr ), comment( {} ), show_diff( show_diff ) {}
 
-  parsed_assisted_combat_rule_t( std::string expr, std::string comment )
+  parsed_assisted_combat_rule_t( std::string expr, const char* comment )
     : expr( expr ), comment( comment ), show_diff( true ) {}
 
   parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff )
