@@ -9,6 +9,7 @@
 
 #include "actor.hpp"
 #include "assessor.hpp"
+#include "dbc/assisted_combat.hpp"
 #include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
 #include "gear_stats.hpp"
@@ -107,6 +108,30 @@ struct player_report_extension_t
 public:
   virtual ~player_report_extension_t() = default;
   virtual void html_customsection(report::sc_html_stream&) = 0;
+};
+
+struct parsed_assisted_combat_rule_t
+{
+  std::string expr;
+  std::string comment;
+  bool show_diff;
+
+  parsed_assisted_combat_rule_t( const char* expr )
+    : expr( expr ), comment( {} ), show_diff( false ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr )
+    : expr( expr ), comment( {} ), show_diff( false ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, bool show_diff )
+    : expr( expr ), comment( {} ), show_diff( show_diff ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, const char* comment )
+    : expr( expr ), comment( comment ), show_diff( true ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff )
+    : expr( expr ), comment( comment ), show_diff( show_diff ) {}
+
+  operator std::string() { return expr; }
 };
 
 struct player_t : public actor_t
@@ -324,6 +349,8 @@ struct player_t : public actor_t
   std::string modify_action;
   std::string use_apl;
   bool use_default_action_list;
+  bool use_blizzard_action_list;
+  bool one_button_mode;
   auto_dispose< std::vector<dot_t*> > dot_list;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
@@ -698,6 +725,7 @@ struct player_t : public actor_t
 
   bool active_during_iteration;
   const spell_data_t* spec_spell;
+  const spell_data_t* single_button_assistant;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
@@ -857,7 +885,7 @@ struct player_t : public actor_t
     // harvester's edict chance to intercept
     double harvesters_edict_intercept_chance = 0.2;
     // Dawn/Duskthread Lining
-    double dawn_dusk_thread_lining_uptime = 0.6;
+    double dawn_dusk_thread_lining_uptime = 0.7;
     // Interval between checking blue_silken_lining_uptime
     timespan_t dawn_dusk_thread_lining_update_interval = 10_s;
     // Standard Deviation of interval
@@ -886,6 +914,7 @@ struct player_t : public actor_t
     player_option_t<std::string> mister_locknstalk_mode = "dynamic";
     player_option_t<std::string> jastor_diamond_ally_stat = "none";
     double suspicious_energy_drink_bonus_chance           = 0;
+    timespan_t additional_gcd_time                        = 0_s;
   } thewarwithin_opts;
 
 private:
@@ -1115,6 +1144,13 @@ public:
   virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
+  virtual void init_blizzard_action_list();
+  virtual std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const;
+  virtual std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const;
+  virtual void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat );
+
+  virtual parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                    const assisted_combat_step_data_t& step ) const;
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();

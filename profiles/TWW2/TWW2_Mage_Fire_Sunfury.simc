@@ -30,7 +30,7 @@ actions.precombat+=/variable,name=sf_combustion_flamestrike,if=talent.spellfire_
 actions.precombat+=/variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+talent.firefall+!talent.mark_of_the_firelord+!(talent.flame_patch|talent.quickflame)+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame))*2+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame)&talent.firefall)*99
 actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter
 actions.precombat+=/use_item,name=treacherous_transmitter
-actions.precombat+=/use_item,name=ingenious_mana_battery
+actions.precombat+=/use_item,name=ingenious_mana_battery,target=self
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/frostfire_bolt,if=talent.frostfire_bolt
@@ -130,32 +130,32 @@ actions.sf_filler+=/phoenix_flames
 actions.sf_filler+=/scorch,if=scorch_execute.active
 actions.sf_filler+=/fireball
 
-head=aspectral_emissarys_crystalline_cowl,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,ilevel=678,gem_id=213743
-neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213494/213455
-shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=11109/8960,ilevel=675,enchant_id=7403,crafted_stats=36/40
-chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
-wrists=hyperthread_wristwraps,id=168989,ilevel=678,gem_id=213485
-hands=punctured_apiary_gloves,id=221067,ilevel=678
-waist=ringmasters_cummerbund,id=168958,ilevel=678,gem_id=213485
-legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=aspectral_emissarys_slippers,id=229345,bonus_id=11996/10356/6652/1579/10255,ilevel=678
-finger1=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213485/213470,enchant_id=7340,crafted_stats=36/49
-finger2=wicks_golden_loop,id=221099,ilevel=678,gem_id=213485/213485,enchant_id=7340
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-trinket2=mugs_moxie_jug,id=230192,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-main_hand=fleshcrafters_knife,id=178789,ilevel=678,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8792/11144,ilevel=675,crafted_stats=40/32
+head=aspectral_emissarys_crystalline_cowl,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,ilevel=684,gem_id=213743,enchant_id=7927
+neck=semicharmed_amulet,id=228841,ilevel=684,gem_id=213494/213455
+shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=11109/8960,ilevel=681,enchant_id=7403,crafted_stats=36/40
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=684,enchant_id=7364
+wrists=hyperthread_wristwraps,id=168989,ilevel=684,gem_id=213485
+hands=punctured_apiary_gloves,id=221067,ilevel=684
+waist=ringmasters_cummerbund,id=168958,ilevel=684,gem_id=213485
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=684,enchant_id=7534
+feet=aspectral_emissarys_slippers,id=229345,bonus_id=11996/10356/6652/1579/10255,ilevel=684
+finger1=miniature_roulette_wheel,id=228843,ilevel=684,gem_id=213485/213470,enchant_id=7340,crafted_stats=36/49
+finger2=wicks_golden_loop,id=221099,ilevel=684,gem_id=213485/213485,enchant_id=7340
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=684
+trinket2=mugs_moxie_jug,id=230192,bonus_id=6652/10356/11996/1527/10255,ilevel=684
+main_hand=fleshcrafters_knife,id=178789,ilevel=684,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8792/11144,ilevel=681,crafted_stats=40/32
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_stamina=391616
-# gear_intellect=69873
-# gear_crit_rating=2983
-# gear_haste_rating=28248
-# gear_mastery_rating=8013
-# gear_versatility_rating=6447
+# gear_ilvl=683.63
+# gear_stamina=421565
+# gear_intellect=73782
+# gear_crit_rating=3061
+# gear_haste_rating=29030
+# gear_mastery_rating=8205
+# gear_versatility_rating=6615
 # gear_avoidance_rating=545
-# gear_armor=20731
+# gear_armor=21608
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

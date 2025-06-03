@@ -380,7 +380,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   else if ( p.report_information.save_str.find( "TWW2" ) != std::string::npos )
   {
     tier_name          = "TWW2";
-    max_ilevel_allowed = 678;
+    max_ilevel_allowed = 684;
   }
   else
   {

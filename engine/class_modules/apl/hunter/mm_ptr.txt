@@ -26,7 +26,7 @@ actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
 
 actions.st=volley,if=!talent.double_tap
-actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up
+actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down
 actions.st+=/trueshot,if=variable.trueshot_ready
 actions.st+=/explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up
 actions.st+=/aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up
@@ -48,7 +48,7 @@ actions.trickshots+=/multishot,if=buff.precise_shots.up&(debuff.spotters_mark.do
 actions.trickshots+=/volley,if=talent.double_tap&buff.double_tap.down
 actions.trickshots+=/black_arrow,if=buff.withering_fire.up&buff.trick_shots.up
 actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_cooldown.down)
 actions.trickshots+=/explosive_shot,if=talent.precision_detonation&(buff.lock_and_load.up|!set_bonus.thewarwithin_season_2_4pc)&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
 actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up
 actions.trickshots+=/explosive_shot

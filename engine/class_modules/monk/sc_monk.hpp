@@ -1392,46 +1392,59 @@ public:
 public:
   monk_t( sim_t *sim, util::string_view name, race_e r );
 
+  // APL
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
-  action_t *create_action( util::string_view name, util::string_view options ) override;
-  double composite_attack_power_multiplier() const override;
-  double composite_dodge() const override;
-  double non_stacking_movement_modifier() const override;
-  double composite_player_target_armor( player_t *target ) const override;
-  double resource_regen_per_second( resource_e ) const override;
+  void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void validate_actor();
+  bool validate_fight_style( fight_style_e style ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
+                                                            const assisted_combat_step_data_t &step ) const override;
+
+  // Init / Reset
   void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
   void init_base_stats() override;
   void init_scaling() override;
-  void create_buffs() override;
-  void create_actions() override;
   void init_gains() override;
   void init_procs() override;
   void init_assessors() override;
   void init_special_effects() override;
   void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
-  void reset() override;
+  void create_buffs() override;
+  action_t *create_action( util::string_view name, util::string_view options ) override;
+  void create_actions() override;
   void create_options() override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  void reset() override;
   void copy_from( player_t * ) override;
-  resource_e primary_resource() const override;
-  role_e primary_role() const override;
-  stat_e convert_hybrid_stat( stat_e s ) const override;
+  void collect_resource_timeline_information() override;
+
+  // Combat
+  void activate() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
   void assess_heal( school_e, result_amount_type, action_state_t *s ) override;
   void invalidate_cache( cache_e ) override;
-  void init_action_list() override;
-  void activate() override;
-  void collect_resource_timeline_information() override;
-  bool validate_fight_style( fight_style_e style ) const override;
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+
+  // Stats
+  role_e primary_role() const override;
+  resource_e primary_resource() const override;
+  stat_e convert_hybrid_stat( stat_e s ) const override;
+  double composite_attack_power_multiplier() const override;
+  double composite_dodge() const override;
+  double non_stacking_movement_modifier() const override;
+  double composite_player_target_armor( player_t *target ) const override;
+  double resource_regen_per_second( resource_e ) const override;
+
+  // Other
   const monk_td_t *find_target_data( const player_t *target ) const override
   {
     return target_data[ target ];
@@ -1445,8 +1458,6 @@ public:
     }
     return td;
   }
-
-  // Custom Monk Functions
   void parse_player_effects();
   void create_proc_callback( const spell_data_t *effect_driver,
                              bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
@@ -1460,11 +1471,13 @@ public:
   void create_proc_callback( const spell_data_t *effect_driver,
                              bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
                              action_t *proc_action_override = nullptr );
+
+  // Actions
   void trigger_celestial_fortune( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-  bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic
+  bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
   std::vector<player_t *> create_storm_earth_and_fire_target_list() const;
   void summon_storm_earth_and_fire( timespan_t duration );
   void retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> &targets ) const;

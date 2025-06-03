@@ -2988,6 +2988,16 @@ struct rogue_poison_t : public rogue_attack_t
 
   virtual void trigger( const action_state_t* source_state )
   {
+    // 2025-05-01 -- Terrible hack due to the discovery that Thrown Precision can roll poisons twice
+    if ( p()->bugs && p()->talent.assassination.thrown_precision->ok() && source_state->result == RESULT_CRIT &&
+         rogue_t::cast_attack( source_state->action )->data().id() == p()->spec.fan_of_knives->id() )
+    {
+      sim->print_debug( "{} procs poison from thrown_precision {}, target={} source={}", *player, *this,
+                        *source_state->target, *source_state->action );
+
+      execute_on_target( source_state->target );
+    }
+
     bool result = rng().roll( proc_chance( source_state ) );
 
     sim->print_debug( "{} attempts to proc poison {}, target={} source={} proc_chance={}: {}", *player, *this,
@@ -2996,8 +3006,7 @@ struct rogue_poison_t : public rogue_attack_t
     if ( !result )
       return;
 
-    set_target( source_state->target );
-    execute();
+    execute_on_target( source_state->target );
   }
 
   void impact( action_state_t* state ) override
@@ -4515,6 +4524,21 @@ struct envenom_t : public rogue_attack_t
     // 2023-10-05 -- Envenom spell no longer has a base 1s duration, hard code for now
     timespan_t envenom_duration = ( 1_s * cast_state( state )->get_combo_points() ) +
                                   p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
+
+    // 2025-05-12 -- Envenom with Twist the Knife pandemics based on the stack it is replacing if at max stacks
+    //               Needs custom duration because pandemics on async buffs is not supported in the core
+    if ( p()->buffs.envenom->stack_behavior == buff_stack_behavior::ASYNCHRONOUS &&
+         p()->buffs.envenom->expiration.size() == p()->buffs.envenom->max_stack() )
+    {
+      auto current_remains = p()->buffs.envenom->expiration.front()->occurs() - sim->current_time();
+      auto residual = std::min( envenom_duration * 0.3, current_remains );
+      
+      sim->print_debug( "{} {} carryover duration from ongoing async buff: {}, refresh_duration={} new_duration={}",
+                        *p(), *p()->buffs.envenom, residual, envenom_duration, ( envenom_duration + residual ) );
+
+      envenom_duration += residual;
+    }
+
     p()->buffs.envenom->trigger( envenom_duration );
 
     rogue_attack_t::impact( state );
@@ -4676,7 +4700,7 @@ struct fan_of_knives_t: public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* state ) const override
   {
-    if( p()->talent.assassination.thrown_precision->ok() && state->result == RESULT_CRIT )
+    if( !p()->bugs && p()->talent.assassination.thrown_precision->ok() && state->result == RESULT_CRIT )
       return 1.0;
 
     return rogue_attack_t::composite_poison_flat_modifier( state );
@@ -5340,6 +5364,15 @@ struct mutilate_t : public rogue_attack_t
 
   bool has_amount_result() const override
   { return true; }
+
+  bool ready() override
+  {
+    // Blindside overrides Mutilate with Ambush in the action bar when the buff is present
+    if ( p()->buffs.blindside->check() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
 };
 
 // Roll the Bones ===========================================================
@@ -5639,7 +5672,8 @@ struct secret_technique_t : public rogue_attack_t
       rogue_attack_t( name, p, s )
     {
       aoe = -1;
-      reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value();
+      full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
+      reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value() - 1;
     }
 
     double composite_player_multiplier( const action_state_t* state ) const override
@@ -6710,6 +6744,7 @@ struct vicious_venoms_t : public rogue_attack_t
     rogue_attack_t( name, p, s ), triggers_doomblade( from_multilate )
   {
     base_dd_min = base_dd_max = 1;  // Override from 0 for snapshot_flags
+    affected_by.improved_shiv = true; // 2025-05-03 -- Not in spell data
   }
 
   void impact( action_state_t* state ) override
@@ -8760,12 +8795,6 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // Compute Blade Flurry modifier
   double multiplier = p()->buffs.blade_flurry->check_value();
 
-  // Grand Melee buff is additive with Killing Spree base value
-  if ( p()->buffs.grand_melee->up() )
-  {
-    multiplier += p()->spec.grand_melee->effectN( 2 ).percent();
-  }
-
   if ( p()->talent.outlaw.precise_cuts->ok() )
   {
     // Already ignores the main target due to the target_list() being filtered
@@ -8775,6 +8804,12 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     {
       multiplier += p()->talent.outlaw.precise_cuts->effectN( 1 ).percent() * ( max_targets - num_targets );
     }
+  }
+
+  // 2025-05-06 Grand Melee is 20% multiplicative, used to be 10% additive, spell data is hotfixed manually
+  if ( p()->buffs.grand_melee->up() )
+  {
+    multiplier *= 1.0 + p()->spec.grand_melee->effectN( 2 ).percent();
   }
 
   // 2024-08-12 -- This effect is multiplicative, even though it uses the same tooltip as additive mods
@@ -9613,8 +9648,8 @@ void actions::rogue_action_t<Base>::trigger_tww2_set_bonus_removal()
       // If the 4pc refreshes itself, the restoration value (default_value) gets updated to 10 stacks
       if ( p()->buffs.tww2_assassination_4pc->check() )
       {
-        p()->buffs.tww2_assassination_4pc->trigger( p()->buffs.tww2_assassination_4pc->max_stack(),
-                                                    p()->buffs.tww2_assassination_4pc->max_stack() );
+        p()->buffs.tww2_assassination_4pc->trigger( p()->buffs.tww2_assassination_4pc->max_stack() );
+        p()->buffs.tww2_assassination_4pc->default_value = p()->buffs.tww2_assassination_4pc->max_stack();
       }
       else
       {
@@ -13088,6 +13123,12 @@ public:
 
   void register_hotfixes() const override
   {
+    // 2025-05-06 Grand Melee is 20% multiplicative
+    hotfix::register_effect( "Rogue", "2025-05-06", "Grand Melee Blade Flurry Bonus", 1107258 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 10 );
   }
 
   void init( player_t* ) const override {}

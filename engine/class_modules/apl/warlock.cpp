@@ -251,6 +251,7 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
   default_->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14" );
+  default_->add_action( "hand_of_guldan,if=active_enemies>3&(pet.greater_dreadstalker.remains&pet.greater_dreadstalker.remains>gcd.max&pet.greater_dreadstalker.remains<gcd.max*3)&cooldown.call_dreadstalkers.remains>gcd.max*3&cooldown.summon_vilefiend.remains>gcd.max*2" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25" );
   default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30" );
   default_->add_action( "demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.react&(!talent.doom|buff.demonic_core.react>1|debuff.doom.remains>10|debuff.doom.down)&(((!talent.fel_invocation|pet.felguard.cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4))&!prev_gcd.1.demonbolt&!variable.pool_cores_for_tyrant" );
@@ -260,8 +261,9 @@ void demonology( player_t* p )
   default_->add_action( "bilescourge_bombers,if=active_enemies>1" );
   default_->add_action( "guillotine,if=active_enemies>1&(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
   default_->add_action( "ruination" );
+  default_->add_action( "hand_of_guldan,if=active_enemies>3&active_enemies<8&soul_shard>=2&set_bonus.tww2_4pc&buff.dreadstalkers.up|active_enemies>7&active_enemies<16&soul_shard>=2&set_bonus.tww2_4pc&buff.tyrant.remains>cast_time" );
+  default_->add_action( "implosion,if=active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl" );
   default_->add_action( "infernal_bolt,if=soul_shard<3&cooldown.summon_demonic_tyrant.remains>20" );
-  default_->add_action( "implosion,if=two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&!raid_event.adds.exists|two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&raid_event.adds.exists&(active_enemies>3|active_enemies<=3&last_cast_imps>0)" );
   default_->add_action( "demonbolt,if=variable.diabolic_ritual_remains>gcd.max&variable.diabolic_ritual_remains<gcd.max+gcd.max&buff.demonic_core.up&soul_shard<=3" );
   default_->add_action( "shadow_bolt,if=variable.diabolic_ritual_remains>gcd.max&variable.diabolic_ritual_remains<soul_shard.deficit*cast_time+gcd.max&soul_shard<5" );
   default_->add_action( "hand_of_guldan,if=((soul_shard>2&(cooldown.call_dreadstalkers.remains>gcd.max*4|buff.demonic_calling.remains-gcd.max>cooldown.call_dreadstalkers.remains)&cooldown.summon_demonic_tyrant.remains>17)|soul_shard=5|soul_shard=4&talent.fel_invocation)&(active_enemies=1)" );

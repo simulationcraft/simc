@@ -191,32 +191,32 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_b
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
 
-head=sanitized_scraphood,id=228859,bonus_id=1808,ilevel=678,gem_id=213743
-neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213467/213467
-shoulders=opulent_treasurescales_gleaming_mantle,id=229278,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/8790/11303/8960,enchant=chant_of_winged_grace_3,crafted_stats=32/49
-chest=opulent_treasurescales_tunic,id=229283,ilevel=678,enchant=crystalline_radiance_3
-wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/8790/11303/8960/1808,gem_id=213467,enchant=chant_of_armored_leech_3,crafted_stats=32/49
-hands=opulent_treasurescales_goldcounters,id=229281,ilevel=678
-waist=dealers_covetous_chain,id=228877,bonus_id=1808,ilevel=678,gem_id=213467
-legs=opulent_treasurescales_petticoat,id=229279,ilevel=678,enchant=sunset_spellthread_3
-feet=shrapnelridden_sabatons,id=228862,ilevel=678,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213467/213491,enchant=radiant_critical_strike_3
-finger2=bloodoath_signet,id=178871,bonus_id=8781,ilevel=678,gem_id=213479/213455,enchant=radiant_critical_strike_3
-trinket1=mugs_moxie_jug,id=230192,ilevel=678
-trinket2=house_of_cards,id=230027,ilevel=678
-main_hand=bestinslots,id=232805,ilevel=678,enchant=authority_of_radiant_power_3
+head=sanitized_scraphood,id=228859,bonus_id=1808,ilevel=684,gem_id=213743,enchant_id=7933
+neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=684,gem_id=213467/213467
+shoulders=opulent_treasurescales_gleaming_mantle,id=229278,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/8790/11303/8960,ilevel=681,enchant=chant_of_winged_grace_3,crafted_stats=32/49
+chest=opulent_treasurescales_tunic,id=229283,ilevel=684,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/8790/11303/8960/1808,ilevel=681,gem_id=213467,enchant=chant_of_armored_leech_3,crafted_stats=32/49
+hands=opulent_treasurescales_goldcounters,id=229281,ilevel=684
+waist=dealers_covetous_chain,id=228877,bonus_id=1808,ilevel=684,gem_id=213467
+legs=opulent_treasurescales_petticoat,id=229279,ilevel=684,enchant=sunset_spellthread_3
+feet=shrapnelridden_sabatons,id=228862,ilevel=684,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=684,gem_id=213467/213491,enchant=radiant_haste_3
+finger2=bloodoath_signet,id=178871,bonus_id=8781,ilevel=684,gem_id=213479/213455,enchant=radiant_haste_3
+trinket1=mugs_moxie_jug,id=230192,ilevel=684
+trinket2=house_of_cards,id=230027,ilevel=684
+main_hand=bestinslots,id=232805,ilevel=684,enchant=stormriders_fury_3
 
 # Gear Summary
-# gear_ilvl=677.60
-# gear_stamina=392419
-# gear_intellect=75206
-# gear_crit_rating=15276
-# gear_haste_rating=16902
-# gear_mastery_rating=9485
-# gear_versatility_rating=1283
+# gear_ilvl=683.60
+# gear_stamina=422361
+# gear_intellect=79423
+# gear_crit_rating=15017
+# gear_haste_rating=18025
+# gear_mastery_rating=9763
+# gear_versatility_rating=1296
 # gear_leech_rating=2040
 # gear_avoidance_rating=545
-# gear_armor=48977
+# gear_armor=51053
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

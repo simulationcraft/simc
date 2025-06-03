@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61188 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -682,11 +682,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -1634,7 +1634,7 @@ Family Flags     : 1, 36
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=898900)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.016 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.016 | PvP Coefficient: 1.15 | Target: Friendly (21)
 Description      : $@spelldesc360995
 
 Name             : Fluttering Seedlings (id=361361) [Spell Family (224)] 
@@ -1721,9 +1721,9 @@ Family Flags     : 1, 7, 22
 Attributes       : Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=899463)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.588 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.66 | Target: Friendly (21)
 #2 (id=907224)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.13 | Target: Friendly (21)
 Description      : $@spelldesc361469
 Tooltip          : Healing for $w2 every $t2 sec.
 
@@ -2158,7 +2158,7 @@ Family Flags     : 1, 2, 3, 11, 38
 Attributes       : Not Shapeshifted (16), Aura Expires Offline (130), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904256)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | Target: Friendly (21)
 #2 (id=904257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Friendly (21)
 Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next healing spell to cast an additional time on that ally at $s2% of normal healing. Essence spells cannot be Echoed.
@@ -2417,7 +2417,7 @@ Family Flags     : 1, 27
 Attributes       : No Aura Icon (60), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.32 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.78 | Target: Friendly (21)
 #2 (id=915159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=982930)   : Dummy (3)
@@ -2437,7 +2437,7 @@ Family Flags     : 1, 27
 Attributes       : Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910754)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.32 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.78 | Target: Friendly (21)
 #2 (id=1017326)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc367226
@@ -2925,7 +2925,7 @@ Effects          :
                    Family Flags: 6
 #3 (id=1055987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : Disintegrate channels $s1% faster$?c3[ and Eruption's cast time is reduced by $s3%][].
 
@@ -3922,7 +3922,7 @@ Triggered By     : Energy Loop (372233)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | PvP Coefficient: 0.75 | Resource: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -6941,15 +6941,15 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1030355)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160)
+                   Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160), Eruption (438653)
                    Family Flags: 10, 54
 #2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 #3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 #4 (id=1084518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
@@ -7311,15 +7311,13 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1037188)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 24 | Scaled Value: 24 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.85 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (15 -> 24)
 #2 (id=1037189)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 24 | Scaled Value: 24 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.85 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (15 -> 24)
 #3 (id=1037190)  : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -8275,7 +8273,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1070005)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : Eruption's Essence cost is reduced by $s1.
 
@@ -8730,7 +8728,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Unknown(78) -> At Enemy in Area (16)
-Hotfixed         : Base Value (8 -> 10)
 #2 (id=1075735)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Radius: 6 yards | Target: At Enemy in Area (16)
 Description      : $@spelldesc403631
@@ -11259,8 +11256,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Fire Breath (357209 effect#6), Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
-Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2)
-Family Flags     : 0
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Natural Convergence (369913 effect#3), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Essence Burst (392268 effects: #1, #2, #3), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Volcanism (406904 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Melt Armor (441172 effect#2), Unrelenting Siege (441248 effects: #1, #3), Volcanic Upsurge (456142 effect#1), Imminent Destruction (459574 effects: #1, #2, #3)
+Family Flags     : 0, 3, 38, 54
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131385)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
@@ -11360,7 +11357,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Enemy (6)
 #2 (id=1135463)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
-                   Affected Spells: Emerald Blossom (355916), Disintegrate (356995), Pyre (357212), Echo (364343), Emerald Blossom (373766), Eruption (395160), Bombardments (434481), Bombardments (441661), Bombardments (442161)
+                   Affected Spells: Emerald Blossom (355916), Disintegrate (356995), Pyre (357212), Echo (364343), Emerald Blossom (373766), Eruption (395160), Bombardments (434481), Eruption (438653), Bombardments (441661), Bombardments (442161)
                    Family Flags: 38, 78
 Description      : $@spelldesc357210
 Tooltip          : $?e0[Suffering $w1 Volcanic damage every $t1 sec.][]$?e1[ Damage taken from Essence abilities and bombardments increased by $s2%.][]
@@ -11531,13 +11528,13 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
 #1 (id=1135590)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 12, 50, 54
 #2 (id=1135591)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1168513)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Living Flame (361500), Azure Strike (362969), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 12, 50, 54
 Description      : $@spelldesc441246
 Tooltip          : Azure Strike, Living Flame, and $?c1[Disintegrate][Eruption] deal $w1% increased damage.
@@ -12264,7 +12261,7 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1155672)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Upheaval (396288)
                    Family Flags: 58
 #2 (id=1160139)  : Apply Aura (6) | Proc Trigger Spell (42): Volcanic Upsurge
@@ -12409,8 +12406,8 @@ Triggered By     : Evoker Augmentation 11.0 Class Set 2pc (453672)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : $@spelldesc453672
 Tooltip          : Eruption damage increased by $w1%.
@@ -12511,15 +12508,15 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166492)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Disintegrate (356995), Eruption (395160)
+                   Affected Spells: Disintegrate (356995), Eruption (395160), Eruption (438653)
                    Family Flags: 6, 54
 #2 (id=1166493)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Pyre (357211), Pyre (357212), Eruption (395160)
+                   Affected Spells: Pyre (357211), Pyre (357212), Eruption (395160), Eruption (438653)
                    Family Flags: 5, 54
 #3 (id=1166494)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Eruption (395160)
+                   Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
 Description      : $@spelldesc370781
 Tooltip          : Eruption essence cost reduced by $s1 and its damage increased by $s2%.

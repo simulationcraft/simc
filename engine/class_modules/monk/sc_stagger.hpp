@@ -251,7 +251,7 @@ struct stagger_t : base_actor_t
       if ( splits.size() != 2 || splits[ 0 ] != stagger_effect.name() )
         continue;
       for ( const auto &level : stagger_effect.levels )
-        if ( splits[ 1 ] == level.name() )
+        if ( splits[ 1 ] == util::tokenize_fn( level.name() ) )
           return make_fn_expr( name_str, [ &stagger_effect = stagger_effect, &level = level ] {
             return stagger_effect.current->level_data == level.level_data;
           } );

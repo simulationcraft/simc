@@ -1537,6 +1537,16 @@ class SpellDataGenerator(DataGenerator):
          # 11.1.5
          1225040, # Twilight Devastation Enchant
          1227303, # Twisted Appendage Enchant
+         # 11.1.7
+         1236109, 1236110, 1236140, # Charged Bolts
+         1236118, 1236122, 1236141, # Cauterizing Bolts
+         1236142, 1236272, # Critical Chain
+         1236144, 1236273, 1236936, # Spark Burst
+         1236146, 1236275, 1236938, # Static Charge
+         1236148, 1236276, 1236937, 1236961, # Electric Current
+         1236161, 1236277, # Charged Touch
+         1236165, 1236278, 1236993, # Energy Shield
+         1236169, 1236279, # Charged Crystal
         ),
 
         # Warrior:
@@ -1929,6 +1939,7 @@ class SpellDataGenerator(DataGenerator):
           ( 326982, 0 ), # Unending Thirst
           ( 425721, 0 ), # T31 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
+          ( 1235391, 0 ), # Dark Transformation player buff
           # The War Within
           ( 290577, 0 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
@@ -5272,5 +5283,54 @@ class TraitLoadoutGenerator(DataGenerator):
             fields += entry.field('num_points', 'order_index')
 
             self.output_record(fields)
+
+        self.output_footer()
+
+class AssistedCombatStepGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatStep').values(),
+                          key = lambda e: (e.ref('id_assisted_combat').id_spec, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Step data',
+            type = 'assisted_combat_step_data_t',
+            array = 'assisted_combat_step',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.ref('id_assisted_combat').field('id_spec')
+            fields += entry.field('order_index', 'id_spell')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
+
+        self.output_footer()
+
+class AssistedCombatRuleGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatRule').values(), key = lambda e: (e.id_parent, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Rule data',
+            type = 'assisted_combat_rule_data_t',
+            array = 'assisted_combat_rule',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.field('id_parent', 'order_index', 'condition_type',
+                                  'condition_value_1', 'condition_value_2', 'condition_value_3')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
 
         self.output_footer()

@@ -459,7 +459,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    player_talent_t dimension_ripper; // TODO: After 11.1 goes live, removed outdated RNG option and outdated trigger flags
+    player_talent_t dimension_ripper; // TODO: implement the correct proc behavior based on the spell data
 
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
@@ -807,7 +807,7 @@ public:
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10, "decimation" };
-    rng_setting_t dimension_ripper = { 0.05, 0.05, "dimension_ripper" };
+    rng_setting_t dimension_ripper = { 0.0225, 0.0225, "dimension_ripper" };
 
     // Diabolist
 

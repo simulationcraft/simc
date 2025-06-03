@@ -370,6 +370,11 @@ double target_fight_length( sim_t* sim )
     }
   }
 
+  // Some fight styles don't have targets that can be used to compute
+  // the fight length; use the sim length as an approximation.
+  if ( fight_length == 0.0 )
+    fight_length = sim->simulation_length.mean();
+
   return fight_length;
 }
 

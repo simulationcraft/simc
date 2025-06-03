@@ -1070,6 +1070,9 @@ public:
   void init_scaling() override;
   void init_assessors() override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   void init_special_effects() override;
   void init_finished() override;
   void reset() override;
@@ -3231,7 +3234,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   {
     hunter_pet_attack_t::tick( d );
 
-    if ( rng().roll( ursine_fury.chance ) )
+    if ( ursine_fury.cooldown && rng().roll( ursine_fury.chance ) )
       ursine_fury.cooldown->adjust( ursine_fury.reduction );
   }
 
@@ -4728,7 +4731,7 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( p->talents.withering_fire.ok() )
     {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( 13 ).base_value() );
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( p->is_ptr() ? 12 : 13 ).base_value() );
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
@@ -7895,6 +7898,7 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "call_pet_1"            ) return new             summon_pet_t( this, options_str );
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
@@ -9050,6 +9054,60 @@ void hunter_t::init_action_list()
   }
 
   player_t::init_action_list();
+}
+
+void hunter_t::init_blizzard_action_list()
+{
+  player_t::init_blizzard_action_list();
+
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  switch ( specialization() )
+  {
+    case HUNTER_MARKSMANSHIP:
+      precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
+      break;
+    default:
+      precombat->add_action( "summon_pet" );
+      break;
+  }
+
+
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  default_->add_action( specialization() == HUNTER_SURVIVAL ? "auto_attack" : "auto_shot" );
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  switch ( specialization() )
+  {
+    case HUNTER_BEAST_MASTERY:
+      cooldowns->add_action( "call_of_the_wild" );
+      break;
+    case HUNTER_MARKSMANSHIP:
+      cooldowns->add_action( "trueshot" );
+      break;
+    case HUNTER_SURVIVAL:
+      cooldowns->add_action( "coordinated_assault" );
+      break;
+    default:
+      break;
+  }
+}
+
+parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                const assisted_combat_step_data_t& step ) const
+{
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  // We should consider making it so that we can use kill_shot to refer to both Kill Shot
+  // and Black Arrow depending on talents, rather than have them separate.
+  if( spell_id == talents.kill_shot->id() )
+  {
+    return { "kill_shot", "black_arrow" };
+  }
+
+  return player_t::action_names_from_spell_id( spell_id );
 }
 
 void hunter_t::init_special_effects()

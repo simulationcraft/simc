@@ -257,7 +257,7 @@ public:
     buff_t* juggernaut_prot;
     buff_t* last_stand;
     buff_t* meat_cleaver;
-    buff_t* martial_prowess;
+    buff_t* overpower;
     buff_t* merciless_bonegrinder;
     buff_t* ravager;
     buff_t* recklessness;
@@ -993,6 +993,10 @@ public:
 
   void apl_default();
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
 
   action_t* create_action( util::string_view name, util::string_view options ) override;
   void activate() override;
@@ -1139,6 +1143,8 @@ public:
       parse_effects( p()->buff.dance_of_death_bladestorm );
       parse_effects( p()->buff.juggernaut );
       parse_effects( p()->buff.merciless_bonegrinder );
+      if ( p()->talents.arms.martial_prowess->ok() )
+        parse_effects( p()->buff.overpower, effect_mask_t( false ).enable( 2 ) );
       parse_effects( p()->buff.storm_of_swords );
       parse_effects( p()->buff.recklessness_warlords_torment, effect_mask_t( true ).disable( 10, 11, 12 ) );
 
@@ -3284,15 +3290,6 @@ struct mortal_strike_t : public warrior_attack_t
     }
   }
 
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
-
-    return am;
-  }
-
   double cost() const override
   {
     if ( background )
@@ -3339,7 +3336,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.crushing_advance->expire();
 
-    p()->buff.martial_prowess->expire();
+    p()->buff.overpower->expire();
 
     p()->buff.brutal_finish->expire();
 
@@ -3867,8 +3864,6 @@ struct cleave_seismic_reverberation_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
-
     if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
@@ -3936,8 +3931,6 @@ struct cleave_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p()->buff.martial_prowess->check_stack_value();
-
     if ( !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up() )
     {
       am *= 1.0 + p()->buff.collateral_damage->stack_value();
@@ -4000,7 +3993,7 @@ struct cleave_t : public warrior_attack_t
     {
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
-    p()->buff.martial_prowess->expire();
+    p()->buff.overpower->expire();
 
     if ( p()->talents.arms.collateral_damage.ok() && !p()->buff.sweeping_strikes->up() && p()->buff.collateral_damage->up()  )
     {
@@ -4474,7 +4467,11 @@ struct thunder_blast_t : public warrior_attack_t
           state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
       // Seismic Reverb deals 70% reduced Thunder Blast damage, despite only listing Whirlwind/Cleave as affected spells
-      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
+      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
+      if ( p()->bugs )
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
+      else
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
       seismic_action->execute_on_target( target );
     }
   }
@@ -4665,7 +4662,11 @@ struct thunder_clap_t : public warrior_attack_t
           state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
       // Seismic Reverb deals 70% reduced Thunder Clap damage, despite only listing Whirlwind/Cleave as affected spells
-      seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
+      // BUGS BUGS BUGS.  Currently in live, TC and TB are doing 70% of normal, damage, rather than 30% of damage
+      if ( p()->bugs )
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 0.70 );  // Hard code 70% damage
+      else
+        seismic_action->base_dd_min = seismic_action->base_dd_max = state->result_amount * ( 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent() );
       seismic_action->execute_on_target( target );
     }
   }
@@ -6162,7 +6163,7 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess->ok() )
     {
-    p()->buff.martial_prowess->trigger();
+      p()->buff.overpower->trigger();
     }
 
     if ( p()->talents.arms.finishing_blows->ok() && target->health_percentage() < 35 )
@@ -9592,10 +9593,8 @@ void warrior_t::create_buffs()
   buff.meat_cleaver = make_buff( this, "meat_cleaver", spell.whirlwind_buff )
                         ->apply_affecting_aura( talents.fury.meat_cleaver );
 
-  buff.martial_prowess =
-    make_buff(this, "martial_prowess", talents.arms.martial_prowess)
-    ->set_default_value(talents.arms.overpower->effectN(2).percent() );
-  buff.martial_prowess->set_max_stack(buff.martial_prowess->max_stack() + as<int>( talents.arms.martial_prowess->effectN(2).base_value() ) );
+  buff.overpower = make_buff(this, "overpower", talents.arms.overpower)
+                        ->apply_affecting_aura( talents.arms.martial_prowess );
 
   buff.merciless_bonegrinder = make_buff( this, "merciless_bonegrinder", find_spell( 383316 ) )
     ->set_default_value( find_spell( 383316 )->effectN( 1 ).percent() )
@@ -10107,6 +10106,94 @@ void warrior_t::init_action_list()
   // Default
   use_default_action_list = true;
   parse_player_effects_t::init_action_list();
+}
+
+// warrior_t::init_blizzard_action_list ====================================
+
+void warrior_t::init_blizzard_action_list()
+{
+  player_t::init_blizzard_action_list();
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
+  action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+  switch ( specialization() )
+  {
+    case WARRIOR_ARMS:
+      pre_c->add_action( "battle_stance,toggle=on" );
+      break;
+    case WARRIOR_FURY:
+      pre_c->add_action( "berserker_stance,toggle=on" );
+      break;
+    case WARRIOR_PROTECTION:
+      pre_c->add_action( "battle_stance,toggle=on" );
+      break;
+    default:
+      break;
+  }
+
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
+  default_->add_action( "charge,if=time<=0.5|movement.distance>5" );
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  switch ( specialization() )
+  {
+    case WARRIOR_ARMS:
+      cooldowns->add_action( "avatar" );
+      break;
+    case WARRIOR_FURY:
+      cooldowns->add_action( "recklessness" );
+      cooldowns->add_action( "avatar" );
+      break;
+    case WARRIOR_PROTECTION:
+      cooldowns->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
+      cooldowns->add_action( "shield_charge" );
+      cooldowns->add_action( "avatar" );
+      cooldowns->add_action( "shield_block,if=buff.shield_block.remains<=10" );
+      cooldowns->add_action( "last_stand" );
+      cooldowns->add_action( "shield_wall" );
+      cooldowns->add_action( "ignore_pain,if=rage>=65" );
+      break;
+    default:
+      break;
+  }
+}
+
+// warrior_t::parse_assisted_combat_rule ===============================
+parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                        const assisted_combat_step_data_t& step ) const
+{
+  // Blizz uses 5 in their apl, making the condition <5, however, this should be <6 to align with
+  // distance targeting, as well, this makes it work correctly in simc
+  if ( rule.condition_type == TARGET_DISTANCE_LESS && rule.condition_value_1 == 5 )
+  {
+    assisted_combat_rule_data_t rule_copy = rule;
+    rule_copy.condition_value_1 = 6;
+    return { player_t::parse_assisted_combat_rule( rule_copy, step ), true };
+  }
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+// warrior_t::parse_assisted_combat_step ===============================Add commentMore actions
+void warrior_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                                 action_priority_list_t* assisted_combat )
+{
+  return player_t::parse_assisted_combat_step( step, assisted_combat );
+}
+
+// warrior_t::action_names_from_spell_id ===============================
+std::vector<std::string> warrior_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  // If we need to do spell id replacements for blizz apl, see DK module for an example
+  return player_t::action_names_from_spell_id( spell_id );
 }
 
 // warrior_t::arise() ======================================================

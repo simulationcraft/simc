@@ -5,7 +5,7 @@ level=80
 race=dwarf
 role=attack
 position=back
-talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAM2mxMjZMzMzYYGGjZMMzMz0yMmtZAAAAAAw2yMzgZmxCsMbDAAAAzMADsBzY0Y2AsNhFzA
+talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAM2mZmZMjZYGDzwgZMzMmZmWmxsMDAAAAAA22mZmhZmxCsMLDAAAAzMDAGzmhhMwswCtwmB
 
 # Default consumables
 potion=tempered_potion_3
@@ -157,32 +157,32 @@ actions.vanish_usage_off_meta+=/vanish,if=!talent.underhanded_upper_hand&!talent
 actions.vanish_usage_off_meta+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&talent.fateful_ending&(!buff.fatebound_lucky_coin.up&(buff.fatebound_coin_tails.stack>=5|buff.fatebound_coin_heads.stack>=5)|buff.fatebound_lucky_coin.up&!cooldown.between_the_eyes.ready)
 actions.vanish_usage_off_meta+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&!talent.fateful_ending&talent.take_em_by_surprise&!buff.take_em_by_surprise.up
 
-head=spectral_gamblers_damned_visage,id=229289,bonus_id=1527/11996,gem_id=213743
-neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/10878/12043/12040/1485/10520/8960,gem_id=213467/213497,crafted_stats=40/36
-shoulders=spectral_gamblers_bladed_mantle,id=229287,bonus_id=1527/11996
-back=trashmasters_mantle,id=199921,bonus_id=10067/11996/11964,ilevel=678
-chest=seraphic_wraps_of_the_ordained,id=221130,bonus_id=10067/11996/11964,ilevel=678,enchant=crystalline_radiance_3
-wrists=servoarm_bindings,id=158353,bonus_id=10067/11996/11964,ilevel=678,gem_id=213485
-hands=spectral_gamblers_gloves,id=229290,bonus_id=1527/11996
-waist=hitmans_holster,id=228880,bonus_id=1527/11996,gem_id=213485
-legs=spectral_gamblers_pantaloons,id=229288,bonus_id=1527/11996,enchant=stormbound_armor_kit_3
-feet=dragsters_last_stride,id=228876,bonus_id=10067/11996/11964,ilevel=678
-finger1=miniature_roulette_wheel,id=228843,bonus_id=1527/11996/11964/8781,gem_id=213485/213485,enchant=cursed_versatility_3,crafted_stats=40/36
-finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10878/12043/12040/1485/10520/8960,gem_id=213485/213461,enchant=cursed_versatility_3,crafted_stats=32/40
-trinket1=junkmaestros_mega_magnet,id=230189,bonus_id=1527/11996
-trinket2=zees_thug_hotline,id=230199,bonus_id=1527/11996
-main_hand=gallywixs_iron_thumb,id=228899,bonus_id=1527/11996,enchant=authority_of_the_depths_3
-off_hand=capos_molten_knuckles,id=232804,bonus_id=1527/11996,enchant=authority_of_the_depths_3
+head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=684,gem_id=213743,enchant_id=7927
+neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/8792/8781/10520/8960,ilevel=681,gem_id=213461/213461
+shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=684
+back=trashmasters_mantle,id=199921,ilevel=684
+chest=seraphic_wraps_of_the_ordained,id=221130,ilevel=684,enchant_id=7364
+wrists=killer_queens_wristflickers,id=228869,bonus_id=1808,ilevel=684,gem_id=213461
+hands=spectral_gamblers_gloves,id=229290,ilevel=684
+waist=spectral_gamblers_pocket_ace,id=229286,bonus_id=1808,ilevel=684,gem_id=213461
+legs=spectral_gamblers_pantaloons,id=229288,ilevel=684,enchant_id=7654
+feet=spectral_gamblers_cavaliers,id=229291,ilevel=684
+finger1=miniature_roulette_wheel,id=228843,bonus_id=1533/12376/11964,gem_id=213461/213461,enchant_id=7352,crafted_stats=40/32
+finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/8792/8781/10520/8960,ilevel=681,gem_id=213461/213461,enchant_id=7352
+trinket1=zees_thug_hotline,id=230199,ilevel=684
+trinket2=junkmaestros_mega_magnet,id=230189,ilevel=684
+main_hand=gallywixs_iron_thumb,id=228899,ilevel=684,enchant_id=7460
+off_hand=capos_molten_knuckles,id=232804,ilevel=684,enchant_id=7460
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_agility=56573
-# gear_stamina=391524
+# gear_ilvl=683.63
+# gear_agility=59622
+# gear_stamina=421376
 # gear_attack_power=938
-# gear_crit_rating=8326
-# gear_haste_rating=12647
-# gear_mastery_rating=1806
-# gear_versatility_rating=20591
-# gear_armor=34040
+# gear_crit_rating=7827
+# gear_haste_rating=12664
+# gear_mastery_rating=1932
+# gear_versatility_rating=22210
+# gear_armor=35482
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

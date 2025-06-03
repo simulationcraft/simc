@@ -35,7 +35,7 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20
 # Hold Volley for up to its whole cooldown for multiple target situations, also make sure Rapid Fire will be available to stack extra Bullestorm stacks during it without Aspect of the Hydra.
 actions.st=volley,if=!talent.double_tap&(talent.aspect_of_the_hydra|active_enemies=1|buff.precise_shots.down&(cooldown.rapid_fire.remains+action.rapid_fire.execute_time<6|!talent.bulletstorm))&(!raid_event.adds.exists|raid_event.adds.in>cooldown|active_enemies>1)
 # Prioritize Rapid Fire to trigger Lunar Storm or to stack extra Bulletstorm when Volley Trick Shots is up without Aspect of the Hydra.
-actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|!talent.aspect_of_the_hydra&talent.bulletstorm&active_enemies>1&buff.trick_shots.up&(buff.precise_shots.down|!talent.no_scope)
+actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down|!talent.aspect_of_the_hydra&talent.bulletstorm&active_enemies>1&buff.trick_shots.up&(buff.precise_shots.down|!talent.no_scope)
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Prioritize 4pc double bonus by casting Explosive Shot and following up with Aimed Shot when Lock and Load is up, as long as Precise Shots would not be wasted.
 actions.st+=/explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up
@@ -70,7 +70,7 @@ actions.trickshots+=/black_arrow,if=buff.trick_shots.up
 # Prioritize Aimed Shot a bit higher than Rapid Fire if it's close to charge capping and Bulletstorm is up.
 actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd
 # With Sentinel, hold Rapid Fire for up to 1/3 of its cooldown to trigger Lunar Storm as soon as possible.
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_cooldown.down)
 # With Precision Detonation, wait until a follow up Aimed Shot would not waste Precise Shots to cast. Require Lock and Load active if using the 4pc.
 actions.trickshots+=/explosive_shot,if=talent.precision_detonation&(buff.lock_and_load.up|!set_bonus.thewarwithin_season_2_4pc)&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
 # Aimed Shot if we've spent Precise Shots to trigger Spotter's Mark and Moving Target. With No Scope this means Precise Shots could be up when Aimed Shot is cast.

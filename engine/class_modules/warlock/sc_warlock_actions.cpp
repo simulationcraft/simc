@@ -341,35 +341,6 @@ using namespace helpers;
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && !p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->rng_settings.dimension_ripper.setting_value )  )
-      {
-        if ( p()->talents.dimensional_rift.ok() )
-        {
-          p()->cooldowns.dimensional_rift->reset( true, 1 );
-        }
-        else
-        {
-          int rift = rng().range( 3 );
-
-          switch ( rift )
-          {
-          case 0:
-            p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
-            break;
-          case 1:
-            p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
-            break;
-          case 2:
-            p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
-            break;
-          default:
-            break;
-          }
-        }
-
-        p()->procs.dimension_ripper->occur();
-      }
-
       if ( destruction() && active_2pc( TWW2 ) && triggers.jackpot_destruction )
       {
         if ( p()->jackpot_destruction_rng->trigger() )
@@ -399,7 +370,7 @@ using namespace helpers;
           p()->procs.reverse_entropy->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() / ( p()->bugs ? 2.0 : 1.0 ) ) )
+      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
       {
         int rift = rng().range( 3 );
 
@@ -3517,8 +3488,6 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
         affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
-        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
-
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); // TOCHECK: Does this apply in-game correctly?
@@ -3605,7 +3574,6 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
-      triggers.dimension_ripper = p->talents.dimension_ripper.ok();
       triggers.jackpot_destruction = true;
 
       add_child( fnb_action );

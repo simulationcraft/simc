@@ -942,6 +942,7 @@ static constexpr auto _category_flag_strings = util::make_static_map<unsigned, s
   { 3, "Cooldown in Days"                 },
   { 4, "Reset Charges on Encounter End"   },
   { 5, "Reset Coooldown on Encounter End" },
+  { 6, "Unaffected by Modify Time Rate"   },
 } );
 
 static constexpr auto _property_type_strings = util::make_static_map<int, std::string_view>( {

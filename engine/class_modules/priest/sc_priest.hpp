@@ -873,8 +873,8 @@ public:
 
     bool shadow_tww2_4pc_insanity = true;
 
-    // 10% Chance that a Fire Mage steals the proc because you are slow or you just dont hit it.
-    double synergistic_brewterializer_tof_chance = 0.9;
+    // 30% Chance that a Fire Mage steals the proc because you are slow or you just dont hit it or it just bugs out.
+    double synergistic_brewterializer_tof_chance = 0.7;
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
   } options;

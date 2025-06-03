@@ -67,7 +67,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=neural_on_mini,op=set,value=equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter|equipped.imperfect_ascendancy_serum|equipped.quickwick_candlestick|equipped.soulletting_ruby|equipped.funhouse_lens|equipped.house_of_cards|equipped.flarendos_pilot_light|equipped.signet_of_the_priory" );
   precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.blastmaster3000|equipped.ratfang_toxin|equipped.ingenious_mana_battery|equipped.geargrinders_spare_keys|equipped.ringing_ritual_mud|equipped.goo_blin_grenade|equipped.noggenfogger_ultimate_deluxe|equipped.garbagemancers_last_resort|equipped.mad_queens_mandate|equipped.fearbreakers_echo|equipped.mereldars_toll|equipped.gooblin_grenade" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "use_item,name=ingenious_mana_battery" );
+  precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=11" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
   precombat->add_action( "mirror_image" );
@@ -117,7 +117,7 @@ void arcane( player_t* p )
   spellslinger->add_action( "arcane_barrage,if=(buff.arcane_tempo.up&buff.arcane_tempo.remains<(gcd.max+(gcd.max*2*(buff.nether_precision.stack=1))))|(buff.intuition.react&buff.intuition.remains<gcd.max)", "Barrage if Tempo or Intuition are about to expire, for Tempo, you can Barrage a little earlier if you have Nether Precision." );
   spellslinger->add_action( "arcane_barrage,if=buff.arcane_harmony.stack>=(18-(6*talent.high_voltage))&(buff.nether_precision.down|buff.nether_precision.stack=1|(active_enemies>3&buff.clearcasting.react&talent.high_voltage))", "Barrage if Harmony is over 18 stacks, or 12 with High Voltage and either no Nether Precision or your last stack of it." );
   spellslinger->add_action( "arcane_missiles,if=buff.aether_attunement.react&cooldown.touch_of_the_magi.remains<gcd.max*3&buff.clearcasting.react&set_bonus.thewarwithin_season_2_4pc", "Use Aether Attunement up before casting Touch if you have S2 4pc equipped to avoid munching." );
-  spellslinger->add_action( "arcane_barrage,if=(cooldown.touch_of_the_magi.ready|cooldown.touch_of_the_magi.remains<((travel_time+50)>?gcd.max))", "Barrage if Touch is up or will be up while Barrage is in the air." );
+  spellslinger->add_action( "arcane_barrage,if=(cooldown.touch_of_the_magi.ready|cooldown.touch_of_the_magi.remains<((travel_time+0.050)>?gcd.max))", "Barrage if Touch is up or will be up while Barrage is in the air." );
   spellslinger->add_action( "arcane_barrage,if=talent.high_voltage&talent.orb_barrage&buff.arcane_charge.stack>1&buff.clearcasting.react&buff.aether_attunement.react&(buff.nether_precision.stack=1|(buff.nether_precision.up&active_enemies>1)|((buff.nether_precision.up|(buff.clearcasting.react<3&buff.intuition.react=0))&active_enemies>3))", "Barrage in AOE if you can refund Charges through High Voltage as soon as possible if you have Aether Attunement and Nether Precision up." );
   spellslinger->add_action( "arcane_missiles,if=(buff.clearcasting.react&buff.nether_precision.down&((cooldown.touch_of_the_magi.remains>gcd.max*7&cooldown.arcane_surge.remains>gcd.max*7)|buff.clearcasting.react>1|!talent.magis_spark|(cooldown.touch_of_the_magi.remains<gcd.max*4&buff.aether_attunement.react=0)|set_bonus.thewarwithin_season_2_4pc))|(fight_remains<5&buff.clearcasting.react),interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1", "Use Clearcasting procs to keep Nether Precision up, if you don't have S2 4pc try to pool Aether Attunement for cooldown windows." );
   spellslinger->add_action( "arcane_blast,if=((debuff.magis_spark_arcane_blast.up&((debuff.magis_spark_arcane_blast.remains<(cast_time+gcd.max))|active_enemies=1|talent.leydrinker))|buff.leydrinker.up)&buff.arcane_charge.stack=4&!talent.charged_orb&active_enemies<3,line_cd=2", "Blast whenever you have the bonus from Leydrinker or Magi's Spark up, don't let spark expire in AOE." );
@@ -145,7 +145,7 @@ void arcane( player_t* p )
   sunfury->add_action( "arcane_barrage,if=(talent.orb_barrage&active_enemies>1&buff.arcane_harmony.stack>=18&((active_enemies>3&(talent.resonance|talent.high_voltage))|buff.nether_precision.down|buff.nether_precision.stack=1|(buff.nether_precision.stack=2&buff.clearcasting.react=3)))" );
   sunfury->add_action( "arcane_missiles,if=buff.clearcasting.react&set_bonus.thewarwithin_season_2_4pc&buff.aether_attunement.react&cooldown.touch_of_the_magi.remains<gcd.max*(3-(1.5*(active_enemies>3&(!talent.time_loop|talent.resonance)))),interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1" );
   sunfury->add_action( "arcane_blast,if=((debuff.magis_spark_arcane_blast.up&((debuff.magis_spark_arcane_blast.remains<(cast_time+gcd.max))|active_enemies=1|talent.leydrinker))|buff.leydrinker.up)&buff.arcane_charge.stack=4&(buff.nether_precision.up|buff.clearcasting.react=0),line_cd=2", "Blast whenever you have the bonus from Leydrinker or Magi's Spark up, don't let spark expire in AOE." );
-  sunfury->add_action( "arcane_barrage,if=buff.arcane_charge.stack=4&(cooldown.touch_of_the_magi.ready|cooldown.touch_of_the_magi.remains<((travel_time+50)>?gcd.max))", "Barrage into Touch if you have charges when it comes up." );
+  sunfury->add_action( "arcane_barrage,if=buff.arcane_charge.stack=4&(cooldown.touch_of_the_magi.ready|cooldown.touch_of_the_magi.remains<((travel_time+0.050)>?gcd.max))", "Barrage into Touch if you have charges when it comes up." );
   sunfury->add_action( "arcane_barrage,if=(talent.high_voltage&active_enemies>1&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.nether_precision.stack=1)", "AOE Barrage conditions are optimized for funnel, avoids overcapping Harmony stacks (line below Tempo line above), spending Charges when you have a way to recoup them via High Voltage or Orb while pooling sometimes for Touch with various talent optimizations." );
   sunfury->add_action( "arcane_barrage,if=(active_enemies>1&talent.high_voltage&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.aether_attunement.react&buff.glorious_incandescence.down&buff.intuition.down)" );
   sunfury->add_action( "arcane_barrage,if=(active_enemies>2&talent.orb_barrage&talent.high_voltage&debuff.magis_spark_arcane_blast.down&buff.arcane_charge.stack=4&target.health.pct<35&talent.arcane_bombardment&(buff.nether_precision.up|(buff.nether_precision.down&buff.clearcasting.stack=0)))" );
@@ -181,7 +181,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+talent.firefall+!talent.mark_of_the_firelord+!(talent.flame_patch|talent.quickflame)+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame))*2+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame)&talent.firefall)*99" );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
-  precombat->add_action( "use_item,name=ingenious_mana_battery" );
+  precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "frostfire_bolt,if=talent.frostfire_bolt" );
@@ -297,7 +297,7 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
-  precombat->add_action( "use_item,name=ingenious_mana_battery" );
+  precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
   precombat->add_action( "blizzard,if=active_enemies>=3" );
   precombat->add_action( "frostbolt,if=active_enemies<=2" );
 

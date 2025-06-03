@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.60490 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.5.61188 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -121111,7 +121111,6 @@ Effects          :
 Description      : $@spelldesc279524
 
 Name             : Berserk (id=279526) [Spell Family (7)] 
-Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Spell Level      : 19
@@ -127084,7 +127083,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 413
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Master Assassin (470676 effect#1)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Master Assassin (470676 effect#1)
 Triggered By     : Nothing Personal (286579)
 Family Flags     : 54, 97
 Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -127952,7 +127951,7 @@ Labels           : 292
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Triggered By     : Echoing Blades (287650)
 Family Flags     : 54
 Attributes       : No Active Defense (21), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
@@ -160523,6 +160522,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Momentum Redistributor Boots (id=330914) 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 60
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
@@ -169848,9 +169848,9 @@ Labels           : 3959: Item Effects
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=871958)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5267.525 (coefficient=1.375703) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5794.38 (coefficient=1.5133) | Misc Value: 1792 | Target: Self (1)
 #2 (id=871962)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 6438.424 (coefficient=1.681503) | Misc Value: 1792 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7082.445 (coefficient=1.8497) | Misc Value: 1792 | Target: Self (1)
 
 Name             : Call Steward (id=345837) 
 School           : Physical
@@ -183166,7 +183166,7 @@ Name             : Firim's Specimen Container (id=368121)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Attributes       : Not In Combat (Only Peaceful) (28), Visible only to caster (conversations only) (343)
+Attributes       : Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not in Battleground (284), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=912320)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -185442,7 +185442,7 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982828)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Trigger Spell: 371124
@@ -185457,7 +185457,7 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982836)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 371124
@@ -185472,7 +185472,7 @@ Labels           : 1450
                  : 1452
                  : 1471
 Category Cooldown: 600 seconds
-Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
+Attributes       : Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), Only Peaceful Targets (40), No Threat (42), Not In Arena or Rated Battleground (144), Not in Battleground (284), Reset cooldown upon ending an encounter (333), Not In Proving Grounds (401)
 Effects          :
 #1 (id=982837)   : Dummy (3)
                    Base Value: 18 | Scaled Value: 18 | Trigger Spell: 371124
@@ -231102,7 +231102,7 @@ Triggered By     : Entropic Reclamation (449254)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139246)  : Apply Aura (6) | Proc Trigger Spell (42): Entropic Skardyn Core | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 4305.431 (coefficient=1.124436) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4951.241 (coefficient=1.2931) | PvP Coefficient: 0.5 | Trigger Spell: 449267 | Target: Self (1)
 Description      : Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.
 
 Name             : Cinderbrew Stein (id=443381) 
@@ -231454,7 +231454,7 @@ Effects          :
 #1 (id=1139498)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4092.05 (coefficient=1.068708) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1146187)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 429.9397 (coefficient=0.112286) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1075.175 (coefficient=0.2808) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your spells have a chance to imbue the wax, causing it to form into a blazing candle for $451367d which increases your Versatility by $s1, further increased by $s2 while you remain within its light.
 
 Name             : Burin of the Candle King (id=443529) 
@@ -259809,8 +259809,8 @@ Effects          :
 #2 (id=1207395)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207396)  : Dummy (3)
-                   Base Value: 678 | Scaled Value: 678
-Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to 678 in Arenas and Battlegrounds. 
+                   Base Value: 684 | Scaled Value: 684
+Description      : Increase the minimum item level of Liberation of Undermine set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Prized Jeweler's Settings.
 
@@ -259823,8 +259823,8 @@ Effects          :
 #2 (id=1207402)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1207403)  : Dummy (3)
-                   Base Value: 678 | Scaled Value: 678
-Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to 678 in Arenas and Battlegrounds. 
+                   Base Value: 684 | Scaled Value: 684
+Description      : Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 Name             : Ringing Ritual Mud (id=1221145) [Passive] 
 School           : Physical
@@ -260106,12 +260106,12 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 125 | Mechanic: Knockback | Target: Self (1)
 Description      : $@spelldesc1218417
 
-Name             : Cut of the Curseblade (id=1224456) [Passive, Hidden] 
+Name             : Cut of the Curseblade (id=1224456) [Passive] 
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : White Melee, White Ranged
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213105)  : Apply Aura (6) | Proc Trigger Damage (43) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | PvP Coefficient: 0.5 | Target: Self (1)
@@ -260230,7 +260230,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1214030)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 845195 (coefficient=330.4433) | Trigger Spell: 1225038 | Target: Self (1)
-Hotfixed         : Coefficient (143.289124 -> 330.443298)
 Description      : $@spelldesc1225074
 
 Name             : Twilight Devastation (id=1225045) [Passive] 
@@ -260248,7 +260247,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1214035)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1448900 (coefficient=566.472) | Trigger Spell: 1225038 | Target: Self (1)
-Hotfixed         : Coefficient (198.324081 -> 566.472046), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225074
 
 Name             : Lesser Rune of Twilight Devastation (id=1225074) 
@@ -260364,8 +260362,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215377)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 42260 (coefficient=16.52226) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (7.164454 -> 16.522263)
+                   Base Value: 0 | Scaled Value: 71842 (coefficient=28.08785) | Trigger Spell: 1225883 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225880) [Passive] 
@@ -260382,8 +260379,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1215379)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 72445 (coefficient=28.3236) | Trigger Spell: 1225883 | Target: Self (1)
-Hotfixed         : Coefficient (9.916095 -> 28.323601)
+                   Base Value: 0 | Scaled Value: 123156.5 (coefficient=48.15012) | Trigger Spell: 1225883 | Target: Self (1)
 Description      : $@spelldesc1225873
 
 Name             : Echoing Void (id=1225883) [Hidden] 
@@ -260392,7 +260388,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 20 (Haste multiplier)
-Proc Flags       : Cast Successful
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Cast Successful
 Triggered By     : Echoing Void (1225878), Echoing Void (1225880)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Check Required Target Aura By Caster (382)
 Effects          :
@@ -260410,7 +260406,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Proc Flags       : Encounter Start
 Triggered By     : Echoing Void (1225883)
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Points On Client (268), Check Required Target Aura By Caster (382)
+Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1215386)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -260553,10 +260549,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217487)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 211298 (coefficient=82.61053) | Trigger Spell: 1227215 | Target: Self (1)
-Hotfixed         : Coefficient (39.404579 -> 82.610535), Scaling Class (-9 -> -8)
 #2 (id=1218047)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 73954 (coefficient=28.91357) | Target: Self (1)
-Hotfixed         : Coefficient (10.746684 -> 28.913568), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227211) [Passive] 
@@ -260574,10 +260568,8 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217488)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 362226 (coefficient=141.6184) | Trigger Spell: 1227215 | Target: Self (1)
-Hotfixed         : Coefficient (54.539207 -> 141.618393), Scaling Class (-9 -> -8)
 #2 (id=1218066)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 126779 (coefficient=49.5664) | Target: Self (1)
-Hotfixed         : Coefficient (14.874307 -> 49.566399), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1227206
 
 Name             : Infinite Stars (id=1227215) [Hidden] 
@@ -260627,7 +260619,7 @@ Effects          :
 #3 (id=1217501)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
 Description      : $@spelldesc1227206
-Tooltip          : Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.
+Tooltip          : Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].
 
 Name             : Greater Rune of Gushing Wound (id=1227288) 
 School           : Physical
@@ -260662,7 +260654,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217617)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 37774 (coefficient=14.76839) | Trigger Spell: 1227292 | Target: Self (1)
-Hotfixed         : Coefficient (6.404082 -> 14.768386), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227291) [Passive] 
@@ -260680,11 +260671,9 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1217619)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 64756 (coefficient=25.31745) | Trigger Spell: 1227292 | Target: Self (1)
-Hotfixed         : Coefficient (8.863611 -> 25.317455), Scaling Class (-9 -> -8)
 Description      : $@spelldesc1225873
 
 Name             : Gushing Wound (id=1227292) [Hidden] 
-Hotfixed         : Internal Cooldown (100 -> 0)
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260749,8 +260738,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217628)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 84520 (coefficient=33.04453) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (14.328914 -> 33.044525), Scaling Class (-9 -> -8)
+                   Base Value: 0 | Scaled Value: 95085 (coefficient=37.17509) | Trigger Spell: 1227300 | Target: Self (1)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227297) [Passive] 
@@ -260767,12 +260755,10 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217630)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 144891 (coefficient=56.64759) | Trigger Spell: 1227300 | Target: Self (1)
-Hotfixed         : Coefficient (19.832581 -> 56.647594), Scaling Class (-9 -> -8)
+                   Base Value: 0 | Scaled Value: 163002.4 (coefficient=63.72854) | Trigger Spell: 1227300 | Target: Self (1)
 Description      : $@spelldesc1227294
 
 Name             : Twisted Appendage (id=1227300) [Hidden] 
-Hotfixed         : Proc Chance (100 -> 101)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260845,8 +260831,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217652)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 59.33371 (coefficient=0.015496) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.019048 -> 0.015496)
+                   Base Value: 0 | Scaled Value: 47.46774 (coefficient=0.012397) | Trigger Spell: 1227315 | Target: Self (1)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227314) [Passive] 
@@ -260863,8 +260848,7 @@ Labels           : 969
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1217654)  : Apply Aura (6) | Unknown(285) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 102.6662 (coefficient=0.026813) | Trigger Spell: 1227315 | Target: Self (1)
-Hotfixed         : Coefficient (0.02636 -> 0.026813)
+                   Base Value: 0 | Scaled Value: 82.13523 (coefficient=0.021451) | Trigger Spell: 1227315 | Target: Self (1)
 Description      : $@spelldesc1227311
 
 Name             : Void Ritual (id=1227315) 
@@ -260896,7 +260880,7 @@ Triggered By     : Void Ritual (1227315)
 Attributes       : Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1217658)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
-                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 123.1167 (coefficient=0.032154) | PvP Coefficient: 0.25 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
 #2 (id=1217659)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1227311

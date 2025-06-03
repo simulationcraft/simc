@@ -494,17 +494,9 @@ struct felguard_melee_t : public warlock_pet_melee_t
   {
     fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->o()->talents.fiendish_wrath_dmg )
     {
+      weapon_multiplier = 1.0;
       background = dual = true;
       aoe = -1;
-    }
-
-    void init_finished() override
-    {
-      warlock_pet_melee_attack_t::init_finished();
-
-      snapshot_flags &= ~STATE_MUL_PET;
-      snapshot_flags &= ~STATE_TGT_MUL_PET;
-      snapshot_flags &= ~STATE_VERSATILITY;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -533,12 +525,10 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
   void impact( action_state_t* s ) override
   {
-    auto amount = s->result_raw;
-
     warlock_pet_melee_t::impact( s );
 
     if ( p()->buffs.fiendish_wrath->check() )
-      fiendish_wrath->execute_on_target( s->target, amount );
+      fiendish_wrath->execute_on_target( s->target );
   }
 };
 
@@ -722,7 +712,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       background = dual = true;
       aoe = -1;
-      ignores_armor = true;
+      ignores_armor = !p->bugs; // TOCHECK: 2025-04-17 This spell currently does not ignore armor (bug?)
       base_dd_min = base_dd_max = 0;
     }
 
@@ -730,7 +720,10 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       warlock_pet_melee_attack_t::init_finished();
 
-      snapshot_flags &= STATE_NO_MULTIPLIER;
+      // TOCHECK: 2025-04-17 Although this spell is not supposed to be affected by modifiers, it is currently affected by them (bug?)
+      if ( !p()->bugs )
+        snapshot_flags &= STATE_NO_MULTIPLIER;
+
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -895,6 +888,7 @@ void felguard_pet_t::init_base_stats()
   owner_coeff.sp_from_sp = 1.4519;
 
   melee_attack->base_dd_multiplier *= 1.42;
+  debug_cast<felguard_melee_t*>( melee_attack )->fiendish_wrath->base_dd_multiplier = melee_attack->base_dd_multiplier;
 
   special_action = new axe_toss_t( this, "" );
 
