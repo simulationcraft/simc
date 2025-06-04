@@ -1571,8 +1571,7 @@ public:
   struct
   {
     // General
-    affect_flags chaos_brand_server_side;
-
+    
     // Havoc
     affect_flags a_fire_inside;
     affect_flags demonic_presence;
@@ -1890,11 +1889,6 @@ public:
   {
     double m = ab::composite_target_da_multiplier( t );
 
-    if ( affected_by.chaos_brand_server_side.direct && t->debuffs.chaos_brand->up() )
-    {
-      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
-    }
-
     demon_hunter_td_t* target_data = td( t );
     if ( affected_by.reavers_mark && target_data->debuffs.reavers_mark->up() )
     {
@@ -1946,11 +1940,6 @@ public:
   double composite_target_ta_multiplier( player_t* t ) const override
   {
     double m = ab::composite_target_ta_multiplier( t );
-
-    if ( affected_by.chaos_brand_server_side.periodic && t->debuffs.chaos_brand->up() )
-    {
-      m *= 1.0 + p()->spell.chaos_brand->effectN( 1 ).percent();
-    }
 
     demon_hunter_td_t* target_data = td( t );
     if ( affected_by.reavers_mark && target_data->debuffs.reavers_mark->up() )
@@ -2439,6 +2428,10 @@ struct wounded_quarry_accumulator_t : public BASE
         BASE::p()->sim->print_debug( "{} triggers Wounded Quarry from {} on target {}: {}", BASE::p()->name(),
                                      s->action->name(), BASE::p()->last_reavers_mark_applied->name(),
                                      BASE::p()->wounded_quarry_accumulator );
+        if ( s->target->debuffs.chaos_brand->up() )
+        {
+          BASE::p()->wounded_quarry_accumulator *= 1.0 + BASE::p()->spell.chaos_brand->effectN( 1 ).percent();
+        }
         BASE::p()->active.wounded_quarry->execute_on_target( BASE::p()->last_reavers_mark_applied,
                                                              BASE::p()->wounded_quarry_accumulator );
         BASE::p()->wounded_quarry_accumulator = 0.0;
@@ -6829,10 +6822,6 @@ struct wounded_quarry_t : public demon_hunter_attack_t
       affected_by.demon_hide.direct   = true;
       affected_by.demon_hide.periodic = true;
     }
-
-    // WQ is affected by Chaos Brand on the server side
-    affected_by.chaos_brand_server_side.direct   = true;
-    affected_by.chaos_brand_server_side.periodic = true;
   }
 
   void impact( action_state_t* s ) override
