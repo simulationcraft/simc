@@ -1,4 +1,4 @@
-// Active class spells, wow build 11.1.7.61048
+// Active class spells, wow build 11.1.7.61131
 static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
@@ -111,9 +111,9 @@ static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   {  4,    0,  315496,       0, "Slice and Dice"                     },
   {  4,    0,  315584,       0, "Instant Poison"                     },
   {  4,  259,     703,       0, "Garrote"                            },
-  {  4,  259,    1329,       0, "Mutilate"                           },
+  {  4,  259,    1329,    1752, "Mutilate"                           },
   {  4,  259,    1943,       0, "Rupture"                            },
-  {  4,  259,   32645,       0, "Envenom"                            },
+  {  4,  259,   32645,  196819, "Envenom"                            },
   {  4,  259,   51723,       0, "Fan of Knives"                      },
   {  4,  259,  185565,       0, "Poisoned Knife"                     },
   {  4,  259, 1229376,       0, "Single-Button Assistant"            },
@@ -357,7 +357,7 @@ static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 11.1.7.61048
+// Pet active spells, wow build 11.1.7.61131
 static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },
