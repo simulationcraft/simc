@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61048 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61131 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -19489,7 +19489,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)

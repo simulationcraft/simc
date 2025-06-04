@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61048 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61131 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2608,7 +2608,7 @@ Effects          :
 #7 (id=260878)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
 #8 (id=260879)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Explosive Shot (212680), Explosive Shot (269850)
                    Family Flags: 73
 #9 (id=260880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4218,7 +4218,7 @@ Family Flags     : 101, 106
 Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.375 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -18205,7 +18205,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
@@ -18228,5 +18228,16 @@ Effects          :
 #1 (id=1241117)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc53271
+
+Name             : Track Pets (id=1244920) [Passive, Hidden] 
+Class            : Beast Mastery Hunter, Survival Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1245719)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Self (1)
+Description      : Shows the location of all nearby wild pets on the minimap.
+Tooltip          : Tracking Wild Pets.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61048 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61131 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -3172,7 +3172,7 @@ Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5461,7 +5461,7 @@ Family Flags     : 0, 18
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0608 | PvP Coefficient: 1.4 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.0608 | PvP Coefficient: 1.61 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -5650,7 +5650,7 @@ Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -12720,7 +12720,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -12879,7 +12879,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2328 (Type 0x1): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
-Category Flags   : Reset Charges on Encounter End (4)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17407,7 +17407,7 @@ Effects          :
                    Affected Spells: Entangling Roots (339), Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2, 9
 #2 (id=1113724)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
 Description      : $@spelldesc429433
@@ -21127,7 +21127,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)

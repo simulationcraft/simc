@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61048 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61131 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3337,7 +3337,7 @@ Effects          :
 #7 (id=260938)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 34 | Scaled Value: 34 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
 #9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -3352,7 +3352,7 @@ Effects          :
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
 #12 (id=1040380) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4003 (Label) | Target: Self (1)
+                   Base Value: 42 | Scaled Value: 42 | Misc Value 2: 4003 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120696), Halo (390964)
 #13 (id=1040381) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 49 | Scaled Value: 49 | PvP Coefficient: 0 | Target: Self (1)
@@ -3941,7 +3941,7 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | PvP Coefficient: 0.9 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
@@ -4344,7 +4344,7 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -12918,7 +12918,7 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095893)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1 | PvP Coefficient: 1.35 | Target: Any Target (25)
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421544) [Spell Family (6)] 
@@ -12935,7 +12935,7 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095896)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.3 | PvP Coefficient: 1.35 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Any Target (25)
 Description      : $@spelldesc421453
 
 Name             : Overloaded with Light (id=421557) [Spell Family (6), Passive, Hidden] 
@@ -16105,7 +16105,7 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)

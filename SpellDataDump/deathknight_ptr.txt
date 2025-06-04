@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61048 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61131 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -2015,7 +2015,7 @@ Family Flags     : 34, 43, 110, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.3234 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2034,7 +2034,7 @@ Family Flags     : 43, 49, 111
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05891 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05891 | PvP Coefficient: 1.26775 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -2410,7 +2410,7 @@ Family Flags     : 43, 73, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87374)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.392 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.392 | PvP Coefficient: 2 | Target: Enemy (6)
 #2 (id=87375)    : Dummy (3)
                    Base Value: 2.5 | Scaled Value: 2.5 (delta=0.4) | Target: Enemy (6)
 Description      : Strikes for $s1 Physical damage and infects the target with $m2-$M2 Festering Wounds.
@@ -5989,7 +5989,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05891 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05891 | PvP Coefficient: 1.26775 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -6009,7 +6009,7 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.3234 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Wraith Walk (id=223804) [Spell Family (15), Hidden] 
@@ -8159,10 +8159,10 @@ Stance Mask      : 0x00000040
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=803165)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5616 | PvP Coefficient: 0.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5616 | Target: Enemy (6)
 Description      : Deals $s1 Shadow damage.
 
-Name             : Frostbolt (id=317792) 
+Name             : Frostbolt (id=317792) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -8617,7 +8617,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.56757 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.56757 | PvP Coefficient: 1.26775 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -8637,7 +8637,7 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.27593 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.27593 | PvP Coefficient: 2.3234 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -8652,7 +8652,7 @@ Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown 
 Effects          :
 #1 (id=815924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Dark Transformation (63560)
+                   Affected Spells: Dark Transformation (63560), Dark Transformation (1235391)
                    Family Flags: 69
 Description      : Dark Transformation grants your ghoul $s1% energy.
 
@@ -9551,7 +9551,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #2 (id=874420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Dark Transformation (63560)
+                   Affected Spells: Dark Transformation (63560), Dark Transformation (1235391)
                    Family Flags: 69
 Description      : Dark Transformation's duration is increased by ${$s2/1000} sec and your Minion damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
@@ -10834,11 +10834,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1000060)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #2 (id=1000061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #3 (id=1000062)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -17907,12 +17907,35 @@ Range            : 30 yards
 Cast Time        : 2 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Is Ability (4), Displayed Outside Of Spellbook (432)
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
 Effects          :
 #1 (id=1220649)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
 Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
 
 The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
+
+Name             : Dark Transformation (id=1235391) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Spell Level      : 32
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Stance Mask      : 0x01000000
+Affecting Spells : Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#2)
+Family Flags     : 69
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1230682)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=1230683)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Your $?s207313[abomination]?s58640[geist][ghoul] deals $344955s1 Shadow damage to $344955s2 nearby enemies and transforms into a powerful undead monstrosity for $d. $?s325554[Granting them $325554s1% energy and the][The] $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.
+Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
+Damage dealt increased by $w1%.
 
 
