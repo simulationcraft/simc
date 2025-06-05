@@ -27351,7 +27351,7 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   { 1236123, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137w3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1236124, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137w4 Haste for $1236936d. ", 0, 0 },
   { 1236128, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
-  { 1236129, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
+  { 1236129, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
   { 1236132, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137w10.", 0, 0 },
   { 1236134, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137w11 damage for $1236993d. When the shield expires it deals $1236137w12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1236135, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137w13 Nature damage split between targets within $1237033A1 yds.", 0, 0 },
@@ -27398,8 +27398,9 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.1.7.61131
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  407924,  0, "$@spelldesc1236129", "$@spelldesc402813" },
+  { 1236129,  0, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating." },
 } };
 
 // Spell description variables, wow build 11.1.7.61131
