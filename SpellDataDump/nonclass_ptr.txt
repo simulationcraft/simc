@@ -261527,13 +261527,14 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.
 
 Name             : Electric Current (id=1236129) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231839)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.
+Description      : You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.
 
 Name             : Charged Touch (id=1236132) [Passive] 
 School           : Physical
