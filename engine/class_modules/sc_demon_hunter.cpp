@@ -1571,7 +1571,7 @@ public:
   struct
   {
     // General
-    
+
     // Havoc
     affect_flags a_fire_inside;
     affect_flags demonic_presence;
@@ -2365,19 +2365,20 @@ struct winning_streak_removal_trigger_t : public BASE
     {
       // 2025-02-08 -- Winning Streak! residual keeps the highest value of stacks and won't refresh if the stacks on
       //               the non-residual version are less than the stacks on the residual version.
+      int stacks = BASE::p()->buff.winning_streak->stack();
 
       // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
       //               damage
-      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this ] {
-        int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
+      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this, stacks ] {
         int new_stacks      = BASE::p()->buff.winning_streak->stack();
+        int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
         BASE::p()->buff.winning_streak->expire();
         BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
 
         if ( new_stacks >= residual_stacks )
         {
           BASE::p()->buff.winning_streak_residual->expire();
-          BASE::p()->buff.winning_streak_residual->trigger( new_stacks + residual_stacks );
+          BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
         }
         else
         {
@@ -4897,7 +4898,8 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
     double m = base_t::composite_target_da_multiplier( t );
 
     demon_hunter_td_t* target_data = td( t );
-    if ( target_data->debuffs.reavers_mark->up() ) {
+    if ( target_data->debuffs.reavers_mark->up() )
+    {
       m *= 1.0 + target_data->debuffs.reavers_mark->check_stack_value();
     }
 
@@ -5269,6 +5271,8 @@ struct blade_dance_t : public blade_dance_base_t
   blade_dance_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "blade_dance_1", data().effectN( 2 ) ) );
@@ -5319,7 +5323,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
     {
@@ -5577,6 +5582,8 @@ struct chaos_strike_t : public chaos_strike_base_t
   chaos_strike_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -5614,6 +5621,8 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( name, p, p->spec.annihilation, options_str )
   {
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
+
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
