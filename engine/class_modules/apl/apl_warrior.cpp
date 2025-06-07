@@ -297,9 +297,9 @@ void arms( player_t* p )
   slayer_execute->add_action( "execute,if=buff.juggernaut.remains<=gcd*2&talent.juggernaut" );
   slayer_execute->add_action( "bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision" );
   slayer_execute->add_action( "skullsplitter,if=rage<=40" );
-  slayer_execute->add_action( "overpower,if=buff.martial_prowess.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)" );
+  slayer_execute->add_action( "overpower,if=buff.overpower.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)" );
   slayer_execute->add_action( "mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up" );
-  slayer_execute->add_action( "overpower,if=rage<=40&buff.martial_prowess.stack<2&talent.fierce_followthrough" );
+  slayer_execute->add_action( "overpower,if=rage<=40&buff.overpower.stack<2&talent.fierce_followthrough" );
   slayer_execute->add_action( "execute" );
   slayer_execute->add_action( "overpower" );
   slayer_execute->add_action( "wrecking_throw" );
@@ -341,7 +341,7 @@ void arms( player_t* p )
   slayer_sweep->add_action( "overpower" );
   slayer_sweep->add_action( "thunder_clap,if=dot.rend.remains<=8&buff.sweeping_strikes.down" );
   slayer_sweep->add_action( "rend,if=dot.rend.remains<=5" );
-  slayer_sweep->add_action( "cleave,if=talent.fervor_of_battle&!buff.martial_prowess.up" );
+  slayer_sweep->add_action( "cleave,if=talent.fervor_of_battle&!buff.overpower.up" );
   slayer_sweep->add_action( "whirlwind,if=talent.fervor_of_battle" );
   slayer_sweep->add_action( "execute,if=!talent.juggernaut" );
   slayer_sweep->add_action( "wrecking_throw,if=!buff.sweeping_strikes.up" );
@@ -376,6 +376,7 @@ void protection( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "charge,if=time=0" );
+  default_->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   default_->add_action( "use_items" );
   default_->add_action( "avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2" );
   default_->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );

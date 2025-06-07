@@ -919,6 +919,11 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void combat_begin() override;
   void init_rng() override;
   const priest_td_t* find_target_data( const player_t* target ) const override;
@@ -990,6 +995,7 @@ public:
   void extend_entropic_rift();
   void expand_entropic_rift();
   void trigger_cauterizing_shadows();
+  std::string blizzard_apl_action_replace( std::string options );
 
   std::vector<action_t*> secondary_action_list;
 

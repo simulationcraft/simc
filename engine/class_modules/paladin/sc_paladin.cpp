@@ -2450,10 +2450,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   for ( int i = 0; i < number_to_trigger; i++ )
   {
     if ( ( i > 0 && random_after_first ) || target == nullptr )
-    {
-      int result  = as<int>( std::floor( rng().real() * sim->target_non_sleeping_list.size() ) );
-      next_target   = sim->target_non_sleeping_list[ result ];
-    }
+      next_target = *rng().range( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end() );
     make_event<delayed_execute_event_t>( *sim, this, active.empyrean_hammer, next_target, totalDelay );
     totalDelay += additionalDelay;
   }
@@ -2483,7 +2480,8 @@ void paladin_t::trigger_greater_judgment(paladin_td_t* targetdata, int num_stack
   {
     num_stacks += as<int>( talents.highlords_wrath->effectN( 1 ).base_value() );
   }
-  targetdata->debuff.judgment->trigger( num_stacks );
+  if ( num_stacks )
+    targetdata->debuff.judgment->trigger( num_stacks );
 }
 
 // Holy Armaments

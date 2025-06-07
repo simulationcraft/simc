@@ -157,32 +157,33 @@ actions.st_ss+=/ice_lance,if=buff.fingers_of_frost.react|remaining_winters_chill
 actions.st_ss+=/frostbolt
 actions.st_ss+=/call_action_list,name=movement
 
-head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
-neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213461/213485
-shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
-back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964,enchant_id=7403
-chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/1808/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
-hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
-waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213485
-legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
-finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213470/213455,enchant_id=7340
-finger2=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,ilevel=678,gem_id=213485/213485,enchant_id=7340
-trinket1=candle_confidant,id=225648,bonus_id=3194/11990
-trinket2=house_of_cards,id=230027,ilevel=678
-main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8795/11144,ilevel=675,crafted_stats=40/32
+head=inventors_ingenious_trifocals,id=235226,bonus_id=3176/12376/11964/1808,gem_id=213743,enchant_id=7924
+neck=flickering_glowtorc,id=221103,bonus_id=3176/12376/11964/8781,gem_id=213467/213467
+shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=12179/1533/12376
+back=electricians_siphoning_filter,id=234507,bonus_id=4786/1533/12376,enchant_id=7409
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=12178/1533/12376,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/12373/11109/8960/1808,gem_id=213467,enchant_id=7397,crafted_stats=32/40
+hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=12179/1533/12376
+waist=tuneup_toolbelt,id=228861,bonus_id=1533/12376/11964/1808,gem_id=213467
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=12178/1533/12376,enchant_id=7534
+feet=nonconductive_killosocks,id=234497,bonus_id=1533/12376/11964,enchant_id=7418
+finger1=the_jastor_diamond,id=231265,bonus_id=1533/12376/11964/8781,gem_id=213467/213497,enchant_id=7352
+finger2=miniature_roulette_wheel,id=228843,bonus_id=1533/12376/11964/8781,gem_id=213461/213485,enchant_id=7352,crafted_stats=36/40
+trinket1=house_of_cards,id=230027,bonus_id=1533/12376/11964
+trinket2=entropic_skardyn_core,id=219296,bonus_id=3176/12376/11964
+main_hand=blastfurious_machete,id=231268,bonus_id=1533/12376/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/12373/11300/8960,crafted_stats=36/40
 
 # Gear Summary
-# gear_ilvl=676.81
-# gear_stamina=392511
-# gear_intellect=74469
-# gear_crit_rating=11402
-# gear_haste_rating=14662
-# gear_mastery_rating=9352
-# gear_versatility_rating=9914
-# gear_avoidance_rating=1635
-# gear_armor=20744
+# gear_ilvl=683.63
+# gear_stamina=421565
+# gear_intellect=73782
+# gear_crit_rating=12686
+# gear_haste_rating=15937
+# gear_mastery_rating=10125
+# gear_versatility_rating=9533
+# gear_leech_rating=1020
+# gear_speed_rating=1250
+# gear_armor=21621
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

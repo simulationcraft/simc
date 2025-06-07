@@ -5,7 +5,7 @@ level=80
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAgxMzMzMjY2MwsNzMDWGAAAAAAAAAAzAGzYYBGYZ0CNswMzMzsNmZxMzMzYMzMYMzMgZAAA
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAgxMzMzMjY2MwsNzMDWGAAAAAAAAAAzAGzYYBGYZ0CNswYmZmtxMLmZmZGjZmBjZmBjZAAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -178,34 +178,34 @@ actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ri
 actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_overlord.remains,if=buff.diabolic_ritual_overlord.up
 actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_pit_lord.remains,if=buff.diabolic_ritual_pit_lord.up
 
-head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1527/11996/1808,gem_id=213743
-neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213467/213467
-shoulders=underbosss_tailored_mantle,id=228870,ilevel=678
-back=candlebearers_shroud,id=221109,bonus_id=3170/11996/11964,enchant_id=7409
-chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/8792/11109/8960,ilevel=675,gem_id=213467,enchant_id=7397,crafted_stats=36/32
-hands=spliced_fiendtraders_demonic_grasp,id=229326,ilevel=678
-waist=excavators_safety_belt,id=159226,bonus_id=1808,ilevel=678,gem_id=213491
-legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=cloudstrider_soles,id=221043,ilevel=678,enchant_id=7424
-finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213458,enchant_id=7334
-finger2=miniature_roulette_wheel,id=228843,bonus_id=1527/11996/11964/8781,gem_id=213458/213458,enchant_id=7340,crafted_stats=40/36
-trinket1=eye_of_kezan,id=230198,ilevel=678
-trinket2=house_of_cards,id=230027,ilevel=678
-main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/8795/11300/8960,crafted_stats=40/36
+head=spliced_fiendtraders_transcendence,id=229325,bonus_id=11996/1808/12376/1533,gem_id=213743,enchant_id=7933
+neck=semicharmed_amulet,id=228841,bonus_id=1533/12376/11964/8781,gem_id=213470/213470
+shoulders=underbosss_tailored_mantle,id=228870,bonus_id=1533/12376/11964
+back=candlebearers_shroud,id=221109,bonus_id=11996/11964/12376/3176,enchant_id=7409
+chest=spliced_fiendtraders_surgical_gown,id=229328,bonus_id=12178/1533/12376,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/10222/11144/11307/11109/8960/1530/12373/8795,ilevel=681,gem_id=213470,enchant_id=7397,crafted_stats=36/32
+hands=spliced_fiendtraders_demonic_grasp,id=229326,bonus_id=12179/1533/12376
+waist=excavators_safety_belt,id=159226,bonus_id=11365/12376/11964/1808,gem_id=213470
+legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=12178/1533/12376,enchant_id=7534
+feet=cloudstrider_soles,id=221043,bonus_id=3176/12376/11964,enchant_id=7424
+finger1=miniature_roulette_wheel,id=228843,bonus_id=11996/11964/8781/12376/1533,gem_id=213470/213491,enchant_id=7346,crafted_stats=40/36
+finger2=the_jastor_diamond,id=231265,bonus_id=1533/12376/11964/8781,gem_id=213485/213458,enchant_id=7346
+trinket1=house_of_cards,id=230027,bonus_id=1533/12376/11964
+trinket2=mugs_moxie_jug,id=230192,bonus_id=1533/12376/11964
+main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=11996/11964/12376/3176,enchant_id=7445
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/11300/8960/1491/12373/8793,ilevel=681,crafted_stats=40/36
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_stamina=392511
-# gear_intellect=69873
-# gear_crit_rating=11162
-# gear_haste_rating=14115
-# gear_mastery_rating=10560
-# gear_versatility_rating=11194
+# gear_ilvl=683.63
+# gear_stamina=422460
+# gear_intellect=79268
+# gear_crit_rating=10728
+# gear_haste_rating=14358
+# gear_mastery_rating=10205
+# gear_versatility_rating=11248
 # gear_leech_rating=1020
 # gear_speed_rating=1000
-# gear_armor=20744
+# gear_armor=21621
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1
 default_pet=felguard

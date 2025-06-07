@@ -1454,6 +1454,7 @@ public:
     const spell_data_t* festering_scythe;
     const spell_data_t* festering_scythe_buff;
     const spell_data_t* festering_scythe_stacking_buff;
+    const spell_data_t* dark_transformation_player_buff;
     // Tier Sets
     const spell_data_t* unholy_commander;
     const spell_data_t* winning_streak_unholy;
@@ -1773,6 +1774,11 @@ public:
   // Character Definition overrides
   void init_spells() override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void init_rng() override;
   void init_base_stats() override;
   void init_scaling() override;
@@ -1856,6 +1862,7 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   double psuedo_random_p_from_c( double c );
   double pseudo_random_c_from_p( double p );
+  std::string blizzard_apl_action_replace( std::string options );
   // Rider of the Apocalypse
   int get_random_rider();
   void summon_rider( timespan_t duration, bool random );
@@ -3059,7 +3066,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     bool ready() override
     {
-      if ( usable_in_dt != dk()->buffs.dark_transformation->up() )
+      if ( usable_in_dt != pet()->dark_transformation->check() )
         return false;
 
       return pet_melee_attack_t<ghoul_pet_t>::ready();
@@ -3136,7 +3143,8 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      m *= 1.0 + dk()->buffs.dark_transformation->value();
+      if ( dark_transformation->check() )
+        m *= 1.0 + dark_transformation->check_value();
 
       if ( ghoulish_frenzy->check() )
         m *= 1.0 + ghoulish_frenzy->check_value();
@@ -3160,6 +3168,13 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     base_ghoul_pet_t::init_gains();
 
     dark_transformation_gain = get_gain( "Dark Transformation" );
+  }
+
+  void demise() override
+  {
+    base_ghoul_pet_t::demise();
+    if ( dk()->buffs.dark_transformation->check() )
+      dk()->buffs.dark_transformation->expire();
   }
 
   void init_action_list() override
@@ -3200,6 +3215,11 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::create_buffs();
 
+    dark_transformation = make_buff( this, "dark_transformation", dk()->talent.unholy.dark_transformation )
+                              ->set_duration( 0_ms )  // Handled by the player buff
+                              ->set_cooldown( 0_ms )  // Handled by the action
+                              ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
+
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk()->pet_spell.ghoulish_frenzy )
                           ->set_default_value( dk()->pet_spell.ghoulish_frenzy->effectN( 1 ).percent() )
                           ->apply_affecting_aura( dk()->talent.unholy.ghoulish_frenzy )
@@ -3213,6 +3233,7 @@ private:
 
 public:
   propagate_const<gain_t*> dark_transformation_gain;
+  propagate_const<buff_t*> dark_transformation;
   propagate_const<buff_t*> ghoulish_frenzy;
 };
 
@@ -5611,32 +5632,39 @@ struct dark_transformation_buff_t final : public death_knight_buff_t
   void start( int stacks, double value, timespan_t duration ) override
   {
     death_knight_buff_t::start( stacks, value, duration );
+
+    pets::ghoul_pet_t* ghoul = p()->pets.ghoul_pet.active_pet();
+
+    ghoul->dark_transformation->trigger();
+
     if ( p()->talent.unholy.ghoulish_frenzy.ok() )
     {
       p()->buffs.ghoulish_frenzy->trigger();
-      p()->pets.ghoul_pet.active_pet()->ghoulish_frenzy->trigger();
+      ghoul->ghoulish_frenzy->trigger();
     }
+
     if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-    {
       p()->buffs.gift_of_the_sanlayn->trigger();
-    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     death_knight_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    pets::ghoul_pet_t* ghoul = p()->pets.ghoul_pet.active_pet();
+
+    if ( ghoul != nullptr )
+    {
+      ghoul->dark_transformation->expire();
+      if ( p()->talent.unholy.ghoulish_frenzy.ok() )
+        ghoul->ghoulish_frenzy->expire();
+    }
+
     if ( p()->talent.unholy.ghoulish_frenzy.ok() )
-    {
       p()->buffs.ghoulish_frenzy->expire();
-      if ( p()->pets.ghoul_pet.active_pet() != nullptr )
-      {
-        p()->pets.ghoul_pet.active_pet()->ghoulish_frenzy->expire();
-      }
-    }
+
     if ( p()->talent.sanlayn.gift_of_the_sanlayn.ok() )
-    {
       p()->buffs.gift_of_the_sanlayn->expire();
-    }
   }
 };
 
@@ -13637,33 +13665,34 @@ void death_knight_t::spell_lookups()
       conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ), 1222698 );
 
   // Unholy
-  spell.runic_corruption_chance        = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
-  spell.festering_wound_debuff         = conditional_spell_lookup( spec.festering_wound->ok(), 194310 );
-  spell.rotten_touch_debuff            = conditional_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
-  spell.death_rot_debuff               = conditional_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
-  spell.coil_of_devastation_debuff     = conditional_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
-  spell.ghoulish_frenzy_player         = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
-  spell.plaguebringer_buff             = conditional_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
-  spell.festermight_buff               = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
-  spell.unholy_blight                  = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115989 );
-  spell.unholy_blight_dot              = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
-  spell.commander_of_the_dead          = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
-  spell.ruptured_viscera_chance        = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
-  spell.apocalypse_duration            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
-  spell.apocalypse_rune_gen            = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
-  spell.unholy_pact_damage             = conditional_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
-  spell.dark_transformation_damage     = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
-  spell.defile_damage                  = conditional_spell_lookup( talent.unholy.defile.ok(), 156000 );
-  spell.epidemic_damage                = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
-  spell.bursting_sores_damage          = conditional_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
-  spell.festering_wound_damage         = conditional_spell_lookup( spec.festering_wound->ok(), 194311 );
-  spell.outbreak_aoe                   = conditional_spell_lookup( spec.outbreak->ok(), 196780 );
-  spell.unholy_aura_debuff             = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
-  spell.decomposition_buff             = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
-  spell.decomposition_damage           = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
-  spell.festering_scythe               = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
-  spell.festering_scythe_buff          = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
-  spell.festering_scythe_stacking_buff = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 459238 );
+  spell.runic_corruption_chance         = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
+  spell.festering_wound_debuff          = conditional_spell_lookup( spec.festering_wound->ok(), 194310 );
+  spell.rotten_touch_debuff             = conditional_spell_lookup( talent.unholy.rotten_touch.ok(), 390276 );
+  spell.death_rot_debuff                = conditional_spell_lookup( talent.unholy.death_rot.ok(), 377540 );
+  spell.coil_of_devastation_debuff      = conditional_spell_lookup( talent.unholy.coil_of_devastation.ok(), 390271 );
+  spell.ghoulish_frenzy_player          = conditional_spell_lookup( talent.unholy.ghoulish_frenzy.ok(), 377588 );
+  spell.plaguebringer_buff              = conditional_spell_lookup( talent.unholy.plaguebringer.ok(), 390178 );
+  spell.festermight_buff                = conditional_spell_lookup( talent.unholy.festermight.ok(), 377591 );
+  spell.unholy_blight                   = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115989 );
+  spell.unholy_blight_dot               = conditional_spell_lookup( talent.unholy.unholy_blight.ok(), 115994 );
+  spell.commander_of_the_dead           = conditional_spell_lookup( talent.unholy.commander_of_the_dead.ok(), 390260 );
+  spell.ruptured_viscera_chance         = conditional_spell_lookup( talent.unholy.ruptured_viscera.ok(), 390236 );
+  spell.apocalypse_duration             = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 221180 );
+  spell.apocalypse_rune_gen             = conditional_spell_lookup( talent.unholy.apocalypse.ok(), 343758 );
+  spell.unholy_pact_damage              = conditional_spell_lookup( talent.unholy.unholy_pact.ok(), 319236 );
+  spell.dark_transformation_damage      = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 344955 );
+  spell.defile_damage                   = conditional_spell_lookup( talent.unholy.defile.ok(), 156000 );
+  spell.epidemic_damage                 = conditional_spell_lookup( spec.epidemic->ok(), 212739 );
+  spell.bursting_sores_damage           = conditional_spell_lookup( talent.unholy.bursting_sores.ok(), 207267 );
+  spell.festering_wound_damage          = conditional_spell_lookup( spec.festering_wound->ok(), 194311 );
+  spell.outbreak_aoe                    = conditional_spell_lookup( spec.outbreak->ok(), 196780 );
+  spell.unholy_aura_debuff              = conditional_spell_lookup( talent.unholy.unholy_aura.ok(), 377445 );
+  spell.decomposition_buff              = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458233 );
+  spell.decomposition_damage            = conditional_spell_lookup( talent.unholy.decomposition.ok(), 458264 );
+  spell.festering_scythe                = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458128 );
+  spell.festering_scythe_buff           = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
+  spell.festering_scythe_stacking_buff  = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 459238 );
+  spell.dark_transformation_player_buff = conditional_spell_lookup( talent.unholy.dark_transformation.ok(), 1235391 );
   // Set Bonuses
   spell.unholy_commander = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
   spell.winning_streak_unholy =
@@ -13839,6 +13868,158 @@ void death_knight_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// death_knight_t::init_blizzard_action_list ================================
+void death_knight_t::init_blizzard_action_list()
+{
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.type != WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->errorf( "Player %s has an Off-Hand weapon equipped with a 2h.", name() );
+    quiet = true;
+    return;
+  }
+
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  default_->add_action( "auto_attack" );  // Add before generating the other actions so its always the highest priority
+  player_t::init_blizzard_action_list();
+
+  action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+  if (specialization() == DEATH_KNIGHT_UNHOLY)
+    pre_c->add_action( "raise_dead" );
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      cooldowns->add_action( "vampiric_blood" );
+      cooldowns->add_action( "tombstone,if=buff.bone_shield.stack>5" );
+      cooldowns->add_action( "abomination_limb" );
+      cooldowns->add_action( "raise_dead" );
+      break;
+    case DEATH_KNIGHT_FROST:
+      cooldowns->add_action( "breath_of_sindragosa,if=runic_power>60" );
+      cooldowns->add_action( "empower_rune_weapon" );
+      cooldowns->add_action( "abomination_limb" );
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      cooldowns->add_action( "raise_abomination" );
+      cooldowns->add_action( "army_of_the_dead" );
+      cooldowns->add_action( "summon_gargoyle,if=runic_power>30" );
+      cooldowns->add_action( "abomination_limb" );
+      break;
+    default:
+      break;
+  }
+}
+
+// death_knight_t::parse_assisted_combat_rule ===============================
+parsed_assisted_combat_rule_t death_knight_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                        const assisted_combat_step_data_t& step ) const
+{
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+// death_knight_t::blizzard_apl_action_replace ================================
+std::string death_knight_t::blizzard_apl_action_replace( std::string options )
+{
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      break;
+    case DEATH_KNIGHT_FROST:
+      break;
+    case DEATH_KNIGHT_UNHOLY:
+      if ( options.find( "talent.clawing_shadows" ) != std::string::npos )
+        return "clawing_shadows";
+      break;
+    default:
+      break;
+  }
+
+  return "";
+}
+
+// death_knight_t::parse_assisted_combat_step ===============================
+void death_knight_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                                 action_priority_list_t* assisted_combat )
+{
+  std::string options = "";
+  std::string comment = "";
+  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
+  {
+    parsed_assisted_combat_rule_t rule_str = parse_assisted_combat_rule( rule, step );
+    if ( !rule_str.expr.empty() )
+      options += options.empty() ? rule_str.expr : "&" + rule_str.expr;
+    if ( !rule_str.comment.empty() )
+      comment += comment.empty() ? rule_str.comment : ", " + rule_str.comment;
+  }
+
+  // This is kinda ugly, maybe find a better way to do this?
+  if ( !options.empty() )
+  {
+    std::string name = blizzard_apl_action_replace( options );
+    if ( name != "" )
+    {
+      assisted_combat->add_action( name + ",if=" + options, comment );
+      return;
+    }
+  }
+
+  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  {
+    if ( !name.empty() )
+    {
+      if ( options.empty() )
+        assisted_combat->add_action( name, comment );
+      else
+        assisted_combat->add_action( name + ",if=" + options, comment );
+    }
+  }
+}
+
+// death_knight_t::action_names_from_spell_id ===============================
+std::vector<std::string> death_knight_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 316239 )  // Rune Strike
+  {
+    switch ( specialization() )
+    {
+      case DEATH_KNIGHT_BLOOD:
+        spell_id = talent.blood.heart_strike->id();
+        break;
+      case DEATH_KNIGHT_FROST:
+        spell_id = talent.frost.obliterate
+                       ->id();  // Seems they use Obliterate as a replacement for Rune Strike rather than Frost Strike
+        break;
+      case DEATH_KNIGHT_UNHOLY:
+        spell_id = talent.unholy.festering_strike->id();
+        break;
+      default:
+        break;
+    }
+  }
+
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
+std::string death_knight_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
+  if ( aura_expr == "debuff.reapers_mark" )
+    aura_expr.append( "_debuff" );
+
+  return aura_expr;
 }
 
 // death_knight_t::init_scaling =============================================
@@ -14055,7 +14236,7 @@ void death_knight_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             if ( talent.deathbringer.dark_talons.ok() )
             {
-              if ( new_ == 1 )
+              if ( new_ >= 1 )
               {
                 buffs.dark_talons_shadowfrost->trigger();
               }
@@ -14451,8 +14632,9 @@ void death_knight_t::create_buffs()
                                ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   // Unholy
-  buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
-      talent.unholy.dark_transformation.ok(), this, "dark_transformation", talent.unholy.dark_transformation );
+  buffs.dark_transformation =
+      make_fallback<dark_transformation_buff_t>( talent.unholy.dark_transformation.ok(), this, "dark_transformation",
+                                                 spell.dark_transformation_player_buff );
 
   buffs.sudden_doom = make_fallback( talent.unholy.sudden_doom.ok(), this, "sudden_doom",
                                      talent.unholy.sudden_doom->effectN( 1 ).trigger() )

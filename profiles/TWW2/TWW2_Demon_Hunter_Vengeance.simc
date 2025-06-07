@@ -260,33 +260,33 @@ actions.rg_sequence_filler+=/soul_carver
 actions.rg_sequence_filler+=/fel_devastation
 actions.rg_sequence_filler+=/throw_glaive
 
-head=feldealers_visor,id=229316,bonus_id=1808,ilevel=678,gem_id=213470
-neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213485/213743
-shoulders=feldealers_recycled_reavers,id=229314,ilevel=678
-back=test_pilots_gopack,id=228844,ilevel=678,enchant_id=7409
-chest=feldealers_soul_engine,id=229319,ilevel=678,enchant_id=7364
-wrists=servoarm_bindings,id=158353,ilevel=678,gem_id=213485,enchant_id=7391
-hands=feldealers_underhandlers,id=229317,ilevel=678
-waist=runebranded_waistband,id=219331,bonus_id=12040/1515/10520/8790,ilevel=675,gem_id=213485
-legs=shadowspawn_leggings,id=221114,ilevel=678,enchant_id=7601
-feet=dragsters_last_stride,id=228876,ilevel=678
-finger1=bloodoath_signet,id=178871,ilevel=678,gem_id=213485/213485,enchant_id=7340
-finger2=the_jastor_diamond,id=231265,ilevel=678,gem_id=213485/213485,enchant_id=7352
-trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
-trinket2=eye_of_kezan,id=230198,ilevel=678
-main_hand=sonic_kaboomerang,id=234491,ilevel=678,enchant_id=7460
-off_hand=capos_molten_knuckles,id=232804,ilevel=678,enchant_id=7439
+head=feldealers_visor,id=229316,bonus_id=1808,ilevel=684,gem_id=213470,enchant_id=7917
+neck=semicharmed_amulet,id=228841,ilevel=684,gem_id=213485/213743
+shoulders=feldealers_recycled_reavers,id=229314,ilevel=684
+back=test_pilots_gopack,id=228844,ilevel=684,enchant_id=7409
+chest=feldealers_soul_engine,id=229319,ilevel=684,enchant_id=7364
+wrists=servoarm_bindings,id=158353,ilevel=684,gem_id=213485,enchant_id=7391
+hands=feldealers_underhandlers,id=229317,ilevel=684
+waist=runebranded_waistband,id=219331,bonus_id=12040/1515/10520/8790,ilevel=681,gem_id=213485
+legs=shadowspawn_leggings,id=221114,ilevel=684,enchant_id=7601
+feet=dragsters_last_stride,id=228876,ilevel=684
+finger1=bloodoath_signet,id=178871,ilevel=684,gem_id=213485/213485,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,ilevel=684,gem_id=213485/213485,enchant_id=7352
+trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=684
+trinket2=eye_of_kezan,id=230198,ilevel=684
+main_hand=sonic_kaboomerang,id=234491,ilevel=684,enchant_id=7460
+off_hand=capos_molten_knuckles,id=232804,ilevel=684,enchant_id=7439
 
 # Gear Summary
-# gear_ilvl=677.81
-# gear_agility=51272
-# gear_stamina=392071
+# gear_ilvl=683.81
+# gear_agility=54110
+# gear_stamina=422058
 # gear_attack_power=938
-# gear_crit_rating=10875
-# gear_haste_rating=21872
-# gear_mastery_rating=10683
-# gear_versatility_rating=1954
+# gear_crit_rating=11176
+# gear_haste_rating=22458
+# gear_mastery_rating=10994
+# gear_versatility_rating=1980
 # gear_leech_rating=3060
-# gear_armor=33975
+# gear_armor=35413
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

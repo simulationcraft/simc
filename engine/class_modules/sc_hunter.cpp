@@ -1070,6 +1070,10 @@ public:
   void init_scaling() override;
   void init_assessors() override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule, const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat ) override;
   void init_special_effects() override;
   void init_finished() override;
   void reset() override;
@@ -2273,7 +2277,8 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     buffs.potent_mutagen = 
       make_buff( this, "potent_mutagen", o()->find_spell( 1218003 ) )
         //2025-03-07 - For some reason the base value is still 1, the pet buff says 0.5 seconds reduction per hit, but the server script doing the reduction only reduces by 0.25s
-        ->set_default_value( o()->find_spell( 1218004 )->effectN( 2 ).base_value() / 4 );
+        //2025-06-05 - The base value is now 25 for a 0.25s reduction per hit on the PTR for 11.1.7.
+        ->set_default_value( is_ptr() ? o()->find_spell( 1218004)->effectN( 2 ).percent() : ( o()->find_spell( 1218004 )->effectN( 2 ).base_value() / 4 ) );
 
     buffs.solitary_companion = 
       make_buff( this, "solitary_companion", find_spell( 474751 ) )
@@ -3231,7 +3236,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   {
     hunter_pet_attack_t::tick( d );
 
-    if ( rng().roll( ursine_fury.chance ) )
+    if ( ursine_fury.cooldown && rng().roll( ursine_fury.chance ) )
       ursine_fury.cooldown->adjust( ursine_fury.reduction );
   }
 
@@ -7871,7 +7876,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
-  if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "bloodshed"             ) return new              bloodshed_t( this, options_str );
   if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
@@ -7889,16 +7893,24 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "implosive_trap"        ) return new         implosive_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
-  if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
+  if ( name == "call_pet_1"            ) return new             summon_pet_t( this, options_str );
   if ( name == "tar_trap"              ) return new               tar_trap_t( this, options_str );
   if ( name == "trueshot"              ) return new               trueshot_t( this, options_str );
   if ( name == "volley"                ) return new                 volley_t( this, options_str );
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
+
+  if ( name == "kill_shot" )
+  {
+    if ( talents.black_arrow.ok() )
+      return new black_arrow_t( this, options_str );
+    else 
+      return new kill_shot_t( this, options_str );
+  }
 
   if ( name == "raptor_strike" || name == "mongoose_bite" || name == "raptor_bite" || name == "mongoose_strike" )
   {
@@ -9050,6 +9062,64 @@ void hunter_t::init_action_list()
   }
 
   player_t::init_action_list();
+}
+
+void hunter_t::init_blizzard_action_list()
+{
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  // Added before generating the other action lists so its always the highest priority and gets executed at the start of combat.
+  default_->add_action( specialization() == HUNTER_SURVIVAL ? "auto_attack" : "auto_shot" );
+
+  player_t::init_blizzard_action_list();
+
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  switch ( specialization() )
+  {
+    case HUNTER_MARKSMANSHIP:
+      precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
+      break;
+    default:
+      precombat->add_action( "summon_pet" );
+      break;
+  }
+
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  switch ( specialization() )
+  {
+    case HUNTER_BEAST_MASTERY:
+      cooldowns->add_action( "call_of_the_wild" );
+      break;
+    case HUNTER_MARKSMANSHIP:
+      cooldowns->add_action( "trueshot" );
+      break;
+    case HUNTER_SURVIVAL:
+      cooldowns->add_action( "coordinated_assault" );
+      break;
+    default:
+      break;
+  }
+}
+
+parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                const assisted_combat_step_data_t& step ) const
+{
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
+void hunter_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat )
+{
+  // Revive Pet is not an action relevant for SimC, so we don't add it to the assisted combat list.
+  if ( step.spell_id == 982 )
+  {
+    return;
+  }
+
+  return player_t::parse_assisted_combat_step( step, assisted_combat );
 }
 
 void hunter_t::init_special_effects()

@@ -27,7 +27,7 @@ actions+=/lights_judgment
 
 # COOLDOWNS ACTIONLIST
 actions.cds=blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
-actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
+actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)
 actions.cds+=/harpoon,if=prev.kill_command
 actions.cds+=/ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
@@ -39,16 +39,18 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 # PACK LEADER | AOE ACTIONLIST
 actions.plcleave=spearhead,if=cooldown.coordinated_assault.remains
-actions.plcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains
+actions.plcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains|raid_event.adds.exists&raid_event.adds.remains<4
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1
+actions.plcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
+actions.plcleave+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
 actions.plcleave+=/wildfire_bomb
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
 actions.plcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1
 actions.plcleave+=/butchery
 actions.plcleave+=/coordinated_assault
 actions.plcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
+actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.plcleave+=/explosive_shot
-actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|charges_fractional>1.5
 actions.plcleave+=/kill_shot,if=buff.deathblow.remains&talent.sic_em
 actions.plcleave+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
 actions.plcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains
@@ -65,6 +67,7 @@ actions.plst+=/raptor_bite,if=buff.strike_it_rich.remains&buff.tip_of_the_spear.
 actions.plst+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)
 actions.plst+=/coordinated_assault
 actions.plst+=/wildfire_bomb
+actions.plst+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.howl_of_the_pack_leader_cooldown.up&buff.howl_of_the_pack_leader_cooldown.remains<2*gcd
 actions.plst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1|focus<30))
 actions.plst+=/explosive_shot,if=active_enemies=2
 actions.plst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
@@ -76,14 +79,15 @@ actions.plst+=/explosive_shot
 actions.sentcleave=wildfire_bomb,if=!buff.lunar_storm_cooldown.remains
 actions.sentcleave+=/kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1
 actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|(talent.bombardier&cooldown.coordinated_assault.remains<2*gcd)|talent.butchery&cooldown.butchery.remains<gcd
+actions.sentcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.sentcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd
 actions.sentcleave+=/butchery
+actions.sentcleave+=/explosive_shot,if=buff.tip_of_the_spear.stack>0
 actions.sentcleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
-actions.sentcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.sentcleave+=/flanking_strike,if=(buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1)
 actions.sentcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
-actions.sentcleave+=/explosive_shot
 actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
+actions.sentcleave+=/explosive_shot
 actions.sentcleave+=/kill_shot,if=buff.deathblow.remains&talent.sic_em
 actions.sentcleave+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
 actions.sentcleave+=/raptor_bite,target_if=max:dot.serpent_sting.remains
@@ -100,11 +104,11 @@ actions.sentst+=/butchery
 actions.sentst+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
 actions.sentst+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=buff.tip_of_the_spear.stack<1&cooldown.flanking_strike.remains<gcd
-actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<2|focus<30)))
+actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<1|focus<30)))
 actions.sentst+=/mongoose_bite,if=buff.mongoose_fury.remains<gcd&buff.mongoose_fury.stack>0
 actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&buff.lunar_storm_cooldown.remains>full_recharge_time&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)
-actions.sentst+=/mongoose_bite,if=buff.mongoose_fury.remains
 actions.sentst+=/explosive_shot
+actions.sentst+=/mongoose_bite,if=buff.mongoose_fury.remains
 actions.sentst+=/kill_shot
 actions.sentst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
 actions.sentst+=/raptor_bite,target_if=max:dot.serpent_sting.remains

@@ -4524,6 +4524,21 @@ struct envenom_t : public rogue_attack_t
     // 2023-10-05 -- Envenom spell no longer has a base 1s duration, hard code for now
     timespan_t envenom_duration = ( 1_s * cast_state( state )->get_combo_points() ) +
                                   p()->talent.assassination.twist_the_knife->effectN( 1 ).time_value();
+
+    // 2025-05-12 -- Envenom with Twist the Knife pandemics based on the stack it is replacing if at max stacks
+    //               Needs custom duration because pandemics on async buffs is not supported in the core
+    if ( p()->buffs.envenom->stack_behavior == buff_stack_behavior::ASYNCHRONOUS &&
+         p()->buffs.envenom->expiration.size() == p()->buffs.envenom->max_stack() )
+    {
+      auto current_remains = p()->buffs.envenom->expiration.front()->occurs() - sim->current_time();
+      auto residual = std::min( envenom_duration * 0.3, current_remains );
+      
+      sim->print_debug( "{} {} carryover duration from ongoing async buff: {}, refresh_duration={} new_duration={}",
+                        *p(), *p()->buffs.envenom, residual, envenom_duration, ( envenom_duration + residual ) );
+
+      envenom_duration += residual;
+    }
+
     p()->buffs.envenom->trigger( envenom_duration );
 
     rogue_attack_t::impact( state );
@@ -5349,6 +5364,15 @@ struct mutilate_t : public rogue_attack_t
 
   bool has_amount_result() const override
   { return true; }
+
+  bool ready() override
+  {
+    // Blindside overrides Mutilate with Ambush in the action bar when the buff is present
+    if ( p()->buffs.blindside->check() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
 };
 
 // Roll the Bones ===========================================================
@@ -5648,7 +5672,8 @@ struct secret_technique_t : public rogue_attack_t
       rogue_attack_t( name, p, s )
     {
       aoe = -1;
-      reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value();
+      full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
+      reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value() - 1;
     }
 
     double composite_player_multiplier( const action_state_t* state ) const override

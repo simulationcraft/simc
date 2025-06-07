@@ -63,33 +63,33 @@ actions.race_actions+=/fireblood
 actions.race_actions+=/ancestral_call
 actions.race_actions+=/bag_of_tricks
 
-head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5878/11996/1808,gem_id=213743
-neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5878/7981/11996/10376/8781,gem_id=213467/213497
-shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5878/11996
-back=trashmasters_mantle,id=199921,bonus_id=657/12042/5878/7981/11996,enchant=chant_of_leeching_fangs_3
-chest=venture_co._plenipotentiary_vest,id=235417,bonus_id=657/12042/5878/7981/11996,enchant=crystalline_radiance_3
-wrists=runebranded_armbands,id=219334,bonus_id=12040/9627/12043/8795/11109/1808,gem_id=213479,enchant=chant_of_armored_leech_3
-hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5878/11996
-waist=adrenal_surge_clasp,id=219502,bonus_id=12040/9627/12043/1808,gem_id=213461
-legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5878/11996,enchant=stormbound_armor_kit_3
-feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5878/11996,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
-trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5878/7981/11996
-trinket2=grim_codex,id=178811,bonus_id=657/12042/5878/7981/11996
-main_hand=capos_molten_knuckles,id=232804,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
-off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
+head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5878/11996/1808,ilevel=684,gem_id=213743,enchant_id=7917
+neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5878/7981/11996/10376/8781,ilevel=684,gem_id=213467/213497
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5878/11996,ilevel=684
+back=trashmasters_mantle,id=199921,bonus_id=657/12042/5878/7981/11996,ilevel=684,enchant=chant_of_leeching_fangs_3
+chest=venture_co._plenipotentiary_vest,id=235417,bonus_id=657/12042/5878/7981/11996,ilevel=684,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=12040/9627/12043/8795/11109/1808,ilevel=681,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5878/11996,ilevel=684
+waist=adrenal_surge_clasp,id=219502,bonus_id=12040/9627/12043/1808,ilevel=681,gem_id=213461
+legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5878/11996,ilevel=684,enchant=stormbound_armor_kit_3
+feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5878/11996,ilevel=684,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5878/11996/10376/8781,ilevel=684,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5878/11996/10376/8781,ilevel=684,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5878/7981/11996,ilevel=684
+trinket2=zees_thug_hotline,id=230199,bonus_id=4800/4786/1533/12376,ilevel=684
+main_hand=capos_molten_knuckles,id=232804,bonus_id=7981/12042/5878/11996,ilevel=684,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,ilevel=684,enchant=authority_of_the_depths_3
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_agility=51187
-# gear_stamina=392147
+# gear_ilvl=683.63
+# gear_agility=54021
+# gear_stamina=422065
 # gear_attack_power=938
-# gear_crit_rating=14062
-# gear_haste_rating=4449
-# gear_mastery_rating=9216
-# gear_versatility_rating=15862
+# gear_crit_rating=14410
+# gear_haste_rating=4564
+# gear_mastery_rating=9488
+# gear_versatility_rating=16308
 # gear_leech_rating=3060
-# gear_armor=33917
+# gear_armor=35352
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

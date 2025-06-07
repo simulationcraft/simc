@@ -80,10 +80,10 @@ void beast_mastery( player_t* p )
 
   cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains" );
   cleave->add_action( "dire_beast,if=talent.huntmasters_call&buff.huntmasters_call.stack=2" );
-  cleave->add_action( "black_arrow,if=buff.beast_cleave.remains&buff.withering_fire.up" );
+  cleave->add_action( "kill_shot,if=talent.black_arrow&buff.beast_cleave.remains&buff.withering_fire.up" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  cleave->add_action( "black_arrow,if=buff.beast_cleave.remains" );
+  cleave->add_action( "kill_shot,if=talent.black_arrow&buff.beast_cleave.remains" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "dire_beast,if=talent.shadow_hounds|talent.dire_cleave" );
@@ -98,12 +98,12 @@ void beast_mastery( player_t* p )
 
   st->add_action( "dire_beast,if=talent.huntmasters_call" );
   st->add_action( "bestial_wrath" );
-  st->add_action( "black_arrow,if=buff.withering_fire.up" );
+  st->add_action( "kill_shot,if=talent.black_arrow&buff.withering_fire.up" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
   st->add_action( "kill_command" );
-  st->add_action( "black_arrow" );
+  st->add_action( "kill_shot,if=talent.black_arrow" );
   st->add_action( "explosive_shot,if=talent.thundering_hooves" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -150,10 +150,10 @@ void beast_mastery_ptr( player_t* p )
 
   cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains" );
   cleave->add_action( "dire_beast,if=talent.huntmasters_call&buff.huntmasters_call.stack=2" );
-  cleave->add_action( "black_arrow,if=buff.beast_cleave.remains&buff.withering_fire.up" );
+  cleave->add_action( "kill_shot,if=talent.black_arrow&buff.beast_cleave.remains&buff.withering_fire.up" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  cleave->add_action( "black_arrow,if=buff.beast_cleave.remains" );
+  cleave->add_action( "kill_shot,if=talent.black_arrow&buff.beast_cleave.remains" );
   cleave->add_action( "call_of_the_wild" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "dire_beast,if=talent.shadow_hounds|talent.dire_cleave" );
@@ -168,12 +168,12 @@ void beast_mastery_ptr( player_t* p )
 
   st->add_action( "dire_beast,if=talent.huntmasters_call" );
   st->add_action( "bestial_wrath" );
-  st->add_action( "black_arrow,if=buff.withering_fire.up" );
+  st->add_action( "kill_shot,if=talent.black_arrow&buff.withering_fire.up" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon.ready&full_recharge_time<8" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
   st->add_action( "kill_command" );
-  st->add_action( "black_arrow" );
+  st->add_action( "kill_shot,if=talent.black_arrow" );
   st->add_action( "explosive_shot,if=talent.thundering_hooves" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -223,29 +223,29 @@ void marksmanship( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
 
   st->add_action( "volley,if=!talent.double_tap&(talent.aspect_of_the_hydra|active_enemies=1|buff.precise_shots.down&(cooldown.rapid_fire.remains+action.rapid_fire.execute_time<6|!talent.bulletstorm))&(!raid_event.adds.exists|raid_event.adds.in>cooldown|active_enemies>1)", "Hold Volley for up to its whole cooldown for multiple target situations, also make sure Rapid Fire will be available to stack extra Bullestorm stacks during it without Aspect of the Hydra." );
-  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|!talent.aspect_of_the_hydra&talent.bulletstorm&active_enemies>1&buff.trick_shots.up&(buff.precise_shots.down|!talent.no_scope)", "Prioritize Rapid Fire to trigger Lunar Storm or to stack extra Bulletstorm when Volley Trick Shots is up without Aspect of the Hydra." );
+  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down|!talent.aspect_of_the_hydra&talent.bulletstorm&active_enemies>1&buff.trick_shots.up&(buff.precise_shots.down|!talent.no_scope)", "Prioritize Rapid Fire to trigger Lunar Storm or to stack extra Bulletstorm when Volley Trick Shots is up without Aspect of the Hydra." );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up", "Prioritize 4pc double bonus by casting Explosive Shot and following up with Aimed Shot when Lock and Load is up, as long as Precise Shots would not be wasted." );
   st->add_action( "aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up" );
   st->add_action( "volley,if=talent.double_tap&buff.double_tap.down", "For Double Tap, lower Volley in priority until Trueshot has already triggered Double Tap." );
-  st->add_action( "black_arrow,target_if=min:dot.black_arrow_dot.ticking|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up", "Kill Shot/Black Arrow become the primary Precise Shot spenders for Headshot builds. For all Precise Shot spenders, skip to Aimed Shot if both Spotter's Mark and Moving Target are already up." );
-  st->add_action( "kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up" );
+  st->add_action( "kill_shot,target_if=min:dot.black_arrow_dot.ticking|max_prio_damage,if=talent.black_arrow&(talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up)", "Black Arrow becomes the primary Precise Shot spenders for Headshot builds. For all Precise Shot spenders, skip to Aimed Shot if both Spotter's Mark and Moving Target are already up." );
+  st->add_action( "kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=!talent.black_arrow&(talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up)", "Kill Shot becomes the primary Precise Shot spenders for Headshot builds. For all Precise Shot spenders, skip to Aimed Shot if both Spotter's Mark and Moving Target are already up." );
   st->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)&active_enemies>1&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)", "With either Symphonic Arsenal or Small Game Hunter, Multi-Shot can be used as the Precise Shots spender on 2 targets without Aspect of the Hydra." );
   st->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver", "Prioritize Aimed Shot a bit higher than Rapid Fire if it's close to charge capping and Bulletstorm is up." );
   st->add_action( "rapid_fire,if=(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3)&(!talent.bulletstorm|buff.bulletstorm.stack<=10|talent.aspect_of_the_hydra&active_enemies>1)", "With Sentinel, hold Rapid Fire for up to 1/3 of its cooldown to trigger Lunar Storm as soon as possible. Don't reset Bulletstorm if it's been stacked over 10 unless it can be re-stacked over 10." );
   st->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up", "Aimed Shot if we've spent Precise Shots to trigger Spotter's Mark and Moving Target. With No Scope this means Precise Shots could be up when Aimed Shot is cast." );
   st->add_action( "explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc|!talent.precision_detonation" );
-  st->add_action( "black_arrow,if=!talent.headshot" );
+  st->add_action( "kill_shot,if=talent.black_arrow&!talent.headshot" );
   st->add_action( "steady_shot", "Steady Shot is our only true filler due to the Aimed Shot cdr." );
 
   trickshots->add_action( "volley,if=!talent.double_tap" );
   trickshots->add_action( "trueshot,if=variable.trueshot_ready" );
   trickshots->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|buff.trick_shots.down", "Swap targets to spend Precise Shots from No Scope after applying Spotter's Mark already to the primary target." );
   trickshots->add_action( "volley,if=talent.double_tap&buff.double_tap.down", "For Double Tap, lower Volley in priority until Trueshot has already triggered Double Tap." );
-  trickshots->add_action( "black_arrow,if=buff.trick_shots.up", "Always cast Black Arrow with Trick Shots up for Bleak Powder." );
+  trickshots->add_action( "kill_shot,if=talent.black_arrow&buff.trick_shots.up", "Always cast Black Arrow with Trick Shots up for Bleak Powder." );
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd", "Prioritize Aimed Shot a bit higher than Rapid Fire if it's close to charge capping and Bulletstorm is up." );
-  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)", "With Sentinel, hold Rapid Fire for up to 1/3 of its cooldown to trigger Lunar Storm as soon as possible." );
+  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_cooldown.down)", "With Sentinel, hold Rapid Fire for up to 1/3 of its cooldown to trigger Lunar Storm as soon as possible." );
   trickshots->add_action( "explosive_shot,if=talent.precision_detonation&(buff.lock_and_load.up|!set_bonus.thewarwithin_season_2_4pc)&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)", "With Precision Detonation, wait until a follow up Aimed Shot would not waste Precise Shots to cast. Require Lock and Load active if using the 4pc." );
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up", "Aimed Shot if we've spent Precise Shots to trigger Spotter's Mark and Moving Target. With No Scope this means Precise Shots could be up when Aimed Shot is cast." );
   trickshots->add_action( "explosive_shot" );
@@ -293,12 +293,11 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
 
   st->add_action( "volley,if=!talent.double_tap" );
-  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up" );
+  st->add_action( "rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_cooldown.down" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up" );
   st->add_action( "aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up" );
   st->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
-  st->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
   st->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
   st->add_action( "multishot,if=active_enemies>1&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)" );
@@ -306,20 +305,20 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3" );
   st->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   st->add_action( "explosive_shot,if=(!set_bonus.thewarwithin_season_2_4pc|!talent.precision_detonation)&active_enemies>1" );
-  st->add_action( "black_arrow,if=!talent.headshot" );
+  st->add_action( "kill_shot,if=talent.black_arrow&!talent.headshot" );
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "volley,if=!talent.double_tap" );
   trickshots->add_action( "trueshot,if=variable.trueshot_ready" );
   trickshots->add_action( "multishot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|buff.trick_shots.down" );
   trickshots->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
-  trickshots->add_action( "black_arrow,if=buff.withering_fire.up&buff.trick_shots.up" );
+  trickshots->add_action( "kill_shot,if=talent.black_arrow&buff.withering_fire.up&buff.trick_shots.up" );
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd" );
-  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)" );
+  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_cooldown.down)" );
   trickshots->add_action( "explosive_shot,if=talent.precision_detonation&(buff.lock_and_load.up|!set_bonus.thewarwithin_season_2_4pc)&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)" );
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up" );
   trickshots->add_action( "explosive_shot" );
-  trickshots->add_action( "black_arrow" );
+  trickshots->add_action( "kill_shot,if=talent.black_arrow" );
   trickshots->add_action( "steady_shot,if=focus+cast_regen<focus.max" );
   trickshots->add_action( "multishot" );
 
@@ -360,7 +359,7 @@ void survival( player_t* p )
   default_->add_action( "lights_judgment" );
 
   cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault", "COOLDOWNS ACTIONLIST" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)" );
   cds->add_action( "harpoon,if=prev.kill_command" );
   cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
@@ -370,16 +369,18 @@ void survival( player_t* p )
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6", "actions.cds+=/use_item,use_off_gcd=1,slot=trinket1,if=buff.coordinated_assault.up&trinket.1.has_use_buff|cooldown.coordinated_assault.remains>31|!trinket.1.has_use_buff&cooldown.coordinated_assault.remains>20|time_to_die<cooldown.coordinated_assault.remains actions.cds+=/use_item,use_off_gcd=1,slot=trinket2,if=buff.coordinated_assault.up&trinket.2.has_use_buff|cooldown.coordinated_assault.remains>31|!trinket.2.has_use_buff&cooldown.coordinated_assault.remains>20|time_to_die<cooldown.coordinated_assault.remains" );
 
   plcleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains", "PACK LEADER | AOE ACTIONLIST" );
-  plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains" );
+  plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains|raid_event.adds.exists&raid_event.adds.remains<4" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1" );
+  plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
   plcleave->add_action( "wildfire_bomb" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)" );
   plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plcleave->add_action( "butchery" );
   plcleave->add_action( "coordinated_assault" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   plcleave->add_action( "explosive_shot" );
-  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|charges_fractional>1.5" );
   plcleave->add_action( "kill_shot,if=buff.deathblow.remains&talent.sic_em" );
   plcleave->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
@@ -395,6 +396,7 @@ void survival( player_t* p )
   plst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   plst->add_action( "coordinated_assault" );
   plst->add_action( "wildfire_bomb" );
+  plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.howl_of_the_pack_leader_cooldown.up&buff.howl_of_the_pack_leader_cooldown.remains<2*gcd" );
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1|focus<30))" );
   plst->add_action( "explosive_shot,if=active_enemies=2" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
@@ -405,14 +407,15 @@ void survival( player_t* p )
   sentcleave->add_action( "wildfire_bomb,if=!buff.lunar_storm_cooldown.remains", "SENTINEL | DEFAULT AOE ACTIONLIST" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|(talent.bombardier&cooldown.coordinated_assault.remains<2*gcd)|talent.butchery&cooldown.butchery.remains<gcd" );
+  sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd" );
   sentcleave->add_action( "butchery" );
+  sentcleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "flanking_strike,if=(buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1)" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
-  sentcleave->add_action( "explosive_shot" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  sentcleave->add_action( "explosive_shot" );
   sentcleave->add_action( "kill_shot,if=buff.deathblow.remains&talent.sic_em" );
   sentcleave->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   sentcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
@@ -428,11 +431,11 @@ void survival( player_t* p )
   sentst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   sentst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.tip_of_the_spear.stack<1&cooldown.flanking_strike.remains<gcd" );
-  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<2|focus<30)))" );
+  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<1|focus<30)))" );
   sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains<gcd&buff.mongoose_fury.stack>0" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&buff.lunar_storm_cooldown.remains>full_recharge_time&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
-  sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains" );
   sentst->add_action( "explosive_shot" );
+  sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains" );
   sentst->add_action( "kill_shot" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   sentst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
@@ -474,7 +477,7 @@ void survival_ptr( player_t* p )
   default_->add_action( "lights_judgment" );
 
   cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault", "COOLDOWNS ACTIONLIST" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)" );
   cds->add_action( "harpoon,if=prev.kill_command" );
   cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
@@ -484,18 +487,21 @@ void survival_ptr( player_t* p )
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6", "actions.cds+=/use_item,use_off_gcd=1,slot=trinket1,if=buff.coordinated_assault.up&trinket.1.has_use_buff|cooldown.coordinated_assault.remains>31|!trinket.1.has_use_buff&cooldown.coordinated_assault.remains>20|time_to_die<cooldown.coordinated_assault.remains actions.cds+=/use_item,use_off_gcd=1,slot=trinket2,if=buff.coordinated_assault.up&trinket.2.has_use_buff|cooldown.coordinated_assault.remains>31|!trinket.2.has_use_buff&cooldown.coordinated_assault.remains>20|time_to_die<cooldown.coordinated_assault.remains" );
 
   plcleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains", "PACK LEADER | AOE ACTIONLIST" );
-  plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains" );
+  plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains&boar_charge.remains>0|buff.hogstrider.remains<gcd&buff.hogstrider.up|buff.hogstrider.remains&buff.strike_it_rich.remains|raid_event.adds.exists&raid_event.adds.remains<4" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1" );
+  plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
   plcleave->add_action( "wildfire_bomb" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)" );
   plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plcleave->add_action( "butchery" );
   plcleave->add_action( "coordinated_assault" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   plcleave->add_action( "explosive_shot" );
-  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|charges_fractional>1.5" );
   plcleave->add_action( "kill_shot,if=buff.deathblow.remains&talent.sic_em" );
-  plcleave->add_action( "raptor_bite" );
+  plcleave->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
+  plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
 
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)|(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "PACK LEADER | SINGLE TARGET ACTIONLIST." );
   plst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
@@ -508,6 +514,7 @@ void survival_ptr( player_t* p )
   plst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   plst->add_action( "coordinated_assault" );
   plst->add_action( "wildfire_bomb" );
+  plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.howl_of_the_pack_leader_cooldown.up&buff.howl_of_the_pack_leader_cooldown.remains<2*gcd" );
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1|focus<30))" );
   plst->add_action( "explosive_shot,if=active_enemies=2" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
@@ -518,14 +525,15 @@ void survival_ptr( player_t* p )
   sentcleave->add_action( "wildfire_bomb,if=!buff.lunar_storm_cooldown.remains", "SENTINEL | DEFAULT AOE ACTIONLIST" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|(talent.bombardier&cooldown.coordinated_assault.remains<2*gcd)|talent.butchery&cooldown.butchery.remains<gcd" );
+  sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd" );
   sentcleave->add_action( "butchery" );
+  sentcleave->add_action( "explosive_shot,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "flanking_strike,if=(buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1)" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
-  sentcleave->add_action( "explosive_shot" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  sentcleave->add_action( "explosive_shot" );
   sentcleave->add_action( "kill_shot,if=buff.deathblow.remains&talent.sic_em" );
   sentcleave->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   sentcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
@@ -541,11 +549,11 @@ void survival_ptr( player_t* p )
   sentst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   sentst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.tip_of_the_spear.stack<1&cooldown.flanking_strike.remains<gcd" );
-  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<2|focus<30)))" );
+  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&(buff.tip_of_the_spear.stack<1|focus<30)))" );
   sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains<gcd&buff.mongoose_fury.stack>0" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&buff.lunar_storm_cooldown.remains>full_recharge_time&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
-  sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains" );
   sentst->add_action( "explosive_shot" );
+  sentst->add_action( "mongoose_bite,if=buff.mongoose_fury.remains" );
   sentst->add_action( "kill_shot" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   sentst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );

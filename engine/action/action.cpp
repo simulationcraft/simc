@@ -1217,6 +1217,10 @@ timespan_t action_t::gcd() const
     gcd_ += player->thewarwithin_opts.additional_gcd_time;
   }
 
+  // TODO: Figure out how this works for spells with cast times.
+  if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode )
+    gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
+
   return gcd_;
 }
 

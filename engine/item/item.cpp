@@ -822,7 +822,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 33> options { {
+  std::array<std::unique_ptr<option_t>, 34> options { {
     opt_uint("id", parsed.data.id),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
@@ -855,7 +855,8 @@ void item_t::parse_options()
     opt_string("azerite_level", option_azerite_level_str),
     opt_string("context", DUMMY_CONTEXT),
     opt_string("crafted_stats", option_crafted_stat_str),
-    opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY)
+    opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY),
+    opt_string("titan_disc_id", option_titan_disc_driver_id )
   } };
 
   try
@@ -1057,6 +1058,8 @@ void item_t::parse_options()
       std::throw_with_nested( std::runtime_error( "Crafted Stats" ) );
     }
   }
+  if ( !option_titan_disc_driver_id.empty() )
+    parsed.titan_disc_driver_id = util::to_unsigned( option_titan_disc_driver_id );
 }
 
 // item_t::initialize_data ==================================================
@@ -1280,6 +1283,9 @@ std::string item_t::encoded_item() const
 
     s << ",crafted_stats=" << util::string_join( strs, "/" );
   }
+
+  if ( !option_titan_disc_driver_id.empty() )
+    s << ",titan_disc_id=" << option_titan_disc_driver_id;
 
   return s.str();
 }

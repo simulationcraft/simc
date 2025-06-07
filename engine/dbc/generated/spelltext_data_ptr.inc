@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.7.60672
-static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.7.61131
+static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18846,7 +18846,6 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   {  384411, "$s2% chance to refund Maelstrom Weapon stacks spent on Lightning Bolt$?a454009[, Tempest,][] or Chain Lightning.\r\n\r\nWhile Ascendance is active, generate $s1 Maelstrom Weapon $lstack:stacks; every $384437t1 sec.", 0, 0 },
   {  384434, "$@spelldesc384382", 0, 0 },
   {  384437, "$@spelldesc384411", "Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $t1 sec.", 0 },
-  {  384442, "Call upon the Light and become an avatar of retribution, increasing your critical strike chance by $s1% for $31884d.\r\n\r\n|cFFFFFFFFCombines with other Avenging Wrath abilities.|r", 0, 0 },
   {  384444, "Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].\r\n\r\nWhile Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.", 0, 0 },
   {  384447, "Increases the chance to gain a stack of Maelstrom Weapon by $s1%, and whenever you gain a stack of Maelstrom Weapon, the cooldown of Feral Spirits is reduced by ${$m2/1000}.1 sec.", 0, 0 },
   {  384450, "Consuming $s2 stacks of Maelstrom Weapon will reset the cooldown of Stormstrike and increases the damage of your Physical and Frost abilities by $s1% for $384451d.", 0, 0 },
@@ -21452,6 +21451,7 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   {  407907, "$@spelldesc407903", 0, 0 },
   {  407913, "$@spelldesc407914", "$pri increased by $w1.", 0 },
   {  407914, "Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.", 0, 0 },
+  {  407924, "$@spelldesc402813", 0, 0 },
   {  407925, "$@spelldesc402813", 0, 0 },
   {  407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
   {  407961, "$@spelldesc402813", 0, 0 },
@@ -26036,7 +26036,6 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   {  462244, "$@spelldesc196819", 0, 0 },
   {  462247, "$@spelldesc196819", 0, 0 },
   {  462248, "$@spelldesc196819", 0, 0 },
-  {  462342, "$@cdataelem115\r\n\r\n${$cond($eq($@cdataelem115,4),$STR,$AGI)}", 0, 0 },
   {  462368, "Healing from Healing Stream Totem reduces Fire, Frost, and Nature damage taken by $462568s1% for $462568d.$?c3[\r\n\r\nHealing from Cloudburst Totem reduces Fire, Frost, and Nature damage taken by $462369s1% for $462369d.][]", 0, 0 },
   {  462369, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   {  462375, "Casting Lava Burst increases the healing of your next Healing Surge by $462377s1%, stacking up to $462377u times.\r\n\r\nHealing Surge applies Flame Shock to a nearby enemy when empowered by Master of the Elements.", 0, 0 },
@@ -27319,8 +27318,8 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1228149, "$@spelldesc1224457", 0, 0 },
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   { 1228455, "$@spelldesc433106", 0, 0 },
-  { 1229376, "Casts a rotation of damaging abilities for use in combat. Abilities used through the Single-Button Assistant incur an additional ${$s1/10}.1 second global cooldown.", 0, 0 },
-  { 1231411, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$d}% of your maximum health over $d.", 0, 0 },
+  { 1229376, "Casts damaging abilities for use in combat, rotating through them based on priority.\r\n\r\nThe global cooldown of abilities used through the Single-Button Assistant is $s1% longer.", 0, 0 },
+  { 1231411, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$1231418d}% of your maximum health over $1231418d.", 0, 0 },
   { 1231418, "$@spelldesc1231411", "Restoring $s1% health every sec.", 0 },
   { 1231772, "Elemental Shaman baseline passive", 0, 0 },
   { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
@@ -27340,6 +27339,7 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1234212, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
   { 1234337, "Your Spotting Eagle now resembles a Spotting Owl.", 0, 0 },
   { 1234338, "$@spelldesc1234337", 0, 0 },
+  { 1235391, "Your $?s207313[abomination]?s58640[geist][ghoul] deals $344955s1 Shadow damage to $344955s2 nearby enemies and transforms into a powerful undead monstrosity for $d. $?s325554[Granting them $325554s1% energy and the][The] $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.", "$?$w2>0[Transformed into an undead monstrosity.][Gassy.]\r\nDamage dealt increased by $w1%.", 0 },
   { 1236108, "Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.", 0, 0 },
   { 1236109, "$@spelldesc1236108", 0, 0 },
   { 1236110, "$@spelldesc1236108", 0, 0 },
@@ -27350,8 +27350,8 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1236122, "$@spelldesc1236115", 0, 0 },
   { 1236123, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137w3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1236124, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137w4 Haste for $1236936d. ", 0, 0 },
-  { 1236128, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137w5 for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
-  { 1236129, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
+  { 1236128, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
+  { 1236129, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
   { 1236132, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137w10.", 0, 0 },
   { 1236134, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137w11 damage for $1236993d. When the shield expires it deals $1236137w12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1236135, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137w13 Nature damage split between targets within $1237033A1 yds.", 0, 0 },
@@ -27382,22 +27382,28 @@ static const std::array<spelltext_data_t, 27391> __ptr_spelltext_data { {
   { 1237033, "$@spelldesc1236135", 0, 0 },
   { 1238052, "Holy Priest core passive", 0, 0 },
   { 1240103, "Increases your reputation with the Rajani by $s1.", 0, 0 },
-  { 1241240, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals $1236137s13 Nature damage split between targets within $1237033A1 yds.", 0, 0 },
+  { 1241240, "Your spells and attacks have a chance to send a Charged Bolt at your target that deals ${$<rolemult>*$1236137s13} Nature damage split between targets within $1237033A1 yds.", 0, 0 },
   { 1241241, "When you take damage, you have a chance to gain a Titan Energy Shield preventing up to $1236137s11 damage for $1236993d. When the shield expires it deals $1236137s12% of the remaining absorb as Arcane damage split between enemies within $1237011A1 yds. ", 0, 0 },
   { 1241242, "Your heals have a chance to Spark jumping to the lowest health target within $1236974A1 yds, healing them for $1236137s10.", 0, 0 },
-  { 1241243, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137s7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137s7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
+  { 1241243, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137s7 every $1236961t sec up to a maximum of ${$1236937u*$1236137s7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", 0, 0 },
   { 1241244, "Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137s1} Nature damage every $1236110t sec for $1236110d.", 0, 0 },
-  { 1241245, "Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for ${$<rolemult>*$1236137s2} every $1236118t sec for $1236118d.", 0, 0 },
+  { 1241245, "Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for $1236137s2 every $1236118t sec for $1236118d.", 0, 0 },
   { 1241246, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137s3 every $1236940t sec for $1236940d. ", 0, 0 },
-  { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by $1236137s5 for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
+  { 1241250, "Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.", 0, 0 },
   { 1241251, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137s4 Haste for $1236936d. ", 0, 0 },
+  { 1241871, "$@spelldesc53271", 0, "Command Pet Ability" },
+  { 1243749, 0, "You now flip on every jump! Yay!", 0 },
+  { 1244920, "Shows the location of all nearby wild pets on the minimap.", "Tracking Wild Pets.", 0 },
+  { 1245325, "Shows the location of all nearby wild pets on the minimap.", "Tracking Wild Pets.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.7.60672
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.1.7.61131
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  407924,  0, "$@spelldesc1236129", "$@spelldesc402813" },
+  { 1236129,  0, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating." },
 } };
 
-// Spell description variables, wow build 11.1.7.60672
+// Spell description variables, wow build 11.1.7.61131
 static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28049,11 +28055,11 @@ static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { 
   { 1234189, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   { 1236108, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236115, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1241240, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241244, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
-  { 1241245, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.7.60672
+// spelldesc_vars hotfix entries, wow build 11.1.7.61131
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

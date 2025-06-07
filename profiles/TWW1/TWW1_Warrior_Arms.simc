@@ -173,9 +173,9 @@ actions.slayer_execute+=/colossus_smash
 actions.slayer_execute+=/execute,if=buff.juggernaut.remains<=gcd*2&talent.juggernaut
 actions.slayer_execute+=/bladestorm,if=(debuff.executioners_precision.stack=2&(debuff.colossus_smash.remains>4|cooldown.colossus_smash.remains>15))|!talent.executioners_precision
 actions.slayer_execute+=/skullsplitter,if=rage<=40
-actions.slayer_execute+=/overpower,if=buff.martial_prowess.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)
+actions.slayer_execute+=/overpower,if=buff.overpower.stack<2&buff.opportunist.up&talent.opportunist&(talent.bladestorm|talent.ravager&rage<85)
 actions.slayer_execute+=/mortal_strike,if=dot.rend.remains<2|debuff.executioners_precision.stack=2&!buff.ravager.up
-actions.slayer_execute+=/overpower,if=rage<=40&buff.martial_prowess.stack<2&talent.fierce_followthrough
+actions.slayer_execute+=/overpower,if=rage<=40&buff.overpower.stack<2&talent.fierce_followthrough
 actions.slayer_execute+=/execute
 actions.slayer_execute+=/overpower
 actions.slayer_execute+=/wrecking_throw
@@ -217,7 +217,7 @@ actions.slayer_sweep+=/mortal_strike
 actions.slayer_sweep+=/overpower
 actions.slayer_sweep+=/thunder_clap,if=dot.rend.remains<=8&buff.sweeping_strikes.down
 actions.slayer_sweep+=/rend,if=dot.rend.remains<=5
-actions.slayer_sweep+=/cleave,if=talent.fervor_of_battle&!buff.martial_prowess.up
+actions.slayer_sweep+=/cleave,if=talent.fervor_of_battle&!buff.overpower.up
 actions.slayer_sweep+=/whirlwind,if=talent.fervor_of_battle
 actions.slayer_sweep+=/execute,if=!talent.juggernaut
 actions.slayer_sweep+=/wrecking_throw,if=!buff.sweeping_strikes.up

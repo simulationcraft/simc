@@ -4226,6 +4226,182 @@ void priest_t::init_action_list()
   base_t::init_action_list();
 }
 
+void priest_t::init_blizzard_action_list()
+{
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  player_t::init_blizzard_action_list();
+
+  // default overrides
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      break;
+    case PRIEST_HOLY:
+      break;
+    case PRIEST_SHADOW:
+      break;
+    default:
+      break;
+  }
+
+  // precombat overrides
+  action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      break;
+    case PRIEST_HOLY:
+      break;
+    case PRIEST_SHADOW:
+      pre_c->add_action( "shadowform,if=!buff.shadowform.up" );
+      break;
+    default:
+      break;
+  }
+
+  // cooldown overrides
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+  // reset this from player.cpp to get a better use_items
+  cooldowns->action_list.clear();
+
+  cooldowns->add_action( "potion" );
+  cooldowns->add_action( "blood_fury" );
+  cooldowns->add_action( "berserking" );
+  cooldowns->add_action( "fireblood" );
+  cooldowns->add_action( "ancestral_call" );
+
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      break;
+    case PRIEST_HOLY:
+      break;
+    case PRIEST_SHADOW:
+      cooldowns->add_action( "use_items,if=buff.voidform.up|buff.dark_ascension.up" );
+      cooldowns->add_action( "void_eruption" );
+      cooldowns->add_action( "dark_ascension,if=dot.vampiric_touch.ticking" );
+      cooldowns->add_action( "power_infusion,if=buff.voidform.up|buff.dark_ascension.up" );
+      break;
+    default:
+      break;
+  }
+}
+
+parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                    const assisted_combat_step_data_t& step ) const
+{
+  // vampiric touch action checks if shadow crash is available
+  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 1243723 )
+  {
+    return { "(!talent.whispering_shadows|!cooldown.shadow_crash.up)" };
+  }
+
+  // instead of checking for hidden void blast buff we check for entropic rift
+  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 450404 )
+  {
+    return { "buff.entropic_rift.up" };
+  }
+
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+std::string priest_t::blizzard_apl_action_replace( std::string options )
+{
+  switch ( specialization() )
+  {
+    case PRIEST_DISCIPLINE:
+      break;
+    case PRIEST_HOLY:
+      break;
+    case PRIEST_SHADOW:
+      // override mind_blast into void_blast
+      if ( options.find( "buff.entropic_rift.up" ) != std::string::npos )
+      {
+        return "void_blast";
+      }
+      // ensure we use mind_spike_insanity action instead of mind_spike
+      if ( options.find( "mind_spike_insanity" ) != std::string::npos )
+      {
+        return "mind_spike_insanity";
+      }
+      // ensure we use mind_flay_insanity action instead of mind_flay
+      if ( options.find( "mind_flay_insanity" ) != std::string::npos )
+      {
+        return "mind_flay_insanity";
+      }
+      break;
+    default:
+      break;
+  }
+
+  return "";
+}
+
+void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                           action_priority_list_t* assisted_combat )
+{
+  std::string options = "";
+  std::string comment = "";
+  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
+  {
+    parsed_assisted_combat_rule_t rule_str = parse_assisted_combat_rule( rule, step );
+    if ( !rule_str.expr.empty() )
+      options += options.empty() ? rule_str.expr : "&" + rule_str.expr;
+    if ( !rule_str.comment.empty() )
+      comment += comment.empty() ? rule_str.comment : ", " + rule_str.comment;
+  }
+
+  // This is kinda ugly, maybe find a better way to do this?
+  if ( !options.empty() )
+  {
+    std::string name = blizzard_apl_action_replace( options );
+    if ( name != "" )
+    {
+      assisted_combat->add_action( name + ",if=" + options, comment );
+      return;
+    }
+  }
+
+  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  {
+    if ( !name.empty() )
+    {
+      if ( options.empty() )
+        assisted_combat->add_action( name, comment );
+      else
+        assisted_combat->add_action( name + ",if=" + options, comment );
+    }
+  }
+}
+
+std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 15407 && talents.shadow.mind_spike.enabled() )  // Mind Flay
+  {
+    spell_id = talents.shadow.mind_spike->id();
+  }
+
+  if ( spell_id == 15407 )
+  {
+    return { "mind_flay_insanity", "mind_flay" };
+  }
+
+  if ( spell_id == 73510 )
+  {
+    return { "mind_spike_insanity", "mind_spike" };
+  }
+
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
+std::string priest_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  std::string aura_expr = player_t::aura_expr_from_spell_id( spell_id, on_self );
+
+  return aura_expr;
+}
+
 void priest_t::combat_begin()
 {
   player_t::combat_begin();
