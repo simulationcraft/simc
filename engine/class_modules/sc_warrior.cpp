@@ -9280,14 +9280,6 @@ void warrior_t::create_buffs()
 
   buff.bloodcraze = make_buff( this, "bloodcraze", talents.fury.bloodcraze->effectN( 1 ).trigger() );
 
-  //buff.vengeance_ignore_pain = make_buff( this, "vengeance_ignore_pain", find_spell( 202574 ) )
-    //->set_chance( talents.vengeance->ok() )
-    //->set_default_value( find_spell( 202574 )->effectN( 1 ).percent() );
-
-  //buff.vengeance_revenge = make_buff( this, "vengeance_revenge", find_spell( 202573 ) )
-    //->set_chance( talents.vengeance->ok() )
-    //->set_default_value( find_spell( 202573 )->effectN( 1 ).percent() );
-
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
   buff.dance_of_death_ravager = make_buff( this, "dance_of_death_ravager", find_spell( 459567 ) )
