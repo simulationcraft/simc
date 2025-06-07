@@ -2482,6 +2482,86 @@ struct lightning_strike_t : public warrior_attack_t
   }
 };
 
+// Ignore Pain =============================================================
+
+struct ignore_pain_buff_t : public absorb_buff_t
+{
+  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->talents.protection.ignore_pain )
+  {
+    cooldown->duration = 0_ms;
+    set_absorb_source( player->get_stats( "ignore_pain" ) );
+    set_absorb_gain( player->get_gain( "ignore_pain" ) );
+  }
+
+  // Custom consume implementation to allow minimum absorb amount.
+  double consume( double amount, action_state_t* ) override
+  {
+    // Effect 2 stores the % of damage that is absorbed
+    amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
+    double absorbed = absorb_buff_t::consume( amount );
+
+    return absorbed;
+  }
+};
+
+struct ignore_pain_t : public warrior_spell_t
+{
+  double max_hp_percent_cap;
+  ignore_pain_t( warrior_t* p, util::string_view options_str )
+    : warrior_spell_t( "ignore_pain", p, p->talents.protection.ignore_pain )
+  {
+    parse_options( options_str );
+    may_crit     = false;
+    use_off_gcd  = true;
+    harmful      = false;
+    range        = -1;
+    target       = player;
+    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 20 : 35);
+
+    base_dd_max = base_dd_min = 0;
+    resource_current = RESOURCE_RAGE;
+
+    max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
+  }
+
+  ignore_pain_t ( util::string_view name, warrior_t* p )
+    : warrior_spell_t( name, p, p->talents.protection.ignore_pain )
+    {
+      may_crit    = false;
+      background  = true;
+      harmful     = false;
+      range       = -1;
+      target      = player;
+      base_dd_min = base_dd_max = 0;
+
+      max_hp_percent_cap = p->talents.protection.ignore_pain->effectN( 4 ).percent();
+    }
+
+  void impact( action_state_t* s ) override
+  {
+    double new_ip = s -> result_amount;
+
+    double previous_ip = p() -> buff.ignore_pain -> current_value;
+
+    // IP is capped to 30% of max health
+    double ip_max_health_cap = p() -> max_health() * max_hp_percent_cap;
+
+    new_ip = std::min( previous_ip + new_ip, ip_max_health_cap );
+
+    if ( new_ip > 0.0 )
+    {
+      p()->buff.ignore_pain->trigger( 1, new_ip );
+    }
+  }
+
+  double cost() const override
+  {
+    if ( background )
+      return 0;
+    return warrior_spell_t::cost();
+  }
+};
+
 // Bloodthirst Heal =========================================================
 
 struct bloodthirst_heal_t : public warrior_heal_t
@@ -4075,6 +4155,7 @@ struct thunder_blast_t : public warrior_attack_t
   warrior_attack_t* rend;
   action_t* lightning_strike;
   action_t* seismic_action;
+  action_t* ignore_pain;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
@@ -4084,6 +4165,7 @@ struct thunder_blast_t : public warrior_attack_t
       rend( nullptr ),
       lightning_strike( nullptr ),
       seismic_action( nullptr ),
+      ignore_pain( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -4131,6 +4213,9 @@ struct thunder_blast_t : public warrior_attack_t
       seismic_action = new thunder_blast_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
       add_child( seismic_action );
     }
+
+    if ( p->talents.protection.violent_outburst->ok() )
+      ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
 
     if ( p->talents.protection.strategist->ok() )
     {
@@ -4188,7 +4273,7 @@ struct thunder_blast_t : public warrior_attack_t
 
     if ( p()->buff.violent_outburst->check() )
     {
-      p()->buff.ignore_pain->trigger();
+      ignore_pain->execute();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
     }
@@ -4283,6 +4368,7 @@ struct thunder_clap_t : public warrior_attack_t
   warrior_attack_t* rend;
   action_t* lightning_strike;
   action_t* seismic_action;
+  action_t* ignore_pain;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
@@ -4292,6 +4378,7 @@ struct thunder_clap_t : public warrior_attack_t
       rend( nullptr ),
       lightning_strike( nullptr ),
       seismic_action( nullptr ),
+      ignore_pain( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -4332,6 +4419,11 @@ struct thunder_clap_t : public warrior_attack_t
     {
       seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_clap_seismic_reverberation", p );
       add_child( seismic_action );
+    }
+
+    if ( p->talents.protection.violent_outburst->ok() )
+    {
+      ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
     }
 
     if ( p->talents.protection.strategist->ok() )
@@ -4390,7 +4482,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p()->buff.violent_outburst->check() )
     {
-      p()->buff.ignore_pain->trigger();
+      ignore_pain->execute();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p()->buff.violent_outburst->data().effectN( 4 ).percent();
     }
@@ -6619,6 +6711,7 @@ struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
   int aoe_targets;
+  action_t* ignore_pain;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
     rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
@@ -6636,6 +6729,11 @@ struct shield_slam_t : public warrior_attack_t
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
     else
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+
+    if ( p->talents.protection.violent_outburst->ok() )
+    {
+      ignore_pain = get_action<ignore_pain_t>( "ignore_pain_violent_outburst", p );
+    }
   }
 
   int n_targets() const override
@@ -6682,7 +6780,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.violent_outburst->check() )
     {
-      p()->buff.ignore_pain->trigger();
+      ignore_pain->execute();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
     }
@@ -7768,65 +7866,6 @@ struct torment_recklessness_t : public warrior_spell_t
 
     const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
     p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
-  }
-};
-
-// Ignore Pain =============================================================
-
-struct ignore_pain_buff_t : public absorb_buff_t
-{
-  ignore_pain_buff_t( warrior_t* player ) : absorb_buff_t( player, "ignore_pain", player->talents.protection.ignore_pain )
-  {
-    cooldown->duration = 0_ms;
-    set_absorb_source( player->get_stats( "ignore_pain" ) );
-    set_absorb_gain( player->get_gain( "ignore_pain" ) );
-  }
-
-  // Custom consume implementation to allow minimum absorb amount.
-  double consume( double amount, action_state_t* ) override
-  {
-    // Effect 2 stores the % of damage that is absorbed
-    amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
-    double absorbed = absorb_buff_t::consume( amount );
-
-    return absorbed;
-  }
-};
-
-struct ignore_pain_t : public warrior_spell_t
-{
-  ignore_pain_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "ignore_pain", p, p->talents.protection.ignore_pain )
-  {
-    parse_options( options_str );
-    may_crit     = false;
-    use_off_gcd  = true;
-    range        = -1;
-    target       = player;
-    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 20 : 35);
-
-    base_dd_max = base_dd_min = 0;
-    resource_current = RESOURCE_RAGE;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    double new_ip = s -> result_amount;
-
-    double previous_ip = p() -> buff.ignore_pain -> current_value;
-
-    // IP is capped to 30% of max health
-    double ip_max_health_cap = p() -> max_health() * 0.3;
-
-    if ( previous_ip + new_ip > ip_max_health_cap )
-    {
-      new_ip = ip_max_health_cap;
-    }
-
-    if ( new_ip > 0.0 )
-    {
-      p()->buff.ignore_pain->trigger( 1, new_ip );
-    }
   }
 };
 
