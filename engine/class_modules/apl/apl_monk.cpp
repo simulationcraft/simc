@@ -852,7 +852,7 @@ namespace monk
 {
 bool monk_t::validate_actor()
 {
-  if ( specialization() == MONK_MISTWEAVER && !sim->allow_experimental_specializations )
+  if ( specialization() == MONK_MISTWEAVER )
   {
     if ( !quiet )
       sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
@@ -939,7 +939,30 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
   if ( step.spell_id == 205523 && rule.condition_type == AURA_ON_PLAYER )
     return { "", "Remove talent.blackout_combo check." };
 
+  if ( rule.condition_type == AURA_MISSING_PLAYER )
+  {
+    switch ( rule.condition_value_1 )
+    {
+      case 1245502:
+      case 1245503:
+      case 1245504:
+      case 1245506:
+        return { "combo_strike",
+                 fmt::format( "Spell id {} is a helper buff to avoid breaking combo for {}.", rule.condition_value_1,
+                              find_spell( step.spell_id )->name_cstr() ),
+                 true };
+    }
+  }
+
   return base_t::parse_assisted_combat_rule( rule, step );
+}
+
+std::string monk_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  if ( spell_id == 261916 && on_self )
+    return "buff.bok_proc";
+
+  return base_t::aura_expr_from_spell_id( spell_id, on_self );
 }
 };  // namespace monk
 
