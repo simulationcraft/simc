@@ -1897,6 +1897,7 @@ public:
   void init_items() override;
   void init_special_effects() override;
   void init_finished() override;
+  bool validate_actor() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ ) override;
@@ -14370,6 +14371,31 @@ void shaman_t::init_finished()
   apply_player_effects();
 }
 
+bool shaman_t::validate_actor()
+{
+  if ( !( primary_role() == ROLE_ATTACK && specialization() == SHAMAN_ENHANCEMENT ) &&
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) &&
+       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_RESTORATION ) )
+  {
+    if ( !quiet )
+      sim->errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.", name(),
+                   util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
+    return false;
+  }
+
+  // Restoration isn't supported atm
+  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION &&
+       primary_role() == ROLE_HEAL )
+  {
+    if ( !quiet )
+      sim->errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );
+
+    return false;
+  }
+
+  return true;
+}
+
 // shaman_t::apply_affecting_auras ==========================================
 
 void shaman_t::apply_affecting_auras( action_t& action )
@@ -15073,25 +15099,7 @@ void shaman_t::init_action_list_restoration_dps()
 
 void shaman_t::init_action_list()
 {
-  if ( !( primary_role() == ROLE_ATTACK && specialization() == SHAMAN_ENHANCEMENT ) &&
-       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_ELEMENTAL ) &&
-       !( primary_role() == ROLE_SPELL && specialization() == SHAMAN_RESTORATION ) )
-  {
-    if ( !quiet )
-      sim->errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.", name(),
-                   util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
-    quiet = true;
-    return;
-  }
-
-  // Restoration isn't supported atm
-  if ( !sim->allow_experimental_specializations && specialization() == SHAMAN_RESTORATION &&
-       primary_role() == ROLE_HEAL )
-  {
-    if ( !quiet )
-      sim->errorf( "Restoration Shaman healing for player %s is not currently supported.", name() );
-
-    quiet = true;
+  if ( quiet )
     return;
   }
 
