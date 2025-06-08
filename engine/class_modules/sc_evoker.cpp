@@ -1382,6 +1382,7 @@ struct evoker_t : public player_t
   void validate_sim_options() override;
   unsigned int specialization_aura_id();
   void init_action_list() override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   void init_finished() override;
   void init_base_stats() override;
   void init_background_actions() override;
@@ -4825,11 +4826,16 @@ struct disintegrate_t : public essence_spell_t
     : essence_spell_t( "disintegrate", p,
                        p->talent.eruption.ok() ? spell_data_t::not_found() : p->find_class_spell( "Disintegrate" ),
                        options_str ),
-      num_ticks( as<int>( dot_duration.base / base_tick_time.base + 1 + p->talent.azure_celerity->effectN( 3 ).base_value() ) ),
+      num_ticks( 0 ),
       mass_disint_mult( p->talent.scalecommander.mass_disintegrate->effectN( 2 ).percent() ),
       current_dots()
   {
     channeled = tick_zero = true;
+
+    if ( data().ok() )
+      num_ticks = as<int>( dot_duration.base / base_tick_time.base + 1 + p->talent.azure_celerity->effectN( 3 ).base_value() );
+    else
+      num_ticks = as<int>( 1 + p->talent.azure_celerity->effectN( 3 ).base_value() );
 
     if ( p->bugs )
     {
@@ -8154,6 +8160,14 @@ void evoker_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+std::string evoker_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  if ( spell_id == 1245013 && on_self )
+    return "buff.blistering_scales";
+
+  return player_t::aura_expr_from_spell_id( spell_id, on_self );
 }
 
 void evoker_t::create_pets()
