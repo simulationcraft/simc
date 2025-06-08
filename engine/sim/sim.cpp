@@ -2975,7 +2975,7 @@ void sim_t::analyze()
     std::fflush( stdout );
   }
 
-
+  
   assert( iterations > 0 );
 
   // Run core analyze for all actor collected data before proceeding to full analysis. This is to prevent errors from
