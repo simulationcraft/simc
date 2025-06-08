@@ -3517,6 +3517,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
   bool has_or;
   bool is_duplicate_2;
   bool is_duplicate_3;
+  bool is_modified;
   // TODO: verify < vs <= and > vs >= on all condition types
   switch ( rule.condition_type )
   {
@@ -3591,9 +3592,10 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
         }
         expr_str += expr_str_3;
       }
+      is_modified = is_duplicate_2 || is_duplicate_3;
       if ( has_or )
-        return fmt::format( "({})", expr_str );
-      return expr_str;
+        return { fmt::format( "({})", expr_str ), is_modified };
+      return { expr_str, is_modified };
     case AURA_ON_TARGET:
       assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
