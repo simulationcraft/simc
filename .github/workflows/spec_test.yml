@@ -43,7 +43,6 @@ jobs:
             mage_frost,
             monk_brewmaster,
             monk_windwalker,
-            monk_mistweaver,
             paladin_protection,
             paladin_retribution,
             priest_shadow,
@@ -111,6 +110,14 @@ jobs:
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+
+      - name: "All Talents, Assisted Combat"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+            enable_all_talents=1 \
+            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1
+
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
@@ -194,14 +201,25 @@ jobs:
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
-      - name: Dump APL
-        id: dump_apl
+      - name: Dump APL Default
+        id: dump_apl_default
         if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
-            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} save_actions=${{ matrix.spec }}.simc
+            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
+            save_actions=default/${{ matrix.spec }}.simc
+
+      - name: Dump APL Assisted
+        id: dump_apl_assisted
+        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
+            enable_all_talents=1 enable_all_sets=1 \
+            allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
+            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1 \
+            save_actions=assisted_combat/${{ matrix.spec }}.simc
 
       - name: Upload APL
         if: steps.dump_apl.outcome == 'success'
@@ -209,5 +227,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: apl-${{ inputs.cache-sha }}-${{ matrix.spec }}
-          path: ${{ matrix.spec }}.simc
+          path: |
+            default/${{ matrix.spec }}.simc
+            assisted_combat/${{ matrix.spec }}.simc
           retention-days: 1
