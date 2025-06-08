@@ -1114,6 +1114,8 @@ public:
   virtual void validate_sim_options() {}
   virtual bool validate_fight_style( fight_style_e ) const
   { return true; }
+  virtual bool validate_actor()
+  { return true; }
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();

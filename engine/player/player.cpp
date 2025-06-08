@@ -3826,6 +3826,13 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
+  // if actor is not valid, set `quiet` and skip the rest of action creation
+  if ( !validate_actor() )
+  {
+    quiet = true;
+    return;
+  }
+
   if( is_player() && !is_enemy() && !is_pet() )
     consumable::create_consumeable_actions( this );
 
