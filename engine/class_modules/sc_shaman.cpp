@@ -15101,7 +15101,6 @@ void shaman_t::init_action_list()
 {
   if ( quiet )
     return;
-  }
 
   // After error checks, initialize secondary actions for various things
   windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
