@@ -1911,6 +1911,9 @@ public:
   void init_action_list() override;
   void init_action_list_enhancement();
   void init_action_list_restoration_dps();
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                            const assisted_combat_step_data_t& step ) const override;
   std::string generate_bloodlust_options();
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -11682,6 +11685,19 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
 void shaman_t::create_actions()
 {
+  // After actor validation, initialize secondary actions for various things
+  if ( validate_actor() )
+  {
+    windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
+    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this,
+        specialization() == SHAMAN_ENHANCEMENT
+        ? &( off_hand_weapon )
+        : &( main_hand_weapon ) );
+  }
+  else {
+    quiet = true;
+  }
+
   parse_player_effects_t::create_actions();
 
   if ( talent.crash_lightning->ok() )
@@ -15113,13 +15129,6 @@ void shaman_t::init_action_list()
   if ( quiet )
     return;
 
-  // After error checks, initialize secondary actions for various things
-  windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
-  flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this,
-      specialization() == SHAMAN_ENHANCEMENT
-      ? &( off_hand_weapon )
-      : &( main_hand_weapon ) );
-
   if ( !action_list_str.empty() )
   {
     parse_player_effects_t::init_action_list();
@@ -15146,6 +15155,30 @@ void shaman_t::init_action_list()
   use_default_action_list = true;
 
   parse_player_effects_t::init_action_list();
+}
+
+// shaman_t::action_names_from_spell_id ===================================================
+
+std::vector<std::string> shaman_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 196840 )
+    return { "frost_shock", "ice_strike" };
+
+  return parse_player_effects_t::action_names_from_spell_id( spell_id );
+}
+
+// shaman_t::parse_assisted_combat_rule ===================================================
+
+parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                    const assisted_combat_step_data_t& step ) const
+{
+  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 466469 )
+    return "action.ice_strike.ready";
+
+  if ( rule.condition_type == AFFORD_COST && rule.condition_value_1 == 117014 )
+    return { "action.elemental_blast.ready", "Elemental Blast being ready implies that the player has enough resources to cast it." };
+
+  return parse_player_effects_t::parse_assisted_combat_rule( rule, step );
 }
 
 // shaman_t::moving =========================================================
