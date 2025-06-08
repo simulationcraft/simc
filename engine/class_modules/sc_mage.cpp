@@ -476,6 +476,7 @@ public:
     double it_clearcasting_chance = 0.0938;
     double blast_clearcasting_chance = 0.0938;
     double blast_it_clearcasting_chance = 0.1618;
+    double intuition_chance = 0.01; // Tooltip claims there's a 5% chance to proc Intuition, yet seemingly, it's 1%
   } options;
 
   // Pets
@@ -577,6 +578,7 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
+    bool just_gained_intuition; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified. 
     int embedded_splinters;
     int magis_spark_spells;
     int intuition_blp_count;
@@ -2288,10 +2290,10 @@ public:
       if ( p()->state.clearcasting_blp_count >= cc_blp_threshold )
         proc_chance = 1.0;
       if ( proc_chance == 1.0 || !background )
-      {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms ) )
+        {
+        if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
           p()->state.clearcasting_blp_count = 0;
-      }
+        }
     }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
@@ -2627,16 +2629,22 @@ struct arcane_mage_spell_t : public mage_spell_t
     if ( p()->talents.intuition.ok() && !p()->buffs.intuition->check() && triggers.intuition )
     {
       constexpr int blp_threshold = 11;
-      // Tooltip claims there's a 5% chance to proc Intuition, yet seemingly, it's 1%
-      constexpr double base_proc_chance = 0.01;
 
       p()->state.intuition_blp_count += 1;
-      if ( p()->state.intuition_blp_count >= blp_threshold
-        || ( !background && rng().roll( base_proc_chance ) ) )
+      // Snapshot whether Intuition is guaranteed as to have it predictable with the mentioned delay below.
+      bool guaranteed = p()->state.intuition_blp_count >= blp_threshold;
+      if ( guaranteed || ( !background && rng().roll( p()->options.intuition_chance ) ) )
       {
         // Needs to be triggered with a delay so that ABar doesn't eat its own proc
-        make_event( *sim, [ this ] { p()->buffs.intuition->trigger(); } );
+        make_event( *sim, [ this, guaranteed ]
+        {
+          p()->buffs.intuition->trigger(); 
+          if ( !background && guaranteed )
+            p()->buffs.intuition->predict(); 
+        } );
         p()->state.intuition_blp_count = 0;
+        p()->state.just_gained_intuition = true;
+        make_event( *sim, 30_ms, [ this ] { p()->state.just_gained_intuition = false; } );
       }
     }
   }
@@ -3636,7 +3644,8 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
-    am *= 1.0 + p()->buffs.intuition->check_value();
+    if ( !p()->bugs || !p()->state.just_gained_intuition )
+      am *= 1.0 + p()->buffs.intuition->check_value();
     am *= 1.0 + p()->buffs.arcane_soul_damage->check_stack_value();
 
     return am;
@@ -7950,11 +7959,11 @@ void mage_t::create_options()
                 return true;
               } ) );
   add_option( opt_bool( "mage.ice_nova_consumes_winters_chill", options.ice_nova_consumes_winters_chill ) );
-  add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance));
-  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance));
-  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance));
-  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance));
-
+  add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance) );
+  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance) );
+  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance) );
+  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance) );
+  add_option( opt_float( "mage.intuition_chance", options.intuition_chance) );
   player_t::create_options();
 }
 
@@ -8517,7 +8526,7 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->modify_default_value( talents.aether_fragment->effectN( 1 ).percent() )
                                       ->set_chance( talents.intuition.ok() );
-  buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
+    buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
                                       ->set_chance( talents.leydrinker.ok() );
   buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                       ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
@@ -9382,6 +9391,24 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.embedded_splinters; } );
+  }
+
+  if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return 13 - state.clearcasting_blp_count; } );
+  }
+
+  if ( util::str_compare_ci( name, "intuition_blp_remains" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return 11 - state.intuition_blp_count; } );
+  }
+
+  if ( util::str_compare_ci( name, "has_intuition_damage_amp" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return buffs.intuition->check() && !state.just_gained_intuition; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
