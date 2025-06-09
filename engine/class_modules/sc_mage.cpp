@@ -2590,12 +2590,7 @@ struct arcane_mage_spell_t : public mage_spell_t
           p()->buffs.aether_attunement_counter->trigger();
 
           if ( rng().roll( p()->talents.leydrinker->effectN( 1 ).percent() ) )
-          {
-            if ( p()->buffs.leydrinker->check() )
-              make_event( *sim, 150_ms, [ this ] { p()->buffs.leydrinker->trigger(); } );
-            else
-              p()->buffs.leydrinker->trigger();
-          }
+            p()->buffs.leydrinker->trigger();
         }
         break;
       }
@@ -3807,6 +3802,9 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
   {
     if ( echo && p()->buffs.clearcasting->check() )
       make_event( *sim, 500_ms, [ this, t = target ] { echo->execute_on_target( t ); } );
+
+    if ( type != ae_type::NORMAL && rng().roll( p()->talents.leydrinker->effectN( 1 ).percent() ) )
+      p()->buffs.leydrinker->trigger();
 
     arcane_mage_spell_t::execute();
 
