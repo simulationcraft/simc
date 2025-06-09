@@ -2290,10 +2290,10 @@ public:
       if ( p()->state.clearcasting_blp_count >= cc_blp_threshold )
         proc_chance = 1.0;
       if ( proc_chance == 1.0 || !background )
-        {
+      {
         if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
           p()->state.clearcasting_blp_count = 0;
-        }
+      }
     }
 
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
@@ -8526,7 +8526,7 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->modify_default_value( talents.aether_fragment->effectN( 1 ).percent() )
                                       ->set_chance( talents.intuition.ok() );
-    buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
+  buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
                                       ->set_chance( talents.leydrinker.ok() );
   buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                       ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
