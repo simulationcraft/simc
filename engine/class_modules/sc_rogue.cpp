@@ -1273,6 +1273,9 @@ public:
   void        copy_from( player_t* source ) override;
   std::string create_profile( save_e stype ) override;
   void        init_action_list() override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                            const assisted_combat_step_data_t& step ) const override;
   void        reset() override;
   void        activate() override;
   void        arise() override;
@@ -10097,6 +10100,78 @@ void rogue_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// rogue_t::action_names_from_spell_id ====================================================
+
+std::vector<std::string> rogue_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  auto name = find_spell( spell_id )->name_cstr();
+  auto splits = util::string_split( util::tokenize_fn( name ), "_" );
+  auto fragment = !splits.empty() ? splits[ 0 ] : "";
+
+  std::string type = "";
+  switch ( spell_id )
+  {
+  case 2823:   // deadly poison
+  case 315584: // instant poison
+  case 381664: // amplifying poison
+  case 8679:   // wound poison
+    type = "lethal";
+  case 381637: // atrophic poison
+  case 3408:   // crippling poison
+  case 5761:   // numbing poison
+    type = "nonlethal";
+  default:
+    break;
+  }
+
+  if ( !type.empty() )
+    return { fmt::format( "apply_poison,{}={}", type, fragment ) };
+
+  if ( spell_id == 196819 && specialization() == ROGUE_OUTLAW )
+    return { "dispatch", "coup_de_grace" };
+  if ( spell_id == 196819 && specialization() == ROGUE_SUBTLETY )
+    return { "eviscerate", "coup_de_grace" };
+  if ( spell_id == 196819 && specialization() == ROGUE_ASSASSINATION )
+    return { "envenom", "coup_de_grace" };
+
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
+// rogue_t::action_names_from_spell_id ====================================================
+parsed_assisted_combat_rule_t rogue_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                   const assisted_combat_step_data_t& step ) const
+{
+  if ( rule.condition_type == AURA_MISSING_PLAYER )
+  {
+    switch ( rule.condition_value_1 )
+    {
+      case 2823:    // deadly poison
+      case 315584:  // instant poison
+      case 381664:  // amplifying poison
+      case 8679:    // wound poison
+      case 381637:  // atrophic poison
+      case 3408:    // crippling poison
+      case 5761:    // numbing poison
+        return { "1",
+                 "apply_poison may only be executed once per iteration, so we do not need to condition based on poison "
+                 "status." };
+      default:
+        break;
+    }
+  }
+
+  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 51667 )
+    return { "1", "Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly true." };
+
+  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 51667 )
+    return { "0", "Checks if the automatically learned passive Cut to the Chase is known. Assumed to be strictly false." };
+
+  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 462128 )
+    return "action.coup_de_grace.ready";
+
+  return player_t::parse_assisted_combat_rule( rule, step );
 }
 
 // rogue_t::create_action  ==================================================
