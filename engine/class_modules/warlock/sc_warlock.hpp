@@ -843,6 +843,9 @@ public:
   void init_procs() override;
   void init_rng() override;
   void init_action_list() override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                            const assisted_combat_step_data_t& step ) const override;
   void init_resources( bool force ) override;
   void init_special_effects() override;
   void reset() override;

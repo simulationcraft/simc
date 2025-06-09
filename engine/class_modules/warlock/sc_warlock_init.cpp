@@ -1185,6 +1185,26 @@ namespace warlock
     player_t::init_action_list();
   }
 
+  std::string warlock_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+  {
+    if ( spell_id == 342938 && !on_self )
+      return "dot.unstable_affliction";
+
+    return player_t::aura_expr_from_spell_id( spell_id, on_self );
+  }
+
+  parsed_assisted_combat_rule_t warlock_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                       const assisted_combat_step_data_t& step ) const
+  {
+    if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 335052 )
+      return { "1", "Condition discarded as it checks for PvP talent." };
+
+    if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 335052 )
+      return { "0", "Condition discarded as it checks for PvP talent." };
+
+    return player_t::parse_assisted_combat_rule( rule, step );
+  }
+
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
     add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );
