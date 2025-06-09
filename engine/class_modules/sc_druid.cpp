@@ -1306,6 +1306,7 @@ struct druid_t final : public parse_player_effects_t
   bool validate_fight_style( fight_style_e ) const override;
   void init_absorb_priority() override;
   void init_action_list() override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   void init_base_stats() override;
   void init_stats() override;
   void init_gains() override;
@@ -12665,6 +12666,15 @@ void druid_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+// druid_t::aura_expr_from_spell_id ====================================================
+std::string druid_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  if ( spell_id == 252752 && on_self )
+    return "buff.apex_predators_craving";
+
+  return player_t::aura_expr_from_spell_id( spell_id, on_self );
 }
 
 // druid_t::reset ===========================================================
