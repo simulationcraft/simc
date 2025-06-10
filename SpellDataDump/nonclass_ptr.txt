@@ -261484,14 +261484,14 @@ Effects          :
 Description      : $@spelldesc1236108
 
 Name             : Cauterizing Bolts (id=1236115) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231817)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15246.09 (coefficient=3.981774) | Target: Self (1)
-Description      : Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for ${$<rolemult>*$1236137w2} every $1236118t sec for $1236118d.
-Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+Description      : Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for $1236137w2 every $1236118t sec for $1236118d.
 
 Name             : Cauterizing Bolt (id=1236116) 
 School           : Nature
