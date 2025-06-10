@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.7.61131
-static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.7.61340
+static const std::array<spelltext_data_t, 27396> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27206,6 +27206,7 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   { 1221091, "Increase the minimum item level of Liberation of Undermine set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. ", 0, 0 },
   { 1221151, "$@spelldesc1219102", 0, 0 },
   { 1221246, "$@spelldesc196884", 0, 0 },
+  { 1221348, "Summon your Surging Totem nearby.", 0, 0 },
   { 1221386, "$@spelldesc360966", "$@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $378962s2% increased damage.][.]", 0 },
   { 1221429, 0, "You now flip on every jump! Yay!", 0 },
   { 1222234, "Once per week, attune yourself to the energies of the targeted Undermine raid boss and gain the following aura:\r\n\r\n$@spellicon472535$@spellname472535\r\nIncrease your Versatility by $472535s1 when fighting the targeted raid boss. This effect lasts the entire week.\r\n", 0, 0 },
@@ -27319,7 +27320,7 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   { 1228455, "$@spelldesc433106", 0, 0 },
   { 1229376, "Casts damaging abilities for use in combat, rotating through them based on priority.\r\n\r\nThe global cooldown of abilities used through the Single-Button Assistant is $s1% longer.", 0, 0 },
-  { 1231411, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$1231418d}% of your maximum health over $1231418d.", 0, 0 },
+  { 1231411, "Take a breather, prepare some food and have a meal. Restores ${$1231418s1*$1231418d}% of your maximum health over $1231418d.", 0, 0 },
   { 1231418, "$@spelldesc1231411", "Restoring $s1% health every sec.", 0 },
   { 1231772, "Elemental Shaman baseline passive", 0, 0 },
   { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
@@ -27342,11 +27343,11 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   { 1235391, "Your $?s207313[abomination]?s58640[geist][ghoul] deals $344955s1 Shadow damage to $344955s2 nearby enemies and transforms into a powerful undead monstrosity for $d. $?s325554[Granting them $325554s1% energy and the][The] $?s207313[abomination]?s58640[geist][ghoul]'s abilities are empowered and take on new functions while the transformation is active.", "$?$w2>0[Transformed into an undead monstrosity.][Gassy.]\r\nDamage dealt increased by $w1%.", 0 },
   { 1236108, "Your spells and abilities have a chance to turn you into a Lightning Rod striking a random enemy target within $1236111A1 yds for ${$<rolemult>*$1236137w1} Nature damage every $1236110t sec for $1236110d.", 0, 0 },
   { 1236109, "$@spelldesc1236108", 0, 0 },
-  { 1236110, "$@spelldesc1236108", 0, 0 },
+  { 1236110, "$@spelldesc1236108", "Damaging nearby targets for ${$<rolemult>*$1236137w1} Nature damage every $t sec.", 0 },
   { 1236111, "$@spelldesc1236108", 0, 0 },
   { 1236115, "Your spells and abilities have a chance to turn you into a Lightning Rod causing strikes that heal the lowest health friendly target within $1236116A1 yds for ${$<rolemult>*$1236137w2} every $1236118t sec for $1236118d.", 0, 0 },
   { 1236116, "$@spelldesc1236115", 0, 0 },
-  { 1236118, "$@spelldesc1236115", 0, 0 },
+  { 1236118, "$@spelldesc1236115", "Healing nearby targets for $1236137w2 every $t sec.", 0 },
   { 1236122, "$@spelldesc1236115", 0, 0 },
   { 1236123, "Your spells and abilities have a chance to trigger Critical Overload, increasing your Critical Strike by $1236137w3 every $1236940t sec for $1236940d. ", 0, 0 },
   { 1236124, "Your spells and abilities have a chance to trigger a Spark Burst granting you $1236137w4 Haste for $1236936d. ", 0, 0 },
@@ -27397,14 +27398,17 @@ static const std::array<spelltext_data_t, 27395> __ptr_spelltext_data { {
   { 1245325, "Shows the location of all nearby wild pets on the minimap.", "Tracking Wild Pets.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.7.61131
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.1.7.61340
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
   {  407924,  0, "$@spelldesc1236129", "$@spelldesc402813" },
+  { 1231411,  0, "Take a breather, prepare some food and have a meal. Restoring ${$1231418s1*$1231418d}% of your maximum health over $1231418d.", "Take a breather, prepare some food and have a meal. Restores ${$1231418s1*$1231418d}% of your maximum health over $1231418d." },
+  { 1236110,  1, nullptr, "Damaging nearby targets for ${$<rolemult>*$1236137w1} Nature damage every $t sec." },
+  { 1236118,  1, nullptr, "Healing nearby targets for $1236137w2 every $t sec." },
   { 1236129,  0, "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${($1236937u*$1236961t)*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating.", "You gain Electric Current upon entering combat, increasing your Mastery by $1236137w7 every $1236961t sec up to a maximum of ${$1236937u*$1236137w7} after ${$1236937u*$1236961t} sec then cycling back down and repeating." },
 } };
 
-// Spell description variables, wow build 11.1.7.61131
-static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 11.1.7.61340
+static const std::array<spelldesc_vars_data_t, 653> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28054,12 +28058,13 @@ static const std::array<spelldesc_vars_data_t, 652> __ptr_spelldesc_vars_data { 
   { 1233392, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1234189, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   { 1236108, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1236110, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1236115, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241240, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1241244, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.7.61131
+// spelldesc_vars hotfix entries, wow build 11.1.7.61340
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
