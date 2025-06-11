@@ -4451,35 +4451,46 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
 
 struct spirit_burst_t : public demonsurge_trigger_t<demonsurge_ability::SPIRIT_BURST, spirit_bomb_base_t>
 {
-  spirit_burst_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, options_str )
+  spirit_burst_t( demon_hunter_t* p )
+    : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, "" )
   {
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buff.demonsurge_demonic->check() )
-    {
-      return false;
-    }
-    return spirit_bomb_base_t::ready();
   }
 };
 
 struct spirit_bomb_t : public spirit_bomb_base_t
 {
+  spirit_burst_t* spirit_burst;
+  double spirit_burst_cost;
+
   spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str )
+    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ), spirit_burst(nullptr), spirit_burst_cost(0)
   {
+    if (p->talent.felscarred.demonsurge->ok()) {
+      spirit_burst = new spirit_burst_t(p);
+      spirit_burst_cost = spirit_burst->data().cost(POWER_FURY);
+      add_child(spirit_burst);
+    }
   }
 
-  bool ready() override
+  double cost() const override
   {
     if ( p()->buff.demonsurge_demonic->check() )
     {
-      return false;
+      return spirit_burst_cost;
     }
-    return spirit_bomb_base_t::ready();
+    return base_costs[ POWER_FURY ];
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.demonsurge_demonic->check() )
+    {
+      spirit_burst->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    spirit_bomb_base_t::execute();
   }
 };
 
@@ -7677,8 +7688,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new sigil_of_doom_t( this, options_str );
   if ( name == "spirit_bomb" )
     return new spirit_bomb_t( this, options_str );
-  if ( name == "spirit_burst" )
-    return new spirit_burst_t( this, options_str );
   if ( name == "sigil_of_spite" )
     return new sigil_of_spite_t( this, options_str );
   if ( name == "the_hunt" )

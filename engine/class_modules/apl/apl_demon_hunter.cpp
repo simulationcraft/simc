@@ -458,7 +458,7 @@ void vengeance( player_t* p )
   externals->add_action( "invoke_external_buff,name=symbol_of_hope" );
   externals->add_action( "invoke_external_buff,name=power_infusion" );
 
-  fel_dev->add_action( "spirit_burst,if=buff.demonsurge_spirit_burst.up&(variable.can_spburst|soul_fragments>=4|(buff.metamorphosis.remains<(gcd.max*2)))" );
+  fel_dev->add_action( "spirit_bomb,if=buff.demonsurge_spirit_burst.up&(variable.can_spburst|soul_fragments>=4|(buff.metamorphosis.remains<(gcd.max*2)))" );
   fel_dev->add_action( "soul_cleave,if=buff.demonsurge_soul_sunder.up&(!buff.demonsurge_spirit_burst.up|(buff.metamorphosis.remains<(gcd.max*2)))" );
   fel_dev->add_action( "sigil_of_spite,if=(!talent.cycle_of_binding|(cooldown.sigil_of_spite.duration<(cooldown.metamorphosis.remains+18)))&(soul_fragments.total<=2&buff.demonsurge_spirit_burst.up)" );
   fel_dev->add_action( "soul_carver,if=soul_fragments.total<=2&!prev_gcd.1.sigil_of_spite&buff.demonsurge_spirit_burst.up" );
@@ -528,10 +528,10 @@ void vengeance( player_t* p )
   fs->add_action( "felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_devastation.remains<(execute_time+gcd.max)&fury<50)" );
   fs->add_action( "soul_carver,if=(!talent.fiery_demise|talent.fiery_demise&dot.fiery_brand.ticking)&((!talent.spirit_bomb|variable.single_target)|(talent.spirit_bomb&!prev_gcd.1.sigil_of_spite&((soul_fragments.total+3<=5&fury>=40)|(soul_fragments.total=0&fury>=15))))" );
   fs->add_action( "sigil_of_spite,if=(!talent.cycle_of_binding|(cooldown.sigil_of_spite.duration<(cooldown.metamorphosis.remains+18)))&(!talent.spirit_bomb|(fury>=80&(variable.can_spbomb|variable.can_spbomb_soon))|(soul_fragments.total<=(2-talent.soul_sigils.rank)))" );
-  fs->add_action( "spirit_burst,if=variable.can_spburst&talent.fiery_demise&dot.fiery_brand.ticking&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
+  fs->add_action( "spirit_bomb,if=variable.can_spburst&talent.fiery_demise&dot.fiery_brand.ticking&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
   fs->add_action( "spirit_bomb,if=variable.can_spbomb&talent.fiery_demise&dot.fiery_brand.ticking&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
   fs->add_action( "soul_cleave,if=variable.single_target&!variable.dont_soul_cleave" );
-  fs->add_action( "spirit_burst,if=variable.can_spburst&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
+  fs->add_action( "spirit_bomb,if=variable.can_spburst&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
   fs->add_action( "spirit_bomb,if=variable.can_spbomb&!(cooldown.fel_devastation.remains<(gcd.max*3))" );
   fs->add_action( "felblade,if=((fury<40&((buff.metamorphosis.up&(variable.can_spburst|variable.can_spburst_soon))|(!buff.metamorphosis.up&(variable.can_spbomb|variable.can_spbomb_soon)))))" );
   fs->add_action( "fracture,if=((fury<40&((buff.metamorphosis.up&(variable.can_spburst|variable.can_spburst_soon))|(!buff.metamorphosis.up&(variable.can_spbomb|variable.can_spbomb_soon))))|(buff.metamorphosis.up&variable.can_spburst_one_gcd)|(!buff.metamorphosis.up&variable.can_spbomb_one_gcd))" );
@@ -566,16 +566,16 @@ void vengeance( player_t* p )
   metamorphosis->add_action( "felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_desolation.remains<(execute_time+gcd.max)&fury<50)" );
   metamorphosis->add_action( "soul_carver,if=(!talent.spirit_bomb|(variable.single_target&!buff.demonsurge_spirit_burst.up))|(((soul_fragments.total+3)<=6)&fury>=40&!prev_gcd.1.sigil_of_spite)" );
   metamorphosis->add_action( "sigil_of_spite,if=!talent.spirit_bomb|(fury>=80&(variable.can_spburst|variable.can_spburst_soon))|(soul_fragments.total<=(2-talent.soul_sigils.rank))" );
-  metamorphosis->add_action( "spirit_burst,if=variable.can_spburst&buff.demonsurge_spirit_burst.up" );
+  metamorphosis->add_action( "spirit_bomb,if=variable.can_spburst&buff.demonsurge_spirit_burst.up" );
   metamorphosis->add_action( "fel_desolation" );
   metamorphosis->add_action( "the_hunt" );
   metamorphosis->add_action( "soul_cleave,if=buff.demonsurge_soul_sunder.up&!buff.demonsurge_spirit_burst.up&!variable.can_spburst_one_gcd" );
-  metamorphosis->add_action( "spirit_burst,if=variable.can_spburst&(talent.fiery_demise&dot.fiery_brand.ticking|variable.big_aoe)&buff.metamorphosis.remains>(gcd.max*2)" );
+  metamorphosis->add_action( "spirit_bomb,if=variable.can_spburst&(talent.fiery_demise&dot.fiery_brand.ticking|variable.big_aoe)&buff.metamorphosis.remains>(gcd.max*2)" );
   metamorphosis->add_action( "felblade,if=fury<40&(variable.can_spburst|variable.can_spburst_soon)&(buff.demonsurge_spirit_burst.up|talent.fiery_demise&dot.fiery_brand.ticking|variable.big_aoe)" );
   metamorphosis->add_action( "fracture,if=fury<40&(variable.can_spburst|variable.can_spburst_soon|variable.can_spburst_one_gcd)&(buff.demonsurge_spirit_burst.up|talent.fiery_demise&dot.fiery_brand.ticking|variable.big_aoe)" );
   metamorphosis->add_action( "fracture,if=variable.can_spburst_one_gcd&(buff.demonsurge_spirit_burst.up|variable.big_aoe)&!prev_gcd.1.fracture" );
   metamorphosis->add_action( "soul_cleave,if=variable.single_target&!variable.dont_soul_cleave" );
-  metamorphosis->add_action( "spirit_burst,if=variable.can_spburst&buff.metamorphosis.remains>(gcd.max*2)" );
+  metamorphosis->add_action( "spirit_bomb,if=variable.can_spburst&buff.metamorphosis.remains>(gcd.max*2)" );
   metamorphosis->add_action( "felblade,if=fury.deficit>=40" );
   metamorphosis->add_action( "soul_cleave,if=!variable.dont_soul_cleave&!(variable.big_aoe&(variable.can_spburst|variable.can_spburst_soon))" );
   metamorphosis->add_action( "felblade" );
