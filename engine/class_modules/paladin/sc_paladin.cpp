@@ -4200,6 +4200,36 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+// paladin_t::parse_assisted_combat_rule ==================================================
+
+parsed_assisted_combat_rule_t paladin_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                     const assisted_combat_step_data_t& step ) const
+{
+  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 188370 )
+    return { "!consecration.up", true };
+
+  if ( rule.condition_type == AURA_ON_PLAYER && rule.condition_value_1 == 427441 )
+    return { "(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
+
+  if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 427441 )
+    return { "!(buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)", true };
+
+  return player_t::parse_assisted_combat_rule( rule, step );
+}
+
+// paladin_t::action_names_from_spell_id ==================================================
+
+std::vector<std::string> paladin_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  if ( spell_id == 255937 )
+    return { "wake_of_ashes", "hammer_of_light" };
+
+  if ( spell_id == 387174 )
+    return { "eye_of_tyr", "hammer_of_light" };
+
+  return player_t::action_names_from_spell_id( spell_id );
+}
+
 // paladin_t::validate_fight_style ==========================================
 bool paladin_t::validate_fight_style( fight_style_e style ) const
 {
