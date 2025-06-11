@@ -6731,6 +6731,7 @@ struct soul_carver_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "soul_carver", p, p->talent.vengeance.soul_carver, options_str )
   {
     impact_action = p->get_background_action<soul_carver_oh_t>( "soul_carver_oh" );
+    add_child( impact_action );
   }
 
   void impact( action_state_t* s ) override
