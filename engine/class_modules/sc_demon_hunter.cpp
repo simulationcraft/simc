@@ -262,6 +262,8 @@ public:
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
+  event_t* winning_streak_conversion_event;
+
   // Buffs
   struct buffs_t
   {
@@ -1105,6 +1107,37 @@ public:
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
+};
+
+struct winning_streak_conversion_event_t : public event_t
+{
+  demon_hunter_t& dh;
+  winning_streak_conversion_event_t( demon_hunter_t* p, timespan_t delay ) : event_t( *p->sim, delay ), dh( *p )
+  {
+  }
+  const char* name() const override
+  {
+    return "winning_streak_conversion";
+  }
+
+  void execute() override
+  {
+    int residual_stacks = dh.buff.winning_streak_residual->stack();
+    int new_stacks      = dh.buff.winning_streak->stack();
+    dh.buff.winning_streak->expire();
+    dh.proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
+
+    if ( new_stacks >= residual_stacks )
+    {
+      dh.buff.winning_streak_residual->expire();
+      dh.buff.winning_streak_residual->trigger( new_stacks + residual_stacks );
+    }
+    else
+    {
+      dh.proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
+    }
+    dh.winning_streak_conversion_event = nullptr;
+  }
 };
 
 // Delayed Execute Event ====================================================
@@ -2365,26 +2398,23 @@ struct winning_streak_removal_trigger_t : public BASE
     {
       // 2025-02-08 -- Winning Streak! residual keeps the highest value of stacks and won't refresh if the stacks on
       //               the non-residual version are less than the stacks on the residual version.
-      int stacks = BASE::p()->buff.winning_streak->stack();
 
       // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
       //               damage
-      make_event( *BASE::p()->sim, winning_streak_removal_delay, [ this, stacks ] {
-        int new_stacks      = BASE::p()->buff.winning_streak->stack();
-        int residual_stacks = BASE::p()->buff.winning_streak_residual->stack();
-        BASE::p()->buff.winning_streak->expire();
-        BASE::p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
-
-        if ( new_stacks >= residual_stacks )
-        {
-          BASE::p()->buff.winning_streak_residual->expire();
-          BASE::p()->buff.winning_streak_residual->trigger( stacks + residual_stacks );
-        }
-        else
-        {
-          BASE::p()->proc.winning_streak_drop_wasted_from_tww2_havoc_2pc->occur();
-        }
-      } );
+      assert( BASE::p()->winning_streak_conversion_event == nullptr );
+      BASE::p()->winning_streak_conversion_event =
+          make_event<winning_streak_conversion_event_t>( *BASE::sim, BASE::p(), winning_streak_removal_delay );
+    }
+  }
+  bool ready() override
+  {
+    if ( BASE::p()->winning_streak_conversion_event )
+    {
+      return false;
+    }
+    else
+    {
+      return true;
     }
   }
 };
@@ -5272,7 +5302,6 @@ struct blade_dance_t : public blade_dance_base_t
     : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, nullptr )
   {
     winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<blade_dance_damage_t>( "blade_dance_1", data().effectN( 2 ) ) );
@@ -5323,8 +5352,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
-    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    // winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
     {
@@ -5583,7 +5612,6 @@ struct chaos_strike_t : public chaos_strike_base_t
     : chaos_strike_base_t( name, p, p->spec.chaos_strike, options_str )
   {
     winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -5622,7 +5650,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
     : base_t( name, p, p->spec.annihilation, options_str )
   {
     winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() + 1 );
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -7136,6 +7163,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->set_bonuses.tww2_havoc_4pc->ok() &&
          ( p()->buff.winning_streak->up() || p()->buff.winning_streak_residual->up() ) )
     {
+      event_t::cancel( p()->winning_streak_conversion_event );
       // 2025-02-08 -- Necessary Sacrifice will not be triggered if the number of stacks on Winning Streak! is less than
       //               the number of stacks on Necessary Sacrifice
 
@@ -9522,15 +9550,16 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up         = nullptr;
-  frailty_driver                = nullptr;
-  exit_melee_event              = nullptr;
-  next_fragment_spawn           = 0;
-  metamorphosis_health          = 0;
-  frailty_accumulator           = 0.0;
-  shattered_destiny_accumulator = 0.0;
-  wounded_quarry_accumulator    = 0.0;
-  last_reavers_mark_applied     = nullptr;
+  soul_fragment_pick_up           = nullptr;
+  frailty_driver                  = nullptr;
+  exit_melee_event                = nullptr;
+  winning_streak_conversion_event = nullptr;
+  next_fragment_spawn             = 0;
+  metamorphosis_health            = 0;
+  frailty_accumulator             = 0.0;
+  shattered_destiny_accumulator   = 0.0;
+  wounded_quarry_accumulator      = 0.0;
+  last_reavers_mark_applied       = nullptr;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
