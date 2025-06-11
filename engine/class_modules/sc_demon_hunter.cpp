@@ -6289,35 +6289,47 @@ struct soul_cleave_base_t
 
 struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUNDER, soul_cleave_base_t>
 {
-  soul_sunder_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, options_str )
+  soul_sunder_t( demon_hunter_t* p )
+    : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buff.demonsurge_demonic->check() )
-    {
-      return false;
-    }
-    return base_t::ready();
   }
 };
 
 struct soul_cleave_t : public soul_cleave_base_t
 {
+  soul_sunder_t* soul_sunder;
+  double soul_sunder_cost;
+
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
     : soul_cleave_base_t( "soul_cleave", p, p->spec.soul_cleave, options_str )
   {
+    if ( p->talent.felscarred.demonsurge->ok() )
+    {
+      soul_sunder      = new soul_sunder_t( p );
+      soul_sunder_cost = soul_sunder->data().cost( POWER_FURY );
+      add_child( soul_sunder );
+    }
   }
 
-  bool ready() override
+  double cost() const override
   {
     if ( p()->buff.demonsurge_demonic->check() )
     {
-      return false;
+      return soul_sunder_cost;
     }
-    return soul_cleave_base_t::ready();
+    return base_costs[ POWER_FURY ];
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.demonsurge_demonic->check() )
+    {
+      soul_sunder->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    soul_cleave_base_t::execute();
   }
 };
 
@@ -7704,8 +7716,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new shear_t( this, options_str );
   if ( name == "soul_cleave" )
     return new soul_cleave_t( this, options_str );
-  if ( name == "soul_sunder" )
-    return new soul_sunder_t( this, options_str );
   if ( name == "throw_glaive" )
     return new throw_glaive_t( "throw_glaive", this, options_str );
   if ( name == "vengeful_retreat" )
