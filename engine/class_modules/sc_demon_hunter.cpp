@@ -3649,31 +3649,9 @@ struct sigil_of_flame_base_t : public demon_hunter_spell_t
   }
 };
 
-struct sigil_of_flame_t : public sigil_of_flame_base_t
-{
-  sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
-    : sigil_of_flame_base_t( "sigil_of_flame", p, p->spell.sigil_of_flame, options_str )
-  {
-    sigil        = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
-    sigil->stats = stats;
-
-    // Add damage modifiers in sigil_of_flame_damage_t, not here.
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.demonsurge_hardcast->check() )
-    {
-      return false;
-    }
-    return sigil_of_flame_base_t::ready();
-  }
-};
-
 struct sigil_of_doom_t : public demonsurge_trigger_t<demonsurge_ability::SIGIL_OF_DOOM, sigil_of_flame_base_t>
 {
-  sigil_of_doom_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "sigil_of_doom", p, p->hero_spec.sigil_of_doom, options_str )
+  sigil_of_doom_t( demon_hunter_t* p ) : base_t( "sigil_of_doom", p, p->hero_spec.sigil_of_doom, "" )
   {
     if ( p->hero_spec.sigil_of_doom_damage->ok() )
     {
@@ -3683,14 +3661,49 @@ struct sigil_of_doom_t : public demonsurge_trigger_t<demonsurge_ability::SIGIL_O
 
     // Add damage modifiers in sigil_of_doom_damage_t, not here.
   }
+};
 
-  bool ready() override
+struct sigil_of_flame_t : public sigil_of_flame_base_t
+{
+  sigil_of_doom_t* sigil_of_doom;
+  double sigil_of_doom_cost;
+
+  sigil_of_flame_t( demon_hunter_t* p, util::string_view options_str )
+    : sigil_of_flame_base_t( "sigil_of_flame", p, p->spell.sigil_of_flame, options_str ),
+      sigil_of_doom( nullptr ),
+      sigil_of_doom_cost( 0 )
   {
-    if ( !p()->buff.demonsurge_hardcast->check() )
+    sigil        = p->get_background_action<sigil_of_flame_damage_t>( "sigil_of_flame_damage", ground_aoe_duration );
+    sigil->stats = stats;
+
+    if ( p->talent.felscarred.demonic_intensity->ok() )
     {
-      return false;
+      sigil_of_doom      = new sigil_of_doom_t( p );
+      sigil_of_doom_cost = sigil_of_doom->data().cost( POWER_FURY );
+      add_child( sigil_of_doom );
     }
-    return base_t::ready();
+    // Add damage modifiers in sigil_of_flame_damage_t, not here.
+  }
+
+  double cost() const override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      return sigil_of_doom_cost;
+    }
+    return base_costs[ POWER_FURY ];
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      sigil_of_doom->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    sigil_of_flame_base_t::execute();
   }
 };
 
@@ -4451,8 +4464,7 @@ struct spirit_bomb_base_t : public demon_hunter_spell_t
 
 struct spirit_burst_t : public demonsurge_trigger_t<demonsurge_ability::SPIRIT_BURST, spirit_bomb_base_t>
 {
-  spirit_burst_t( demon_hunter_t* p )
-    : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, "" )
+  spirit_burst_t( demon_hunter_t* p ) : base_t( "spirit_burst", p, p->hero_spec.spirit_burst, "" )
   {
   }
 };
@@ -4463,12 +4475,15 @@ struct spirit_bomb_t : public spirit_bomb_base_t
   double spirit_burst_cost;
 
   spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ), spirit_burst(nullptr), spirit_burst_cost(0)
+    : spirit_bomb_base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
+      spirit_burst( nullptr ),
+      spirit_burst_cost( 0 )
   {
-    if (p->talent.felscarred.demonsurge->ok()) {
-      spirit_burst = new spirit_burst_t(p);
-      spirit_burst_cost = spirit_burst->data().cost(POWER_FURY);
-      add_child(spirit_burst);
+    if ( p->talent.felscarred.demonsurge->ok() )
+    {
+      spirit_burst      = new spirit_burst_t( p );
+      spirit_burst_cost = spirit_burst->data().cost( POWER_FURY );
+      add_child( spirit_burst );
     }
   }
 
@@ -6300,8 +6315,7 @@ struct soul_cleave_base_t
 
 struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUNDER, soul_cleave_base_t>
 {
-  soul_sunder_t( demon_hunter_t* p )
-    : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
+  soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
   }
 };
@@ -6312,7 +6326,9 @@ struct soul_cleave_t : public soul_cleave_base_t
   double soul_sunder_cost;
 
   soul_cleave_t( demon_hunter_t* p, util::string_view options_str )
-    : soul_cleave_base_t( "soul_cleave", p, p->spec.soul_cleave, options_str )
+    : soul_cleave_base_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
+      soul_sunder( nullptr ),
+      soul_sunder_cost( 0 )
   {
     if ( p->talent.felscarred.demonsurge->ok() )
     {
@@ -7685,8 +7701,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new pick_up_fragment_t( this, options_str );
   if ( name == "sigil_of_flame" )
     return new sigil_of_flame_t( this, options_str );
-  if ( name == "sigil_of_doom" )
-    return new sigil_of_doom_t( this, options_str );
   if ( name == "spirit_bomb" )
     return new spirit_bomb_t( this, options_str );
   if ( name == "sigil_of_spite" )

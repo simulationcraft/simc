@@ -185,11 +185,11 @@ actions.metamorphosis=call_action_list,name=externals
 actions.metamorphosis+=/fel_desolation,if=buff.metamorphosis.remains<(gcd.max*3)
 actions.metamorphosis+=/felblade,if=fury<50&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up
 actions.metamorphosis+=/fracture,if=fury<50&!cooldown.felblade.up&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up
-actions.metamorphosis+=/sigil_of_doom,if=talent.illuminated_sigils&talent.cycle_of_binding&charges=max_charges
+actions.metamorphosis+=/sigil_of_flame,if=talent.illuminated_sigils&talent.cycle_of_binding&charges=max_charges
 actions.metamorphosis+=/immolation_aura
-actions.metamorphosis+=/sigil_of_doom,if=!talent.student_of_suffering&(talent.ascending_flame|(!talent.ascending_flame&!prev_gcd.1.sigil_of_doom&(dot.sigil_of_doom.remains<(4-talent.quickened_sigils))))
-actions.metamorphosis+=/sigil_of_doom,if=talent.student_of_suffering&!prev_gcd.1.sigil_of_flame&!prev_gcd.1.sigil_of_doom&(buff.student_of_suffering.remains<(4-talent.quickened_sigils))
-actions.metamorphosis+=/sigil_of_doom,if=buff.metamorphosis.remains<((2-talent.quickened_sigils)+(charges*gcd.max))
+actions.metamorphosis+=/sigil_of_flame,if=!talent.student_of_suffering&(talent.ascending_flame|(!talent.ascending_flame&!prev_gcd.1.sigil_of_flame&(dot.sigil_of_doom.remains<(4-talent.quickened_sigils))))
+actions.metamorphosis+=/sigil_of_flame,if=talent.student_of_suffering&!prev_gcd.1.sigil_of_flame&!prev_gcd.1.sigil_of_flame&(buff.student_of_suffering.remains<(4-talent.quickened_sigils))
+actions.metamorphosis+=/sigil_of_flame,if=buff.metamorphosis.remains<((2-talent.quickened_sigils)+(charges*gcd.max))
 actions.metamorphosis+=/fel_desolation,if=soul_fragments<=3&(soul_fragments.inactive>=2|prev_gcd.1.sigil_of_spite)
 actions.metamorphosis+=/felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_desolation.remains<(execute_time+gcd.max)&fury<50)
 actions.metamorphosis+=/soul_carver,if=(!talent.spirit_bomb|(variable.single_target&!buff.demonsurge_spirit_burst.up))|(((soul_fragments.total+3)<=6)&fury>=40&!prev_gcd.1.sigil_of_spite)
