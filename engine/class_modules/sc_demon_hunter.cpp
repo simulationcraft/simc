@@ -2401,20 +2401,9 @@ struct winning_streak_removal_trigger_t : public BASE
 
       // 2025-04-13 -- Winning Streak! removal seems to only happen after the triggering spell has finished dealing all
       //               damage
-      assert( BASE::p()->winning_streak_conversion_event == nullptr );
+      event_t::cancel( BASE::p()->winning_streak_conversion_event );
       BASE::p()->winning_streak_conversion_event =
           make_event<winning_streak_conversion_event_t>( *BASE::sim, BASE::p(), winning_streak_removal_delay );
-    }
-  }
-  bool ready() override
-  {
-    if ( BASE::p()->winning_streak_conversion_event )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
     }
   }
 };
@@ -5352,8 +5341,8 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
-    // winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
+    winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
     {
