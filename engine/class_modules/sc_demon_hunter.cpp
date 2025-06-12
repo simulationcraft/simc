@@ -3379,8 +3379,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   fiery_brand_dot_t* dot_action;
 
-  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
-    : demon_hunter_spell_t( name, p, p->talent.vengeance.fiery_brand, options_str ), dot_action( nullptr )
+  fiery_brand_t( demon_hunter_t* p, util::string_view options_str = {} )
+    : demon_hunter_spell_t( "fiery_brand", p, p->talent.vengeance.fiery_brand, options_str ), dot_action( nullptr )
   {
     use_off_gcd = true;
 
@@ -7697,7 +7697,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
   if ( name == "fiery_brand" )
-    return new fiery_brand_t( "fiery_brand", this, options_str );
+    return new fiery_brand_t( this, options_str );
   if ( name == "glaive_tempest" )
     return new glaive_tempest_t( this, options_str );
   if ( name == "infernal_strike" )
