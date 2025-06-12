@@ -261461,7 +261461,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Triggered By     : Charged Bolts (1236109)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231809)  : Apply Aura (6) | Periodic Trigger Spell (23): Lightning Strike every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236111 | Target: Self (1)
@@ -261513,7 +261513,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Triggered By     : Cauterizing Bolts (1236122)
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1231820)  : Apply Aura (6) | Periodic Trigger Spell (23): Cauterizing Bolt every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236116 | Target: Self (1)
@@ -261604,31 +261604,39 @@ Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Criti
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 25535.37 (coefficient=9.983487) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 61705.98 (coefficient=24.125) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (9.983487 -> 24.124998)
 #2 (id=1232811)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 38305.15 (coefficient=14.97605) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 50528.88 (coefficient=19.75512) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (14.976047 -> 19.755123)
 #3 (id=1232881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 731.8118 (coefficient=0.191125) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1048.931 (coefficient=0.273946) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.191125 -> 0.273946)
 #4 (id=1232883)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 4021.919 (coefficient=1.050392) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5828.163 (coefficient=1.522123) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (1.050392 -> 1.522123)
 #5 (id=1232886)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 384.2026 (coefficient=0.100341) | PvP Coefficient: 0.25 | Target: Self (1)
 #6 (id=1232887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1232950)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 324.7426 (coefficient=0.084812) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 350.6609 (coefficient=0.091581) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.084812 -> 0.091581)
 #8 (id=1232957)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=1232958)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1232959) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 172373.3 (coefficient=67.39228) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 198229.4 (coefficient=77.50113) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (67.392281 -> 77.501129)
 #11 (id=1232961) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 357503.2 (coefficient=139.7719) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 411128.5 (coefficient=160.7377) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (139.771927 -> 160.737656)
 #12 (id=1232962) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
 #13 (id=1232963) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 127677.6 (coefficient=49.91773) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 178212.4 (coefficient=69.67516) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (49.917732 -> 69.675156)
 
 Name             : Durable Information Securing Container (id=1236138) [Passive] 
 School           : Physical
@@ -261698,7 +261706,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
-Real PPM         : 1.5 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
@@ -261725,7 +261733,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 29 seconds
 Proc Chance      : 101%
-Real PPM         : 1.5 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
@@ -261832,11 +261840,12 @@ Description      : $@spelldesc1236129
 Tooltip          : Mastery increased by $w1.
 
 Name             : Static Charge (id=1236938) 
+Hotfixed         : Internal Cooldown (1000 -> 750)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Labels           : 292
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.75 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
