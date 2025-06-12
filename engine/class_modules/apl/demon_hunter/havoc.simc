@@ -257,7 +257,6 @@ actions.fs_fel_barrage=variable,name=generator_up,op=set,value=cooldown.felblade
 actions.fs_fel_barrage+=/variable,name=gcd_drain,op=set,value=gcd.max*32
 actions.fs_fel_barrage+=/annihilation,if=buff.inner_demon.up
 actions.fs_fel_barrage+=/eye_beam,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)
-actions.fs_fel_barrage+=/abyssal_gaze,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)
 actions.fs_fel_barrage+=/essence_break,if=buff.fel_barrage.down&buff.metamorphosis.up
 actions.fs_fel_barrage+=/death_sweep,if=buff.fel_barrage.down
 actions.fs_fel_barrage+=/immolation_aura,if=(active_enemies>2|buff.fel_barrage.up)&(cooldown.eye_beam.remains>recharge_time+3)
@@ -303,8 +302,8 @@ actions.fs_meta+=/annihilation,if=buff.inner_demon.up&cooldown.blade_dance.remai
 actions.fs_meta+=/essence_break,if=fury>20&(cooldown.metamorphosis.remains>10|cooldown.blade_dance.remains<gcd.max*2)&(buff.inertia_trigger.down|buff.inertia.up&buff.inertia.remains>=gcd.max*3|!talent.inertia)&buff.out_of_range.remains<gcd.max&(!talent.shattered_destiny|cooldown.eye_beam.remains>4)&(!hero_tree.felscarred|active_enemies>1|cooldown.metamorphosis.remains>5&cooldown.eye_beam.remains)&(!buff.cycle_of_hatred.stack=3|buff.initiative.up|!talent.initiative|!talent.cycle_of_hatred)|fight_remains<5
 actions.fs_meta+=/sigil_of_flame,if=cooldown.blade_dance.remains&debuff.essence_break.down&(cooldown.eye_beam.remains>=20|cooldown.eye_beam.remains<=gcd.max)&(!talent.student_of_suffering|buff.demonsurge_sigil_of_doom.up)
 actions.fs_meta+=/immolation_aura,if=buff.demonsurge.up&debuff.essence_break.down&buff.demonsurge_consuming_fire.up&cooldown.blade_dance.remains>=gcd.max&cooldown.eye_beam.remains>=gcd.max&fury.deficit>10+variable.fury_gen
-actions.fs_meta+=/eye_beam,if=debuff.essence_break.down&buff.inner_demon.down
-actions.fs_meta+=/abyssal_gaze,if=debuff.essence_break.down&buff.inner_demon.down&(buff.cycle_of_hatred.stack<4|cooldown.essence_break.remains>=20-gcd.max*talent.student_of_suffering|cooldown.sigil_of_flame.remains&talent.student_of_suffering|cooldown.essence_break.remains<=gcd.max)
+actions.fs_meta+=/eye_beam,if=buff.metamorphosis.down&debuff.essence_break.down&buff.inner_demon.down
+actions.fs_meta+=/eye_beam,if=buff.metamorphosis.up&debuff.essence_break.down&buff.inner_demon.down&(buff.cycle_of_hatred.stack<4|cooldown.essence_break.remains>=20-gcd.max*talent.student_of_suffering|cooldown.sigil_of_flame.remains&talent.student_of_suffering|cooldown.essence_break.remains<=gcd.max)
 actions.fs_meta+=/death_sweep,if=cooldown.essence_break.remains>=gcd.max*2+talent.student_of_suffering*gcd.max|debuff.essence_break.up|!talent.essence_break
 actions.fs_meta+=/glaive_tempest,if=debuff.essence_break.down&(cooldown.blade_dance.remains>gcd.max*2|fury>60)&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>10)
 actions.fs_meta+=/sigil_of_flame,if=active_enemies>2&debuff.essence_break.down
@@ -345,7 +344,7 @@ actions.fs_opener+=/felblade,if=fury<40&debuff.essence_break.down&buff.inertia_t
 actions.fs_opener+=/metamorphosis,if=buff.metamorphosis.up&buff.inner_demon.down&buff.demonsurge_annihilation.down&cooldown.blade_dance.remains
 #actions.fs_opener+=/sigil_of_spite,if=hero_tree.felscarred
 actions.fs_opener+=/eye_beam,if=buff.metamorphosis.down|debuff.essence_break.down&buff.inner_demon.down&(cooldown.blade_dance.remains|talent.essence_break&cooldown.essence_break.up)&(!talent.a_fire_inside|action.immolation_aura.charges=0)
-actions.fs_opener+=/abyssal_gaze,if=debuff.essence_break.down&buff.inner_demon.down
+actions.fs_opener+=/eye_beam,if=buff.metamorphosis.up&debuff.essence_break.down&buff.inner_demon.down
 #actions.fs_opener+=/essence_break,if=cooldown.blade_dance.remains<gcd.max&!hero_tree.felscarred&!talent.shattered_destiny&buff.metamorphosis.up|(cooldown.eye_beam.remains|buff.demonsurge_abyssal_gaze.down)&cooldown.metamorphosis.remains&(!talent.inertia|buff.inertia_trigger.down)
 actions.fs_opener+=/death_sweep
 actions.fs_opener+=/annihilation

@@ -278,7 +278,6 @@ void havoc( player_t* p )
   fs_fel_barrage->add_action( "variable,name=gcd_drain,op=set,value=gcd.max*32" );
   fs_fel_barrage->add_action( "annihilation,if=buff.inner_demon.up" );
   fs_fel_barrage->add_action( "eye_beam,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)" );
-  fs_fel_barrage->add_action( "abyssal_gaze,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)" );
   fs_fel_barrage->add_action( "essence_break,if=buff.fel_barrage.down&buff.metamorphosis.up" );
   fs_fel_barrage->add_action( "death_sweep,if=buff.fel_barrage.down" );
   fs_fel_barrage->add_action( "immolation_aura,if=(active_enemies>2|buff.fel_barrage.up)&(cooldown.eye_beam.remains>recharge_time+3)" );
@@ -313,8 +312,8 @@ void havoc( player_t* p )
   fs_meta->add_action( "essence_break,if=fury>20&(cooldown.metamorphosis.remains>10|cooldown.blade_dance.remains<gcd.max*2)&(buff.inertia_trigger.down|buff.inertia.up&buff.inertia.remains>=gcd.max*3|!talent.inertia)&buff.out_of_range.remains<gcd.max&(!talent.shattered_destiny|cooldown.eye_beam.remains>4)&(!hero_tree.felscarred|active_enemies>1|cooldown.metamorphosis.remains>5&cooldown.eye_beam.remains)&(!buff.cycle_of_hatred.stack=3|buff.initiative.up|!talent.initiative|!talent.cycle_of_hatred)|fight_remains<5", "actions.fs_meta+=/sigil_of_flame,if=debuff.essence_break.down&(buff.demonsurge_sigil_of_doom.up&cooldown.blade_dance.remains|talent.student_of_suffering&((talent.essence_break&cooldown.essence_break.remains>30-gcd.max|cooldown.essence_break.remains<=gcd.max*3&(!talent.inertia|buff.inertia_trigger.up))|(!talent.essence_break&(cooldown.eye_beam.remains>=30|cooldown.eye_beam.remains<=gcd.max))))" );
   fs_meta->add_action( "sigil_of_flame,if=cooldown.blade_dance.remains&debuff.essence_break.down&(cooldown.eye_beam.remains>=20|cooldown.eye_beam.remains<=gcd.max)&(!talent.student_of_suffering|buff.demonsurge_sigil_of_doom.up)" );
   fs_meta->add_action( "immolation_aura,if=buff.demonsurge.up&debuff.essence_break.down&buff.demonsurge_consuming_fire.up&cooldown.blade_dance.remains>=gcd.max&cooldown.eye_beam.remains>=gcd.max&fury.deficit>10+variable.fury_gen" );
-  fs_meta->add_action( "eye_beam,if=debuff.essence_break.down&buff.inner_demon.down" );
-  fs_meta->add_action( "abyssal_gaze,if=debuff.essence_break.down&buff.inner_demon.down&(buff.cycle_of_hatred.stack<4|cooldown.essence_break.remains>=20-gcd.max*talent.student_of_suffering|cooldown.sigil_of_flame.remains&talent.student_of_suffering|cooldown.essence_break.remains<=gcd.max)" );
+  fs_meta->add_action( "eye_beam,if=buff.metamorphosis.down&debuff.essence_break.down&buff.inner_demon.down" );
+  fs_meta->add_action( "eye_beam,if=buff.metamorphosis.up&debuff.essence_break.down&buff.inner_demon.down&(buff.cycle_of_hatred.stack<4|cooldown.essence_break.remains>=20-gcd.max*talent.student_of_suffering|cooldown.sigil_of_flame.remains&talent.student_of_suffering|cooldown.essence_break.remains<=gcd.max)" );
   fs_meta->add_action( "death_sweep,if=cooldown.essence_break.remains>=gcd.max*2+talent.student_of_suffering*gcd.max|debuff.essence_break.up|!talent.essence_break" );
   fs_meta->add_action( "glaive_tempest,if=debuff.essence_break.down&(cooldown.blade_dance.remains>gcd.max*2|fury>60)&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>10)" );
   fs_meta->add_action( "sigil_of_flame,if=active_enemies>2&debuff.essence_break.down" );
@@ -343,7 +342,7 @@ void havoc( player_t* p )
   fs_opener->add_action( "felblade,if=fury<40&debuff.essence_break.down&buff.inertia_trigger.down&cooldown.metamorphosis.up" );
   fs_opener->add_action( "metamorphosis,if=buff.metamorphosis.up&buff.inner_demon.down&buff.demonsurge_annihilation.down&cooldown.blade_dance.remains" );
   fs_opener->add_action( "eye_beam,if=buff.metamorphosis.down|debuff.essence_break.down&buff.inner_demon.down&(cooldown.blade_dance.remains|talent.essence_break&cooldown.essence_break.up)&(!talent.a_fire_inside|action.immolation_aura.charges=0)", "actions.fs_opener+=/sigil_of_spite,if=hero_tree.felscarred" );
-  fs_opener->add_action( "abyssal_gaze,if=debuff.essence_break.down&buff.inner_demon.down" );
+  fs_opener->add_action( "eye_beam,if=buff.metamorphosis.up&debuff.essence_break.down&buff.inner_demon.down" );
   fs_opener->add_action( "death_sweep", "actions.fs_opener+=/essence_break,if=cooldown.blade_dance.remains<gcd.max&!hero_tree.felscarred&!talent.shattered_destiny&buff.metamorphosis.up|(cooldown.eye_beam.remains|buff.demonsurge_abyssal_gaze.down)&cooldown.metamorphosis.remains&(!talent.inertia|buff.inertia_trigger.down)" );
   fs_opener->add_action( "annihilation" );
   fs_opener->add_action( "demons_bite" );

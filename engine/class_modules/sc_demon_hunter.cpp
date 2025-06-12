@@ -3021,37 +3021,48 @@ struct eye_beam_base_t : public demon_hunter_spell_t
   }
 };
 
-struct eye_beam_t : public eye_beam_base_t
+struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
 {
-  eye_beam_t( demon_hunter_t* p, util::string_view options_str )
-    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str )
+  abyssal_gaze_t( demon_hunter_t* p )
+    : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, "" )
   {
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.demonsurge_hardcast->check() )
-    {
-      return false;
-    }
-    return eye_beam_base_t::ready();
   }
 };
 
-struct abyssal_gaze_t : public demonsurge_trigger_t<demonsurge_ability::ABYSSAL_GAZE, eye_beam_base_t>
+struct eye_beam_t : public eye_beam_base_t
 {
-  abyssal_gaze_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "abyssal_gaze", p, p->hero_spec.abyssal_gaze, options_str )
+  abyssal_gaze_t* abyssal_gaze;
+  double abyssal_gaze_cost;
+
+  eye_beam_t( demon_hunter_t* p, util::string_view options_str )
+    : eye_beam_base_t( "eye_beam", p, p->talent.havoc.eye_beam, options_str ), abyssal_gaze( nullptr ), abyssal_gaze_cost( 0 )
   {
+    if ( p->talent.felscarred.demonic_intensity->ok() ) {
+      abyssal_gaze = new abyssal_gaze_t( p );
+      abyssal_gaze_cost = abyssal_gaze->data().cost( POWER_FURY );
+      add_child( abyssal_gaze );
+    }
   }
 
-  bool ready() override
+  double cost() const override
   {
-    if ( !p()->buff.demonsurge_hardcast->check() )
+    if ( p()->buff.demonsurge_hardcast->check() )
     {
-      return false;
+      return abyssal_gaze_cost;
     }
-    return base_t::ready();
+    return base_costs[ POWER_FURY ];
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      abyssal_gaze->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    eye_beam_base_t::execute();
   }
 };
 
@@ -7688,8 +7699,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new disrupt_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
-  if ( name == "abyssal_gaze" )
-    return new abyssal_gaze_t( this, options_str );
   if ( name == "fel_barrage" )
     return new fel_barrage_t( this, options_str );
   if ( name == "fel_eruption" )
