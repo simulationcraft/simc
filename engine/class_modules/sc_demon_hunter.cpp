@@ -3205,39 +3205,52 @@ struct fel_devastation_base_t : public demon_hunter_spell_t
   }
 };
 
-struct fel_devastation_t : public fel_devastation_base_t
-{
-  fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
-    : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str )
-  {
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.demonsurge_hardcast->check() )
-    {
-      return false;
-    }
-    return fel_devastation_base_t::ready();
-  }
-};
-
 struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DESOLATION, fel_devastation_base_t>
 {
-  fel_desolation_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
+  fel_desolation_t( demon_hunter_t* p ) : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, "" )
   {
     // 2024-07-07 -- Fel Desolation doesn't benefit from DGB CDR
     benefits_from_dgb_cdr = !p->bugs;
   }
+};
 
-  bool ready() override
+struct fel_devastation_t : public fel_devastation_base_t
+{
+  fel_desolation_t* fel_desolation;
+  double fel_desolation_cost;
+
+  fel_devastation_t( demon_hunter_t* p, util::string_view options_str )
+    : fel_devastation_base_t( "fel_devastation", p, p->talent.vengeance.fel_devastation, options_str ),
+      fel_desolation( nullptr ),
+      fel_desolation_cost( 0 )
   {
-    if ( !p()->buff.demonsurge_hardcast->check() )
+    if ( p->talent.felscarred.demonic_intensity->ok() )
     {
-      return false;
+      fel_desolation      = new fel_desolation_t( p );
+      fel_desolation_cost = fel_desolation->data().cost( POWER_FURY );
+      add_child( fel_desolation );
     }
-    return base_t::ready();
+  }
+
+  double cost() const override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      return fel_desolation_cost;
+    }
+    return base_costs[ POWER_FURY ];
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.demonsurge_hardcast->check() )
+    {
+      fel_desolation->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    fel_devastation_base_t::execute();
   }
 };
 
@@ -7683,8 +7696,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
-  if ( name == "fel_desolation" )
-    return new fel_desolation_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( "fiery_brand", this, options_str );
   if ( name == "glaive_tempest" )

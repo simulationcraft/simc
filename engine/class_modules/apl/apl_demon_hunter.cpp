@@ -554,20 +554,20 @@ void vengeance( player_t* p )
   meta_prep->add_action( "sigil_of_flame" );
 
   metamorphosis->add_action( "call_action_list,name=externals" );
-  metamorphosis->add_action( "fel_desolation,if=buff.metamorphosis.remains<(gcd.max*3)" );
-  metamorphosis->add_action( "felblade,if=fury<50&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up" );
-  metamorphosis->add_action( "fracture,if=fury<50&!cooldown.felblade.up&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up" );
+  metamorphosis->add_action( "fel_devastation,if=buff.metamorphosis.remains<(gcd.max*3)" );
+  metamorphosis->add_action( "felblade,if=fury<50&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_devastation.up" );
+  metamorphosis->add_action( "fracture,if=fury<50&!cooldown.felblade.up&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_devastation.up" );
   metamorphosis->add_action( "sigil_of_flame,if=talent.illuminated_sigils&talent.cycle_of_binding&charges=max_charges" );
   metamorphosis->add_action( "immolation_aura" );
   metamorphosis->add_action( "sigil_of_flame,if=!talent.student_of_suffering&(talent.ascending_flame|(!talent.ascending_flame&!prev_gcd.1.sigil_of_flame&(dot.sigil_of_doom.remains<(4-talent.quickened_sigils))))" );
   metamorphosis->add_action( "sigil_of_flame,if=talent.student_of_suffering&!prev_gcd.1.sigil_of_flame&!prev_gcd.1.sigil_of_flame&(buff.student_of_suffering.remains<(4-talent.quickened_sigils))" );
   metamorphosis->add_action( "sigil_of_flame,if=buff.metamorphosis.remains<((2-talent.quickened_sigils)+(charges*gcd.max))" );
-  metamorphosis->add_action( "fel_desolation,if=soul_fragments<=3&(soul_fragments.inactive>=2|prev_gcd.1.sigil_of_spite)" );
-  metamorphosis->add_action( "felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_desolation.remains<(execute_time+gcd.max)&fury<50)" );
+  metamorphosis->add_action( "fel_devastation,if=soul_fragments<=3&(soul_fragments.inactive>=2|prev_gcd.1.sigil_of_spite)" );
+  metamorphosis->add_action( "felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_devastation.remains<(execute_time+gcd.max)&fury<50)" );
   metamorphosis->add_action( "soul_carver,if=(!talent.spirit_bomb|(variable.single_target&!buff.demonsurge_spirit_burst.up))|(((soul_fragments.total+3)<=6)&fury>=40&!prev_gcd.1.sigil_of_spite)" );
   metamorphosis->add_action( "sigil_of_spite,if=!talent.spirit_bomb|(fury>=80&(variable.can_spburst|variable.can_spburst_soon))|(soul_fragments.total<=(2-talent.soul_sigils.rank))" );
   metamorphosis->add_action( "spirit_bomb,if=variable.can_spburst&buff.demonsurge_spirit_burst.up" );
-  metamorphosis->add_action( "fel_desolation" );
+  metamorphosis->add_action( "fel_devastation" );
   metamorphosis->add_action( "the_hunt" );
   metamorphosis->add_action( "soul_cleave,if=buff.demonsurge_soul_sunder.up&!buff.demonsurge_spirit_burst.up&!variable.can_spburst_one_gcd" );
   metamorphosis->add_action( "spirit_bomb,if=variable.can_spburst&(talent.fiery_demise&dot.fiery_brand.ticking|variable.big_aoe)&buff.metamorphosis.remains>(gcd.max*2)" );
