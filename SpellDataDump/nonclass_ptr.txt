@@ -260298,11 +260298,12 @@ Effects          :
 Description      : $@spelldesc1225074
 
 Name             : Lesser Rune of Twilight Devastation (id=1225074) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1214065)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7912 | Misc Value 2: 0xb | Target: Self (1)
@@ -260379,11 +260380,12 @@ Effects          :
 Description      : $@spelldesc386692
 
 Name             : Greater Rune of the Echoing Void (id=1225873) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1215369)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7917 | Misc Value 2: 0xb
@@ -260691,11 +260693,12 @@ Effects          :
 Description      : $@spelldesc1227124
 
 Name             : Greater Rune of Infinite Stars (id=1227206) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1217481)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7924 | Misc Value 2: 0xb
@@ -260796,11 +260799,12 @@ Description      : $@spelldesc1227206
 Tooltip          : Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].
 
 Name             : Greater Rune of Gushing Wound (id=1227288) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1217613)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7927 | Misc Value 2: 0xb
@@ -260881,11 +260885,12 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
 Name             : Greater Rune of the Twisted Appendage (id=1227294) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1217625)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7930 | Misc Value 2: 0xb
@@ -260975,11 +260980,12 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Taking Shadow damage every $t1 sec.
 
 Name             : Greater Rune of the Void Ritual (id=1227311) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1217650)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7933 | Misc Value 2: 0xb
@@ -261268,11 +261274,12 @@ Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
 Name             : Greater Rune of Twilight Devastation (id=1233223) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226501)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7914 | Misc Value 2: 0xb
@@ -261286,11 +261293,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Echoing Void (id=1233355) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226690)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7915 | Misc Value 2: 0xb
@@ -261304,11 +261312,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of Infinite Stars (id=1233375) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226719)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7922 | Misc Value 2: 0xb
@@ -261322,11 +261331,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of Gushing Wound (id=1233385) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226731)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7925 | Misc Value 2: 0xb
@@ -261340,11 +261350,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Twisted Appendage (id=1233392) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226744)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7928 | Misc Value 2: 0xb
@@ -261358,11 +261369,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Void Ritual (id=1233394) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
-Attributes       : Not Shapeshifted (16), No Threat (42)
+Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226748)  : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7931 | Misc Value 2: 0xb

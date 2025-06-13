@@ -3534,9 +3534,10 @@ Effects          :
 #24 (id=1222495) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Tick Time (19)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 19 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
-#25 (id=1246028) : Apply Party Aura (35) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 5326 (Label) | Target: Self (1)
+#25 (id=1246028) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value 2: 5326 (Label) | Target: Self (1)
                    Affected Spells (Label): Ruination (434636)
+Hotfixed         : Type (35 -> 6), Base Value (15 -> 35)
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock

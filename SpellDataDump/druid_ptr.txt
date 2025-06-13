@@ -1122,7 +1122,8 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
-                   Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (815 -> 950)
 #2 (id=12002)    : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 16979 | Scaled Value: 16979 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
