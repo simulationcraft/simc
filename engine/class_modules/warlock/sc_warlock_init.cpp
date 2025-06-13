@@ -1211,23 +1211,24 @@ namespace warlock
     {
       if ( specialization() == WARLOCK_DESTRUCTION )
         return { "wither" };
+
       return { "wither", "corruption" };
     }
 
     if ( spell_id == 348 )  // Wither from immolate
-    {
       return { "wither", "immolate" };
-    }
 
     if ( spell_id == 686 )  // Shadowbolt
     {
       if ( specialization() == WARLOCK_DESTRUCTION )
         return { "infernal_bolt", "incinerate" };
+
       return { "infernal_bolt", "shadow_bolt" };
     }
 
     if ( spell_id == 105174 )  // Hand of guldan
       return { "ruination", "hand_of_guldan" };
+
     if ( spell_id == 116858 )  // Chaos bolt
       return { "ruination", "chaos_bolt" };
 
