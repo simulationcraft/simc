@@ -1400,6 +1400,8 @@ public:
   std::string default_temporary_enchant() const override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t &step,
+                                   action_priority_list_t *assisted_combat ) override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   bool validate_actor() override;
   bool validate_fight_style( fight_style_e style ) const override;
