@@ -1216,7 +1216,7 @@ namespace warlock
 
     if ( spell_id == 348 )  // Wither from immolate
     {
-      return { "wither" };
+      return { "wither", "immolate" };
     }
 
     if ( spell_id == 686 )  // Shadowbolt
