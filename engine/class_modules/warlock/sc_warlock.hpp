@@ -843,6 +843,7 @@ public:
   void init_procs() override;
   void init_rng() override;
   void init_action_list() override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
@@ -881,6 +882,7 @@ public:
   double composite_melee_crit_chance() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_rating_multiplier( rating_e ) const override;
+  void init_blizzard_action_list() override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
