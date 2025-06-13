@@ -578,7 +578,7 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
-    bool just_gained_intuition; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified. 
+    bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified. 
     int embedded_splinters;
     int magis_spark_spells;
     int intuition_blp_count;
@@ -2266,6 +2266,7 @@ public:
   {
     spell_t::execute();
 
+    bool snapshot_clearcasting = p()->buffs.clearcasting->check();
     // Make sure we remove all cost reduction buffs before we trigger new ones.
     // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
     consume_cost_reductions();
@@ -2273,6 +2274,7 @@ public:
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
       constexpr int cc_blp_threshold = 13;
+      timespan_t delay = 100_ms;
       // The tooltip chance present on Clearcasting/Illuminated Thoughts is the total expected outcome of Clearcasting applications, not it's random proc chance.
       // Whenever combining both the proc chance and its bad luck protection, the final application rate is equal to its tooltip chance.
       double proc_chance = p()->options.clearcasting_chance; 
@@ -2289,9 +2291,13 @@ public:
       p()->state.clearcasting_blp_count += 1;
       if ( p()->state.clearcasting_blp_count >= cc_blp_threshold )
         proc_chance = 1.0;
+      // Arcane Explosion, if consuming Clearcasting, has the random proc chance occur precisely whenever the Echo is executed.
+      if ( proc_chance != 1.0 && id == 1449 && snapshot_clearcasting )
+        delay = 500_ms;
+
       if ( proc_chance == 1.0 || !background )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, background ) )
+        if ( p()->trigger_clearcasting( proc_chance, delay, background ) )
           p()->state.clearcasting_blp_count = 0;
       }
     }
@@ -2630,16 +2636,23 @@ struct arcane_mage_spell_t : public mage_spell_t
       bool guaranteed = p()->state.intuition_blp_count >= blp_threshold;
       if ( guaranteed || ( !background && rng().roll( p()->options.intuition_chance ) ) )
       {
-        // Needs to be triggered with a delay so that ABar doesn't eat its own proc
-        make_event( *sim, [ this, guaranteed ]
+        // Needs to be triggered with a delay so that ABar doesn't eat its own proc.
+        // Orb Barrage at 10blp has the incoming Barrage consuming Intuition; additionally, doesn't have its damage amplified by Intuition's multiplier.
+        if ( id == 153626 )
+          p()->buffs.intuition->trigger();
+        else
         {
-          p()->buffs.intuition->trigger(); 
-          if ( !background && guaranteed )
-            p()->buffs.intuition->predict(); 
-        } );
-        p()->state.intuition_blp_count = 0;
-        p()->state.just_gained_intuition = true;
-        make_event( *sim, 30_ms, [ this ] { p()->state.just_gained_intuition = false; } );
+          make_event( *sim, [ this, guaranteed ]
+          {
+            p()->buffs.intuition->trigger();
+            if ( !background && guaranteed )
+              p()->buffs.intuition->predict();
+          } );
+        }
+        make_event( *sim, [ this ] { p()->state.intuition_blp_count = 0; } );
+
+        p()->state.prevent_intuition_damage_amp = true;
+        make_event( *sim, 30_ms, [ this ] { p()->state.prevent_intuition_damage_amp = false; } );
       }
     }
   }
@@ -3489,10 +3502,6 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
-
-    // Likely a bug: Arcane Orb procs from Orb Barrage uniquely decrements the BLP, effectively nullifying the incoming increment from Barrage.
-    if ( type == ao_type::ORB_BARRAGE )
-      p()->state.clearcasting_blp_count -= 1;
   }
 
   void impact( action_state_t* s ) override
@@ -3568,8 +3577,16 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
     snapshot_charges = p()->buffs.arcane_charge->check();
-    if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
-      orb_barrage->execute_on_target( target );
+    if ( p()->talents.orb_barrage->ok() )
+    {
+      triggers.clearcasting = true;
+      if ( rng().roll( snapshot_charges * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
+      {
+        orb_barrage->execute_on_target( target );
+        // Likely a bug: Arcane Orb procs from Orb Barrage uniquely prevent Barrage from rolling Clearcasting's proc chance, and incrementing its BLP.
+        triggers.clearcasting = false;
+      }
+    }
 
     p()->benefits.arcane_charge.arcane_barrage->update();
 
@@ -3639,7 +3656,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
-    if ( !p()->bugs || !p()->state.just_gained_intuition )
+    if ( !p()->bugs || !p()->state.prevent_intuition_damage_amp )
       am *= 1.0 + p()->buffs.intuition->check_value();
     am *= 1.0 + p()->buffs.arcane_soul_damage->check_stack_value();
 
@@ -9406,7 +9423,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   if ( util::str_compare_ci( name, "has_intuition_damage_amp" ) )
   {
     return make_fn_expr( name, [ this ]
-    { return buffs.intuition->check() && !state.just_gained_intuition; } );
+    { return buffs.intuition->check() && !state.prevent_intuition_damage_amp; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
