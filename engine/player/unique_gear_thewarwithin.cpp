@@ -10753,7 +10753,7 @@ void charged_crystal( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
   effect.execute_action =
-      create_proc_action<generic_aoe_proc_t>( util::tokenize_fn( trigger->name_cstr() ), effect, trigger );
+      create_proc_action<generic_aoe_proc_t>( util::tokenize_fn( trigger->name_cstr() ), effect, trigger, true );
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
       value_spell->effectN( 13 ).average( effect );
   effect.execute_action->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 1241240 ) );
