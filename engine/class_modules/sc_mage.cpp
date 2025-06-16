@@ -578,7 +578,8 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
-    bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified. 
+    bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified.
+    bool gained_initial_clearcasting; // To track queueable Missiles for the APL -- cannot queue Missiles if subsequently gaining CC from a hard cast.
     int embedded_splinters;
     int magis_spark_spells;
     int intuition_blp_count;
@@ -7974,11 +7975,11 @@ void mage_t::create_options()
                 return true;
               } ) );
   add_option( opt_bool( "mage.ice_nova_consumes_winters_chill", options.ice_nova_consumes_winters_chill ) );
-  add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance) );
-  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance) );
-  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance) );
-  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance) );
-  add_option( opt_float( "mage.intuition_chance", options.intuition_chance) );
+  add_option( opt_float( "mage.clearcasting_chance", options.clearcasting_chance ) );
+  add_option( opt_float( "mage.it_clearcasting_chance", options.it_clearcasting_chance ) );
+  add_option( opt_float( "mage.blast_clearcasting_chance", options.blast_clearcasting_chance ) );
+  add_option( opt_float( "mage.blast_it_clearcasting_chance", options.blast_it_clearcasting_chance ) );
+  add_option( opt_float( "mage.intuition_chance", options.intuition_chance ) );
   player_t::create_options();
 }
 
@@ -9426,6 +9427,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     { return buffs.intuition->check() && !state.prevent_intuition_damage_amp; } );
   }
 
+  if ( util::str_compare_ci( name, "queueable_missiles" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return !state.gained_initial_clearcasting; } );
+  }
+
   auto splits = util::string_split<std::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
@@ -9827,6 +9834,11 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
   bool success = rng().roll( chance );
   if ( success )
   {
+    if ( !buffs.clearcasting->check() )
+    {
+      state.gained_initial_clearcasting = true;
+      make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
+    }
     if ( delay > 0_ms && buffs.clearcasting->check() )
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
