@@ -7,22 +7,21 @@ role=tank
 position=front
 talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAjxYGGWmx2MzMDAAAAAAALLgYmBmhBGjtZmZYWGzM2mlZabb2sNzMMLAAwGCAAgZbWamZmFmhFA
 
-head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5878/11996/1808,gem_id=213743,enchant_id=7917,ilevel=684
-neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5878/7981/11996/10376/8781,gem_id=213467/213497,ilevel=684
-shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5878/11996,ilevel=684
-back=trashmasters_mantle,id=199921,bonus_id=657/12042/5878/7981/11996,enchant=chant_of_leeching_fangs_3,ilevel=684
-chest=venture_co._plenipotentiary_vest,id=235417,bonus_id=657/12042/5878/7981/11996,enchant=crystalline_radiance_3,ilevel=684
-wrists=runebranded_armbands,id=219334,bonus_id=12040/9627/12043/8795/11109/1808,gem_id=213479,enchant=chant_of_armored_leech_3,ilevel=681
-hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5878/11996,ilevel=684
-waist=adrenal_surge_clasp,id=219502,bonus_id=12040/9627/12043/1808,gem_id=213461,ilevel=681
-legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5878/11996,enchant=stormbound_armor_kit_3,ilevel=684
-feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5878/11996,enchant=defenders_march_3,ilevel=684
-finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3,ilevel=684
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3,ilevel=684
-trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5878/7981/11996,ilevel=684
-trinket2=zees_thug_hotline,id=230199,bonus_id=4800/4786/1533/12376,ilevel=684
-main_hand=capos_molten_knuckles,id=232804,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3,ilevel=684
-off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3,ilevel=684
+head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5884/12376/1808,gem_id=213743,enchant_id=7917
+neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5884/7981/12376/10376/8781,gem_id=213467/213497
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5884/12376
+back=trashmasters_mantle,id=199921,bonus_id=657/12042/5884/7981/12376,enchant=chant_of_leeching_fangs_3
+chest=runebranded_tunic,id=219328,bonus_id=10421/9633/8902/9627/12043/8795/12040/12373/11303/8960,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/12043/8795/12040/12176/11303/8960/12373/1808,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5884/12376
+waist=durable_information_securing_container,id=245964,titan_disc_id=1236109,gem_id=213461
+legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5884/12376,enchant=stormbound_armor_kit_3
+feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5884/12376,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5884/12376/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5884/12376/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5884/7981/12376
+trinket2=zees_thug_hotline,id=230199,bonus_id=4800/4786/1533/12376
+main_hand=giga_bank-breaker,id=228905,bonus_id=7981/12042/5884/12376,enchant=authority_of_the_depths_3
 
 save=TWW2_Monk_Brewmaster.simc
 
