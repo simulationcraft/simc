@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61406 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3537,7 +3537,6 @@ Effects          :
 #25 (id=1246028) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Misc Value 2: 5326 (Label) | Target: Self (1)
                    Affected Spells (Label): Ruination (434636)
-Hotfixed         : Type (35 -> 6), Base Value (15 -> 35)
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock

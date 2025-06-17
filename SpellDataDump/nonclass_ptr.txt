@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61406 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -213783,7 +213783,6 @@ Effects          :
 Description      : Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.
 
 Name             : Ebb (id=407924) [Hidden] 
-Hotfixed         : Name, Aura Interrupt, Description
 School           : Fire
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -256614,7 +256613,6 @@ Effects          :
 Description      : Take Credit for your allies' deeds up to once every $1215043d, gaining $s1 of their highest secondary stat up to $s2 times until shortly after leaving combat. You have a $s3% chance to get caught in the act, transferring all accumulated Credit to your ally for $1214826d instead.
 
 Name             : Shard of Porcelain Arrowhead Idol (id=1214336) 
-Hotfixed         : Proc Flags 1 (87312 -> 87380), Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -260298,7 +260296,6 @@ Effects          :
 Description      : $@spelldesc1225074
 
 Name             : Lesser Rune of Twilight Devastation (id=1225074) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -260380,7 +260377,6 @@ Effects          :
 Description      : $@spelldesc386692
 
 Name             : Greater Rune of the Echoing Void (id=1225873) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -260693,7 +260689,6 @@ Effects          :
 Description      : $@spelldesc1227124
 
 Name             : Greater Rune of Infinite Stars (id=1227206) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -260799,7 +260794,6 @@ Description      : $@spelldesc1227206
 Tooltip          : Damage taken from Infinite Stars increased by up to $?a1227211[${$1227211s2*$u}][${$1227210s2*$u}].
 
 Name             : Greater Rune of Gushing Wound (id=1227288) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -260885,7 +260879,6 @@ Tooltip          : Bleeding for $w1 damage every $t1 sec.
 Variables        : $points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}
 
 Name             : Greater Rune of the Twisted Appendage (id=1227294) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -260980,7 +260973,6 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Taking Shadow damage every $t1 sec.
 
 Name             : Greater Rune of the Void Ritual (id=1227311) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261193,7 +261185,6 @@ Effects          :
 Description      : $@spelldesc1224457
 
 Name             : Recuperate (id=1231411) 
-Hotfixed         : Description
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -261274,7 +261265,6 @@ Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
 Name             : Greater Rune of Twilight Devastation (id=1233223) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261293,7 +261283,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Echoing Void (id=1233355) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261312,7 +261301,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of Infinite Stars (id=1233375) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261331,7 +261319,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of Gushing Wound (id=1233385) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261350,7 +261337,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Twisted Appendage (id=1233392) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261369,7 +261355,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Lesser Rune of the Void Ritual (id=1233394) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
@@ -261455,20 +261440,20 @@ Description      : Your spells and abilities have a chance to turn you into a Li
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Charged Bolts (id=1236109) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1231808)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolts
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236110 | Target: Self (1)
 Description      : $@spelldesc1236108
 
 Name             : Charged Bolts (id=1236110) 
-Hotfixed         : Attributes, Tooltip
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -261496,7 +261481,6 @@ Effects          :
 Description      : $@spelldesc1236108
 
 Name             : Cauterizing Bolts (id=1236115) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -261520,7 +261504,6 @@ Effects          :
 Description      : $@spelldesc1236115
 
 Name             : Cauterizing Bolts (id=1236118) 
-Hotfixed         : Attributes, Tooltip
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -261533,13 +261516,14 @@ Description      : $@spelldesc1236115
 Tooltip          : Healing nearby targets for $1236137w2 every $t sec.
 
 Name             : Cauterizing Bolts (id=1236122) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1231826)  : Apply Aura (6) | Proc Trigger Spell (42): Cauterizing Bolts
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236118 | Target: Self (1)
@@ -261573,7 +261557,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant you Static Charge, increasing your Versatility by ${$1236137w5*$1236938u} for $1236938d. Each of your next spells and abilities reduce the Versatility bonus by ${100/$1236938u}%.
 
 Name             : Electric Current (id=1236129) [Passive] 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -261617,38 +261600,30 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 61705.98 (coefficient=24.125) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (9.983487 -> 24.124998)
 #2 (id=1232811)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 50528.88 (coefficient=19.75512) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (14.976047 -> 19.755123)
 #3 (id=1232881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1048.931 (coefficient=0.273946) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (0.191125 -> 0.273946)
 #4 (id=1232883)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5828.163 (coefficient=1.522123) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (1.050392 -> 1.522123)
 #5 (id=1232886)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 384.2026 (coefficient=0.100341) | PvP Coefficient: 0.25 | Target: Self (1)
 #6 (id=1232887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1232950)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 350.6609 (coefficient=0.091581) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (0.084812 -> 0.091581)
 #8 (id=1232957)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=1232958)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1232959) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 198229.4 (coefficient=77.50113) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (67.392281 -> 77.501129)
 #11 (id=1232961) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 411128.5 (coefficient=160.7377) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (139.771927 -> 160.737656)
 #12 (id=1232962) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
 #13 (id=1232963) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 178212.4 (coefficient=69.67516) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (49.917732 -> 69.675156)
 
 Name             : Durable Information Securing Container (id=1236138) [Passive] 
 School           : Physical
@@ -261713,6 +261688,7 @@ Effects          :
 Description      : when you destroy a Titanic Storm Crystal you immediately send a Charged Bolt at an enemy within 40yds. 
 
 Name             : Critical Chain (id=1236272) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261720,26 +261696,28 @@ Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232105)  : Apply Aura (6) | Proc Trigger Spell (42): Critical Overload
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236940 | Target: Self (1)
 Description      : $@spelldesc1236123
 
 Name             : Spark Burst (id=1236273) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232106)  : Apply Aura (6) | Proc Trigger Spell (42): Spark Burst
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236936 | Target: Self (1)
 Description      : $@spelldesc1236124
 
 Name             : Static Charge (id=1236275) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261747,43 +261725,46 @@ Internal Cooldown: 29 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232108)  : Apply Aura (6) | Proc Trigger Spell (42): Static Charge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236938 | Target: Self (1)
 Description      : $@spelldesc1236128
 
 Name             : Electric Current (id=1236276) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Aura Points On Client (268), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232109)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236129
 
 Name             : Charged Touch (id=1236277) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Helpful Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232110)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1236132
 
 Name             : Energy Shield (id=1236278) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Allow Aura On Level Scale (444)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232111)  : Apply Aura (6) | Proc Trigger Spell (42): Energy Shield
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236993 | Target: Self (1)
@@ -261852,7 +261833,6 @@ Description      : $@spelldesc1236129
 Tooltip          : Mastery increased by $w1.
 
 Name             : Static Charge (id=1236938) 
-Hotfixed         : Internal Cooldown (1000 -> 750)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
