@@ -928,9 +928,6 @@ void monk_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step
                                          action_priority_list_t* assisted_combat )
 {
   base_t::parse_assisted_combat_step( step, assisted_combat );
-
-  if ( !is_ptr() && step.id == 4631 && assisted_combat_rule_data_t::data( 10378, is_ptr() ).empty() )
-    assisted_combat->action_list.back().action_ += ",wait_on_ready=1";
 }
 
 parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
@@ -944,7 +941,8 @@ parsed_assisted_combat_rule_t monk_t::parse_assisted_combat_rule( const assisted
     return { base_t::parse_assisted_combat_rule( rule_copy, step ), "Extended range check to 10 yards (from 5)." };
   }
 
-  if ( !is_ptr() && step.spell_id == 205523 && rule.condition_type == AURA_ON_PLAYER )
+  if ( is_ptr() && step.spell_id == 205523 && rule.condition_type == AURA_ON_PLAYER &&
+       rule.condition_value_1 == 196736 )
     return { "", "Remove talent.blackout_combo check." };
 
   if ( rule.condition_type == AURA_MISSING_PLAYER )
