@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.1.5.61265
-static const std::array<item_name_description_t, 963> __item_name_description_data { {
+// Item name descriptions, wow build 11.1.7.61491
+static const std::array<item_name_description_t, 966> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -963,5 +963,8 @@ static const std::array<item_name_description_t, 963> __item_name_description_da
   { 14259, "Flame's Radiance"                            },
   { 14260, "Season 3 Crafted"                            },
   { 14261, "Voidfire Deathcycle"                         },
+  { 14290, "Fiery"                                       },
+  { 14291, "Blood"                                       },
+  { 14294, "A Greedy Emissary"                           },
 } };
 
