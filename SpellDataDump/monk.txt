@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.61265 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3467,7 +3467,6 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)  : Apply Aura (6) | Threat (10)
                    Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (815 -> 950)
 #13 (id=260844)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #14 (id=260845)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -12140,7 +12139,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395519 | Target: Self (1)
 #4 (id=1031603)  : Trigger Spell (64): Strike of the Windlord
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 395521 | Target: Self (1)
-Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d.
+Description      : Strike with both fists at all enemies in front of you, dealing ${$395519s1+$395521s1} Physical damage and reducing movement speed by $s2% for $d. Deals reduced damage to secondary targets.
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Thunderfist (id=392985) [Spell Family (53), Passive] 
@@ -19226,7 +19225,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198818)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216182 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Rising Sun Kick and Spinning Crane Kick by $1216182s1% stacking up to $1216182u times. Rising Sun Kick and Spinning Crane Kick have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r, increasing the damage of your Rising Sun Kick and Spinning Crane Kick by $1216182s1%, stacking up to $1216182u times. Rising Sun Kick and Spinning Crane Kick have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Monk Windwalker 11.1 Class Set 4pc (id=1215718) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -19241,7 +19240,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198819)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Fists of Fury applies $s1 $Lstack:stacks; of |cFFFFFFFF Winning Streak!|r when cast and when finished channeling completely. The damage of your next Fists of Fury is increased by $1216498s1% per stack when |cFFFFFFFF Winning Streak!|r is removed.
+Description      : Fists of Fury applies $s1 $Lstack:stacks; of|cFFFFFFFF Winning Streak!|r when cast and when finished channeling completely. The damage of your next Fists of Fury is increased by $1216498s1% per stack when|cFFFFFFFF Winning Streak!|r is removed.
 
 Your |cFFFFFFFF Winning Streak!|r is always removed once it reaches max stacks.
 
@@ -19481,5 +19480,21 @@ Effects          :
 #3 (id=1234990)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 5146 (Label) | Target: Self (1)
                    Affected Spells (Label): Efficient Training (450989)
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
+Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
+
+The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
 

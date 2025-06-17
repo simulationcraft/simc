@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.5.61265 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -16541,5 +16541,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
+Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
+
+The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
 
