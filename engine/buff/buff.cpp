@@ -1313,7 +1313,10 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
     if ( tick_behavior == buff_tick_behavior::CLIP || tick_behavior == buff_tick_behavior::REFRESH )
     {
-      refresh_behavior = buff_refresh_behavior::PANDEMIC;
+      if ( data().attribute( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+        refresh_behavior = buff_refresh_behavior::PANDEMIC;
+      else
+        refresh_behavior = buff_refresh_behavior::TICK;
     }
     // Otherwise, just do the full-duration refresh
     else
