@@ -2378,6 +2378,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 0x6 | Target: Self (1)
 #14 (id=1189101) : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 0x6 | Target: Self (1)
+#15 (id=1239481) : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Transform into an Air Ascendant for $114051d, immediately dealing $344548s1 Nature damage to any enemy within $344548A1 yds, reducing the cooldown and cost of Stormstrike by $s9%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $114089r yd range.$?s384411[
 
 While Ascendance is active, generate $s1 Maelstrom Weapon $lstack:stacks; every $384437t1 sec.][]
@@ -12762,6 +12765,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+Triggered By     : Ascendance (114051)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1017055)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
