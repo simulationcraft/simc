@@ -73,7 +73,7 @@ Internal Cooldown: 3 seconds
 Stacks           : 9 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
-Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3, #6, #7)
+Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
@@ -1040,6 +1040,7 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
+Hotfixed         : Max stacks (0 -> 9), Proc Stacks (9 -> 0), Attributes
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1050,16 +1051,17 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Internal Cooldown: 3 seconds
-Stacks           : 9 initial, 9 maximum
+Stacks           : 9 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken
-Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5)
+Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7)
 Family Flags     : 37
-Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=44554)    : Apply Aura (6) | Proc Trigger Spell (42): Water Shield
-                   Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25 | Trigger Spell: 52128 | Target: Self (1)
+#1 (id=44554)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), SP Coefficient (0.25 -> 1), Base Value (40 -> 0), Trigger Spell (52128 -> 0)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2015.248 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
@@ -1075,8 +1077,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5)
-Triggered By     : Water Shield (52127)
+Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7)
 Family Flags     : 37
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Not an Action (92), Can't Crit (93), Suppress Caster Procs (112), Allow Cast While Casting (135), Allow Class Ability Procs (416)
 Effects          :
@@ -12539,7 +12540,7 @@ Internal Cooldown: 3 seconds
 Stacks           : 9 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
-Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3, #6, #7)
+Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
@@ -18504,13 +18505,15 @@ Effects          :
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #2 (id=1201813)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 37 | Target: Self (1)
+                   Base Value: -99 | Scaled Value: -99 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-8 -> -99)
 #3 (id=1201819)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 31 | Target: Self (1)
+                   Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-8 -> -99)
 #4 (id=1201820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
@@ -18520,13 +18523,15 @@ Effects          :
                    Affected Spells: Water Shield (52127), Water Shield (52128)
                    Family Flags: 37
 #6 (id=1201822)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: -9 | Scaled Value: -9 | Misc Value: 37 | Target: Self (1)
-                   Affected Spells: Earth Shield (974), Earth Shield (383648)
-                   Family Flags: 42
+                   Base Value: -99 | Scaled Value: -99 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Water Shield (52127), Water Shield (52128)
+                   Family Flags: 37
+Hotfixed         : Base Value (-9 -> -99), Affects Spells
 #7 (id=1201823)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
-                   Base Value: -9 | Scaled Value: -9 | Misc Value: 31 | Target: Self (1)
-                   Affected Spells: Earth Shield (974), Earth Shield (383648)
-                   Family Flags: 42
+                   Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
+                   Affected Spells: Water Shield (52127), Water Shield (52128)
+                   Family Flags: 37
+Hotfixed         : Base Value (-9 -> -99), Affects Spells
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
