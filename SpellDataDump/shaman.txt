@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61559 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1040,7 +1040,6 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
-Hotfixed         : Max stacks (0 -> 9), Proc Stacks (9 -> 0), Attributes
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1061,7 +1060,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), SP Coefficient (0.25 -> 1), Base Value (40 -> 0), Trigger Spell (52128 -> 0)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2015.248 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
@@ -2378,6 +2376,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 0x6 | Target: Self (1)
 #14 (id=1189101) : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 0x6 | Target: Self (1)
+#15 (id=1239481) : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Transform into an Air Ascendant for $114051d, immediately dealing $344548s1 Nature damage to any enemy within $344548A1 yds, reducing the cooldown and cost of Stormstrike by $s9%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $114089r yd range.$?s384411[
 
 While Ascendance is active, generate $s1 Maelstrom Weapon $lstack:stacks; every $384437t1 sec.][]
@@ -12762,6 +12763,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+Triggered By     : Ascendance (114051)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1017055)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -18508,12 +18510,10 @@ Effects          :
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-8 -> -99)
 #3 (id=1201819)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-8 -> -99)
 #4 (id=1201820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
@@ -18526,12 +18526,10 @@ Hotfixed         : Base Value (-8 -> -99)
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
                    Family Flags: 37
-Hotfixed         : Base Value (-9 -> -99), Affects Spells
 #7 (id=1201823)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
                    Family Flags: 37
-Hotfixed         : Base Value (-9 -> -99), Affects Spells
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
