@@ -346,8 +346,23 @@ struct blessed_hammer_t : public paladin_spell_t
       callbacks                       = false;
       radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
       may_crit                        = true;
+      if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+      {
+        hammer_and_anvil = new hammer_and_anvil_t( p );
+        add_child( hammer_and_anvil );
+      }
     }
 
+      struct hammer_and_anvil_t : public paladin_spell_t
+    {
+      hammer_and_anvil_t( paladin_t* p ) : paladin_spell_t( "hammer_and_anvil_bh", p, p->find_spell( 433717 ) )
+      {
+        background = proc = may_crit = true;
+        may_miss                     = false;
+        aoe                          = -1;
+      }
+    };
+    hammer_and_anvil_t* hammer_and_anvil;
     action_state_t* new_state() override
     {
       return new state_t( this, target );
@@ -370,6 +385,11 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+      if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT  )
+      {
+        hammer_and_anvil->set_target( s->target );
+        hammer_and_anvil->execute();
+      }
     }
   };
 
