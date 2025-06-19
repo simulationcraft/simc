@@ -4164,8 +4164,9 @@ class SetBonusListGenerator(DataGenerator):
                     if item_data.class_mask & mask:
                         class_.append(idx)
 
-            if set_spell_data.ref('id_trait_sub_tree').id > 0:
-                trait_sub_tree_ = set_spell_data.ref('id_trait_sub_tree').id
+            tst = set_spell_data.ref('id_trait_sub_tree')
+            if tst is not None and tst.id > 0:
+                trait_sub_tree_ = tst.id
             else:
                 trait_sub_tree_ = -1
 
