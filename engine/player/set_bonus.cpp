@@ -184,44 +184,32 @@ void set_bonus_t::initialize()
         if ( data.bonus == nullptr )
           continue;
 
-        unsigned spec_role_idx = static_cast<int>( spec_idx );
-
         // Set bonus is overridden, or we have sufficient number of items to enable the bonus
-        if ( data.overridden >= 1 ||
-             ( set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1 ) ||
-             ( data.bonus->has_spec( actor->_spec ) &&
-               ( ( util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier ) && data.bonus->bonus == 2 ) ||
-                 ( util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4 ) ) ) )
+        if ( data.overridden < 1 )
+          continue;
+
+        unsigned spec_role_idx = static_cast<int>( spec_idx );
+        if ( set_bonus_spec_count[ idx ][ spec_role_idx ] < data.bonus->bonus || data.overridden != -1 )
+          continue;
+
+        bool valid_set_by_spec = data.bonus->has_spec( actor->_spec );
+        bool valid_set_by_trait_sub_tree = std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), data.bonus->bonus->has_trait_sub_tree );
+        if ( !valid_set_by_spec || !valid_set_by_trait_sub_tree )
+          continue;
+
+        bool enable_4_set = util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4;
+        bool disable_4_set = util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) && data.bonus->bonus == 4;
+
+        data.enabled = false;
+
+        bool enable_2_set = util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier );
+        bool disable_2_set = util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier );
+        if ( ( data.bonus->bonus == 2 && enable_2_set && !disable_2_set ) ||
+             ( data.bonus->bonus == 4 && enable_4_set && !disable_4_set ) ||
+             ( data.bonus->bonus != 2 && data.bonus->bonus != 4 ) )
         {
-          if ( data.bonus->bonus == 2 )
-          {
-            if ( !util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier ) )
-            {
-              data.spell = actor->find_spell( data.bonus->spell_id );
-              data.enabled = true;
-            }
-            else
-            {
-              data.enabled = false;
-            }
-          }
-          else if ( data.bonus->bonus == 4 )
-          {
-            if ( !util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) )
-            {
-              data.spell = actor->find_spell( data.bonus->spell_id );
-              data.enabled = true;
-            }
-            else
-            {
-              data.enabled = false;
-            }
-          }
-          else
-          {
-            data.spell = actor->find_spell( data.bonus->spell_id );
-            data.enabled = true;
-          }
+          data.spell = actor->find_spell( data.bonus->spell_id );
+          data.enabled = true;
         }
       }
     }
