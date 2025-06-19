@@ -224,8 +224,9 @@ void set_bonus_t::enable_all_sets()
   auto spec = actor->specialization();
 
   // assume class & spec matching bonuses are tier
+  // or actor has the correct trait_sub_tree
   for ( const auto& bonus : set_bonuses )
-    if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec )
+    if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), bonus.has_trait_sub_tree ) )
       set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
 }
 
