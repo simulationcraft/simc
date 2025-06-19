@@ -6,22 +6,22 @@ role=attack
 position=back
 talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjZmJmZGAAAAAAwsNzMMwMbzMzmtZZMMzMMW2mtZwwYZjJZYmZGYB
 
-head=,id=229316,bonus_id=1808,gem_id=213743,ilevel=684,enchant_id=7917
-neck=,id=232663,bonus_id=8781,gem_id=213467/213482,ilevel=684
+head=,id=229316,bonus_id=1808,enchant_id=7927,gem_id=213743,ilevel=684
+neck=,id=232663,bonus_id=8781,gem_id=213467/213494,ilevel=684
 shoulder=,id=229314,ilevel=684
 back=,id=221054,enchant_id=7403,ilevel=684
 chest=,id=229319,enchant_id=7364,ilevel=684
-wrist=,id=219334,bonus_id=10222/11109/8960/8780/8791,enchant_id=7385,gem_id=213479,ilevel=681
+wrist=,id=219334,bonus_id=10222/11109/8960/8780/8790,enchant_id=7385,gem_id=213482,ilevel=681
 hands=,id=221036,ilevel=684
-waist=,id=229313,bonus_id=1808,gem_id=213479,ilevel=684
+waist=,id=245964,gem_id=213458,ilevel=701,titan_disc_id=1236109
 legs=,id=229315,enchant_id=7601,ilevel=684
 feet=,id=228888,enchant_id=7424,ilevel=684
-finger1=,id=231265,bonus_id=8781,enchant_id=7346,enchant=radiant_critical_strike_3,gem_id=213479/213458,ilevel=684
-finger2=,id=178872,enchant_id=7334,gem_id=213491/213491,ilevel=684
+finger1=,id=231265,bonus_id=8781,enchant_id=7346,enchant=radiant_critical_strike_3,gem_id=213458/213458,ilevel=684
+finger2=,id=178872,enchant_id=7340,gem_id=213491/213491,ilevel=684
 trinket1=,id=230189,ilevel=684
 trinket2=,id=232541,ilevel=684
 main_hand=,id=232804,enchant_id=7439,ilevel=684
-off_hand=,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7445,enchant=stormriders_fury_3,ilevel=681
+off_hand=,id=222441,bonus_id=10222/11300/8960/8790,enchant_id=7442,enchant=stormriders_fury_3,ilevel=681
 
 save=TWW2_Demon_Hunter_Havoc.simc
 
@@ -33,22 +33,22 @@ role=attack
 position=back
 talents=CEkAAAAAAAAAAAAAAAAAAAAAAYAzMzYMzMjZmJmZGAAAAAAwsNmhBGLzMzmtZZegZmZmZZwGsNLmxwsppBzMzMYD
 
-head=,id=228848,bonus_id=1808,gem_id=213743,ilevel=684,enchant_id=7917
-neck=,id=232663,bonus_id=8781,gem_id=213473/213482,ilevel=684
+head=,id=228848,bonus_id=1808,enchant_id=7927,gem_id=213743,ilevel=684
+neck=,id=232663,bonus_id=8781,gem_id=213491/213467,ilevel=684
 shoulder=,id=229314,ilevel=684
 back=,id=221054,enchant_id=7403,ilevel=684
 chest=,id=229319,enchant_id=7364,ilevel=684
-wrist=,id=219334,bonus_id=10222/11109/8960/8780/8791,enchant_id=7385,gem_id=213458,ilevel=681
+wrist=,id=219334,bonus_id=10222/11109/8960/8780/8790,enchant_id=7385,gem_id=213479,ilevel=681
 hands=,id=229317,ilevel=684
-waist=,id=221107,gem_id=213491,ilevel=684
+waist=,id=245964,gem_id=213455,ilevel=701,titan_disc_id=1236109
 legs=,id=229315,enchant_id=7601,ilevel=684
 feet=,id=228888,enchant_id=7424,ilevel=684
-finger1=,id=178872,enchant_id=7346,gem_id=213491/213491,ilevel=684
-finger2=,id=231265,bonus_id=8781,enchant_id=7346,enchant=radiant_critical_strike_3,gem_id=213458/213458,ilevel=684
+finger1=,id=178872,enchant_id=7334,gem_id=213491/213491,ilevel=684
+finger2=,id=231265,bonus_id=8781,enchant_id=7334,enchant=radiant_critical_strike_3,gem_id=213455/213455,ilevel=684
 trinket1=,id=230189,ilevel=684
 trinket2=,id=230027,ilevel=684
-main_hand=,id=232804,enchant_id=7445,ilevel=684
-off_hand=,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7445,enchant=stormriders_fury_3,ilevel=681
+main_hand=,id=232804,enchant_id=7439,ilevel=684
+off_hand=,id=222441,bonus_id=10222/11300/8960/8790,enchant_id=7445,enchant=stormriders_fury_3,ilevel=681
 
 save=TWW2_Demon_Hunter_Havoc_Fel-Scarred.simc
 
