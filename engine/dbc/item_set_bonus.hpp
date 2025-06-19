@@ -58,7 +58,7 @@ struct item_set_bonus_t
     return has_spec( static_cast<int>( s ) );
   }
 
-  bool has_trait_sub_tree( int trait_sub_tree_id )
+  bool has_trait_sub_tree( int trait_sub_tree_id ) const
   {
     if ( trait_sub_tree > 0 && trait_sub_tree == trait_sub_tree_id )
       return true;

@@ -193,17 +193,18 @@ void set_bonus_t::initialize()
           continue;
 
         bool valid_set_by_spec = data.bonus->has_spec( actor->_spec );
-        bool valid_set_by_trait_sub_tree = std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), data.bonus->bonus->has_trait_sub_tree );
+        auto compare = [ & ]( unsigned tst ){ return data.bonus->has_trait_sub_tree( tst ); };
+        bool valid_set_by_trait_sub_tree = std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), compare );
         if ( !valid_set_by_spec || !valid_set_by_trait_sub_tree )
           continue;
 
-        bool enable_4_set = util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier ) && data.bonus->bonus == 4;
-        bool disable_4_set = util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier ) && data.bonus->bonus == 4;
+        bool enable_2_set = util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier );
+        bool enable_4_set = util::str_compare_ci( actor->sim->enable_4_set, data.bonus->tier );
+        bool disable_2_set = util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier );
+        bool disable_4_set = util::str_compare_ci( actor->sim->disable_4_set, data.bonus->tier );
 
         data.enabled = false;
 
-        bool enable_2_set = util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier );
-        bool disable_2_set = util::str_compare_ci( actor->sim->disable_2_set, data.bonus->tier );
         if ( ( data.bonus->bonus == 2 && enable_2_set && !disable_2_set ) ||
              ( data.bonus->bonus == 4 && enable_4_set && !disable_4_set ) ||
              ( data.bonus->bonus != 2 && data.bonus->bonus != 4 ) )
@@ -225,9 +226,15 @@ void set_bonus_t::enable_all_sets()
 
   // assume class & spec matching bonuses are tier
   // or actor has the correct trait_sub_tree
+  // auto compare = [ & ]( unsigned trait_sub_tree ){ return data.bonus->has_trait_sub_tree( trait_sub_tree ); };
   for ( const auto& bonus : set_bonuses )
-    if ( bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), bonus.has_trait_sub_tree ) )
+  {
+    bool valid_set_by_class_and_spec = bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec;
+    auto compare = [ & ]( unsigned tst ){ return bonus.has_trait_sub_tree( tst ); };
+    bool valid_set_by_trait_sub_tree = std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), compare );
+    if ( valid_set_by_class_and_spec || valid_set_by_trait_sub_tree )
       set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
+  }
 }
 
 void set_bonus_t::enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet )
