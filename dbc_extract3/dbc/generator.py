@@ -4164,6 +4164,11 @@ class SetBonusListGenerator(DataGenerator):
                     if item_data.class_mask & mask:
                         class_.append(idx)
 
+            if set_spell_data.ref('id_trait_sub_tree').id > 0:
+                trait_sub_tree_ = set_spell_data.ref('id_trait_sub_tree').id
+            else:
+                trait_sub_tree_ = -1
+
             if len(class_) == 0:
                 logging.warn('Could not determine class information for required item set "%s" (id=%d)',
                     item_set.name, item_set.id)
@@ -4173,12 +4178,13 @@ class SetBonusListGenerator(DataGenerator):
                 new_entry = dict(base_entry)
                 new_entry['class'] = cls
                 new_entry['spec'] = spec_
+                new_entry['trait_sub_tree'] = trait_sub_tree_
                 data.append(new_entry)
 
         return data
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
+        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id'], v['trait_sub_tree']))
 
         self.output_header(
                 header = 'Set bonus data',
@@ -4187,15 +4193,15 @@ class SetBonusListGenerator(DataGenerator):
                 length = len(data))
 
         _hdr_specifiers = (
-            '{: <43}', '{: <27}', '{: <10}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
+            '{: <43}', '{: <30}', '{: <12}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <9}', '{: <7}', '{}'
         )
 
         _data_specifiers = (
-            '{: <44}', '{: <27}', '{: >10}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+            '{: <44}', '{: <30}', '{: >12}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >9}', '{: >7}', '{}'
         )
 
         _hdr_format = ', '.join(_hdr_specifiers)
-        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'SpellID', 'ItemIDs')
+        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'TraitTree', 'SpellID', 'ItemIDs')
 
         _data_format = ', '.join(_data_specifiers)
 
@@ -4230,6 +4236,7 @@ class SetBonusListGenerator(DataGenerator):
                 entry['bonus'],
                 entry['class'],
                 entry['spec'],
+                entry['trait_sub_tree'],
                 item_set_spell.id_spell,
                 '{ %s }' % (', '.join(items)))))
 
