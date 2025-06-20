@@ -147,7 +147,7 @@ sim_t* sim_signal_handler_t::global_sim = nullptr;
 
 bool need_to_save_profiles( sim_t* sim )
 {
-  if ( sim->save_profiles )
+  if ( sim->save_profiles || sim->save_profile_pre_init )
   {
     return true;
   }
