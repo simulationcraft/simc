@@ -22,9 +22,9 @@ struct player_processed_report_information_t
   std::string save_gear_str;
   std::string save_talents_str;
   std::string save_actions_str;
+  bool save_full_blizzard_apl;
   std::string comment_str;
   std::string thumbnail_url;
   std::string html_profile_str;
   std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
-
 };

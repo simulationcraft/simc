@@ -3531,6 +3531,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
   bool is_duplicate_2;
   bool is_duplicate_3;
   bool is_modified;
+  bool full = report_information.save_full_blizzard_apl;
   // TODO: verify < vs <= and > vs >= on all condition types
   switch ( rule.condition_type )
   {
@@ -3547,17 +3548,17 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
         // TODO: Are there any other types of passives to check here?
         // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
       }
-      return ""; // no check necessary because simc actions are filtered out if the spell is not known
+      return !full ? "" : fmt::format( "SPELL_LEARNED({})", v1 ); // no check necessary because simc actions are filtered out if the spell is not known
     case SPELL_ON_COOLDOWN:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "!cooldown.{}.ready", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
+      return !full ? "" : fmt::format( "SPELL_ON_COOLDOWN({})", v1 ); // no check necessary because simc actions are not ready unless their cooldown is ready
     case SPELL_OFF_COOLDOWN:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "cooldown.{}.ready", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
+      return !full ? "" : fmt::format( "SPELL_OFF_COOLDOWN({})", v1 ); // no check necessary because simc actions are not ready unless their cooldown is ready
     case TARGET_DISTANCE_LESS:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance<={}", v1 );
@@ -3565,9 +3566,11 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.distance>{}", v1 );
     case HOSTILE_TARGET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
+      return !full ? "" : "HOSTILE_TARGET";
     case FRIENDLY_TARGET:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
-      return "";
+      return !full ? "" : "FRIENDLY_TARGET";
     case HEALTH_PCT_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "target.health.pct>={}", v1 );
@@ -3630,12 +3633,14 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "active_{}>={}", expr_str, v1 ); // TODO: > or >=?
       // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_GREATER." );
+      if ( !full )
+        throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_GREATER." );
+      return fmt::format( "AURA_COUNT_NEAR_PLAYER_GREATER({},{},{})", v1, v2, v3 );
     case AFFORD_COST:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "action.{}.cost_affordable", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cost is affordable
+      return !full ? "" : fmt::format( "AFFORD_COST({})", v1 ); // no check necessary because simc actions are not ready unless their cost is affordable
     case AURA_MISSING_TARGET:
       assert( v2 == 0 && v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
@@ -3653,7 +3658,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where these would be talents we should worry about?
-      if ( expr_str.find( "talent." ) == 0 )
+      if ( expr_str.find( "talent." ) == 0 && !full )
         throw std::runtime_error( fmt::format( "Talents are unsupported for assisted combat condition AURA_DURATION_PLAYER.", rule.condition_type ) );
       return fmt::format( "{}.up&{}.remains<={:g}", expr_str, expr_str, v2 / 1000.0 );
     case AURA_DURATION_TARGET:
@@ -3764,7 +3769,9 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "active_{}<={}", expr_str, v1 ); // TODO: < or <=?
       // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_LESS." );
+      if ( !full )
+        throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_LESS." );
+      return fmt::format( "AURA_COUNT_NEAR_PLAYER_LESS({},{},{})", v1, v2, v3 );
     case TARGET_AURA_APPLICATION_GREATER:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
@@ -3785,7 +3792,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
         return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless they have a target
+      return !full ? "" : fmt::format( "SPELL_IN_RANGE({})", v1 ); // no check necessary because simc actions are not ready unless they have a target
     case HAS_PET:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       return "pet.any.active";
@@ -3831,7 +3838,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
     case COOLDOWN_ALLOW_CASTING_SUCCESS:
       assert( v1 == 0 && v2 == 0 && v3 == 0 );
       // This is handled elsewhere, since it removes a default condition instead of adding a new one.
-      return "";
+      return !full ? "" : "COOLDOWN_ALLOW_CASTING_SUCCESS";
     case PLAYER_HEALTH_PCT_GREATER:
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct>={}", v1 );
@@ -13024,6 +13031,7 @@ void player_t::create_options()
   add_option( opt_string( "save_gear", report_information.save_gear_str ) );
   add_option( opt_string( "save_talents", report_information.save_talents_str ) );
   add_option( opt_string( "save_actions", report_information.save_actions_str ) );
+  add_option( opt_bool( "save_full_blizzard_apl", report_information.save_full_blizzard_apl ) );
   add_option( opt_string( "comment", report_information.comment_str ) );
   add_option( opt_bool( "bugs", bugs ) );
   add_option( opt_func( "world_lag", parse_world_lag ) );
