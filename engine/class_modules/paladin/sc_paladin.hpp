@@ -368,6 +368,8 @@ public:
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
+
+    cooldown_t* tww3_lightsmith_2p_icd; // ICD For 11.2 Lightsmith Tier Set 2 Piece
   } cooldowns;
 
   // Passives
