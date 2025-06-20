@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61491 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61559 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -261440,7 +261440,6 @@ Description      : Your spells and abilities have a chance to turn you into a Li
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Charged Bolts (id=1236109) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261498,7 +261497,8 @@ Triggered By     : Cauterizing Bolts (1236118)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231818)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: At Self (22) -> Unknown(33)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
+Hotfixed         : Target 2 (33 -> 30)
 #2 (id=1233319)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
 Description      : $@spelldesc1236115
@@ -261516,7 +261516,6 @@ Description      : $@spelldesc1236115
 Tooltip          : Healing nearby targets for $1236137w2 every $t sec.
 
 Name             : Cauterizing Bolts (id=1236122) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261688,7 +261687,6 @@ Effects          :
 Description      : when you destroy a Titanic Storm Crystal you immediately send a Charged Bolt at an enemy within 40yds. 
 
 Name             : Critical Chain (id=1236272) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261703,7 +261701,6 @@ Effects          :
 Description      : $@spelldesc1236123
 
 Name             : Spark Burst (id=1236273) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261717,7 +261714,6 @@ Effects          :
 Description      : $@spelldesc1236124
 
 Name             : Static Charge (id=1236275) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261732,7 +261728,6 @@ Effects          :
 Description      : $@spelldesc1236128
 
 Name             : Electric Current (id=1236276) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261743,7 +261738,6 @@ Effects          :
 Description      : $@spelldesc1236129
 
 Name             : Charged Touch (id=1236277) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261757,7 +261751,6 @@ Effects          :
 Description      : $@spelldesc1236132
 
 Name             : Energy Shield (id=1236278) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
