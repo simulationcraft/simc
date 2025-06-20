@@ -10,9 +10,11 @@
 #include "player/soulbinds.hpp"
 #include "sc_enums.hpp"
 #include "sim/expressions.hpp"
+#include "death_knight_runeforges.hpp"
 #include "unique_gear_dragonflight.hpp"
 #include "unique_gear_shadowlands.hpp"
 #include "unique_gear_thewarwithin.hpp"
+#include "death_knight_runeforges.hpp"
 #include "util/util.hpp"
 
 #include <cctype>
@@ -4917,6 +4919,8 @@ void unique_gear::register_special_effects()
   dragonflight::register_special_effects();
 
   thewarwithin::register_special_effects();
+
+  death_knight_runeforges::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */

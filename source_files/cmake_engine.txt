@@ -138,6 +138,7 @@ player/unique_gear_dragonflight.hpp
 player/unique_gear_helper.hpp
 player/unique_gear_shadowlands.hpp
 player/unique_gear_thewarwithin.hpp
+player/death_knight_runeforges.hpp
 player/weapon.hpp
 player/wrapper_callback.hpp
 report/charts.hpp
@@ -333,6 +334,7 @@ player/unique_gear_helper.cpp
 player/unique_gear_legion.cpp
 player/unique_gear_shadowlands.cpp
 player/unique_gear_thewarwithin.cpp
+player/death_knight_runeforges.cpp
 report/charts.cpp
 report/color.cpp
 report/decorators.cpp

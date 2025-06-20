@@ -699,7 +699,6 @@ void unholy( player_t* p )
     cds_shared->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2" );
     cds_shared->add_action( "legion_of_souls" );
     cds_shared->add_action( "desecrate" );
-    cds_shared->add_action( "apocalypse" );
 
     cleave->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(cooldown.apocalypse.remains|!talent.apocalypse)", "Cleave" );
     cleave->add_action( "death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil" );

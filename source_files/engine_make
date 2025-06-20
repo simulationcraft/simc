@@ -139,6 +139,7 @@ SRC += \
     player$(PATHSEP)unique_gear_legion.cpp \
     player$(PATHSEP)unique_gear_shadowlands.cpp \
     player$(PATHSEP)unique_gear_thewarwithin.cpp \
+    player$(PATHSEP)death_knight_runeforges.cpp \
     report$(PATHSEP)charts.cpp \
     report$(PATHSEP)color.cpp \
     report$(PATHSEP)decorators.cpp \
