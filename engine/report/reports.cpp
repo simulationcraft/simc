@@ -23,43 +23,63 @@ namespace report
 
 void print_profiles(sim_t* sim)
 {
-  if ( sim->save_profile_pre_init )
-    fmt::print( "Profiles generated with the save_profile_pre_init option may exhibit strange behaviour!\n" );
-
   int k = 0;
-  for ( unsigned int i = 0; i < sim->actor_list.size(); i++ )
+  for (unsigned int i = 0; i < sim->actor_list.size(); i++)
   {
-    player_t* p = sim->actor_list[ i ];
-    if ( p->is_pet() )
+    player_t* p = sim->actor_list[i];
+    if (p->is_pet())
       continue;
 
-    if ( !report_helper::check_gear( *p, *sim ) )
+    if (!report_helper::check_gear(*p, *sim))
+    {
       continue;
-
+    }
     k++;
 
-    auto profile_writer = [ & ]( std::string filename, std::string type_str, save_e save_type ) {
-      if ( filename.empty() )
-        return;
-
-      io::cfile file( filename, "w" );
-      if ( file )
+    if (!p->report_information.save_gear_str.empty())  // Save gear
+    {
+      io::cfile file(p->report_information.save_gear_str, "w");
+      if (!file)
       {
-        std::string contents = p->create_profile( save_type );
-        if ( sim->save_profile_pre_init )
-          contents.insert(
-              0,
-              "# Warning! Profiles generated with the save_profile_pre_init option may exhibit strange behaviour!\n" );
-        fprintf( file, "%s", contents.c_str() );
-        return;
+        sim->error("Unable to save gear profile {} for player {}s\n", p->report_information.save_gear_str,
+          p->name());
       }
+      else
+      {
+        std::string profile_str = p->create_profile(SAVE_GEAR);
+        fprintf(file, "%s", profile_str.c_str());
+      }
+    }
 
-      sim->error( "Unable to save {} profile {} for player {}s\n", type_str, filename, p->name() );
-    };
+    if (!p->report_information.save_talents_str.empty())  // Save talents
+    {
+      io::cfile file(p->report_information.save_talents_str, "w");
+      if (!file)
+      {
+        sim->errorf("Unable to save talents profile %s for player %s\n",
+          p->report_information.save_talents_str.c_str(), p->name());
+      }
+      else
+      {
+        std::string profile_str = p->create_profile(SAVE_TALENTS);
+        fprintf(file, "%s", profile_str.c_str());
+      }
+    }
 
-    profile_writer( p->report_information.save_gear_str, "gear", SAVE_GEAR );
-    profile_writer( p->report_information.save_talents_str, "talents", SAVE_TALENTS );
-    profile_writer( p->report_information.save_actions_str, "actions", SAVE_ACTIONS );
+    if (!p->report_information.save_actions_str.empty())  // Save actions
+    {
+      io::cfile file(p->report_information.save_actions_str, "w");
+      if (!file)
+      {
+        sim->errorf("Unable to save actions profile %s for player %s\n",
+          p->report_information.save_actions_str.c_str(), p->name());
+      }
+      else
+      {
+        std::string profile_str = p->create_profile(SAVE_ACTIONS);
+        fprintf(file, "%s", profile_str.c_str());
+      }
+    }
 
     std::string file_name = p->report_information.save_str;
 
@@ -78,11 +98,23 @@ void print_profiles(sim_t* sim)
       file_name += ".simc";
     }
 
-    unsigned save_type = SAVE_ALL;
-    if ( !sim->save_profile_with_actions )
-      save_type &= ~( SAVE_ACTIONS );
+    if (file_name.empty())
+      continue;
 
-    profile_writer( file_name, "", static_cast<save_e>( save_type ) );
+    io::cfile file(file_name, "w");
+    if (!file)
+    {
+      sim->errorf("Unable to save profile %s for player %s\n", file_name.c_str(), p->name());
+      continue;
+    }
+
+    unsigned save_type = SAVE_ALL;
+    if (!sim->save_profile_with_actions)
+    {
+      save_type &= ~(SAVE_ACTIONS);
+    }
+    std::string profile_str = p->create_profile(static_cast<save_e>(save_type));
+    fprintf(file, "%s", profile_str.c_str());
   }
 
   // Save overview file for Guild downloads

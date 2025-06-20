@@ -1397,7 +1397,6 @@ sim_t::sim_t()
     initialized( false ),
     fixed_time( true ),
     save_profiles( false ),
-    save_profile_pre_init( false ),
     save_profile_with_actions( true ),
     save_full_profile( true ),
     default_actions( false ),
@@ -2901,9 +2900,7 @@ void sim_t::init()
 
   // We are committed to simulating something. Tell actors that the sim init is now complete if they
   // need to do something.
-  // Do not call init_finished if saving profiles without validation, or program
-  // possibly exits due to invalid expr exception.
-  if ( ! canceled && !save_profile_pre_init )
+  if ( ! canceled )
   {
     bool verify_use_items_state = true;
 
@@ -3721,7 +3718,6 @@ void sim_t::create_options()
   add_option( opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ) );
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
-  add_option( opt_bool( "save_profile_pre_init", save_profile_pre_init ) );
   add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
   add_option( opt_bool( "save_full_profile", save_full_profile ) );
   add_option( opt_bool( "default_actions", default_actions ) );

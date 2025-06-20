@@ -2917,7 +2917,7 @@ void action_t::init_finished()
     player->dynamic_target_action_list.insert( this );
   }
 
-  if ( !option.if_expr_str.empty() )
+  if ( !option.if_expr_str.empty() && !player->report_information.save_full_blizzard_apl )
   {
     if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
     if ( if_expr == nullptr )
@@ -2926,7 +2926,7 @@ void action_t::init_finished()
     }
   }
 
-  if ( !option.interrupt_if_expr_str.empty() )
+  if ( !option.interrupt_if_expr_str.empty() && !player->report_information.save_full_blizzard_apl )
   {
     interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
     if ( !interrupt_if_expr )
@@ -2935,7 +2935,7 @@ void action_t::init_finished()
     }
   }
 
-  if ( !option.early_chain_if_expr_str.empty() )
+  if ( !option.early_chain_if_expr_str.empty() && !player->report_information.save_full_blizzard_apl )
   {
     early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
     if ( !early_chain_if_expr )
@@ -2944,7 +2944,7 @@ void action_t::init_finished()
     }
   }
 
-  if ( !option.cancel_if_expr_str.empty() )
+  if ( !option.cancel_if_expr_str.empty() && !player->report_information.save_full_blizzard_apl )
   {
     cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
     if ( !cancel_if_expr )

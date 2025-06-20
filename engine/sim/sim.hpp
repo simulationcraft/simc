@@ -82,7 +82,6 @@ struct sim_t : private sc_thread_t
   bool initialized;
   bool fixed_time;
   bool save_profiles;
-  bool save_profile_pre_init; // Save profiles after actor init, but before init_finished. Allows for dumping of expressions that do not validate.
   bool save_profile_with_actions;  // When saving full profiles, include actions or not
   bool save_full_profile;  // save the full profile instead of only active save_e flags
   bool default_actions;
