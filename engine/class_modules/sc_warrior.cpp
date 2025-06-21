@@ -2486,6 +2486,68 @@ struct lightning_strike_t : public warrior_attack_t
   }
 };
 
+// Slayer's Strike ==========================================================
+struct slayers_strike_t : public warrior_attack_t
+{
+  int imminent_demise_tracker;
+  int imminent_demise_trigger_threshold;
+  slayers_strike_t( warrior_t* p )
+    : warrior_attack_t( "slayers_strike", p, p->spell.slayers_strike ),
+    imminent_demise_tracker( 0 ),
+    imminent_demise_trigger_threshold( 0 )
+  {
+    special = true;
+    background = true;
+
+    if( p->talents.slayer.imminent_demise -> ok() && p->talents.shared.sudden_death->ok() )
+      imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
+  }
+
+  slayers_strike_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.slayers_strike ),
+    imminent_demise_tracker( 0 ),
+    imminent_demise_trigger_threshold( 0 )
+  {
+    special = true;
+    background = true;
+
+    if( p->talents.slayer.imminent_demise -> ok() && p->talents.shared.sudden_death->ok() )
+      imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      td( state -> target ) -> debuffs_marked_for_execution->trigger();
+    }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( p() -> talents.slayer.imminent_demise -> ok() && p()->talents.shared.sudden_death->ok() )
+    {
+      imminent_demise_tracker++;
+      if ( imminent_demise_tracker == imminent_demise_trigger_threshold )
+      {
+        imminent_demise_tracker = 0;
+        p() -> buff.sudden_death -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->cooldown.execute->reset( true );
+      }
+    }
+  }
+
+  void reset() override
+  {
+    warrior_attack_t::reset();
+    imminent_demise_tracker = 0;
+  }
+};
+
 // Ignore Pain =============================================================
 
 struct ignore_pain_buff_t : public absorb_buff_t
@@ -4592,6 +4654,7 @@ struct execute_arms_t : public warrior_attack_t
 {
   execute_damage_t* trigger_attack;
   action_t* lightning_strike;
+  action_t* slayers_strike;
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
@@ -4599,6 +4662,7 @@ struct execute_arms_t : public warrior_attack_t
     : warrior_attack_t( "execute", p, p->spell.execute ),
     trigger_attack( nullptr ),
     lightning_strike( nullptr ),
+    slayers_strike( nullptr ),
     max_rage( 40 ),
     execute_pct( 20 ),
     shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
@@ -4628,6 +4692,16 @@ struct execute_arms_t : public warrior_attack_t
     {
       // For some reason on PTR strategist is referencing shield slam reset chance from devastator
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 2pc
+      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+      {
+        slayers_strike = get_action<slayers_strike_t>( "slayers_strike_execute", p );
+        add_child( slayers_strike );
+      }
     }
   }
 
@@ -4728,6 +4802,22 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->active.fatality->set_target( state->target );
       p()->active.fatality->execute();
+    }
+
+    if ( p()->buff.sudden_death -> up() )
+    {
+      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      {
+        // Slayer 2pc
+        if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        {
+          auto target_data = td( state->target );
+          if ( slayers_strike && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+          {
+            slayers_strike->execute_on_target( state->target );
+          }
+        }
+      }
     }
   }
 
@@ -4842,6 +4932,7 @@ struct execute_fury_t : public warrior_attack_t
   execute_main_hand_t* mh_attack;
   execute_off_hand_t* oh_attack;
   action_t* lightning_strike;
+  action_t* slayers_strike;
   bool improved_execute;
   double execute_pct;
   //double cost_rage;
@@ -4852,6 +4943,7 @@ struct execute_fury_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
+      slayers_strike( nullptr ),
       improved_execute( false ),
       execute_pct( 20 ),
       max_rage( 40 ),
@@ -4878,6 +4970,16 @@ struct execute_fury_t : public warrior_attack_t
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
     }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 2pc
+      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+      {
+        slayers_strike = get_action<slayers_strike_t>("slayers_strike_execute", p );
+        add_child( slayers_strike );
+      }
+    }
   }
 
   double cost_pct_multiplier() const override
@@ -4900,6 +5002,27 @@ struct execute_fury_t : public warrior_attack_t
 
 //    return c;
 //  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->buff.sudden_death -> up() )
+    {
+      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      {
+        // Slayer 2pc
+        if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        {
+          auto target_data = td( state->target );
+          if ( slayers_strike && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+          {
+            slayers_strike->execute_on_target( state->target );
+          }
+        }
+      }
+    }
+  }
 
   void execute() override
   {
@@ -6846,56 +6969,6 @@ struct shockwave_t : public warrior_attack_t
     }
 
     return m;
-  }
-};
-
-// Slayer's Strike ==========================================================
-struct slayers_strike_t : public warrior_attack_t
-{
-  int imminent_demise_tracker;
-  int imminent_demise_trigger_threshold;
-  slayers_strike_t( warrior_t* p )
-    : warrior_attack_t( "slayers_strike", p, p->spell.slayers_strike ),
-    imminent_demise_tracker( 0 ),
-    imminent_demise_trigger_threshold( 0 )
-  {
-    special = true;
-    background = true;
-
-    if( p->talents.slayer.imminent_demise -> ok() && p->talents.shared.sudden_death->ok() )
-      imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      td( state -> target ) -> debuffs_marked_for_execution->trigger();
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p() -> talents.slayer.imminent_demise -> ok() && p()->talents.shared.sudden_death->ok() )
-    {
-      imminent_demise_tracker++;
-      if ( imminent_demise_tracker == imminent_demise_trigger_threshold )
-      {
-        imminent_demise_tracker = 0;
-        p() -> buff.sudden_death -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-        p()->cooldown.execute->reset( true );
-      }
-    }
-  }
-
-  void reset() override
-  {
-    warrior_attack_t::reset();
-    imminent_demise_tracker = 0;
   }
 };
 
@@ -10597,6 +10670,14 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
+    // Check for slayer set
+    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+    {
+      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B2 ) );
+    }
+  }
 
   // Mountain Thane
   action.apply_affecting_aura( talents.mountain_thane.strength_of_the_mountain );
