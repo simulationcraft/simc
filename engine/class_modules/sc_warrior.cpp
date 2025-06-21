@@ -316,6 +316,10 @@ public:
     buff_t* double_down_bt;      // Fury 4pc Bloodthirst
     buff_t* double_down_rb;      // Fury 4pc Raging Blow
     buff_t* luck_of_the_draw;    // Prot 2pc
+
+    // TWW3 Tier
+    buff_t* critical_conclusion; // Colossus 4pc Crit buff
+    buff_t* deeper_wounds;       // Colossus 4pc Deep Wounds and Rend amp
   } buff;
 
   struct rppm_t
@@ -1179,6 +1183,12 @@ public:
       parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
       // Effect 3 is the increased rage gain.
       parse_effects( p()->talents.colossus.practiced_strikes, effect_mask_t( true ).disable( 3 ) );
+
+      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      {
+        parse_effects( p()->buff.critical_conclusion );
+        parse_effects( p()->buff.deeper_wounds );
+      }
     }
 
     // Slayer
@@ -3276,6 +3286,11 @@ struct mortal_strike_t : public warrior_attack_t
     }
 
     p()->buff.lethal_blows->expire();
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      p()->buff.critical_conclusion->decrement();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3328,6 +3343,15 @@ struct mortal_strike_t : public warrior_attack_t
       {
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Colossus 4pc
+      if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        p()->buff.deeper_wounds->trigger();
       }
     }
   }
@@ -4097,6 +4121,15 @@ struct demolish_t : public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
     p()->buff.colossal_might->expire();
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Colossus 4pc
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        p()->buff.critical_conclusion->trigger();
+      }
+    }
   }
 };
 
@@ -6958,6 +6991,11 @@ struct shield_slam_t : public warrior_attack_t
     {
       p()->buff.thunder_blast->trigger();
     }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      p()->buff.critical_conclusion->decrement();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7008,6 +7046,15 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.burst_of_power->decrement();
       // Reset CD after everything resolves
       make_event( *p()->sim, [ this ] { p()->cooldown.shield_slam->reset( true ); } );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Colossus 4pc
+      if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        p()->buff.deeper_wounds->trigger();
+      }
     }
   }
 
@@ -9471,6 +9518,14 @@ void warrior_t::create_buffs()
   buff.double_down_bt = make_buff( this, "double_down_bt", find_spell( 1216565 ) );           // Fury 4pc Bloodthirst
   buff.double_down_rb = make_buff( this, "double_down_rb", find_spell( 1216569 ) );           // Fury 4pc Raging Blow
   buff.luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218163 ) );       // Prot 2pc
+
+  // TWW3 Tier
+  if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+  {
+    buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ) // Colossus 4pc
+      ->set_initial_stack( find_spell( 1239144 )->max_stacks() );
+    buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );            // Colossus 4pc
+  }
 }
 
 // warrior_t::init_special_effects() ====================================
