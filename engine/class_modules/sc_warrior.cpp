@@ -5446,6 +5446,7 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   action_t* lightning_strike;
+  action_t* reap_the_storm;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   bool opportunist_up;
@@ -5455,6 +5456,7 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
+      reap_the_storm( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
       opportunist_up( false ),
@@ -5484,12 +5486,40 @@ struct raging_blow_t : public warrior_attack_t
     {
       rage_gain += p->find_spell( 1216569 )->effectN( 2 ).resource( RESOURCE_RAGE );
     }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
+        add_child( reap_the_storm );
+      }
+    }
   }
 
   void init() override
   {
     warrior_attack_t::init();
     cooldown->hasted = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        auto target_data = td( s->target );
+        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        {
+          reap_the_storm->execute_on_target( s->target );
+        }
+      }
+    }
   }
 
   void execute() override
@@ -5628,6 +5658,7 @@ struct crushing_blow_t : public warrior_attack_t
   crushing_blow_attack_t* mh_attack;
   crushing_blow_attack_t* oh_attack;
   action_t* lightning_strike;
+  action_t* reap_the_storm;
   double cd_reset_chance, wrath_and_fury_reset_chance;
   bool opportunist_up;
   double rage_gain;
@@ -5636,6 +5667,7 @@ struct crushing_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
+      reap_the_storm( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
       opportunist_up( false ),
@@ -5668,12 +5700,40 @@ struct crushing_blow_t : public warrior_attack_t
     {
       rage_gain += p->find_spell( 1216569 )->effectN( 2 ).resource( RESOURCE_RAGE );
     }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_crushing_blow", p );
+        add_child( reap_the_storm );
+      }
+    }
   }
 
   void init() override
   {
     warrior_attack_t::init();
     cooldown->hasted = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        auto target_data = td( s->target );
+        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        {
+          reap_the_storm->execute_on_target( s->target );
+        }
+      }
+    }
   }
 
   void execute() override
@@ -6039,13 +6099,15 @@ struct overpower_t : public warrior_attack_t
   double rage_from_finishing_blows;
   double rage_from_battlelord;
   warrior_attack_t* dreadnaught;
+  action_t* reap_the_storm;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
       rage_from_finishing_blows( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_battlelord( p->talents.arms.battlelord->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) ),
-      dreadnaught( nullptr )
+      dreadnaught( nullptr ),
+      reap_the_storm( nullptr )
   {
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
@@ -6056,6 +6118,16 @@ struct overpower_t : public warrior_attack_t
       dreadnaught = new dreadnaught_t( p );
       add_child( dreadnaught );
     }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
+        add_child( reap_the_storm );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -6065,6 +6137,19 @@ struct overpower_t : public warrior_attack_t
     if ( dreadnaught && result_is_hit( s->result ) )
     {
       dreadnaught->execute_on_target( s->target );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    {
+      // Slayer 4pc
+      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      {
+        auto target_data = td( s->target );
+        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        {
+          reap_the_storm->execute_on_target( s->target );
+        }
+      }
     }
   }
 
@@ -10676,6 +10761,10 @@ void warrior_t::apply_affecting_auras( action_t& action )
     if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
     {
       action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B2 ) );
+    }
+    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+    {
+      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B4 ) );
     }
   }
 
