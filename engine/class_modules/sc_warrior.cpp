@@ -1252,6 +1252,16 @@ public:
       // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
       parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
                             p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), p()->spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, p()->spec.protection_warrior );
+
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      {
+        // TODO IF HAS SET BONUS FOR COLOSSUS
+        if( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        {
+          parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
+                            p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 3 ), p()->spell.wrecked_debuff->effectN( 3 ).base_value() / 1000, p()->spec.protection_warrior );
+        }
+      }
     }
 
     // Slayer
