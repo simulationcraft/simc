@@ -1262,7 +1262,7 @@ public:
 
       if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
       {
-        // TODO IF HAS SET BONUS FOR COLOSSUS
+        // Colossus 2pc
         if( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
         {
           parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
