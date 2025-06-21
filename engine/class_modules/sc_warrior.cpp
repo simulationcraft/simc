@@ -1203,10 +1203,7 @@ public:
         parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
         // Update various talents
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
-        if ( p()->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-          parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
-        else
-          parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 3 ), p()->talents.mountain_thane.crashing_thunder );
+        parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 3 ), p()->talents.mountain_thane.crashing_thunder );
       }
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
     }
@@ -1253,7 +1250,7 @@ public:
       parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
                             p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), p()->spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, p()->spec.protection_warrior );
 
-      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
       {
         // TODO IF HAS SET BONUS FOR COLOSSUS
         if( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
@@ -2316,10 +2313,7 @@ struct rend_t : public warrior_attack_t
     hasted_ticks  = true;
     rend_dot      = new rend_dot_t( p );
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -2629,10 +2623,7 @@ struct bloodthirst_t : public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
     if ( p->talents.fury.fresh_meat->ok() )
     {
@@ -2680,10 +2671,7 @@ struct bloodthirst_t : public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
     if ( p->talents.fury.fresh_meat->ok() )
     {
@@ -2888,10 +2876,7 @@ struct bloodbath_t : public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
     if ( p->talents.fury.deft_experience->ok() )
     {
@@ -2947,10 +2932,7 @@ struct bloodbath_t : public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
     if ( p->talents.fury.deft_experience->ok() )
     {
@@ -3515,10 +3497,7 @@ struct onslaught_t : public warrior_attack_t
     parse_options( options_str );
     weapon              = &( p->main_hand_weapon );
     radius              = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     attack_power_mod.direct = damage_spell->effectN( 1 ).ap_coeff();
   }
 
@@ -3663,10 +3642,7 @@ struct slam_t : public warrior_attack_t
     radius = 5;
     if ( player->specialization() == WARRIOR_FURY )
     {
-      if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-        base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-      else
-        base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     }
   }
 
@@ -3679,10 +3655,7 @@ struct slam_t : public warrior_attack_t
     radius = 5;
     if ( player->specialization() == WARRIOR_FURY )
     {
-      if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-        base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-      else
-        base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     }
   }
 
@@ -4808,10 +4781,7 @@ struct execute_main_hand_t : public warrior_attack_t
     dual   = true;
     weapon = &( p->main_hand_weapon );
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -4846,10 +4816,7 @@ struct execute_off_hand_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     weapon                                       = &( p->off_hand_weapon );
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -5005,10 +4972,7 @@ struct hamstring_t : public warrior_attack_t
     weapon = &( p->main_hand_weapon );
 
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -5157,10 +5121,7 @@ struct impending_victory_t : public warrior_attack_t
       impending_victory_heal = new impending_victory_heal_t( p );
     }
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -5332,10 +5293,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     background = true;
 
     //base_multiplier *= 1.0 + p->talents.cruelty->effectN( 1 ).percent();
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -5517,10 +5475,7 @@ struct crushing_blow_attack_t : public warrior_attack_t
     dual                                         = true;
     background = true;
 
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -5701,8 +5656,6 @@ struct shattering_throw_damage_t : public warrior_attack_t
     ignores_armor = true;
     may_crit = false;
     may_dodge = may_parry = may_block = false;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      attack_power_mod.direct = 1.0;
   }
 };
 
@@ -6097,10 +6050,7 @@ struct rampage_attack_t : public warrior_attack_t
   {
     background = true;
     dual = true;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     if ( p->talents.fury.rampage->effectN( 2 ).trigger() == rampage )
       first_attack = true;
   }
@@ -6735,10 +6685,7 @@ struct shield_slam_t : public warrior_attack_t
       rage_gain += p->talents.colossus.practiced_strikes->effectN( 3 ).resource( RESOURCE_RAGE );
 
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
 
     if ( p->talents.protection.violent_outburst->ok() )
     {
@@ -7031,10 +6978,7 @@ struct victory_rush_t : public warrior_attack_t
     cooldown->duration = timespan_t::from_seconds( 1000.0 );
 
     radius = 5;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 3 ).percent();
-    else
-      base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
+    base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
   int n_targets() const override
@@ -7360,8 +7304,6 @@ struct wrecking_throw_damage_t : public warrior_attack_t
     ignores_armor = true;
     may_crit = false;
     may_dodge = may_parry = may_block = false;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-      attack_power_mod.direct = 1.0;
   }
 };
 
@@ -8658,17 +8600,11 @@ void warrior_t::init_spells()
       talents.protection.sudden_death->internal_cooldown();
   cooldown.sudden_death_icd->duration       = talents.arms.sudden_death->internal_cooldown();
   cooldown.tough_as_nails_icd               = get_cooldown( "tough_as_nails" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-    cooldown.tough_as_nails_icd -> duration = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
-  else
-    cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
+  cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails-> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
   cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
-  if ( sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
-    cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
-  else
-    cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->internal_cooldown();
+  cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->internal_cooldown();
   cooldown.reap_the_storm_icd               = get_cooldown( "reap_the_storm" );
   cooldown.reap_the_storm_icd -> duration   = talents.slayer.reap_the_storm->internal_cooldown();
   cooldown.demolish                         = get_cooldown( "demolish" );
