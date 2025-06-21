@@ -10651,6 +10651,14 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
   action.apply_affecting_aura( talents.colossus.no_stranger_to_pain );
 
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
+    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+    {
+      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B2 ) );
+    }
+  }
+
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
 
