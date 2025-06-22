@@ -1286,7 +1286,7 @@ struct mindgames_t final : public priest_spell_t
 
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+      if ( priest().shadow_weaving_active_dots( target, id ) < 3.0 )
       {
         priest().procs.mindgames_casts_no_mastery->occur();
       }
@@ -4840,13 +4840,19 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
   }
 }
 
-int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
+double priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
 {
-  int dots = 0;
+  double dots = 0.0;
 
   if ( buffs.voidform->check() )
   {
-    dots = 3;
+    dots = 3.0;
+
+    // Voidform gets this benefit automatically - 6/22/2025
+    if ( talents.shadow.madness_weaving.enabled() )
+    {
+      dots += talents.shadow.madness_weaving->effectN( 1 ).percent();
+    }
   }
   else
   {
@@ -4863,6 +4869,11 @@ int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned
       bool dp_ticking  = ( spell_id == dot_spells.devouring_plague->id() ) || dp->is_ticking();
 
       dots = swp_ticking + vt_ticking + dp_ticking;
+
+      if ( dp_ticking && talents.shadow.madness_weaving.enabled() )
+      {
+        dots += talents.shadow.madness_weaving->effectN( 1 ).percent();
+      }
     }
   }
 
@@ -4877,9 +4888,9 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   {
     auto dots = shadow_weaving_active_dots( target, spell_id );
 
-    if ( dots > 0 )
+    if ( dots > 0.0 )
     {
-      multiplier *= 1 + dots * cache.mastery_value();
+      multiplier *= 1.0 + dots * cache.mastery_value();
     }
   }
 

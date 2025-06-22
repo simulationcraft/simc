@@ -1582,7 +1582,7 @@ struct void_torrent_t final : public priest_spell_t
       priest().buffs.dark_evangelism->trigger();
     }
 
-    if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+    if ( priest().shadow_weaving_active_dots( target, id ) < 3.0 )
     {
       priest().procs.void_torrent_ticks_no_mastery->occur();
     }

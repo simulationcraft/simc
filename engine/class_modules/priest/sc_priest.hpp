@@ -1064,7 +1064,7 @@ public:
   void refresh_insidious_ire_buff( action_state_t* s );
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
-  int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
+  double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
   spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet();
