@@ -5155,12 +5155,12 @@ class TraitGenerator(DataGenerator):
         }
         self._out.write('#define MAX_HERO_TREES_PER_CLASS (%u)\n\n' % (max(len(v) for v in ht_per_class.values())))
 
-        typename = 'std::tuple<unsigned, std::string, unsigned>'
-        length = len(subtrees)
-        array = 'trait_sub_tree'
-        self._out.write('// Hero Trees, wow build {}\n'.format(self._options.build))
-        self._out.write('static constexpr std::array<{}, {}> __{}_data {{ {{\n'.format(
-            typename, length, self.format_str(array)))
+        self.output_header(
+            header='Hero trees',
+            type='std::tuple<unsigned, std::string, unsigned>',
+            array='trait_sub_tree',
+            length=len(subtrees)
+        )
 
         for e in sorted(subtrees):
             ttid = self.db('TraitSubTree')[e].id_trait_tree
@@ -5176,6 +5176,20 @@ class TraitGenerator(DataGenerator):
                                 '{}'.format(class_id)])
 
         self.output_footer()
+
+        self._out.write('static constexpr unsigned __{}_data[{}][2] = {{\n'.format(self.format_str('trait_sub_tree_map'), len(subtrees)))
+        for e in sorted(subtrees):
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self._out.write('  {{ {}, {} }},\n'.format(e, class_id))
+
+        self._out.write('};')
 
         """
         print(
