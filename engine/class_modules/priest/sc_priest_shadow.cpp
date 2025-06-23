@@ -2058,17 +2058,6 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     return target_list.size();
   }
 
-  std::vector<player_t*>& target_list() const override
-  {
-    target_cache.is_valid = false;
-
-    std::vector<player_t*>& tl = priest_spell_t::target_list();
-
-    range::erase_remove( tl, target );
-
-    return tl;
-  }
-
   void execute() override
   {
     // Ensures that target_list is regenerated to remove the main target
