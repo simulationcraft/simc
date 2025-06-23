@@ -2048,28 +2048,29 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     radius                     = _radius;
   }
 
-  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    priest_spell_t::available_targets( target_list );
+    // base action_t::available_targets with main target removed.
+    tl.clear();
 
-    // Remove the main target, this only hits everything else in range.
-    range::erase_remove( target_list, target );
-
-    return target_list.size();
-  }
-
-  void execute() override
-  {
-    // Ensures that target_list is regenerated to remove the main target
-    target_cache.is_valid = false;
-
-    // Don't trigger this in pure single target
-    if ( target_list().size() == 0 )
+    for ( auto* t : sim->target_non_sleeping_list )
     {
-      return;
+      if ( t->is_enemy() && ( t != target ) )
+      {
+        tl.push_back( t );
+      }
     }
 
-    priest_spell_t::execute();
+    if ( sim->debug && !sim->distance_targeting_enabled )
+    {
+      sim->print_debug( "{} regenerated target cache for {} ({})", *player, signature_str, *this );
+      for ( size_t i = 0; i < tl.size(); i++ )
+      {
+        sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
+      }
+    }
+
+    return tl.size();
   }
 
   bool insidious_ire_active() const
@@ -2138,10 +2139,18 @@ struct void_volley_t final : public priest_spell_t
     make_repeating_event(
         sim, 50_ms, [ this ] { void_volley_damage->execute(); }, as<int>( data().effectN( 1 ).base_value() ) );
 
+    if ( void_volley_damage_aoe->target != s->target )
+    {
+      void_volley_damage_aoe->target = s->target;
+      // Invalidate the cache if the target has been changed.
+      void_volley_damage_aoe->target_cache.is_valid = false;
+    }
     // fire s3 bolts at secondary targets with s1 radius
-    void_volley_damage_aoe->target = s->target;
-    make_repeating_event(
-        sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+    if ( void_volley_damage_aoe->target_list().size() > 0 )
+    {
+      make_repeating_event(
+          sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+    }
   }
 };
 
