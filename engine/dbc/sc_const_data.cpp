@@ -843,7 +843,8 @@ namespace
 {
 struct hero_tree_index_map_t
 {
-  std::array <int8_t, std::size( __trait_sub_tree_map_data ) + 1> data;
+  std::array<int8_t, hero_talent_e::HERO_MAX> data;
+
 private:
   std::array<int8_t, MAX_SPEC_CLASS> classes;
 
@@ -852,8 +853,9 @@ public:
   {
     for ( size_t hero = 0; hero < std::size( __trait_sub_tree_map_data ); hero++ )
     {
-      unsigned int class_index = __trait_sub_tree_map_data[hero][1];
-      data[ hero ]         = classes[ class_index ];
+      size_t hero_index  = __trait_sub_tree_map_data[ hero ][ 0 ];
+      size_t class_index = __trait_sub_tree_map_data[ hero ][ 1 ];
+      data[ hero_index ] = classes[ class_index ];
       classes[ class_index ]++;
     }
   }
