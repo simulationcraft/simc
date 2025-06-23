@@ -1660,6 +1660,11 @@ struct void_torrent_t final : public priest_spell_t
 
     priest().buffs.void_torrent->trigger();
     priest().buffs.overflowing_void->expire();
+
+    if ( priest().talents.shadow.void_volley.enabled() )
+    {
+      priest().buffs.void_volley->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1994,6 +1999,137 @@ struct shadow_crash_t final : public shadow_crash_base_t
     }
 
     priest_spell_t::impact( s );
+  }
+};
+
+// ==========================================================================
+// Void Volley
+// buff - 1242171
+// missile - 1242173
+// damage - 1242189
+// ==========================================================================
+struct void_volley_damage_t final : public priest_spell_t
+{
+  void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;  // TODO: confirm this
+  }
+
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_ta_multiplier( s );
+
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
+struct void_volley_damage_aoe_t final : public priest_spell_t
+{
+  void_volley_damage_aoe_t( util::string_view n, priest_t& p, const spell_data_t* s, double _radius )
+    : priest_spell_t( n, p, s )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;  // TODO: confirm this
+    aoe                        = -1;
+    radius                     = _radius;
+  }
+
+  // Ignore the main target
+  std::vector<player_t*>& target_list() const override
+  {
+    target_cache.is_valid = false;
+
+    std::vector<player_t*>& tl = priest_spell_t::target_list();
+
+    range::erase_remove( tl, target );
+
+    return tl;
+  }
+
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_ta_multiplier( s );
+
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
+struct void_volley_t final : public priest_spell_t
+{
+  propagate_const<void_volley_damage_t*> void_volley_damage;
+  propagate_const<void_volley_damage_aoe_t*> void_volley_damage_aoe;
+
+  void_volley_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "void_volley", p, p.talents.shadow.void_volley_missile ), void_volley_damage( nullptr )
+  {
+    parse_options( options_str );
+
+    void_volley_damage     = new void_volley_damage_t( name_str + "_damage", p, p.talents.shadow.void_volley_damage );
+    void_volley_damage_aoe = new void_volley_damage_aoe_t(
+        name_str + "_damage_aoe", p, p.talents.shadow.void_volley_damage, data().effectN( 1 ).radius_max() );
+    add_child( void_volley_damage );
+    add_child( void_volley_damage_aoe );
+
+    may_miss = false;
+  }
+
+  bool ready() override
+  {
+    if ( !priest().buffs.void_volley->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.void_volley->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest().spawn_idol_of_cthun( s );
+
+    // fire s1 bolts at main target
+    void_volley_damage->target = s->target;
+    make_repeating_event(
+        sim, 50_ms, [ this ] { void_volley_damage->execute(); }, as<int>( data().effectN( 1 ).base_value() ) );
+
+    // fire s3 bolts at secondary targets with s1 radius
+    void_volley_damage_aoe->target = s->target;
+    make_repeating_event(
+        sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
   }
 };
 
@@ -2404,9 +2540,9 @@ void priest_t::create_buffs_shadow()
   buffs.last_shadowy_apparition_crit =
       make_buff( this, "last_shadowy_apparition_crit" )->set_quiet( true )->set_duration( 0_s )->set_max_stack( 1 );
 
-  // Idol of Y'Shaarj
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
+    // Idol of Y'Shaarj
     buffs.call_of_the_void = make_buff( this, "call_of_the_void", talents.shadow.call_of_the_void )
                                  ->set_default_value_from_effect( 1 )
                                  ->add_invalidate( CACHE_HASTE )
@@ -2423,6 +2559,9 @@ void priest_t::create_buffs_shadow()
     buffs.shattered_psyche =
         make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
             ->set_default_value_from_effect( 1 );
+
+    buffs.void_volley = make_buff(
+        this, "void_volley", talents.shadow.void_volley_buff );  // tracking buff for when void volley is available
   }
 
   // Tier Sets
@@ -2572,9 +2711,12 @@ void priest_t::init_spells_shadow()
 
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
-    talents.shadow.madness_weaving = ST( "Madness Weaving" );
-    talents.shadow.deaths_torment  = ST( "Death's Torment" );
-    talents.shadow.void_volley     = ST( "Void Volley" );
+    talents.shadow.madness_weaving     = ST( "Madness Weaving" );
+    talents.shadow.deaths_torment      = ST( "Death's Torment" );
+    talents.shadow.void_volley         = ST( "Void Volley" );
+    talents.shadow.void_volley_buff    = find_spell( 1242171 );
+    talents.shadow.void_volley_missile = find_spell( 1242173 );
+    talents.shadow.void_volley_damage  = find_spell( 1242189 );
   }
 
   // Row 10
@@ -2726,6 +2868,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "dark_ascension" )
   {
     return new dark_ascension_t( *this, options_str );
+  }
+  if ( name == "void_volley" )
+  {
+    return new void_volley_t( *this, options_str );
   }
 
   return nullptr;

@@ -245,6 +245,7 @@ public:
     propagate_const<buff_t*> call_of_the_void;
     propagate_const<buff_t*> overburdened_mind;
     propagate_const<buff_t*> shattered_psyche;
+    propagate_const<buff_t*> void_volley;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -423,6 +424,9 @@ public:
       player_talent_t insidious_ire;
       player_talent_t malediction;
       player_talent_t void_volley;
+      const spell_data_t* void_volley_buff;
+      const spell_data_t* void_volley_missile;
+      const spell_data_t* void_volley_damage;
       // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* devoured_pride;
