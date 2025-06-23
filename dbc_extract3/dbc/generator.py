@@ -5142,15 +5142,38 @@ class TraitGenerator(DataGenerator):
             array = 'trait_spell')
 
         # Hero trees
-        self.output_header(
-            header='Hero trees',
-            type='std::pair<unsigned, std::string>',
-            array='trait_sub_tree',
-            length=len(subtrees)
-        )
+        ht_per_class = {
+            class_.id: {
+                tst_id
+                for tst_id in sorted(subtrees)
+                if ( ttid := self.db('TraitSubTree')[tst_id].id_trait_tree )
+                for ttl in self.db('TraitTreeLoadout').values()
+                if ttl.id_trait_tree == ttid
+                if ttl.ref('id_spec').class_id == class_.id
+            }
+            for class_ in self.db('ChrClasses').values()
+        }
+        self._out.write('#define MAX_HERO_TREES_PER_CLASS (%u)\n\n' % (max(len(v) for v in ht_per_class.values())))
+
+        typename = 'std::tuple<unsigned, std::string, unsigned>'
+        length = len(subtrees)
+        array = 'trait_sub_tree'
+        self._out.write('// Hero Trees, wow build {}\n'.format(self._options.build))
+        self._out.write('static constexpr std::array<{}, {}> __{}_data {{ {{\n'.format(
+            typename, length, self.format_str(array)))
 
         for e in sorted(subtrees):
-            self.output_record([str(e), '"{}"'.format(self.db('TraitSubTree')[e].name)])
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self.output_record([str(e),
+                                '"{}"'.format(self.db('TraitSubTree')[e].name),
+                                '{}'.format(class_id)])
 
         self.output_footer()
 

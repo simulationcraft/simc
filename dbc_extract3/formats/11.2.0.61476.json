@@ -215,7 +215,8 @@
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "H", "field": "cinematic_sequence_id" },
       { "data_type": "H", "field": "default_spec" },
-      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "id" },
+      { "data_type": "B", "field": "has_strength_attack_bonus" },
       { "data_type": "B", "field": "primary_stat_priority" },
       { "data_type": "B", "field": "display_power" },
       { "data_type": "B", "field": "ranged_attack_power_per_agility" },
@@ -224,7 +225,10 @@
       { "data_type": "B", "field": "spell_class_set" },
       { "data_type": "B", "field": "chat_color_r" },
       { "data_type": "B", "field": "chat_color_g" },
-      { "data_type": "B", "field": "chat_color_b" }
+      { "data_type": "B", "field": "chat_color_b" },
+      { "data_type": "B", "field": "unk_5" },
+      { "data_type": "B", "field": "unk_6" },
+      { "data_type": "B", "field": "unk_7"}
     ]
   },
   "ChrSpecialization": {
@@ -2090,5 +2094,3 @@
     ]
   }
 }
-
-
