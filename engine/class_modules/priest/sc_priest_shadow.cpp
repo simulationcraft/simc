@@ -2048,7 +2048,16 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     radius                     = _radius;
   }
 
-  // Ignore the main target
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    priest_spell_t::available_targets( target_list );
+
+    // Remove the main target, this only hits everything else in range.
+    range::erase_remove( target_list, target );
+
+    return target_list.size();
+  }
+
   std::vector<player_t*>& target_list() const override
   {
     target_cache.is_valid = false;
@@ -2058,6 +2067,20 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
     range::erase_remove( tl, target );
 
     return tl;
+  }
+
+  void execute() override
+  {
+    // Ensures that target_list is regenerated to remove the main target
+    target_cache.is_valid = false;
+
+    // Don't trigger this in pure single target
+    if ( target_list().size() == 0 )
+    {
+      return;
+    }
+
+    priest_spell_t::execute();
   }
 
   bool insidious_ire_active() const
