@@ -17,8 +17,9 @@ set_bonus_t::set_bonus_t( player_t* player )
 {
   for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
-    set_bonus_spec_data[ i ].resize( actor->dbc->specialization_max_per_class() );
-    set_bonus_spec_count[ i ].resize( actor->dbc->specialization_max_per_class() );
+    unsigned index_count = actor->dbc->specialization_max_per_class() + actor->dbc->hero_trees_max_per_class();
+    set_bonus_spec_data[ i ].resize( index_count );
+    set_bonus_spec_count[ i ].resize( index_count );
     // For now only 2, and 4 set bonuses
     for ( size_t j = 0; j < set_bonus_spec_data[ i ].size(); j++ )
     {
@@ -66,8 +67,9 @@ set_bonus_t::set_bonus_t( player_t* player )
     {
       assert( bonus.spec > 0 );
       specialization_e spec = static_cast<specialization_e>( bonus.spec );
+      hero_talent_e hero_talent = bonus.trait_sub_tree != -1 ? static_cast<hero_talent_e>( bonus.trait_sub_tree ) : HERO_NONE;
 
-      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].bonus = &bonus;
+      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) + dbc::hero_idx( hero_talent ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
   }
 }
