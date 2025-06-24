@@ -261598,15 +261598,18 @@ Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Criti
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 61705.98 (coefficient=24.125) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23448.27 (coefficient=9.167499) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (24.124998 -> 9.167499)
 #2 (id=1232811)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 50528.88 (coefficient=19.75512) | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1232881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1048.931 (coefficient=0.273946) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1311.166 (coefficient=0.342433) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.273946 -> 0.342433)
 #4 (id=1232883)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5828.163 (coefficient=1.522123) | PvP Coefficient: 0.25 | Target: Self (1)
 #5 (id=1232886)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 384.2026 (coefficient=0.100341) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 573.2542 (coefficient=0.149715) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.100341 -> 0.149715)
 #6 (id=1232887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1232950)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
@@ -261622,7 +261625,8 @@ Effects          :
 #12 (id=1232962) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
 #13 (id=1232963) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 178212.4 (coefficient=69.67516) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 135441.4 (coefficient=52.95312) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (69.675156 -> 52.953117)
 
 Name             : Durable Information Securing Container (id=1236138) [Passive] 
 School           : Physical
