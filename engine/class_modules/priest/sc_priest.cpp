@@ -158,9 +158,10 @@ public:
       void_blast_cdr( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } ? p.find_spell( 450404 )->effectN( 3 ).percent() : 0.0 )
   {
     parse_options( options_str );
-    affected_by_shadow_weaving = true;
-    cooldown                   = p.cooldowns.mind_blast;
-    cooldown->hasted           = true;
+    affected_by_shadow_weaving   = true;
+    cooldown                     = p.cooldowns.mind_blast;
+    cooldown->hasted             = true;
+    idol_of_nzoth_execute_stacks = 6;
 
     if ( priest().talents.discipline.expiation.enabled() )
     {
@@ -924,7 +925,6 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 // Smite
 // ==========================================================================
-
 struct smite_base_t : public priest_spell_t
 {
   timespan_t train_of_thought_cdr;
@@ -1343,6 +1343,8 @@ struct summon_fiend_t final : public priest_spell_t
     parse_options( options_str );
     harmful = false;
 
+    idol_of_nzoth_execute_stacks = 5;
+
     if ( p.talents.voidweaver.voidwraith.ok() && p.talents.shared.mindbender.ok() )
     {
       cooldown->duration = p.talents.shared.mindbender->cooldown();
@@ -1596,7 +1598,8 @@ public:
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
   {
-    affected_by_shadow_weaving = true;
+    affected_by_shadow_weaving   = true;
+    idol_of_nzoth_execute_stacks = 4;
 
     if ( priest().talents.discipline.expiation.enabled() )
     {
@@ -2860,6 +2863,11 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
                                               p.talents.archon.resonant_energy_shadow );
+
+  if ( p.sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
+    buffs.horrific_visions = make_buff( *this, "horrific_visions", p.talents.shadow.horrific_visions );
+  }
 }
 
 void priest_td_t::reset()
@@ -2968,6 +2976,8 @@ void priest_t::create_gains()
   gains.shield_discipline                = get_gain( "Shield Discipline" );
   gains.ascension_tww3_2pc               = get_gain( "Ascension" );
   gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
+  gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
+  gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
 }
 
 /** Construct priest procs */

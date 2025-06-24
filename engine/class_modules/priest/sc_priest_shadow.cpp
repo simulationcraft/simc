@@ -28,6 +28,7 @@ struct mind_flay_base_t : public priest_spell_t
     may_crit                   = false;
     channeled                  = true;
     use_off_gcd                = true;
+    idol_of_nzoth_tick_stacks  = 1;
   }
 
   void tick( dot_t* d ) override
@@ -615,6 +616,11 @@ struct shadow_word_pain_t final : public priest_spell_t
       spell_power_mod.direct = 0;
     }
 
+    if ( casted )
+    {
+      idol_of_nzoth_execute_stacks = 3;
+    }
+
     // Shadow: DoT Duration increase
     apply_affecting_aura( priest().talents.shadow.misery );
     // Discipline: 8% / 15% damage increase
@@ -936,6 +942,11 @@ struct vampiric_touch_t final : public priest_spell_t
       add_child( child_ud );
     }
 
+    if ( casted )
+    {
+      idol_of_nzoth_execute_stacks = 4;
+    }
+
     // Spell Periodic Percent Increase
     apply_affecting_aura( priest().talents.shadow.maddening_touch );
   }
@@ -1069,8 +1080,9 @@ struct devouring_plague_t final : public priest_spell_t
     : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
       devouring_plague_heal( new devouring_plague_heal_t( p ) )
   {
-    may_crit                   = true;
-    affected_by_shadow_weaving = true;
+    may_crit                     = true;
+    affected_by_shadow_weaving   = true;
+    idol_of_nzoth_execute_stacks = 12;
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p )
@@ -1254,9 +1266,10 @@ struct void_bolt_base_t : public priest_spell_t
   {
     parse_options( options );
 
-    energize_type              = action_energize::ON_CAST;
-    cooldown->hasted           = true;
-    affected_by_shadow_weaving = true;
+    energize_type                = action_energize::ON_CAST;
+    cooldown->hasted             = true;
+    affected_by_shadow_weaving   = true;
+    idol_of_nzoth_execute_stacks = 10;
 
     auto rank2 = p.find_spell( 231688 );
     if ( rank2->ok() )
@@ -1416,9 +1429,10 @@ struct void_eruption_damage_t final : public priest_spell_t
   void_eruption_damage_t( priest_t& p )
     : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage )
   {
-    may_miss                   = false;
-    background                 = true;
-    affected_by_shadow_weaving = true;
+    may_miss                     = false;
+    background                   = true;
+    affected_by_shadow_weaving   = true;
+    idol_of_nzoth_execute_stacks = 5;
   }
 
   void impact( action_state_t* s ) override
@@ -1556,6 +1570,7 @@ struct void_torrent_t final : public priest_spell_t
     tick_zero                  = true;
     dot_duration               = data().duration();
     affected_by_shadow_weaving = true;
+    idol_of_nzoth_tick_stacks  = 2;
 
     // Getting insanity from the trigger spell data, base spell doesn't have it
     energize_type     = action_energize::NONE;
@@ -2109,6 +2124,7 @@ struct void_volley_t final : public priest_spell_t
         name_str + "_damage_aoe", p, p.talents.shadow.void_volley_damage, data().effectN( 1 ).radius_max() );
     add_child( void_volley_damage );
     add_child( void_volley_damage_aoe );
+    idol_of_nzoth_execute_stacks = 10;
 
     may_miss = false;
   }
@@ -2583,6 +2599,25 @@ void priest_t::create_buffs_shadow()
 
     buffs.void_volley = make_buff(
         this, "void_volley", talents.shadow.void_volley_buff );  // tracking buff for when void volley is available
+
+    buffs.horrific_vision =
+        make_buff( this, "horrific_vision", talents.shadow.horrific_vision_buff )
+            ->set_default_value_from_effect( 1 )
+            ->set_freeze_stacks( true )
+            ->set_period( talents.shadow.horrific_vision_buff->effectN( 1 ).period() )
+            ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
+              double insanity = talents.shadow.horrific_vision_buff->effectN( 1 ).resource( RESOURCE_INSANITY );
+              generate_insanity( insanity * buff->check(), gains.insanity_horrific_vision, nullptr );
+            } );
+    buffs.vision_of_nzoth =
+        make_buff( this, "vision_of_nzoth", talents.shadow.vision_of_nzoth_buff )
+            ->set_default_value_from_effect( 1 )
+            ->set_freeze_stacks( true )
+            ->set_period( talents.shadow.vision_of_nzoth_buff->effectN( 1 ).period() )
+            ->set_tick_callback( [ this ]( buff_t* buff, int, timespan_t ) {
+              double insanity = talents.shadow.vision_of_nzoth_buff->effectN( 1 ).resource( RESOURCE_INSANITY );
+              generate_insanity( insanity * buff->check(), gains.insanity_vision_of_nzoth, nullptr );
+            } );
   }
 
   // Tier Sets
@@ -2754,8 +2789,13 @@ void priest_t::init_spells_shadow()
 
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
-    talents.shadow.call_of_the_void  = find_spell( 373316 );  // Idol of Y'Shaarj positive haste buff
-    talents.shadow.overburdened_mind = find_spell( 373317 );  // Idol of Y'Shaarj negative haste buff
+    talents.shadow.call_of_the_void       = find_spell( 373316 );   // Idol of Y'Shaarj positive haste buff
+    talents.shadow.overburdened_mind      = find_spell( 373317 );   // Idol of Y'Shaarj negative haste buff
+    talents.shadow.horrific_visions       = find_spell( 1243069 );  // Idol of N'Zoth debuff
+    talents.shadow.horrific_vision_damage = find_spell( 1243105 );  // Idol of N'Zoth 50 stack damage
+    talents.shadow.vision_of_nzoth_damage = find_spell( 1243106 );  // Idol of N'Zoth 100 stack damage
+    talents.shadow.horrific_vision_buff   = find_spell( 1243113 );  // Idol of N'Zoth 50 stack buff
+    talents.shadow.vision_of_nzoth_buff   = find_spell( 1243114 );  // Idol of N'Zoth 100 stack buff
   }
 
   talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
@@ -3095,8 +3135,10 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 
 void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 {
-  if ( !talents.shadow.idol_of_nzoth.enabled() )
+  if ( !talents.shadow.idol_of_nzoth.enabled() || sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
     return;
+  }
 
   auto td = get_target_data( target );
 
@@ -3114,6 +3156,50 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
       sim->print_debug( "{} triggered echoing_void_collapse on target {} for {} stacks.", *this, target->name_str,
                         stacks );
       td->buffs.echoing_void_collapse->trigger( timespan_t::from_seconds( stacks + 1 ) );
+    }
+  }
+}
+
+void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
+{
+  if ( !talents.shadow.idol_of_nzoth.enabled() )
+  {
+    return;
+  }
+
+  auto td = get_target_data( target );
+
+  if ( !td )
+  {
+    return;
+  }
+
+  int current_stacks = td->buffs.horrific_visions->check();
+  td->buffs.horrific_visions->trigger( stacks );
+
+  if ( current_stacks )
+  {
+    // TODO: use spelldata for these
+    // calculate number of stacks in total we would have
+    int new_stacks = current_stacks + stacks;
+    if ( current_stacks < 50 && new_stacks >= 50 )
+    {
+      // TODO: trigger damage
+      buffs.horrific_vision->trigger();
+    }
+    else if ( current_stacks < 100 && new_stacks >= 100 )
+    {
+      // clear out old stacks
+      td->buffs.horrific_visions->expire();
+
+      // TODO: trigger damage
+      buffs.vision_of_nzoth->trigger();
+
+      int leftover_stacks = new_stacks - 100;
+      if ( leftover_stacks > 0 )
+      {
+        td->buffs.horrific_visions->trigger( leftover_stacks );
+      }
     }
   }
 }
