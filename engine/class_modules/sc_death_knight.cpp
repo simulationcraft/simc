@@ -761,6 +761,8 @@ public:
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frozen_dominion;
     buff_t* cryogenic_chamber;
+    buff_t* cryogenic_chamber_remorseless_winter;
+    
     // Tier Sets
     propagate_const<buff_t*> icy_vigor;
     propagate_const<buff_t*> winning_streak_frost;
@@ -910,6 +912,7 @@ public:
     propagate_const<action_t*> frostscythe_proc;
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
+    propagate_const<action_t*> cryogenic_chamber_remorseless_winter;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1159,7 +1162,6 @@ public:
       player_talent_t killing_machine;
       player_talent_t empower_rune_weapon;
       player_talent_t frostscythe;
-      player_talent_t everfrost;
       // Row 4
       player_talent_t arctic_assault;
       player_talent_t runic_overflow;
@@ -1176,13 +1178,14 @@ public:
       player_talent_t howling_blades;
       player_talent_t inexorable_assault;
       player_talent_t enduring_strength;
-      player_talent_t rage_of_the_frozen_champion;
-      player_talent_t frigid_executioner;
       player_talent_t frostwyrms_fury;
+      player_talent_t frigid_executioner;
       // Row 7
       player_talent_t murderous_efficiency;
-      player_talent_t frozen_dominion;
       player_talent_t cryogenic_chamber;
+      player_talent_t rage_of_the_frozen_champion;
+      player_talent_t frozen_dominion;
+      player_talent_t everfrost;
       // Row 8
       player_talent_t bonegrinder;
       player_talent_t smothering_offense;
@@ -1407,6 +1410,7 @@ public:
     const spell_data_t* icy_onslaught_buff;
     const spell_data_t* first_howling_blades_damage;
     const spell_data_t* second_howling_blades_damage;
+    const spell_data_t* cryogenic_chamber_remorseless_winter_buff;
     // Tier Sets
     const spell_data_t* icy_vigor;
     const spell_data_t* winning_streak_frost;
@@ -7782,6 +7786,14 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
     return 0;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    p()->buffs.rime->trigger(
+        1, buff_t::DEFAULT_VALUE(),
+        p()->spec.rime->effectN( 1 ).percent() + p()->talent.frost.rage_of_the_frozen_champion->effectN( 2 ).percent() );
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
@@ -9380,6 +9392,8 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     {
       p()->buffs.winning_streak_frost->expire();
     }
+
+    p()->buffs.rime->trigger();
   }
 
 private:
@@ -9507,6 +9521,8 @@ struct glacial_advance_t final : public death_knight_spell_t
                              p()->gains.obliteration );
       }
     }
+
+    p()->buffs.rime->trigger();
   }
 };
 
@@ -9841,6 +9857,10 @@ struct howling_blast_t final : public death_knight_spell_t
       {
         m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
       }
+    }
+    if ( !p()->bugs && p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() && this->target != t )
+    {
+      m *= 1.0 + p()->talent.frost.everfrost->effectN( 2 ).percent();
     }
 
     return m;
@@ -10194,7 +10214,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
         make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_oh : oh,
                                              execute_state->target, oh_delay );
 
-      p()->buffs.rime->trigger();
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -10311,6 +10330,11 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->buffs.pillar_of_frost->trigger();
+
+    if ( p()->talent.frost.cryogenic_chamber->ok() )
+    {
+      p()->background_actions.cryogenic_chamber_remorseless_winter->execute();
+    }
   }
 
 private:
@@ -10372,8 +10396,8 @@ struct raise_dead_t final : public death_knight_summon_spell_t
 
 struct remorseless_winter_damage_t final : public death_knight_spell_t
 {
-  remorseless_winter_damage_t( std::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spec.remorseless_winter->effectN( 2 ).trigger() ),
+  remorseless_winter_damage_t( std::string_view n, death_knight_t* p, const spell_data_t* data )
+    : death_knight_spell_t( n, p, data ),
       biting_cold_target_threshold( 0 ),
       triggered_biting_cold( false )
   {
@@ -10417,41 +10441,62 @@ public:
   bool triggered_biting_cold;
 };
 
-struct remorseless_winter_t final : public death_knight_spell_t
+struct remorseless_winter_base_t : public death_knight_spell_t
 {
-  remorseless_winter_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "remorseless_winter", p, p->spec.remorseless_winter ),
-      damage( p->background_actions.remorseless_winter_tick )
+  remorseless_winter_base_t( std::string_view name, death_knight_t* p, const spell_data_t* data, buff_t* remorseless_winter_buff )
+    : death_knight_spell_t( name, p, data ),
+      damage( p->background_actions.remorseless_winter_tick ),
+      remorseless_winter_buff( remorseless_winter_buff )
   {
     may_miss = may_dodge = may_parry = false;
 
-    parse_options( options_str );
-
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
-    if ( p->spec.remorseless_winter->ok() )
-    {
+    if ( p->spec.remorseless_winter->ok() || p->talent.frost.cryogenic_chamber->ok() )
       add_child( damage );
-    }
-    if ( p->talent.frost.cryogenic_chamber.ok() )
-    {
-      add_child( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) );
-    }
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
     debug_cast<remorseless_winter_damage_t*>( damage )->triggered_biting_cold = false;
-    p()->buffs.remorseless_winter->trigger();
+    remorseless_winter_buff->trigger();
+  }
+
+private:
+  action_t*& damage;
+  buff_t* remorseless_winter_buff;
+};
+
+struct cryogenic_chamber_remorseless_winter_t final : public remorseless_winter_base_t
+{
+  cryogenic_chamber_remorseless_winter_t( std::string_view name, death_knight_t* p )
+    : remorseless_winter_base_t( name, p,
+                                 p->spell.cryogenic_chamber_remorseless_winter_buff, p->buffs.cryogenic_chamber_remorseless_winter )
+  {
+    background = true;
+
+    if ( p->talent.frost.cryogenic_chamber.ok() )
+      add_child( get_action<cryogenic_chamber_t>( "cryogenic_chamber", p ) );
+  }
+
+  void execute() override
+  {
+    remorseless_winter_base_t::execute();
     if ( p()->talent.frost.cryogenic_chamber.ok() && p()->buffs.cryogenic_chamber->check() )
     {
       p()->buffs.cryogenic_chamber->expire();
     }
   }
+};
 
-private:
-  action_t*& damage;
+struct remorseless_winter_t final : public remorseless_winter_base_t
+{
+  remorseless_winter_t( death_knight_t* p, std::string_view options_str )
+    : remorseless_winter_base_t( "remorseless_winter", p, p->spec.remorseless_winter, p->buffs.remorseless_winter )
+  {
+    parse_options( options_str );
+  }
 };
 
 // Sacrificial Pact =========================================================
@@ -12819,10 +12864,13 @@ void death_knight_t::create_actions()
           get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", this );
     }
 
-    if ( spec.remorseless_winter->ok() )
+    if ( spec.remorseless_winter->ok() || talent.frost.cryogenic_chamber->ok() )
     {
+      const spell_data_t* rw_data = spec.remorseless_winter->ok()
+                                        ? spec.remorseless_winter->effectN( 2 ).trigger()
+                                        : spell.cryogenic_chamber_remorseless_winter_buff->effectN( 2 ).trigger();
       background_actions.remorseless_winter_tick =
-          get_action<remorseless_winter_damage_t>( "remorseless_winter_damage", this );
+          get_action<remorseless_winter_damage_t>( "remorseless_winter_damage", this, rw_data );
     }
 
     if ( talent.frost.frost_strike.ok() )
@@ -12856,18 +12904,26 @@ void death_knight_t::create_actions()
       }
     }
 
-    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
-    {
-      background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
-    }
     if ( talent.frost.empower_rune_weapon.ok() )
     {
       background_actions.erw_projectile =
           get_action<empower_rune_weapon_projectile_t>( "empower_rune_weapon_projectile", this );
     }
+
     if ( talent.frost.frostreaper.ok() )
     {
       background_actions.frostreaper = get_action<frostreaper_t>( "frostreaper", this );
+    }
+
+    if ( talent.frost.cryogenic_chamber->ok() )
+    {
+      background_actions.cryogenic_chamber_remorseless_winter =
+          get_action<cryogenic_chamber_remorseless_winter_t>( "remorseless_winter", this );
+    }
+
+    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
+    {
+      background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
     }
   }
 
@@ -13529,16 +13585,15 @@ void death_knight_t::init_spells()
   talent.frost.obliterate    = find_talent_spell( talent_tree::SPECIALIZATION, "Obliterate" );
   talent.frost.howling_blast = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blast" );
   // Row 3
-  talent.frost.killing_machine = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Machine" );
+  talent.frost.killing_machine     = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Machine" );
   talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
   talent.frost.frostscythe         = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
-  talent.frost.everfrost       = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   // Row 4
-  talent.frost.arctic_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
-  talent.frost.runic_overflow   = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Overflow" );
-  talent.frost.frostbound_will  = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbound Will" );
-  talent.frost.runic_command    = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
-  talent.frost.biting_cold      = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
+  talent.frost.arctic_assault  = find_talent_spell( talent_tree::SPECIALIZATION, "Arctic Assault" );
+  talent.frost.runic_overflow  = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Overflow" );
+  talent.frost.frostbound_will = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbound Will" );
+  talent.frost.runic_command   = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
+  talent.frost.biting_cold     = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   // Row 5
   talent.frost.runic_strikes   = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Strikes" );
   talent.frost.frostreaper     = find_talent_spell( talent_tree::SPECIALIZATION, "Frostreaper" );
@@ -13546,18 +13601,18 @@ void death_knight_t::init_spells()
   talent.frost.icy_onslaught   = find_talent_spell( talent_tree::SPECIALIZATION, "Icy Onslaught" );
   talent.frost.gathering_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
   // Row 6
-  talent.frost.howling_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blades" );
+  talent.frost.howling_blades     = find_talent_spell( talent_tree::SPECIALIZATION, "Howling Blades" );
   talent.frost.inexorable_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
-  talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.frostwyrms_fury   = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
+  talent.frost.enduring_strength  = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
+  talent.frost.frostwyrms_fury    = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   talent.frost.frigid_executioner = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
-
-  talent.frost.rage_of_the_frozen_champion =
-      find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
-  talent.frost.frozen_dominion      = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Dominion" );
   talent.frost.cryogenic_chamber    = find_talent_spell( talent_tree::SPECIALIZATION, "Cryogenic Chamber" );
+  talent.frost.rage_of_the_frozen_champion =
+      find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
+  talent.frost.everfrost       = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
+  talent.frost.frozen_dominion = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Dominion" );
   // Row 8
   talent.frost.bonegrinder        = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
   talent.frost.smothering_offense = find_talent_spell( talent_tree::SPECIALIZATION, "Smothering Offense" );
@@ -13754,7 +13809,7 @@ void death_knight_t::spell_lookups()
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
-  spell.rage_of_the_frozen_champion = conditional_spell_lookup( talent.frost.rage_of_the_frozen_champion.ok(), 341725 );
+  spell.rage_of_the_frozen_champion = conditional_spell_lookup( talent.frost.rage_of_the_frozen_champion.ok(), 377077 );
   spell.runic_empowerment_chance    = conditional_spell_lookup( spec.frost_death_knight->ok(), 81229 );
   spell.gathering_storm_buff        = conditional_spell_lookup( talent.frost.gathering_storm.ok(), 211805 );
   spell.inexorable_assault_buff     = conditional_spell_lookup( talent.frost.inexorable_assault.ok(), 253595 );
@@ -13789,6 +13844,7 @@ void death_knight_t::spell_lookups()
   spell.icy_onslaught_buff           = conditional_spell_lookup( talent.frost.icy_onslaught.ok(), 1230273 );
   spell.first_howling_blades_damage  = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231083 );
   spell.second_howling_blades_damage = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231082 );
+  spell.cryogenic_chamber_remorseless_winter_buff = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 1233152 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
@@ -14673,7 +14729,7 @@ void death_knight_t::create_buffs()
                                                                  "pillar_of_frost", talent.frost.pillar_of_frost );
 
   buffs.remorseless_winter =
-      make_fallback( spec.remorseless_winter->ok(), this, "remorseless_winter", spec.remorseless_winter )
+      make_fallback( spec.remorseless_winter->ok() && !talent.frost.cryogenic_chamber->ok(), this, "remorseless_winter", spec.remorseless_winter )
           ->set_cooldown( 0_ms )  // Handled by the action
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_partial_tick( true )
@@ -14683,6 +14739,26 @@ void death_knight_t::create_buffs()
             if ( !new_ )
             {
               buffs.gathering_storm->expire();
+            }
+            else
+            {
+              debug_cast<remorseless_winter_damage_t*>( background_actions.remorseless_winter_tick )
+                  ->triggered_biting_cold = false;
+            }
+          } );
+
+  buffs.cryogenic_chamber_remorseless_winter =
+      make_fallback( talent.frost.cryogenic_chamber->ok(), this, "remorseless_winter", spell.cryogenic_chamber_remorseless_winter_buff )
+          ->set_cooldown( 0_ms )  // Handled by the action
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_partial_tick( true )
+          ->set_tick_callback(
+              [ this ]( buff_t*, int, timespan_t ) { background_actions.remorseless_winter_tick->execute(); } )
+          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+            if ( !new_ )
+            {
+              // 11.2 TODO Gathering Storm is bugged with CC
+              // buffs.gathering_storm->expire();
             }
             else
             {
@@ -15598,6 +15674,8 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->talent.frost.smothering_offense );
   parse_effects( p()->buffs.winning_streak_frost, p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 ) );
   parse_effects( p()->buffs.icy_onslaught );
+  parse_effects( p()->buffs.remorseless_winter, p()->talent.cleaving_strikes );
+  parse_effects( p()->buffs.cryogenic_chamber_remorseless_winter, p()->talent.cleaving_strikes );
 
 
   // Unholy

@@ -1,4 +1,27 @@
 {
+  "Achievement": {
+    "fields": [
+      { "data_type": "S", "field": "description" },
+      { "data_type": "S", "field": "title" },
+      { "data_type": "S", "field": "reward" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "h", "field": "id_instance" },
+      { "data_type": "b", "field": "faction" },
+      { "data_type": "i", "field": "supercedes" },
+      { "data_type": "h", "field": "category" },
+      { "data_type": "b", "field": "minimum_criteria" },
+      { "data_type": "b", "field": "points" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "h", "field": "ui_order" },
+      { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "i", "field": "id_reward_item" },
+      { "data_type": "I", "field": "criteria_tree" },
+      { "data_type": "h", "field": "shares_criteria" },
+      { "data_type": "i", "field": "id_covenant" },
+      { "data_type": "i", "field": "hidden_before_display_season" },
+      { "data_type": "i", "field": "legacy_after_time_event" }
+    ]
+  },
   "ArmorLocation": {
     "fields": [
       { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3ff" } },

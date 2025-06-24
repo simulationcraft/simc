@@ -70,6 +70,8 @@ struct entropic_rift_t;
 struct entropic_rift_damage_t;
 struct collapsing_void_damage_t;
 struct halo_t;
+struct horrific_vision_t;
+struct vision_of_nzoth_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -112,6 +114,7 @@ public:
     propagate_const<buff_t*> psychic_horror;
     buff_t* atonement;
     propagate_const<buff_t*> resonant_energy;
+    propagate_const<buff_t*> horrific_visions;
   } buffs;
 
   priest_t& priest()
@@ -246,6 +249,8 @@ public:
     propagate_const<buff_t*> overburdened_mind;
     propagate_const<buff_t*> shattered_psyche;
     propagate_const<buff_t*> void_volley;
+    propagate_const<buff_t*> horrific_vision;
+    propagate_const<buff_t*> vision_of_nzoth;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -441,6 +446,11 @@ public:
       player_talent_t idol_of_cthun;
       const spell_data_t* echoing_void;
       const spell_data_t* echoing_void_debuff;
+      const spell_data_t* horrific_visions;        // enemy debuff
+      const spell_data_t* horrific_vision_damage;  // 50 stack damage
+      const spell_data_t* vision_of_nzoth_damage;  // 100 stack damage
+      const spell_data_t* horrific_vision_buff;    // 50 stack buff
+      const spell_data_t* vision_of_nzoth_buff;    // 100 stack buff
     } shadow;
 
     struct
@@ -798,6 +808,8 @@ public:
     propagate_const<gain_t*> shield_discipline;
     propagate_const<gain_t*> ascension_tww3_2pc;
     propagate_const<gain_t*> insanity_dark_thoughts;
+    propagate_const<gain_t*> insanity_horrific_vision;
+    propagate_const<gain_t*> insanity_vision_of_nzoth;
   } gains;
 
   // Benefits
@@ -871,6 +883,8 @@ public:
     propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
     propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
     propagate_const<action_t*> echo_of_light;
+    propagate_const<actions::spells::horrific_vision_t*> horrific_vision;
+    propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
   } background_actions;
 
   // Items
@@ -1069,6 +1083,7 @@ public:
   void refresh_insidious_ire_buff( action_state_t* s );
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
+  void trigger_idol_of_nzoth( player_t* target, int stacks );
   double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
@@ -1648,12 +1663,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
   bool ignores_automatic_mastery;
+  int idol_of_nzoth_execute_stacks;
+  int idol_of_nzoth_tick_stacks;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false ),
-      ignores_automatic_mastery( false )
+      ignores_automatic_mastery( false ),
+      idol_of_nzoth_execute_stacks( 0 ),
+      idol_of_nzoth_tick_stacks( 0 )
   {
     weapon_multiplier = 0.0;
 
@@ -1717,6 +1736,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->expire();
       }
     }
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.idol_of_nzoth.enabled() &&
+         idol_of_nzoth_execute_stacks > 0 )
+    {
+      priest().trigger_idol_of_nzoth( target, idol_of_nzoth_execute_stacks );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1758,6 +1783,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( triggers_atonement && result_is_hit( d->state->result ) )
     {
       p().trigger_atonement( d->state, composite_atonement_multiplier( d->state ) );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.idol_of_nzoth.enabled() &&
+         idol_of_nzoth_tick_stacks > 0 )
+    {
+      priest().trigger_idol_of_nzoth( d->target, idol_of_nzoth_tick_stacks );
     }
   }
 
