@@ -250564,9 +250564,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172033)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3990.777 (coefficient=1.560262) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0 -> 1.560262)
 #2 (id=1172251)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7691.975 (coefficient=2.008889) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0 -> 2.008889)
 #3 (id=1172345)  : Dummy (3)
                    Base Value: 10779 | Scaled Value: 10779 | PvP Coefficient: 0.25 | Target: Self (1)
 #4 (id=1172536)  : Dummy (3)
