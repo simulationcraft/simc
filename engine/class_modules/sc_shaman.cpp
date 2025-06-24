@@ -609,6 +609,7 @@ enum class spell_variant : unsigned
   NORMAL = 0,
   ASCENDANCE,
   DEEPLY_ROOTED_ELEMENTS,
+  TWW3,
   PRIMORDIAL_WAVE,
   THORIMS_INVOCATION,
   FUSION_OF_ELEMENTS,
@@ -1069,6 +1070,8 @@ public:
 
     // Doom Winds damage
     action_t* doom_winds;
+    
+    action_t* set_ascendance;
   } action;
 
   // Pets
@@ -9454,13 +9457,17 @@ struct ascendance_t : public shaman_spell_t
   ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
   lava_burst_overload_t* lvb_ol;
+  spell_variant var_;
 
-  ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
+  ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {},
+                spell_variant var_ = spell_variant::NORMAL )
+    :
     shaman_spell_t( name_str, player, player->spell.ascendance ),
     ascendance_damage( nullptr ), lvb( nullptr ), lvb_ol(nullptr)
   {
     parse_options( options_str );
     harmful = false;
+    this->var_  = var_;
 
     if ( ascendance_damage )
     {
@@ -9543,7 +9550,27 @@ struct ascendance_t : public shaman_spell_t
 
     if ( background )
     {
-      p()->buff.ascendance->extend_duration_or_trigger( dre_duration, player );
+      assert( var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS || var_ == spell_variant::TWW3 );
+      timespan_t duration = timespan_t::zero();
+      if (var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS)
+      {
+        duration = dre_duration;
+      }
+      else
+      {
+        if (p()->specialization() == SHAMAN_ENHANCEMENT)
+        {
+          duration = p()->spell.tww3_stormbringer_2pc->effectN( 1 )
+                         .time_value();  // TODO: double check which is which but both are equal rn anyway
+        }
+        else
+        {
+          duration = p()->spell.tww3_stormbringer_2pc->effectN( 4 )
+                         .time_value();  // TODO: double check which is which but both are equal rn anyway
+        }
+      }
+      assert( ( duration != timespan_t::zero() ) );
+      p()->buff.ascendance->extend_duration_or_trigger( duration, player );
     }
     else
     {
@@ -9604,7 +9631,7 @@ struct ascendance_t : public shaman_spell_t
 
 struct ascendance_dre_t : public ascendance_t
 {
-  ascendance_dre_t( shaman_t* player ) : ascendance_t( player, "ascendance_dre" )
+  ascendance_dre_t( shaman_t* player, spell_variant var_ ) : ascendance_t( player, "ascendance_dre", {}, var_) 
   {
     background = true;
     cooldown->duration = 0_s;
@@ -11828,7 +11855,12 @@ void shaman_t::create_actions()
 
   if ( talent.deeply_rooted_elements.ok() )
   {
-    action.dre_ascendance = new ascendance_dre_t( this );
+    action.dre_ascendance = new ascendance_dre_t( this, spell_variant::DEEPLY_ROOTED_ELEMENTS );
+  }
+
+  if (spell.tww3_stormbringer_2pc->ok())
+  {
+    action.set_ascendance = new ascendance_dre_t( this, spell_variant::TWW3 );
   }
 
   if ( talent.tempest_strikes.ok() )
@@ -13596,15 +13628,14 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   if(spell.tww3_stormbringer_2pc->ok())
   {
     aws_counter++;
-    auto test1 = spell.tww3_stormbringer_2pc->effectN( 3 ).base_value();
-    auto test2 = spell.tww3_stormbringer_2pc->effectN( 4 ).base_value();
-    ;
 
-    unsigned int proc_on_x = specialization() == SHAMAN_ELEMENTAL ? test1 : test2;
+    unsigned int proc_on_x = specialization() == SHAMAN_ELEMENTAL
+                                 ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                 : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value();
 
     if ( aws_counter % proc_on_x == 0 )
     {
-      action.dre_ascendance->execute_on_target( state->target );
+      action.set_ascendance->execute_on_target( state->target );
     }
   }
 
