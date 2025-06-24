@@ -68,6 +68,7 @@ struct set_bonus_t
 
   // Enable a specific set bonus, set quiet by default
   void enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true );
+  void enable_set_bonus( hero_talent_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true );
 
   std::unique_ptr<expr_t> create_expression( const player_t*, util::string_view type );
 
@@ -75,9 +76,11 @@ struct set_bonus_t
 
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
+  const spell_data_t* set( hero_talent_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
+  bool has_set_bonus( hero_talent_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
   bool parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
   std::string to_string() const;

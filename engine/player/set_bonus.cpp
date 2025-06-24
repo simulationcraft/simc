@@ -11,6 +11,35 @@
 #include "player/player.hpp"
 #include "sim/expressions.hpp"
 #include "sim/sim.hpp"
+#include "sc_enums.hpp"
+
+namespace
+{
+int composite_idx( specialization_e spec, hero_talent_e hero )
+{
+  return dbc::spec_idx( spec ) + dbc::hero_idx( hero );
+}
+
+int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
+{
+  // only one spec or hero may be selected, or this does very dangerous things!
+  // a proposed rewrite of this subsystem to use the standard data-wrapper-and-cache-on-actor
+  // approach solves this :)
+  assert( ( bonus.spec != -1 ) != ( bonus.trait_sub_tree != -1 ) );
+  specialization_e spec;
+  if ( bonus.spec == -1 )
+    spec = static_cast<specialization_e>( actor->dbc->specialization_max_per_class() );
+  else
+    spec = static_cast<specialization_e>( bonus.spec );
+  hero_talent_e hero;
+  if ( bonus.trait_sub_tree == -1 )
+    hero = hero_talent_e::HERO_NONE;
+  else
+    hero = static_cast<hero_talent_e>( bonus.trait_sub_tree );
+
+  return composite_idx( spec, hero );
+}
+}
 
 set_bonus_t::set_bonus_t( player_t* player )
   : actor( player ), set_bonus_spec_data( SET_BONUS_MAX ), set_bonus_spec_count( SET_BONUS_MAX )
@@ -47,8 +76,8 @@ set_bonus_t::set_bonus_t( player_t* player )
     // going to be provided by the new set_bonus= option, so no need to
     // translate anything from the old set bonus options.
     //
-    // All specs share the same set bonus
-    if ( bonus.spec == -1 )
+    // All specs and trait sub trees share the same set bonus
+    if ( bonus.spec == -1 && bonus.trait_sub_tree == -1 )
     {
       for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ bonus.enum_id ].size(); spec_idx++ )
       {
@@ -62,14 +91,11 @@ set_bonus_t::set_bonus_t( player_t* player )
         set_bonus_spec_data[ bonus.enum_id ][ spec_idx ][ bonus.bonus - 1 ].bonus = &bonus;
       }
     }
-    // Note, Spec specific set bonuses are allowed to override "generic" bonuses (bonus.spec == -1)
+    // Note, spec and hero tree specific set bonuses are allowed to override "generic" bonuses (bonus.spec == -1 && bonus.trait_sub_tree == -1)
     else
     {
       assert( bonus.spec > 0 );
-      specialization_e spec = static_cast<specialization_e>( bonus.spec );
-      hero_talent_e hero_talent = bonus.trait_sub_tree != -1 ? static_cast<hero_talent_e>( bonus.trait_sub_tree ) : HERO_NONE;
-
-      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) + dbc::hero_idx( hero_talent ) ][ bonus.bonus - 1 ].bonus = &bonus;
+      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus, actor ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
   }
 }
@@ -95,18 +121,21 @@ void set_bonus_t::initialize_items()
       if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 
-      if ( bonus.class_id != -1 && !bonus.has_spec( static_cast<int>( actor->_spec ) ) )
-        continue;
+      bool has_class = bonus.class_id == -1 || bonus.class_id == static_cast<int>( actor->type );
+      bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
+      bool has_trait_sub_tree =
+          bonus.trait_sub_tree == -1 || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(),
+                                                     [ & ]( int tst ) { return bonus.trait_sub_tree == tst; } );
 
       if ( range::find( item_ids, item.parsed.data.id ) != item_ids.end() )
-      {
         continue;
-      }
 
-      // T17+ and PVP is spec specific, T16 and lower is "role specific"
-      set_bonus_spec_count[ bonus.enum_id ][ dbc::spec_idx( actor->_spec ) ]++;
-      item_ids.push_back( item.parsed.data.id );
-      break;
+      if ( has_class || has_spec || has_trait_sub_tree )
+      {
+        set_bonus_spec_count[ bonus.enum_id ][ composite_idx( bonus, actor ) ]++;
+        item_ids.push_back( item.parsed.data.id );
+        break;
+      }
     }
   }
 }
@@ -146,15 +175,27 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
 const spell_data_t* set_bonus_t::set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
 {
   if ( dbc::spec_idx( spec ) < 0 )
-  {
     return spell_data_t::nil();
-  }
+  hero_talent_e hero_tree = HERO_NONE;
 #ifndef NDEBUG
-  assert( set_bonus_spec_data.size() > (unsigned)set_bonus );
-  assert( set_bonus_spec_data[ set_bonus ].size() > (unsigned)dbc::spec_idx( spec ) );
-  assert( set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ].size() > (unsigned)bonus );
+  assert( set_bonus_spec_data.size() > static_cast<unsigned>( set_bonus ) );
+  assert( set_bonus_spec_data[ set_bonus ].size() > as<unsigned>( composite_idx( spec, hero_tree ) ) );
+  assert( set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ].size() > static_cast<unsigned>( bonus ) );
 #endif
   return set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ].spell;
+}
+
+const spell_data_t* set_bonus_t::set( hero_talent_e hero_tree, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
+{
+  if ( dbc::hero_idx( hero_tree ) < 0 )
+    return spell_data_t::nil();
+  specialization_e spec = static_cast<specialization_e>( actor->dbc->specialization_max_per_class() );
+#ifndef NDEBUG
+  assert( set_bonus_spec_data.size() > static_cast<unsigned>( set_bonus ) );
+  assert( set_bonus_spec_data[ set_bonus ].size() > as<unsigned>( composite_idx( spec, hero_tree ) ) );
+  assert( set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ].size() > static_cast<unsigned>( bonus ) );
+#endif
+  return set_bonus_spec_data[ set_bonus ][ actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ][ bonus ].spell;
 }
 
 void set_bonus_t::initialize()
@@ -235,11 +276,16 @@ void set_bonus_t::enable_all_sets()
   // or actor has the correct trait_sub_tree
   for ( const auto& bonus : set_bonuses )
   {
-    bool valid_set_by_class_and_spec = bonus.class_id == util::class_id( actor->type ) && bonus.spec == spec;
-    auto compare = [ & ]( unsigned tst ){ return bonus.has_trait_sub_tree( tst ); };
-    bool valid_set_by_trait_sub_tree = std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(), compare );
-    if ( valid_set_by_class_and_spec || valid_set_by_trait_sub_tree )
-      set_bonus_spec_data[ bonus.enum_id ][ dbc::spec_idx( spec ) ][ bonus.bonus - 1 ].overridden = 1;
+    bool has_class = bonus.class_id == -1 || bonus.class_id == static_cast<int>( actor->type );
+    bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
+    bool has_trait_sub_tree =
+        bonus.trait_sub_tree == -1 || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(),
+                                                    [ & ]( int tst ) { return bonus.trait_sub_tree == tst; } );
+    if ( has_class || has_spec || has_trait_sub_tree )
+    {
+      for ( unsigned tst : actor->player_sub_trees )
+        set_bonus_spec_data[ bonus.enum_id ][ composite_idx( spec, static_cast<hero_talent_e>( tst ) ) ][ bonus.bonus - 1 ].overridden = 1;
+    }
   }
 }
 
@@ -255,14 +301,32 @@ void set_bonus_t::enable_set_bonus( specialization_e spec, set_bonus_type_e set_
   entry.quiet = quiet;
 }
 
+void set_bonus_t::enable_set_bonus( hero_talent_e hero_tree, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet )
+{
+  if ( dbc::hero_idx( hero_tree ) < 0 )
+    return;
+
+  auto& entry = set_bonus_spec_data[ set_bonus ][ actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ][ bonus ];
+
+  entry.enabled = true;
+  entry.spell = actor->find_spell( entry.bonus->spell_id );
+  entry.quiet = quiet;
+}
+
 bool set_bonus_t::has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
 {
   if ( dbc::spec_idx( spec ) < 0 )
-  {
     return false;
-  }
 
   return set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ][ bonus ].enabled;
+}
+
+bool set_bonus_t::has_set_bonus( hero_talent_e hero_tree, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
+{
+  if ( dbc::hero_idx( hero_tree ) < 0 )
+    return false;
+
+  return set_bonus_spec_data[ set_bonus ][ actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ][ bonus ].enabled;
 }
 
 std::string set_bonus_t::to_string() const
