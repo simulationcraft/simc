@@ -13596,7 +13596,13 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   if(spell.tww3_stormbringer_2pc->ok())
   {
     aws_counter++;
-    if (aws_counter % 6 == 0)
+    auto test1 = spell.tww3_stormbringer_2pc->effectN( 3 ).base_value();
+    auto test2 = spell.tww3_stormbringer_2pc->effectN( 4 ).base_value();
+    ;
+
+    unsigned int proc_on_x = specialization() == SHAMAN_ELEMENTAL ? test1 : test2;
+
+    if ( aws_counter % proc_on_x == 0 )
     {
       action.dre_ascendance->execute_on_target( state->target );
     }
