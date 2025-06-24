@@ -13,7 +13,7 @@ back=,id=221054,enchant_id=7403,ilevel=684
 chest=,id=229319,enchant_id=7364,ilevel=684
 wrist=,id=219334,bonus_id=10222/11109/8960/8780/8790,enchant_id=7385,gem_id=213482,ilevel=681
 hands=,id=221036,ilevel=684
-waist=,id=245964,gem_id=213458,ilevel=701,titan_disc_id=1236109
+waist=,id=245964,gem_id=213458,ilevel=701,titan_disc_id=1236272
 legs=,id=229315,enchant_id=7601,ilevel=684
 feet=,id=228888,enchant_id=7424,ilevel=684
 finger1=,id=231265,bonus_id=8781,enchant_id=7346,enchant=radiant_critical_strike_3,gem_id=213458/213458,ilevel=684
@@ -40,7 +40,7 @@ back=,id=221054,enchant_id=7403,ilevel=684
 chest=,id=229319,enchant_id=7364,ilevel=684
 wrist=,id=219334,bonus_id=10222/11109/8960/8780/8790,enchant_id=7385,gem_id=213479,ilevel=681
 hands=,id=229317,ilevel=684
-waist=,id=245964,gem_id=213455,ilevel=701,titan_disc_id=1236109
+waist=,id=245964,gem_id=213455,ilevel=701,titan_disc_id=1236272
 legs=,id=229315,enchant_id=7601,ilevel=684
 feet=,id=228888,enchant_id=7424,ilevel=684
 finger1=,id=178872,enchant_id=7334,gem_id=213491/213491,ilevel=684
