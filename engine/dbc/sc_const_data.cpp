@@ -851,6 +851,8 @@ private:
 public:
   constexpr hero_tree_index_map_t() : data{}, classes{}
   {
+    for ( int8_t& value : data )
+      value = -1;
     for ( size_t hero = 0; hero < std::size( __trait_sub_tree_map_data ); hero++ )
     {
       size_t hero_index  = __trait_sub_tree_map_data[ hero ][ 0 ];
