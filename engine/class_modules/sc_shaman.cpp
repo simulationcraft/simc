@@ -978,6 +978,7 @@ public:
   extended_sample_data_t lvs_samples;
 
   unsigned dre_attempts;
+  unsigned aws_counter;
   double lava_surge_attempts_normalized;
 
   // Elemental Shamans can extend Ascendance by x sec via Further Beyond (talent)
@@ -1161,6 +1162,7 @@ public:
     buff_t* tww1_4pc_ele;
     buff_t* jackpot;
     buff_t* ancestral_wisdom;
+    buff_t* storms_eye;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -1689,6 +1691,8 @@ public:
     const spell_data_t* elemental_weapons;
     const spell_data_t* tww3_farseer_2pc;
     const spell_data_t* tww3_farseer_4pc;
+    const spell_data_t* tww3_stormbringer_2pc;
+    const spell_data_t* tww3_stormbringer_4pc;
   } spell;
 
   struct rng_obj_t
@@ -1729,6 +1733,7 @@ public:
       dre_uptime_samples( "dre_uptime_tracker", false ),
       lvs_samples( "lvs_tracker", false ),
       dre_attempts( 0U ),
+      aws_counter(0U),
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
       ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
@@ -7006,6 +7011,16 @@ struct chain_lightning_t : public chained_base_t
   }
 };
 
+struct storms_eye_t : public shaman_spell_t
+{
+  storms_eye_t( shaman_t* player ) : shaman_spell_t( "storms_eye", player, player->find_spell( 1235840 ) )
+  {
+    background = true;
+    may_crit   = true;
+    dual       = true;
+  }
+};
+
 struct erupting_lava_t : public shaman_spell_t
 {
     erupting_lava_t( shaman_t* player )
@@ -7628,7 +7643,9 @@ struct lava_burst_t : public shaman_spell_t
     double m = shaman_spell_t::recharge_rate_multiplier( cd );
 
     if ( p()->buff.ancestral_wisdom->check() )
+    {
       m /= 1 + p()->buff.ancestral_wisdom->data().effectN( 5 ).percent();
+    }
 
     return m;
   }
@@ -8265,7 +8282,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     }
     else
     {
-      // No elemental spirits selected, just summon normal pets
+      // No elemental spirits selected, just summon snormal pets
       if ( !p()->talent.elemental_spirits->ok() )
       {
         p()->pet.spirit_wolves.spawn( duration, n_summons );
@@ -9491,6 +9508,15 @@ struct ascendance_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->spell.tww3_stormbringer_2pc->ok() )
+    {
+        p()->buff.tempest->trigger();
+    }
+    if (p()->spell.tww3_stormbringer_4pc->ok())
+    {
+      p()->buff.storms_eye->trigger(2);
+    }
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) && !background )
     {
@@ -11012,6 +11038,8 @@ struct tempest_overload_t : public elemental_overload_spell_t
 
 struct tempest_t : public shaman_spell_t
 {
+  storms_eye_t* storms_eye;
+
   tempest_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} ) :
     shaman_spell_t( ::action_name( "tempest", type_ ), player, player->find_spell( 452201 ), type_ )
   {
@@ -11025,6 +11053,11 @@ struct tempest_t : public shaman_spell_t
     if ( player->mastery.elemental_overload->ok() )
     {
       overload = new tempest_overload_t( player, this );
+    }
+
+    if (p()->spell.tww3_stormbringer_4pc->ok())
+    {
+      storms_eye = new storms_eye_t( player );
     }
 
     switch ( exec_type )
@@ -11065,6 +11098,11 @@ struct tempest_t : public shaman_spell_t
 
   void execute() override
   {
+    if ( p()->buff.storms_eye->up())
+    {
+      storms_eye->execute();
+    }
+
     p()->buff.tempest->decrement();
     p()->buff.master_of_the_elements->decrement();
 
@@ -11116,6 +11154,8 @@ struct tempest_t : public shaman_spell_t
         p()->action.ti_trigger = p()->action.chain_lightning_ti;
       }
     }
+
+    p()->buff.storms_eye->decrement();
   }
 
   void impact( action_state_t* state ) override
@@ -12493,6 +12533,8 @@ void shaman_t::init_spells()
   spell.elemental_weapons   = find_spell( 408390 );
   spell.tww3_farseer_2pc             = conditional_spell_lookup( options.tww3_farseer_set >= 2, 1236406 );
   spell.tww3_farseer_4pc             = conditional_spell_lookup( options.tww3_farseer_set >= 4, 1236407 );
+  spell.tww3_stormbringer_2pc        = conditional_spell_lookup( options.tww3_stormbringer_set >= 2, 1236408 );
+  spell.tww3_stormbringer_4pc        = conditional_spell_lookup( options.tww3_stormbringer_set >= 4, 1236409 );
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
@@ -12689,7 +12731,7 @@ void shaman_t::summon_ancestor( double proc_chance, bool from_set )
     cooldown.storm_elemental->adjust( talent.offering_from_beyond->effectN( 1 ).time_value() );
   }
   timespan_t ancestor_duration =
-      from_set ? buff.call_of_the_ancestors->buff_duration() : buff.call_of_the_ancestors_tww3_set->buff_duration();
+      from_set ? buff.call_of_the_ancestors_tww3_set->buff_duration() : buff.call_of_the_ancestors->buff_duration();
   pet.ancestor.spawn( ancestor_duration );
   buff.call_of_the_ancestors->trigger();
 }
@@ -13551,6 +13593,15 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
     return;
   }
 
+  if(spell.tww3_stormbringer_2pc->ok())
+  {
+    aws_counter++;
+    if (aws_counter % 6 == 0)
+    {
+      action.dre_ascendance->execute_on_target( state->target );
+    }
+  }
+
   buff.awakening_storms->trigger();
 
   if ( buff.awakening_storms->stack() == buff.awakening_storms->max_stack() )
@@ -14128,7 +14179,7 @@ void shaman_t::create_buffs()
   buff.call_of_the_ancestors_tww3_set = make_buff( this, "call_of_the_ancestors_tww3_set", find_spell( 1238269 ) )
                                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                             ->apply_affecting_aura( talent.heed_my_call )
-                                            ->set_trigger_spell( find_spell(1236406) );
+                                            ->set_trigger_spell( spell.tww3_farseer_2pc );
   buff.ancestral_swiftness = make_buff( this, "ancestral_swiftness", find_spell( 443454 ) )
     ->set_trigger_spell( talent.ancestral_swiftness )
     ->set_cooldown( 0_ms );
@@ -14246,6 +14297,9 @@ void shaman_t::create_buffs()
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
                                 cooldown.lava_burst->adjust_recharge_multiplier();
                               } );
+  buff.storms_eye = make_buff( this, "storms_eye", find_spell(1239315) )
+                        ->set_trigger_spell( spell.tww3_stormbringer_4pc )
+                        ->set_max_stack(6);  //TODO: retest. assumption is that 6 is max
 
   //
   // Restoration
@@ -14554,6 +14608,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
+  action.apply_affecting_aura( spell.tww3_stormbringer_4pc );
 
   // Custom
 
@@ -15460,6 +15515,7 @@ void shaman_t::reset()
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
+  aws_counter                    = 0U;
   lava_surge_attempts_normalized = 0.0;
   action.ti_trigger = nullptr;
   action.totemic_recall_totem = nullptr;
@@ -16245,7 +16301,7 @@ shaman_t::pets_t::pets_t( shaman_t* s ) :
     } ),
 
     ancestor( "ancestor", s, []( shaman_t* s ) { return new pet::ancestor_t( s, ancestor_variant::NORMAL ); } ),
-    set_ancestor( "ancestor", s, []( shaman_t* s ) { return new pet::ancestor_t( s, ancestor_variant::SET ); } ),
+    set_ancestor( "big_ancestor", s, []( shaman_t* s ) { return new pet::ancestor_t( s, ancestor_variant::SET ); } ),
 
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
