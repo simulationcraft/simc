@@ -27,9 +27,15 @@ int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
   // approach solves this :)
   assert( ( bonus.spec != -1 ) != ( bonus.trait_sub_tree != -1 ) );
   int index = 0;
+
   if ( bonus.spec == -1 )
     index += actor->dbc->specialization_max_per_class();
-  if ( bonus.trait_sub_tree != -1 )
+  else
+    index += dbc::spec_idx( static_cast<specialization_e>( bonus.spec ) );
+
+  if ( bonus.trait_sub_tree == -1 )
+    index += 0;
+  else
     index += dbc::hero_idx( static_cast<hero_talent_e>( bonus.trait_sub_tree ) );
 
   return index;
@@ -218,10 +224,8 @@ void set_bonus_t::initialize()
         if ( data.bonus == nullptr )
           continue;
 
-        unsigned spec_role_idx = static_cast<int>( spec_idx );
-
         bool is_overridden = data.overridden > 0;
-        bool is_in_range = set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1;
+        bool is_in_range = set_bonus_spec_count[ idx ][ spec_idx ] >= data.bonus->bonus && data.overridden == -1;
         bool is_allowed_spec = data.bonus->has_spec( actor->_spec );
         bool is_allowed_trait_sub_tree = data.bonus->trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( data.bonus->trait_sub_tree ) ) : false;
         bool is_equippable = is_allowed_spec || is_allowed_trait_sub_tree;
