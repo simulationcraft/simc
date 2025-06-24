@@ -81,6 +81,7 @@ const char* weapon_class_string       ( int weapon_class );
 const char* weapon_subclass_string    ( int subclass );
 const char* item_quality_string       ( int quality );
 const char* specialization_string     ( specialization_e spec );
+std::string hero_talent_string    ( hero_talent_e hero_talent );
 const char* movement_direction_string( movement_direction_type );
 const char* spec_string_no_class( const player_t&p );
 const char* retarget_event_string     ( retarget_source );
