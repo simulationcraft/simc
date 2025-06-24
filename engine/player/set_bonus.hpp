@@ -89,3 +89,50 @@ struct set_bonus_t
 
   friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );
 };
+
+enum trait_sub_tree_e
+  { TST_ONE };
+/*
+ * HERO_ANY, SPEC_ANY, CLASS_ANY
+ * [class_e, spec_e, hero_e, set_bonus_type_e, set_bonus_e]
+ */
+
+struct set_bonus_pair_t
+{
+  std::vector<set_bonus_t*> sets;
+
+  set_bonus_pair_t( player_t* ) : sets() {};
+
+  void initialize();
+  std::unique_ptr<expr_t> create_expression( const player_t*, util::string_view expr );
+  std::vector<const item_set_bonus_t*> enabled_set_bonus_data() const;
+  std::string to_profile_string( const std::string& = "\n" ) const;
+  std::string generate_set_bonus_options() const;
+  bool parse_set_bonus_option( util::string_view option, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
+
+private:
+  template <typename T>
+  constexpr set_bonus_t* get_bonuses()
+  {
+    if constexpr( std::is_same_v<T, specialization_e> )
+      return sets[0];
+    if constexpr( std::is_same_v<T, trait_sub_tree_e> )
+      return sets[1];
+
+    static_assert(false);
+    return nullptr;
+  }
+
+public:
+  template <typename T>
+  void enable_set_bonus( T idx, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true )
+  { get_bonuses<T>()->enable_set_bonus( idx, set_bonus, bonus, quiet ); }
+
+  template <typename T>
+  const spell_data_t* set( T idx, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
+  { return get_bonuses<T>()->set( idx, set_bonus, bonus ); };
+
+  template <typename T>
+  bool has_set_bonus( T idx, set_bonus_type_e set_bonus, set_bonus_e bonus  ) const
+  { return get_bonuses<T>()->has_set_bonus( idx, set_bonus, bonus ); };
+};

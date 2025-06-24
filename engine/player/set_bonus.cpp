@@ -17,7 +17,8 @@ namespace
 {
 int composite_idx( specialization_e spec, hero_talent_e hero )
 {
-  return dbc::spec_idx( spec ) + dbc::hero_idx( hero );
+  int hero_idx = dbc::hero_idx( hero );
+  return dbc::spec_idx( spec ) + ( hero_idx == -1 ? 0 : hero_idx );
 }
 
 int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
@@ -26,18 +27,13 @@ int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
   // a proposed rewrite of this subsystem to use the standard data-wrapper-and-cache-on-actor
   // approach solves this :)
   assert( ( bonus.spec != -1 ) != ( bonus.trait_sub_tree != -1 ) );
-  specialization_e spec;
+  int index = 0;
   if ( bonus.spec == -1 )
-    spec = static_cast<specialization_e>( actor->dbc->specialization_max_per_class() );
-  else
-    spec = static_cast<specialization_e>( bonus.spec );
-  hero_talent_e hero;
-  if ( bonus.trait_sub_tree == -1 )
-    hero = hero_talent_e::HERO_NONE;
-  else
-    hero = static_cast<hero_talent_e>( bonus.trait_sub_tree );
+    index += actor->dbc->specialization_max_per_class();
+  if ( bonus.trait_sub_tree != -1 )
+    index += dbc::hero_idx( static_cast<hero_talent_e>( bonus.trait_sub_tree ) );
 
-  return composite_idx( spec, hero );
+  return index;
 }
 }
 
@@ -94,7 +90,7 @@ set_bonus_t::set_bonus_t( player_t* player )
     // Note, spec and hero tree specific set bonuses are allowed to override "generic" bonuses (bonus.spec == -1 && bonus.trait_sub_tree == -1)
     else
     {
-      assert( bonus.spec > 0 );
+      assert( bonus.spec > 0 || bonus.trait_sub_tree > 0 );
       set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus, actor ) ][ bonus.bonus - 1 ].bonus = &bonus;
     }
   }
@@ -189,11 +185,10 @@ const spell_data_t* set_bonus_t::set( hero_talent_e hero_tree, set_bonus_type_e 
 {
   if ( dbc::hero_idx( hero_tree ) < 0 )
     return spell_data_t::nil();
-  specialization_e spec = static_cast<specialization_e>( actor->dbc->specialization_max_per_class() );
 #ifndef NDEBUG
   assert( set_bonus_spec_data.size() > static_cast<unsigned>( set_bonus ) );
-  assert( set_bonus_spec_data[ set_bonus ].size() > as<unsigned>( composite_idx( spec, hero_tree ) ) );
-  assert( set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( spec ) ].size() > static_cast<unsigned>( bonus ) );
+  assert( set_bonus_spec_data[ set_bonus ].size() > as<unsigned>( actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ) );
+  assert( set_bonus_spec_data[ set_bonus ][ actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ].size() > static_cast<unsigned>( bonus ) );
 #endif
   return set_bonus_spec_data[ set_bonus ][ actor->dbc->specialization_max_per_class() + dbc::hero_idx( hero_tree ) ][ bonus ].spell;
 }
