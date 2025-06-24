@@ -1240,8 +1240,9 @@ struct mindgames_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    affected_by_shadow_weaving = true;
-    triggers_atonement         = true;
+    affected_by_shadow_weaving   = true;
+    triggers_atonement           = true;
+    idol_of_nzoth_execute_stacks = 10;
 
     if ( priest().options.mindgames_healing_reversal )
     {

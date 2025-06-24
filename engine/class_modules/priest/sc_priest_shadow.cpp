@@ -1429,10 +1429,9 @@ struct void_eruption_damage_t final : public priest_spell_t
   void_eruption_damage_t( priest_t& p )
     : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage )
   {
-    may_miss                     = false;
-    background                   = true;
-    affected_by_shadow_weaving   = true;
-    idol_of_nzoth_execute_stacks = 5;
+    may_miss                   = false;
+    background                 = true;
+    affected_by_shadow_weaving = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1455,8 +1454,9 @@ struct void_eruption_t final : public priest_spell_t
     impact_action = new void_eruption_damage_t( p );
     add_child( impact_action );
 
-    may_miss = false;
-    aoe      = -1;
+    may_miss                     = false;
+    aoe                          = -1;
+    idol_of_nzoth_execute_stacks = 10;
 
     if ( p.sets->has_set_bonus( PRIEST_SHADOW, TWW2, B2 ) )
     {
