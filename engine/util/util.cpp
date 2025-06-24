@@ -2849,6 +2849,15 @@ specialization_e util::parse_specialization_type( util::string_view name )
   return SPEC_NONE;
 }
 
+hero_talent_e util::parse_hero_talent_type( util::string_view name )
+{
+  for ( const auto& entry : __trait_sub_tree_data )
+    if ( util::str_compare_ci( tokenize_fn( std::get<1>( entry ) ), name ) )
+      return static_cast<hero_talent_e>( std::get<0>( entry ) );
+
+  return HERO_NONE;
+}
+
 // parse_item_quality =======================================================
 
 int util::parse_item_quality( util::string_view quality )

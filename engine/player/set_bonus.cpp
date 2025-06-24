@@ -13,8 +13,6 @@
 #include "sim/sim.hpp"
 #include "sc_enums.hpp"
 
-namespace
-{
 int composite_idx( specialization_e spec, hero_talent_e hero )
 {
   int hero_idx = dbc::hero_idx( hero );
@@ -34,7 +32,6 @@ int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
     index += dbc::hero_idx( static_cast<hero_talent_e>( bonus.trait_sub_tree ) );
 
   return index;
-}
 }
 
 set_bonus_t::set_bonus_t( player_t* player )
@@ -433,6 +430,8 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
 
     if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
     {
+      if ( bonus.trait_sub_tree != -1 )
+        actor->sim->error( "Old style set bonus options do not support tier sets enabled by trait tree! Use set_bonus=set_name=1,hero_tree=hero_tree_name instead." );
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
     }
@@ -441,23 +440,28 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
   return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
 }
 
-bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, bool& enabled )
+bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, bool& enabled, specialization_e& spec, hero_talent_e& hero )
 {
   set_bonus = SET_BONUS_NONE;
   bonus = B_NONE;
   enabled = false;
-  specialization_e spec = SPEC_NONE;
-  hero_talent_e hero = HERO_NONE;
+  spec = SPEC_NONE;
+  hero = HERO_NONE;
 
   auto name_end = opt_str.find( "=" );
   util::string_view set_name = opt_str.substr( 0, name_end - 1 );
+  auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
+  for ( const auto& bonus : set_bonuses )
+    if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
+      set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
+
   util::string_view opts = opt_str.substr( name_end );
   auto params = util::string_split<util::string_view>( opts, "," );
 
   for ( util::string_view param : params )
   {
-    util::string_view value_pair = util::string_split<util::string_view>( param, "=" );
-    if ( value_pair[0] == "pc" )
+    auto value_pair = util::string_split<util::string_view>( param, "=" );
+    if ( util::str_compare_ci( value_pair[0], "pc" ) )
     {
       unsigned bonus_index = util::to_unsigned( value_pair[1] );
       if ( bonus_index > B_MAX )
@@ -465,23 +469,23 @@ bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bon
       bonus = static_cast<set_bonus_e>( bonus_index - 1 );
       continue;
     }
-    if ( value_pair[0] == "spec" )
+    if ( util::str_compare_ci( value_pair[0], "spec" ) )
     {
       spec = util::parse_specialization_type( value_pair[1] );
       if ( spec == SPEC_NONE )
         return false;
       continue;
     }
-    if ( value_pair[0] == "hero_tree" )
+    if ( util::str_compare_ci( value_pair[0], "hero-tree" ) )
     {
       hero = util::parse_hero_talent_type( value_pair[1] );
       if ( hero == HERO_NONE )
         return false;
       continue;
     }
-    if ( value_pair[0] == "1" || value_pair[0] == "0" )
+    if ( int val = util::to_int( value_pair[0] ); val == 1 || val == 0)
     {
-      enabled = util::to_bool( value_pair[0] );
+      enabled = val;
       continue;
     }
     return false;

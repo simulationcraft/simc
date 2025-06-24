@@ -22,6 +22,8 @@ struct player_t;
 
 // Set Bonus ================================================================
 
+int composite_idx( specialization_e spec, hero_talent_e hero );
+
 struct set_bonus_t
 {
   // Some magic constants
@@ -83,6 +85,7 @@ struct set_bonus_t
   bool has_set_bonus( hero_talent_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
   bool parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
+  bool new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, bool& enabled, specialization_e& spec, hero_talent_e& hero );
   std::string to_string() const;
   std::string to_profile_string( const std::string& = "\n" ) const;
   std::string generate_set_bonus_options() const;

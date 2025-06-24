@@ -121,6 +121,7 @@ stat_e parse_stat_type           ( util::string_view name );
 scale_metric_e parse_scale_metric( util::string_view name );
 profile_source parse_profile_source( util::string_view name );
 specialization_e parse_specialization_type( util::string_view name );
+hero_talent_e parse_hero_talent_type( util::string_view name );
 movement_direction_type parse_movement_direction( util::string_view name );
 item_subclass_armor parse_armor_type( util::string_view name );
 weapon_e parse_weapon_type       ( util::string_view name );
