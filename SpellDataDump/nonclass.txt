@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61559 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -261498,7 +261498,6 @@ Attributes       : Aura Points On Client (268), Scales with Casting Item's Level
 Effects          :
 #1 (id=1231818)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 2 (33 -> 30)
 #2 (id=1233319)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
 Description      : $@spelldesc1236115
