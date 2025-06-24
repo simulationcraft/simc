@@ -117,16 +117,14 @@ void set_bonus_t::initialize_items()
       if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 
-      bool has_class = bonus.class_id == -1 || bonus.class_id == static_cast<int>( actor->type );
-      bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
-      bool has_trait_sub_tree =
-          bonus.trait_sub_tree == -1 || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(),
-                                                     [ & ]( int tst ) { return bonus.trait_sub_tree == tst; } );
+      bool has_class = bonus.class_id == -1 || bonus.class_id == util::class_id( actor->type );
+      bool has_spec  = bonus.spec == static_cast<int>( actor->_spec );
+      bool has_trait_sub_tree = bonus.trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) ) : false;
 
       if ( range::find( item_ids, item.parsed.data.id ) != item_ids.end() )
         continue;
 
-      if ( has_class || has_spec || has_trait_sub_tree )
+      if ( has_class && ( has_spec || has_trait_sub_tree ) )
       {
         set_bonus_spec_count[ bonus.enum_id ][ composite_idx( bonus, actor ) ]++;
         item_ids.push_back( item.parsed.data.id );
@@ -227,10 +225,7 @@ void set_bonus_t::initialize()
         bool is_overridden = data.overridden > 0;
         bool is_in_range = set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus && data.overridden == -1;
         bool is_allowed_spec = data.bonus->has_spec( actor->_spec );
-        bool is_allowed_trait_sub_tree = std::any_of(
-                                                     actor->player_sub_trees.cbegin(),
-                                                     actor->player_sub_trees.cend(),
-                                                     [ & ]( unsigned tst ){ return data.bonus->has_trait_sub_tree( tst ); } );
+        bool is_allowed_trait_sub_tree = data.bonus->trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( data.bonus->trait_sub_tree ) ) : false;
         bool is_equippable = is_allowed_spec || is_allowed_trait_sub_tree;
 
         bool enable_2_set = util::str_compare_ci( actor->sim->enable_2_set, data.bonus->tier );
@@ -271,12 +266,10 @@ void set_bonus_t::enable_all_sets()
   // or actor has the correct trait_sub_tree
   for ( const auto& bonus : set_bonuses )
   {
-    bool has_class = bonus.class_id == -1 || bonus.class_id == static_cast<int>( actor->type );
-    bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
-    bool has_trait_sub_tree =
-        bonus.trait_sub_tree == -1 || std::any_of( actor->player_sub_trees.cbegin(), actor->player_sub_trees.cend(),
-                                                    [ & ]( int tst ) { return bonus.trait_sub_tree == tst; } );
-    if ( has_class || has_spec || has_trait_sub_tree )
+    bool has_class = bonus.class_id == -1 || bonus.class_id == util::class_id( actor->type );
+    bool has_spec  = bonus.spec == static_cast<int>( actor->_spec );
+    bool has_trait_sub_tree = bonus.trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) ) : false;
+    if ( has_class && ( has_spec || has_trait_sub_tree ) )
     {
       for ( unsigned tst : actor->player_sub_trees )
         set_bonus_spec_data[ bonus.enum_id ][ composite_idx( spec, static_cast<hero_talent_e>( tst ) ) ][ bonus.bonus - 1 ].overridden = 1;
@@ -342,10 +335,11 @@ void sc_format_to( const set_bonus_t& sb, fmt::format_context::iterator out )
         if ( data.bonus == nullptr )
           continue;
 
-        unsigned spec_role_idx = static_cast<int>( spec_idx );
+        // sanely reporting the active subtree is nonfeasible without a lot
+        // of additional code. we'll just omit this for now.
 
         if ( data.overridden >= 1 ||
-             ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
+             ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_idx ] >= data.bonus->bonus ) )
         {
           fmt::format_to( out, "{}{{ {}, {}, {}, {} piece bonus {} }}", i > 0 ? ", " : "", data.bonus->set_name,
                           data.bonus->set_opt_name, util::specialization_string( sb.actor->specialization() ),
@@ -442,6 +436,55 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
     }
+  }
+
+  return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
+}
+
+bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, bool& enabled )
+{
+  set_bonus = SET_BONUS_NONE;
+  bonus = B_NONE;
+  enabled = false;
+  specialization_e spec = SPEC_NONE;
+  hero_talent_e hero = HERO_NONE;
+
+  auto name_end = opt_str.find( "=" );
+  util::string_view set_name = opt_str.substr( 0, name_end - 1 );
+  util::string_view opts = opt_str.substr( name_end );
+  auto params = util::string_split<util::string_view>( opts, "," );
+
+  for ( util::string_view param : params )
+  {
+    util::string_view value_pair = util::string_split<util::string_view>( param, "=" );
+    if ( value_pair[0] == "pc" )
+    {
+      unsigned bonus_index = util::to_unsigned( value_pair[1] );
+      if ( bonus_index > B_MAX )
+        return false;
+      bonus = static_cast<set_bonus_e>( bonus_index - 1 );
+      continue;
+    }
+    if ( value_pair[0] == "spec" )
+    {
+      spec = util::parse_specialization_type( value_pair[1] );
+      if ( spec == SPEC_NONE )
+        return false;
+      continue;
+    }
+    if ( value_pair[0] == "hero_tree" )
+    {
+      hero = util::parse_hero_talent_type( value_pair[1] );
+      if ( hero == HERO_NONE )
+        return false;
+      continue;
+    }
+    if ( value_pair[0] == "1" || value_pair[0] == "0" )
+    {
+      enabled = util::to_bool( value_pair[0] );
+      continue;
+    }
+    return false;
   }
 
   return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
