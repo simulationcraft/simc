@@ -1733,7 +1733,10 @@ struct psychic_link_t final : public priest_spell_t
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
       _pl_shadow_word_death(
           new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow.psychic_link ) ),
-      _pl_void_blast( new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) )
+      _pl_void_blast( new psychic_link_base_t( "psychic_link_void_blast", p, p.talents.shadow.psychic_link ) ),
+      _pl_horrific_vision(
+          new psychic_link_base_t( "psychic_link_horrific_vision", p, p.talents.shadow.psychic_link ) ),
+      _pl_vision_of_nzoth( new psychic_link_base_t( "psychic_link_vision_of_nzoth", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1751,6 +1754,8 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_void_torrent );
     add_child( _pl_shadow_word_death );
     add_child( _pl_void_blast );
+    add_child( _pl_horrific_vision );
+    add_child( _pl_vision_of_nzoth );
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
@@ -1799,6 +1804,14 @@ struct psychic_link_t final : public priest_spell_t
     {
       _pl_void_blast->trigger( target, original_amount, action_name );
     }
+    else if ( action_name == "horrific_vision" )
+    {
+      _pl_horrific_vision->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "vision_of_nzoth" )
+    {
+      _pl_vision_of_nzoth->trigger( target, original_amount, action_name );
+    }
     else
     {
       player->sim->print_debug( "{} tried to trigger psychic_link from unknown action {}.", priest(), action_name );
@@ -1817,6 +1830,8 @@ private:
   propagate_const<psychic_link_base_t*> _pl_void_torrent;
   propagate_const<psychic_link_base_t*> _pl_shadow_word_death;
   propagate_const<psychic_link_base_t*> _pl_void_blast;
+  propagate_const<psychic_link_base_t*> _pl_horrific_vision;
+  propagate_const<psychic_link_base_t*> _pl_vision_of_nzoth;
 };
 
 // ==========================================================================
@@ -2166,6 +2181,53 @@ struct void_volley_t final : public priest_spell_t
     {
       make_repeating_event(
           sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+    }
+  }
+};
+
+// ==========================================================================
+// Idol of N'Zoth
+// Horrific Vision - 1243105 - 50 Stacks
+// Vision of N'Zoth - 1243106 - 100 Stacks
+// ==========================================================================
+struct horrific_vision_t final : public priest_spell_t
+{
+  double parent_targets = 1;
+
+  horrific_vision_t( priest_t& p ) : priest_spell_t( "horrific_vision", p, p.talents.shadow.horrific_vision_damage )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;  // TODO: verify this
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().trigger_psychic_link( s );
+    }
+  }
+};
+
+struct vision_of_nzoth_t final : public priest_spell_t
+{
+  double parent_targets = 1;
+
+  vision_of_nzoth_t( priest_t& p ) : priest_spell_t( "vision_of_nzoth", p, p.talents.shadow.vision_of_nzoth_damage )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;  // TODO: verify this
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().trigger_psychic_link( s );
     }
   }
 };
@@ -2980,6 +3042,12 @@ void priest_t::init_background_actions_shadow()
   background_actions.shadow_weaving = new actions::spells::shadow_weaving_t( *this );
 
   background_actions.shadow_word_pain = new actions::spells::shadow_word_pain_t( *this );
+
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.shadow.idol_of_nzoth.enabled() )
+  {
+    background_actions.horrific_vision = new actions::spells::horrific_vision_t( *this );
+    background_actions.vision_of_nzoth = new actions::spells::vision_of_nzoth_t( *this );
+  }
 }
 
 // ==========================================================================
@@ -3174,32 +3242,40 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
     return;
   }
 
-  int current_stacks = td->buffs.horrific_visions->check();
-  td->buffs.horrific_visions->trigger( stacks );
+  int current_stacks            = td->buffs.horrific_visions->check();
+  int new_stacks                = current_stacks + stacks;
+  int horrific_vision_threshold = as<int>( talents.shadow.idol_of_nzoth->effectN( 1 ).base_value() );
+  int vision_of_nzoth_threshold = as<int>( talents.shadow.idol_of_nzoth->effectN( 2 ).base_value() );
+
+  if ( new_stacks < vision_of_nzoth_threshold )
+  {
+    td->buffs.horrific_visions->trigger( stacks );
+  }
 
   if ( current_stacks )
   {
-    // TODO: use spelldata for these
-    // calculate number of stacks in total we would have
-    int new_stacks = current_stacks + stacks;
-    if ( current_stacks < 50 && new_stacks >= 50 )
+    if ( current_stacks < horrific_vision_threshold && new_stacks >= horrific_vision_threshold )
     {
-      // TODO: trigger damage
+      background_actions.horrific_vision->execute_on_target( target );
       buffs.horrific_vision->trigger();
     }
-    else if ( current_stacks < 100 && new_stacks >= 100 )
+    else if ( current_stacks < vision_of_nzoth_threshold && new_stacks >= vision_of_nzoth_threshold )
     {
       // clear out old stacks
       td->buffs.horrific_visions->expire();
 
-      // TODO: trigger damage
+      background_actions.vision_of_nzoth->execute_on_target( target );
       buffs.vision_of_nzoth->trigger();
 
-      int leftover_stacks = new_stacks - 100;
+      int leftover_stacks = new_stacks - vision_of_nzoth_threshold;
       if ( leftover_stacks > 0 )
       {
         td->buffs.horrific_visions->trigger( leftover_stacks );
       }
+
+      sim->print_debug(
+          "Idol of N'Zoth rollover from {} stacks - current_stacks: {}, new_stacks: {}, leftover_stacks: {}", stacks,
+          current_stacks, new_stacks, leftover_stacks );
     }
   }
 }

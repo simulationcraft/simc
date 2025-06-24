@@ -70,6 +70,8 @@ struct entropic_rift_t;
 struct entropic_rift_damage_t;
 struct collapsing_void_damage_t;
 struct halo_t;
+struct horrific_vision_t;
+struct vision_of_nzoth_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -881,6 +883,8 @@ public:
     propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
     propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
     propagate_const<action_t*> echo_of_light;
+    propagate_const<actions::spells::horrific_vision_t*> horrific_vision;
+    propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
   } background_actions;
 
   // Items
