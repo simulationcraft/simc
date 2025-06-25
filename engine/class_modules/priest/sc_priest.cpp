@@ -1594,7 +1594,7 @@ public:
               ? timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) *
                     ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() )
               : timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_threshold( sim->dbc->wowv() < wowv_t{ 11, 2, 0 }
+      depth_of_shadows_threshold( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 }
                                       ? p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() +
                                             priest().talents.shadow.deathspeaker->effectN( 5 ).base_value()
                                       : p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
