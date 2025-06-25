@@ -747,7 +747,7 @@ public:
     propagate_const<buff_t*> luck_of_the_draw;
 
     // Frost
-    propagate_const<buff_t*> breath_of_sindragosa;
+    buff_t* breath_of_sindragosa;
     propagate_const<buff_t*> gathering_storm;
     propagate_const<buff_t*> inexorable_assault;
     propagate_const<buff_t*> empower_rune_weapon;
@@ -913,6 +913,7 @@ public:
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
     propagate_const<action_t*> cryogenic_chamber_remorseless_winter;
+    action_t* breath_of_sindragosa_inital_hit;
 
     // Unholy
     propagate_const<action_t*> bursting_sores;
@@ -1414,6 +1415,7 @@ public:
     const spell_data_t* cryogenic_chamber_remorseless_winter_buff;
     const spell_data_t* breath_of_sindragosa_buff;
     const spell_data_t* breath_of_sindragosa_initial_hit;
+    const spell_data_t* breath_of_sindragosa_erw_refund;
     // Tier Sets
     const spell_data_t* icy_vigor;
     const spell_data_t* winning_streak_frost;
@@ -4529,7 +4531,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       background              = true;
       aoe                     = 20;
       attack_power_mod.direct = 0;
-      //impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic", p );
+      impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic", p );
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4609,7 +4611,7 @@ struct whitemane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    epidemic = new epidemic_whitemane_t( "epidemic", this );
+    epidemic = new epidemic_whitemane_t( "epidemic_cast", this );
     death_coil = new death_coil_whitemane_background_t( "death_coil_tww3_4pc", this );
   }
 
@@ -5913,7 +5915,7 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
   breath_of_sindragosa_buff_t( death_knight_t* p, std::string_view name, const spell_data_t* s )
     : death_knight_buff_t( p, name, s ),
       ticking_cost( 0.0 ),
-      tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
+      tick_period( p->spell.breath_of_sindragosa_buff->effectN( 1 ).period() ),
       rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) )
   {
     cooldown->duration = 0_ms;  // Handled by the action
@@ -8152,9 +8154,9 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    p()->buffs.rime->trigger(
-        1, buff_t::DEFAULT_VALUE(),
-        p()->spec.rime->effectN( 1 ).percent() + p()->talent.frost.rage_of_the_frozen_champion->effectN( 2 ).percent() );
+    p()->buffs.rime->trigger( 1, buff_t::DEFAULT_VALUE(),
+                              p()->spec.rime->effectN( 1 ).percent() +
+                                  p()->talent.frost.rage_of_the_frozen_champion->effectN( 2 ).percent() );
   }
 
   void impact( action_state_t* state ) override
@@ -8171,6 +8173,38 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
 private:
   double hyperpyrexia_mod;
   double hyperpyrexia_chance;
+};
+
+struct breath_of_sindragosa_initial_hit_t final : public death_knight_spell_t
+{
+  breath_of_sindragosa_initial_hit_t( std::string_view n, death_knight_t* p )
+    : death_knight_spell_t( n, p, p->spell.breath_of_sindragosa_initial_hit )
+  {
+    aoe        = -1;
+    background = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    switch ( empower )
+    {
+      case EMPOWER_3:
+        m *= p()->talent.frost.breath_of_sindragosa->effectN( 8 ).percent();
+        break;
+      case EMPOWER_2:
+        m *= p()->talent.frost.breath_of_sindragosa->effectN( 7 ).percent();
+        break;
+      default:
+        break;
+    }
+
+    return m;
+  }
+
+public:
+  empower_e empower;
 };
 
 struct empower_breath_of_sindragosa_t final : public death_knight_empowered_charge_spell_t
@@ -8205,9 +8239,17 @@ struct empower_breath_of_sindragosa_t final : public death_knight_empowered_char
     void execute() override
     {
       death_knight_spell_t::execute();
-      p()->buffs.breath_of_sindragosa->trigger();
-      p()->replenish_rune( rune_gen, p()->gains.breath_of_sindragosa );
 
+      debug_cast<breath_of_sindragosa_initial_hit_t*>( p()->background_actions.breath_of_sindragosa_inital_hit )
+          ->empower = empower_level( execute_state );
+
+      p()->buffs.breath_of_sindragosa->trigger( max_duration_from_empower( execute_state ) );
+
+      // 11.2 TODO verify reset behavior while recharging
+      p()->cooldown.empower_rune_weapon->reset(
+          false, as<int>( p()->spell.breath_of_sindragosa_erw_refund->effectN( 1 ).base_value() ) );
+
+      p()->background_actions.breath_of_sindragosa_inital_hit->execute_on_target( target );
       p()->background_actions.breath_of_sindragosa_tick->execute_on_target( target );
 
       if ( p()->talent.icy_talons.ok() )
@@ -8221,6 +8263,19 @@ struct empower_breath_of_sindragosa_t final : public death_knight_empowered_char
         return false;
 
       return death_knight_spell_t::ready();
+    }
+
+    timespan_t max_duration_from_empower( const action_state_t* state ) const
+    {
+      switch ( empower_level( state ) )
+      {
+        case EMPOWER_3:
+          return p()->talent.frost.breath_of_sindragosa->effectN( 6 ).time_value();
+        case EMPOWER_2:
+          return p()->talent.frost.breath_of_sindragosa->effectN( 5 ).time_value();
+        default:
+          return p()->talent.frost.breath_of_sindragosa->effectN( 4 ).time_value();
+      }
     }
 
   private:
@@ -9536,7 +9591,7 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     
     if ( p()->buffs.killing_machine->up() )
     {
-      // TODO 11.2 check over fsc misc values for a potential delay source
+      //  11.2 TODO check over fsc misc values for a potential delay source
       p()->consume_killing_machine( p()->procs.killing_machine_fsc, 0_ms );
     }
   }
@@ -13244,6 +13299,8 @@ void death_knight_t::create_actions()
     {
       background_actions.breath_of_sindragosa_tick =
           get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_damage", this );
+      background_actions.breath_of_sindragosa_inital_hit =
+          get_action<breath_of_sindragosa_initial_hit_t>( "breath_of_sindragosa_inital_hit", this );
     }
 
     if ( spec.remorseless_winter->ok() || talent.frost.cryogenic_chamber->ok() )
@@ -14230,6 +14287,7 @@ void death_knight_t::spell_lookups()
   spell.cryogenic_chamber_remorseless_winter_buff = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 1233152 );
   spell.breath_of_sindragosa_buff        = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 152279 );
   spell.breath_of_sindragosa_initial_hit = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 1231316 );
+  spell.breath_of_sindragosa_erw_refund  = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
