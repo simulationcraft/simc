@@ -23386,7 +23386,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  441398, "Finishing moves have $s1% increased chance to critically strike Fazed targets.", 0, 0 },
   {  441403, "Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.", 0, 0 },
   {  441415, "Blind and Shroud of Concealment have $s1% reduced cooldown.\r\n\r\nPick Pocket and Sap have $s2 yd increased range.", 0, 0 },
-  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
+  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
   {  441423, "After $441786s1 strikes with Unseen Blade, your next $?a137036[Dispatch][Eviscerate] will be performed as a Coup de Grace, functioning as if it had consumed $s3 additional combo points.\r\n\r\nIf the primary target is Fazed, gain $s2 stacks of Flawless Form.", 0, 0 },
   {  441424, "$@spelldesc441378", 0, 0 },
   {  441426, "$@spelldesc441378", 0, 0 },
@@ -26585,7 +26585,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  473402, "Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $d. ", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
   {  473490, "Restores ${$m1/5*$d} health over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
   {  473492, "$@spelldesc471063", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
-  {  473520, "Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
+  {  473520, "Casting Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
   {  473522, "Consuming Precise Shots reduces the cooldown of Explosive Shot by ${$s1/1000}.1 sec.\r\n\r\nConsuming Lock and Load reduces the cooldown of Explosive Shot by ${$s2/1000}.1 sec.", 0, 0 },
   {  473523, "Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.\r\n\r\nCasting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.", 0, 0 },
   {  473602, "$@spelldesc471316", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
@@ -28015,7 +28015,9 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.61624
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  441416,  1, "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes." },
+  {  473520,  0, "Explosive Shot has a $s1% chance to grant Lock and Load.", "Casting Explosive Shot has a $s1% chance to grant Lock and Load." },
 } };
 
 // Spell description variables, wow build 11.2.0.61624
