@@ -121,7 +121,7 @@ back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/11304/
 chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1533/10255,enchant=crystalline_radiance_3
 wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960/10878,gem_id=213497,crafted_stats=32/36
 hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1533/10255
-waist=durable_information_securing_container,id=245966,titan_disc_id=1236109,bonus_id=12533/1489,gem_id=213497
+waist=durable_information_securing_container,id=245966,titan_disc_id=1236273,bonus_id=12533/1489,gem_id=213497
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=4786/9993/11996,enchant=stormbound_armor_kit_3
 feet=cauldron_champions_greatboots,id=229255,bonus_id=11996/10356/6652/1533/10255,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1533/10255/10879,gem_id=213497/213497,enchant=radiant_haste_3
@@ -147,7 +147,7 @@ back=consecrated_cloak,id=222817,bonus_id=12043/9631/9633/8902/8793/12040/11304/
 chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1533/10255,enchant=crystalline_radiance_3
 wrists=everforged_vambraces,id=222435,bonus_id=12043/9631/9633/8902/8793/12040/11304/8960/10878,gem_id=213497,crafted_stats=32/36
 hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1533/10255
-waist=durable_information_securing_container,id=245966,titan_disc_id=1236109,bonus_id=12533/1489,gem_id=213497
+waist=durable_information_securing_container,id=245966,titan_disc_id=1236273,bonus_id=12533/1489,gem_id=213497
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=4786/9993/11996,enchant=stormbound_armor_kit_3
 feet=cauldron_champions_greatboots,id=229255,bonus_id=11996/10356/6652/1533/10255,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1533/10255/10879,gem_id=213497/213497,enchant=radiant_haste_3

@@ -917,6 +917,7 @@ void monk_t::init_blizzard_action_list()
       break;
     case MONK_WINDWALKER:
       cooldowns->add_action( "invoke_xuen_the_white_tiger" );
+      cooldowns->add_action( "touch_of_karma" );
       break;
     default:
       assert( false );

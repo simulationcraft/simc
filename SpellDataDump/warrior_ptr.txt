@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1254,6 +1254,8 @@ Effects          :
                    Family Flags: 29
 #4 (id=1243174)  : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 163201 | Target: Self (1)
+#5 (id=1251855)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 281000 | Target: Self (1)
 Description      : $@spelldesc29725
 Tooltip          : $?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.
 
@@ -5585,6 +5587,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Affecting Spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#14), Arms Warrior (137049 effects: #12, #15, #16), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Precise Strikes (248195 effect#1), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Improved Execute (397708 effect#1), Marked for Execution (445584 effects: #1, #2, #3), Warrior Slayer 11.2 Class Set 2pc (1236423 effect#1)
+Triggered By     : Sudden Death (280776)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -5668,6 +5671,8 @@ Effects          :
                    Family Flags: 29
 #2 (id=1243175)  : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 5308 | Target: Self (1)
+#3 (id=1251857)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 280735 | Target: Self (1)
 Description      : $@spelldesc280721
 Tooltip          : $?a317320[Condemn][Execute] can be used on any target, regardless of their health.
 
@@ -5704,6 +5709,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Affecting Spells : Recklessness (1719 effect#7), Sudden Death (52437 effects: #1, #2, #3), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effect#14), Arms Warrior (137049 effects: #12, #15, #16), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Precise Strikes (248195 effect#1), Deadly Calm (262228 effects: #1, #2), Sudden Death (280776 effect#1), Improved Execute (316402 effects: #1, #2, #3), Improved Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4), Juggernaut (383290 effect#1), Sharpened Blades (383341 effects: #1, #2), Ashen Juggernaut (392537 effect#1), Cruel Strikes (392777 effect#2), Improved Execute (397708 effect#1), Marked for Execution (445584 effects: #1, #2, #3), Warrior Slayer 11.2 Class Set 2pc (1236423 effect#1)
+Triggered By     : Sudden Death (52437)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :

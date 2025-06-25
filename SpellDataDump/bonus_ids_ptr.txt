@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4870,45 +4870,45 @@ bonus_id={ 9269 }, quality={ legendary }, ilevel={ 24 @plvl 1 - 385 @plvl 70 }
 bonus_id={ 9270 }, quality={ legendary }, ilevel={ 30 @plvl 1 - 391 @plvl 70 }
 bonus_id={ 9271 }, quality={ legendary }, ilevel={ 32 @plvl 1 - 393 @plvl 70 }
 bonus_id={ 9272 }, quality={ legendary }, ilevel={ 22 @plvl 1 - 383 @plvl 70 }
-bonus_id={ 9294 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
-bonus_id={ 9295 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
-bonus_id={ 9296 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9297 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9298 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9299 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9300 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9301 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9302 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9303 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9304 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9305 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9306 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9307 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9308 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9309 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9294 }, quality={ uncommon }
+bonus_id={ 9295 }, quality={ uncommon }
+bonus_id={ 9296 }, quality={ rare }
+bonus_id={ 9297 }, quality={ rare }
+bonus_id={ 9298 }, quality={ rare }
+bonus_id={ 9299 }, quality={ rare }
+bonus_id={ 9300 }, quality={ rare }
+bonus_id={ 9301 }, quality={ rare }
+bonus_id={ 9302 }, quality={ rare }
+bonus_id={ 9303 }, quality={ rare }
+bonus_id={ 9304 }, quality={ rare }
+bonus_id={ 9305 }, quality={ rare }
+bonus_id={ 9306 }, quality={ epic }
+bonus_id={ 9307 }, quality={ epic }
+bonus_id={ 9308 }, quality={ epic }
+bonus_id={ 9309 }, quality={ epic }
 bonus_id={ 9310 }, quality={ legendary }, ilevel={ 30 @plvl 1 - 391 @plvl 70 }
 bonus_id={ 9311 }, base_ilevel={ 366 }
-bonus_id={ 9313 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9314 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9315 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9316 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9317 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9318 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9319 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9320 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9321 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9322 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9323 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9324 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9325 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9327 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9328 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9329 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9330 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9331 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9332 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9333 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9334 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9313 }, quality={ epic }
+bonus_id={ 9314 }, quality={ epic }
+bonus_id={ 9315 }, quality={ epic }
+bonus_id={ 9316 }, quality={ epic }
+bonus_id={ 9317 }, quality={ epic }
+bonus_id={ 9318 }, quality={ epic }
+bonus_id={ 9319 }, quality={ epic }
+bonus_id={ 9320 }, quality={ epic }
+bonus_id={ 9321 }, quality={ epic }
+bonus_id={ 9322 }, quality={ epic }
+bonus_id={ 9323 }, quality={ epic }
+bonus_id={ 9324 }, quality={ epic }
+bonus_id={ 9325 }, quality={ epic }
+bonus_id={ 9327 }, quality={ epic }
+bonus_id={ 9328 }, quality={ epic }
+bonus_id={ 9329 }, quality={ epic }
+bonus_id={ 9330 }, quality={ epic }
+bonus_id={ 9331 }, quality={ epic }
+bonus_id={ 9332 }, quality={ epic }
+bonus_id={ 9333 }, quality={ epic }
+bonus_id={ 9334 }, quality={ epic }
 bonus_id={ 9335 }, quality={ epic }
 bonus_id={ 9336 }, quality={ epic }
 bonus_id={ 9337 }, quality={ epic }
@@ -4938,12 +4938,12 @@ bonus_id={ 9374 }, base_ilevel={ 421 }
 bonus_id={ 9375 }, base_ilevel={ 434 }
 bonus_id={ 9376 }, base_ilevel={ 434 }
 bonus_id={ 9379 }, effects={ Roiling Shadowflame (id=406254, index=0, type=equip) }
-bonus_id={ 9380 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9381 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9382 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9383 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9384 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9385 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9380 }, quality={ epic }
+bonus_id={ 9381 }, quality={ epic }
+bonus_id={ 9382 }, quality={ epic }
+bonus_id={ 9383 }, quality={ epic }
+bonus_id={ 9384 }, quality={ epic }
+bonus_id={ 9385 }, quality={ epic }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
 bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
 bonus_id={ 9402 }, ilevel_adjust={ 3 }
@@ -6990,9 +6990,9 @@ bonus_id={ 12025 }, quality={ epic }
 bonus_id={ 12026 }, quality={ epic }
 bonus_id={ 12027 }, quality={ epic }
 bonus_id={ 12028 }, quality={ epic }
-bonus_id={ 12037 }, base_ilevel={ 571 }, quality={ uncommon }
-bonus_id={ 12038 }, base_ilevel={ 584 }, quality={ rare }
-bonus_id={ 12039 }, base_ilevel={ 623 }, quality={ epic }
+bonus_id={ 12037 }, base_ilevel={ 597 }, quality={ uncommon }
+bonus_id={ 12038 }, base_ilevel={ 610 }, quality={ rare }
+bonus_id={ 12039 }, base_ilevel={ 649 }, quality={ epic }
 bonus_id={ 12040 }, base_ilevel={ 632 }, desc={ Fortune Crafted }
 bonus_id={ 12041 }, base_ilevel={ 616 }, quality={ epic }
 bonus_id={ 12042 }, base_ilevel={ 645 }

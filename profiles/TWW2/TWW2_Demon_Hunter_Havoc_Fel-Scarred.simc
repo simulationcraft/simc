@@ -355,7 +355,7 @@ back=chef_chewies_towel,id=221054,ilevel=684,enchant_id=7403
 chest=feldealers_soul_engine,id=229319,ilevel=684,enchant_id=7364
 wrists=runebranded_armbands,id=219334,bonus_id=10222/11109/8960/8780/8790,ilevel=681,gem_id=213479,enchant_id=7385
 hands=feldealers_underhandlers,id=229317,ilevel=684
-waist=durable_information_securing_container,id=245964,ilevel=701,gem_id=213455,titan_disc_id=1236109
+waist=durable_information_securing_container,id=245964,ilevel=701,gem_id=213455,titan_disc_id=1236272
 legs=feldealers_fur_kilt,id=229315,ilevel=684,enchant_id=7601
 feet=rushed_beta_launchers,id=228888,ilevel=684,enchant_id=7424
 finger1=ring_of_perpetual_conflict,id=178872,ilevel=684,gem_id=213491/213491,enchant_id=7334

@@ -11267,7 +11267,7 @@ void runeforge::razorice( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto buff = buff_t::find( t, "razorice" );
+      auto buff = buff_t::find( t, "razorice", player );
       if (!buff)
       {
         std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : name_str;
@@ -14066,7 +14066,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_cooldown( 0_ms );  // Handled by the action
 
   // Frost
-  debuff.razorice = buff_t::find( &target, "razorice" );
+  debuff.razorice = buff_t::find( &target, "razorice", &p );
   if ( debuff.razorice )
   {
     debuff.razorice->set_default_value_from_effect( 1 )->set_period( 0_ms )->apply_affecting_aura(

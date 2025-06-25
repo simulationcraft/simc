@@ -1548,6 +1548,8 @@ class SpellDataGenerator(DataGenerator):
          1236165, 1236278, 1236993, # Energy Shield
          1236169, 1236279, # Charged Crystal
          1221347, # Surging Totem hidden buff on player for assisted combat APL
+         # 11.2
+         1224916, # Void-Touched Fragment stacking buff
         ),
 
         # Warrior:
@@ -1834,6 +1836,7 @@ class SpellDataGenerator(DataGenerator):
             ( 148859, 0 ),          # Shadowy Apparitions Travel Spell
             ( 1215702, 0 ),         # Priest Shadow 11.1 Class Set 2pc
             ( 1215703, 0 ),         # Priest Shadow 11.1 Class Set 4pc
+            ( 1237615, 0 ),         # Priest Voidweaver 11.1 Class Set 4pc
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1947,6 +1950,9 @@ class SpellDataGenerator(DataGenerator):
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
           ( 463730, 0 ), # Coagulating Blood for Death Strike
+          ( 1232346, 0 ), # Desecrate Damage
+          ( 1239422, 0 ), # Blighted Arrow Coil Buff
+          ( 1233351, 0), # Frostreaper debuff
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -1965,11 +1971,11 @@ class SpellDataGenerator(DataGenerator):
           ( 454389, 0 ), # Summon Whitemane 2
           ( 448229, 0 ), # Soul Reaper
           ( 445513, 0 ), # Whitemane Death Coil
+          ( 1237172, 0 ), # Whitemane Epidemic
           ( 445504, 0 ), # Mograine Heart Strike
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
-          ( 1232346, 0 ), # Desecrate Damage
           # San'layn
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption

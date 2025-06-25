@@ -927,10 +927,10 @@ public:
     heal_t* frailty_heal    = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive = nullptr;
-    attack_t* preemptive_strike = nullptr;
-    attack_t* warblades_hunger  = nullptr;
-    attack_t* wounded_quarry    = nullptr;
+    attack_t* fury_of_the_aldrachi = nullptr;
+    attack_t* preemptive_strike    = nullptr;
+    attack_t* warblades_hunger     = nullptr;
+    attack_t* wounded_quarry       = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -958,6 +958,9 @@ public:
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat = 0.6;
+
+    int tww3_aldrachi_reaver_set = 0;
+    int tww3_felscarred_set      = 0;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -2243,7 +2246,7 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
-        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+        BASE::p()->active.fury_of_the_aldrachi->execute_on_target( BASE::target );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
@@ -2262,9 +2265,12 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
-      int first_ability_amount  = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
-      int second_ability_amount = 1 + BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() +
-                                  BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int second_ability_increase =
+          BASE::p()->is_ptr() ? BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() : 1;
+
+      int first_ability_amount = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int second_ability_amount =
+          1 + second_ability_increase + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
         BASE::td( BASE::target )
@@ -6821,14 +6827,14 @@ struct soul_carver_t : public demon_hunter_attack_t
 };
 
 // Art of the Glaive ===================================================
-struct art_of_the_glaive_t : public demon_hunter_attack_t
+struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
 {
-  struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
+  struct fury_of_the_aldrachi_damage_t : public demon_hunter_attack_t
   {
     timespan_t delay;
 
-    art_of_the_glaive_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
-                                std::basic_string<char> reporting_name )
+    fury_of_the_aldrachi_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
+                                   std::basic_string<char> reporting_name )
       : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
     {
       background = dual  = true;
@@ -6837,9 +6843,9 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     }
   };
 
-  std::vector<art_of_the_glaive_damage_t*> attacks;
+  std::vector<fury_of_the_aldrachi_damage_t*> attacks;
 
-  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
+  fury_of_the_aldrachi_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
   {
     background = dual = true;
@@ -6848,8 +6854,8 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
       if ( effect.type() != E_TRIGGER_SPELL )
         continue;
 
-      attacks.push_back( p->get_background_action<art_of_the_glaive_damage_t>(
-          fmt::format( "art_of_the_glaive_{}", effect.index() ), effect, "art_of_the_glaive" ) );
+      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>(
+          fmt::format( "fury_of_the_aldrachi_{}", effect.index() ), effect, "fury_of_the_aldrachi" ) );
     }
   }
 
@@ -6874,7 +6880,13 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
          !p()->buff.rending_strike->up() )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      // with TWW3 tier set, it triggers 6 more times
+      if ( p()->set_bonuses.tww3_aldrachi_4pc->ok() )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      }
     }
 
     for ( auto attack : attacks )
@@ -8228,6 +8240,8 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
+  add_option( opt_int( "tww3_aldrachi_reaver_set", options.tww3_aldrachi_reaver_set, 0, 4 ) );
+  add_option( opt_int( "tww3_felscarred_set", options.tww3_felscarred_set, 0, 4 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8924,10 +8938,10 @@ void demon_hunter_t::init_spells()
   set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
   set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
   set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
-  set_bonuses.tww3_aldrachi_2pc   = spell_data_t::not_found();
-  set_bonuses.tww3_aldrachi_4pc   = spell_data_t::not_found();
-  set_bonuses.tww3_felscarred_2pc = spell_data_t::not_found();
-  set_bonuses.tww3_felscarred_4pc = spell_data_t::not_found();
+  set_bonuses.tww3_aldrachi_2pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236358 );
+  set_bonuses.tww3_aldrachi_4pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236360 );
+  set_bonuses.tww3_felscarred_2pc = conditional_spell_lookup( options.tww3_felscarred_set >= 2, 1236361 );
+  set_bonuses.tww3_felscarred_4pc = conditional_spell_lookup( options.tww3_felscarred_set >= 4, 1236362 );
 
   // Set Bonus Auxilliary ===================================================
 
@@ -9005,7 +9019,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
   {
-    active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
+    active.fury_of_the_aldrachi = get_background_action<fury_of_the_aldrachi_t>( "fury_of_the_aldrachi" );
   }
   if ( talent.aldrachi_reaver.preemptive_strike->ok() )
   {

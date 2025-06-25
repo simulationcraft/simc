@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -18901,7 +18901,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1136541)  : Apply Aura (6) | Proc Trigger Spell (42): Ruthless Aggression
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 441817 | Target: Self (1)

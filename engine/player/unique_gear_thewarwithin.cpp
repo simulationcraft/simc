@@ -560,7 +560,7 @@ void daybreak_spellthread( special_effect_t& effect )
 // 1233223 Role Mult Spell - Greater
 void twilight_devastation( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   struct twilight_devastation_t : public generic_proc_t
@@ -604,7 +604,7 @@ void twilight_devastation( special_effect_t& effect )
 // TODO: Check the chance to trigger void collapse is correct.
 void echoing_void( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "echoing_void_corruption", effect, 1225889, true );
@@ -661,7 +661,7 @@ void echoing_void( special_effect_t& effect )
 // TODO: Implement slow effect on enemy targeted by mind flay if it ever matters for sims.
 void twisted_appendage( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   struct mind_flay_t : public spell_t
@@ -748,10 +748,10 @@ void twisted_appendage( special_effect_t& effect )
 // 1227316 Buff
 // 1227312 Value Spell/Default Driver - Lesser
 // 1227314 Value Spell/Default Driver - Greater
-// TODO: Check if this still adheres to the increased chance if at least 2 players are wearing it. 
+// TODO: Check if this still adheres to the increased chance if at least 2 players are wearing it.
 void void_ritual( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   auto buff = create_buff<stat_buff_t>( effect.player, "the_end_is_coming", effect.player->find_spell( 1227316 ) )
@@ -777,7 +777,7 @@ void void_ritual( special_effect_t& effect )
 // 1227288 Role Mult Spell - Greater
 void gushing_wound( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   auto damage     = create_proc_action<generic_proc_t>( "gushing_wound", effect, 1227293 );
@@ -801,7 +801,7 @@ void gushing_wound( special_effect_t& effect )
 // 1227206 Role Mult Spell - Greater
 void infinite_stars( special_effect_t& effect )
 {
-  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } )
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 1, 5 } || effect.player->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     return;
 
   struct infinite_stars_t : public generic_proc_t

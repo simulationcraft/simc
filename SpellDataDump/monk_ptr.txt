@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -2556,7 +2556,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -3307,7 +3307,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 930
-Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -5460,7 +5460,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2369
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -6726,7 +6726,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -6791,7 +6791,7 @@ Description      : Niuzao's teachings allow you to shuffle during combat, increa
 Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.
 
 Name             : Celestial Brew (id=322507) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -7174,7 +7174,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Do Not Log Aura Refresh (291), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -10004,7 +10004,7 @@ Description      : $@spelldesc310454
 Name             : Walk with the Ox (id=387219) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
-                 : Effect#2 [op=set, values=(-250, -500)]
+                 : Effect#2 [op=set, values=(-30000, -60000)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10018,12 +10018,18 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Do Not Log Aura Refresh (291), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1021868)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Your damaging abilities have $@switch<$s1>[a][an increased] chance to invoke Niuzao, causing him to charge to your target's location and Stomp. 
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1252789)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (395267)
+                   Family Flags: 3
+Description      : Your damaging abilities have $@switch<$s1>[a][an increased] chance to invoke Niuzao, causing him to charge to your target's location and Stomp. 
+
+The cooldown of Invoke Niuzao, the Black Ox is reduced by ${$abs($s2/1000)} sec.
 Variables        : $chance=$?${$s1>1}[an increased ][a ]
 
 Name             : Fluidity of Motion (id=387230) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10093,7 +10099,7 @@ Description      : Reduces Stagger by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Staggering Strikes (id=387625) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10112,7 +10118,7 @@ Description      : When you Blackout Kick, your Stagger is reduced by $<reduc>.
 Variables        : $reduc=${$AP*$387625s2/100}
 
 Name             : Shadowboxing Treads (id=387638) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10782,7 +10788,7 @@ Description      : $@spelldesc388491
 Tooltip          : Versatility increased by $w1%.
 
 Name             : Quick Sip (id=388505) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -11801,7 +11807,7 @@ Description      : $@spelldesc389575
 Tooltip          : Avoidance increased by $w1%.
 
 Name             : Face Palm (id=389942) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=8, col=7, max_rank=1, req_points=20]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12440,7 +12446,7 @@ Description      : Increases Dodge by $s1%.
 Tooltip          : Increases Dodge by $s1%.
 
 Name             : Pretense of Instability (id=393516) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12804,7 +12810,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
@@ -13295,7 +13301,7 @@ Effects          :
 Description      : $@spelldesc400089
 
 Name             : Spirit of the Ox (id=400629) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18000,7 +18006,7 @@ Effects          :
 Description      : Enveloping Mist and Renewing Mist healing increased by $s1%.
 
 Name             : August Blessing (id=454483) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -18017,7 +18023,7 @@ Effects          :
 Description      : When you would be healed above maximum health, you instead convert an amount equal to $s1% of your critical strike chance to a heal over time effect.
 
 Name             : One With the Wind (id=454484) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -18172,7 +18178,7 @@ Description      : $@spelldesc454969
 Tooltip          : Haste increased by ${$w1}.1%.
 
 Name             : Strike At Dawn (id=455043) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19697,7 +19703,7 @@ Effects          :
 Description      : Removing $@spellname1240099 causes a $@spellname1240105 inflicting $s1 Arcane damage to all players.
 
 Name             : Celestial Infusion (id=1241059) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19726,7 +19732,7 @@ Variables        : $absorb=${($AP*11.34)*(1+$@versadmg)}
 
 
 Name             : Niuzao's Resolve (id=1241097) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19759,7 +19765,7 @@ Description      : $@spelldesc1241097
 Tooltip          : Healing for $w1 every $t sec.
 
 Name             : Zen State (id=1241136) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None

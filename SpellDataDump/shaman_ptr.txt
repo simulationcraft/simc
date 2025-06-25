@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -12799,7 +12799,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].
 
-During Ascendance, Windstrike consumes up to $s1 Maelstrom Weapon to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used$?s454009[. When available, it will instead discharge a Tempest at $s3% effectiveness, consuming $s6 Maelstrom Weapon.][.]
+During Ascendance, Windstrike consumes up to $s1 Maelstrom Weapon to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used$?s454009[. When available, it will instead discharge a Tempest at $s3% effectiveness, consuming up to $s6 Maelstrom Weapon.][.]
 
 Name             : Witch Doctor's Ancestry (id=384447) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
