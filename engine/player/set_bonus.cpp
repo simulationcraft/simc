@@ -15,9 +15,20 @@
 
 int composite_idx( specialization_e spec, hero_talent_e hero )
 {
-  int spec_idx = spec == SPEC_NONE ? 4 : dbc::spec_idx( spec );
-  int hero_idx = dbc::hero_idx( hero ) == -1 ? 0 : dbc::hero_idx( hero );
-  return spec_idx + hero_idx;
+  assert( ( spec != SPEC_NONE ) != ( hero != HERO_NONE ) );
+  int index = 0;
+
+  if ( spec == SPEC_NONE )
+    index += 4;
+  else
+    index += dbc::spec_idx( spec );
+
+  if ( hero == HERO_NONE )
+    index += 0;
+  else
+    index += dbc::hero_idx( hero );
+
+  return index;
 }
 
 int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
@@ -262,7 +273,6 @@ void set_bonus_t::initialize()
 void set_bonus_t::enable_all_sets()
 {
   auto set_bonuses = item_set_bonus_t::data( actor->dbc->ptr );
-  auto spec = actor->specialization();
 
   // assume class & spec matching bonuses are tier
   // or actor has the correct trait_sub_tree
@@ -273,8 +283,7 @@ void set_bonus_t::enable_all_sets()
     bool has_trait_sub_tree = bonus.trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) ) : false;
     if ( has_class && ( has_spec || has_trait_sub_tree ) )
     {
-      for ( unsigned tst : actor->player_sub_trees )
-        set_bonus_spec_data[ bonus.enum_id ][ composite_idx( spec, static_cast<hero_talent_e>( tst ) ) ][ bonus.bonus - 1 ].overridden = 1;
+      set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus, actor ) ][ bonus.bonus - 1 ].overridden = 1;
     }
   }
 }
