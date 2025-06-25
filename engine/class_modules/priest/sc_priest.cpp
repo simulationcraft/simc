@@ -1679,7 +1679,7 @@ public:
   {
     double m = ab::composite_da_multiplier( s );
 
-    if ( cast_state( s )->chain_number > 0 )
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && cast_state( s )->chain_number > 0 )
     {
       m *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
     }
@@ -1745,7 +1745,7 @@ public:
     if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
-      if ( cast_state( s )->chain_number > 0 )
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && cast_state( s )->chain_number > 0 )
       {
         mod *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
       }
@@ -1760,7 +1760,7 @@ public:
       {
         double chance = 0.9;
         // TODO: Find out the actual chance, this is a guess
-        if ( cast_state( s )->chain_number > 0 )
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && cast_state( s )->chain_number > 0 )
         {
           chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
         }
@@ -1775,7 +1775,7 @@ public:
         }
       }
 
-      if ( priest().talents.shadow.deaths_torment.enabled() )
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.deaths_torment.enabled() )
       {
         int number_of_chains;
         state_t* curr_state = cast_state( s );
