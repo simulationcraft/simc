@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.2.0.61624
-static const std::array<specialization_spell_entry_t, 564> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.1.7.61609
+static const std::array<specialization_spell_entry_t, 563> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -34,7 +34,6 @@ static const std::array<specialization_spell_entry_t, 564> __ptr_specialization_
   {  1,   72,  462117,      0, "Fury Warrior"                      , 0 },
   {  1,   72, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  1,   73,      71,      0, "Vanguard"                          , 0 },
-  {  1,   73,    1161,      0, "Challenging Shout"                 , 0 },
   {  1,   73,    5301,      0, "Revenge Trigger"                   , 0 },
   {  1,   73,   20243,      0, "Devastate"                         , 0 },
   {  1,   73,   76857,      0, "Mastery: Critical Block"           , 0 },
@@ -248,7 +247,6 @@ static const std::array<specialization_spell_entry_t, 564> __ptr_specialization_
   {  6,  251,  137006,      0, "Frost Death Knight"                , 0 },
   {  6,  251,  162698,      0, "Stat Negation Aura - Strength DPS" , 0 },
   {  6,  251,  178819,      0, "Dark Succor"                       , 0 },
-  {  6,  251,  194913,      0, "Glacial Advance"                   , 0 },
   {  6,  251,  195621,      0, "Frost Fever"                       , 0 },
   {  6,  251,  196770,      0, "Remorseless Winter"                , 0 },
   {  6,  251,  317214,      0, "Frostreaper"                       , 0 },
@@ -349,6 +347,7 @@ static const std::array<specialization_spell_entry_t, 564> __ptr_specialization_
   {  9,  265,  231791,      0, "Unstable Affliction"               , "Rank 2" },
   {  9,  265,  231792,      0, "Agony"                             , "Rank 2" },
   {  9,  265,  231811,      0, "Soulstone"                         , "Rank 2" },
+  {  9,  265,  317031,      0, "Xavian Teachings"                  , 0 },
   {  9,  265,  324536,      0, "Malefic Rapture"                   , 0 },
   {  9,  265,  334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  9,  265,  462111,      0, "Affliction Warlock"                , 0 },
