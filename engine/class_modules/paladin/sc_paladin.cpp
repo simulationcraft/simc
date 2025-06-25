@@ -2420,6 +2420,18 @@ struct empyrean_hammer_t : public paladin_spell_t
     return am;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = paladin_spell_t::composite_crit_damage_bonus_multiplier();
+
+    // Checking that Light's Guidance is learned to check that you're templar, probably not necessary
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, TWW3, B2 ) && p()->talents.templar.lights_guidance->ok() )
+    {
+      cm *= 1 + p()->find_spell( 1236391 )->effectN( 1 ).percent();
+    }
+    return cm;
+  }
+
   double composite_target_multiplier( player_t *t ) const override
   {
     double ctm = paladin_spell_t::composite_target_multiplier( t );
@@ -2440,6 +2452,12 @@ struct empyrean_hammer_t : public paladin_spell_t
           p()->talents.templar.wrathful_descent->effectN( 2 ).percent() * s->result_total;
       wd->execute_on_target( target );
       p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
+    }
+    //Checking that Light's Guidance is learned to check that you're templar
+    // Todo: How to add chance from spells?
+    if ( ( p()->sets->has_set_bonus(PALADIN_PROTECTION,TWW3,B2) && p()->talents.templar.lights_guidance->ok() && s->result == RESULT_CRIT && p()->rng().roll(2) ) )
+    {
+      p()->buffs.templar.lights_deliverance->trigger();
     }
   }
 };
