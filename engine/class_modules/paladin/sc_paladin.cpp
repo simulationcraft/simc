@@ -2264,7 +2264,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
-      p()->buffs.templar.hammer_of_light_ready->expire();
+      p()->buffs.templar.hammer_of_light_ready->decrement();
       if (p()->buffs.templar.lights_deliverance->at_max_stacks())
       {
         p()->trigger_lights_deliverance(true);
@@ -3999,9 +3999,11 @@ void paladin_t::create_buffs()
                                          ->set_max_stack( 10 )
                                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buffs.templar.hammer_of_light_ready =
+  buffs.templar.hammer_of_light_ready = 
       make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
-          ->set_duration( 12_s )
+                                            ->set_duration( 12_s )
+                                            ->set_max_stack( 2 )
+                                            ->set_initial_stack( sets->has_set_bonus(PALADIN_PROTECTION, TWW3, B4) ? 2 : 1 )
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
   buffs.templar.hammer_of_light_free =
