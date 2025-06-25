@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.1.7.61609
-static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
+// Active class spells, wow build 11.2.0.61624
+static const std::array<active_class_spell_t, 357> __ptr_active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -19,6 +19,7 @@ static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   {  1,   72,    5308,  163201, "Execute"                            },
   {  1,   72,  190411,    1680, "Whirlwind"                          },
   {  1,   72, 1229376,       0, "Single-Button Assistant"            },
+  {  1,   73,    1161,       0, "Challenging Shout"                  },
   {  1,   73,   20243,       0, "Devastate"                          },
   {  1,   73, 1229376,       0, "Single-Button Assistant"            },
   {  2,    0,     642,       0, "Divine Shield"                      },
@@ -177,6 +178,7 @@ static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   {  6,    0,  316239,       0, "Rune Strike"                        },
   {  6,  250,  195292,       0, "Death's Caress"                     },
   {  6,  250, 1229376,       0, "Single-Button Assistant"            },
+  {  6,  251,  194913,       0, "Glacial Advance"                    },
   {  6,  251,  196770,       0, "Remorseless Winter"                 },
   {  6,  251, 1229376,       0, "Single-Button Assistant"            },
   {  6,  252,   77575,       0, "Outbreak"                           },
@@ -357,7 +359,7 @@ static const std::array<active_class_spell_t, 355> __ptr_active_spells_data { {
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 11.1.7.61609
+// Pet active spells, wow build 11.2.0.61624
 static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },
