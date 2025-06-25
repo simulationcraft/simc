@@ -825,15 +825,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
     triggers_atonement         = true;
 
-    // This is hard coded in the spell
-    // spcoeff * $?a137032[${0.326139}][${0.442}]
-    // spell_power_mod.direct *= p.direct_power_mod;
-
-    // Negative modifier used for point scaling
-    // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
-
-    // Tuning modifier effect
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -845,9 +837,9 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     return m;
   }
 
-  void trigger( player_t* target, double mod_ )
+  void trigger( player_t* target, double deaths_torment_mod )
   {
-    mod = mod_;
+    mod = deaths_torment_mod;
 
     set_target( target );
     execute();
@@ -882,19 +874,19 @@ struct inescapable_torment_t final : public priest_pet_spell_t
     base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
-  void trigger( player_t* target, bool echo, double mod )
+  void trigger( player_t* target, bool deaths_torment_echo, double deaths_torment_mod )
   {
     duration = data().effectN( 2 ).time_value();
 
-    if ( echo )
+    if ( deaths_torment_echo )
     {
-      duration *= mod;
+      duration *= deaths_torment_mod;
     }
 
     set_target( target );
     execute();
 
-    damage->trigger( target, mod );
+    damage->trigger( target, deaths_torment_mod );
   }
 
   void execute() override

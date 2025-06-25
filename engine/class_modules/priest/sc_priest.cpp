@@ -1758,10 +1758,17 @@ public:
 
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
+        double chance = 0.9;
+        // TODO: Find out the actual chance, this is a guess
+        if ( cast_state( s )->chain_number > 0 )
+        {
+          chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        }
+
         // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
         if ( ( ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && priest().buffs.deathspeaker->check() ) ||
                save_health_percentage <= depth_of_shadows_threshold ) &&
-             rng().roll( 0.9 ) )
+             rng().roll( chance ) )
         {
           priest().procs.depth_of_shadows->occur();
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
