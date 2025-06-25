@@ -1412,6 +1412,8 @@ public:
     const spell_data_t* first_howling_blades_damage;
     const spell_data_t* second_howling_blades_damage;
     const spell_data_t* cryogenic_chamber_remorseless_winter_buff;
+    const spell_data_t* breath_of_sindragosa_buff;
+    const spell_data_t* breath_of_sindragosa_initial_hit;
     // Tier Sets
     const spell_data_t* icy_vigor;
     const spell_data_t* winning_streak_frost;
@@ -4527,7 +4529,7 @@ struct whitemane_pet_t final : public horseman_pet_t
       background              = true;
       aoe                     = 20;
       attack_power_mod.direct = 0;
-      impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic", p );
+      //impact_action           = get_action<epidemic_whitemane_main_t>( "epidemic", p );
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -5206,6 +5208,332 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 {
   death_knight_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
     : death_knight_action_t( n, p, s )
+  {
+  }
+};
+
+// Empower Event (stolen from sc_evoker) ===============================
+enum empower_e
+{
+  EMPOWER_NONE = 0,
+  EMPOWER_1    = 1,
+  EMPOWER_2,
+  EMPOWER_3,
+  EMPOWER_MAX,
+
+};
+template <typename Data, typename Base = action_state_t>
+struct death_knight_empower_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> );  // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> );        // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) =
+        *static_cast<const Data*>( static_cast<const death_knight_empower_action_state_t*>( o ) );
+  }
+};
+
+struct empower_data_t
+{
+  empower_e empower;
+
+  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
+  {
+    fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) );
+  }
+};
+
+template <class BASE>
+struct death_knight_empowered_base_t : public BASE
+{
+protected:
+  using state_t = death_knight_empower_action_state_t<empower_data_t>;
+
+public:
+  empower_e max_empower;
+
+  death_knight_empowered_base_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
+    : BASE( name, p, spell ), max_empower( empower_e::EMPOWER_3 )
+  {
+    BASE::can_have_one_button_penalty = false;
+  }
+
+  action_state_t* new_state() override
+  {
+     return new state_t( this, BASE::target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+     return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+};
+
+template <class BASE>
+struct death_knight_empowered_release_t : public death_knight_empowered_base_t<BASE>
+{
+  using base = death_knight_empowered_base_t<BASE>;
+
+  death_knight_empowered_release_t( std::string_view name, death_knight_t* p, const spell_data_t* spell )
+    : death_knight_empowered_base_t<BASE>( name, p, spell )
+  {
+    base::dual = true;  // set on parent?
+  }
+
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return base::cast_state( s )->empower;
+  }
+
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( base::cast_state( s )->empower );
+  }
+};
+
+template <class BASE>
+struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BASE>
+{
+  using base = death_knight_empowered_base_t<BASE>;
+
+  action_t* release_spell;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
+  int empower_to;
+  timespan_t base_empower_duration;
+  timespan_t lag;
+
+  void setup_empower_stats( int empower_level )
+  {
+    assert( empower_level > 0 );
+    assert( empower_level <= 5 );
+    setup_empower_stats( static_cast<empower_e>( empower_level ) );
+  }
+
+  void setup_empower_stats( empower_e empower_level )
+  {
+    empower_to = empower_level;
+    if ( static_cast<empower_e>( empower_to ) == EMPOWER_MAX )
+    {
+      base::dot_duration = base::base_tick_time = base_empower_duration = max_hold_time();
+    }
+    else
+    {
+      empower_to         = std::min( static_cast<int>( base::max_empower ), empower_to );
+      base::dot_duration = base::base_tick_time = base_empower_duration =
+          base_time_to_empower( static_cast<empower_e>( empower_to ) );
+    }
+  }
+
+  death_knight_empowered_charge_t( std::string_view name, death_knight_t* p, const spell_data_t* spell,
+                                   std::string_view options_str )
+    : base( name, p, spell ),
+      release_spell( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( base::stats ),
+      empower_to( EMPOWER_MAX ),
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
+  {
+    base::channeled = true;
+    base::add_option( opt_int( "empower_to", empower_to, EMPOWER_1, EMPOWER_MAX ) );
+
+    base::parse_options( options_str );
+
+    setup_empower_stats( empower_to );
+
+    base::gcd_type = gcd_haste_type::NONE;
+    if ( base::trigger_gcd > timespan_t::zero() )
+      base::min_gcd = base::trigger_gcd;
+  }
+
+  template <typename T>
+  void create_release_spell( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
+                   "Empowered release spell must be dervied from empowered_release_spell_t." );
+
+    release_spell             = get_action<T>( n, base::p() );
+    release_spell->stats      = base::stats;
+    release_spell->background = false;
+  }
+
+  timespan_t base_time_to_empower( empower_e emp ) const
+  {
+    // 11.2 TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( emp )
+    {
+      case empower_e::EMPOWER_1:
+        return 1000_ms;
+      case empower_e::EMPOWER_2:
+        return 1750_ms;
+      case empower_e::EMPOWER_3:
+        return 2500_ms;
+      default:
+        break;
+    }
+
+    return 0_ms;
+  }
+
+  timespan_t max_hold_time() const
+  {
+    // TODO: confirm if this is affected by duration mods/haste
+    return base_time_to_empower( base::max_empower ) + 2_s;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    return composite_dot_duration( s );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dur = base::composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
+  }
+
+  double dot_duration_pct_multiplier( const action_state_t* s ) const override
+  {
+    // action_t::dot_duration_pct_multiplier calls tick_time(), but since tick_time() is overriden to call
+    // composite_dot_duration() we need to entirely bypass action_t::dot_duration_pct_multiplier().
+    //
+    // *** Any non-parsed duration multipliers should be implemented here. ***
+    auto mul = base::hasted_dot_duration ? s->haste : 1.0;
+
+    for ( const auto& i : base::dot_duration_effects )
+      mul *= 1.0 + base::get_effect_value( i );
+
+    return mul;
+  }
+
+  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
+  {
+    auto base_time = base_time_to_empower( emp );
+    auto mult      = composite_dot_duration( s ) / base_empower_duration;
+
+    return base_time * mult;
+  }
+
+  empower_e empower_level( const dot_t* d ) const
+  {
+    auto emp = empower_e::EMPOWER_NONE;
+
+    if ( !d->is_ticking() )
+      return emp;
+
+    auto s       = d->state;
+    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
+
+    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
+      emp = empower_e::EMPOWER_3;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
+      emp = empower_e::EMPOWER_2;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
+      emp = empower_e::EMPOWER_1;
+
+    return std::min( base::max_empower, emp );
+  }
+
+  virtual player_t* get_release_target( dot_t* )
+  {
+    return base::target;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    base::last_tick( d );
+
+    // being stunned ends the empower without triggering the release spell
+    //if ( base::p()->buffs.stunned->check() )
+    //{
+    //  base::p()->was_empowering = false;
+    //  return;
+    //}
+
+    auto release_target = get_release_target( d );
+
+    /*if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
+    {
+      base::p()->was_empowering = false;
+      return;
+    }*/
+
+    auto emp_state        = release_spell->get_state();
+    emp_state->target     = release_target;
+    release_spell->target = release_target;
+    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
+
+    base::cast_state( emp_state )->empower = empower_level( d );
+
+    release_spell->schedule_execute( emp_state );
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_spell;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    base::p()->last_foreground_action = release_spell;
+    // Start GCD - All Empowerw have a GCD of 0.5s after completion.
+    base::start_gcd();
+  }
+};
+
+struct death_knight_empowered_charge_spell_t : public death_knight_empowered_charge_t<death_knight_spell_t>
+{
+  using base_t = death_knight_empowered_charge_spell_t;
+
+  death_knight_empowered_charge_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s,
+                                         std::string_view o )
+    : death_knight_empowered_charge_t( n, p, s, o )
+  {
+  }
+
+  player_t* get_release_target( dot_t* d ) override
+  {
+    auto t = d->state->target;
+
+    if ( t->is_sleeping() )
+      t = nullptr;
+
+    return t;
+  }
+};
+
+struct death_knight_empowered_release_spell_t : public death_knight_empowered_release_t<death_knight_spell_t>
+{
+  using base_t = death_knight_empowered_release_t<death_knight_spell_t>;
+  death_knight_empowered_release_spell_t( std::string_view n, death_knight_t* p, const spell_data_t* s )
+    : death_knight_empowered_release_t( n, p, s )
   {
   }
 };
@@ -7782,7 +8110,7 @@ private:
 struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
 {
   breath_of_sindragosa_tick_t( std::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->talent.frost.breath_of_sindragosa->effectN( 1 ).trigger() ),
+    : death_knight_spell_t( n, p, p->spell.breath_of_sindragosa_buff->effectN( 1 ).trigger() ),
       hyperpyrexia_mod( 0.0 ),
       hyperpyrexia_chance( 0.0 )
   {
@@ -7845,58 +8173,70 @@ private:
   double hyperpyrexia_chance;
 };
 
-struct breath_of_sindragosa_t final : public death_knight_spell_t
+struct empower_breath_of_sindragosa_t final : public death_knight_empowered_charge_spell_t
 {
-  breath_of_sindragosa_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "breath_of_sindragosa", p, p->talent.frost.breath_of_sindragosa ),
-      ticking_cost( 0.0 ),
-      rune_gen( 0 )
+  struct breath_of_sindragosa_t final : public death_knight_empowered_release_spell_t
   {
-    may_miss = may_dodge = may_parry = false;
-    parse_options( options_str );
-
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
+    breath_of_sindragosa_t( std::string_view name, death_knight_t* p )
+      : death_knight_empowered_release_spell_t( name, p, p->spell.breath_of_sindragosa_buff ),
+        ticking_cost( 0.0 ),
+        rune_gen( 0 )
     {
-      const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
+      may_miss = may_dodge = may_parry = false;
+      background                       = true;
+
+      for ( size_t idx = 1; idx <= data().power_count(); idx++ )
       {
-        ticking_cost = power.cost_per_tick();
+        const spellpower_data_t& power = data().powerN( idx );
+        if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
+        {
+          ticking_cost = power.cost_per_tick();
+        }
       }
+
+      if ( p->talent.frost.breath_of_sindragosa.ok() )
+      {
+        add_child( p->background_actions.breath_of_sindragosa_tick );
+      }
+
+      rune_gen = as<unsigned>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() );
     }
 
-    if ( p->talent.frost.breath_of_sindragosa.ok() )
+    void execute() override
     {
-      add_child( p->background_actions.breath_of_sindragosa_tick );
+      death_knight_spell_t::execute();
+      p()->buffs.breath_of_sindragosa->trigger();
+      p()->replenish_rune( rune_gen, p()->gains.breath_of_sindragosa );
+
+      p()->background_actions.breath_of_sindragosa_tick->execute_on_target( target );
+
+      if ( p()->talent.icy_talons.ok() )
+        p()->buffs.icy_talons->trigger();
     }
 
-    rune_gen = as<unsigned>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() );
-  }
+    // Breath of Sindragosa can not be used if there isn't enough resources available for one tick
+    bool ready() override
+    {
+      if ( !p()->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
+        return false;
 
-  void execute() override
+      return death_knight_spell_t::ready();
+    }
+
+  private:
+    double ticking_cost;
+    int rune_gen;
+  };
+
+  empower_breath_of_sindragosa_t( death_knight_t* p, std::string_view options_str )
+    : death_knight_empowered_charge_spell_t( "breath_of_sindragosa", p, p->talent.frost.breath_of_sindragosa, options_str )
   {
-    death_knight_spell_t::execute();
-    p()->buffs.breath_of_sindragosa->trigger();
-    p()->replenish_rune( rune_gen, p()->gains.breath_of_sindragosa );
-
-    p()->background_actions.breath_of_sindragosa_tick->execute_on_target( target );
-
-    if ( p()->talent.icy_talons.ok() )
-      p()->buffs.icy_talons->trigger();
+    create_release_spell<breath_of_sindragosa_t>( "breath_of_sindragosa_release" );
+    // cast action lists a cost that is not used in game
+    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
   }
-
-  // Breath of Sindragosa can not be used if there isn't enough resources available for one tick
-  bool ready() override
-  {
-    if ( !p()->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
-      return false;
-
-    return death_knight_spell_t::ready();
-  }
-
-private:
-  double ticking_cost;
-  int rune_gen;
 };
+
 
 // Chains of Ice ============================================================
 
@@ -9149,7 +9489,9 @@ struct frostscythe_base_t : public death_knight_melee_attack_t
     if ( p->talent.frost.frostreaper.ok() )
     {
       frostreaper = p->background_actions.frostreaper;
-      add_child( frostreaper );
+      // necessary hack as long as we support TWW2 since the set can proc frostreaper without fsc talented
+      if ( !p->background_actions.frostreaper->stats->parent )
+        add_child( frostreaper );
     }
   }
 
@@ -13031,7 +13373,7 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
 
   // Frost Actions
   if ( name == "breath_of_sindragosa" )
-    return new breath_of_sindragosa_t( this, options_str );
+    return new empower_breath_of_sindragosa_t( this, options_str );
   if ( name == "empower_rune_weapon" )
     return new empower_rune_weapon_t( this, options_str );
   if ( name == "frost_strike" )
@@ -13858,7 +14200,7 @@ void death_knight_t::spell_lookups()
   spell.bonegrinder_frost_buff      = conditional_spell_lookup( talent.frost.bonegrinder.ok(), 377103 );
   spell.enduring_strength_buff      = conditional_spell_lookup( talent.frost.enduring_strength.ok(), 377195 );
   spell.inexorable_assault_damage   = conditional_spell_lookup( talent.frost.inexorable_assault.ok(), 253597 );
-  spell.breath_of_sindragosa_rune_gen = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
+  spell.breath_of_sindragosa_rune_gen = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 1234304 );
   spell.death_strike_offhand =
       conditional_spell_lookup( talent.death_strike.ok() && off_hand_weapon.type != WEAPON_NONE, 66188 );
   spell.frostwyrms_fury_damage = conditional_spell_lookup( talent.frost.frostwyrms_fury.ok(), 279303 );
@@ -13886,6 +14228,8 @@ void death_knight_t::spell_lookups()
   spell.first_howling_blades_damage  = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231083 );
   spell.second_howling_blades_damage = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231082 );
   spell.cryogenic_chamber_remorseless_winter_buff = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 1233152 );
+  spell.breath_of_sindragosa_buff        = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 152279 );
+  spell.breath_of_sindragosa_initial_hit = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 1231316 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
@@ -14735,7 +15079,7 @@ void death_knight_t::create_buffs()
 
   // Frost
   buffs.breath_of_sindragosa = make_fallback<breath_of_sindragosa_buff_t>(
-      talent.frost.breath_of_sindragosa.ok(), this, "breath_of_sindragosa", talent.frost.breath_of_sindragosa );
+      talent.frost.breath_of_sindragosa.ok(), this, "breath_of_sindragosa", spell.breath_of_sindragosa_buff );
 
   buffs.gathering_storm =
       make_fallback( talent.frost.gathering_storm.ok(), this, "gathering_storm", spell.gathering_storm_buff )
