@@ -2123,7 +2123,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       background = true;
 
       is_hammer_of_light         = true;
-      aoe                        = 5;
+      aoe                        = p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value();
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.

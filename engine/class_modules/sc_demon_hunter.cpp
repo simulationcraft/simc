@@ -959,9 +959,6 @@ public:
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat = 0.6;
-
-    int tww3_aldrachi_reaver_set = 0;
-    int tww3_felscarred_set      = 0;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -2270,7 +2267,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       int second_ability_increase =
           BASE::p()->is_ptr() ? BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() : 1;
 
-      int first_ability_amount = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int first_ability_amount = 1;
       int second_ability_amount =
           1 + second_ability_increase + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
@@ -8253,8 +8250,6 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
-  add_option( opt_int( "tww3_aldrachi_reaver_set", options.tww3_aldrachi_reaver_set, 0, 4 ) );
-  add_option( opt_int( "tww3_felscarred_set", options.tww3_felscarred_set, 0, 4 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8951,10 +8946,10 @@ void demon_hunter_t::init_spells()
   set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
   set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
   set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
-  set_bonuses.tww3_aldrachi_2pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236358 );
-  set_bonuses.tww3_aldrachi_4pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236360 );
-  set_bonuses.tww3_felscarred_2pc = conditional_spell_lookup( options.tww3_felscarred_set >= 2, 1236361 );
-  set_bonuses.tww3_felscarred_4pc = conditional_spell_lookup( options.tww3_felscarred_set >= 4, 1236362 );
+  set_bonuses.tww3_aldrachi_2pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B2 );
+  set_bonuses.tww3_aldrachi_4pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B4 );
+  set_bonuses.tww3_felscarred_2pc = sets->set( HERO_FELSCARRED, TWW3, B2 );
+  set_bonuses.tww3_felscarred_4pc = sets->set( HERO_FELSCARRED, TWW3, B4 );
 
   // Set Bonus Auxilliary ===================================================
 

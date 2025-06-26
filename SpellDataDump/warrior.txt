@@ -9803,7 +9803,7 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Suppress Caster Procs 
 Effects          :
 #1 (id=1016059)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1016060)  : Unknown(293)
+#2 (id=1016060)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 | Target: Self (1)
 Description      : $@spelldesc383877
 

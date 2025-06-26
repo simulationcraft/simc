@@ -7626,7 +7626,7 @@ Labels           : 16: Class Spells
 Triggered By     : Breath of Sindragosa (152279)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=779584)   : Unknown(293)
+#1 (id=779584)   : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1614 | Target: Self (1)
 Description      : $@spelldesc155166
 
@@ -17129,9 +17129,9 @@ Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Not
 Effects          :
 #1 (id=1167345)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#2 (id=1230253)  : Unknown(293)
+#2 (id=1230253)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1877 | Target: Self (1)
-#3 (id=1230277)  : Unknown(293)
+#3 (id=1230277)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1927 | Target: Self (1)
 Description      : $@spelldesc434143
 Tooltip          : $?a137007[Scourge Strike][Heart Strike] consumes your $?a137007[Virulent Plague][Blood Plague] to deal $w1% of their remaining damage to the target.

@@ -762,6 +762,7 @@ public:
     propagate_const<buff_t*> frozen_dominion;
     buff_t* cryogenic_chamber;
     buff_t* cryogenic_chamber_remorseless_winter;
+    propagate_const<buff_t*> frostbane;
     
     // Tier Sets
     propagate_const<buff_t*> icy_vigor;
@@ -913,6 +914,7 @@ public:
     propagate_const<action_t*> erw_projectile;
     propagate_const<action_t*> frostreaper;
     propagate_const<action_t*> cryogenic_chamber_remorseless_winter;
+    propagate_const<action_t*> frostbane_strike;
     action_t* breath_of_sindragosa_inital_hit;
 
     // Unholy
@@ -1200,6 +1202,7 @@ public:
       player_talent_t hyperpyrexia;
       // Row 10
       player_talent_t the_long_winter;
+      player_talent_t frostbane;
       player_talent_t breath_of_sindragosa;
     } frost;
 
@@ -1413,6 +1416,9 @@ public:
     const spell_data_t* first_howling_blades_damage;
     const spell_data_t* second_howling_blades_damage;
     const spell_data_t* cryogenic_chamber_remorseless_winter_buff;
+    const spell_data_t* frostbane_buff;
+    const spell_data_t* frostbane_driver;
+    const spell_data_t* frostbane_damage;
     const spell_data_t* breath_of_sindragosa_buff;
     const spell_data_t* breath_of_sindragosa_initial_hit;
     const spell_data_t* breath_of_sindragosa_erw_refund;
@@ -6220,6 +6226,8 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
     set_default_value_from_effect( idx );
     set_duration( 0_ms );  // Handled by DT and VB
     add_invalidate( CACHE_HASTE );
+    if ( p->sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ) )
+      add_invalidate( CACHE_MASTERY );
     set_expire_callback( [ p ]( buff_t*, int, timespan_t ) {
       p->buffs.vampiric_strike->expire();
       if ( p->talent.sanlayn.infliction_of_sorrow.ok() )
@@ -6246,36 +6254,30 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
 struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
 {
   essence_of_the_blood_queen_buff_t( death_knight_t* p, std::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell ), gift_idx( 0 )
+    : death_knight_buff_t( p, name, spell )
   {
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
     set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 1 ).base_value() / 10 );
-    gift_idx = p->specialization() == DEATH_KNIGHT_UNHOLY ? 7 : 8;
   }
 
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    double v = death_knight_buff_t::value();
+    double v = default_value;
 
-    if ( p()->buffs.gift_of_the_sanlayn->check() )
-      v *= 1.0 + p()->spell.gift_of_the_sanlayn_buff->effectN( gift_idx ).percent();
+    v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
 
     return v;
   }
 
   double check_value() const override
   {
-    double v = death_knight_buff_t::check_value();
+    double v = default_value;
 
-    if ( p()->buffs.gift_of_the_sanlayn->check() )
-      v *= 1.0 + p()->spell.gift_of_the_sanlayn_buff->effectN( gift_idx ).percent();
+    v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
 
     return v;
   }
-
-private:
-  int gift_idx;
 };
 
 // Death and Decay ==========================================================
@@ -9697,7 +9699,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     if ( sb )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
-      m *= 1.0 + ri->default_value * ri->max_stack();
+      // 11.2 TODO check if this multi is right
+      m *= 1.0 + ri->default_value * ri->max_stack(); 
     }
 
     return m;
@@ -9719,6 +9722,61 @@ public:
   bool sb;
 };
 
+struct frostbane_strike_t final : public death_knight_melee_attack_t
+{
+  frostbane_strike_t( std::string_view n, death_knight_t* p )
+    : death_knight_melee_attack_t( n, p, p->spell.frostbane_damage )
+  {
+    background = true;
+    aoe        = -1;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m      = death_knight_melee_attack_t::composite_da_multiplier( state );
+    const auto ri = get_td( state->target )->debuff.razorice;
+
+    if ( ri->at_max_stacks() )
+    {
+      m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
+      ri->expire();
+    }
+
+    double target_reduction = 1 - ( state->chain_target * p()->talent.frost.frostbane->effectN( 4 ).percent() );
+    target_reduction        = std::max( target_reduction, p()->talent.frost.frostbane->effectN( 5 ).percent() );
+
+    m *= target_reduction;
+
+    return m;
+  }
+};
+
+struct frostbane_t final : public death_knight_spell_t
+{
+  frostbane_t( std::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.frostbane_driver ),
+      frostbane_strike( p->background_actions.frostbane_strike )
+  {
+    if ( data().ok() )
+    {
+      add_child( frostbane_strike );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // 11.2 TODO drive the delays from likely misc values
+    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 200_ms );
+    make_event<delayed_execute_event_t>( *sim, p(), frostbane_strike, target, 250_ms );
+    p()->buffs.frostbane->expire();
+  }
+
+private:
+  action_t* frostbane_strike;
+};
+
 struct frost_strike_t final : public death_knight_melee_attack_t
 {
   frost_strike_t( death_knight_t* p, std::string_view options_str )
@@ -9729,7 +9787,8 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       oh_sb( p->background_actions.frost_strike_sb_offhand ),
       mh_delay( 0_ms ),
       oh_delay( 0_ms ),
-      sb( false )
+      sb( false ),
+      frostbane( new frostbane_t( "frostbane", p ) )
   {
     parse_options( options_str );
 
@@ -9761,6 +9820,10 @@ struct frost_strike_t final : public death_knight_melee_attack_t
           add_child( oh_sb );
         }
       }
+      if ( p->talent.frost.frostbane.ok() )
+      {
+        add_child( frostbane );
+      }
     }
   }
 
@@ -9768,17 +9831,26 @@ struct frost_strike_t final : public death_knight_melee_attack_t
   {
     const auto td = get_td( target );
 
+    // 11.2 TODO 6/21/25 IO still buffs the frost strike that procs RE so we need to delay expiration and prevent
+    // additional stacks til after the FS is resolved
+
+    // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
+    // when frostbane procs RE
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    {
+      p()->buffs.icy_onslaught->trigger();
+    }
+
+    if ( p()->buffs.frostbane->up() )
+    {
+      frostbane->execute_on_target( target );
+      return;
+    }
+
     if ( p()->talent.frost.shattering_blade.ok() && td->debuff.razorice->at_max_stacks() )
     {
       sb = true;
       td->debuff.razorice->expire();
-    }
-
-    // 11.2 TODO 6/21/25 IO still buffs the frost strike that procs RE so we need to delay expiration and prevent
-    // additional stacks til after the FS is resolved
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
-    {
-      p()->buffs.icy_onslaught->trigger();
     }
 
     death_knight_melee_attack_t::execute();
@@ -9835,6 +9907,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
 private:
   action_t *&mh, *&oh, *&mh_sb, *&oh_sb;
+  action_t* frostbane;
   timespan_t mh_delay;
   timespan_t oh_delay;
   bool sb;
@@ -9900,7 +9973,9 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    /*get_td( state->target )->debuff.razorice->trigger();
+    auto razorice = get_td( state->target )->debuff.razorice;
+    
+    razorice->trigger();
     if ( is_arctic_assault )
     {
       p()->procs.razorice_from_arctic_assault->occur();
@@ -9908,7 +9983,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     else
     {
       p()->procs.razorice_from_glacial_advance->occur();
-    }*/
+    }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
          p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
@@ -9916,6 +9991,10 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       residual_action::trigger( p()->background_actions.hyperpyrexia_damage, state->target,
                                 state->result_amount * p()->talent.frost.hyperpyrexia->effectN( 1 ).percent() );
     }
+
+    // 11.2 TODO find actual proc chance
+    if ( p()->rng().roll( .15 * razorice->check() ) )
+      p()->buffs.frostbane->trigger();
   }
 
 private:
@@ -13354,10 +13433,15 @@ void death_knight_t::create_actions()
       background_actions.frostreaper = get_action<frostreaper_t>( "frostreaper", this );
     }
 
-    if ( talent.frost.cryogenic_chamber->ok() )
+    if ( talent.frost.cryogenic_chamber.ok() )
     {
       background_actions.cryogenic_chamber_remorseless_winter =
           get_action<cryogenic_chamber_remorseless_winter_t>( "remorseless_winter", this );
+    }
+
+    if ( talent.frost.frostbane.ok() )
+    {
+      background_actions.frostbane_strike = get_action<frostbane_strike_t>( "frostbane", this );
     }
 
     if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
@@ -14065,6 +14149,7 @@ void death_knight_t::init_spells()
   talent.frost.hyperpyrexia      = find_talent_spell( talent_tree::SPECIALIZATION, "Hyperpyrexia" );
   // Row 10
   talent.frost.the_long_winter      = find_talent_spell( talent_tree::SPECIALIZATION, "The Long Winter" );
+  talent.frost.frostbane            = find_talent_spell( talent_tree::SPECIALIZATION, "Frostbane" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
 
   //////// Unholy
@@ -14284,6 +14369,12 @@ void death_knight_t::spell_lookups()
   spell.icy_onslaught_buff           = conditional_spell_lookup( talent.frost.icy_onslaught.ok(), 1230273 );
   spell.first_howling_blades_damage  = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231083 );
   spell.second_howling_blades_damage = conditional_spell_lookup( talent.frost.howling_blades.ok(), 1231082 );
+  spell.cryogenic_chamber_remorseless_winter_buff =
+      conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 1233152 );
+  spell.frostbane_buff       = conditional_spell_lookup( talent.frost.frostbane.ok(), 1229310 );
+  spell.frostbane_driver     = conditional_spell_lookup( talent.frost.frostbane.ok(), 1228433 );
+  spell.frostbane_damage        = conditional_spell_lookup( talent.frost.frostbane.ok(), 1228443 );
+
   spell.cryogenic_chamber_remorseless_winter_buff = conditional_spell_lookup( talent.frost.cryogenic_chamber.ok(), 1233152 );
   spell.breath_of_sindragosa_buff        = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 152279 );
   spell.breath_of_sindragosa_initial_hit = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 1231316 );
@@ -14960,9 +15051,8 @@ void death_knight_t::create_buffs()
           ->set_default_value( spell.rune_carved_plates_magical_buff->effectN( 1 ).base_value() / 1000 );
 
   // San'layn
-    buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_buff_t>(
-        talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen",
-        spell.essence_of_the_blood_queen_buff );
+  buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_buff_t>(
+      talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff );
 
   buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>(
       talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn", spell.gift_of_the_sanlayn_buff );
@@ -15274,6 +15364,8 @@ void death_knight_t::create_buffs()
   buffs.icy_onslaught =
       make_fallback( talent.frost.icy_onslaught.ok(), this, "icy_onslaught", spell.icy_onslaught_buff );
 
+  buffs.frostbane = make_fallback( talent.frost.frostbane.ok(), this, "frostbane", spell.frostbane_buff );
+
   // Unholy
   buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
       talent.unholy.dark_transformation.ok(), this, "dark_transformation", spell.dark_transformation_player_buff );
@@ -15410,6 +15502,7 @@ void death_knight_t::init_procs()
   procs.razorice_from_arctic_assault  = get_proc( "Razorice from Arctic Assault" );
   procs.razorice_from_avalanche       = get_proc( "Razorice from Avalanche" );
   procs.razorice_from_runeforge       = get_proc( "Razorice from Runeforge" );
+  procs.razorice_from_glacial_advance = get_proc( "Razorice from Glacial Advance" );
 
   procs.ready_rune = get_proc( "Rune ready" );
 

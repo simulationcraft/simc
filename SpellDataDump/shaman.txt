@@ -5460,7 +5460,7 @@ Effects          :
                    Family Flags: 76
 #6 (id=363023)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self (1)
-#7 (id=1185735)  : Unknown(293)
+#7 (id=1185735)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 | Target: Self (1)
 Description      : $@spelldesc201845
 Tooltip          : Stormstrike cooldown has been reset$?$?a319930[ and will deal $319930w1% additional damage as Nature][].
@@ -12863,7 +12863,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Sundering (197214), Alpha Wolf (198455), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Echoing Shock (320125), Fire Nova (333977), Ice Strike (342240), Primordial Wave (375984), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Ice Strike (470194), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 24, 58
-#3 (id=1185734)  : Unknown(293)
+#3 (id=1185734)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 | Target: Self (1)
 Description      : $@spelldesc335899
 Tooltip          : Damage dealt by your Physical and Frost abilities increased by $w1%.

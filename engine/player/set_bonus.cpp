@@ -445,7 +445,7 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
     if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
     {
       if ( bonus.trait_sub_tree != -1 )
-        actor->sim->error( "Old style set bonus options do not support tier sets enabled by trait tree! Use set_bonus=[1/0]name=set_name,hero_tree=hero_tree_name instead." );
+        actor->sim->error( "Old style set bonus options do not support tier sets enabled by trait tree! Check Equipment page of wiki for alternative syntax." );
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
     }
@@ -454,13 +454,15 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
   return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
 }
 
-bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, bool& enabled, specialization_e& spec, hero_talent_e& hero )
+bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus,
+                                              set_bonus_e& bonus, bool& enabled, specialization_e& spec,
+                                              hero_talent_e& hero )
 {
   set_bonus = SET_BONUS_NONE;
-  bonus = B_NONE;
-  enabled = false;
-  spec = SPEC_NONE;
-  hero = HERO_NONE;
+  bonus     = B_NONE;
+  enabled   = false;
+  spec      = SPEC_NONE;
+  hero      = HERO_NONE;
 
   auto params = util::string_split<util::string_view>( opt_str, "," );
 
@@ -468,35 +470,42 @@ bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bon
   for ( util::string_view param : params )
   {
     auto value_pair = util::string_split<util::string_view>( param, "=" );
-    if ( util::str_compare_ci( value_pair[0], "name" ) )
+    if ( util::str_compare_ci( value_pair[ 0 ], "name" ) )
     {
-      set_name = value_pair[1];
+      set_name = value_pair[ 1 ];
       continue;
     }
-    if ( util::str_compare_ci( value_pair[0], "pc" ) )
+    if ( util::str_compare_ci( value_pair[ 0 ], "pc" ) )
     {
-      unsigned bonus_index = util::to_unsigned( value_pair[1] );
+      unsigned bonus_index = util::to_unsigned( value_pair[ 1 ] );
       if ( bonus_index > B_MAX )
         return false;
       bonus = static_cast<set_bonus_e>( bonus_index - 1 );
       continue;
     }
-    if ( util::str_compare_ci( value_pair[0], "spec" ) )
+    if ( util::str_compare_ci( value_pair[ 0 ], "spec" ) )
     {
-      spec = util::parse_specialization_type( value_pair[1] );
+      spec = util::parse_specialization_type( value_pair[ 1 ] );
       if ( spec == SPEC_NONE )
         return false;
       continue;
     }
-    if ( util::str_compare_ci( value_pair[0], "hero_tree" ) )
+    if ( util::str_compare_ci( value_pair[ 0 ], "hero_tree" ) )
     {
-      hero = util::parse_hero_talent_type( value_pair[1] );
+      hero = util::parse_hero_talent_type( value_pair[ 1 ] );
       if ( hero == HERO_NONE )
         return false;
       continue;
     }
-    if ( util::str_compare_ci( value_pair[0], "0" ) || util::str_compare_ci( value_pair[0], "1" ) )
-      if ( int val = util::to_int( value_pair[0] ); val == 1 || val == 0)
+    if ( util::str_compare_ci( value_pair[ 0 ], "0" ) || util::str_compare_ci( value_pair[ 0 ], "1" ) )
+      if ( int val = util::to_int( value_pair[ 0 ] ); val == 1 || val == 0 )
+      {
+        enabled = val;
+        continue;
+      }
+    if ( util::str_compare_ci( value_pair[ 0 ], "enable" ) &&
+         ( util::str_compare_ci( value_pair[ 1 ], "0" ) || util::str_compare_ci( value_pair[ 1 ], "1" ) ) )
+      if ( int val = util::to_int( value_pair[ 1 ] ); val == 1 || val == 0 )
       {
         enabled = val;
         continue;
