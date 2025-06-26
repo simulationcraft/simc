@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61624 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61684 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -17153,6 +17153,7 @@ Effects          :
 Description      : Rapid Fire grants Precise Shots.
 
 Name             : Shrapnel Shot (id=473520) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Marksmanship [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
@@ -17166,7 +17167,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1192466)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Explosive Shot has a $s1% chance to grant Lock and Load.
+Description      : Casting Explosive Shot has a $s1% chance to grant Lock and Load.
 
 Name             : Magnetic Gunpowder (id=473522) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Marksmanship [tree=spec, row=7, col=7, max_rank=1, req_points=8]
