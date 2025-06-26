@@ -4611,7 +4611,7 @@ struct whitemane_pet_t final : public horseman_pet_t
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
-    epidemic = new epidemic_whitemane_t( "epidemic_cast", this );
+    epidemic = new epidemic_whitemane_t( "epidemic_main", this );
     death_coil = new death_coil_whitemane_background_t( "death_coil_tww3_4pc", this );
   }
 
