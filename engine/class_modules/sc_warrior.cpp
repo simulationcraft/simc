@@ -1184,7 +1184,7 @@ public:
       // Effect 3 is the increased rage gain.
       parse_effects( p()->talents.colossus.practiced_strikes, effect_mask_t( true ).disable( 3 ) );
 
-      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      if ( p()->sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
       {
         parse_effects( p()->buff.critical_conclusion );
         parse_effects( p()->buff.deeper_wounds );
@@ -1262,8 +1262,7 @@ public:
 
       if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
       {
-        // Colossus 2pc
-        if( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        if( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B2 ) )
         {
           parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
                             p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 3 ), p()->spell.wrecked_debuff->effectN( 3 ).base_value() / 1000, p()->spec.protection_warrior );
@@ -3348,8 +3347,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Colossus 4pc
-      if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
       {
         p()->buff.deeper_wounds->trigger();
       }
@@ -4124,8 +4122,7 @@ struct demolish_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Colossus 4pc
-      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
       {
         p()->buff.critical_conclusion->trigger();
       }
@@ -4729,8 +4726,7 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 2pc
-      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
       {
         slayers_strike = get_action<slayers_strike_t>( "slayers_strike_execute", p );
         add_child( slayers_strike );
@@ -4841,11 +4837,10 @@ struct execute_arms_t : public warrior_attack_t
     {
       if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
       {
-        // Slayer 2pc
-        if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
         {
           auto target_data = td( state->target );
-          if ( slayers_strike && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+          if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
           {
             slayers_strike->execute_on_target( state->target );
           }
@@ -5006,8 +5001,7 @@ struct execute_fury_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 2pc
-      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
       {
         slayers_strike = get_action<slayers_strike_t>("slayers_strike_execute", p );
         add_child( slayers_strike );
@@ -5044,11 +5038,10 @@ struct execute_fury_t : public warrior_attack_t
     {
       if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
       {
-        // Slayer 2pc
-        if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+        if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
         {
           auto target_data = td( state->target );
-          if ( slayers_strike && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+          if ( slayers_strike && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B2 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
           {
             slayers_strike->execute_on_target( state->target );
           }
@@ -5522,8 +5515,7 @@ struct raging_blow_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
         add_child( reap_the_storm );
@@ -5543,11 +5535,10 @@ struct raging_blow_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         auto target_data = td( s->target );
-        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        if ( reap_the_storm && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
         {
           reap_the_storm->execute_on_target( s->target );
         }
@@ -5736,8 +5727,7 @@ struct crushing_blow_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_crushing_blow", p );
         add_child( reap_the_storm );
@@ -5757,11 +5747,10 @@ struct crushing_blow_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         auto target_data = td( s->target );
-        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        if ( reap_the_storm && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
         {
           reap_the_storm->execute_on_target( s->target );
         }
@@ -6154,8 +6143,7 @@ struct overpower_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
         add_child( reap_the_storm );
@@ -6174,11 +6162,10 @@ struct overpower_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Slayer 4pc
-      if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         auto target_data = td( s->target );
-        if ( reap_the_storm && rng().roll( p()->sets->set( WARRIOR_PROTECTION, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
+        if ( reap_the_storm && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
         {
           reap_the_storm->execute_on_target( s->target );
         }
@@ -7050,8 +7037,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      // Colossus 4pc
-      if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
+      if ( state->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_COLOSSUS, TWW3, B4 ) )
       {
         p()->buff.deeper_wounds->trigger();
       }
@@ -10802,9 +10788,9 @@ void warrior_t::apply_affecting_auras( action_t& action )
 
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
-    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
+    if ( sets->has_set_bonus( HERO_COLOSSUS, TWW3, B2 ) )
     {
-      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B2 ) );
+      action.apply_affecting_aura( sets->set( HERO_COLOSSUS, TWW3, B2 ) );
     }
   }
 
@@ -10812,15 +10798,11 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.slayer.slayers_malice );
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
-    // Check for slayer set
-    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B2 ) )
-    {
-      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B2 ) );
-    }
-    if ( sets->has_set_bonus( WARRIOR_PROTECTION, TWW3, B4 ) )
-    {
-      action.apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW3, B4 ) );
-    }
+    if ( sets->has_set_bonus( HERO_SLAYER, TWW3, B2 ) )
+      action.apply_affecting_aura( sets->set( HERO_SLAYER, TWW3, B2 ) );
+
+    if ( sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
+      action.apply_affecting_aura( sets->set( HERO_SLAYER, TWW3, B4 ) );
   }
 
   // Mountain Thane
