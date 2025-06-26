@@ -4004,7 +4004,6 @@ void paladin_t::create_buffs()
       make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
                                             ->set_duration( 12_s )
                                             ->set_max_stack( sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 2 : 1 )
-                                            ->set_initial_stack( sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 2 : 1 )
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
   buffs.templar.hammer_of_light_free =
