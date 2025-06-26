@@ -1,4 +1,4 @@
-// Spell text, wow build 11.2.0.61624
+// Spell text, wow build 11.2.0.61684
 static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -23386,7 +23386,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  441398, "Finishing moves have $s1% increased chance to critically strike Fazed targets.", 0, 0 },
   {  441403, "Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.", 0, 0 },
   {  441415, "Blind and Shroud of Concealment have $s1% reduced cooldown.\r\n\r\nPick Pocket and Sap have $s2 yd increased range.", 0, 0 },
-  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
+  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
   {  441423, "After $441786s1 strikes with Unseen Blade, your next $?a137036[Dispatch][Eviscerate] will be performed as a Coup de Grace, functioning as if it had consumed $s3 additional combo points.\r\n\r\nIf the primary target is Fazed, gain $s2 stacks of Flawless Form.", 0, 0 },
   {  441424, "$@spelldesc441378", 0, 0 },
   {  441426, "$@spelldesc441378", 0, 0 },
@@ -26585,7 +26585,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  473402, "Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $d. ", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
   {  473490, "Restores ${$m1/5*$d} health over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
   {  473492, "$@spelldesc471063", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
-  {  473520, "Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
+  {  473520, "Casting Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
   {  473522, "Consuming Precise Shots reduces the cooldown of Explosive Shot by ${$s1/1000}.1 sec.\r\n\r\nConsuming Lock and Load reduces the cooldown of Explosive Shot by ${$s2/1000}.1 sec.", 0, 0 },
   {  473523, "Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.\r\n\r\nCasting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.", 0, 0 },
   {  473602, "$@spelldesc471316", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
@@ -28014,11 +28014,13 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1248979, "$@spelldesc1227048", "Targeting by Voidblade Ambush.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.0.61624
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.2.0.61684
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  441416,  1, "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes." },
+  {  473520,  0, "Explosive Shot has a $s1% chance to grant Lock and Load.", "Casting Explosive Shot has a $s1% chance to grant Lock and Load." },
 } };
 
-// Spell description variables, wow build 11.2.0.61624
+// Spell description variables, wow build 11.2.0.61684
 static const std::array<spelldesc_vars_data_t, 669> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28691,7 +28693,7 @@ static const std::array<spelldesc_vars_data_t, 669> __ptr_spelldesc_vars_data { 
   { 1244417, "$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.0.61624
+// spelldesc_vars hotfix entries, wow build 11.2.0.61684
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
