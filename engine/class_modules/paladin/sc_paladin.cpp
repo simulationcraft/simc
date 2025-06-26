@@ -2246,7 +2246,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
    bool target_ready( player_t* candidate_target ) override
    {
-    if ( !(p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up()) )
+     if ( !p()->buffs.templar.hammer_of_light_ready->up() )
     {
       return false;
     }
@@ -2262,6 +2262,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
          p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
      cleave_hammer->schedule_execute( state );
 
+     if ( p()->buffs.templar.hammer_of_light_free->up() )
+     {
+       p()->buffs.templar.hammer_of_light_free->expire();
+     }
+
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
       p()->buffs.templar.hammer_of_light_ready->decrement();
@@ -2269,10 +2274,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p()->trigger_lights_deliverance(true);
       }
-    }
-    else if (p()->buffs.templar.hammer_of_light_free->up())
-    {
-      p()->buffs.templar.hammer_of_light_free->expire();
     }
     if (p()->talents.templar.zealous_vindication->ok())
     {
@@ -2486,11 +2487,12 @@ void paladin_t::trigger_lights_deliverance( bool /* triggered_by_hol */ )
        ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
     return;
 
-  if ( buffs.templar.hammer_of_light_ready->up() )
-    return;
+  if ( buffs.templar.hammer_of_light_ready->current_stack == buffs.templar.hammer_of_light_ready->max_stack() )  
+  return;
 
   auto cost_reduction = buffs.templar.hammer_of_light_free->default_value;
   buffs.templar.hammer_of_light_free->execute(-1, cost_reduction, timespan_t::min());
+  buffs.templar.hammer_of_light_ready->trigger();
   buffs.templar.lights_deliverance->expire();
 }
 
@@ -4001,7 +4003,7 @@ void paladin_t::create_buffs()
   buffs.templar.hammer_of_light_ready = 
       make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
                                             ->set_duration( 12_s )
-                                            ->set_max_stack( 2 )
+                                            ->set_max_stack( sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 2 : 1 )
                                             ->set_initial_stack( sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 2 : 1 )
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
@@ -4033,7 +4035,7 @@ void paladin_t::create_buffs()
                                    if ( b->at_max_stacks() )
                                    {
                                      trigger_lights_deliverance();
-                                   }
+                                           } 
                                  } );
 
   buffs.templar.sacrosanct_crusade = new buffs::sacrosanct_crusade_t( this );
