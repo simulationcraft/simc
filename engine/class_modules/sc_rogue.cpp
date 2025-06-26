@@ -571,6 +571,7 @@ public:
     gain_t* improved_adrenaline_rush;
     gain_t* improved_adrenaline_rush_expiry;
     gain_t* improved_ambush;
+    gain_t* killing_spree;
     gain_t* premeditation;
     gain_t* quick_draw;
     gain_t* ruthlessness;
@@ -735,6 +736,7 @@ public:
     const spell_data_t* improved_adrenaline_rush_energize;
     const spell_data_t* killing_spree_mh_attack;
     const spell_data_t* killing_spree_oh_attack;
+    const spell_data_t* killing_spree_cps;
     const spell_data_t* opportunity_buff;
     const spell_data_t* sinister_strike_extra_attack;
     const spell_data_t* sting_like_a_bee_debuff;
@@ -5114,6 +5116,13 @@ struct killing_spree_tick_t : public rogue_attack_t
     {
       p()->get_target_data( state->target )->debuffs.fazed->trigger();
     }
+
+    // 11.2 PTR -- Resource generation coincides with mainhand hit
+    // This triggers at the zero tick unlike in-game, however the zero tick happens before CPs are consumed anyway
+    if ( p()->is_ptr() && weapon->slot == SLOT_MAIN_HAND )
+    {
+      trigger_combo_point_gain( as<int>( p()->spec.killing_spree_cps->effectN( 1 ).base_value() ), p()->gains.killing_spree );
+    }
   }
 
   bool procs_main_gauche() const override
@@ -5137,7 +5146,8 @@ struct killing_spree_t : public rogue_attack_t
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
-    interrupt_auto_attack = false;
+    // 11.2 PTR -- Auto attacks are interrupted
+    interrupt_auto_attack = p->is_ptr() ? true : false;
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
@@ -5189,8 +5199,9 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    attack_mh->execute_on_target( d->target );
-    attack_oh->execute_on_target( d->target );
+    // 11.2 PTR -- Both hits target random enemies
+    attack_mh->execute_on_target( p()->is_ptr() ? *rng().range( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end() ) : d->target );
+    attack_oh->execute_on_target( p()->is_ptr() ? *rng().range( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end() ) : d->target );
   }
 
   void last_tick( dot_t* d ) override
@@ -7604,8 +7615,8 @@ struct coup_de_grace_t : public rogue_attack_t
       if ( p()->buffs.tww3_trickster_4pc->check() ) 
       {
         p()->buffs.tww3_trickster_4pc->expire();
-    p()->buffs.escalating_blade->expire();
-  }
+        p()->buffs.escalating_blade->expire();
+      }
       else
       {
         // 5s timer to recast Coup de Grace starts ~1 second into the cast
@@ -11525,8 +11536,10 @@ void rogue_t::init_spells()
   spec.greenskins_wickers_buff = talent.outlaw.greenskins_wickers->ok() ? find_spell( 394131 ) : spell_data_t::not_found();
   spec.hidden_opportunity_extra_attack = talent.outlaw.hidden_opportunity->ok() ? find_spell( 385897 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
+  // TOCHECK -- Killing Spree spell ids could change over 11.2 PTR
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
-  spec.killing_spree_oh_attack = spec.killing_spree_mh_attack->effectN( 1 ).trigger();
+  spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
+  spec.killing_spree_cps = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
   spec.opportunity_buff = talent.outlaw.opportunity->ok() ? find_spell( 195627 ) : spell_data_t::not_found();
   spec.sinister_strike_extra_attack = talent.outlaw.opportunity->ok() ? find_spell( 197834 ) : spell_data_t::not_found();
   spec.summarily_dispatched_buff = talent.outlaw.summarily_dispatched->ok() ? find_spell( 386868 ) : spell_data_t::not_found();
@@ -11861,6 +11874,7 @@ void rogue_t::init_gains()
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
+  gains.killing_spree                   = get_gain( "Killing Spree" );
   gains.master_of_shadows               = get_gain( "Master of Shadows" );
   gains.premeditation                   = get_gain( "Premeditation" );
   gains.quick_draw                      = get_gain( "Quick Draw" );
