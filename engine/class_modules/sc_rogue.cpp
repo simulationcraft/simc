@@ -502,6 +502,8 @@ public:
     damage_buff_t* tww2_outlaw_2pc;
     damage_buff_t* tww2_subtlety_2pc;
 
+    buff_t* tww3_trickster_4pc;
+
   } buffs;
 
   // Cooldowns
@@ -1082,7 +1084,7 @@ public:
       player_talent_t destiny_defined;  // TODO: Outlaw also gets the poison proc rate the text says is for assa? Verify in-game.
       player_talent_t double_jeopardy;  // TODO: Double jeopardy + edge case stealth break overlap bug
 
-      player_talent_t fateful_ending;   // TODO: Add tertiary stats
+      player_talent_t fateful_ending;
 
     } fatebound;
 
@@ -1183,6 +1185,11 @@ public:
     const spell_data_t* tww2_outlaw_4pc;
     const spell_data_t* tww2_subtlety_2pc;
     const spell_data_t* tww2_subtlety_4pc;
+
+    const spell_data_t* tww3_fatebound_2pc;
+    const spell_data_t* tww3_fatebound_4pc;
+    const spell_data_t* tww3_trickster_2pc;
+    const spell_data_t* tww3_trickster_4pc;
   } set_bonuses;
 
   // Options
@@ -3684,7 +3691,25 @@ struct adrenaline_rush_t : public rogue_spell_t
         p()->buffs.double_jeopardy->expire();
         execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
       }
+      if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+      {
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
     }
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->set_bonuses.tww3_fatebound_4pc->ok() && p()->buffs.fatebound_lucky_coin->check() )
+    {
+      if ( cd_duration < 0_ms )
+      {
+        cd_duration = cooldown->duration;
+      }
+      cd_duration += p()->set_bonuses.tww3_fatebound_4pc->effectN( 1 ).time_value();
+    }
+
+    rogue_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -4396,7 +4421,25 @@ struct deathmark_t : public rogue_attack_t
         p()->buffs.double_jeopardy->expire();
         execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
       }
+      if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+      {
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
     }
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->set_bonuses.tww3_fatebound_4pc->ok() && p()->buffs.fatebound_lucky_coin->check() )
+    {
+      if ( cd_duration < 0_ms )
+      {
+        cd_duration = cooldown->duration;
+      }
+      cd_duration += p()->set_bonuses.tww3_fatebound_4pc->effectN( 2 ).time_value();
+    }
+
+    rogue_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -4915,14 +4958,61 @@ struct ghostly_strike_t : public rogue_attack_t
   {
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.tww3_fatebound_2pc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
 
     if ( result_is_hit( state->result ) )
     {
-      td( state->target )->debuffs.ghostly_strike->trigger();
+      timespan_t duration = data().duration();
+      if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+      {
+        duration += p()->set_bonuses.tww3_fatebound_2pc->effectN( 4 ).time_value();
+      }
+      td( state->target )->debuffs.ghostly_strike->trigger( duration );
     }
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p()->talent.fatebound.edge_case->ok() && p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
+        p()->buffs.double_jeopardy->expire();
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
+    }
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->set_bonuses.tww3_fatebound_4pc->ok() && p()->buffs.fatebound_lucky_coin->check() )
+    {
+      if ( cd_duration < 0_ms )
+      {
+        cd_duration = cooldown->duration;
+      }
+      cd_duration += p()->set_bonuses.tww3_fatebound_4pc->effectN( 3 ).time_value();
+    }
+
+    rogue_attack_t::update_ready( cd_duration );
   }
 
   bool procs_main_gauche() const override
@@ -5129,10 +5219,74 @@ struct kingsbane_t : public rogue_attack_t
   {
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.tww3_fatebound_2pc->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+    if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      duration += p()->set_bonuses.tww3_fatebound_2pc->effectN( 5 ).time_value();
+    }
+    return duration;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+
+    if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.tww3_fatebound_2pc->effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p()->talent.fatebound.edge_case->ok() && p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
+        p()->buffs.double_jeopardy->expire();
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
     p()->buffs.kingsbane->expire();
+  }
+
+  void update_ready( timespan_t cd_duration ) override
+  {
+    if ( p()->set_bonuses.tww3_fatebound_4pc->ok() && p()->buffs.fatebound_lucky_coin->check() )
+    {
+      if ( cd_duration < 0_ms )
+      {
+        cd_duration = cooldown->duration;
+      }
+      cd_duration += p()->set_bonuses.tww3_fatebound_4pc->effectN( 4 ).time_value();
+    }
+
+    rogue_attack_t::update_ready( cd_duration );
   }
 };
 
@@ -7207,6 +7361,18 @@ struct unseen_blade_t : public rogue_attack_t
   {
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p()->set_bonuses.tww3_trickster_2pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.tww3_trickster_2pc->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -7433,7 +7599,25 @@ struct coup_de_grace_t : public rogue_attack_t
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
     trigger_tww2_set_bonus_removal();
 
+    if ( p()->set_bonuses.tww3_trickster_4pc->ok() )
+    {
+      if ( p()->buffs.tww3_trickster_4pc->check() ) 
+      {
+        p()->buffs.tww3_trickster_4pc->expire();
     p()->buffs.escalating_blade->expire();
+  }
+      else
+      {
+        // 5s timer to recast Coup de Grace starts ~1 second into the cast
+        make_event( *p()->sim, 1_s, [ this ] {
+          p()->buffs.tww3_trickster_4pc->trigger();
+        } );
+      }
+    }
+    else 
+    {
+      p()->buffs.escalating_blade->expire();
+    }
   }
 
   bool ready() override
@@ -9544,6 +9728,14 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
     p()->buffs.unseen_blade_cd->trigger();
 
   p()->cooldowns.unseen_blade_icd->start();
+
+  if ( p()->set_bonuses.tww3_trickster_2pc->ok() )
+  {
+    if ( this->rng().roll( p()->set_bonuses.tww3_trickster_2pc->effectN( 2 ).percent() ) )
+    {
+      p()->buffs.unseen_blade_cd->expire();
+    }
+  }
 }
 
 template <typename Base>
@@ -11404,6 +11596,11 @@ void rogue_t::init_spells()
 
   spec.tww2_assassination_4pc_buff = set_bonuses.tww2_assassination_4pc->ok() ? find_spell( 1219264 ) : spell_data_t::not_found();
 
+  set_bonuses.tww3_fatebound_2pc = sets->set( HERO_FATEBOUND, TWW3, B2 );
+  set_bonuses.tww3_fatebound_4pc = sets->set( HERO_FATEBOUND, TWW3, B4 );
+  set_bonuses.tww3_trickster_2pc = sets->set( HERO_TRICKSTER, TWW3, B2 );
+  set_bonuses.tww3_trickster_4pc = sets->set( HERO_TRICKSTER, TWW3, B4 );
+
   // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -12023,7 +12220,6 @@ void rogue_t::create_buffs()
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
   buffs.fatebound_lucky_coin->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() );
-  // TODO: lucky coin still has effects for non-primary stat buffs, but definitely only affects primary stat in game
   buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
   buffs.fatebound_lucky_coin->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
@@ -12315,6 +12511,13 @@ void rogue_t::create_buffs()
   if ( set_bonuses.tww2_subtlety_2pc->ok() )
   {
     buffs.tww2_subtlety_2pc->set_direct_mod( set_bonuses.tww2_subtlety_2pc->effectN( 1 ).trigger(), 1 );
+  }
+
+  // Buff to expose when Coup de Grace is able to be recasted
+  buffs.tww3_trickster_4pc = make_buff( this, "tww3_trickster_coup_recast", set_bonuses.tww3_trickster_4pc );
+  if ( set_bonuses.tww3_trickster_4pc->ok() )
+  {
+    buffs.tww3_trickster_4pc->set_duration( 5_s );
   }
 }
 
