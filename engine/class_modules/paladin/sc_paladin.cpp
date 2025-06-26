@@ -2126,7 +2126,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       background = true;
 
       is_hammer_of_light         = true;
-      aoe                        = p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value();
+      aoe                        = (p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value() + (p->sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 3 : 0 ) );
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
@@ -2424,8 +2424,7 @@ struct empyrean_hammer_t : public paladin_spell_t
   {
     double cm = paladin_spell_t::composite_crit_damage_bonus_multiplier();
 
-    // Checking that Light's Guidance is learned to check that you're templar, probably not necessary
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, TWW3, B2 ) && p()->talents.templar.lights_guidance->ok() )
+    if ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) )
     {
       cm *= 1 + p()->find_spell( 1236391 )->effectN( 1 ).percent();
     }
@@ -2453,9 +2452,9 @@ struct empyrean_hammer_t : public paladin_spell_t
       wd->execute_on_target( target );
       p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
     }
-    //Checking that Light's Guidance is learned to check that you're templar
-    // Todo: How to add chance from spells?
-    if ( ( p()->sets->has_set_bonus(PALADIN_PROTECTION,TWW3,B2) && p()->talents.templar.lights_guidance->ok() && s->result == RESULT_CRIT && p()->rng().roll(2) ) )
+
+    // Todo: How to add chance from spells? I forgor
+    if ( ( p()->sets->has_set_bonus(HERO_TEMPLAR,TWW3,B2) && p()->talents.templar.lights_guidance->ok() && s->result == RESULT_CRIT && p()->rng().roll(0.5) ) )
     {
       p()->buffs.templar.lights_deliverance->trigger();
     }
@@ -4003,7 +4002,7 @@ void paladin_t::create_buffs()
       make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
                                             ->set_duration( 12_s )
                                             ->set_max_stack( 2 )
-                                            ->set_initial_stack( sets->has_set_bonus(PALADIN_PROTECTION, TWW3, B4) ? 2 : 1 )
+                                            ->set_initial_stack( sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 2 : 1 )
           ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_lights_deliverance();
         });
   buffs.templar.hammer_of_light_free =

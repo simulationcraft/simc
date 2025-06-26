@@ -385,7 +385,7 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
-      if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT && p()->sets->has_set_bonus(PALADIN_PROTECTION, TWW3, B2) )
+      if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT && p()->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B2) )
       {
         if ( p()->cooldowns.tww3_lightsmith_2p_icd->up() )
         {
