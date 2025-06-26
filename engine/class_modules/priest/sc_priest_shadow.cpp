@@ -1178,7 +1178,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.surge_of_insanity->trigger();
     }
 
-    if ( priest().tww3_spells.archon_4pc->ok() && priest().buffs.power_surge->check() )
+    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) && priest().buffs.power_surge->check() )
     {
       priest().buffs.tww3_archon_4pc->trigger();
     }
