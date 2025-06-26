@@ -9864,7 +9864,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#2 (id=1083449)  : Unknown(293)
+#2 (id=1083449)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 | Target: Self (1)
 Description      : $@spelldesc383328
 Tooltip          : Hammer of Wrath can be used on any target.
@@ -17647,7 +17647,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#2 (id=1153279)  : Unknown(293)
+#2 (id=1153279)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 | Target: Self (1)
 Description      : $@spelldesc383328
 Tooltip          : Hammer of Wrath can be used on any target.

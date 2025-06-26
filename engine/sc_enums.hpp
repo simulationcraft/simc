@@ -279,6 +279,51 @@ enum player_e
   PLAYER_MAX
 };
 
+enum hero_talent_e
+{
+  HERO_NONE                      = 0,
+  HERO_VOIDWEAVER                = 18,
+  HERO_ARCHON                    = 19,
+  HERO_ORACLE                    = 20,
+  HERO_DRUID_OF_THE_CLAW         = 21,
+  HERO_WILDSTALKER               = 22,
+  HERO_KEEPER_OF_THE_GROVE       = 23,
+  HERO_ELUNES_CHOSEN             = 24,
+  HERO_SANLAYN                   = 31,
+  HERO_RIDER_OF_THE_APOCALYPSE   = 32,
+  HERO_DEATHBRINGER              = 33,
+  HERO_FELSCARRED                = 34,
+  HERO_ALDRACHI_REAVER           = 35,
+  HERO_SCALECOMMANDER            = 36,
+  HERO_FLAMESHAPER               = 37,
+  HERO_CHRONOWARDEN              = 38,
+  HERO_SUNFURY                   = 39,
+  HERO_SPELLSLINGER              = 40,
+  HERO_FROSTFIRE                 = 41,
+  HERO_SENTINEL                  = 42,
+  HERO_PACK_LEADER               = 43,
+  HERO_DARK_RANGER               = 44,
+  HERO_TEMPLAR                   = 48,
+  HERO_LIGHTSMITH                = 49,
+  HERO_HERALD_OF_THE_SUN         = 50,
+  HERO_TRICKSTER                 = 51,
+  HERO_FATEBOUND                 = 52,
+  HERO_DEATHSTALKER              = 53,
+  HERO_TOTEMIC                   = 54,
+  HERO_STORMBRINGER              = 55,
+  HERO_FARSEER                   = 56,
+  HERO_SOUL_HARVESTER            = 57,
+  HERO_HELLCALLER                = 58,
+  HERO_DIABLOIST                 = 59,
+  HERO_SLAYER                    = 60,
+  HERO_MOUNTAIN_THANE            = 61,
+  HERO_COLOSSUS                  = 62,
+  HERO_CONDUIT_OF_THE_CELESTIALS = 64,
+  HERO_SHADOPAN                  = 65,
+  HERO_MASTER_OF_HARMONY         = 66,
+  HERO_MAX
+};
+
 enum pet_e
 {
   PET_NONE = 0,

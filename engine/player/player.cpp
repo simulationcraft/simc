@@ -842,6 +842,18 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   player_t* p = sim->active_player;
 
+  set_bonus_type_e set_bonus = SET_BONUS_NONE;
+  set_bonus_e bonus          = B_NONE;
+  bool enabled = false;
+  specialization_e spec = SPEC_NONE;
+  hero_talent_e hero = HERO_NONE;
+
+  if ( p->sets->new_parse_set_bonus_option( value, set_bonus, bonus, enabled, spec, hero ) )
+  {
+    p->sets->set_bonus_spec_data [ set_bonus ][ composite_idx( spec, hero ) ][ bonus].overridden = enabled;
+    return true;
+  }
+
   auto set_bonus_split = util::string_split<std::string_view>( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
@@ -856,9 +868,6 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
   }
-
-  set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus          = B_NONE;
 
   if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
   {

@@ -214703,7 +214703,7 @@ Stacks           : 60 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), No Aura Icon (60), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1073106)  : Unknown(293)
+#1 (id=1073106)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2170 | Target: Self (1)
 Description      : $@spelldesc408667
 

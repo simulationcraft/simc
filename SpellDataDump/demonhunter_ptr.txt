@@ -10473,9 +10473,9 @@ Affecting Spells : Havoc Demon Hunter (212612 effect#4), Vengeance Demon Hunter 
 Family Flags     : 85
 Attributes       : Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1107806)  : Unknown(293)
+#1 (id=1107806)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1676 | Target: Self (1)
-#2 (id=1157662)  : Unknown(293)
+#2 (id=1157662)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2298 | Target: Self (1)
 Description      : $@spelldesc427775
 

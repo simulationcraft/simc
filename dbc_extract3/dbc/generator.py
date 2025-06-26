@@ -4164,6 +4164,12 @@ class SetBonusListGenerator(DataGenerator):
                     if item_data.class_mask & mask:
                         class_.append(idx)
 
+            tst = set_spell_data.ref('id_trait_sub_tree')
+            if tst is not None and tst.id > 0:
+                trait_sub_tree_ = tst.id
+            else:
+                trait_sub_tree_ = -1
+
             if len(class_) == 0:
                 logging.warn('Could not determine class information for required item set "%s" (id=%d)',
                     item_set.name, item_set.id)
@@ -4173,12 +4179,13 @@ class SetBonusListGenerator(DataGenerator):
                 new_entry = dict(base_entry)
                 new_entry['class'] = cls
                 new_entry['spec'] = spec_
+                new_entry['trait_sub_tree'] = trait_sub_tree_
                 data.append(new_entry)
 
         return data
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
+        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id'], v['trait_sub_tree']))
 
         self.output_header(
                 header = 'Set bonus data',
@@ -4187,15 +4194,15 @@ class SetBonusListGenerator(DataGenerator):
                 length = len(data))
 
         _hdr_specifiers = (
-            '{: <43}', '{: <27}', '{: <10}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
+            '{: <43}', '{: <30}', '{: <12}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <9}', '{: <7}', '{}'
         )
 
         _data_specifiers = (
-            '{: <44}', '{: <27}', '{: >10}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+            '{: <44}', '{: <30}', '{: >12}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >9}', '{: >7}', '{}'
         )
 
         _hdr_format = ', '.join(_hdr_specifiers)
-        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'SpellID', 'ItemIDs')
+        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'TraitTree', 'SpellID', 'ItemIDs')
 
         _data_format = ', '.join(_data_specifiers)
 
@@ -4230,6 +4237,7 @@ class SetBonusListGenerator(DataGenerator):
                 entry['bonus'],
                 entry['class'],
                 entry['spec'],
+                entry['trait_sub_tree'],
                 item_set_spell.id_spell,
                 '{ %s }' % (', '.join(items)))))
 
@@ -5134,17 +5142,54 @@ class TraitGenerator(DataGenerator):
             array = 'trait_spell')
 
         # Hero trees
+        ht_per_class = {
+            class_.id: {
+                tst_id
+                for tst_id in sorted(subtrees)
+                if ( ttid := self.db('TraitSubTree')[tst_id].id_trait_tree )
+                for ttl in self.db('TraitTreeLoadout').values()
+                if ttl.id_trait_tree == ttid
+                if ttl.ref('id_spec').class_id == class_.id
+            }
+            for class_ in self.db('ChrClasses').values()
+        }
+        self._out.write('#define MAX_HERO_TREES_PER_CLASS (%u)\n\n' % (max(len(v) for v in ht_per_class.values())))
+
         self.output_header(
             header='Hero trees',
-            type='std::pair<unsigned, std::string>',
+            type='std::tuple<unsigned, std::string, unsigned>',
             array='trait_sub_tree',
             length=len(subtrees)
         )
 
         for e in sorted(subtrees):
-            self.output_record([str(e), '"{}"'.format(self.db('TraitSubTree')[e].name)])
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self.output_record([str(e),
+                                '"{}"'.format(self.db('TraitSubTree')[e].name),
+                                '{}'.format(class_id)])
 
         self.output_footer()
+
+        self._out.write('static constexpr unsigned __{}_data[{}][2] = {{\n'.format(self.format_str('trait_sub_tree_map'), len(subtrees)))
+        for e in sorted(subtrees):
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self._out.write('  {{ {}, {} }},\n'.format(e, class_id))
+
+        self._out.write('};')
 
         """
         print(

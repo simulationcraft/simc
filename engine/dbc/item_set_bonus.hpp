@@ -23,6 +23,7 @@ struct item_set_bonus_t
   unsigned    bonus;
   int         class_id;
   int         spec; // -1 "all"
+  int         trait_sub_tree;
   unsigned    spell_id;
   unsigned    item_ids[SET_BONUS_ITEM_ID_MAX];
 
@@ -55,6 +56,17 @@ struct item_set_bonus_t
   bool has_spec( specialization_e s ) const
   {
     return has_spec( static_cast<int>( s ) );
+  }
+
+  bool has_trait_sub_tree( int trait_sub_tree_id ) const
+  {
+    if ( trait_sub_tree > 0 && trait_sub_tree == trait_sub_tree_id )
+      return true;
+
+    if ( trait_sub_tree == -1 )
+      return true;
+
+    return false;
   }
 
   bool has_item( unsigned item_id ) const
