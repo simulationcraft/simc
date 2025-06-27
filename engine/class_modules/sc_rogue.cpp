@@ -7619,10 +7619,7 @@ struct coup_de_grace_t : public rogue_attack_t
       }
       else
       {
-        // 5s timer to recast Coup de Grace starts ~1 second into the cast
-        make_event( *p()->sim, 1_s, [ this ] {
-          p()->buffs.tww3_trickster_4pc->trigger();
-        } );
+        p()->buffs.tww3_trickster_4pc->trigger();
       }
     }
     else 
@@ -12531,7 +12528,8 @@ void rogue_t::create_buffs()
   buffs.tww3_trickster_4pc = make_buff( this, "tww3_trickster_coup_recast", set_bonuses.tww3_trickster_4pc );
   if ( set_bonuses.tww3_trickster_4pc->ok() )
   {
-    buffs.tww3_trickster_4pc->set_duration( 5_s );
+    // Buff is active on Coup cast but does not begin counting down until 1.2s into the cast, effectively adding 1.2s to its duration
+    buffs.tww3_trickster_4pc->set_duration( timespan_t::from_seconds( set_bonuses.tww3_trickster_4pc->effectN( 2 ).base_value() ) + 1.2_s );
   }
 }
 
