@@ -5245,10 +5245,12 @@ struct kingsbane_t : public rogue_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = rogue_attack_t::composite_dot_duration( s );
+
     if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
     {
       duration += p()->set_bonuses.tww3_fatebound_2pc->effectN( 5 ).time_value();
     }
+
     return duration;
   }
 
