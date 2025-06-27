@@ -12190,15 +12190,12 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
   if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
   {
-    // Combine the 1% per additional stack buff (which we use as the stacking base buff) and 3% from initial stack buff (the fatebound_coin_heads_stacking_buff)
     buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() - spell.fatebound_coin_heads_buff->effectN( 1 ).percent() );
+                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() - spell.fatebound_coin_heads_buff->effectN( 2 ).percent() );
-    // TODO: fatebound_coin_heads_stacking_buff modifies fatebound_coin_heads_buff for the periodic and direct damage effects, but has an inline 3% auto attack damage effect
-    //  Are we getting an extra 1% AA damage for free? We may never know. Assuming we don't for now.
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() );
     buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() - spell.fatebound_coin_heads_buff->effectN( 5 ).percent() );
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() );
   }
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
