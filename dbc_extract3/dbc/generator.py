@@ -1650,6 +1650,9 @@ class SpellDataGenerator(DataGenerator):
             ( 431399 , 0),          # Dawnlight aoe damage
             ( 449198 , 0),          # Highlord's Judgment hidden spell
             ( 431568 , 0),          # Morning Star driver
+            ( 1238903, 0),          # Masterwork (TWW3 Lightsmith 4p)
+            ( 1239091, 0),          # Lesser Weapon (TWW3 Lightsmith 4p)
+            ( 1239002, 0),          # Lesser Bulwark (TWW3 Lightsmith 4p)
         ),
 
         # Hunter:
