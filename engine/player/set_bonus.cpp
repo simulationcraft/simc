@@ -397,14 +397,15 @@ std::unique_ptr<expr_t> set_bonus_t::create_expression( const player_t*, util::s
     return expr_t::create_constant( type, 0.0 );
 
   set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus = B_NONE;
+  set_bonus_e bonus          = B_NONE;
 
   if ( !parse_set_bonus_option( type, set_bonus, bonus ) )
   {
     throw std::invalid_argument( fmt::format( "Cannot parse set bonus '{}'.", type ) );
   }
 
-  bool state = set_bonus_spec_data[ set_bonus ][ spec_id ][ bonus ].spell->id() > 0;
+  bool state = std::any_of( set_bonus_spec_data[ set_bonus ].cbegin(), set_bonus_spec_data[ set_bonus ].cend(),
+                            [ & ]( const bonus_t& bonus_type ) { return bonus_type[ bonus ].spell->id() > 0; } );
 
   return expr_t::create_constant( type, static_cast<double>( state ) );
 }
@@ -444,8 +445,6 @@ bool set_bonus_t::parse_set_bonus_option( util::string_view opt_str, set_bonus_t
 
     if ( util::str_compare_ci( set_name, bonus.set_opt_name ) || util::str_compare_ci( set_name, bonus.tier ) )
     {
-      if ( bonus.trait_sub_tree != -1 )
-        actor->sim->error( "Old style set bonus options do not support tier sets enabled by trait tree! Check Equipment page of wiki for alternative syntax." );
       set_bonus = static_cast<set_bonus_type_e>( bonus.enum_id );
       break;
     }

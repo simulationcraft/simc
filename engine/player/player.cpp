@@ -875,6 +875,12 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
+  if ( p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].bonus->trait_sub_tree != -1 )
+  {
+    p->sim->error( "The unspecified set bonus option does not support tier sets enabled by TraitSubTree! Check Equipment page of wiki for alternative syntax." );
+    return false;
+  }
+
   p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
