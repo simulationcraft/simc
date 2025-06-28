@@ -487,6 +487,9 @@ public:
 
     // Mountain Thane
     const spell_data_t* lightning_strike;
+
+    // TWW3
+    const spell_data_t* ionizing_strike;
   } spell;
 
   // Mastery
@@ -2495,6 +2498,18 @@ struct lightning_strike_t : public warrior_attack_t
   }
 };
 
+
+// Ionizing Strike ==========================================================
+
+struct ionizing_strike_t : public warrior_attack_t
+{
+  ionizing_strike_t ( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->spell.ionizing_strike )
+    {
+      background = true;
+    }
+};
+
 // Slayer's Strike ==========================================================
 struct slayers_strike_t : public warrior_attack_t
 {
@@ -4231,6 +4246,7 @@ struct thunder_blast_t : public warrior_attack_t
   action_t* lightning_strike;
   action_t* seismic_action;
   action_t* ignore_pain;
+  action_t* ionizing_strike;
   double rend_target_cap;
   double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
@@ -4241,6 +4257,7 @@ struct thunder_blast_t : public warrior_attack_t
       lightning_strike( nullptr ),
       seismic_action( nullptr ),
       ignore_pain( nullptr ),
+      ionizing_strike( nullptr ),
       rend_target_cap( 0 ),
       rend_targets_hit( 0 )
   {
@@ -4287,6 +4304,15 @@ struct thunder_blast_t : public warrior_attack_t
     {
       seismic_action = new thunder_blast_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
       add_child( seismic_action );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    {
+      if ( p->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) )
+      {
+        ionizing_strike = get_action<ionizing_strike_t>( "ionizing_strike", p );
+        add_child( ionizing_strike );
+      }
     }
 
     if ( p->talents.protection.violent_outburst->ok() )
@@ -4382,6 +4408,21 @@ struct thunder_blast_t : public warrior_attack_t
     }
 
     p()->buff.thunder_blast->decrement();
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    {
+      if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
+      {
+        size_t ionizing_bolt_target = 0;
+        for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
+        {
+          ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
+          ionizing_bolt_target++;
+          if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
+            ionizing_bolt_target = 0;
+        }
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -8401,6 +8442,9 @@ void warrior_t::init_spells()
 
   // Mountain Thane Spells
   spell.lightning_strike            = find_spell( 435791 );
+
+  // TWW3
+  spell.ionizing_strike             = find_spell( 1238042 );
 
   // Class Talents
   talents.warrior.battle_stance                    = find_talent_spell( talent_tree::CLASS, "Battle Stance" );
