@@ -1318,7 +1318,11 @@ public:
     struct
     {
       const spell_data_t *coc_2pc;
+      const spell_data_t *coc_2pc_heart_of_the_jade_serpent_data;
+      propagate_const<buff_t *> coc_2pc_heart_of_the_jade_serpent;
       const spell_data_t *coc_4pc;
+      const spell_data_t *coc_4pc_jade_serpents_blessing_data;
+      propagate_const<buff_t *> coc_4pc_jade_serpents_blessing;
       const spell_data_t *moh_2pc;
       const spell_data_t *moh_4pc;
       const spell_data_t *spm_2pc;

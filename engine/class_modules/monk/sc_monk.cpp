@@ -203,6 +203,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent,
+                 p()->tier.tww3.coc_4pc->ok() ? effect_mask_t( true ).disable( 8 ) : effect_mask_t( true ) );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -3314,6 +3316,13 @@ struct slicing_winds_t : public monk_melee_attack_t
     parse_options( options_str );
 
     execute_action = new damage_t( player );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent->trigger();
   }
 };
 }  // namespace attacks
@@ -6454,6 +6463,7 @@ void monk_t::parse_player_effects()
   // TWW S2 Set Effects
 
   // TWW S3 Set Effects
+  parse_effects( tier.tww3.coc_4pc_jade_serpents_blessing );
 
   // TWW S4 Set Effects
 }
@@ -7210,13 +7220,15 @@ void monk_t::init_spells()
     tier.tww2.brm_4pc                      = sets->set( MONK_BREWMASTER, TWW2, B4 );
     tier.tww2.brm_4pc_opportunistic_strike = find_spell( 1217999 );
 
-    tier.tww3.coc_2pc                    = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B2 );
-    tier.tww3.coc_4pc                    = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B4 );
-    tier.tww3.moh_2pc                    = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B2 );
-    tier.tww3.moh_4pc                    = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 );
-    tier.tww3.spm_2pc                    = sets->set( HERO_SHADOPAN, TWW3, B2 );
-    tier.tww3.spm_2pc_flurry_charge_data = find_spell( 1237196 );
-    tier.tww3.spm_4pc                    = sets->set( HERO_SHADOPAN, TWW3, B4 );
+    tier.tww3.coc_2pc                                = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B2 );
+    tier.tww3.coc_2pc_heart_of_the_jade_serpent_data = find_spell( 1238904 );
+    tier.tww3.coc_4pc                                = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B4 );
+    tier.tww3.coc_4pc_jade_serpents_blessing_data    = find_spell( 1238901 );
+    tier.tww3.moh_2pc                                = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B2 );
+    tier.tww3.moh_4pc                                = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 );
+    tier.tww3.spm_2pc                                = sets->set( HERO_SHADOPAN, TWW3, B2 );
+    tier.tww3.spm_2pc_flurry_charge_data             = find_spell( 1237196 );
+    tier.tww3.spm_4pc                                = sets->set( HERO_SHADOPAN, TWW3, B4 );
   }
 
   // Passives =========================================
@@ -8085,6 +8097,16 @@ void monk_t::create_buffs()
                                        } );
 
   // TWW S3 Tier Buffs
+  // CoC
+  tier.tww3.coc_2pc_heart_of_the_jade_serpent =
+      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "Heart of the Jade Serpent",
+                          tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+
+  tier.tww3.coc_4pc_jade_serpents_blessing = make_buff_fallback(
+      tier.tww3.coc_4pc->ok(), this, "Jade Serpent's Blessing", tier.tww3.coc_4pc_jade_serpents_blessing_data );
+
   // SPM
   tier.tww3.spm_2pc_flurry_charge =
       make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "Flurry Charge", tier.tww3.spm_2pc_flurry_charge_data );
