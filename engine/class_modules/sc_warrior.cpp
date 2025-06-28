@@ -4414,9 +4414,23 @@ struct thunder_blast_t : public warrior_attack_t
       if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
       {
         size_t ionizing_bolt_target = 0;
+        // Thunder Blast can only proc on mobs it has not procced on for this execute
+        int tb_proc_occured_on_mob[5] = { 0 };
         for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
         {
           ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
+          if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
+          {
+            // Only attempt to proc on mobs we have not got a proc on in this execute
+            if ( tb_proc_occured_on_mob[ionizing_bolt_target] == 0 )
+            {
+              if ( rng().roll(p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B4 )->effectN( 2 ).percent() ) )
+              {
+                p()->buff.thunder_blast->trigger();
+                tb_proc_occured_on_mob[ionizing_bolt_target] = 1;
+              }
+            }
+          }
           ionizing_bolt_target++;
           if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
             ionizing_bolt_target = 0;
@@ -10857,6 +10871,11 @@ void warrior_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( talents.mountain_thane.thunder_blast );
     // Effect 2 is not properly flagged as Protection only in Spell Data. Effect 1 & 3 are manually handled elsewhere.
+  }
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
+    if ( sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
+      action.apply_affecting_aura( sets->set( HERO_MOUNTAIN_THANE, TWW3, B4 ) );
   }
 }
 
