@@ -203,8 +203,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
-  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent,
-                 p()->tier.tww3.coc_4pc->ok() ? effect_mask_t( true ).disable( 8 ) : effect_mask_t( true ) );
+  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -6464,6 +6463,13 @@ void monk_t::parse_player_effects()
 
   // TWW S3 Set Effects
   parse_effects( tier.tww3.coc_4pc_jade_serpents_blessing );
+  parse_effects(
+      buff.heart_of_the_jade_serpent_cdr, [ & ] { return !buff.heart_of_the_jade_serpent_cdr_celestial->check(); },
+      tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
+  parse_effects( buff.heart_of_the_jade_serpent_cdr_celestial,
+                 tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
+  parse_effects( tier.tww3.coc_2pc_heart_of_the_jade_serpent,
+                 tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
 
   // TWW S4 Set Effects
 }
@@ -7936,12 +7942,16 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
-          ->apply_affecting_aura( baseline.windwalker.aura_3 );
+          ->apply_affecting_aura( baseline.windwalker.aura_3 )
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
-          ->apply_affecting_aura( baseline.windwalker.aura_3 );
+          ->apply_affecting_aura( baseline.windwalker.aura_3 )
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
