@@ -488,10 +488,14 @@ void monk_action_t<Base>::consume_resource()
           // this needs to be rounded to the nearest whole number
           p()->flurry_strikes_energy += std::lround( final_cost );
 
+        int flurry_strikes_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
+        if ( p()->tier.tww3.spm_4pc->ok() )
+          flurry_strikes_threshold = p()->tier.tww3.spm_4pc->effectN( 2 ).base_value();
+
         // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
-        if ( p()->flurry_strikes_energy >= p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() )
+        if ( p()->flurry_strikes_energy >= flurry_strikes_threshold )
         {
-          p()->flurry_strikes_energy -= as<int>( p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value() );
+          p()->flurry_strikes_energy -= flurry_strikes_threshold;
           p()->active_actions.flurry_strikes->execute();
         }
       }
@@ -652,6 +656,9 @@ void monk_action_t<Base>::impact( action_state_t *s )
 
         double ap_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 5 ).percent() *
                               p()->composite_melee_attack_power() * p()->composite_damage_versatility();
+
+        if ( p()->tier.tww3.spm_4pc->ok() )
+          ap_threshold /= 1.0 + p()->tier.tww3.spm_4pc->effectN( 1 ).percent();
 
         if ( p()->flurry_strikes_damage >= ap_threshold )
         {
@@ -865,6 +872,8 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    p()->tier.tww3.spm_2pc_flurry_charge->trigger();
+
     p()->summon_storm_earth_and_fire( data().duration() );
 
     if ( p()->talent.windwalker.ordered_elements.ok() )
@@ -1016,6 +1025,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
       background = dual = true;
 
       apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
+      parse_effects( p->tier.tww3.spm_2pc );
 
       wisdom_flurry = new flurry_strike_wisdom_t( p );
 
@@ -1102,12 +1112,26 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   void execute() override
   {
+    bool source_tier    = p()->tier.tww3.spm_2pc_flurry_charge->up();
+    bool source_default = p()->buff.flurry_charge->up();
+
+    int stacks = 0;
+    if ( source_tier )
+      stacks += 10;
+    if ( source_default )
+      stacks += p()->buff.flurry_charge->stack();
+
     // 150ms of delay between executes has been observed, with some small amount of jitter
-    if ( p()->buff.flurry_charge->up() )
-      for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
+    if ( stacks > 0 && ( source_tier || source_default ) )
+      for ( int charge = 1; charge <= stacks; charge++ )
         make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
 
-    p()->buff.flurry_charge->expire();
+    if ( source_default )
+      p()->buff.flurry_charge->expire();
+
+    if ( source_tier )
+      p()->tier.tww3.spm_2pc_flurry_charge->expire();
+
     p()->buff.vigilant_watch->expire();
   }
 };
@@ -4596,6 +4620,8 @@ struct weapons_of_order_t : public monk_spell_t
 
     monk_spell_t::execute();
 
+    p()->tier.tww3.spm_2pc_flurry_charge->trigger();
+
     p()->cooldown.keg_smash->reset( true, 1 );
 
     if ( p()->talent.brewmaster.chi_surge->ok() )
@@ -7183,6 +7209,14 @@ void monk_t::init_spells()
     tier.tww2.brm_2pc_luck_of_the_draw     = tier.tww2.brm_2pc->effectN( 1 ).trigger();
     tier.tww2.brm_4pc                      = sets->set( MONK_BREWMASTER, TWW2, B4 );
     tier.tww2.brm_4pc_opportunistic_strike = find_spell( 1217999 );
+
+    tier.tww3.coc_2pc                    = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B2 );
+    tier.tww3.coc_4pc                    = sets->set( HERO_CONDUIT_OF_THE_CELESTIALS, TWW3, B4 );
+    tier.tww3.moh_2pc                    = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B2 );
+    tier.tww3.moh_4pc                    = sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 );
+    tier.tww3.spm_2pc                    = sets->set( HERO_SHADOPAN, TWW3, B2 );
+    tier.tww3.spm_2pc_flurry_charge_data = find_spell( 1237196 );
+    tier.tww3.spm_4pc                    = sets->set( HERO_SHADOPAN, TWW3, B4 );
   }
 
   // Passives =========================================
@@ -8050,6 +8084,11 @@ void monk_t::create_buffs()
                                            cooldown.blackout_kick->adjust( -b->data().effectN( 1 ).time_value() );
                                        } );
 
+  // TWW S3 Tier Buffs
+  // SPM
+  tier.tww3.spm_2pc_flurry_charge =
+      make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "Flurry Charge", tier.tww3.spm_2pc_flurry_charge_data );
+
   // ------------------------------
   // Movement
   // ------------------------------
@@ -8479,6 +8518,16 @@ void monk_t::init_special_effects()
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm cooldown
           proc.dance_of_chiji->occur();
+        } );
+  }
+
+  if ( tier.tww3.spm_2pc->ok() )
+  {
+    create_proc_callback( tier.tww3.spm_2pc_flurry_charge_data, []( monk_t *, action_state_t * ) { return true; } );
+    callbacks.register_callback_execute_function(
+        tier.tww3.spm_2pc_flurry_charge_data->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          active_actions.flurry_strikes->execute();
         } );
   }
 
