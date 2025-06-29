@@ -409,6 +409,8 @@ public:
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
     buff_t* spellfire_spheres;
+    buff_t* lesser_time_warp;
+    buff_t* flame_quills;
 
 
     // Shared
@@ -570,6 +572,7 @@ public:
     bool heat_shimmer;
     bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified.
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    bool intuition_requires_extra_increment; // Arcane Missiles needs an added increment past 20 harmony stacks to trigger Intuition via TWW3's Spellslinger 4pc.
     int embedded_splinters;
     int magis_spark_spells;
     int intuition_blp_count;
@@ -1041,6 +1044,7 @@ public:
   void trigger_splinter( player_t* target, int count = -1 );
   void trigger_time_manipulation();
   void trigger_jackpot( bool guaranteed = false );
+  void trigger_harmony( double chance = 1.0, bool require_extra_increment = false );
 };
 
 namespace pets {
@@ -1453,9 +1457,11 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     }
     else
     {
-      buff_duration = o()->talents.memory_of_alar->effectN( 1 ).time_value()
-                    + exceptional_spells_used * o()->talents.memory_of_alar->effectN( 2 ).time_value();
+      buff_duration = o()->talents.memory_of_alar->effectN( 1 ).time_value() 
+                    + ( exceptional_spells_used * ( o()->talents.memory_of_alar->effectN( 2 ).time_value() + o()->sets->set( HERO_SUNFURY, TWW3, B4 )->effectN( 1 ).time_value() ) );
       o()->buffs.arcane_soul->trigger( buff_duration );
+      o()->buffs.lesser_time_warp->trigger();
+      o()->buffs.flame_quills->trigger();
     }
   };
 
@@ -1902,6 +1908,7 @@ struct mage_spell_t : public spell_t
     bool numbing_blast = true;
     bool savant = false;
     bool spellfire_sphere = true;
+    bool flame_quills = true;
     bool unleashed_inferno = false;
 
     bool blessing_of_the_phoenix = true;
@@ -2071,6 +2078,9 @@ public:
 
     if ( affected_by.spellfire_sphere )
       m *= 1.0 + p()->buffs.spellfire_sphere->check_stack_value();
+
+    if ( affected_by.flame_quills )
+      m *= 1.0 + p()->buffs.flame_quills->check_stack_value();
 
     if ( affected_by.clarity )
       m *= 1.0 + p()->buffs.clarity->check_value();
@@ -3505,6 +3515,12 @@ struct arcane_orb_t final : public arcane_mage_spell_t
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
     }
+
+    if ( p()->talents.splintering_sorcery->ok() )
+    {
+      if ( s->chain_target < p()->sets->set( HERO_SPELLSLINGER, TWW3, B4 )->effectN( 4 ).base_value() )
+        p()->trigger_harmony( p()->sets->set( HERO_SPELLSLINGER, TWW3, B4 )->effectN( 3 ).percent() );
+    }
   }
 };
 
@@ -3733,6 +3749,9 @@ struct arcane_blast_t final : public dematerialize_spell_t
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 2 ).percent();
 
+    if ( p()->talents.splintering_sorcery->ok() && p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B2 ) )
+      m *= 1.0 + p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 3 ).percent();
+
     return m;
   }
 
@@ -3941,7 +3960,7 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
 
     if ( result_is_hit( s->result ) )
     {
-      p()->buffs.arcane_harmony->trigger();
+      p()->trigger_harmony( p()->talents.arcane_harmony->ok(), true );
 
       if ( p()->talents.arcane_debilitation.ok() )
       {
@@ -4187,7 +4206,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
     // Clear any existing surge buffs to trigger the T30 4pc buff.
     p()->buffs.arcane_surge->expire();
-    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->talents.savor_the_moment->effectN( 3 ).time_value();
+    timespan_t bonus_duration = p()->buffs.spellfire_sphere->check() * p()->talents.savor_the_moment->effectN( 1 ).time_value();
     timespan_t arcane_surge_duration = p()->buffs.arcane_surge->buff_duration() + bonus_duration;
     p()->buffs.arcane_surge->trigger( arcane_surge_duration );
 
@@ -7166,6 +7185,9 @@ struct embedded_splinter_t final : public mage_spell_t
     am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 6 ).mastery_value();
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 5 ).mastery_value();
 
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B4 ) )
+      am *= 1.0 + p()->sets->set( HERO_SPELLSLINGER, TWW3, B4 )->effectN( 5 ).percent();
+
     return am;
   }
 
@@ -7261,6 +7283,9 @@ struct splinter_t final : public mage_spell_t
     am *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 7 ).mastery_value();
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 4 ).mastery_value();
 
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B4 ) )
+      am *= 1.0 + p()->sets->set( HERO_SPELLSLINGER, TWW3, B4 )->effectN( 5 ).percent();
+
     return am;
   }
 
@@ -7282,6 +7307,8 @@ struct splinter_t final : public mage_spell_t
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
     cd->adjust( -p()->talents.spellfrost_teachings->effectN( p()->specialization() == MAGE_FROST ? 2 : 1 ).time_value(), false );
+
+    p()->trigger_harmony( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 1 ).percent() );
   }
 
   timespan_t travel_time() const override
@@ -8611,10 +8638,12 @@ void mage_t::create_buffs()
   buffs.glorious_incandescence = make_buff( this, "glorious_incandescence", find_spell( 451073 ) )
                                    ->set_chance( talents.glorious_incandescence.ok() );
   buffs.lingering_embers       = make_buff( this, "lingering_embers", find_spell( 461145 ) )
-                                   ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 6 : 1 ).percent() )
+                                   ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 2 : 1 ).percent() 
+                                      + sets->set( HERO_SUNFURY, TWW3, B2 )->effectN( 1 ).percent() )
                                    ->set_chance( talents.codex_of_the_sunstriders.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
-                                   ->set_default_value_from_effect( 2,  0.001 )
+                                   ->set_default_value( 0.001 * ( find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 )->effectN( 2 ).base_value() 
+                                      + sets->set( HERO_SUNFURY, TWW3, B2 )->effectN( 5 ).base_value() ) )
                                    ->modify_max_stack( as<int>( talents.ignite_the_future->effectN( 1 ).base_value() ) )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -8629,7 +8658,8 @@ void mage_t::create_buffs()
                                      } )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
-                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 6 : 1, 0.01 )
+                                   ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 2 : 1 ).percent() 
+                                      + sets->set( HERO_SUNFURY, TWW3, B2 )->effectN( 1 ).percent() )
                                    ->modify_max_stack( as<int>( talents.rondurmancy->effectN( 1 ).base_value() ) )
                                    ->set_chance( talents.spellfire_spheres.ok() )
                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -8660,6 +8690,14 @@ void mage_t::create_buffs()
   buffs.extended_bankroll = make_buff( this, "extended_bankroll", find_spell( 1216914 ) )
                               ->set_chance( sets->has_set_bonus( MAGE_FROST, TWW2, B4 ) )
                               ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t ) { trigger_jackpot(); } );
+
+  buffs.lesser_time_warp       = make_buff( this, "lesser_time_warp", find_spell( 1236231 ) )
+                                   ->set_default_value_from_effect( 1 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_chance( sets->has_set_bonus( HERO_SUNFURY, TWW3, B4 ) );
+  buffs.flame_quills           = make_buff( this, "flame_quills", find_spell( 1236145 ) )
+                                   ->set_default_value_from_effect( 1 )
+                                   ->set_chance( sets->has_set_bonus( HERO_SUNFURY, TWW3, B4 ) );
 
 
   // Buffs that use stack_react or may_react need to be reactable regardless of what the APL does
@@ -9643,7 +9681,7 @@ void mage_t::trigger_spellfire_spheres()
   if ( !talents.spellfire_spheres.ok() )
     return;
 
-  int max_stacks = as<int>( talents.spellfire_spheres->effectN( specialization() == MAGE_FIRE ? 3 : 2 ).base_value() );
+  int max_stacks = buffs.spellfire_spheres->max_stack();
 
   buffs.spellfire_spheres->trigger();
 
@@ -9734,6 +9772,42 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool never_p
   }
 
   return success;
+}
+
+void mage_t::trigger_harmony( double chance, bool spell_requires_extra_increment )
+{
+  if ( !talents.arcane_harmony->ok() )
+    return;
+
+  bool just_reached_max_stacks = false;
+
+  if ( rng().roll( chance ) )
+  {
+    if ( buffs.arcane_harmony->check() == buffs.arcane_harmony->max_stack() - 1 )
+      just_reached_max_stacks = true;
+    buffs.arcane_harmony->trigger();
+  }
+
+  if ( talents.splintering_sorcery->ok() && sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B4 ) )
+  {
+    // The state needs to be reset back to false regardless of max stack or Intuition.
+    // This is to avoid scenarios where Harmony is removed at 20 stacks while still requiring an extra increment to gain Intuition.
+    // Otherwise, it'll remain true while the player is regenerating their 20 stacks, resulting in Intuition being gained at 20 increments when it'd usually require 21.
+    if ( state.intuition_requires_extra_increment && buffs.arcane_harmony->at_max_stacks() )
+      buffs.intuition->trigger();
+    state.intuition_requires_extra_increment = false;
+
+    // If the spell (Missiles) requires an extra increment to grant Intuition,
+    // change the state to true so that whenever this is called again, it'll simulate the 21st stack directly above;
+    // else, grant Intuition as expected via Spellslinger's TWW3's 4pc by reaching 20 stacks.
+    if ( just_reached_max_stacks )
+    {
+      if ( spell_requires_extra_increment )
+        state.intuition_requires_extra_increment = true;
+      else
+        buffs.intuition->trigger();
+    }
+  }
 }
 
 bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t delay )
