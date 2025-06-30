@@ -3208,15 +3208,15 @@ class SpellDataGenerator(DataGenerator):
             mask_class = 0
             spec_data = set_spell_data.ref('id_spec')
             tst_data = set_spell_data.ref('id_trait_sub_tree')
-            class_id = -1
+            class_id = 0
             if spec_data.id > 0:
                 class_id = spec_data.class_id
             elif tst_data.id > 0:
                 ttid = tst_data.id_trait_tree
+                class_id = 0
                 for ttl in self.db('TraitTreeLoadout').values():
                     if ttl.id_trait_tree == ttid:
-                        class_id = ttl.ref('id_spec').class_id
-                        break
+                        class_id |= ttl.ref('id_spec').class_id
 
 
             if class_id > 0:
