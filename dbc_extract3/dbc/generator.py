@@ -3207,8 +3207,20 @@ class SpellDataGenerator(DataGenerator):
 
             mask_class = 0
             spec_data = set_spell_data.ref('id_spec')
+            tst_data = set_spell_data.ref('id_trait_sub_tree')
+            class_id = -1
             if spec_data.id > 0:
-                mask_class = DataGenerator._class_masks[spec_data.class_id]
+                class_id = spec_data.class_id
+            elif tst_data.id > 0:
+                ttid = tst_data.id_trait_tree
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_id = ttl.ref('id_spec').class_id
+                        break
+
+
+            if class_id > 0:
+                mask_class = DataGenerator._class_masks[class_id]
 
             self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 
@@ -4154,12 +4166,12 @@ class SetBonusListGenerator(DataGenerator):
                 'bonus'       : set_spell_data.n_req_items
             }
 
-            class_ = []
+            class_ = set()
 
             if set_spell_data.ref('id_spec').id > 0:
                 spec_ = set_spell_data.ref('id_spec').id
                 spec_data = set_spell_data.ref('id_spec')
-                class_.append(spec_data.class_id)
+                class_.add(spec_data.class_id)
             # No spec id, set spec to "-1" (all specs), and try to use set
             # items to figure out the class (or many classes)
             else:
@@ -4173,13 +4185,20 @@ class SetBonusListGenerator(DataGenerator):
                         continue
 
                     if item_data.class_mask & mask:
-                        class_.append(idx)
+                        class_.add(idx)
 
             tst = set_spell_data.ref('id_trait_sub_tree')
             if tst is not None and tst.id > 0:
                 trait_sub_tree_ = tst.id
             else:
                 trait_sub_tree_ = -1
+
+            if trait_sub_tree_ > 0:
+                ttid = tst.id_trait_tree
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_.add(ttl.ref('id_spec').class_id)
+
 
             if len(class_) == 0:
                 logging.warn('Could not determine class information for required item set "%s" (id=%d)',
