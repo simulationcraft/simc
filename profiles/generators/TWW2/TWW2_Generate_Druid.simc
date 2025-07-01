@@ -6,23 +6,23 @@ race=night_elf
 timeofday=night
 role=spell
 position=back
-talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALjys1wYmBGzCLzMjZgZbsMz2MWYmZGzyMmZMjxG2YAGgttxCmmZWGBAAAYjZMDYzAD
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUmtMGzMwDYWYZmZAzMGLzsNjFmZmZmlZMzYmZshFGgBYbbsgpZmlRAAAA2YGDwmxMG
 
-head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213746
-neck=strapped_rescuekeg,id=221060,bonus_id=4795/8781,ilevel=678,gem_id=213473/213473
-shoulder=jaws_of_reclaiming_blight,id=229305,bonus_id=1527/11996
-back=test_pilots_gopack,id=228844,bonus_id=6652/10356/11996/1527/10255,enchant_id=7403
-chest=robes_of_reclaiming_blight,id=229310,bonus_id=1527/11996,enchant_id=7364
-wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/8793/10222/11307/12043/12040/10520/8960,ilevel=675,gem_id=213473,enchant_id=7385,crafted_stats=36/32
-hands=shimmering_glimclaws,id=221102,bonus_id=4795,ilevel=678
-waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/9627/8793/10222/11307/12040/12043/10520/8960,ilevel=675,gem_id=213473,crafted_stats=36/32
-legs=moccasins_of_reclaiming_blight,id=229306,bonus_id=1527/11996,enchant_id=7534
-feet=stalwart_guardians_boots,id=221120,bonus_id=4795,ilevel=678,enchant_id=7424
-finger1=cyrces_circlet,id=228411,bonus_id=12025/1502,ilevel=658,gem_id=228639/228638/228646,enchant_id=7346
-finger2=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/8781,gem_id=213473/213473,enchant_id=7346
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-trinket2=house_of_cards,id=230027,bonus_id=4795,ilevel=678
-main_hand=bestinslots,id=232805,bonus_id=6652/10356/11996/9418/1527/10255,enchant_id=7460
+head=branches_of_reclaiming_blight,id=229307,bonus_id=6652/10390/12178/11960/12055/12376/1533/10255,gem_id=213743,enchant_id=7933
+neck=gobfathers_gifted_bling,id=228842,bonus_id=6652/10356/10879/10396/12376/1533/10255,gem_id=213470/213458
+shoulders=jaws_of_reclaiming_blight,id=229305,bonus_id=11962/10390/6652/12179/12376/1533/10255
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/9627/12040/11304/8960/8793/12043/12373,enchant_id=7403,crafted_stats=49/32
+chest=robes_of_reclaiming_blight,id=229310,bonus_id=40/10356/8095/12178/11958/12376/1533/10255,enchant_id=7364
+wrists=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/12043/11304/8960/8793/12040/12056/12373,gem_id=213482,enchant_id=7385,crafted_stats=32/49
+hands=grips_of_reclaiming_blight,id=229308,bonus_id=10356/11959/6652/12179/12376/1533/10255
+waist=durable_information_securing_container,id=245964,ilevel=701,gem_id=213482,titan_disc_id=1236275
+legs=flameseared_leggings,id=168968,bonus_id=10390/6652/11964/10383/12376/11346/10255,enchant_id=7534
+feet=dragsters_last_stride,id=228876,bonus_id=6652/11998/10356/12376/1533/10255,enchant_id=7424
+finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,gem_id=228638/228639/228640,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,bonus_id=6652/10356/12376/1533/10255/10879/10396,gem_id=213482/213497,enchant_id=7340
+trinket1=house_of_cards,id=230027,bonus_id=6652/10356/12376/1533/10255
+trinket2=mugs_moxie_jug,id=230192,bonus_id=4795,ilevel=684
+main_hand=bestinslots,id=232805,bonus_id=6652/10356/9418/12376/1533/10255,enchant_id=7460
 
 save=TWW2_Druid_Balance.simc
 
