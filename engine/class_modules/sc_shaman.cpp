@@ -6664,7 +6664,7 @@ struct chained_base_t : public shaman_spell_t
         auto new_idx = i;
         do
         {
-          new_idx = rng().range( 1U, tl.size() );
+          new_idx = rng().range<size_t>( 1U, tl.size() );
         } while ( new_idx == i );
 
         sim->print_debug( "{} randomized {} target, target={} (idx={}), new_pos={}",

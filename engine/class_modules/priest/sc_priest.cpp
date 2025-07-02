@@ -219,7 +219,7 @@ public:
   {
     auto m = base_t::recharge_multiplier( c );
 
-    if ( p().tww3_spells.voidweaver_2pc->ok() && p().buffs.entropic_rift->check() )
+    if ( p().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) && p().buffs.entropic_rift->check() )
     {
       m *= 1 + void_blast_cdr;
     }
@@ -392,7 +392,7 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     if ( priest().talents.voidweaver.darkening_horizon.enabled() )
     {
       priest().extend_entropic_rift();
-      if ( priest().tww3_spells.voidweaver_4pc->ok() )
+      if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
       {
         priest().expand_entropic_rift();
       }
@@ -861,7 +861,7 @@ struct halo_t final : public priest_spell_t
       }
     }
 
-    if ( priest().tww3_spells.archon_2pc->ok() )
+    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
     {
       priest().buffs.ascension->trigger();
     }
@@ -1117,7 +1117,7 @@ struct void_blast_disc_t final : public smite_base_t
 
     // This call contains the relevant talent checks, do not need to make them twice.
     p().extend_entropic_rift();
-    if ( priest().tww3_spells.voidweaver_4pc->ok() )
+    if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
     {
       priest().expand_entropic_rift( 2 );
     }
@@ -3602,20 +3602,6 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
-  // Can perform pre-pull actions that are harmful without actually hitting the boss
-  // to build up Insanity before pulling
-  if ( ( specialization() == PRIEST_SHADOW ) && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 &&
-       options.init_insanity )
-  {
-    auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
-
-    if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
-    {
-      // One Shadow Crash == 6 Insanity
-      resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity;
-    }
-  }
-
   base_t::init_resources( force );
 }
 
@@ -3652,7 +3638,6 @@ void priest_t::init_finished()
       }
 
       timespan_t time_spent = 0_ms;
-      bool harmful_found    = false;
 
       for ( auto iter = pre + 1; iter < precombat_action_list.end(); iter++ )
       {
@@ -3664,17 +3649,16 @@ void priest_t::init_finished()
 
         if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
-          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
+          auto& time = std::max( a->base_execute_time.value(), a->trigger_gcd );
+
+          if ( time_spent + time > 2_s )
+            break;
+
+          time_spent += time;
+
           if ( a->harmful )
           {
-            if ( harmful_found )
-            {
-              break;
-            }
-            else
-            {
-              harmful_found = true;
-            }
+            break;
           }
         }
       }
@@ -3757,13 +3741,9 @@ void priest_t::init_spells()
 
   auto sd_nf = spell_data_t::not_found();
 
-  tww3_spells.archon_2pc      = options.tww3_archon_set >= 2 ? find_spell( 1236398 ) : sd_nf;
-  tww3_spells.archon_2pc_buff = tww3_spells.archon_2pc->ok() ? find_spell( 1239336 ) : sd_nf;
-  tww3_spells.archon_4pc      = options.tww3_archon_set >= 4 ? find_spell( 1236399 ) : sd_nf;
+  tww3_spells.archon_2pc_buff = sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) ? find_spell( 1239336 ) : sd_nf;
 
-  tww3_spells.voidweaver_2pc      = options.tww3_vw_set >= 2 ? find_spell( 1236396 ) : sd_nf;
-  tww3_spells.voidweaver_4pc      = options.tww3_vw_set >= 4 ? find_spell( 1236397 ) : sd_nf;
-  tww3_spells.voidweaver_4pc_buff = tww3_spells.voidweaver_4pc->ok() ? find_spell( 1237615 ) : sd_nf;
+  tww3_spells.voidweaver_4pc_buff = sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) ? find_spell( 1237615 ) : sd_nf;
 
   init_spells_shadow();
   init_spells_discipline();
@@ -4037,7 +4017,7 @@ void priest_t::create_buffs()
           }
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-          if ( tww3_spells.voidweaver_2pc->ok() )
+          if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) )
             cooldowns.mind_blast->adjust_recharge_multiplier();
 
           if ( !new_ )
@@ -4046,9 +4026,12 @@ void priest_t::create_buffs()
             buffs.darkening_horizon->expire();
             background_actions.collapsing_void->trigger( state.last_entropic_rift_target,
                                                          buffs.collapsing_void->check() );
-            if ( tww3_spells.voidweaver_4pc->ok() )
+            if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
             {
-              auto value = std::min( buffs.collapsing_void->check_value() * 0.2 + 1.0, 2.0 );
+              auto base_value_per_stack =
+                  talents.voidweaver.collapsing_void->effectN( specialization() == PRIEST_SHADOW ? 3 : 4 ).percent();
+              auto value = std::min( buffs.collapsing_void->check() * base_value_per_stack + 1.0,
+                                     buffs.collapsing_void->default_value * buffs.collapsing_void->max_stack() );
               buffs.overflowing_void->trigger( 1, value );
             }
             buffs.collapsing_void->expire();
@@ -4069,10 +4052,10 @@ void priest_t::create_buffs()
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                               ->set_max_stack( specialization() == PRIEST_SHADOW ? 5 : 10 );
 
-  if ( tww3_spells.voidweaver_4pc->ok() )
+  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
   {
     buffs.collapsing_void->default_value +=
-        tww3_spells.voidweaver_4pc->effectN( specialization() == PRIEST_SHADOW ? 3 : 1 ).percent();
+        sets->set( HERO_VOIDWEAVER, TWW3, B4 )->effectN( specialization() == PRIEST_SHADOW ? 3 : 1 ).percent();
   }
 
   // Unknown what this piece of spell data is for. Discipline testing shows a maximum of 10 stacks.
@@ -4090,13 +4073,14 @@ void priest_t::create_buffs()
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
 
-  buffs.ascension = make_buff_fallback( tww3_spells.archon_2pc->ok(), this, "ascension", tww3_spells.archon_2pc_buff )
-                        ->set_default_value_from_effect( 1, 0.01 )
-                        ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                          resource_gain( RESOURCE_INSANITY, b->current_value, gains.ascension_tww3_2pc );
-                        } );
+  buffs.ascension =
+      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ), this, "ascension", tww3_spells.archon_2pc_buff )
+          ->set_default_value_from_effect( 1, 0.01 )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            resource_gain( RESOURCE_INSANITY, b->current_value, gains.ascension_tww3_2pc );
+          } );
 
-  if ( tww3_spells.archon_2pc->ok() )
+  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
   {
     buffs.ascension->base_buff_duration -= 1_ms;
     buffs.ascension->buff_period -= 1_ms;
@@ -4106,12 +4090,13 @@ void priest_t::create_buffs()
                                                tww3_spells.voidweaver_4pc_buff )
                                ->set_default_value( 0 );
 
-  buffs.tww3_archon_4pc = make_buff_fallback( tww3_spells.archon_4pc->ok(), this, "tww3_archon_4pc_helper" );
+  buffs.tww3_archon_4pc =
+      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ), this, "tww3_archon_4pc_helper" );
 
-  if ( tww3_spells.archon_4pc->ok() )
+  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) )
   {
-    int casts_per_extend = as<int>( tww3_spells.archon_4pc->effectN( 1 ).base_value() );
-    int max_extension    = as<int>( tww3_spells.archon_4pc->effectN( 3 ).base_value() );
+    int casts_per_extend = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 1 ).base_value() );
+    int max_extension    = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 3 ).base_value() );
     buffs.tww3_archon_4pc->set_max_stack( casts_per_extend * max_extension )
         ->set_stack_change_callback( [ this, casts_per_extend ]( buff_t*, int, int _new ) {
           if ( _new % casts_per_extend == 0 && _new != 0 )
@@ -4245,7 +4230,7 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, TWW1, B2 ) );
 
   // TWW3 2pc
-  action.apply_affecting_aura( tww3_spells.voidweaver_2pc );
+  action.apply_affecting_aura( sets->set( HERO_VOIDWEAVER, TWW3, B2 ) );
 }
 
 double priest_t::composite_mastery_value() const
@@ -4758,9 +4743,6 @@ void priest_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
                          options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
-
-  add_option( opt_int( "priest.tww3_archon_set", options.tww3_archon_set, 0, 5 ) );
-  add_option( opt_int( "priest.tww3_vw_set", options.tww3_vw_set, 0, 5 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

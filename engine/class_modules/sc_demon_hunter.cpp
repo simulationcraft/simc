@@ -959,9 +959,6 @@ public:
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat = 0.6;
-
-    int tww3_aldrachi_reaver_set = 0;
-    int tww3_felscarred_set      = 0;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -2270,7 +2267,7 @@ struct art_of_the_glaive_trigger_t : public BASE
       int second_ability_increase =
           BASE::p()->is_ptr() ? BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() : 1;
 
-      int first_ability_amount = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int first_ability_amount = 1;
       int second_ability_amount =
           1 + second_ability_increase + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
@@ -3085,7 +3082,7 @@ struct eye_beam_t : public eye_beam_base_t
     {
       return abyssal_gaze_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return eye_beam_base_t::cost();
   }
 
   void execute() override
@@ -3284,7 +3281,7 @@ struct fel_devastation_t : public fel_devastation_base_t
     {
       return fel_desolation_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return fel_devastation_base_t::cost();
   }
 
   void execute() override
@@ -3750,7 +3747,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
     {
       return sigil_of_doom_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return sigil_of_flame_base_t::cost();
   }
 
   void execute() override
@@ -4215,7 +4212,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
     {
-      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
       p()->trigger_demonsurge(
           demonsurge_ability::ENTER_META,
           timespan_t::from_millis( p()->set_bonuses.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
@@ -4560,7 +4556,7 @@ struct spirit_bomb_t : public spirit_bomb_base_t
     {
       return spirit_burst_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return spirit_bomb_base_t::cost();
   }
 
   void execute() override
@@ -6412,7 +6408,7 @@ struct soul_cleave_t : public soul_cleave_base_t
     {
       return soul_sunder_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return soul_cleave_base_t::cost();
   }
 
   void execute() override
@@ -7269,10 +7265,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
       {
-        p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
-        p()->trigger_demonsurge(
-            demonsurge_ability::ENTER_META,
-            timespan_t::from_millis( p()->set_bonuses.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
+        p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
       }
     }
 
@@ -8071,7 +8064,8 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "winning_streak_residual", set_bonuses.winning_streak_residual_buff )->set_chance( 1.01 );
   buff.necessary_sacrifice = make_buff( this, "necessary_sacrifice", set_bonuses.necessary_sacrifice_buff );
 
-  buff.demon_soul_tww3 = make_buff( this, "demon_soul_tww3", set_bonuses.demon_soul_buff )->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  buff.demon_soul_tww3 = make_buff( this, "demon_soul_tww3", set_bonuses.demon_soul_buff )
+                             ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   buff.scarred_strikes = make_buff( this, "scarred_strikes", set_bonuses.scarred_strikes )->set_quiet( true );
 }
 
@@ -8253,8 +8247,6 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
-  add_option( opt_int( "tww3_aldrachi_reaver_set", options.tww3_aldrachi_reaver_set, 0, 4 ) );
-  add_option( opt_int( "tww3_felscarred_set", options.tww3_felscarred_set, 0, 4 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8951,10 +8943,10 @@ void demon_hunter_t::init_spells()
   set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
   set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
   set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
-  set_bonuses.tww3_aldrachi_2pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236358 );
-  set_bonuses.tww3_aldrachi_4pc   = conditional_spell_lookup( options.tww3_aldrachi_reaver_set >= 4, 1236360 );
-  set_bonuses.tww3_felscarred_2pc = conditional_spell_lookup( options.tww3_felscarred_set >= 2, 1236361 );
-  set_bonuses.tww3_felscarred_4pc = conditional_spell_lookup( options.tww3_felscarred_set >= 4, 1236362 );
+  set_bonuses.tww3_aldrachi_2pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B2 );
+  set_bonuses.tww3_aldrachi_4pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B4 );
+  set_bonuses.tww3_felscarred_2pc = sets->set( HERO_FELSCARRED, TWW3, B2 );
+  set_bonuses.tww3_felscarred_4pc = sets->set( HERO_FELSCARRED, TWW3, B4 );
 
   // Set Bonus Auxilliary ===================================================
 
@@ -10014,6 +10006,11 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
       buff.demonsurge_abilities[ ability ]->expire();
     }
     make_event<delayed_execute_event_t>( *sim, this, active.demonsurge, target, delay );
+    if ( ability == ENTER_META )
+    {
+      make_event( *sim, timespan_t::from_millis( delay.total_millis() + 1 ),
+                  [ this ] { spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON ); } );
+    }
   }
 }
 

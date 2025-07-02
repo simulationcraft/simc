@@ -344,6 +344,7 @@ struct player_t : public actor_t
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
   std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
+  std::vector<std::function<void( player_t* )>> callbacks_on_init_finished;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -1530,6 +1531,7 @@ public:
   void register_on_kill_callback( std::function<void( player_t* )> fn );
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
   void register_movement_callback( std::function<void( bool )> fn );
+  void register_init_finished_callback( std::function<void( player_t* )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

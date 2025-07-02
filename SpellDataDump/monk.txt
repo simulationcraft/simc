@@ -18927,6 +18927,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 3023
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Jade Empowerment (467316)

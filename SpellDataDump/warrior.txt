@@ -550,7 +550,7 @@ Spell Type       : Melee
 Resource         : 20 Rage (1) (id=306017)
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Category         : 2242 (Type 0x0): Hunk o' Blubber (386422 effect#1)
+Category         : 2242 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -9803,7 +9803,7 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Suppress Caster Procs 
 Effects          :
 #1 (id=1016059)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1016060)  : Unknown(293)
+#2 (id=1016060)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 | Target: Self (1)
 Description      : $@spelldesc383877
 
@@ -13350,7 +13350,7 @@ Spell Type       : Melee
 Resource         : 30 Rage (1) (id=306019)
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Category         : 2242 (Type 0x0): Hunk o' Blubber (386422 effect#1)
+Category         : 2242 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292

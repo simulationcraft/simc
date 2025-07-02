@@ -901,6 +901,7 @@ enum set_bonus_type_e
   TWW_WDawn,
   TWW2,
   TWW3,
+  TWW_SOTV,
   SET_BONUS_MAX,
 };
 

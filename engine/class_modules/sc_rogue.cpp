@@ -502,6 +502,9 @@ public:
     damage_buff_t* tww2_outlaw_2pc;
     damage_buff_t* tww2_subtlety_2pc;
 
+    damage_buff_t* tww3_deathstalker_2pc;
+    buff_t* tww3_trickster_4pc;
+
   } buffs;
 
   // Cooldowns
@@ -569,6 +572,7 @@ public:
     gain_t* improved_adrenaline_rush;
     gain_t* improved_adrenaline_rush_expiry;
     gain_t* improved_ambush;
+    gain_t* killing_spree;
     gain_t* premeditation;
     gain_t* quick_draw;
     gain_t* ruthlessness;
@@ -733,6 +737,7 @@ public:
     const spell_data_t* improved_adrenaline_rush_energize;
     const spell_data_t* killing_spree_mh_attack;
     const spell_data_t* killing_spree_oh_attack;
+    const spell_data_t* killing_spree_energize;
     const spell_data_t* opportunity_buff;
     const spell_data_t* sinister_strike_extra_attack;
     const spell_data_t* sting_like_a_bee_debuff;
@@ -800,6 +805,7 @@ public:
     const spell_data_t* tww1_outlaw_2pc_spell;
     const spell_data_t* tww1_outlaw_4pc_buff;
     const spell_data_t* tww2_assassination_4pc_buff;
+    const spell_data_t* tww3_deathstalker_2pc_buff;
 
   } spec;
 
@@ -1082,7 +1088,7 @@ public:
       player_talent_t destiny_defined;  // TODO: Outlaw also gets the poison proc rate the text says is for assa? Verify in-game.
       player_talent_t double_jeopardy;  // TODO: Double jeopardy + edge case stealth break overlap bug
 
-      player_talent_t fateful_ending;   // TODO: Add tertiary stats
+      player_talent_t fateful_ending;
 
     } fatebound;
 
@@ -1183,6 +1189,14 @@ public:
     const spell_data_t* tww2_outlaw_4pc;
     const spell_data_t* tww2_subtlety_2pc;
     const spell_data_t* tww2_subtlety_4pc;
+
+    const spell_data_t* tww3_deathstalker_2pc;
+    const spell_data_t* tww3_deathstalker_4pc;
+    const spell_data_t* tww3_fatebound_2pc;
+    const spell_data_t* tww3_fatebound_4pc;
+    const spell_data_t* tww3_trickster_2pc;
+    const spell_data_t* tww3_trickster_4pc;
+
   } set_bonuses;
 
   // Options
@@ -1702,6 +1716,8 @@ public:
     bool shadow_blades_cp = false;
     bool zoldyck_insignia = false;
 
+    bool tww3_fatebound_4pc = false;
+
     damage_affect_data deeper_daggers;
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
@@ -1800,6 +1816,9 @@ public:
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
     ab::apply_affecting_aura( p->talent.trickster.dont_be_suspicious );
 
+    ab::apply_affecting_aura( p->set_bonuses.tww3_fatebound_2pc );
+    ab::apply_affecting_aura( p->set_bonuses.tww3_trickster_2pc );
+
     // Dynamically affected flags
     // Special things like CP, Energy, Crit, etc.
     affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
@@ -1820,6 +1839,15 @@ public:
     if ( p->talent.fatebound.destiny_defined->ok() )
     {
       affected_by.destiny_defined = ab::data().affected_by( p->talent.fatebound.destiny_defined->effectN( 1 ) );
+    }
+
+    if ( p->set_bonuses.tww3_fatebound_4pc->ok() && p->spell.fatebound_lucky_coin_buff->ok() )
+    {
+      // Cooldown whitelists are in the Lucky Coin buff and modified by the set bonus
+      affected_by.tww3_fatebound_4pc = ( ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 2 ) ) ||
+                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 3 ) ) ||
+                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 4 ) ) ||
+                                         ab::data().affected_by( p->spell.fatebound_lucky_coin_buff->effectN( 5 ) ) );
     }
     
     // Assassination
@@ -2020,7 +2048,8 @@ public:
     register_damage_buff( p()->buffs.tww2_assassination_2pc );
     register_damage_buff( p()->buffs.tww2_assassination_4pc );
     register_damage_buff( p()->buffs.tww2_outlaw_2pc );
-    register_damage_buff( p()->buffs.tww2_subtlety_2pc );   
+    register_damage_buff( p()->buffs.tww2_subtlety_2pc );
+    register_damage_buff( p()->buffs.tww3_deathstalker_2pc );
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -2387,6 +2416,7 @@ public:
   void trigger_restless_blades( const action_state_t* );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
   void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
+  void trigger_fatebound_edge_case( const action_state_t* state );
   void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_blindside( const action_state_t* );
@@ -2408,7 +2438,7 @@ public:
   void trigger_shadowcraft( const action_state_t* state );
   void trigger_cut_to_the_chase( const action_state_t* state );
   void trigger_cloud_cover( const action_state_t* state );
-  void trigger_deathstalkers_mark( const action_state_t* state );
+  void trigger_deathstalkers_mark( const action_state_t* state, bool ignore_cp = false );
   bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_unseen_blade( const action_state_t* state );
   void trigger_nimble_flurry( const action_state_t* state );
@@ -2425,6 +2455,24 @@ public:
     if ( secondary_trigger_type != secondary_trigger::NONE )
     {
       cd_duration = timespan_t::zero();
+    }
+
+    if ( affected_by.tww3_fatebound_4pc && cd_duration != 0_ms && p()->buffs.fatebound_lucky_coin->check() )
+    {
+      if ( cd_duration == timespan_t::min() )
+      {
+        cd_duration = ab::cooldown_base_duration( *ab::cooldown );
+      }
+
+      // Cooldown whitelists are in the Lucky Coin buff and modified by the set bonus
+      const size_t effect_offset = 1;
+      for ( size_t i = 1; i <= p()->set_bonuses.tww3_fatebound_4pc->effect_count(); i++ )
+      {
+        if ( ab::data().affected_by( p()->spell.fatebound_lucky_coin_buff->effectN( i + effect_offset ) ) )
+        {
+          cd_duration += p()->set_bonuses.tww3_fatebound_4pc->effectN( i ).time_value();
+        }
+      }
     }
 
     ab::update_ready( cd_duration );
@@ -2494,7 +2542,8 @@ public:
       if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
            as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
       {
-        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent() *
+          ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 2 ).percent() );
       }
     }
 
@@ -2503,7 +2552,8 @@ public:
     {
       if ( p()->buffs.darkest_night->up() && cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
       {
-        m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent();
+        m *= 1.0 + p()->spell.darkest_night_buff->effectN( 2 ).percent() *
+          ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 3 ).percent() );
       }
     }
 
@@ -2561,7 +2611,8 @@ public:
       if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
            as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
       {
-        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent() *
+          ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 2 ).percent() );
       }
     }
 
@@ -2656,7 +2707,8 @@ public:
 
     if ( affected_by.momentum_of_despair && p()->buffs.momentum_of_despair->check() )
     {
-      cm *= 1.0 + p()->spell.momentum_of_despair_buff->effectN( 2 ).percent();
+      cm *= 1.0 + p()->spell.momentum_of_despair_buff->effectN( 2 ).percent() *
+        ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 3 ).percent() );
     }
 
     return cm;
@@ -3677,14 +3729,7 @@ struct adrenaline_rush_t : public rogue_spell_t
       p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
     }
 
-    if ( p()->talent.fatebound.edge_case->ok() ) {
-      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-      {
-        p()->buffs.double_jeopardy->expire();
-        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
-      }
-    }
+    trigger_fatebound_edge_case( execute_state );
   }
 };
 
@@ -3949,7 +3994,8 @@ struct dispatch_t: public rogue_attack_t
 
   bool ready() override
   {
-    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+    if ( p()->talent.trickster.coup_de_grace->ok() &&
+         ( p()->buffs.escalating_blade->at_max_stacks() || p()->buffs.tww3_trickster_4pc->check() ) )
       return false;
 
     return rogue_attack_t::ready();
@@ -4389,14 +4435,7 @@ struct deathmark_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p()->talent.fatebound.edge_case->ok() ) {
-      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
-      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
-      {
-        p()->buffs.double_jeopardy->expire();
-        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
-      }
-    }
+    trigger_fatebound_edge_case( execute_state );
   }
 };
 
@@ -4649,7 +4688,8 @@ struct eviscerate_t : public rogue_attack_t
 
   bool ready() override
   {
-    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+    if ( p()->talent.trickster.coup_de_grace->ok() &&
+         ( p()->buffs.escalating_blade->at_max_stacks() || p()->buffs.tww3_trickster_4pc->check() ) )
       return false;
 
     return rogue_attack_t::ready();
@@ -4922,6 +4962,11 @@ struct ghostly_strike_t : public rogue_attack_t
     if ( result_is_hit( state->result ) )
     {
       td( state->target )->debuffs.ghostly_strike->trigger();
+
+      if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+      {
+        trigger_fatebound_edge_case( state );
+      }
     }
   }
 
@@ -5047,7 +5092,7 @@ struct killing_spree_t : public rogue_attack_t
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
-    interrupt_auto_attack = false;
+    interrupt_auto_attack = p->is_ptr(); // 06-28-2025 -- TOCHECK: Auto attacks are now interrupted on PTR
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
@@ -5099,8 +5144,15 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    attack_mh->execute_on_target( d->target );
-    attack_oh->execute_on_target( d->target );
+    // 06-28-2025 -- TOCHECK: On 11.2 PTR both hits target random enemies
+    // Additionally, the new damage spell 1248604 is not currently being used but contains the 0-9 yard cone
+    attack_mh->execute_on_target( p()->is_ptr() ? rng().range( sim->target_non_sleeping_list ) : d->target );
+    attack_oh->execute_on_target( p()->is_ptr() ? rng().range( sim->target_non_sleeping_list ) : d->target );
+
+    if ( p()->spec.killing_spree_energize->ok() && d->current_tick > 0 )
+    {
+      trigger_combo_point_gain( as<int>( p()->spec.killing_spree_energize->effectN( 1 ).base_value() ), p()->gains.killing_spree );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -5127,6 +5179,16 @@ struct kingsbane_t : public rogue_attack_t
   kingsbane_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.kingsbane, options_str )
   {
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( result_is_hit( state->result ) && p()->set_bonuses.tww3_fatebound_2pc->ok() )
+    {
+      trigger_fatebound_edge_case( state );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -5687,7 +5749,8 @@ struct secret_technique_t : public rogue_attack_t
       if ( p()->bugs && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
            p()->buffs.lingering_darkness->check() )
       {
-        m /= 1.0 + p()->buffs.lingering_darkness->check_value();
+        m /= 1.0 + p()->buffs.lingering_darkness->check_value() *
+          ( 1.0 + p()->buffs.tww3_deathstalker_2pc->check() * p()->spec.tww3_deathstalker_2pc_buff->effectN( 2 ).percent() );
       }
 
       return m;
@@ -6459,8 +6522,14 @@ struct symbols_of_death_t : public rogue_spell_t
     p()->buffs.the_rotten->trigger( as<int>( p()->talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
     p()->buffs.symbolic_victory->trigger();
     p()->buffs.tww1_subtlety_2pc->trigger();
+    p()->buffs.tww3_deathstalker_2pc->trigger();
 
-    trigger_supercharger();
+    if ( p()->set_bonuses.tww3_deathstalker_4pc->ok() )
+    {
+      trigger_deathstalkers_mark( execute_state, true );
+    }
+
+    trigger_supercharger();    
   }
 };
 
@@ -6478,6 +6547,7 @@ struct shiv_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p()->buffs.symbolic_victory->trigger();
+
     if ( p()->specialization() == ROGUE_ASSASSINATION )
     {
       trigger_supercharger();
@@ -6488,9 +6558,18 @@ struct shiv_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s->result ) && p()->talent.assassination.improved_shiv->ok() )
+    if ( p()->specialization() == ROGUE_ASSASSINATION )
     {
-      td( s->target )->debuffs.shiv->trigger();
+      if ( result_is_hit( s->result ) && p()->talent.assassination.improved_shiv->ok() )
+      {
+        td( s->target )->debuffs.shiv->trigger();
+      }
+
+      p()->buffs.tww3_deathstalker_2pc->trigger();
+      if ( p()->set_bonuses.tww3_deathstalker_4pc->ok() )
+      {
+        trigger_deathstalkers_mark( s, true );
+      }
     }
   }
 
@@ -7433,12 +7512,22 @@ struct coup_de_grace_t : public rogue_attack_t
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
     trigger_tww2_set_bonus_removal();
 
+    if ( p()->buffs.tww3_trickster_4pc->check() )
+    {
+      p()->buffs.tww3_trickster_4pc->expire();
+    }
+    else
+    {
+      p()->buffs.tww3_trickster_4pc->trigger();
+    }
+
     p()->buffs.escalating_blade->expire();
   }
 
   bool ready() override
   {
-    if ( p()->talent.trickster.coup_de_grace->ok() && p()->buffs.escalating_blade->at_max_stacks() )
+    if ( p()->talent.trickster.coup_de_grace->ok() &&
+         ( p()->buffs.escalating_blade->at_max_stacks() || p()->buffs.tww3_trickster_4pc->check() ) )
       return rogue_attack_t::ready();
 
     return false;
@@ -9091,6 +9180,26 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_state_t* state )
+{
+  if ( !p()->talent.fatebound.edge_case->ok() )
+    return;
+
+  execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+  
+  if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+  {
+    p()->buffs.double_jeopardy->expire();
+    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+  }
+
+  if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
+  {
+    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+  }
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_fate_intertwined( const action_state_t* state )
 {
   if ( !p()->talent.fatebound.fate_intertwined->ok() )
@@ -9449,24 +9558,27 @@ void actions::rogue_action_t<Base>::trigger_cloud_cover( const action_state_t* s
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_state_t* state, bool ignore_cp )
 {
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
     return;
 
-  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
+  if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 && !ignore_cp )
     return;
+
+  // 2025-06-28 -- Deathstalker's Mark can be consumed via Symbols of Death with the TWW3 4pc set bonus
+  player_t* mark_target = state->target->is_enemy() ? state->target : p()->target;
 
   // 2024-11-30 -- When Darkest Night is active, Deathstalker's Mark cannot be reduced below the application stacks
   const bool darkest_night_bug = ( p()->bugs && p()->buffs.darkest_night->check() &&
-                                   ( p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() <=
+                                   ( p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() <=
                                      p()->spell.darkest_night_buff->effectN( 3 ).base_value() ) );
-  if ( !darkest_night_bug && p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() &&
-       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
+  if ( !darkest_night_bug && p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->check() &&
+       ( ignore_cp || cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) ) )
   {
-    p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
+    p()->get_target_data( mark_target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.deathstalkers_mark->trigger();
-    p()->active.deathstalker.deathstalkers_mark->execute_on_target( state->target );
+    p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
     if ( p()->talent.deathstalker.shadewalker->ok() )
     {
@@ -9542,6 +9654,14 @@ void actions::rogue_action_t<Base>::trigger_unseen_blade( const action_state_t* 
     p()->buffs.disorienting_strikes->decrement();
   else
     p()->buffs.unseen_blade_cd->trigger();
+
+  if ( p()->set_bonuses.tww3_trickster_2pc->ok() )
+  {
+    if ( this->rng().roll( p()->set_bonuses.tww3_trickster_2pc->effectN( 2 ).percent() ) )
+    {
+      p()->buffs.unseen_blade_cd->expire();
+    }
+  }
 
   p()->cooldowns.unseen_blade_icd->start();
 }
@@ -9723,11 +9843,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.caustic_spatter = make_buff( *this, "caustic_spatter", source->spec.caustic_spatter_buff )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION ); // TOCHECK
   debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
-    ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
+    ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() )
+    ->apply_affecting_aura( source->set_bonuses.tww3_deathstalker_4pc ); // Duration Increase
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
     ->set_tick_behavior( buff_tick_behavior::NONE )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( timespan_t::zero() )
+    ->apply_affecting_aura( source->set_bonuses.tww3_fatebound_2pc ); // Duration Increase
   debuffs.find_weakness = make_buff( *this, "find_weakness", source->spec.find_weakness_debuff )
     ->set_default_value( source->talent.subtlety.find_weakness->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -9976,7 +10098,8 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
     if ( effect.has_common_school( school ) )
     {
-      m *= 1.0 + buffs.lingering_darkness->value();
+      m *= 1.0 + buffs.lingering_darkness->value() *
+        ( 1.0 + buffs.tww3_deathstalker_2pc->check() * spec.tww3_deathstalker_2pc_buff->effectN( 2 ).percent() );
     }
   }
 
@@ -11333,8 +11456,10 @@ void rogue_t::init_spells()
   spec.greenskins_wickers_buff = talent.outlaw.greenskins_wickers->ok() ? find_spell( 394131 ) : spell_data_t::not_found();
   spec.hidden_opportunity_extra_attack = talent.outlaw.hidden_opportunity->ok() ? find_spell( 385897 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
+  // TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
-  spec.killing_spree_oh_attack = spec.killing_spree_mh_attack->effectN( 1 ).trigger();
+  spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
+  spec.killing_spree_energize = talent.outlaw.killing_spree->ok() && is_ptr() ? find_spell( 1235074 ) : spell_data_t::not_found();
   spec.opportunity_buff = talent.outlaw.opportunity->ok() ? find_spell( 195627 ) : spell_data_t::not_found();
   spec.sinister_strike_extra_attack = talent.outlaw.opportunity->ok() ? find_spell( 197834 ) : spell_data_t::not_found();
   spec.summarily_dispatched_buff = talent.outlaw.summarily_dispatched->ok() ? find_spell( 386868 ) : spell_data_t::not_found();
@@ -11395,14 +11520,24 @@ void rogue_t::init_spells()
   spec.tww1_outlaw_2pc_spell = set_bonuses.tww1_outlaw_2pc->ok() ? find_spell( 459002 ) : spell_data_t::not_found();
   spec.tww1_outlaw_4pc_buff = set_bonuses.tww1_outlaw_4pc->ok() ? find_spell( 458826 ) : spell_data_t::not_found();
 
-  set_bonuses.tww2_assassination_2pc = sets->set( ROGUE_ASSASSINATION, TWW2, B2 );
-  set_bonuses.tww2_assassination_4pc = sets->set( ROGUE_ASSASSINATION, TWW2, B4 );
-  set_bonuses.tww2_outlaw_2pc = sets->set( ROGUE_OUTLAW, TWW2, B2 );
-  set_bonuses.tww2_outlaw_4pc = sets->set( ROGUE_OUTLAW, TWW2, B4 );
-  set_bonuses.tww2_subtlety_2pc = sets->set( ROGUE_SUBTLETY, TWW2, B2 );
-  set_bonuses.tww2_subtlety_4pc = sets->set( ROGUE_SUBTLETY, TWW2, B4 );
+  set_bonuses.tww2_assassination_2pc  = sets->set( ROGUE_ASSASSINATION, TWW2, B2 );
+  set_bonuses.tww2_assassination_4pc  = sets->set( ROGUE_ASSASSINATION, TWW2, B4 );
+  set_bonuses.tww2_outlaw_2pc         = sets->set( ROGUE_OUTLAW, TWW2, B2 );
+  set_bonuses.tww2_outlaw_4pc         = sets->set( ROGUE_OUTLAW, TWW2, B4 );
+  set_bonuses.tww2_subtlety_2pc       = sets->set( ROGUE_SUBTLETY, TWW2, B2 );
+  set_bonuses.tww2_subtlety_4pc       = sets->set( ROGUE_SUBTLETY, TWW2, B4 );
 
   spec.tww2_assassination_4pc_buff = set_bonuses.tww2_assassination_4pc->ok() ? find_spell( 1219264 ) : spell_data_t::not_found();
+
+  set_bonuses.tww3_deathstalker_2pc = sets->set( HERO_DEATHSTALKER, TWW3, B2 );
+  set_bonuses.tww3_deathstalker_4pc = sets->set( HERO_DEATHSTALKER, TWW3, B4 );
+  set_bonuses.tww3_fatebound_2pc    = sets->set( HERO_FATEBOUND, TWW3, B2 );
+  set_bonuses.tww3_fatebound_4pc    = sets->set( HERO_FATEBOUND, TWW3, B4 );
+  set_bonuses.tww3_trickster_2pc    = sets->set( HERO_TRICKSTER, TWW3, B2 );
+  set_bonuses.tww3_trickster_4pc    = sets->set( HERO_TRICKSTER, TWW3, B4 );
+
+  spec.tww3_deathstalker_2pc_buff = set_bonuses.tww3_deathstalker_2pc->ok() ?
+    ( specialization() == ROGUE_ASSASSINATION ? find_spell( 1239231 ) : find_spell( 1239232 ) ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
 
@@ -11664,6 +11799,7 @@ void rogue_t::init_gains()
   gains.improved_adrenaline_rush        = get_gain( "Improved Adrenaline Rush" );
   gains.improved_adrenaline_rush_expiry = get_gain( "Improved Adrenaline Rush (Expiry)" );
   gains.improved_ambush                 = get_gain( "Improved Ambush" );
+  gains.killing_spree                   = get_gain( "Killing Spree" );
   gains.master_of_shadows               = get_gain( "Master of Shadows" );
   gains.premeditation                   = get_gain( "Premeditation" );
   gains.quick_draw                      = get_gain( "Quick Draw" );
@@ -11909,7 +12045,8 @@ void rogue_t::create_buffs()
   buffs.shadow_dance = new buffs::shadow_dance_t( this );
 
   buffs.symbols_of_death = make_buff<damage_buff_t>( this, "symbols_of_death", spec.symbols_of_death )
-    ->apply_affecting_aura( talent.subtlety.death_perception ); // Damage Bonus Modifier
+    ->apply_affecting_aura( talent.subtlety.death_perception )    // Damage Bonus Modifier
+    ->apply_affecting_aura( set_bonuses.tww3_deathstalker_4pc );  // Duration Increase
   buffs.symbols_of_death->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   if ( talent.subtlety.planned_execution->ok() )
   {
@@ -11982,15 +12119,28 @@ void rogue_t::create_buffs()
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
   if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
   {
-    // Combine the 1% per additional stack buff (which we use as the stacking base buff) and 3% from initial stack buff (the fatebound_coin_heads_stacking_buff)
-    buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() - spell.fatebound_coin_heads_buff->effectN( 1 ).percent() );
-    buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() - spell.fatebound_coin_heads_buff->effectN( 2 ).percent() );
-    // TODO: fatebound_coin_heads_stacking_buff modifies fatebound_coin_heads_buff for the periodic and direct damage effects, but has an inline 3% auto attack damage effect
-    //  Are we getting an extra 1% AA damage for free? We may never know. Assuming we don't for now.
-    buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() - spell.fatebound_coin_heads_buff->effectN( 5 ).percent() );
+    if ( is_ptr() )
+    {
+      // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff (the fatebound_coin_heads_stacking_buff)
+      buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() );
+      buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
+                                                    1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() );
+      buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
+                                                       1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() );
+    }
+    else
+    {
+      // Combine the 1% per additional stack buff (which we use as the stacking base buff) and 3% from initial stack buff (the fatebound_coin_heads_stacking_buff)
+      buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
+                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() - spell.fatebound_coin_heads_buff->effectN( 1 ).percent() );
+      buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
+                                                    1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() - spell.fatebound_coin_heads_buff->effectN( 2 ).percent() );
+      // TODO: fatebound_coin_heads_stacking_buff modifies fatebound_coin_heads_buff for the periodic and direct damage effects, but has an inline 3% auto attack damage effect
+      //  Are we getting an extra 1% AA damage for free? We may never know. Assuming we don't for now.
+      buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
+                                                       1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() - spell.fatebound_coin_heads_buff->effectN( 5 ).percent() );
+    }
   }
   buffs.fatebound_coin_heads
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
@@ -12106,7 +12256,8 @@ void rogue_t::create_buffs()
   } );
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
-  buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
+  buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE )
+    ->apply_affecting_aura( set_bonuses.tww3_fatebound_2pc );
 
   buffs.master_assassin = make_buff<damage_buff_t>( this, "master_assassin", spec.master_assassin_buff );
   buffs.master_assassin->apply_affecting_aura( talent.rogue.subterfuge ); // Duration Modifer;
@@ -12315,6 +12466,28 @@ void rogue_t::create_buffs()
   if ( set_bonuses.tww2_subtlety_2pc->ok() )
   {
     buffs.tww2_subtlety_2pc->set_direct_mod( set_bonuses.tww2_subtlety_2pc->effectN( 1 ).trigger(), 1 );
+  }
+
+  buffs.tww3_deathstalker_2pc = make_buff<damage_buff_t>( this, "deaths_study", spec.tww3_deathstalker_2pc_buff );
+  buffs.tww3_deathstalker_2pc->apply_affecting_aura( set_bonuses.tww3_deathstalker_4pc ) // Duration Increase
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  if ( spec.tww3_deathstalker_2pc_buff->ok() )
+  {
+    buffs.deathstalkers_mark->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
+    buffs.momentum_of_despair->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
+    buffs.symbolic_victory->apply_dynamic_buff_multiplier( buffs.tww3_deathstalker_2pc );
+  }
+
+  buffs.tww3_trickster_4pc = make_buff( this, "tww3_trickster_4pc", set_bonuses.tww3_trickster_4pc );
+  if ( set_bonuses.tww3_trickster_4pc->ok() )
+  {
+    // Buff is active on Coup cast but does not begin counting down until 1.2s into the cast, effectively adding 1.2s to its duration
+    buffs.tww3_trickster_4pc->set_duration( timespan_t::from_seconds( set_bonuses.tww3_trickster_4pc->effectN( 2 ).base_value() ) + 1.2_s )
+      ->set_default_value_from_effect( 1 ) // TOCHECK -- Currently the "dealing $s1% of normal damage" is set to 100% but may change
+      ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+        if ( new_ == 0 )
+          buffs.escalating_blade->expire(); // Technically this is the same buff in-game
+      } );
   }
 }
 

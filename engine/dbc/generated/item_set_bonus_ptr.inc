@@ -1,5 +1,5 @@
-// Set bonus data, wow build 11.2.0.61624
-static const std::array<item_set_bonus_t, 1073> __ptr_set_bonus_data { {
+// Set bonus data, wow build 11.2.0.61703
+static const std::array<item_set_bonus_t, 1086> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion"         ,   "T19_MOTL",      0,  1293,   2,   1,   -1,        -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion"         ,   "T19_MOTL",      0,  1293,   2,   2,   -1,        -1,  228445, { 134529, 134533,  0 } },
@@ -1116,4 +1116,18 @@ static const std::array<item_set_bonus_t, 1073> __ptr_set_bonus_data { {
   { "Spellweaver's Immaculate Design"           , "thewarwithin_season_3"       ,       "TWW3",     30,  1922,   4,  13,   -1,        36, 1236367, { 237658, 237656, 237655, 237654, 237653,  0 } },
   { "Spellweaver's Immaculate Design"           , "thewarwithin_season_3"       ,       "TWW3",     30,  1922,   4,  13,   -1,        37, 1236365, { 237658, 237656, 237655, 237654, 237653,  0 } },
   { "Spellweaver's Immaculate Design"           , "thewarwithin_season_3"       ,       "TWW3",     30,  1922,   4,  13,   -1,        38, 1236369, { 237658, 237656, 237655, 237654, 237653,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   1,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   2,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   3,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   4,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   5,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   6,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   7,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   8,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,   9,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,  10,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,  11,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,  12,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
+  { "Shards of the Void"                        , "shards_of_the_void"          ,   "TWW_SOTV",     31,  1960,   2,  13,   -1,        -1, 1235130, { 237730, 242392, 237728, 237735,  0 } },
 } };

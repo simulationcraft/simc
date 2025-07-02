@@ -187,7 +187,7 @@ back=test_pilots_gopack,id=228844,ilevel=684
 chest=confessors_unshakable_vestment,id=229337,ilevel=684,enchant=crystalline_radiance_3
 wrists=consecrated_cuffs,id=222815,bonus_id=8793/11109,ilevel=681,gem_id=213497
 hands=confessors_unshakable_mitts,id=229335,ilevel=684
-waist=refiners_conveyor_belt,id=228882,ilevel=684,gem_id=213470
+waist=durable_information_securing_container,id=242664,ilevel=701,gem_id=213470,titan_disc_id=1236961
 legs=pit_doctors_petticoat,id=228865,ilevel=684,enchant=sunset_spellthread_3
 feet=cemented_murlocswimmers,id=228879,ilevel=684
 finger1=the_jastor_diamond,id=231265,ilevel=684,gem_id=213494/213494,enchant=radiant_mastery_3
@@ -198,13 +198,13 @@ main_hand=big_earners_bludgeon,id=228901,ilevel=684,enchant=authority_of_the_dep
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8793,ilevel=681
 
 # Gear Summary
-# gear_ilvl=683.63
-# gear_stamina=421565
-# gear_intellect=79268
+# gear_ilvl=684.69
+# gear_stamina=429095
+# gear_intellect=80011
 # gear_crit_rating=3589
-# gear_haste_rating=17047
-# gear_mastery_rating=19443
+# gear_haste_rating=16514
+# gear_mastery_rating=18149
 # gear_versatility_rating=6461
-# gear_armor=21621
+# gear_armor=21871
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

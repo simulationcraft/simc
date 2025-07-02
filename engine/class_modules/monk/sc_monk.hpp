@@ -1314,6 +1314,22 @@ public:
       propagate_const<buff_t *> luck_of_the_draw;
       propagate_const<buff_t *> opportunistic_strike;
     } tww2;
+
+    struct
+    {
+      const spell_data_t *coc_2pc;
+      const spell_data_t *coc_2pc_heart_of_the_jade_serpent_data;
+      propagate_const<buff_t *> coc_2pc_heart_of_the_jade_serpent;
+      const spell_data_t *coc_4pc;
+      const spell_data_t *coc_4pc_jade_serpents_blessing_data;
+      propagate_const<buff_t *> coc_4pc_jade_serpents_blessing;
+      const spell_data_t *moh_2pc;
+      const spell_data_t *moh_4pc;
+      const spell_data_t *spm_2pc;
+      const spell_data_t *spm_2pc_flurry_charge_data;
+      propagate_const<buff_t *> spm_2pc_flurry_charge;
+      const spell_data_t *spm_4pc;
+    } tww3;
   } tier;
 
   struct pets_t

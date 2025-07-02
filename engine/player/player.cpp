@@ -875,6 +875,13 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
+  const auto* item_set_bonus = p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].bonus;
+  if ( !item_set_bonus || item_set_bonus->trait_sub_tree != -1 )
+  {
+    p->sim->error( "The unspecified set bonus option does not support tier sets enabled by TraitSubTree! Check Equipment page of wiki for alternative syntax." );
+    return false;
+  }
+
   p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
@@ -4268,6 +4275,10 @@ void player_t::init_finished()
 
   // Sort outbound assessors
   assessor_out_damage.sort();
+
+  // Trigger init finished callbacks
+  for ( const auto& cb : callbacks_on_init_finished )
+    cb( this );
 
   // Print items to debug log
   if ( sim->debug )
@@ -15029,6 +15040,11 @@ void player_t::register_on_combat_state_callback( std::function<void( player_t*,
 void player_t::register_movement_callback( std::function<void( bool )> fn )
 {
   callbacks_on_movement.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_init_finished_callback( std::function<void( player_t* )> fn )
+{
+  callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

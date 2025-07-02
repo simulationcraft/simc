@@ -1550,6 +1550,12 @@ class SpellDataGenerator(DataGenerator):
          1221347, # Surging Totem hidden buff on player for assisted combat APL
          # 11.2
          1224916, # Void-Touched Fragment stacking buff
+         1238693, # Voidglass Shards
+         1223417, 1223419, # Reshii Wraps: Ethereal Reaping
+         1239674, # Unyielding Netherprism Damage
+         1242875, 1242895, 1242897, 1242881, 1242901, # Screams of a Forgotten Sky
+         1241847, 1241899, 1240916, # Eradicating Arcanocore
+         1239403, # Sigil of the Cosmic Hunt
         ),
 
         # Warrior:
@@ -1979,6 +1985,7 @@ class SpellDataGenerator(DataGenerator):
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
+          ( 1237388, 0 ), # Trollbane Frostscythe
           # San'layn
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
@@ -4114,6 +4121,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'thewarwithin_season_3',
             'bonuses': [ 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931 ],
             'tier'   : 'TWW3'
+        },
+        {
+            'name'   : 'shards_of_the_void',
+            'bonuses': [ 1960 ],
+            'tier'   : 'TWW_SOTV'
         },
     ]
 

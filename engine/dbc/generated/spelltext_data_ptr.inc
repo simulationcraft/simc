@@ -1,5 +1,5 @@
-// Spell text, wow build 11.2.0.61624
-static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
+// Spell text, wow build 11.2.0.61703
+static const std::array<spelltext_data_t, 28025> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23386,7 +23386,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  441398, "Finishing moves have $s1% increased chance to critically strike Fazed targets.", 0, 0 },
   {  441403, "Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.", 0, 0 },
   {  441415, "Blind and Shroud of Concealment have $s1% reduced cooldown.\r\n\r\nPick Pocket and Sap have $s2 yd increased range.", 0, 0 },
-  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
+  {  441416, "$@spelldesc441378", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", 0 },
   {  441423, "After $441786s1 strikes with Unseen Blade, your next $?a137036[Dispatch][Eviscerate] will be performed as a Coup de Grace, functioning as if it had consumed $s3 additional combo points.\r\n\r\nIf the primary target is Fazed, gain $s2 stacks of Flawless Form.", 0, 0 },
   {  441424, "$@spelldesc441378", 0, 0 },
   {  441426, "$@spelldesc441378", 0, 0 },
@@ -26585,7 +26585,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   {  473402, "Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $d. ", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
   {  473490, "Restores ${$m1/5*$d} health over $d. Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
   {  473492, "$@spelldesc471063", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].", 0 },
-  {  473520, "Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
+  {  473520, "Casting Explosive Shot has a $s1% chance to grant Lock and Load.", 0, 0 },
   {  473522, "Consuming Precise Shots reduces the cooldown of Explosive Shot by ${$s1/1000}.1 sec.\r\n\r\nConsuming Lock and Load reduces the cooldown of Explosive Shot by ${$s2/1000}.1 sec.", 0, 0 },
   {  473523, "Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.\r\n\r\nCasting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.", 0, 0 },
   {  473602, "$@spelldesc471316", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
@@ -27194,6 +27194,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1223377, "$@spelldesc1223229", 0, 0 },
   { 1223410, "$@spelldesc1215712", "Crash Lightning damage increased by $1223332w1%.", 0 },
   { 1223411, "$@spelldesc1223229", 0, 0 },
+  { 1223417, "$@spelldesc1217101", 0, 0 },
   { 1223418, "Cosmic energy explodes after $d, inflicting $1223420s1 Cosmic damage to players within $1223420A1 yards.\r\n\r\nIf the player is within $@spellname1223196 when this effect expires, a region of $@spellname1223196 is transferred through dimensions.", "Upon expiration, inflicts $1223420s1 Cosmic damage to players within $1223420A1 yards.", 0 },
   { 1223420, "$@spelldesc1223418", "$@spellname1223418", 0 },
   { 1223453, 0, "Absorb $w1 damage.", 0 },
@@ -27631,6 +27632,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1235097, "$@spelldesc51690", 0, 0 },
   { 1235100, "$@spelldesc51690", 0, 0 },
   { 1235113, "Your attacks have a chance to target a nearby enemy with Ravager for ${$s1/1000} sec.", 0, 0 },
+  { 1235130, "While $@spellname1234996 is empowered, your voidglass shards are $s1% more effective.", 0, 0 },
   { 1235136, "Your spells have a chance to conjure voidglass shards, slicing enemies for ${$s1*$<rolemult>} Cosmic damage or orbiting allies to absorb $s2 damage for up to $1238697d.", 0, 0 },
   { 1235165, "$@spelldesc455397", "Your next Festering Strike has become Festering Scythe.", 0 },
   { 1235225, "Taking damage infuriates you, causing you to absorb $s1 damage and deal $s2 Shadow damage per infuriation split between nearby enemies. $@spelldesc1240903\r\n\r\nYou may be further infuriated every $proccooldown sec, stacking up to $1235879u times, but calm quickly upon leaving combat. \r\n\r\n$?(a137048|a137028|a137023|a137010|a212613|a137008)[][|cnRED_FONT_COLOR:Valid only for tank specializations.|r]", 0, 0 },
@@ -27805,6 +27807,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1237173, "$@spelldesc1226311", 0, 0 },
   { 1237196, "$@spelldesc450615", "$w1 Flurry Strikes charged, released on your next attack.", 0 },
   { 1237269, "$@spelldesc431695", "Haste, movement speed, and cooldown recovery rate increased by $s1%.", "Bronze" },
+  { 1237388, "A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. Deals reduced damage beyond $s5 targets. ", 0, 0 },
   { 1237591, "$@spelldesc369939", 0, 0 },
   { 1237615, "$@spelldesc1236397", "The damage of your next $?c1[Mind Blast][Void Torrent] is increased by $w1%.", 0 },
   { 1237777, "The powers of your Reshii Wraps also reduce Cosmic damage taken by $1237859s2% for $1237859d or until $s1 damage has been prevented.", 0, 0 },
@@ -27834,6 +27837,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1238675, "$@spelldesc1236361", "Damage increased by $w1%.", 0 },
   { 1238676, "$@spelldesc1236361", "Damage increased by $w1%.", 0 },
   { 1238680, "Consuming Rime reduces the cooldown of Empower Rune Weapon by ${$s1/-1000} sec.", 0, 0 },
+  { 1238693, "$@spelldesc1235136", 0, 0 },
   { 1238696, "$@spelldesc452402", "Damage of your next Demonsurge is increased by $w2%.", 0 },
   { 1238697, "$@spelldesc1235136", "Absorbing ${$w1} damage.", 0 },
   { 1238733, "$@spelldesc178940", 0, 0 },
@@ -27860,6 +27864,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1239356, "An unholy arrow that deals $s1 Shadow damage. When consuming Sudden Doom, your Death Coil commands your archer to fire an additional Blighted Arrow at $194916s1% effectiveness. Epidemic will instead cause Blighted Arrow to ricochet and hit up to $1239385s2 additional targets.", 0, 0 },
   { 1239385, "$@spelldesc1239356", "Next Blighted Arrow hits $w1 additional targets.", 0 },
   { 1239401, "$@spelldesc1235360", 0, 0 },
+  { 1239403, "$@spelldesc1235360", "Suffering $w1 Cosmic damage per $t1.", 0 },
   { 1239422, "$@spelldesc1239356", "Next Blighted Arrow fires again at $194916s1% effectiveness.", 0 },
   { 1239442, "$@spelldesc1236377", 0, 0 },
   { 1239443, "$@spelldesc1236377", 0, 0 },
@@ -27872,6 +27877,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1239609, "$@spelldesc1236395", "Haste increased by ${$W1}.1%. Multiple applications may overlap.", 0 },
   { 1239640, "$@spelldesc1234714", "The antenna is drawing ambient arcane energy towards you!", 0 },
   { 1239641, "$@spelldesc1234714", "Critical Strike rating increased by $w1.", 0 },
+  { 1239674, "$@spelldesc1233553", 0, 0 },
   { 1239675, "$@spelldesc1233553", "The Netherprism is accumulating latent energy and will grant ${$w1} Strength or Agility on use.", 0 },
   { 1239689, "$@spelldesc1236415", "Your Demonic Soul has been unleashed and is assaulting nearby enemies.\r\n\r\n$?a1236416[Generating ${$s2/10} $lSoul Shard:Soul Shards; every $t2 sec.][]", 0 },
   { 1239714, "$@spelldesc449631", 0, 0 },
@@ -27895,6 +27901,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1240891, "Ilyssa places a Sigil of Chains at their current target's location that activates after ${$s1/2}.1 sec.\r\n\r\nAll players are pulled to its center and snared, reducing movement speed by $1223624s1% for $1223624d.", 0, 0 },
   { 1240896, "$@spelldesc1233384", "Unleashing the $@spellname1233384 upon reaching $u charges.", 0 },
   { 1240903, "Damage increased by $s1% per additional enemy, up to ${$s1*$s2}%.", "$@spelldesc1240903", 0 },
+  { 1240916, "$@spelldesc1233384", 0, 0 },
   { 1241059, "A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $<absorb> total.\r\n\r\nPurifying Stagger damage increases absorption by up to $322510s1%.", "Absorbs $s2~% of incoming damage, up to $w1 total.", 0 },
   { 1241097, "Healing Spheres now heal over $1241109d, and their healing is increased by up to $s1% based on your missing health.", 0, 0 },
   { 1241109, "$@spelldesc1241097", "Healing for $w1 every $t sec.", 0 },
@@ -27915,6 +27922,7 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1241777, "$@spelldesc1242162", "Inflicting $s1 Arcane damage every $t1 sec.", 0 },
   { 1241778, "$@spelldesc1242162", 0, 0 },
   { 1241806, 0, "Critical Strike increased by $w1.", 0 },
+  { 1241847, "$@spelldesc1233384", 0, 0 },
   { 1241871, "$@spelldesc53271", 0, "Command Pet Ability" },
   { 1241991, "Portalmaster Halsan places a timebomb that explodes after $d sending out a wave, inflicting $1242033s3 Arcane damage every $1242033t3 sec, reducing haste by $1242033s1%, and reducing movement speed by $1242033s2% for $1242033d. ", 0, 0 },
   { 1242033, "$@spelldesc1241991", 0, 0 },
@@ -27936,9 +27944,14 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1242780, "$@spelldesc1242752", 0, 0 },
   { 1242862, "Increases the critical strike chance of Vampiric Touch and Shadow Word: Pain by $s1% and their critical strike damage by $s2%.", 0, 0 },
   { 1242867, "$@spelldesc1245978$@spelldesc1240891", 0, 0 },
+  { 1242875, "$@spelldesc1235272", 0, 0 },
+  { 1242881, "$@spelldesc1235272", "Damage taken from $@spellname1235272 increased by $1235272s2% per stack.", 0 },
   { 1242882, "$@spelldesc1245978$@spelldesc1240891", 0, 0 },
   { 1242883, "$@spelldesc1245978$@spelldesc1245978", "You are bound to other players. Moving further than $s1 yards away will cause you to snap back towards each other and suffer $1243162s1 Chaos damage.", 0 },
+  { 1242895, "$@spelldesc1235272", 0, 0 },
+  { 1242897, "$@spelldesc1235272", 0, 0 },
   { 1242900, "$@spelldesc1245978$@spelldesc1240891", 0, 0 },
+  { 1242901, "$@spelldesc1235272", 0, 0 },
   { 1243069, "$@spelldesc373280", "Witnissing nightmares from $@auracaster.", 0 },
   { 1243105, "$@spelldesc373280", 0, 0 },
   { 1243106, "$@spelldesc373280", 0, 0 },
@@ -28014,11 +28027,13 @@ static const std::array<spelltext_data_t, 28012> __ptr_spelltext_data { {
   { 1248979, "$@spelldesc1227048", "Targeting by Voidblade Ambush.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.0.61624
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.2.0.61703
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  441416,  1, "Your next $?a137008[Marrowrend][Obliterate] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes.", "Your next $?a137008[Marrowrend][Obliterate or Frostscythe] costs $?a443564[1 Rune][no Runes] and will call forth $441378s1 scythes to strike down your foes." },
+  {  473520,  0, "Explosive Shot has a $s1% chance to grant Lock and Load.", "Casting Explosive Shot has a $s1% chance to grant Lock and Load." },
 } };
 
-// Spell description variables, wow build 11.2.0.61624
+// Spell description variables, wow build 11.2.0.61703
 static const std::array<spelldesc_vars_data_t, 669> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28691,7 +28706,7 @@ static const std::array<spelldesc_vars_data_t, 669> __ptr_spelldesc_vars_data { 
   { 1244417, "$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.0.61624
+// spelldesc_vars hotfix entries, wow build 11.2.0.61703
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

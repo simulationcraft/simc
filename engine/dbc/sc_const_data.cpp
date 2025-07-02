@@ -273,6 +273,7 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_THUNDER_CITRINE:
     case SOCKET_COLOR_SEA_CITRINE:
     case SOCKET_COLOR_WIND_CITRINE:
+    case SOCKET_COLOR_RESHII_FIBER:
       return true;
     default:
       return false;

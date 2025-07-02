@@ -740,12 +740,8 @@ public:
 
   struct
   {
-    const spell_data_t* voidweaver_2pc;
-    const spell_data_t* voidweaver_4pc;
     const spell_data_t* voidweaver_4pc_buff;
-    const spell_data_t* archon_2pc;
     const spell_data_t* archon_2pc_buff;
-    const spell_data_t* archon_4pc;
   } tww3_spells;
 
   // Cooldowns
@@ -967,9 +963,6 @@ public:
     double synergistic_brewterializer_tof_chance = 0.7;
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
-
-    int tww3_vw_set     = 0;
-    int tww3_archon_set = 0;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1417,7 +1410,7 @@ public:
     if ( p().talents.archon.resonant_energy.enabled() )
     {
       parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
-                            p().talents.archon.resonant_energy_shadow, p().tww3_spells.archon_2pc );
+                            p().talents.archon.resonant_energy_shadow, p().sets->set( HERO_ARCHON, TWW3, B2 ) );
     }
   }
 

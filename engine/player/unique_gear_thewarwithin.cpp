@@ -8127,6 +8127,443 @@ void gigazaps_zapcap( special_effect_t& effect )
   } );
 }
 
+// Diamantine Voidcore
+// 1234996 Driver
+// 1239221 Buff
+// TODO: RPPM modifier when mana drops below 50%
+void diamantine_voidcore( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1239221 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Unyielding Netherprism
+// 1233553 Equip Driver & Values
+// 1233556 Use Driver & Stat Buff
+// 1239674 Damage
+// 1239675 Stacking buff
+void unyielding_netherprism( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto equip_driver = effect.player->find_spell( 1233553 );
+  assert( equip_driver && "Unyielding Netherprism missing Equip Driver" );
+
+  struct unyielding_netherprism_use_t : public generic_proc_t
+  {
+    buff_t* stacking;
+    buff_t* stat_buff;
+
+    unyielding_netherprism_use_t( const special_effect_t& e, buff_t* stacking_buff, const spell_data_t* equip )
+      : generic_proc_t( e, "unyielding_netherprism_use", e.driver() ), stacking( stacking_buff ), stat_buff( nullptr )
+    {
+      // Setting max stacks here for reporting to allow for quickly checking the average stacks consumed
+      stat_e stat = e.player->convert_hybrid_stat( STAT_STR_AGI );
+      int idx = stat == STAT_AGILITY ? 1 : 2;
+      stat_buff = create_buff<stat_buff_t>( e.player, e.driver() )
+                      ->add_stat_from_effect( idx, equip->effectN( 2 ).average( e ) )
+                      ->set_cooldown( 0_ms )  // Handled by the trinket
+                      ->set_max_stack( e.player->find_spell( 1239675 )->max_stacks() );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      stat_buff->trigger( stacking->check() );
+      stacking->expire();
+    }
+  };
+
+  struct unyielding_netherprism_damage_t : public generic_aoe_proc_t
+  {
+    buff_t* stacking;
+
+    unyielding_netherprism_damage_t( const special_effect_t& e, const spell_data_t* equip, buff_t* stacking_buff )
+      : generic_aoe_proc_t( e, "unyielding_netherprism", e.player->find_spell( 1239674 ), true ),
+        stacking( stacking_buff )
+    {
+      base_dd_min = base_dd_max = equip->effectN( 1 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+      stacking->trigger();
+    }
+  };
+
+  buff_t* stacking_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1239675 ) );
+
+  auto equip            = new special_effect_t( effect.player );
+  equip->name_str       = fmt::format( "{}_{}", equip_driver->name_cstr(), "equip" );
+  equip->spell_id       = equip_driver->id();
+  equip->execute_action = create_proc_action<unyielding_netherprism_damage_t>( "unyielding_netherprism", effect, equip_driver, stacking_buff );
+  effect.player->special_effects.push_back( equip );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *equip );
+  cb->initialize();
+  cb->activate();
+
+  effect.execute_action = create_proc_action<unyielding_netherprism_use_t>( "unyielding_netherprism_use", effect,
+                                                                            stacking_buff, equip_driver );
+
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI );
+  effect.disable_buff();
+}
+
+// Araz's Ritual Forge
+// 1232802 Driver
+// 1232797 Value Spell
+void arazs_ritual_forge( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct arazs_buff_t final : public stat_buff_t
+  {
+    const special_effect_t& effect;
+    const spell_data_t* value_spell;
+    int current_tick;
+    double buff_val;
+    double decrease;
+
+    arazs_buff_t( const special_effect_t& e )
+      : stat_buff_t( e.player, "arazs_ritual_forge", e.driver() ),
+        effect( e ),
+        value_spell( nullptr ),
+        current_tick( 0 ),
+        buff_val( 0 ),
+        decrease( 0 )
+    {
+      auto n_ticks = e.driver()->duration() / e.driver()->effectN( 2 ).period();
+      value_spell  = e.player->find_spell( 1232797 );
+      buff_val     = value_spell->effectN( 1 ).average( e );
+      decrease     = buff_val / n_ticks;
+
+      set_stat_from_effect( 1, value_spell->effectN( 1 ).average( e ) );
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { recalculate(); } );
+    }
+
+    double current_value()
+    {
+      double value = buff_val - ( decrease * current_tick );
+
+      return value;
+    }
+
+    void recalculate()
+    {
+      current_tick++;
+      for ( auto& buff_stat : stats )
+      {
+        double delta = buff_stat.current_value - current_value();
+
+        if ( delta > 0 )
+        {
+          player->stat_loss( buff_stat.stat, decrease, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+        }
+      }
+    }
+
+    void recalculate_expiry()
+    {
+      for ( auto& buff_stat : stats )
+      {
+        double delta = current_value();
+        if ( delta > 0 )
+        {
+          player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+        }
+        buff_stat.current_value = 0;
+      }
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      // Skip stat_buff_t::expire_override() since we are manually handling stat changes.
+      buff_t::expire_override( s, d );
+      recalculate_expiry();
+      current_tick = 0;
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      current_tick = 0;
+    }
+  };
+
+  effect.custom_buff = make_buff<arazs_buff_t>( effect );
+}
+
+// Astral Antenna
+// 1234714 Driver
+// 1239640 Area Trigger? Has a Heartbeat proc flag and full driver data oddly
+// 1239641 Buff
+// TODO: Investigate the area trigger, see if has importance for sims
+void astral_antenna( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "astral_antenna", effect.player->find_spell( 1239641 ) )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Screams of a Forgotten Sky
+// 1235272 Driver
+// 1242875 Damage: An'xoth
+// 1242895 Damage: An'zuq
+// 1242897 Damage: An'shuul
+// 1242881 Debuff
+// 1242901 On Death damage
+void screams_of_a_forgotten_sky( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct screams_of_a_forgotten_sky_base_t : public generic_proc_t
+  {
+    double debuff_stack_val;
+    double on_death_val;
+    action_t* on_death;
+
+    screams_of_a_forgotten_sky_base_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : generic_proc_t( e, n, s ), debuff_stack_val( 0 ), on_death_val( 0 ), on_death( nullptr )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      debuff_stack_val = e.driver()->effectN( 2 ).percent();
+      on_death_val = e.driver()->effectN( 3 ).average( e );
+      on_death = create_proc_action<generic_aoe_proc_t>( "astral_implosion", e, 1242901, true );
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = generic_proc_t::composite_target_multiplier( t );
+
+      if ( auto debuff = find_debuff( t ) )
+        m *= 1.0 + ( debuff->check() * debuff_stack_val );
+
+      return m;
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      auto buff = buff_t::find( t, "abyssal_gravity", player );
+      if ( !buff )
+      {
+        buff = make_buff( actor_pair_t( t, player ), "abyssal_gravity", data().effectN( 2 ).trigger() );
+        player->register_on_kill_callback( [ &, buff ]( player_t* tar ) {
+          if ( buff->check() )
+          {
+            on_death->execute_on_target( tar, buff->check() * on_death_val );
+          }
+        } );
+      }
+
+      return buff;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  struct screams_of_a_forgotten_sky_cb_t : public dbc_proc_callback_t
+  {
+    action_t* anxoth;
+    action_t* anzuq;
+    action_t* anshuul;
+    action_t* proxy;
+    std::vector<action_t*> actions;
+
+    screams_of_a_forgotten_sky_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), anxoth( nullptr ), anzuq( nullptr ), anshuul( nullptr ), proxy( nullptr ), actions()
+    {
+      proxy = new action_t( action_e::ACTION_OTHER, "screams_of_a_forgotten_sky", e.player, e.driver() );
+
+      anxoth = create_proc_action<screams_of_a_forgotten_sky_base_t>( "screams_of_a_forgotten_sky_anxoth", e,
+                                                                      "screams_of_a_forgotten_sky_anxoth",
+                                                                      e.player->find_spell( 1242875 ) );
+
+      anzuq  = create_proc_action<screams_of_a_forgotten_sky_base_t>( "screams_of_a_forgotten_sky_anzuq", e, 
+                                                                      "screams_of_a_forgotten_sky_anzuq", 
+                                                                      e.player->find_spell( 1242895 ) );
+
+      anshuul = create_proc_action<screams_of_a_forgotten_sky_base_t>( "screams_of_a_forgotten_sky_anshuul", e,
+                                                                       "screams_of_a_forgotten_sky_anshuul",
+                                                                       e.player->find_spell( 1242897 ) );
+
+      actions.push_back( anxoth );
+      actions.push_back( anzuq );
+      actions.push_back( anshuul );
+
+      for ( auto a : actions )
+        proxy->add_child( a );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      actions[ rng().range( actions.size() ) ]->execute_on_target( s->target );
+      proxy->stats->add_execute( 0_ms, s->target );
+    }
+  };
+
+  new screams_of_a_forgotten_sky_cb_t( effect );
+}
+
+// Eradicating Arcanocore
+// 1233384 Driver
+// 1240896 Stacking Buff
+// 1241899 Delay Spell/Area Trigger
+// 1240916 Damage
+// 1241847 Unknown Dummy: 6 yard radius, maybe random visual location?
+void eradicating_arcanocore( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct eradicating_arcanocore_t final : public generic_aoe_proc_t
+  {
+    buff_t* stacking_buff;
+    int st_stacks;
+
+    eradicating_arcanocore_t( const special_effect_t& e, buff_t* stacking )
+      : generic_aoe_proc_t( e, "eradicating_arcanoblast", e.player->find_spell( 1240916 ), true ),
+        stacking_buff( stacking ),
+        st_stacks( 0 )
+    {
+      travel_delay = e.player->find_spell( 1241899 )->duration().total_seconds();
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+
+      st_stacks = as<int>( e.driver()->effectN( 2 ).base_value() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      if ( player->sim->target_non_sleeping_list.size() == 1 )
+        stacking_buff->trigger( st_stacks );
+
+      generic_aoe_proc_t::impact( s );
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "eradicating_arcanoblast", effect.player->find_spell( 1240896 ) )
+                  ->set_expire_at_max_stack( true );
+  auto damage = create_proc_action<eradicating_arcanocore_t>( "eradicating_arcanocore", effect, buff );
+
+  buff->set_expire_callback( [ damage ]( buff_t* b, int, timespan_t d ) {
+    if ( !b->source->sim->canceled )
+      damage->execute();
+  } );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Sigil of the Cosmic Hunt
+// 1235360 Driver
+// 1239401 Damage
+// 1239403 AoE
+void sigil_of_the_cosmic_hunt( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct cosmic_radiation_t final : public generic_proc_t
+  {
+    cosmic_radiation_t( const special_effect_t& e )
+      : generic_proc_t( e, "cosmic_radiation", e.player->find_spell( 1239403 ) )
+    {
+      split_aoe_damage = true;
+      aoe = -1;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      generic_proc_t::available_targets( tl );
+
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  struct cosmic_onslaught_t final : public generic_proc_t
+  {
+    action_t* aoe_damage;
+    double hp_increase;
+    double hp_percent;
+    double damage_pct;
+
+    cosmic_onslaught_t( const special_effect_t& e )
+      : generic_proc_t( e, "cosmic_onslaught", e.driver()->effectN( 1 ).trigger() ),
+        aoe_damage( nullptr ),
+        hp_increase( 0 ),
+        hp_percent( 0 ),
+        damage_pct( 0 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+
+      aoe_damage = create_proc_action<cosmic_radiation_t>( "cosmic_radiation", e );
+
+      hp_increase = e.driver()->effectN( 3 ).percent();
+      hp_percent  = 1;  // Not in spell data, using tooltip value
+      damage_pct  = e.driver()->effectN( 4 ).percent();
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = generic_proc_t::composite_target_multiplier( t );
+
+      m *= 1.0 + ( ( 100 - t->health_percentage() ) / hp_percent * hp_increase );
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      aoe_damage->execute_on_target( s->target, s->result_amount * damage_pct );
+    }
+  };
+
+  effect.execute_action = create_proc_action<cosmic_onslaught_t>( "cosmic_onslaught", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 
 // 443384 driver
@@ -8674,6 +9111,25 @@ void shadow_quake( special_effect_t& effect )
   new shadow_quake_cb_t( effect );
 }
 
+// Voidglass Shards
+// 1235136 Driver
+// 1238693 Damage
+void voidglass_shards( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  action_t* damage =
+      create_proc_action<generic_proc_t>( "voidglass_shards", effect, effect.player->find_spell( 1238693 ) );
+
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
 
 // 457815 driver
@@ -9072,6 +9528,122 @@ void the_jastor_diamond( special_effect_t& effect )
   new the_jastor_diamond_cb_t( effect );
 }
 
+// Reshii Wraps: Ethereal Reaping
+// 1217091 Value Spell
+// 1217101 Driver
+// 1223419 Missile
+// 1223417 Damage
+void ethereal_reaping( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct ethereal_reaping_t final : public generic_aoe_proc_t
+  {
+    double hp_pct;
+    double execute_mult;
+
+    ethereal_reaping_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "ethereal_reaping", e.player->find_spell( 1223417 ), true ), hp_pct( 0.0 ), execute_mult( 0.0 )
+    {
+      const spell_data_t* value_spell = e.player->find_spell( 1217091 );
+
+      hp_pct       = value_spell->effectN( 4 ).base_value();
+      execute_mult = value_spell->effectN( 5 ).percent();
+
+      base_dd_min = base_dd_max = value_spell->effectN( 1 ).average( e );
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double v = generic_proc_t::composite_target_multiplier( t );
+
+      if ( t->health_percentage() <= hp_pct )
+        v *= 1.0 + execute_mult;
+
+      return v;
+    }
+  };
+
+  auto damage = create_proc_action<ethereal_reaping_t>( "ethereal_reaping", effect );
+
+  auto missile           = create_proc_action<generic_proc_t>( "ethereal_reaping_missile", effect, 1223419 );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Reshii Wraps equip driver
+// 1217091 Driver Spell
+// All this does is swap which effect is present based on spec
+void ethereal_energy( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  // Default to DPS specilizations Ethereal Reaping in case something goes VERY wrong
+  int spell_id = 1217101;
+
+  switch ( effect.player->_spec )
+  {
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+    case DRUID_BALANCE:
+    case EVOKER_DEVASTATION:
+    case EVOKER_AUGMENTATION:
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+    case PALADIN_RETRIBUTION:
+    case HUNTER_SURVIVAL:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_OUTLAW:
+    case ROGUE_SUBTLETY:
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+    case SHAMAN_ENHANCEMENT:
+    case MONK_WINDWALKER:
+    case DRUID_FERAL:
+    case DEMON_HUNTER_HAVOC:
+      spell_id = 1217101;
+      effect.spell_id = spell_id;
+      ethereal_reaping( effect );
+      break;
+    case WARRIOR_PROTECTION:
+    case PALADIN_PROTECTION:
+    case DEATH_KNIGHT_BLOOD:
+    case MONK_BREWMASTER:
+    case DRUID_GUARDIAN:
+    case DEMON_HUNTER_VENGEANCE:
+      spell_id = 1217096;
+      effect.spell_id = spell_id;
+      break;
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+    case MONK_MISTWEAVER:
+    case DRUID_RESTORATION:
+    case EVOKER_PRESERVATION:
+      spell_id = 1217103;
+      effect.spell_id = spell_id;
+      break;
+    default:
+      spell_id = 1217101;
+      effect.spell_id = spell_id;
+      break;
+  }
+}
+
 }  // namespace items
 
 namespace sets
@@ -9351,6 +9923,33 @@ void fury_of_the_stormrook( special_effect_t& effect )
   };
 
   new fury_of_the_stormrook_cb_t( effect );
+}
+
+void shards_of_the_void( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  // Shares a name with the weapon effects, change it here to pevent special effect merging
+  effect.name_str = fmt::format( "{}_{}", effect.driver()->name_cstr(), "set");
+
+  effect.player->register_init_finished_callback( [ &effect ]( player_t* p ) {
+    buff_t* buff = buff_t::find( p, "diamantine_voidcore", p );
+    if ( buff )
+    {
+      p->sim->print_debug( "Registering Shards of the Void callback" );
+      action_t* damage = p->find_action( "voidglass_shards" );
+      if ( damage )
+      {
+        buff->set_stack_change_callback( [ &effect, damage ]( buff_t*, int old_, int new_ ) {
+          if ( new_ > old_ && new_ == 1 )
+            damage->base_multiplier = 1.0 + effect.driver()->effectN( 1 ).percent();
+          if ( new_ == 0 )
+            damage->base_multiplier = 1.0;
+        } );
+      }
+    }
+  } );
 }
 }  // namespace sets
 
@@ -10477,10 +11076,10 @@ void charged_bolts( special_effect_t& effect )
   {
     action_t* damage;
 
-    charged_bolts_t( player_t* player, std::string_view name, special_effect_t& effect )
-      : buff_t( player, name, effect.driver()->effectN( 1 ).trigger() ), damage( nullptr )
+    charged_bolts_t( player_t* player, std::string_view name, special_effect_t& effect, const spell_data_t* trigger )
+      : buff_t( player, name, trigger ), damage( nullptr )
     {
-      const spell_data_t* damage_spell_data  = effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
+      const spell_data_t* damage_spell_data  = trigger->effectN( 1 ).trigger();
       const spell_data_t* tooltip_spell_data = player->find_spell( 1241244 );
       const spell_data_t* value_spell_data   = player->find_spell( titan_disc_effect_e::TITAN_DISC_VALUE_SPELL );
 
@@ -10512,13 +11111,13 @@ void charged_bolts( special_effect_t& effect )
   };
 
   const spell_data_t* driver  = effect.player->find_spell( titan_disc_effect_e::CHARGED_BOLTS );
-  const spell_data_t* trigger = driver->effectN( 1 ).trigger();
+  const spell_data_t* trigger = effect.player->find_spell( 1236110 );
 
   effect.name_str     = util::tokenize_fn( driver->name_cstr() );
   effect.proc_flags_  = driver->proc_flags();
   effect.proc_flags2_ = PF2_ALL_HIT;
   effect.ppm_         = driver->_rppm;
-  effect.custom_buff = create_buff<charged_bolts_t>( effect.player, util::tokenize_fn( trigger->name_cstr() ), effect );
+  effect.custom_buff = create_buff<charged_bolts_t>( effect.player, util::tokenize_fn( trigger->name_cstr() ), effect, trigger );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10995,6 +11594,14 @@ void register_special_effects()
   register_special_effect( 1221145, DISABLED_EFFECT );
   register_special_effect( 1219103, items::gigazaps_zapcap );
   register_special_effect( { 1223886, 1223899, 1223902, 1223904 }, items::hallowed_tome );
+  register_special_effect( 1234996, items::diamantine_voidcore );
+  register_special_effect( 1233556, items::unyielding_netherprism );
+  register_special_effect( 1233553, DISABLED_EFFECT ); // Unyielding Netherprism equip driver
+  register_special_effect( 1232802, items::arazs_ritual_forge );
+  register_special_effect( 1234714, items::astral_antenna );
+  register_special_effect( 1235272, items::screams_of_a_forgotten_sky );
+  register_special_effect( 1233384, items::eradicating_arcanocore );
+  register_special_effect( 1235360, items::sigil_of_the_cosmic_hunt );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
@@ -11010,6 +11617,7 @@ void register_special_effects()
   register_special_effect( 1218442, items::machine_gobs_iron_grin );
   register_special_effect( 467774, items::capos_molten_knuckles );
   register_special_effect( 1224457, items::shadow_quake );
+  register_special_effect( 1235136, items::voidglass_shards );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
@@ -11017,6 +11625,7 @@ void register_special_effects()
   register_special_effect( 455799, items::excavation );
   register_special_effect( 457683, items::sureki_zealots_insignia );
   register_special_effect( 1214161, items::the_jastor_diamond );
+  register_special_effect( 1217091, items::ethereal_energy ); // Reshii Wraps equip driver
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket
@@ -11026,6 +11635,7 @@ void register_special_effects()
   register_special_effect( 455521, sets::woven_dawn, true );
   register_special_effect( 443764, sets::embrace_of_the_cinderbee, true );
   register_special_effect( 443773, sets::fury_of_the_stormrook );
+  register_special_effect( 1235130, sets::shards_of_the_void );  // Shards of the Void set bonus
 
   // Singing Citrines
   register_special_effect( singing_citrines::CYRCES_CIRCLET,                    DISABLED_EFFECT );  // Disable ring driver.
