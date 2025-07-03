@@ -602,6 +602,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
+    if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+    {
+      hammer_and_anvil = new hammer_and_anvil_t( p );
+      add_child( hammer_and_anvil );
+    }
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
     cooldown->hasted        = true;
@@ -640,9 +645,31 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe->snapshot_state( state, hotr_aoe->amount_type( state ) );
       hotr_aoe->target = s->target;
       hotr_aoe->schedule_execute( state );
+
+      if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT &&
+           p()->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) )
+      {
+        if ( p()->cooldowns.tww3_lightsmith_2p_icd->up() )
+        {
+          hammer_and_anvil->set_target( s->target );
+          hammer_and_anvil->execute();
+          p()->cooldowns.tww3_lightsmith_2p_icd->start();
+        }
+      }
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
+
+  struct hammer_and_anvil_t : public paladin_spell_t
+  {
+    hammer_and_anvil_t( paladin_t* p ) : paladin_spell_t( "hammer_and_anvil_hotr", p, p->find_spell( 433717 ) )
+    {
+      background = proc = may_crit = true;
+      may_miss                     = false;
+      aoe                          = -1;
+    }
+  };
+  hammer_and_anvil_t* hammer_and_anvil;
 
   action_state_t* new_state() override
   {
