@@ -2126,11 +2126,17 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       background = true;
 
       is_hammer_of_light         = true;
-      aoe                        = (p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value() + (p->sets->has_set_bonus(HERO_TEMPLAR, TWW3, B4) ? 3 : 0 ) );
+      aoe                        = p->spells.templar.hammer_of_light_driver->effectN( 2 ).base_value();
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
       base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
       dual                       = true;
+
+      if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B4 ) )
+        // Both effect 2 and 4 adjust AoE. This is probably a tuning knob for Blizzard. Also maybe Ret is 2, Prot 4, who knows.
+        aoe += p->sets->set( HERO_TEMPLAR, TWW3, B4 )
+                   ->effectN( p->specialization() == PALADIN_RETRIBUTION ? 4 : 2 )
+                   .base_value();
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
