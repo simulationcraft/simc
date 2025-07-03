@@ -344,7 +344,7 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
 {
   // Does Judgment care about ICD?
   if ( p->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT &&
-       p->cooldowns.tww3_lightsmith_2p_icd->up() )
+       ( p->cooldowns.tww3_lightsmith_2p_icd->up() || judgment ) )
   {
     haa->set_target( s->target );
     haa->execute();
