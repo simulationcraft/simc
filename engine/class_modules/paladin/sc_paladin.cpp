@@ -2390,6 +2390,8 @@ struct empyrean_hammer_t : public paladin_spell_t
       wd = new empyrean_hammer_wd_t( p );
       add_child( wd );
     }
+    if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) )
+      apply_affecting_aura( p->sets->set( HERO_TEMPLAR, TWW3, B2 ) );
   }
 
   void execute() override
@@ -2421,17 +2423,6 @@ struct empyrean_hammer_t : public paladin_spell_t
       am *= 1.0 + p()->buffs.templar.sanctification->stack_value();
     }
     return am;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = paladin_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) )
-    {
-      cm *= 1 + p()->sets->set(HERO_TEMPLAR, TWW2, B2)->effectN( 1 ).percent();
-    }
-    return cm;
   }
 
   double composite_target_multiplier( player_t *t ) const override
