@@ -2454,8 +2454,8 @@ struct empyrean_hammer_t : public paladin_spell_t
       p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
     }
 
-    // Todo: How to add chance from spells? I forgor
-    if ( ( p()->sets->has_set_bonus(HERO_TEMPLAR,TWW3,B2) && p()->talents.templar.lights_guidance->ok() && s->result == RESULT_CRIT && p()->rng().roll(0.5) ) )
+    if ( ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) && p()->talents.templar.lights_guidance->ok() &&
+           s->result == RESULT_CRIT && p()->rng().roll( p()->find_spell(1236391)->proc_chance() ) ) )
     {
       p()->buffs.templar.lights_deliverance->trigger();
     }
