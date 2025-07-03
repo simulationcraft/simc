@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1072,7 +1072,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic
 Affecting Spells : Commanding Light (387781 effect#1)
 Triggered By     : Beacon of Light (53563), Beacon of Faith (156910)
 Family Flags     : 104
@@ -1117,7 +1117,7 @@ Family Flags     : 116
 Attributes       : No Aura Cancel (31), No Threat (42), Floating Combat Text On Cast (198), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=46860)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 #2 (id=288923)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
@@ -1505,7 +1505,7 @@ Family Flags     : 46, 74
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.664 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.2632 | Target: Friendly (21)
 Description      : A powerful but expensive spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2597,11 +2597,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 4 | Scaled Value: 4
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Barrier of Faith (148039), Eternal Flame (156322), Beacon of Faith (156910), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002)
                    Family Flags: 38, 46, 90
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 22
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002)
                    Family Flags: 46
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -2638,7 +2638,7 @@ Effects          :
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=1032421) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 91 | Scaled Value: 91 | Target: Self (1)
+                   Base Value: 129 | Scaled Value: 129 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
@@ -11675,7 +11675,7 @@ Effects          :
                    Affected Spells: Infusion of Light (54149), Infusion of Light (458213)
                    Family Flags: 116
 #2 (id=1031454)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Infusion of Light (54149), Infusion of Light (458213)
                    Family Flags: 116
 #3 (id=1042454)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -19526,7 +19526,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 
 Family Flags     : 46
 Effects          :
 #1 (id=1225484)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | Target: Friendly (21)
 Description      : $@spelldesc1232616
 
 Name             : Execution Sentence (id=1234189) [Spell Family (10)] 
@@ -19571,6 +19571,165 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.9 | Target: Enemy (6)
 Description      : $@spelldesc427453
 
+Name             : Paladin Herald of the Sun 11.2 Class Set 2pc (id=1236383) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232303)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Dawnlight (431380), Dawnlight (431381)
+                   Family Flags: 1
+#2 (id=1233401)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 0.33 | Target: Self (1)
+#3 (id=1233610)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+#4 (id=1233611)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 0.33 | Target: Self (1)
+#5 (id=1233612)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.33 | Target: Self (1)
+#6 (id=1244436)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Dawnlight (431380), Dawnlight (431381)
+                   Family Flags: 1
+Description      : Dawnlight's healing and damage is increased by $s1% and you gain Solar Wrath after Avenging Wrath fades causing Sun's Avatar's effect to linger for an additional $?s216331[${$s2/1000-$s5/1000}]?a458359&a137027[${$s2/1000-$s5/1000}]?s231895&a137027[${$s2/1000+$s4/1000}]?a137029&s31884[${$s2/1000}]?a137027!s231895!458359[${$s2/1000}][${$s2/1000}] sec.
+
+Name             : Paladin Herald of the Sun 11.2 Class Set 4pc (id=1236384) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232304)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value: 3 | Misc Value 2: 5086 (Label) | Target: Self (1)
+#2 (id=1233462)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+#3 (id=1233466)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 5086 (Label) | Target: Self (1)
+#4 (id=1233489)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#5 (id=1233490)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Solar Wrath increases the effectiveness of your Holy Power spenders by $s1% and grants you $?s216331[${$s2-$s5}]?a458359&a137027[${$s2-$s5}]?s231895&a137027[${$s2+$s4}]?a137029&s31884[$s2]?a137027!s231895!458359[$s2][$s2] Dawnlight.
+
+Name             : Paladin Lightsmith 11.2 Class Set 2pc (id=1236389) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Internal Cooldown: 0.75 seconds
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232310)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value 2: 5174 (Label) | Target: Self (1)
+                   Affected Spells (Label): Hammer and Anvil (433717), Hammer and Anvil (433722)
+#2 (id=1236239)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+#3 (id=1236240)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : Hammer and Anvil's $?c2[damage][healing] is increased by $s1% and it can also be activated by $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] at $?c1[$s2][$s3]% effectiveness.
+
+Name             : Paladin Lightsmith 11.2 Class Set 4pc (id=1236390) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232311)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Hammer and Anvil also grants a stack of Masterwork, causing your next Holy Armament to cast one Lesser version of itself on a nearby ally for each stack.
+
+Name             : Paladin Templar 11.2 Class Set 2pc (id=1236391) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Proc Chance      : 50%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232312)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value: 15 | Misc Value 2: 3086 (Label) | Target: Self (1)
+                   Affected Spells (Label): Empyrean Hammer (431398)
+#2 (id=1232903)  : Apply Aura (6) | Proc Trigger Spell (42): Light's Deliverance
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 433674 | Target: Self (1)
+Description      : Your Empyrean Hammer deals $s1% increased critical strike damage and its critical strikes have $h% chance to grant an additional stack of Light's Deliverance.
+
+Name             : Paladin Templar 11.2 Class Set 4pc (id=1236392) [Spell Family (10), Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Hammer of Light (427453)
+                   Family Flags: 29
+#2 (id=1232939)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#3 (id=1232940)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Hammer of Light (427453)
+                   Family Flags: 29
+#4 (id=1232941)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#5 (id=1232942)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 5067 (Label) | Target: Self (1)
+                   Affected Spells (Label): Hammer of Light (427441)
+#6 (id=1242657)  : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236748 | Target: Self (1)
+Description      : Hammer of Light deals $?c3[$s1][$s3]% increased damage to its primary target, strikes $?c3[$s2][$s4] additional secondary targets, and can now be cast $s5 more time after $?c3[Wake of Ashes][Eye of Tyr]. 
+
+Name             : Paladin Templar 11.2 Class Set 4pc Driver (id=1236748) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Triggered By     : Paladin Templar 11.2 Class Set 4pc (1236392)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232956)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Hammer of Light deals $?c3[$s1][$s3]% increased damage to its primary target, strikes $?c3[$s2][$s4] additional secondary targets, and can now be cast $s5 more time after $?c3[Wake of Ashes][Eye of Tyr]. 
+
 Name             : Divine Hammer (id=1236942) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -19587,6 +19746,25 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Target: Enemy (6)
 Description      : $@spelldesc198034
 Tooltip          : Movement speed reduced by ${$s3*-1}%.
+
+Name             : Masterwork (id=1238903) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+                 : 5061
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Effects          :
+#1 (id=1236265)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spelldesc1236390
+Tooltip          : Your next Holy Armament will also cast $s1 Lesser $LArmament:Armaments;.
 
 Name             : Lesser Bulwark (id=1239002) [Spell Family (10)] 
 Class            : Paladin
@@ -19608,5 +19786,27 @@ Effects          :
                    Affected School(s): All
 Description      : $@spelldesc432459
 Tooltip          : Absorbing $w1 damage.
+
+Name             : Lesser Weapon (id=1239091) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Max Targets      : 5
+Velocity         : 30 yards/sec
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 292
+Internal Cooldown: 0.75 seconds
+Stacks           : 10 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
+Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Effects          :
+#1 (id=1236560)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
+Description      : $@spelldesc1236390
+Tooltip          : Your next $s1 $Lability:abilities; will deal additional Holy damage or healing.
 
 

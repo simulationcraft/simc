@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -16290,6 +16290,189 @@ Effects          :
 #1 (id=1229912)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Unknown(49) -> At Random (72)
 Description      : $@spelldesc51690
+
+Name             : Rogue Deathstalker 11.2 Class Set 2pc (id=1236400) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232322)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : $?a137037[Shiv][Symbols of Death] increases the effectiveness of all Deathstalker damage effects and damage bonuses by $?a137037[$1239231s1%][$1239232s2%] while active.
+
+Name             : Rogue Deathstalker 11.2 Class Set 4pc (id=1236401) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
+Effects          :
+#1 (id=1232323)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.33 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Symbols of Death (212283), Symbols of Death (227151), Eviscerate (245691), Shiv (319504), Shiv (400789)
+                   Family Flags: 91, 117
+#2 (id=1237168)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.33 | Misc Value: 1 | Misc Value 2: 5178 (Label) | Target: Self (1)
+                   Affected Spells (Label): Death's Study (1239231), Death's Study (1239232)
+Description      : $?a137037[Shiv][Symbols of Death] has ${$s1/1000} sec increased duration and consumes an application of your active Deathstalker's Mark when activated.
+
+Name             : Rogue Fatebound 11.2 Class Set 2pc (id=1236402) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Ghostly Strike (196937)
+                   Family Flags: 26
+#2 (id=1239681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Dreadblades (343142), Kingsbane (385627)
+                   Family Flags: 119
+#3 (id=1239682)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Dreadblades (343142), Kingsbane (385627)
+                   Family Flags: 119
+#4 (id=1239683)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.33 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Ghostly Strike (196937)
+                   Family Flags: 26
+#5 (id=1239710)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.33 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Dreadblades (343142), Kingsbane (385627)
+                   Family Flags: 119
+Description      : $?a137036[Ghostly Strike][Kingsbane] deals $?a137036[$s1][$s2]% increased damage and has $?a137036[${$s4/1000}][${$s5/1000}] sec increased duration.
+
+Edge Case now flips an additional Fatebound Coin and activating $?a137036[Ghostly Strike][Kingsbane] triggers its effect.
+
+Name             : Rogue Fatebound 11.2 Class Set 4pc (id=1236403) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232325)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 5212 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lucky Coin (452562)
+#2 (id=1239744)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 0.33 | Misc Value: 23 | Misc Value 2: 5212 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lucky Coin (452562)
+#3 (id=1239745)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.33 | Misc Value: 32 | Misc Value 2: 5212 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lucky Coin (452562)
+#4 (id=1239746)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.33 | Misc Value: 33 | Misc Value 2: 5212 (Label) | Target: Self (1)
+                   Affected Spells (Label): Lucky Coin (452562)
+Description      : Having a lucky Fatebound Coin reduces the cooldown of $?a137036[Adrenaline Rush][Deathmark] by $?a137036[${$s1/-1000}.1][${$s2/-1000}.1] sec and $?a137036[Ghostly Strike][Kingsbane] by $?a137036[${$s3/-1000}.1][${$s4/-1000}.1] sec.
+
+Name             : Rogue Trickster 11.2 Class Set 2pc (id=1236404) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232326)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Thistle Tea (381623), Unseen Blade (441144)
+                   Family Flags: 125
+#2 (id=1236545)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : Unseen Blade deals $s1% increased damage and has a $s2% chance to strike twice.
+
+Name             : Rogue Trickster 11.2 Class Set 4pc (id=1236405) [Spell Family (8), Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232327)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+#2 (id=1236591)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Coup de Grace may now be activated a second time within $s2 sec, dealing $s1% of normal damage.
+
+Name             : Death's Study (id=1239231) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+                 : 5178: Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#2)
+Attributes       : No Aura Cancel (31), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1236769)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value 2: 3936 (Label) | Target: Self (1)
+                   Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984), Corrupt the Blood (1225168)
+#2 (id=1237128)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 3 | Misc Value 2: 5175 (Label) | Target: Self (1)
+                   Affected Spells (Label): Follow the Blood (457068), Momentum of Despair (457115), Deathstalker's Mark (457160), Symbolic Victory (457167), Lingering Darkness (457273)
+#3 (id=1237129)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 5176 (Label) | Target: Self (1)
+                   Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
+Description      : $@spelldesc1236400
+Tooltip          : Deathstalker effects increased by $w1%.
+
+Name             : Death's Study (id=1239232) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+                 : 5061
+                 : 5178: Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#2)
+Attributes       : No Aura Cancel (31), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1236770)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.34 | Misc Value 2: 3936 (Label) | Target: Self (1)
+                   Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984), Corrupt the Blood (1225168)
+#2 (id=1237123)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.34 | Misc Value: 3 | Misc Value 2: 5175 (Label) | Target: Self (1)
+                   Affected Spells (Label): Follow the Blood (457068), Momentum of Despair (457115), Deathstalker's Mark (457160), Symbolic Victory (457167), Lingering Darkness (457273)
+#3 (id=1237125)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.34 | Misc Value: 12 | Misc Value 2: 5176 (Label) | Target: Self (1)
+                   Affected Spells (Label): Momentum of Despair (457115), Lingering Darkness (457273), Darkest Night (457280)
+Description      : $@spelldesc1236400
+Tooltip          : Deathstalker effects increased by $w1%.
 
 Name             : Killing Spree (id=1248603) [Spell Family (8)] 
 Class            : Rogue

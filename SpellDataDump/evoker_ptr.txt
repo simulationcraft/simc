@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -583,7 +583,7 @@ Family Flags     : 1, 21
 Attributes       : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=889437)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3072 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
 #2 (id=983057)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1037451)  : Direct Heal (10)
@@ -601,11 +601,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890885)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6923 | Target: Self (1)
+                   Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 0.724 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Pyre (1236970)
                    Family Flags: 0
 #2 (id=910332)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6923 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 0.724 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Pyre (1236970)
                    Family Flags: 0
 #3 (id=910333)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -619,9 +619,9 @@ Effects          :
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1
 #6 (id=1031849)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #7 (id=1032442)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #8 (id=1032443)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1034033)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -683,11 +683,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.5556 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3046,7 +3046,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Charged Blast (370455)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=981818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
@@ -3403,7 +3403,7 @@ Mechanic         : Snare
 Affecting Spells : Legacy of Coldarra (387270 effect#1)
 Triggered By     : Permeating Chill (381773)
 Family Flags     : 48
-Attributes       : Do Not Log Immune Misses (3), Aura Is Debuff (26), No Threat (42), Do Not Display Range (126), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
+Attributes       : Do Not Log Immune Misses (3), Aura Is Debuff (26), No Threat (42), Do Not Display Range (126), Aura Points On Client (268), Do Not Log Aura Refresh (291)
 Effects          :
 #1 (id=982471)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Enemy (6)
@@ -5436,7 +5436,7 @@ Family Flags     : 1, 21
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Treat as Area Effect (175), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1003976)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3072 | PvP Coefficient: 1.2 | Target: Friendly (21)
 #2 (id=1037759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1037768)  : Direct Heal (10)
@@ -6011,7 +6011,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1013058)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -90000 | Scaled Value: -90000 | Misc Value: 2035 (Category) | Target: Self (1)
+                   Base Value: -120000 | Scaled Value: -120000 | Misc Value: 2035 (Category) | Target: Self (1)
                    Affected Spells (Category): Rewind (363534)
 Description      : Rewind's cooldown is reduced by ${$s1/-1000} sec.
 
@@ -7316,9 +7316,9 @@ Effects          :
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1
 #6 (id=1037193)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
 #7 (id=1037194)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
 #8 (id=1037195)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1037196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -10639,14 +10639,17 @@ Effects          :
 #10 (id=1119652) : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #11 (id=1234011) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
 #12 (id=1234370) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
 #13 (id=1237463) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2411 (Category) | Target: Self (1)
                    Affected Spells (Category): Time Dilation (357170)
+#14 (id=1254731) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Misc Value 2: 5459 (Label) | Target: Self (1)
+                   Affected Spells (Label): Afterimage (431875)
 Description      : $@spelldesc431695
 Tooltip          : Haste, movement speed, and cooldown recovery rate increased by $s1%.
 
@@ -10780,6 +10783,7 @@ Spell Type       : None
 Spell Level      : 10
 Labels           : 16: Class Spells
                  : 292
+                 : 5459: Temporal Burst (431698 effect#14)
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355)
@@ -11204,7 +11208,7 @@ Labels           : 16: Class Spells
                  : 5098
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=1127597)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
@@ -11871,7 +11875,7 @@ Labels           : 16: Class Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 2557
                  : 5092: Inner Flame (1236776 effect#3)
-Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1140266)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -12186,7 +12190,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 2557
-Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416)
+Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334)
 Effects          :
 #1 (id=1142749)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
@@ -12773,12 +12777,12 @@ Labels           : 16: Class Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 2.5 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198778)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1202066)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Your damaging spells have a chance to hit a |cFFFFFFFFJackpot!|r, launching a Shattering Star at $s2 nearby enemies at $s1% effectiveness. Casting Dragonrage always hits a |cFFFFFFFFJackpot!|r
@@ -12849,7 +12853,7 @@ Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1202067)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215692
 Tooltip          : Empower spell damage increased by $w1%.
 
@@ -12989,6 +12993,171 @@ Effects          :
 Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
 
 The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
+
+Name             : Evoker Flameshaper 11.2 Class Set 2pc (id=1236364) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232282)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : Engulf stokes your Inner Flame, increasing your damage and healing over time by $1236776s1% and increasing your chance to gain Essence Burst by $1236776s2% for $1236776d. Stacks up to $1236776u times. Multiple applications may overlap.
+
+Name             : Evoker Flameshaper 11.2 Class Set 4pc (id=1236365) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232283)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Consuming Essence Burst during Inner Flame fires an Essence Bomb at your target, $?c1[damaging nearby enemies for $1236792s1 Arcane][healing nearby allies for $1236803s1], reduced beyond $s1 targets.
+
+Name             : Evoker Scalecommander 11.2 Class Set 2pc (id=1236366) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232284)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
+#2 (id=1233901)  : None (0)
+                   Base Value: 2 | Scaled Value: 2
+Description      : While flying during $?s403631[Breath of Eons][Deep Breath] and for $s1 seconds after, you command a squadron of $s2 Dracthyr who will attack your targets with Disintegrate and Pyre.
+
+Name             : Evoker Scalecommander 11.2 Class Set 4pc (id=1236367) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232285)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1233896)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.33 | Misc Value: 1 | Misc Value 2: 5099 (Label) | Target: Self (1)
+Description      : While your squadron is active, your $?c1[Mass Disintegrate][Mass Eruption] strikes up to $s1 additional $Ltarget;targets. In addition, your squadron assists you for ${$s2/1000} additional sec.
+
+Name             : Evoker Chronowarden 11.2 Class Set 2pc (id=1236368) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232286)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 0.33 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Tip the Scales (370553)
+                   Family Flags: 82
+Description      : Tip the Scales' cooldown is reduced by ${$s1/-1000} sec.
+
+Name             : Evoker Chronowarden 11.2 Class Set 4pc (id=1236369) [Spell Family (224), Passive, Hidden] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232287)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Target: Self (1)
+#2 (id=1233987)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | PvP Coefficient: 0.33 | Target: Self (1)
+#3 (id=1233988)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : Temporal Burst causes Chrono Flames to strike $s3 additional $Ltarget:targets; and repeat $s1% additional damage or healing, up to a maximum of $<cap>.
+Variables        : $cap=${($SP*4.5)*(1+$@versadmg)}
+
+Name             : Inner Flame (id=1236776) [Spell Family (224)] 
+Class            : Evoker
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+                 : 5440
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Effects          :
+#1 (id=1233009)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Eruption (395160), Upheaval (396288), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Engulf (443330), Fire Breath (444249), Firestorm (456657), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236792), Essence Bomb (1236803), Pyre (1236970)
+                   Family Flags: 0, 1
+#2 (id=1233010)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Target: Self (1)
+#3 (id=1233723)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Misc Value: 22 | Misc Value 2: 5092 (Label) | Target: Self (1)
+                   Affected Spells (Label): Enkindle (444017)
+Description      : $@spelldesc1236364
+Tooltip          : Damage and healing over time increased by $s1%. Chance to trigger Essence Burst increased by $s2%.
+
+Name             : Essence Bomb (id=1236792) [Spell Family (224)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : Magic
+Range            : 30 yards
+Travel Time      : 0.8 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2), Inner Flame (1236776 effect#1)
+Family Flags     : 0
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1233035)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4 | PvP Coefficient: 0.33 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Description      : $@spelldesc1236365
+
+Name             : Essence Bomb (id=1236803) [Spell Family (224)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : Magic
+Range            : 30 yards
+Travel Time      : 0.8 seconds
+Labels           : 16: Class Spells
+                 : 292
+                 : 295
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 5061
+Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1)
+Family Flags     : 1
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1233055)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5 | PvP Coefficient: 0.33 | Radius: 0 - 20 yards | Target: Friendly (21) -> At Friendly in Area (31)
+Description      : $@spelldesc1236365
 
 Name             : Pyre (desc=Red) (id=1236970) [Spell Family (224)] 
 Class            : Evoker

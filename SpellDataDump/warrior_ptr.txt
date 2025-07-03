@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -6926,6 +6926,7 @@ Stacks           : 20 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : No Immunities (29), No Threat (42), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Challenge Mode Start (54)
 Effects          :
 #1 (id=830934)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -13407,7 +13408,7 @@ Effects          :
 #11 (id=1242820) : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1207 | Target: Self (1)
 #12 (id=1246797) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Demolish (436358), Demolish (440884), Demolish (440886), Demolish (440888)
                    Family Flags: 126
 Description      : Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within 8 yds of it. Deals reduced damage beyond $s1 targets.
@@ -13913,6 +13914,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Colossal Might (429634), Precise Might (431548)
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Challenge Mode Start (54)
 Effects          :
 #1 (id=1135197)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15757,7 +15759,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=1229776)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : You have a $s2% chance to disrupt magic damage dealt to you, negating $s3% of it.
+Description      : You have a $s2% chance to disrupt magic damage dealt to you, reducing the damage it deals by $s3%.
 
 Name             : Red Right Hand (id=1235038) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=7, col=5, max_rank=1, req_points=8]
@@ -15847,5 +15849,186 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc199045
 Tooltip          : Your next Thunder Clap roots all targets it damages for $199042d.
+
+Name             : Warrior Colossus 11.2 Class Set 2pc (id=1236419) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232342)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Demolish (436358), Demolish (440884), Demolish (440886), Demolish (440888)
+                   Family Flags: 126
+Description      : Demolish damage increased by $s1% and critical strike damage of your abilities is increased by up to ${$447513s3*$447513u*0.1}% on targets affected by your Demolish for $447513d based on the number of stacks of Colossal Might consumed.
+
+Name             : Warrior Colossus 11.2 Class Set 4pc (id=1236420) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232343)  : Apply Aura (6) | Proc Trigger Spell (42): Deeper Wounds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1239153 | Target: Self (1)
+Description      : Demolish increases the critical strike chance of your next $1239144u $?c1[Mortal Strikes][Shield Slams] by $1239144s1%. $?c1[Mortal Strike][Shield Slam] critical strikes increase your Rend and Deep Wounds damage by $1239153s1% for $1239153d.
+
+Name             : Warrior Mountain Thane 11.2 Class Set 2pc (id=1236421) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232344)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1235050)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+Description      : Thunder Blast has a $s2% chance to call down $s1 Ionizing Strikes on affected targets. Each strike deals $1238042s1 Nature damage.
+
+Name             : Warrior Mountain Thane 11.2 Class Set 4pc (id=1236422) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232345)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value 2: 5148 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ionizing Strike (1238042)
+#2 (id=1235052)  : Apply Aura (6) | Proc Trigger Spell (42): Thunder Blast
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Trigger Spell: 435615 | Target: Self (1)
+Description      : Ionizing Strikes deal $s1% more damage and have a $s2% chance to grant a charge of Thunder Blast.
+
+Name             : Warrior Slayer 11.2 Class Set 2pc (id=1236423) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
+                   Family Flags: 29
+#2 (id=1234978)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+#3 (id=1243118)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : Execute damage increased by $s1% and Executes from Sudden Death have a $s2% chance per stack of Overwhelmed on the target to trigger a Slayer's Strike at $s3% effectiveness.
+
+Name             : Warrior Slayer 11.2 Class Set 4pc (id=1236424) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232347)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Overpower (7384), Raging Blow (85384), Raging Blow (96103), Dreadnaught (315961), Crushing Blow (335098), Crushing Blow (335100)
+                   Family Flags: 2, 45
+#2 (id=1234994)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#3 (id=1234999)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : $?c1[Overpower][Raging Blow] damage increased by $s1% and $?c1[Overpower][Raging Blow] has a $s2% chance per stack of Overwhelmed on the target to trigger Reap the Storm at $s3% effectiveness.
+
+Name             : Ionizing Strike (id=1238042) [Spell Family (4)] 
+Class            : Warrior
+School           : Nature
+Spell Type       : Magic
+Range            : 40 yards
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 3022
+                 : 5148: Warrior Mountain Thane 11.2 Class Set 4pc (1236422 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
+Family Flags     : 9
+Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range (126), Always Show Ground Texture (190), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1235017)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2068 | PvP Coefficient: 0.33 | Target: Enemy (6)
+Description      : $@spelldesc1236421
+
+Name             : Critical Conclusion (id=1239144) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Internal Cooldown: 0.5 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1236636)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Mortal Strike (12294), Shield Slam (23922), Mortal Strike (339385)
+                   Family Flags: 25, 41
+Description      : $@spelldesc1236420
+Tooltip          : Critical Strike chance of your next $?c1[Mortal Strike][Shield Slam] increased by $w1%.
+
+Name             : Deeper Wounds (id=1239153) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+                 : 295
+                 : 5061
+Triggered By     : Warrior Colossus 11.2 Class Set 4pc (1236420)
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1236647)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rend (772), Deep Wounds (115767), Deep Wounds (262115), Rend (388539), Rend (394062), Rend (394063)
+                   Family Flags: 5, 19, 86
+#2 (id=1242837)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Affected Spells: Rend (772), Deep Wounds (115767), Deep Wounds (262115), Rend (388539), Rend (394062), Rend (394063)
+                   Family Flags: 5, 19, 86
+Description      : $@spelldesc1236420
+Tooltip          : Rend and Deep Wounds damage increased by $w1%.
 
 

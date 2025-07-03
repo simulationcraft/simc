@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3413,21 +3413,21 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715)
                    Family Flags: 49
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715)
                    Family Flags: 49
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #5 (id=191030)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #6 (id=261067)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=261068)   : Apply Aura (6) | Dummy (4)
@@ -6012,7 +6012,7 @@ Effects          :
 #2 (id=830602)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: soul_shard | Target: Self (1)
 #3 (id=1107331)  : None (0)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 10 | Scaled Value: 10
 Description      : Summon a Demonic Tyrant to increase the duration of your Dreadstalkers, Vilefiend, Felguard, and up to $s3 of your Wild Imps by ${$265273m3/1000} sec. Your Demonic Tyrant increases the damage of affected demons by $265273s1%, while damaging your target.$?s334585[
 
 |cFFFFFFFFGenerates ${$s2/10} Soul Shards.|r][]
@@ -10238,7 +10238,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Stacks           : 2 maximum
+Stacks           : 3 maximum
 Proc Chance      : 101%
 Effects          :
 #1 (id=1021630)  : Apply Aura (6) | Unknown(262)
@@ -11085,7 +11085,7 @@ Effects          :
 Description      : Demons summoned from your Nether Portal deal $s1% increased damage.
 
 Name             : Pact of the Imp Mother (id=387541) [Spell Family (5), Passive] 
-Talent Entry     : Demonology [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Demonology [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12197,7 +12197,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), AI Primary Ranged Attack (206), Attack on Charge to Unit (242), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1054100)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.04078 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.60195 | Target: Enemy (6)
 Description      : $@spelldesc405670
 
 Name             : Immutable Hatred (id=405685) [Spell Family (5), Hidden] 
@@ -12219,7 +12219,7 @@ Effects          :
 Description      : $@spelldesc405670
 
 Name             : Umbral Blaze (id=405798) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Demonology [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Demonology [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -12231,7 +12231,7 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1054252)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1078213)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100
 Description      : Hand of Gul'dan has a $s1% chance to burn its target for ${$405802s1*(1+$s2/100)} additional Shadowflame damage every $405802t1 sec for $405802d.
@@ -15671,7 +15671,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 30 seconds
+Cooldown         : 25 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -15693,7 +15693,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 30 seconds
+Cooldown         : 25 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -16741,7 +16741,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198766)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 165 | Scaled Value: 165 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1201798)  : Apply Aura (6) | Proc Trigger Spell (42): Call Greater Dreadstalker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217615 | Target: Self (1)
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that summons a Greater Dreadstalker at $1217617s1% effectiveness. Casting Summon Demonic Tyrant always hits a |cFFFFFFFFJackpot!|r
@@ -16795,9 +16795,9 @@ Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198769)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1201796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1201796)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Casting Hand of Gul'dan causes your active Dreadstalkers to cast Dreadbite at $s1% effectiveness. This damage is increased by $s2% for each Soul Shard spent on Hand of Gul'dan.
 
 Name             : Warlock Affliction 11.1 Class Set 4pc (id=1215683) [Spell Family (5), Passive, Hidden] 
@@ -16854,10 +16854,10 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not On Player (167)
 Effects          :
 #1 (id=1201803)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 265 | Scaled Value: 265 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 180 | Scaled Value: 180 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1201804)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 265 | Scaled Value: 265 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 180 | Scaled Value: 180 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215679
 
 Name             : Demonfire Flurry (id=1217731) [Spell Family (5)] 
@@ -17076,6 +17076,216 @@ Description      : Casts damaging abilities for use in combat, rotating through 
 
 The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
+Name             : Warlock Hellcaller 11.2 Class Set 2pc (id=1236413) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232336)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 5182 (Label) | Target: Self (1)
+                   Affected Spells (Label): Malevolence (430014)
+#2 (id=1237448)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.34 | Misc Value: 23 | Misc Value 2: 5181 (Label) | Target: Self (1)
+                   Affected Spells (Label): Mark of Xavius (440046)
+#3 (id=1250176)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.34 | Misc Value: 23 | Misc Value 2: 5181 (Label) | Target: Self (1)
+                   Affected Spells (Label): Mark of Xavius (440046)
+Description      : Mark of Xavius increases Blackened Soul damage by an additional $?a137043[$s3][$s2]% per stack. Malevolence increases the stack count of Wither by an additional $s1 stacks.
+
+Name             : Warlock Hellcaller 11.2 Class Set 4pc (id=1236414) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232337)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1237452)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Casting Malevolence grants $?a137043[$s1][$s2] stacks of $?a137043[Tormented Crescendo][Backdraft] and prevents Blackened Soul from consuming stacks while dealing damage $?a137043[$1239577s2][$1239577s3]% faster for $1239577d.
+
+
+Name             : Warlock Soul Harvester 11.2 Class Set 2pc (id=1236415) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232338)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Shadow of Death unleashes your demonic soul to assault your current target for $1239689d, dealing $1239714s1 Shadow damage and $1239714s2 Shadow damage to enemies within $1239714a2 yds with each swipe.
+
+Name             : Warlock Soul Harvester 11.2 Class Set 4pc (id=1236416) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232339)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.33 | Misc Value 2: 5186 (Label) | Target: Self (1)
+                   Affected Spells (Label): Demonic Soul (449801)
+#2 (id=1237788)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.33 | Misc Value 2: 5185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wicked Reaping (449826)
+Description      : Demonic Soul damage increased by $s1% and Wicked Reaping damage increased by $s2%. Your demonic soul generates ${$1239689s2/10} $lSoul Shard:Soul Shards; every $1239689t2 sec while assaulting enemies.
+
+Name             : Warlock Diabolist 11.2 Class Set 2pc (id=1236417) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Proc Chance      : 101%
+Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232340)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : $?a137044[Hand of Gul'dan cast at full power][Casting Chaos Bolt, Rain of Fire, or Shadowburn] summons a Demonic Oculus, up to $1238810u. Consuming Demonic Art flings your Demonic Oculi at your current target, exploding for $1239510s1 Fire damage and $1239510s2 Fire damage to enemies within $1239510a2 yds.
+
+Name             : Warlock Diabolist 11.2 Class Set 4pc (id=1236418) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1232341)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : Demonic Oculi analyze the battle while active and deliver information to you as they explode, increasing your Intellect by $1239569s1% for $1239569d.
+
+Name             : Demonic Oculus (id=1238810) [Spell Family (5)] 
+Class            : Warlock
+School           : Fire
+Spell Type       : None
+Duration         : 60 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1236101)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1236417
+Tooltip          : A demonic eye floats overhead, analyzing nearby enemies.
+
+Consuming Demonic Art commands the eye to fly at your current target and explode, dealing Fire damage.
+
+Name             : Eye Blast (id=1239510) [Spell Family (5)] 
+Class            : Warlock
+School           : Fire
+Spell Type       : Magic
+Range            : 50000 yards
+Max Targets      : 8
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+                 : 5180
+Attributes       : Do Not Display Range (126)
+Effects          :
+#1 (id=1237335)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.57103 | PvP Coefficient: 0.33 | Target: Enemy (6)
+#2 (id=1237336)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.04702 | PvP Coefficient: 0.33 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Description      : $@spelldesc1236417
+
+Name             : Demonic Intelligence (id=1239569) [Spell Family (5)] 
+Class            : Warlock
+School           : Fire
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Effects          :
+#1 (id=1237443)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value 2: 0x8 | Target: Self (1)
+Description      : $@spelldesc1236417
+Tooltip          : Intellect increased by $s1%.
+
+Name             : Maintained Withering (id=1239577) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadowflame
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1237461)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.33 | Target: Self (1)
+#2 (id=1238057)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.33 | Misc Value: 19 | Misc Value 2: 5188 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blackened Soul (445731)
+#3 (id=1250188)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+Description      : $@spelldesc1236414
+Tooltip          : Blackened Soul deals damage $?a137043[$s2][$s3]% faster and does not consume stacks of Wither.
+
+Name             : Rampaging Demonic Soul (id=1239689) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 9 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+                 : 5061
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1237636)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 245904 | Misc Value 2: 0x18d0 | Target: At Self (18)
+#2 (id=1237750)  : Apply Aura (6) | Periodic Energize Power (24): every 3 seconds
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Misc Value: 7 | Target: Self (1)
+Description      : $@spelldesc1236415
+Tooltip          : Your Demonic Soul has been unleashed and is assaulting nearby enemies.
+
+$?a1236416[Generating ${$s2/10} $lSoul Shard:Soul Shards; every $t2 sec.][]
+
 Name             : Soul Swipe (id=1239714) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -17090,9 +17300,9 @@ Triggered By     : Demonic Soul (1239715)
 Family Flags     : 49
 Effects          :
 #1 (id=1237665)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.32755 | PvP Coefficient: 0.33 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.79306 | PvP Coefficient: 0.33 | Target: Enemy (6)
 #2 (id=1237666)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.55174 | PvP Coefficient: 0.33 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.86209 | PvP Coefficient: 0.33 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc449631
 
 Name             : Demonic Soul (id=1239715) [Spell Family (5), Hidden] 
@@ -17128,7 +17338,9 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193331), Call Dreadstalkers (193332), Call Dreadstalkers (196273), Call Dreadstalkers (196274), Call Dreadstalkers (196281), Summon Vilefiend (264119), Summon Demonic Tyrant (265187), Call Dreadstalkers (364750), Call Dreadstalkers (364751), Summon Gloomhound (455465), Summon Charhound (455476), Call Dreadstalkers (464880), Call Greater Dreadstalker (1217615)
                    Family Flags: 25, 81, 114
-Description      : Reduces the cast time of your Call Dreadstalkers, Summon Vilefiend, and Summon Demonic Tyrant by $s2%.
+#3 (id=1253250)  : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Description      : Increases Mastery by $s3% and reduces the cast time of your Call Dreadstalkers, Summon Vilefiend, and Summon Demonic Tyrant by $s2%.
 
 Name             : Track Pets (id=1245325) [Passive, Hidden] 
 Class            : Demonology Warlock

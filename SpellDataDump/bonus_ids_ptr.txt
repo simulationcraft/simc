@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61703 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4955,21 +4955,11 @@ bonus_id={ 9407 }, quality={ rare }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
 bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
 bonus_id={ 9413 }, socket={ 1 }
 bonus_id={ 9416 }, effects={ Medical Wrap Kit (id=409923, index=0, type=equip) }
-bonus_id={ 9435 }, quality={ epic }
 bonus_id={ 9436 }, socket={ 1 }
 bonus_id={ 9438 }, socket={ 1 }
-bonus_id={ 9439 }, quality={ epic }
-bonus_id={ 9440 }, quality={ epic }
-bonus_id={ 9441 }, quality={ epic }
-bonus_id={ 9442 }, quality={ epic }
 bonus_id={ 9443 }, ilevel={ 2 @plvl 1 - 343 @plvl 70 }
 bonus_id={ 9444 }, ilevel={ 4 @plvl 1 - 345 @plvl 70 }
 bonus_id={ 9445 }, ilevel={ 3 @plvl 1 - 344 @plvl 70 }
-bonus_id={ 9447 }, quality={ epic }
-bonus_id={ 9448 }, quality={ epic }
-bonus_id={ 9449 }, quality={ epic }
-bonus_id={ 9450 }, quality={ epic }
-bonus_id={ 9451 }, quality={ epic }
 bonus_id={ 9455 }, ilevel_adjust={ 401 }
 bonus_id={ 9456 }, ilevel_adjust={ 402 }
 bonus_id={ 9457 }, ilevel_adjust={ 403 }
@@ -5004,50 +4994,50 @@ bonus_id={ 9532 }, effects={ Dreamtender's Charm (id=419368, index=0, type=equip
 bonus_id={ 9533 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 411 @plvl 70 }
 bonus_id={ 9534 }, quality={ rare }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
 bonus_id={ 9535 }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
-bonus_id={ 9536 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9537 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9538 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9539 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9540 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9541 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9542 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9543 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9544 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
-bonus_id={ 9545 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
-bonus_id={ 9546 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9547 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9548 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9549 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9550 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9551 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9552 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9553 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9554 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9555 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9556 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9557 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9558 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9559 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9560 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9561 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9562 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9563 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9564 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9565 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9566 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9567 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9568 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9569 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9570 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9571 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9572 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9573 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9574 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9575 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9576 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9577 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9578 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9581 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9536 }, quality={ rare }
+bonus_id={ 9537 }, quality={ rare }
+bonus_id={ 9538 }, quality={ rare }
+bonus_id={ 9539 }, quality={ rare }
+bonus_id={ 9540 }, quality={ epic }
+bonus_id={ 9541 }, quality={ epic }
+bonus_id={ 9542 }, quality={ epic }
+bonus_id={ 9543 }, quality={ epic }
+bonus_id={ 9544 }, quality={ uncommon }
+bonus_id={ 9545 }, quality={ uncommon }
+bonus_id={ 9546 }, quality={ rare }
+bonus_id={ 9547 }, quality={ rare }
+bonus_id={ 9548 }, quality={ rare }
+bonus_id={ 9549 }, quality={ rare }
+bonus_id={ 9550 }, quality={ rare }
+bonus_id={ 9551 }, quality={ rare }
+bonus_id={ 9552 }, quality={ epic }
+bonus_id={ 9553 }, quality={ epic }
+bonus_id={ 9554 }, quality={ epic }
+bonus_id={ 9555 }, quality={ epic }
+bonus_id={ 9556 }, quality={ epic }
+bonus_id={ 9557 }, quality={ epic }
+bonus_id={ 9558 }, quality={ epic }
+bonus_id={ 9559 }, quality={ epic }
+bonus_id={ 9560 }, quality={ epic }
+bonus_id={ 9561 }, quality={ epic }
+bonus_id={ 9562 }, quality={ epic }
+bonus_id={ 9563 }, quality={ epic }
+bonus_id={ 9564 }, quality={ epic }
+bonus_id={ 9565 }, quality={ epic }
+bonus_id={ 9566 }, quality={ epic }
+bonus_id={ 9567 }, quality={ epic }
+bonus_id={ 9568 }, quality={ epic }
+bonus_id={ 9569 }, quality={ epic }
+bonus_id={ 9570 }, quality={ epic }
+bonus_id={ 9571 }, quality={ epic }
+bonus_id={ 9572 }, quality={ epic }
+bonus_id={ 9573 }, quality={ epic }
+bonus_id={ 9574 }, quality={ epic }
+bonus_id={ 9575 }, quality={ epic }
+bonus_id={ 9576 }, quality={ epic }
+bonus_id={ 9577 }, quality={ epic }
+bonus_id={ 9578 }, quality={ epic }
+bonus_id={ 9581 }, quality={ epic }
 bonus_id={ 9598 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9601 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9613 }, stats={ 100% Haste [0.4779] }
@@ -5476,99 +5466,99 @@ bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
 bonus_id={ 10250 }, base_ilevel={ 438 }
 bonus_id={ 10254 }, quality={ rare }
 bonus_id={ 10255 }, quality={ epic }
-bonus_id={ 10256 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10257 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10258 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10259 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10260 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10261 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10262 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10263 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10264 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10265 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10266 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10267 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10268 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10269 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10270 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10271 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10272 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10273 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10274 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10275 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10276 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10277 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10278 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10279 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10280 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10281 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10282 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10283 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10284 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10285 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10286 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10287 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10288 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10289 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10290 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10291 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10292 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10293 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10294 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10295 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10296 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10297 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10298 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10299 }, desc={ The War Within Season 1 }, quality={ epic }
+bonus_id={ 10256 }, quality={ epic }
+bonus_id={ 10257 }, quality={ epic }
+bonus_id={ 10258 }, quality={ epic }
+bonus_id={ 10259 }, quality={ epic }
+bonus_id={ 10260 }, quality={ epic }
+bonus_id={ 10261 }, quality={ epic }
+bonus_id={ 10262 }, quality={ epic }
+bonus_id={ 10263 }, quality={ epic }
+bonus_id={ 10264 }, quality={ epic }
+bonus_id={ 10265 }, quality={ epic }
+bonus_id={ 10266 }, quality={ epic }
+bonus_id={ 10267 }, quality={ epic }
+bonus_id={ 10268 }, quality={ epic }
+bonus_id={ 10269 }, quality={ epic }
+bonus_id={ 10270 }, quality={ epic }
+bonus_id={ 10271 }, quality={ epic }
+bonus_id={ 10272 }, quality={ epic }
+bonus_id={ 10273 }, quality={ epic }
+bonus_id={ 10274 }, quality={ epic }
+bonus_id={ 10275 }, quality={ epic }
+bonus_id={ 10276 }, quality={ epic }
+bonus_id={ 10277 }, quality={ epic }
+bonus_id={ 10278 }, quality={ epic }
+bonus_id={ 10279 }, quality={ epic }
+bonus_id={ 10280 }, quality={ epic }
+bonus_id={ 10281 }, quality={ epic }
+bonus_id={ 10282 }, quality={ rare }
+bonus_id={ 10283 }, quality={ rare }
+bonus_id={ 10284 }, quality={ rare }
+bonus_id={ 10285 }, quality={ rare }
+bonus_id={ 10286 }, quality={ rare }
+bonus_id={ 10287 }, quality={ rare }
+bonus_id={ 10288 }, quality={ uncommon }
+bonus_id={ 10289 }, quality={ uncommon }
+bonus_id={ 10290 }, quality={ epic }
+bonus_id={ 10291 }, quality={ epic }
+bonus_id={ 10292 }, quality={ epic }
+bonus_id={ 10293 }, quality={ epic }
+bonus_id={ 10294 }, quality={ rare }
+bonus_id={ 10295 }, quality={ rare }
+bonus_id={ 10296 }, quality={ rare }
+bonus_id={ 10297 }, quality={ rare }
+bonus_id={ 10298 }, quality={ epic }
+bonus_id={ 10299 }, quality={ epic }
 bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
 bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
 bonus_id={ 10303 }, ilevel={ 0 @plvl 0 - 459 @plvl 80 }
 bonus_id={ 10304 }, ilevel={ 0 @plvl 0 - 463 @plvl 80 }
-bonus_id={ 10305 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10306 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10307 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10308 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10309 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10310 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10311 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10312 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10313 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10314 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10315 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10316 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10317 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10318 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10319 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10320 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10321 }, desc={ Dragonflight Season 4 }, quality={ uncommon }
-bonus_id={ 10322 }, desc={ Dragonflight Season 4 }, quality={ uncommon }
-bonus_id={ 10323 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10324 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10325 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10326 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10327 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10328 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10329 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10330 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10331 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10332 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10333 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10334 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10335 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10336 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10337 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10338 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10305 }, quality={ rare }
+bonus_id={ 10306 }, quality={ rare }
+bonus_id={ 10307 }, quality={ rare }
+bonus_id={ 10308 }, quality={ rare }
+bonus_id={ 10309 }, quality={ epic }
+bonus_id={ 10310 }, quality={ epic }
+bonus_id={ 10311 }, quality={ epic }
+bonus_id={ 10312 }, quality={ epic }
+bonus_id={ 10313 }, quality={ epic }
+bonus_id={ 10314 }, quality={ epic }
+bonus_id={ 10315 }, quality={ epic }
+bonus_id={ 10316 }, quality={ epic }
+bonus_id={ 10317 }, quality={ epic }
+bonus_id={ 10318 }, quality={ epic }
+bonus_id={ 10319 }, quality={ epic }
+bonus_id={ 10320 }, quality={ epic }
+bonus_id={ 10321 }, quality={ uncommon }
+bonus_id={ 10322 }, quality={ uncommon }
+bonus_id={ 10323 }, quality={ rare }
+bonus_id={ 10324 }, quality={ rare }
+bonus_id={ 10325 }, quality={ rare }
+bonus_id={ 10326 }, quality={ rare }
+bonus_id={ 10327 }, quality={ rare }
+bonus_id={ 10328 }, quality={ rare }
+bonus_id={ 10329 }, quality={ epic }
+bonus_id={ 10330 }, quality={ epic }
+bonus_id={ 10331 }, quality={ epic }
+bonus_id={ 10332 }, quality={ epic }
+bonus_id={ 10333 }, quality={ epic }
+bonus_id={ 10334 }, quality={ epic }
+bonus_id={ 10335 }, quality={ epic }
+bonus_id={ 10336 }, quality={ epic }
+bonus_id={ 10337 }, quality={ epic }
+bonus_id={ 10338 }, quality={ epic }
 bonus_id={ 10339 }, quality={ epic }
 bonus_id={ 10340 }, quality={ epic }
-bonus_id={ 10341 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10342 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10343 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10344 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10345 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10346 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10347 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10348 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10341 }, quality={ epic }
+bonus_id={ 10342 }, quality={ epic }
+bonus_id={ 10343 }, quality={ epic }
+bonus_id={ 10344 }, quality={ epic }
+bonus_id={ 10345 }, quality={ epic }
+bonus_id={ 10346 }, quality={ epic }
+bonus_id={ 10347 }, quality={ epic }
+bonus_id={ 10348 }, quality={ epic }
 bonus_id={ 10349 }, base_ilevel={ 564 }, desc={ Beginner Crafted }
 bonus_id={ 10350 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10357 }, base_ilevel={ 473 }, quality={ epic }
@@ -5589,18 +5579,18 @@ bonus_id={ 10391 }, quality={ common }, effects={ Combo Attack (id=471633, index
 bonus_id={ 10397 }, socket={ 1 }
 bonus_id={ 10405 }, effects={ Fervor (id=429389, index=0, type=equip) }
 bonus_id={ 10406 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
-bonus_id={ 10407 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10408 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10409 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10410 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10411 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10412 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10413 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10414 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10415 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10416 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10417 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10418 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10407 }, quality={ epic }
+bonus_id={ 10408 }, quality={ epic }
+bonus_id={ 10409 }, quality={ epic }
+bonus_id={ 10410 }, quality={ epic }
+bonus_id={ 10411 }, quality={ epic }
+bonus_id={ 10412 }, quality={ epic }
+bonus_id={ 10413 }, quality={ epic }
+bonus_id={ 10414 }, quality={ epic }
+bonus_id={ 10415 }, quality={ epic }
+bonus_id={ 10416 }, quality={ epic }
+bonus_id={ 10417 }, quality={ epic }
+bonus_id={ 10418 }, quality={ epic }
 bonus_id={ 10421 }, base_ilevel={ 593 }
 bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
 bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
@@ -5666,20 +5656,20 @@ bonus_id={ 10486 }, quality={ common }, effects={ Holy Shield (id=433380, index=
 bonus_id={ 10487 }, quality={ uncommon }, effects={ Holy Shield (id=433472, index=0, type=equip) }
 bonus_id={ 10488 }, quality={ rare }, effects={ Holy Shield (id=433473, index=0, type=equip) }
 bonus_id={ 10489 }, quality={ epic }, effects={ Holy Shield (id=433474, index=0, type=equip) }
-bonus_id={ 10490 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10491 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10492 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10493 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10494 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10495 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10496 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10497 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10498 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10499 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10500 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10501 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10502 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10503 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10490 }, quality={ epic }
+bonus_id={ 10491 }, quality={ epic }
+bonus_id={ 10492 }, quality={ epic }
+bonus_id={ 10493 }, quality={ epic }
+bonus_id={ 10494 }, quality={ epic }
+bonus_id={ 10495 }, quality={ epic }
+bonus_id={ 10496 }, quality={ epic }
+bonus_id={ 10497 }, quality={ epic }
+bonus_id={ 10498 }, quality={ epic }
+bonus_id={ 10499 }, quality={ epic }
+bonus_id={ 10500 }, quality={ epic }
+bonus_id={ 10501 }, quality={ epic }
+bonus_id={ 10502 }, quality={ epic }
+bonus_id={ 10503 }, quality={ epic }
 bonus_id={ 10504 }, quality={ common }, effects={ Star Bomb (id=434880, index=0, type=equip) }
 bonus_id={ 10505 }, quality={ uncommon }, effects={ Star Bomb (id=435030, index=0, type=equip) }
 bonus_id={ 10506 }, quality={ rare }, effects={ Star Bomb (id=435032, index=0, type=equip) }
@@ -7015,20 +7005,6 @@ bonus_id={ 12065 }, quality={ epic }, effects={ Celestial Barrage (id=472406, in
 bonus_id={ 12067 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12068 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12070 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
-bonus_id={ 12071 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12072 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12073 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12074 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12075 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12076 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12077 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12078 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12079 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12080 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12081 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12082 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12083 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12084 }, desc={ The War Within Season 2 }, quality={ epic }
 bonus_id={ 12085 }, quality={ common }, effects={ Void Tear (id=472696, index=0, type=equip) }
 bonus_id={ 12086 }, quality={ uncommon }, effects={ Void Tear (id=472852, index=0, type=equip) }
 bonus_id={ 12087 }, quality={ rare }, effects={ Void Tear (id=472859, index=0, type=equip) }
@@ -7231,8 +7207,8 @@ bonus_id={ 12373 }, ilevel_adjust={ 6 }
 bonus_id={ 12374 }, ilevel_adjust={ 3 }
 bonus_id={ 12375 }, quality={ epic }
 bonus_id={ 12376 }, quality={ epic }
-bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 626 @plvl 80 }
-bonus_id={ 12378 }, ilevel={ 24 @plvl 1 - 662 @plvl 80 }
+bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 632 @plvl 80 }
+bonus_id={ 12378 }, ilevel={ 24 @plvl 1 - 668 @plvl 80 }
 bonus_id={ 12379 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
 bonus_id={ 12380 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
 bonus_id={ 12504 }, quality={ epic }
