@@ -572,7 +572,6 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
-    bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified.
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     int embedded_splinters;
     int magis_spark_spells;
@@ -2633,8 +2632,6 @@ struct arcane_mage_spell_t : public mage_spell_t
         }
         make_event( *sim, [ this ] { p()->state.intuition_blp_count = 0; } );
 
-        p()->state.prevent_intuition_damage_amp = true;
-        make_event( *sim, 30_ms, [ this ] { p()->state.prevent_intuition_damage_amp = false; } );
       }
     }
   }
@@ -3650,8 +3647,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
-    if ( !p()->bugs || !p()->state.prevent_intuition_damage_amp )
-      am *= 1.0 + p()->buffs.intuition->check_value();
+    am *= 1.0 + p()->buffs.intuition->check_value();
     am *= 1.0 + p()->buffs.arcane_soul_damage->check_stack_value();
 
     return am;
@@ -9357,12 +9353,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return 11 - state.intuition_blp_count; } );
-  }
-
-  if ( util::str_compare_ci( name, "has_intuition_damage_amp" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return buffs.intuition->check() && !state.prevent_intuition_damage_amp; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
