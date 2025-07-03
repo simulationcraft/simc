@@ -490,7 +490,8 @@ void monk_action_t<Base>::consume_resource()
           p()->flurry_strikes_energy += std::lround( final_cost );
 
         int flurry_strikes_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
-        if ( p()->tier.tww3.spm_4pc->ok() )
+        if ( p()->tier.tww3.spm_4pc->ok() &&
+             ( p()->buff.weapons_of_order->up() || p()->buff.storm_earth_and_fire->up() ) )
           flurry_strikes_threshold = p()->tier.tww3.spm_4pc->effectN( 2 ).base_value();
 
         // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
@@ -8109,17 +8110,18 @@ void monk_t::create_buffs()
   // TWW S3 Tier Buffs
   // CoC
   tier.tww3.coc_2pc_heart_of_the_jade_serpent =
-      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "Heart of the Jade Serpent",
+      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
           ->set_expire_callback(
               [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
-  tier.tww3.coc_4pc_jade_serpents_blessing = make_buff_fallback(
-      tier.tww3.coc_4pc->ok(), this, "Jade Serpent's Blessing", tier.tww3.coc_4pc_jade_serpents_blessing_data );
+  tier.tww3.coc_4pc_jade_serpents_blessing =
+      make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
+                          tier.tww3.coc_4pc_jade_serpents_blessing_data );
 
   // SPM
-  tier.tww3.spm_2pc_flurry_charge =
-      make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "Flurry Charge", tier.tww3.spm_2pc_flurry_charge_data );
+  tier.tww3.spm_2pc_flurry_charge = make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "flurry_charge_tww3_tier",
+                                                        tier.tww3.spm_2pc_flurry_charge_data );
 
   // ------------------------------
   // Movement
