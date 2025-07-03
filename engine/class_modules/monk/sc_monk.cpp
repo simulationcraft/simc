@@ -8109,17 +8109,17 @@ void monk_t::create_buffs()
   // TWW S3 Tier Buffs
   // CoC
   tier.tww3.coc_2pc_heart_of_the_jade_serpent =
-      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "Heart of the Jade Serpent",
+      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "tww3_heart_of_the_jade_serpent",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
           ->set_expire_callback(
               [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   tier.tww3.coc_4pc_jade_serpents_blessing = make_buff_fallback(
-      tier.tww3.coc_4pc->ok(), this, "Jade Serpent's Blessing", tier.tww3.coc_4pc_jade_serpents_blessing_data );
+      tier.tww3.coc_4pc->ok(), this, "tww3_jade_serpents_blessing", tier.tww3.coc_4pc_jade_serpents_blessing_data );
 
   // SPM
   tier.tww3.spm_2pc_flurry_charge =
-      make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "Flurry Charge", tier.tww3.spm_2pc_flurry_charge_data );
+      make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "tww3_flurry_charge", tier.tww3.spm_2pc_flurry_charge_data );
 
   // ------------------------------
   // Movement
