@@ -1228,7 +1228,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
       return false;
     }

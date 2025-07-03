@@ -2427,7 +2427,7 @@ struct empyrean_hammer_t : public paladin_spell_t
 
     if ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) )
     {
-      cm *= 1 + p()->find_spell( 1236391 )->effectN( 1 ).percent();
+      cm *= 1 + p()->sets->set(HERO_TEMPLAR, TWW2, B2)->effectN( 1 ).percent();
     }
     return cm;
   }
@@ -2455,7 +2455,7 @@ struct empyrean_hammer_t : public paladin_spell_t
     }
 
     if ( ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) && p()->talents.templar.lights_guidance->ok() &&
-           s->result == RESULT_CRIT && p()->rng().roll( p()->find_spell(1236391)->proc_chance() ) ) )
+           s->result == RESULT_CRIT && p()->rng().roll( p()->sets->set(HERO_TEMPLAR, TWW3, B2)->proc_chance() ) ) )
     {
       p()->buffs.templar.lights_deliverance->trigger();
     }

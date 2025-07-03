@@ -715,10 +715,11 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( !p()->buffs.templar.hammer_of_light_ready->up() )
+    if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
-      return paladin_spell_t::target_ready( candidate_target );
+      return false;
     }
+    return paladin_spell_t::target_ready( candidate_target );
   }
 
   double action_multiplier() const override
