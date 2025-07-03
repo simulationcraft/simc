@@ -2447,10 +2447,11 @@ struct empyrean_hammer_t : public paladin_spell_t
       p()->get_target_data( s->target )->debuff.empyrean_hammer->execute();
     }
 
-    if ( ( p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 ) && p()->talents.templar.lights_guidance->ok() &&
-           s->result == RESULT_CRIT && p()->rng().roll( p()->sets->set(HERO_TEMPLAR, TWW3, B2)->proc_chance() ) ) )
+    if ( ( s->result == RESULT_CRIT && p()->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B2 )
+            && p()->rng().roll( p()->sets->set(HERO_TEMPLAR, TWW3, B2)->proc_chance() ) ) )
     {
       p()->buffs.templar.lights_deliverance->trigger();
+      p()->procs.templar_tww3_eh_ld->occur();
     }
   }
 };
@@ -3847,12 +3848,12 @@ void paladin_t::init_procs()
 
   procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader" );
   procs.as_grand_crusader_wasted  = get_proc( "Avenger's Shield: Grand Crusader wasted" );
-  procs.as_engraved_sigil         = get_proc( "Avenger's Shield: Engraved Sigil" );
-  procs.as_engraved_sigil_wasted  = get_proc( "Avenger's Shield: Engraved Sigil wasted" );
   procs.as_moment_of_glory        = get_proc( "Avenger's Shield: Moment of Glory" );
   procs.as_moment_of_glory_wasted = get_proc( "Avenger's Shield: Moment of Glory wasted" );
 
   procs.divine_inspiration = get_proc( "Divine Inspiration" );
+
+  procs.templar_tww3_eh_ld = get_proc( "Templar TWW3 2pc: LD additional stacks" );
 }
 
 // paladin_t::init_scaling ==================================================

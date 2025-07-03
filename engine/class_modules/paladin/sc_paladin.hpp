@@ -413,12 +413,12 @@ public:
 
     proc_t* as_grand_crusader;
     proc_t* as_grand_crusader_wasted;
-    proc_t* as_engraved_sigil;
-    proc_t* as_engraved_sigil_wasted;
     proc_t* as_moment_of_glory;
     proc_t* as_moment_of_glory_wasted;
 
     proc_t* divine_inspiration;
+
+    proc_t* templar_tww3_eh_ld;
   } procs;
 
   // Spells
