@@ -371,7 +371,7 @@ struct blessed_hammer_t : public paladin_spell_t
       callbacks                       = false;
       radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
       may_crit                        = true;
-      if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+      if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) && p->talents.lightsmith.hammer_and_anvil->ok() )
       {
         hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_bh", p );
         hammer_and_anvil->base_dd_multiplier *= p->sets->set( HERO_LIGHTSMITH, TWW3, B2 )->effectN( 3 ).percent();
@@ -612,7 +612,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
-    if ( p->talents.lightsmith.hammer_and_anvil->ok() )
+    if ( p->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B2) && p->talents.lightsmith.hammer_and_anvil->ok() )
     {
       hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_hotr", p );
       hammer_and_anvil->base_dd_multiplier *= p->sets->set( HERO_LIGHTSMITH, TWW3, B2 )->effectN( 3 ).percent();
