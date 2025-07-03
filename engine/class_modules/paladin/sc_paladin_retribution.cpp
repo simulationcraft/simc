@@ -1174,7 +1174,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     }
     if ( p()->talents.templar.lights_guidance->ok() )
     {
-      p()->buffs.templar.hammer_of_light_ready->trigger(p()->buffs.templar.hammer_of_light_ready->max_stack());
+      p()->buffs.templar.hammer_of_light_ready->trigger();
     }
 
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
