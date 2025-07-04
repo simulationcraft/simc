@@ -216,6 +216,7 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
+  parse_effects( p()->buff.vigilant_watch );
 
   // TWW S1 Set Effects
   parse_effects(
@@ -1090,13 +1091,25 @@ struct flurry_strikes_t : public monk_melee_attack_t
     }
   };
 
+  enum flurry_strike_source_e
+  {
+    FLURRY_DEFAULT,
+    FLURRY_TIER
+  };
+
   flurry_strike_t *strike;
   high_impact_t *high_impact;
+  flurry_strike_source_e source;
 
-  flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
+  flurry_strikes_t( monk_t *p, flurry_strike_source_e source )
+    : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes ), source( source )
   {
     strike = new flurry_strike_t( p, this );
     add_child( strike );
+
+    assert( source != FLURRY_TIER || source == FLURRY_TIER && p->sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) );
+    if ( source == FLURRY_TIER )
+      strike->base_multiplier *= p->tier.tww3.spm_2pc->effectN( 3 ).percent();
 
     if ( !p->talent.shado_pan.high_impact->ok() )
       return;
@@ -1114,8 +1127,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   void execute() override
   {
-    bool source_tier    = p()->tier.tww3.spm_2pc_flurry_charge->up();
-    bool source_default = p()->buff.flurry_charge->up();
+    bool source_tier    = source == FLURRY_TIER && p()->tier.tww3.spm_2pc_flurry_charge->check();
+    bool source_default = source == FLURRY_DEFAULT && p()->buff.flurry_charge->check();
 
     int stacks = 0;
     if ( source_tier )
@@ -1128,13 +1141,15 @@ struct flurry_strikes_t : public monk_melee_attack_t
       for ( int charge = 1; charge <= stacks; charge++ )
         make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
 
+    if ( stacks && p()->buff.vigilant_watch->check() )
+      make_event<events::delayed_cb_event_t>( *sim, p(), stacks * 150_ms + 1_ms,
+                                              [ & ] { p()->buff.vigilant_watch->expire(); } );
+
     if ( source_default )
       p()->buff.flurry_charge->expire();
 
     if ( source_tier )
       p()->tier.tww3.spm_2pc_flurry_charge->expire();
-
-    p()->buff.vigilant_watch->expire();
   }
 };
 
@@ -7322,7 +7337,12 @@ void monk_t::init_background_actions()
 
   // Shado-Pan
   if ( talent.shado_pan.flurry_strikes->ok() )
-    active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
+    active_actions.flurry_strikes =
+        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_DEFAULT );
+
+  if ( sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) )
+    tier.tww3.spm_2pc_flurry_strikes =
+        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_TIER );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -8565,7 +8585,7 @@ void monk_t::init_special_effects()
         tier.tww3.spm_2pc_flurry_charge_data->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           if ( tier.tww3.spm_2pc_flurry_charge->check() )
-            active_actions.flurry_strikes->execute();
+            tier.tww3.spm_2pc_flurry_strikes->execute();
         } );
   }
 
