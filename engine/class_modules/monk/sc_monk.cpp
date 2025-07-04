@@ -8557,11 +8557,15 @@ void monk_t::init_special_effects()
 
   if ( tier.tww3.spm_2pc->ok() )
   {
+    // if `create_proc_callback` gets rewritten to use `std::function`, this
+    // can be simplified and filter on buff status, or use the dbc_proc_callback
+    // enable/disable system
     create_proc_callback( tier.tww3.spm_2pc_flurry_charge_data, []( monk_t *, action_state_t * ) { return true; } );
     callbacks.register_callback_execute_function(
         tier.tww3.spm_2pc_flurry_charge_data->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          active_actions.flurry_strikes->execute();
+          if ( tier.tww3.spm_2pc_flurry_charge->check() )
+            active_actions.flurry_strikes->execute();
         } );
   }
 
