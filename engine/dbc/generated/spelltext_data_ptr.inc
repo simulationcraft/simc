@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.61787
-static const std::array<spelltext_data_t, 28037> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28038> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27681,6 +27681,7 @@ static const std::array<spelltext_data_t, 28037> __ptr_spelltext_data { {
   { 1236160, "$@spelldesc12846", "Deals $w1 Fire damage every $t1 sec.$?$w3>0[\r\nMovement speed reduced by $w3%.][]", 0 },
   { 1236161, "Sparks triggered when healing Brann deal the healing amount as damage to an enemy target within 40yds. ", 0, 0 },
   { 1236169, "when you destroy a Titanic Storm Crystal you immediately send a Charged Bolt at an enemy within 40yds. ", 0, 0 },
+  { 1236209, "Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus all of the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.\r\n\r\nRequires 5 Icicles to cast.\r\n\r\n|cFFFFFFFFPassive:|r Ice Lance no longer launches Icicles.", "Frozen in place.", 0 },
   { 1236211, "$@spelldesc199786", "Frozen in place.", 0 },
   { 1236212, "Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].", 0, 0 },
   { 1236231, "$@spelldesc210805", "Haste increased by ${$w1}.1%.", 0 },
