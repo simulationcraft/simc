@@ -741,60 +741,79 @@ public:
 
     struct protection_talents_t
     {
+      // Row 1
       player_talent_t ignore_pain;
 
+      // Row 2
+      player_talent_t demoralizing_shout;
       player_talent_t revenge;
 
-      player_talent_t demoralizing_shout;
-      player_talent_t devastator;
-      player_talent_t last_stand;
-
-      player_talent_t fight_through_the_flames;
-      player_talent_t best_served_cold;
-      player_talent_t strategist;
+      // Row 3
       player_talent_t brace_for_impact;
-      player_talent_t unnerving_focus;
+      player_talent_t armor_specialization;
+      player_talent_t fight_through_the_flames;
+      player_talent_t devastator;
 
-      player_talent_t challenging_shout;
+      // Row 4
+      player_talent_t disrupting_shout;
+      player_talent_t strategist;
+      player_talent_t best_served_cold;
+
+      // Row 5
+      player_talent_t last_stand;
       player_talent_t instigate;
       player_talent_t rend;
       player_talent_t bloodsurge;
       player_talent_t fueled_by_violence;
       player_talent_t brutal_vitality;
 
-      player_talent_t disrupting_shout;
-      player_talent_t show_of_force;
-      player_talent_t sudden_death;
-      player_talent_t thunderlord;
-      player_talent_t shield_wall;
+      // Row 6
       player_talent_t bolster;
-      player_talent_t tough_as_nails;
-      player_talent_t spell_block;
-      player_talent_t bloodborne;
-
+      player_talent_t unnerving_focus;
+      player_talent_t thunderlord;
       player_talent_t heavy_repercussions;
       player_talent_t into_the_fray;
+      player_talent_t bloodborne;
+      player_talent_t sudden_death;
+      player_talent_t punish;
+      player_talent_t spellbreaker;
+      player_talent_t hunker_down;
+
+      // Row 7
+      player_talent_t tough_as_nails;
+      player_talent_t shield_wall;
       player_talent_t enduring_defenses;
-      player_talent_t massacre;
-      player_talent_t anger_management;
+      player_talent_t unyielding_stance;
+      player_talent_t red_right_hand;
+
+      // Row 8
       player_talent_t defenders_aegis;
       player_talent_t impenetrable_wall;
-      player_talent_t punish;
-      player_talent_t juggernaut;
-
       player_talent_t focused_vigor;
       player_talent_t shield_specialization;
       player_talent_t enduring_alacrity;
+      player_talent_t anger_management;
 
-      player_talent_t shield_charge;
+      // Row 9
+      player_talent_t massacre;
       player_talent_t booming_voice;
       player_talent_t indomitable;
       player_talent_t violent_outburst;
+      player_talent_t heavy_handed;
+
+      // Row 10
+      player_talent_t shield_charge;
+      player_talent_t battle_scarred_veteran;
+      player_talent_t whirling_blade;
       player_talent_t ravager;
 
+      // TODO Remove these after 11.2 launches
+      player_talent_t challenging_shout;
+      player_talent_t show_of_force;
+      player_talent_t spell_block;
+      player_talent_t juggernaut;
       player_talent_t battering_ram;
       player_talent_t champions_bulwark;
-      player_talent_t battle_scarred_veteran;
       player_talent_t dance_of_death;
       player_talent_t storm_of_steel;
 
@@ -10646,6 +10665,10 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
     if ( buff.defensive_stance->up() )
     {
       s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent() + spec.protection_warrior->effectN( 17 ).percent();
+      if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+      {
+        s->result_amount *= 1.0 + talents.protection.unyielding_stance->effectN( 1 ).percent();
+      }
     }
 
     if ( buff.defensive_stance->up() && talents.protection.fight_through_the_flames->ok() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
