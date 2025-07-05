@@ -511,7 +511,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Target: Self (1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier (108): Spell Pushback (9)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537), Arcane Surge (365362), Displacement (389713), Summon Water Elemental (417486), Frostfire Bolt (431044), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655), Pyroblast (1236212)
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537), Arcane Surge (365362), Displacement (389713), Summon Water Elemental (417486), Frostfire Bolt (431044), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655), Glacial Spike (1236209), Pyroblast (1236212)
                    Family Flags: 0, 2, 4, 5, 7, 11, 22, 24, 26, 29, 30, 40, 43, 44, 51, 56, 76, 101, 110, 123
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 
@@ -1215,7 +1215,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Proc
 Effects          :
 #1 (id=49437)    : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Ebonbolt (257537)
+                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Ebonbolt (257537), Glacial Spike (1236209)
                    Family Flags: 101, 104, 110, 115
 #2 (id=136440)   : Dummy (3)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 0.25
@@ -1850,7 +1850,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Co
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Ring of Frost (113724), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Surge (365350), Summon Water Elemental (417486), Frostfire Bolt (431044), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655), Glacial Spike (1236211), Pyroblast (1236212)
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Ring of Frost (113724), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Surge (365350), Summon Water Elemental (417486), Frostfire Bolt (431044), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655), Glacial Spike (1236209), Glacial Spike (1236211), Pyroblast (1236212)
                    Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 62, 64, 69, 76, 86, 98, 107, 110, 112, 116
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -6401,7 +6401,7 @@ Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), No Cast Log (12
 Effects          :
 #1 (id=786056)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Charge (36032), Arcane Barrage (44425), Frozen Orb (84721), Fire Blast (108853), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Fire Blast (319836), Meteor (351140), Frostbite (378756), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Meteor (438607), Meteor (438608), Comet Storm (438609), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Phoenix Flames (450506), Pyroblast (460475), Flamestrike (460476), Arcane Explosion (461508), Arcane Orb (463357), Frostfire Bolt (468655), Gravity Lapse (473290), Gravity Lapse (473291), Glacial Spike (1236211), Pyroblast (1236212)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Charge (36032), Arcane Barrage (44425), Frozen Orb (84721), Fire Blast (108853), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Fire Blast (319836), Meteor (351140), Frostbite (378756), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Meteor (438607), Meteor (438608), Comet Storm (438609), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Phoenix Flames (450506), Pyroblast (460475), Flamestrike (460476), Arcane Explosion (461508), Arcane Orb (463357), Frostfire Bolt (468655), Gravity Lapse (473290), Gravity Lapse (473291), Glacial Spike (1236209), Glacial Spike (1236211), Pyroblast (1236212)
                    Family Flags: 0, 1, 2, 4, 5, 6, 7, 9, 11, 12, 17, 21, 22, 23, 28, 29, 34, 38, 41, 47, 56, 64, 66, 69, 71, 77, 78, 83, 85, 96, 102, 115, 117, 119, 120, 121, 122, 125, 127
 Description      : $@spelldesc307443
 Tooltip          : Damage taken from $@auracaster  increased by $w1%.
@@ -6822,7 +6822,7 @@ Effects          :
                    Family Flags: 56
 #3 (id=1091225)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05 | Target: Self (1)
-                   Affected Spells: Ice Lance (30455), Glacial Spike (199786), Ice Lance (228598), Glacial Spike (228600), Ebonbolt (257538), Glacial Spike (1236211)
+                   Affected Spells: Ice Lance (30455), Glacial Spike (199786), Ice Lance (228598), Glacial Spike (228600), Ebonbolt (257538), Glacial Spike (1236209), Glacial Spike (1236211)
                    Family Flags: 17, 64, 117
 #4 (id=1170474)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05 | Misc Value 2: 3408 (Label) | Target: Self (1)
@@ -8989,7 +8989,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1007421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Icicle (148022), Glacial Spike (199786), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655), Glacial Spike (1236211)
+                   Affected Spells: Frostbolt (116), Icicle (148022), Glacial Spike (199786), Frostbolt (228597), Glacial Spike (228600), Frostfire Bolt (431044), Frostfire Bolt (468655), Glacial Spike (1236209), Glacial Spike (1236211)
                    Family Flags: 5, 64, 115
 Description      : Frostbolt and $?s199786[Glacial Spike][Icicle] critical strike damage increased by $s1%.
 
@@ -12006,7 +12006,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1098482)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Glacial Spike (199786), Glacial Spike (228600), Glacial Spike (1236211)
+                   Affected Spells: Glacial Spike (199786), Glacial Spike (228600), Glacial Spike (1236209), Glacial Spike (1236211)
                    Family Flags: 64
 #2 (id=1100601)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -16417,7 +16417,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1210431)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-                   Affected Spells: Icicle (148022), Glacial Spike (199786), Glacial Spike (228600), Glacial Spike (1236211)
+                   Affected Spells: Icicle (148022), Glacial Spike (199786), Glacial Spike (228600), Glacial Spike (1236209), Glacial Spike (1236211)
                    Family Flags: 64, 115
 Description      : $@spelldesc378406
 Tooltip          : The damage of your Icicles and Glacial Spike is increased by $s1%.
@@ -16635,7 +16635,7 @@ Effects          :
                    Family Flags: 29
 #4 (id=1249857)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Ice Lance (228598), Glacial Spike (228600), Glacial Spike (1236211)
+                   Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Ice Lance (228598), Glacial Spike (228600), Glacial Spike (1236209), Glacial Spike (1236211)
                    Family Flags: 17, 64, 115
 Description      : $?c1[Arcane Blast][Ice Lance and Icicle] damage increased by $?c1[$s3][$s4]%. Direct Splinter damage has a $?c1[$s1][$s2]% chance to grant a stack of $?c1[Arcane Harmony][Cold Front].
 
@@ -16822,6 +16822,32 @@ Effects          :
 Description      : $@spelldesc12846
 Tooltip          : Deals $w1 Fire damage every $t1 sec.$?$w3>0[
 Movement speed reduced by $w3%.][]
+
+Name             : Glacial Spike (id=1236209) [Spell Family (3)] 
+Class            : Mage
+School           : Frost
+Spell Type       : Magic
+Resource         : 1% Base Mana (0) (id=310700)
+Range            : 40 yards
+Cast Time        : 2.75 seconds
+GCD              : 1.5 seconds
+Velocity         : 40 yards/sec
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 52
+                 : 292
+Affecting Spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#3), Piercing Cold (378919 effect#1), Mage Frost 10.2 Class Set 2pc (422884 effect#1), Wintertide (1222865 effect#1), Mage Spellslinger 11.2 Class Set 2pc (1235959 effect#4)
+Family Flags     : 64, 101
+Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Effects          :
+#1 (id=1231966)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy (6)
+Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus all of the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
+
+Requires 5 Icicles to cast.
+
+|cFFFFFFFFPassive:|r Ice Lance no longer launches Icicles.
+Tooltip          : Frozen in place.
 
 Name             : Glacial Spike (id=1236211) [Spell Family (3)] 
 Class            : Mage
