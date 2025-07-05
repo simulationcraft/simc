@@ -10316,6 +10316,7 @@ double warrior_t::composite_armor_multiplier() const
       auto q = spec.vanguard -> effectN( 1 ).percent() *
                 talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
                 ( 1+talents.warrior.reinforced_plates->effectN( 2 ).percent()) *
+                ( 1+talents.protection.armor_specialization->effectN( 1 ).percent()) *
                 ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
                 ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
       ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
@@ -10325,6 +10326,7 @@ double warrior_t::composite_armor_multiplier() const
 
   ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 2 ).percent();
 
+  ar *= 1.0 + talents.protection.armor_specialization -> effectN( 1 ).percent();
   ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
   ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
