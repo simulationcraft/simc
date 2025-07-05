@@ -776,8 +776,8 @@ public:
       player_talent_t bloodborne;
       player_talent_t sudden_death;
       player_talent_t punish;
-      player_talent_t spellbreaker;
-      player_talent_t hunker_down;
+      player_talent_t spellbreaker; // NYI
+      player_talent_t hunker_down;  // NYI
 
       // Row 7
       player_talent_t tough_as_nails;
@@ -4720,6 +4720,12 @@ struct execute_damage_t : public warrior_attack_t
     background = true;
     finishing_wound = new finishing_wound_t( "finishing_wound", p);
     add_child( finishing_wound );
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p->talents.protection.heavy_handed->ok() )
+    {
+      aoe = data().effectN( 1 ).chain_target() + as<int>( p->talents.protection.heavy_handed->effectN( 1 ).base_value() );
+      base_aoe_multiplier = p->talents.protection.heavy_handed->effectN( 2 ).percent();
+    }
   }
 
   double action_multiplier() const override
@@ -8719,6 +8725,15 @@ void warrior_t::init_spells()
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
+  // 11.2 New talents
+  talents.protection.armor_specialization   = find_talent_spell( talent_tree::SPECIALIZATION, "Armor Specialization", WARRIOR_PROTECTION );
+  talents.protection.heavy_handed           = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Handed", WARRIOR_PROTECTION );
+  talents.protection.whirling_blade         = find_talent_spell( talent_tree::SPECIALIZATION, "Whirling Blade", WARRIOR_PROTECTION );
+  talents.protection.hunker_down            = find_talent_spell( talent_tree::SPECIALIZATION, "Hunker Down", WARRIOR_PROTECTION );
+  talents.protection.spellbreaker           = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Breaker", WARRIOR_PROTECTION );
+  talents.protection.unyielding_stance      = find_talent_spell( talent_tree::SPECIALIZATION, "Unyielding Stance", WARRIOR_PROTECTION );
+  talents.protection.red_right_hand         = find_talent_spell( talent_tree::SPECIALIZATION, "Red Right Hand", WARRIOR_PROTECTION );
+
   // Colossus Hero Talents
   talents.colossus.demolish                     = find_talent_spell( talent_tree::HERO, "Demolish" );
   talents.colossus.martial_expert               = find_talent_spell( talent_tree::HERO, "Martial Expert" );
@@ -10833,6 +10848,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.protection.defenders_aegis );
   action.apply_affecting_aura( talents.protection.battering_ram );
   action.apply_affecting_aura( talents.protection.punish );
+  action.apply_affecting_aura( talents.protection.red_right_hand );
 
   // Shared Auras
   action.apply_affecting_aura( talents.warrior.champions_might );
