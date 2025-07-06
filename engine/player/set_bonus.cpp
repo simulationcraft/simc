@@ -390,10 +390,17 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
-        if ( data.overridden >= 1 ||
-             ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
-        {
+        if ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] < data.bonus->bonus )
+          continue;
+
+        if ( data.bonus->trait_sub_tree == -1 )
           s += fmt::format( "# set_bonus={}_{}pc=1{}", data.bonus->set_opt_name, data.bonus->bonus, newline );
+        else
+        {
+          std::string ht = util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) );
+          util::tolower( ht );
+          s += fmt::format( "# set_bonus=name={},pc={},hero_tree={},enable=1{}", data.bonus->set_opt_name,
+                            data.bonus->bonus, ht, newline );
         }
       }
     }
