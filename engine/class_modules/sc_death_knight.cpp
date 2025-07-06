@@ -1423,7 +1423,6 @@ public:
     const spell_data_t* frostbane_buff;
     const spell_data_t* frostbane_driver;
     const spell_data_t* frostbane_damage;
-    const spell_data_t* breath_of_sindragosa_buff;
     const spell_data_t* breath_of_sindragosa_erw_refund;
     const spell_data_t* killing_streak_buff;
     // Tier Sets
@@ -5630,7 +5629,6 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
 {
   breath_of_sindragosa_buff_t( death_knight_t* p, std::string_view name, const spell_data_t* s )
     : death_knight_buff_t( p, name, s ),
-      ticking_cost( 0.0 ),
       tick_period( p->talent.frost.breath_of_sindragosa->effectN( 1 ).period() ),
       rune_gen( as<int>( p->spell.breath_of_sindragosa_rune_gen->effectN( 1 ).base_value() ) )
   {
@@ -5638,53 +5636,14 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
     set_tick_on_application( false );
     set_tick_zero( false );
 
-    // Extract the cost per tick from spelldata
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
-    {
-      const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
-      {
-        ticking_cost = power.cost_per_tick();
-      }
-    }
-
     set_tick_callback( [ &, p ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
-      // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
-      if ( !check_resource( "for this tick" ) )
-        return;
-
-      // Else, consume the resource and update the damage tick's resource stats
-      p->resource_loss( RESOURCE_RUNIC_POWER, ticking_cost, nullptr, p->background_actions.breath_of_sindragosa_tick );
-      p->background_actions.breath_of_sindragosa_tick->stats->consume_resource( RESOURCE_RUNIC_POWER, ticking_cost );
-
-      // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
-      // after the RP consumption and before the damage event
-      // This is the normal BoS expiration scenario
-      if ( !check_resource( "for the next tick" ) )
-        return;
-
       // Default player target to begin with, if theres a valid last target, switch to that.
       player_t* bos_target = p->target;
       if ( !p->last_target->is_sleeping() && p->last_target != nullptr && p->last_target != source )
         bos_target = p->last_target;
 
-      // If there's enough resources for another tick, deal damage
       p->background_actions.breath_of_sindragosa_tick->execute_on_target( bos_target );
     } );
-  }
-
-  bool check_resource( std::string_view s )
-  {
-    if ( p()->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
-      return true;
-
-    sim->print_log( "Player {} doesn't have the {} Runic Power required {}. Breath of Sindragosa was cancelled.",
-                    p()->name_str, ticking_cost, s );
-
-    // Separate the expiration event to happen immediately after tick processing
-    make_event( *sim, 0_ms, [ & ]() { expire(); } );
-    return false;
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -5699,7 +5658,6 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
   }
 
 private:
-  double ticking_cost;
   const timespan_t tick_period;
   int rune_gen;
 };
@@ -7874,16 +7832,6 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
     background          = true;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
-    // Extract the cost per tick from spelldata
-    for ( size_t idx = 1; idx <= p->buffs.breath_of_sindragosa->data().power_count(); idx++ )
-    {
-      const spellpower_data_t& power = p->buffs.breath_of_sindragosa->data().powerN( idx );
-      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
-      {
-        // Make sure to set base_casts for runic power spending procs.
-        base_costs[ RESOURCE_RUNIC_POWER ] = power.cost_per_tick();
-      }
-    }
     ap_type = attack_power_type::WEAPON_BOTH;
 
     if ( p->main_hand_weapon.group() == WEAPON_2H )
@@ -7903,14 +7851,6 @@ struct breath_of_sindragosa_tick_t final : public death_knight_spell_t
   double cost() const override
   {
     return 0;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    p()->buffs.rime->trigger(
-        1, buff_t::DEFAULT_VALUE(),
-        p()->spec.rime->effectN( 1 ).percent() + p()->talent.frost.rage_of_the_frozen_champion->effectN( 2 ).percent() );
   }
 
   void impact( action_state_t* state ) override
@@ -7933,20 +7873,10 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
 {
   breath_of_sindragosa_t( death_knight_t* p, std::string_view options_str )
     : death_knight_spell_t( "breath_of_sindragosa", p, p->talent.frost.breath_of_sindragosa ),
-      ticking_cost( 0.0 ),
       rune_gen( 0 )
   {
     may_miss = may_dodge = may_parry = false;
     parse_options( options_str );
-
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
-    {
-      const spellpower_data_t& power = data().powerN( idx );
-      if ( power.aura_id() == 0 || player->dbc->spec_by_spell( power.aura_id() ) == player->specialization() )
-      {
-        ticking_cost = power.cost_per_tick();
-      }
-    }
 
     if ( p->talent.frost.breath_of_sindragosa.ok() )
     {
@@ -7960,25 +7890,13 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     p()->buffs.breath_of_sindragosa->trigger();
-    p()->replenish_rune( rune_gen, p()->gains.breath_of_sindragosa );
+    p()->cooldown.empower_rune_weapon->reset(
+        false, as<int>( p()->spell.breath_of_sindragosa_erw_refund->effectN( 1 ).base_value() ) );
 
     p()->background_actions.breath_of_sindragosa_tick->execute_on_target( target );
-
-    if ( p()->talent.icy_talons.ok() )
-      p()->buffs.icy_talons->trigger();
-  }
-
-  // Breath of Sindragosa can not be used if there isn't enough resources available for one tick
-  bool ready() override
-  {
-    if ( !p()->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
-      return false;
-
-    return death_knight_spell_t::ready();
   }
 
 private:
-  double ticking_cost;
   int rune_gen;
 };
 
@@ -10226,6 +10144,13 @@ struct howling_blast_t final : public death_knight_spell_t
           as<int>( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) );
     }
 
+    if ( p()->talent.frost.breath_of_sindragosa.ok() && p()->buffs.breath_of_sindragosa->check() && p()->buffs.rime->check() )
+    {
+      timespan_t base_extension = p()->talent.frost.breath_of_sindragosa->effectN( 3 ).time_value();
+      p()->buffs.breath_of_sindragosa->extend_duration(p(), base_extension);
+    }
+
+
     p()->buffs.rime->decrement();
 
     if ( p()->talent.frost.howling_blades->ok() )
@@ -12373,6 +12298,12 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     if ( talent.frost.killing_streak.ok() )
       buffs.killing_streak->trigger( decrement_count );
 
+    if ( talent.frost.breath_of_sindragosa.ok() && buffs.breath_of_sindragosa->check() )
+    {
+      timespan_t base_extension = talent.frost.breath_of_sindragosa->effectN( 3 ).time_value();
+      buffs.breath_of_sindragosa->extend_duration(this, base_extension * decrement_count);
+    }
+
     for ( int i = decrement_count; i > 0; --i )
     {
       if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
@@ -14221,7 +14152,6 @@ void death_knight_t::spell_lookups()
   spell.frostbane_driver    = conditional_spell_lookup( talent.frost.frostbane.ok(), 1228433 );
   spell.frostbane_damage    = conditional_spell_lookup( talent.frost.frostbane.ok(), 1228443 );
   spell.killing_streak_buff = conditional_spell_lookup( talent.frost.killing_streak.ok(), 1230916 );
-  spell.breath_of_sindragosa_buff        = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 152279 );
   spell.breath_of_sindragosa_erw_refund  = conditional_spell_lookup( talent.frost.breath_of_sindragosa.ok(), 303753 );
   // Tier Sets
   spell.icy_vigor            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
