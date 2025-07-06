@@ -264,7 +264,7 @@ void set_bonus_t::initialize()
 
         bool is_enabled = is_enabled_2p || is_enabled_4p;
 
-        if ( is_overridden || is_in_range || ( is_equippable && is_enabled ) )
+        if ( is_equippable && ( is_overridden || is_in_range || is_enabled ) )
         {
           if ( is_disabled_2p || is_disabled_4p )
             data.enabled = false;
