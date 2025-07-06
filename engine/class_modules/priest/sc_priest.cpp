@@ -3649,7 +3649,7 @@ void priest_t::init_finished()
 
         if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
-          auto& time = std::max( a->base_execute_time.value(), a->trigger_gcd );
+          timespan_t time = std::max( a->base_execute_time.value(), a->trigger_gcd );
 
           if ( time_spent + time > 2_s )
             break;
