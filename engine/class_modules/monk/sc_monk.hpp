@@ -164,18 +164,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
 };
 
-struct monk_buff_t : public buff_t
-{
-  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
-               const item_t *item = nullptr );
-  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
-               const item_t *item = nullptr );
-  monk_td_t &get_td( player_t *target );
-  const monk_td_t *find_td( player_t *target ) const;
-  monk_t &p();
-  const monk_t &p() const;
-};
-
 struct summon_pet_t : public monk_spell_t
 {
   timespan_t summoning_duration;
@@ -205,8 +193,6 @@ struct brews_t
   void adjust( timespan_t reduction );
 };
 
-namespace attacks
-{
 struct conduit_of_the_celestials_container_t
 {
   action_t *base;
@@ -220,12 +206,23 @@ struct conduit_of_the_celestials_container_t
   {
   }
 };
-}  // namespace attacks
 }  // namespace actions
 
 namespace buffs
 {
-struct shuffle_t : actions::monk_buff_t
+struct monk_buff_t : public buff_t
+{
+  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_td_t &get_td( player_t *target );
+  const monk_td_t *find_td( player_t *target ) const;
+  monk_t &p();
+  const monk_t &p() const;
+};
+
+struct shuffle_t : monk_buff_t
 {
   timespan_t accumulator;
   const timespan_t max_duration;
@@ -235,7 +232,7 @@ struct shuffle_t : actions::monk_buff_t
   void trigger( timespan_t duration );
 };
 
-struct gift_of_the_ox_t : actions::monk_buff_t
+struct gift_of_the_ox_t : monk_buff_t
 {
   /*
    * TODO:
@@ -294,14 +291,14 @@ private:
 
   bool fallback;
 
-  struct accumulator_t : actions::monk_buff_t
+  struct accumulator_t : monk_buff_t
   {
     aspect_of_harmony_t *aspect_of_harmony;
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
   };
 
-  struct spender_t : actions::monk_buff_t
+  struct spender_t : monk_buff_t
   {
     template <class base_action_t>
     struct purified_spirit_t : base_action_t
@@ -450,9 +447,9 @@ public:
     propagate_const<action_t *> chi_wave;
 
     // Conduit of the Celestials
-    actions::attacks::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
-    actions::attacks::conduit_of_the_celestials_container_t flight_of_the_red_crane;
-    actions::attacks::conduit_of_the_celestials_container_t strength_of_the_black_ox;
+    actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
+    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
+    actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
 
     // Shado-Pan
     propagate_const<action_t *> flurry_strikes;

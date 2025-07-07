@@ -41,6 +41,11 @@ BREWMASTER:
 
 #include "simulationcraft.hpp"
 
+namespace monk_live
+{
+// #include "sc_monk.inc"
+}
+
 // ==========================================================================
 // Monk
 // ==========================================================================
@@ -769,37 +774,6 @@ result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state
   }
 }
 
-monk_buff_t::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
-  : buff_t( player, name, spell_data, item )
-{
-}
-
-monk_buff_t::monk_buff_t( monk_td_t *target_data, std::string_view name, const spell_data_t *spell_data,
-                          const item_t *item )
-  : buff_t( *target_data, name, spell_data, item )
-{
-}
-
-monk_td_t &monk_buff_t::get_td( player_t *t )
-{
-  return *( p().get_target_data( t ) );
-}
-
-const monk_td_t *monk_buff_t::find_td( player_t *t ) const
-{
-  return p().find_target_data( t );
-}
-
-monk_t &monk_buff_t::p()
-{
-  return *debug_cast<monk_t *>( buff_t::source );
-}
-
-const monk_t &monk_buff_t::p() const
-{
-  return *debug_cast<monk_t *>( buff_t::source );
-}
-
 summon_pet_t::summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
                             const spell_data_t *spell_data )
   : monk_spell_t( player, name, spell_data ),
@@ -928,7 +902,6 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 
 namespace attacks
 {
-
 // ==========================================================================
 // Windwalking Aura Toggle
 // ==========================================================================
@@ -3350,6 +3323,149 @@ struct slicing_winds_t : public monk_melee_attack_t
 
 namespace spells
 {
+// ==========================================================================
+// Chi Wave
+// ==========================================================================
+struct chi_wave_t : public monk_spell_t
+{
+  template <class TBase>
+  struct bounce_t : TBase
+  {
+    using TBase::execute;
+    std::function<void( unsigned )> other_cb;
+    std::function<void( unsigned )> this_cb;
+    unsigned count;
+
+    bounce_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "chi_wave_{}", name ), spell_data ), count( 0 )
+    {
+      TBase::dual         = true;
+      TBase::travel_speed = player->talent.monk.chi_wave_driver->missile_speed();
+      this_cb             = [ this ]( unsigned new_count ) { this->execute( new_count ); };
+    }
+
+    void execute( unsigned new_count )
+    {
+      count = new_count;
+      if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
+        return;
+
+      TBase::execute();
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      TBase::impact( state );
+      other_cb( ++count );
+    }
+  };
+
+  bounce_t<monk_heal_t> *heal;
+  bounce_t<monk_spell_t> *damage;
+
+  chi_wave_t( monk_t *player )
+    : monk_spell_t( player, "chi_wave", player->talent.monk.chi_wave_driver ),
+      heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
+      damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
+  {
+    background             = true;
+    may_combo_strike       = false;
+    trigger_jadefire_stomp = true;
+
+    heal->other_cb   = damage->this_cb;
+    damage->other_cb = heal->this_cb;
+
+    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
+
+    add_child( damage );
+    add_child( heal );
+  }
+
+  void execute() override
+  {
+    if ( !p()->buff.chi_wave->up() )
+      return;
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
+    p()->buff.chi_wave->expire();
+    monk_spell_t::execute();
+
+    if ( player->target->is_enemy() )
+      damage->execute( 0 );
+    else
+      heal->execute( 0 );
+  }
+};
+
+// ==========================================================================
+// Chi Burst
+// ==========================================================================
+struct chi_burst_t : monk_spell_t
+{
+  template <class TBase>
+  struct hit_t : TBase
+  {
+    hit_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, fmt::format( "chi_burst_{}", name ), spell_data )
+    {
+      TBase::background = TBase::dual = true;
+      TBase::reduced_aoe_targets      = player->talent.monk.chi_burst_projectile->effectN( 1 ).base_value();
+      TBase::aoe                      = -1;
+
+      // TODO: Helper to check if a damaging effect exists on the passed spell
+      for ( const auto &effect : spell_data->effects() )
+        if ( effect.type() == E_SCHOOL_DAMAGE )
+          TBase::ww_mastery = true;
+    }
+  };
+
+  hit_t<monk_spell_t> *damage;
+  hit_t<monk_heal_t> *heal;
+  propagate_const<buff_t *> buff;
+
+  // TODO: Figure out what you have to do to simulate this as a projectile.
+  chi_burst_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "chi_burst",
+                    player->specialization() == MONK_WINDWALKER ? player->talent.monk.chi_burst_projectile
+                                                                : player->talent.monk.chi_burst ),
+      damage( new hit_t<monk_spell_t>( player, "damage", player->talent.monk.chi_burst_damage ) ),
+      heal( new hit_t<monk_heal_t>( player, "heal", player->talent.monk.chi_burst_heal ) ),
+      buff( buff_t::find( player, "chi_burst" ) )
+  {
+    parse_options( options_str );
+    may_combo_strike       = true;
+    trigger_jadefire_stomp = true;
+    gcd_type               = gcd_haste_type::NONE;
+
+    stats = damage->stats;
+    add_child( heal );
+  }
+
+  bool ready() override
+  {
+    if ( p()->specialization() != MONK_WINDWALKER )
+      return monk_spell_t::ready();
+    if ( buff && buff->up() )
+      return monk_spell_t::ready();
+    return false;
+  }
+
+  void execute() override
+  {
+    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
+    monk_spell_t::execute();
+
+    if ( buff )
+    {
+      if ( p()->bugs )
+        buff->expire();
+      else
+        buff->decrement();
+    }
+
+    damage->execute();
+    heal->execute();
+  }
+};
 
 // ==========================================================================
 // Special Delivery
@@ -4053,7 +4169,7 @@ struct diffuse_magic_t : public monk_spell_t
 // ==========================================================================
 
 // Courage of the White Tiger
-struct courage_of_the_white_tiger_t : attacks::conduit_of_the_celestials_container_t
+struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
 {
   enum cotwt_source_e
   {
@@ -4116,7 +4232,7 @@ struct courage_of_the_white_tiger_t : attacks::conduit_of_the_celestials_contain
     }
   };
 
-  courage_of_the_white_tiger_t( monk_t *player ) : attacks::conduit_of_the_celestials_container_t( player )
+  courage_of_the_white_tiger_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
     base      = new impact_t( player, "courage_of_the_white_tiger", BASE );
     celestial = new impact_t( player, "courage_of_the_white_tiger_celestial", CELESTIAL );
@@ -4268,7 +4384,7 @@ struct flurry_of_xuen_t : public monk_spell_t
 // ==========================================================================
 // Invoke Niuzao, the Black Ox
 // ==========================================================================
-struct strength_of_the_black_ox_t : attacks::conduit_of_the_celestials_container_t
+struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 {
   enum sotbo_source_e
   {
@@ -4327,7 +4443,7 @@ struct strength_of_the_black_ox_t : attacks::conduit_of_the_celestials_container
     }
   };
 
-  strength_of_the_black_ox_t( monk_t *player ) : attacks::conduit_of_the_celestials_container_t( player )
+  strength_of_the_black_ox_t( monk_t *player ) : conduit_of_the_celestials_container_t( player )
   {
     switch ( player->specialization() )
     {
@@ -5095,150 +5211,6 @@ struct expel_harm_t : monk_heal_t
 };
 
 // ==========================================================================
-// Chi Wave
-// ==========================================================================
-struct chi_wave_t : public monk_spell_t
-{
-  template <class TBase>
-  struct bounce_t : TBase
-  {
-    using TBase::execute;
-    std::function<void( unsigned )> other_cb;
-    std::function<void( unsigned )> this_cb;
-    unsigned count;
-
-    bounce_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, fmt::format( "chi_wave_{}", name ), spell_data ), count( 0 )
-    {
-      TBase::dual         = true;
-      TBase::travel_speed = player->talent.monk.chi_wave_driver->missile_speed();
-      this_cb             = [ this ]( unsigned new_count ) { this->execute( new_count ); };
-    }
-
-    void execute( unsigned new_count )
-    {
-      count = new_count;
-      if ( count > TBase::p()->talent.monk.chi_wave_driver->effectN( 1 ).base_value() )
-        return;
-
-      TBase::execute();
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      TBase::impact( state );
-      other_cb( ++count );
-    }
-  };
-
-  bounce_t<monk_heal_t> *heal;
-  bounce_t<monk_spell_t> *damage;
-
-  chi_wave_t( monk_t *player )
-    : monk_spell_t( player, "chi_wave", player->talent.monk.chi_wave_driver ),
-      heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
-      damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
-  {
-    background             = true;
-    may_combo_strike       = false;
-    trigger_jadefire_stomp = true;
-
-    heal->other_cb   = damage->this_cb;
-    damage->other_cb = heal->this_cb;
-
-    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
-
-    add_child( damage );
-    add_child( heal );
-  }
-
-  void execute() override
-  {
-    if ( !p()->buff.chi_wave->up() )
-      return;
-    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
-    p()->buff.chi_wave->expire();
-    monk_spell_t::execute();
-
-    if ( player->target->is_enemy() )
-      damage->execute( 0 );
-    else
-      heal->execute( 0 );
-  }
-};
-
-// ==========================================================================
-// Chi Burst
-// ==========================================================================
-struct chi_burst_t : monk_spell_t
-{
-  template <class TBase>
-  struct hit_t : TBase
-  {
-    hit_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : TBase( player, fmt::format( "chi_burst_{}", name ), spell_data )
-    {
-      TBase::background = TBase::dual = true;
-      TBase::reduced_aoe_targets      = player->talent.monk.chi_burst_projectile->effectN( 1 ).base_value();
-      TBase::aoe                      = -1;
-
-      // TODO: Helper to check if a damaging effect exists on the passed spell
-      for ( const auto &effect : spell_data->effects() )
-        if ( effect.type() == E_SCHOOL_DAMAGE )
-          TBase::ww_mastery = true;
-    }
-  };
-
-  hit_t<monk_spell_t> *damage;
-  hit_t<monk_heal_t> *heal;
-  propagate_const<buff_t *> buff;
-
-  // TODO: Figure out what you have to do to simulate this as a projectile.
-  chi_burst_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "chi_burst",
-                    player->specialization() == MONK_WINDWALKER ? player->talent.monk.chi_burst_projectile
-                                                                : player->talent.monk.chi_burst ),
-      damage( new hit_t<monk_spell_t>( player, "damage", player->talent.monk.chi_burst_damage ) ),
-      heal( new hit_t<monk_heal_t>( player, "heal", player->talent.monk.chi_burst_heal ) ),
-      buff( buff_t::find( player, "chi_burst" ) )
-  {
-    parse_options( options_str );
-    may_combo_strike       = true;
-    trigger_jadefire_stomp = true;
-    gcd_type               = gcd_haste_type::NONE;
-
-    stats = damage->stats;
-    add_child( heal );
-  }
-
-  bool ready() override
-  {
-    if ( p()->specialization() != MONK_WINDWALKER )
-      return monk_spell_t::ready();
-    if ( buff && buff->up() )
-      return monk_spell_t::ready();
-    return false;
-  }
-
-  void execute() override
-  {
-    p()->buff.aspect_of_harmony.trigger_path_of_resurgence();
-    monk_spell_t::execute();
-
-    if ( buff )
-    {
-      if ( p()->bugs )
-        buff->expire();
-      else
-        buff->decrement();
-    }
-
-    damage->execute();
-    heal->execute();
-  }
-};
-
-// ==========================================================================
 // Celestial Fortune
 // ==========================================================================
 // This is a Brewmaster-specific critical strike effect
@@ -5361,21 +5333,44 @@ void brews_t::adjust( timespan_t reduction )
     cooldown->sim.print_debug( "reducing cooldown of brew ({}) by {}", cooldown->name(), reduction );
   }
 }
-
-using namespace pets;
-using namespace pet_summon;
-using namespace attacks;
-using namespace spells;
-using namespace heals;
-using namespace absorbs;
 }  // namespace actions
 
 namespace buffs
 {
-using namespace actions;
 // ==========================================================================
 // Monk Buffs
 // ==========================================================================
+
+monk_buff_t::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
+  : buff_t( player, name, spell_data, item )
+{
+}
+
+monk_buff_t::monk_buff_t( monk_td_t *target_data, std::string_view name, const spell_data_t *spell_data,
+                          const item_t *item )
+  : buff_t( *target_data, name, spell_data, item )
+{
+}
+
+monk_td_t &monk_buff_t::get_td( player_t *t )
+{
+  return *( p().get_target_data( t ) );
+}
+
+const monk_td_t *monk_buff_t::find_td( player_t *t ) const
+{
+  return p().find_target_data( t );
+}
+
+monk_t &monk_buff_t::p()
+{
+  return *debug_cast<monk_t *>( buff_t::source );
+}
+
+const monk_t &monk_buff_t::p() const
+{
+  return *debug_cast<monk_t *>( buff_t::source );
+}
 
 // ==========================================================================
 // Gift of the Ox
@@ -5657,7 +5652,7 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
 // ===============================================================================
 struct rushing_jade_wind_buff_t : public monk_buff_t
 {
-  struct tick_action_t : monk_melee_attack_t
+  struct tick_action_t : actions::monk_melee_attack_t
   {
     tick_action_t( monk_t *p ) : monk_melee_attack_t( p, "rushing_jade_wind_tick", p->passives.rushing_jade_wind_tick )
     {
@@ -5995,16 +5990,16 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
     return;
   }
 
-  damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
-                                                player->talent.master_of_harmony.aspect_of_harmony_damage );
-  heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+  damage = new spender_t::tick_t<actions::monk_spell_t>( player, "aspect_of_harmony_damage",
+                                                         player->talent.master_of_harmony.aspect_of_harmony_damage );
+  heal   = new spender_t::tick_t<actions::monk_heal_t>( player, "aspect_of_harmony_heal",
+                                                        player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
-    purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
+    purified_spirit = new spender_t::purified_spirit_t<actions::monk_spell_t>(
         player, player->talent.master_of_harmony.purified_spirit_damage, this );
   if ( player->specialization() == MONK_MISTWEAVER )
-    purified_spirit = new spender_t::purified_spirit_t<monk_heal_t>(
+    purified_spirit = new spender_t::purified_spirit_t<actions::monk_heal_t>(
         player, player->talent.master_of_harmony.purified_spirit_heal, this );
   damage->add_child( purified_spirit );
 }
@@ -6102,8 +6097,7 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
 }
 
 aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony )
-  : actions::monk_buff_t( player, "aspect_of_harmony_spender",
-                          player->talent.master_of_harmony.aspect_of_harmony_spender ),
+  : monk_buff_t( player, "aspect_of_harmony_spender", player->talent.master_of_harmony.aspect_of_harmony_spender ),
     aspect_of_harmony( aspect_of_harmony ),
     pool( 0.0 )
 {
@@ -6233,7 +6227,6 @@ void init()
 {
 }
 }  // namespace items
-
 }  // end namespace monk
 
 namespace monk
@@ -6501,6 +6494,11 @@ void monk_t::parse_player_effects()
 action_t *monk_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions;
+  using namespace actions::pet_summon;
+  using namespace actions::attacks;
+  using namespace actions::spells;
+  using namespace actions::heals;
+  using namespace actions::absorbs;
   // General
   if ( name == "snapshot_stats" )
     return new monk_snapshot_stats_t( this, options_str );
@@ -7323,8 +7321,8 @@ void monk_t::init_background_actions()
   new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
-  active_actions.chi_wave = new actions::chi_wave_t( this );
-  windwalking_aura        = new actions::windwalking_aura_t( this );
+  active_actions.chi_wave = new actions::spells::chi_wave_t( this );
+  windwalking_aura        = new actions::attacks::windwalking_aura_t( this );
 
   // Conduit of the Celestials
   bool uw  = talent.conduit_of_the_celestials.unity_within->ok();
@@ -7333,7 +7331,7 @@ void monk_t::init_background_actions()
   bool sbt = talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() || uw;
 
   if ( cwt )
-    active_actions.courage_of_the_white_tiger = actions::courage_of_the_white_tiger_t( this );
+    active_actions.courage_of_the_white_tiger = actions::spells::courage_of_the_white_tiger_t( this );
 
   if ( frc )
     active_actions.flight_of_the_red_crane = actions::attacks::flight_of_the_red_crane_t( this );
@@ -7344,45 +7342,43 @@ void monk_t::init_background_actions()
   // Shado-Pan
   if ( talent.shado_pan.flurry_strikes->ok() )
     active_actions.flurry_strikes =
-        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_DEFAULT );
+        new actions::attacks::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_DEFAULT );
 
   if ( sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) )
     tier.tww3.spm_2pc_flurry_strikes =
-        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_TIER );
+        new actions::attacks::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_TIER );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
   {
-    active_actions.special_delivery           = new actions::special_delivery_t( this );
+    active_actions.special_delivery           = new actions::spells::special_delivery_t( this );
     active_actions.breath_of_fire             = new actions::spells::breath_of_fire_dot_t( this );
     active_actions.celestial_fortune          = new actions::heals::celestial_fortune_t( this );
     active_actions.exploding_keg              = new actions::spells::exploding_keg_proc_t( this );
-    active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
+    active_actions.niuzao_call_to_arms_summon = new actions::spells::niuzao_call_to_arms_summon_t( this );
 
     active_actions.chi_surge = new actions::spells::chi_surge_t( this );
   }
 
   // Mistweaver
   if ( specialization() == MONK_MISTWEAVER )
-  {
-    active_actions.lesson_of_anger_damage = new actions::lesson_of_anger_t( this );
-  }
+    active_actions.lesson_of_anger_damage = new actions::spells::lesson_of_anger_t( this );
 
   // Windwalker
   if ( specialization() == MONK_WINDWALKER )
   {
-    active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( this );
-    active_actions.flurry_of_xuen            = new actions::flurry_of_xuen_t( this );
-    active_actions.fury_of_xuen_summon       = new actions::fury_of_xuen_summon_t( this );
+    active_actions.empowered_tiger_lightning = new actions::spells::empowered_tiger_lightning_t( this );
+    active_actions.flurry_of_xuen            = new actions::spells::flurry_of_xuen_t( this );
+    active_actions.fury_of_xuen_summon       = new actions::spells::fury_of_xuen_summon_t( this );
     active_actions.fury_of_xuen_empowered_tiger_lightning =
-        new actions::fury_of_xuen_empowered_tiger_lightning_t( this );
-    active_actions.gale_force = new actions::gale_force_t( this );
+        new actions::spells::fury_of_xuen_empowered_tiger_lightning_t( this );
+    active_actions.gale_force = new actions::spells::gale_force_t( this );
   }
 
   // Passive Action Spells
   passive_actions.combat_wisdom_eh    = new actions::heals::expel_harm_t( this, "" );
-  passive_actions.thunderfist         = new actions::thunderfist_t( this );
-  passive_actions.press_the_advantage = new actions::press_the_advantage_melee_t( this );
+  passive_actions.thunderfist         = new actions::attacks::thunderfist_t( this );
+  passive_actions.press_the_advantage = new actions::attacks::press_the_advantage_melee_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -7513,10 +7509,10 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
   }
 };
 
-struct training_of_niuzao_buff : actions::monk_buff_t
+struct training_of_niuzao_buff : buffs::monk_buff_t
 {
   training_of_niuzao_buff( monk_t *player )
-    : actions::monk_buff_t( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
+    : buffs::monk_buff_t( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
   {
     set_default_value( 0.0 );
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
@@ -7526,7 +7522,7 @@ struct training_of_niuzao_buff : actions::monk_buff_t
                 timespan_t duration = timespan_t::min() ) override
   {
     double v = p().find_stagger( "Stagger" )->level_index() * data().effectN( 1 ).base_value();
-    return actions::monk_buff_t::trigger( 1, v, chance, duration );
+    return buffs::monk_buff_t::trigger( 1, v, chance, duration );
   }
 };
 
@@ -9320,12 +9316,19 @@ struct monk_module_t : public module_t
   {
   }
 
-  player_t *create_player( sim_t *sim, util::string_view name, race_e r ) const override
+  player_t *create_player( sim_t *sim, util::string_view name, race_e race ) const override
   {
-    auto p              = new monk_t( sim, name, r );
-    p->report_extension = std::make_unique<monk_report_t>( *p );
-    return p;
+    monk_t *player;
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      player = nullptr /* new monk_live::monk_t( sim, name, race ) */;
+    else
+      player = new monk_t( sim, name, race );
+
+    player->report_extension = std::make_unique<monk_report_t>( *player );
+    assert( player );
+    return player;
   }
+
   bool valid() const override
   {
     return true;
@@ -9344,11 +9347,6 @@ struct monk_module_t : public module_t
             .operation( hotfix::HOTFIX_SET )
             .modifier( 40 )
             .verification_value( 20 );
-          hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-4p Buff", 1098485)
-            .field( "base_value" )
-            .operation( hotfix::HOTFIX_SET )
-            .modifier( 15 )
-            .verification_value( 10 );
     */
   }
 
@@ -9358,9 +9356,11 @@ struct monk_module_t : public module_t
                                              ->add_invalidate( CACHE_RUN_SPEED )
                                              ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
   }
+
   void combat_begin( sim_t * ) const override
   {
   }
+
   void combat_end( sim_t * ) const override
   {
   }
