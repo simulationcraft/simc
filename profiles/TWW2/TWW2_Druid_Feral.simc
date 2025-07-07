@@ -179,33 +179,32 @@ actions.variable+=/variable,name=regrowth,op=reset
 # optional variable that forgoes shredding in AoE. Turned off by default
 actions.variable+=/variable,name=easy_swipe,op=reset
 
-head=branches_of_reclaiming_blight,id=229307,ilevel=678,gem_id=213743
-neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213491/213491
-shoulders=jaws_of_reclaiming_blight,id=229305,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960,enchant_id=7403,crafted_stats=32/49
-chest=robes_of_reclaiming_blight,id=229310,ilevel=678,enchant_id=7364
-wrists=knots_of_reclaiming_blight,id=229303,ilevel=678,gem_id=213491,enchant_id=7391
-hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/9627/8791/10222/12043/12040/11303/8960,crafted_stats=36/49
-waist=hitmans_holster,id=228880,ilevel=678,gem_id=213491
-legs=moccasins_of_reclaiming_blight,id=229306,ilevel=678,enchant_id=7601
-feet=machinists_treasured_treads,id=168975,ilevel=678,enchant_id=7424
-finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,gem_id=228638/228639/228640,enchant_id=7346
-finger2=the_jastor_diamond,id=231265,ilevel=678,gem_id=213491/213491,enchant_id=7346
-trinket1=house_of_cards,id=230027,ilevel=678
-trinket2=eye_of_kezan,id=230198,bonus_id=1527/11996/11964
-main_hand=bestinslots,id=232526,ilevel=678,enchant_id=7445
+head=branches_of_reclaiming_blight,id=229307,bonus_id=10356/11960/6652/12178/12376/1533/10255/12055,gem_id=213473,enchant_id=7933
+neck=strapped_rescuekeg,id=221060,bonus_id=10390/41/10383/10879/10396/12376/3176/10255,gem_id=213482/213458
+shoulders=jaws_of_reclaiming_blight,id=229305,bonus_id=43/10356/8095/12179/11962/12376/1533/10255
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/9627/12040/11303/8960/8793/12043/12373,enchant_id=7409,crafted_stats=32/36
+chest=robes_of_reclaiming_blight,id=229310,bonus_id=11958/10390/6652/12178/12376/1533/10255,enchant_id=7364
+wrists=hustlers_anteuppers,id=228885,bonus_id=6652/11998/10356/12376/1533/10255/12055,gem_id=213491,enchant_id=7391
+hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/9627/12043/11303/8960/8794/12040/12373,crafted_stats=36/49
+waist=durable_information_securing_container,id=245964,bonus_id=12531/1482,gem_id=213473,titan_disc_id=1236275
+legs=breeches_of_reclaiming_blight,id=229306,bonus_id=11961/10390/6652/12178/12376/1533/10255,enchant_id=7601
+feet=dragsters_last_stride,id=228876,bonus_id=6652/11998/10356/12376/1533/10255,enchant_id=7424
+finger1=the_jastor_diamond,id=231265,bonus_id=6652/10356/12376/1533/10255/10879/10396,gem_id=213458/213458,enchant_id=7346
+finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10394/10879/9627/12040/11941/8790/12043/12373,gem_id=213743/213494,enchant_id=7346,crafted_stats=36/32
+trinket1=improvised_seaforium_pacemaker,id=232541,bonus_id=10390/6652/10383/12376/1520/10255
+trinket2=house_of_cards,id=230027,bonus_id=6652/10356/12376/1533/10255
+main_hand=bestinslots,id=232526,bonus_id=6652/10356/9418/12376/1533/10255,enchant_id=7460
 
 # Gear Summary
-# gear_ilvl=676.27
-# gear_agility=51186
-# gear_stamina=387109
+# gear_ilvl=684.07
+# gear_agility=59931
+# gear_stamina=425466
 # gear_attack_power=469
-# gear_crit_rating=7444
-# gear_haste_rating=12018
-# gear_mastery_rating=15606
-# gear_versatility_rating=934
-# gear_leech_rating=2040
-# gear_avoidance_rating=545
-# gear_armor=33928
+# gear_crit_rating=6743
+# gear_haste_rating=15459
+# gear_mastery_rating=17280
+# gear_versatility_rating=2196
+# gear_leech_rating=4438
+# gear_armor=35609
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

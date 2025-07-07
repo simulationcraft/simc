@@ -1550,6 +1550,18 @@ class SpellDataGenerator(DataGenerator):
          1221347, # Surging Totem hidden buff on player for assisted combat APL
          # 11.2
          1224916, # Void-Touched Fragment stacking buff
+         1238693, # Voidglass Shards
+         1223417, 1223419, # Reshii Wraps: Ethereal Reaping
+         1239674, # Unyielding Netherprism Damage
+         1242875, 1242895, 1242897, 1242881, 1242901, # Screams of a Forgotten Sky
+         1241847, 1241899, 1240916, # Eradicating Arcanocore
+         1239403, # Sigil of the Cosmic Hunt
+         1241809, 1241809, # Cursed Stone Idol
+         1239810, # Naazindhris Mystic Lash
+         1244448, 1244444, # Perfidious Projector
+         1243133, # Incorporeal Warpclap
+         1245643, # Mind-Fracturing Odium 
+         1224916, 1224917, 1224918, # Void-Touched Fragment
         ),
 
         # Warrior:
@@ -1650,6 +1662,12 @@ class SpellDataGenerator(DataGenerator):
             ( 431399 , 0),          # Dawnlight aoe damage
             ( 449198 , 0),          # Highlord's Judgment hidden spell
             ( 431568 , 0),          # Morning Star driver
+            ( 1238903, 0),          # Masterwork (TWW3 Lightsmith 4p)
+            ( 1239091, 0),          # Lesser Weapon (TWW3 Lightsmith 4p)
+            ( 1239002, 0),          # Lesser Bulwark (TWW3 Lightsmith 4p)
+            ( 1239282, 0),          # Lesser Weapon Damage (TWW3 Lightsmith 4p)
+            ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
+            ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
         ),
 
         # Hunter:
@@ -1703,6 +1721,7 @@ class SpellDataGenerator(DataGenerator):
           ( 474293, 2 ), # Moving Target buff
           ( 471947, 0 ), ( 472020, 0 ), # Boar Charge (Pack Leader)
           ( 1225858, 0 ), # Bear Summon (Pack Leader)
+          ( 1232922, 0 ), # Kill Command (for Dire Beasts via Wildspeaker)
         ),
 
         # Rogue:
@@ -1976,6 +1995,7 @@ class SpellDataGenerator(DataGenerator):
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
+          ( 1237388, 0 ), # Trollbane Frostscythe
           # San'layn
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
@@ -2119,6 +2139,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1216988, 0 ),                           # Recently damaged by Blizzard (Freezing Winds talent)
           ( 1223801, 0 ),                           # Arcane Rebound
           ( 1217750, 0 ),                           # Master of Flame hidden buff
+          ( 1236209, 0 ),                           # Frostfire 4pc Glacial Spike
         ),
 
         # Warlock:
@@ -2557,6 +2578,9 @@ class SpellDataGenerator(DataGenerator):
           ( 438653, 0 ), # Mass Eruption Child Damage
           ( 438588, 0 ), # Mass Eruption Buff
           ( 442204, 0 ), # Breath of Eons
+          ( 1236949, 0 ), # TWW3 Set Disintegrate
+          ( 1236970, 0 ), # TWW3 Set Pyre
+          ( 1236943, 0 ), # TWW3 Set Deep Breath on Pet
           # Chronowarden
           ( 431583, 0 ), # Chrono Flame
           ( 431620, 0 ), # Upheaval Dot
@@ -3201,8 +3225,20 @@ class SpellDataGenerator(DataGenerator):
 
             mask_class = 0
             spec_data = set_spell_data.ref('id_spec')
+            tst_data = set_spell_data.ref('id_trait_sub_tree')
+            class_id = 0
             if spec_data.id > 0:
-                mask_class = DataGenerator._class_masks[spec_data.class_id]
+                class_id = spec_data.class_id
+            elif tst_data.id > 0:
+                ttid = tst_data.id_trait_tree
+                class_id = 0
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_id |= ttl.ref('id_spec').class_id
+
+
+            if class_id > 0:
+                mask_class = DataGenerator._class_masks[class_id]
 
             self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 
@@ -4112,6 +4148,11 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931 ],
             'tier'   : 'TWW3'
         },
+        {
+            'name'   : 'shards_of_the_void',
+            'bonuses': [ 1960 ],
+            'tier'   : 'TWW_SOTV'
+        },
     ]
 
     @staticmethod
@@ -4143,12 +4184,12 @@ class SetBonusListGenerator(DataGenerator):
                 'bonus'       : set_spell_data.n_req_items
             }
 
-            class_ = []
+            class_ = set()
 
             if set_spell_data.ref('id_spec').id > 0:
                 spec_ = set_spell_data.ref('id_spec').id
                 spec_data = set_spell_data.ref('id_spec')
-                class_.append(spec_data.class_id)
+                class_.add(spec_data.class_id)
             # No spec id, set spec to "-1" (all specs), and try to use set
             # items to figure out the class (or many classes)
             else:
@@ -4162,7 +4203,20 @@ class SetBonusListGenerator(DataGenerator):
                         continue
 
                     if item_data.class_mask & mask:
-                        class_.append(idx)
+                        class_.add(idx)
+
+            tst = set_spell_data.ref('id_trait_sub_tree')
+            if tst is not None and tst.id > 0:
+                trait_sub_tree_ = tst.id
+            else:
+                trait_sub_tree_ = -1
+
+            if trait_sub_tree_ > 0:
+                ttid = tst.id_trait_tree
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_.add(ttl.ref('id_spec').class_id)
+
 
             if len(class_) == 0:
                 logging.warn('Could not determine class information for required item set "%s" (id=%d)',
@@ -4173,12 +4227,13 @@ class SetBonusListGenerator(DataGenerator):
                 new_entry = dict(base_entry)
                 new_entry['class'] = cls
                 new_entry['spec'] = spec_
+                new_entry['trait_sub_tree'] = trait_sub_tree_
                 data.append(new_entry)
 
         return data
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
+        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id'], v['trait_sub_tree']))
 
         self.output_header(
                 header = 'Set bonus data',
@@ -4187,15 +4242,15 @@ class SetBonusListGenerator(DataGenerator):
                 length = len(data))
 
         _hdr_specifiers = (
-            '{: <43}', '{: <27}', '{: <10}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
+            '{: <43}', '{: <30}', '{: <12}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <9}', '{: <7}', '{}'
         )
 
         _data_specifiers = (
-            '{: <44}', '{: <27}', '{: >10}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+            '{: <44}', '{: <30}', '{: >12}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >9}', '{: >7}', '{}'
         )
 
         _hdr_format = ', '.join(_hdr_specifiers)
-        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'SpellID', 'ItemIDs')
+        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'TraitTree', 'SpellID', 'ItemIDs')
 
         _data_format = ', '.join(_data_specifiers)
 
@@ -4230,6 +4285,7 @@ class SetBonusListGenerator(DataGenerator):
                 entry['bonus'],
                 entry['class'],
                 entry['spec'],
+                entry['trait_sub_tree'],
                 item_set_spell.id_spell,
                 '{ %s }' % (', '.join(items)))))
 
@@ -5134,17 +5190,54 @@ class TraitGenerator(DataGenerator):
             array = 'trait_spell')
 
         # Hero trees
+        ht_per_class = {
+            class_.id: {
+                tst_id
+                for tst_id in sorted(subtrees)
+                if ( ttid := self.db('TraitSubTree')[tst_id].id_trait_tree )
+                for ttl in self.db('TraitTreeLoadout').values()
+                if ttl.id_trait_tree == ttid
+                if ttl.ref('id_spec').class_id == class_.id
+            }
+            for class_ in self.db('ChrClasses').values()
+        }
+        self._out.write('#define MAX_HERO_TREES_PER_CLASS (%u)\n\n' % (max(len(v) for v in ht_per_class.values())))
+
         self.output_header(
             header='Hero trees',
-            type='std::pair<unsigned, std::string>',
+            type='std::tuple<unsigned, std::string, unsigned>',
             array='trait_sub_tree',
             length=len(subtrees)
         )
 
         for e in sorted(subtrees):
-            self.output_record([str(e), '"{}"'.format(self.db('TraitSubTree')[e].name)])
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self.output_record([str(e),
+                                '"{}"'.format(self.db('TraitSubTree')[e].name),
+                                '{}'.format(class_id)])
 
         self.output_footer()
+
+        self._out.write('static constexpr unsigned __{}_data[{}][2] = {{\n'.format(self.format_str('trait_sub_tree_map'), len(subtrees)))
+        for e in sorted(subtrees):
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self._out.write('  {{ {}, {} }},\n'.format(e, class_id))
+
+        self._out.write('};')
 
         """
         print(

@@ -10,8 +10,10 @@
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/trait_data.hpp"
 
 #include "lib/utf8-cpp/utf8.h"
+#include "dbc/generated/trait_data.inc"
 
 #include <cctype>
 #include <limits>
@@ -2821,6 +2823,19 @@ const char* util::specialization_string( specialization_e spec )
   return "Unknown";
 }
 
+// hero_tree_string ====================================================
+std::string util::hero_talent_string( hero_talent_e hero_tree )
+{
+  for ( const auto& entry : __trait_sub_tree_data )
+  {
+    if ( hero_tree == static_cast<hero_talent_e>( std::get<0>( entry ) ) )
+      return std::get<1>( entry );
+  }
+
+  return "unknown";
+}
+
+
 // parse_position_type ======================================================
 
 specialization_e util::parse_specialization_type( util::string_view name )
@@ -2832,6 +2847,15 @@ specialization_e util::parse_specialization_type( util::string_view name )
   }
 
   return SPEC_NONE;
+}
+
+hero_talent_e util::parse_hero_talent_type( util::string_view name )
+{
+  for ( const auto& entry : __trait_sub_tree_data )
+    if ( util::str_compare_ci( tokenize_fn( std::get<1>( entry ) ), name ) )
+      return static_cast<hero_talent_e>( std::get<0>( entry ) );
+
+  return HERO_NONE;
 }
 
 // parse_item_quality =======================================================

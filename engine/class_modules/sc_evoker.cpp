@@ -976,6 +976,7 @@ struct evoker_t : public player_t
     action_t* volatility;
     action_t* volatility_dragonrage;
     action_t* enkindle;
+    action_t* essence_bomb; // FS TWW3 4pc
   } action;
 
   // Buffs
@@ -1034,6 +1035,7 @@ struct evoker_t : public player_t
     // Flameshaper
     propagate_const<buff_t*> burning_adrenaline;
     propagate_const<buff_t*> burning_adrenaline_channel;
+    propagate_const<buff_t*> inner_flame;
     // Scalecommander
     propagate_const<buff_t*> mass_disintegrate_stacks;
     propagate_const<buff_t*> mass_disintegrate_ticks;
@@ -1286,6 +1288,8 @@ struct evoker_t : public player_t
       player_talent_t draconic_instincts;
       player_talent_t consume_flame;
       const spell_data_t* consume_flame_damage;  // 444089      
+      const spell_data_t* inner_flame_buff;  // TWw3_2pc 1236776
+      const spell_data_t* essence_bomb_spell; // TWw3_4pc 1236792
     } flameshaper;
 
     struct scalecommander_t
@@ -2091,6 +2095,11 @@ public:
     {
       parse_effects( p()->buff.volcanic_upsurge, IGNORE_STACKS );
     }
+
+    if ( p()->sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ) )
+    {
+      parse_effects( p()->buff.inner_flame, IGNORE_STACKS );
+    }
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -2219,6 +2228,11 @@ struct essence_base_t : public BASE
 
     if ( BASE::p()->buff.essence_burst->up() )
     {
+      if ( BASE::p()->sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B4 ) && BASE::execute_state )
+      {
+        for ( int i = 0; i < BASE::p()->buff.essence_burst->check(); i++ )
+          BASE::p()->action.essence_bomb->execute_on_target( BASE::execute_state->target );
+      }
       if ( BASE::p()->talent.momentum_shift.ok() )
       {
         BASE::p()->buff.momentum_shift->trigger();
@@ -3906,7 +3920,8 @@ struct fire_breath_t : public empowered_charge_spell_t
       
       apply_affecting_aura( p->talent.flameshaper.fulminous_roar );
 
-      dot_dur_per_emp *= 1 + p->talent.flameshaper.fulminous_roar->effectN( 2 ).percent();
+      if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+        dot_dur_per_emp *= 1 + p->talent.flameshaper.fulminous_roar->effectN( 2 ).percent();
 
       if ( p->talent.chronowarden.afterimage.enabled() )
       {
@@ -4210,7 +4225,8 @@ struct azure_strike_t : public evoker_spell_t
   void execute() override
   {
     evoker_spell_t::execute();
-    double eb_chance = p()->talent.azure_essence_burst->effectN( 1 ).percent();
+    double eb_chance =
+        p()->talent.azure_essence_burst->effectN( 1 ).percent() * ( 1 + p()->buff.inner_flame->check_stack_value() );
 
     // TODO:  Work out how this is rolled.
     if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) &&
@@ -5111,7 +5127,9 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->action.enkindle )
     {
       residual_action::trigger( p()->action.enkindle, d->state->target,
-                                d->state->result_amount * enkindle_mul );
+                                d->state->result_amount * enkindle_mul *
+                                    ( 1 + p()->buff.inner_flame->stack() *
+                                              p()->talent.flameshaper.inner_flame_buff->effectN( 2 ).percent() ) );
     }
 
     if ( p()->talent.causality.ok() && current_dots[ 0 ] == d )
@@ -5541,7 +5559,8 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p()->talent.ruby_essence_burst.ok() )
     {
-      double eb_chance = p()->talent.ruby_essence_burst->effectN( 1 ).percent();
+      double eb_chance =
+          p()->talent.ruby_essence_burst->effectN( 1 ).percent() * ( 1 + p()->buff.inner_flame->check_stack_value() );
 
       for ( int i = 0; i < total_damage_hits; i++ )
       {
@@ -6920,31 +6939,6 @@ struct engulf_t : public evoker_spell_t
         dot_t* source_effect    = consumed_dot( td );
         empower_e empower_level = get_empower_level( source_effect );
 
-        if ( base_t::p()->talent.flameshaper.traveling_flame.ok() )
-        {
-          if ( source_effect && source_effect->is_ticking() )
-          {
-            source_effect->adjust_duration( traveling_flame_extend );
-
-            if ( base_t::p()->sim->active_enemies > 1 )
-            {
-              // TODO: Change to spread to lowest if it fails to spread on anyone? confirm behaviour.
-              for ( auto* t : base_t::p()->sim->target_non_sleeping_list )
-              {
-                dot_t* target_effect = consumed_dot( base_t::p()->get_target_data( t ) );
-                if ( !target_effect || target_effect->is_ticking() )
-                  continue;
-
-                if ( !target_effect->is_ticking() )
-                {
-                  apply_dot( empower_level, t );
-                  break;
-                }
-              }
-            }
-          }
-        }
-
         if ( base_t::p()->talent.flameshaper.consume_flame.ok() && consume_flame )
         {
           if ( source_effect && source_effect->is_ticking() )
@@ -7056,6 +7050,11 @@ struct engulf_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
+    if ( p()->sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ) )
+    {
+      p()->buff.inner_flame->trigger();
+    }
+
     // Single child, update children to parent action on each precombat execute
     damage->execute_on_target( target );
 
@@ -7068,7 +7067,22 @@ struct engulf_t : public evoker_spell_t
     {
       p()->cooldown.fire_breath->adjust( flame_siphon_cdr, false );
     }
+
+    
   }
+};
+
+struct essence_bomb_t : public evoker_spell_t
+{
+  essence_bomb_t( evoker_t* p )
+    : evoker_spell_t( "essence_bomb", p, p->talent.flameshaper.essence_bomb_spell )
+  {
+    background = true;
+
+    aoe = -1;
+    reduced_aoe_targets = 5;
+  }
+
 };
 
 struct bombardments_damage_t : public evoker_external_action_t<spell_t>
@@ -9133,6 +9147,9 @@ void evoker_t::init_spells()
   talent.flameshaper.consume_flame               = HT( "Consume Flame" );
   talent.flameshaper.consume_flame_damage        = find_spell( 444089 );
 
+  talent.flameshaper.inner_flame_buff   = find_spell( 1236776 );
+  talent.flameshaper.essence_bomb_spell = find_spell( 1236792 );
+
   // Scalecommander
   talent.scalecommander.mass_disintegrate               = HT( "Mass Disintegrate" );
   talent.scalecommander.mass_disintegrate_buff          = find_spell( 436336 );
@@ -9351,6 +9368,11 @@ void evoker_t::create_actions()
       vol_dr->proc                 = true;
       action.volatility_dragonrage = vol_dr;
     }
+  }
+
+  if ( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B4 ) )
+  {
+    action.essence_bomb = get_secondary_action<essence_bomb_t>( "essence_bomb" );
   }
 
   player_t::create_actions();
@@ -9613,6 +9635,13 @@ void evoker_t::create_buffs()
   buff.burning_adrenaline_channel = MBF( talent.flameshaper.burning_adrenaline.ok(), this, "burning_adrenaline_channel",
                                          talent.flameshaper.burning_adrenaline_buff )
                                         ->set_quiet( true );
+
+  // Flameshaper
+  buff.inner_flame =
+      MBF( sets->has_set_bonus( HERO_FLAMESHAPER, TWW3, B2 ), this, "inner_flame", talent.flameshaper.inner_flame_buff )
+          ->set_default_value_from_effect( 2, 0.01 )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
   // Scalecommander
   buff.mass_disintegrate_stacks = MBF( talent.scalecommander.mass_disintegrate.ok(), this, "mass_disintegrate_stacks",
                                        talent.scalecommander.mass_disintegrate_buff );

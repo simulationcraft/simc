@@ -234,7 +234,7 @@ back=consecrated_cloak,id=222817,bonus_id=3524/10520/8960,ilevel=675,crafted_sta
 chest=ageless_serpents_inked_coils,id=229301,bonus_id=1563,ilevel=678,enchant=crystalline_radiance_3
 wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=675,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=36/49
 hands=ageless_serpents_handguards,id=229299,bonus_id=1563,ilevel=678
-waist=durable_information_securing_container,id=245964,bonus_id=12533/1489,gem_id=213482,titan_disc_id=1236109
+waist=durable_information_securing_container,id=245964,bonus_id=12533/1489,gem_id=213482,titan_disc_id=1236272
 legs=flameseared_leggings,id=168968,bonus_id=4786/10067/11996,enchant=stormbound_armor_kit_3
 feet=backbreaking_bootstrappers,id=221071,bonus_id=4786/3170/11996,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=4822/4786/1501/11982/8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3

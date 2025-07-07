@@ -39,6 +39,13 @@ enum armament : unsigned int
   NUM_ARMAMENT  = 2,
 };
 
+enum armament_source : unsigned int
+{
+  LS_HARDCAST           = 0,
+  LS_WINGS              = 1,
+  LS_DIVINE_INSPIRATION = 2,
+};
+
 enum consecration_source : unsigned int
 {
   HARDCAST         = 0,
@@ -86,6 +93,8 @@ struct paladin_td_t : public actor_target_data_t
   {
     buff_t* holy_bulwark;
     buff_t* sacred_weapon;
+    buff_t* lesser_weapon;
+    buff_t* lesser_bulwark;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -150,6 +159,8 @@ public:
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
+    action_t* lesser_weapon_proc_damage;
+    action_t* lesser_weapon_proc_heal;
     action_t* refining_fire;
     action_t* eye_for_an_eye;
 
@@ -247,6 +258,9 @@ public:
       buff_t* rite_of_adjuration;
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
       buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
+      buff_t* masterwork;
+      buff_t* lesser_weapon[5];
+      buff_t* lesser_bulwark;
     } lightsmith;
 
     struct
@@ -368,6 +382,8 @@ public:
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
+
+    cooldown_t* tww3_lightsmith_2p_icd; // ICD For 11.2 Lightsmith Tier Set 2 Piece
   } cooldowns;
 
   // Passives
@@ -411,12 +427,12 @@ public:
 
     proc_t* as_grand_crusader;
     proc_t* as_grand_crusader_wasted;
-    proc_t* as_engraved_sigil;
-    proc_t* as_engraved_sigil_wasted;
     proc_t* as_moment_of_glory;
     proc_t* as_moment_of_glory_wasted;
 
     proc_t* divine_inspiration;
+
+    proc_t* templar_tww3_eh_ld;
   } procs;
 
   // Spells
@@ -448,6 +464,8 @@ public:
       const spell_data_t* holy_bulwark_absorb;
       const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge (Shield of the Righteous)
       const spell_data_t* sacred_word;      // Spell triggered by Blessing of the Forge (Word of Glory)
+      const spell_data_t* lesser_bulwark; // TWW3 Absorb
+      const spell_data_t* lesser_weapon; // TWW3 Damage
     } lightsmith;
 
     struct
@@ -860,7 +878,7 @@ public:
   void trigger_holy_shield( action_state_t* s );
   void trigger_laying_down_arms();
   void trigger_empyrean_hammer( player_t* target, int number_to_trigger, timespan_t delay, bool random_after_first = false );
-  void trigger_lights_deliverance(bool triggered_by_hol = false);
+  void trigger_lights_deliverance();
   void tww1_4p_prot();
   void heartfire( action_state_t* s );
   void t29_4p_prot();
@@ -872,7 +890,7 @@ public:
   bool standing_in_consecration() const;
   bool standing_in_hallow() const;
   void adjust_health_percent();
-  void cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random );
+  void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
   void trigger_greater_judgment( paladin_td_t* targetdata, int num_stacks );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
@@ -933,7 +951,8 @@ public:
   {
     return !( talents.crusading_strikes->ok() );
   }
-  dbc_proc_callback_t* create_sacred_weapon_callback(paladin_t* source, player_t* target);
+  dbc_proc_callback_t* create_sacred_weapon_callback( paladin_t* source, player_t* target );
+  dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target, int index );
 };
 
 namespace buffs
@@ -1081,6 +1100,18 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
     }
     total_value = std::min( total_value, this->player->resources.max[ RESOURCE_HEALTH ] * caster->spells.lightsmith.holy_bulwark->effectN( 5 ).percent());
     return absorb_buff_t::trigger( stacks, total_value, chance, duration );
+  }
+};
+
+struct lesser_bulwark_buff_t : public absorb_buff_t
+{
+  paladin_t* caster;
+  lesser_bulwark_buff_t(paladin_td_t* td)
+    : absorb_buff_t(td->target, "lesser_bulwark_ally_" + td->source->name_str + "_" + td->target->name_str,
+      debug_cast<paladin_t*>(td->source)->spells.lightsmith.lesser_bulwark)
+  {
+    caster = debug_cast<paladin_t*>( td->source );
+    set_absorb_source( caster->get_stats( "lesser_bulwark_absorb_" + td->target->name_str ) );
   }
 };
 

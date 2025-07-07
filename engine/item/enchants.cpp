@@ -385,6 +385,11 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
     return initialize_relic( item, gem_idx, gem_prop );
   }
 
+  // Reshii Wraps fibers just apply a bonus id to the gear, which we already parse elsewhere.
+  // Prevent stat parsing here to prevent double dipping.
+  if ( gem_prop.color & SOCKET_COLOR_RESHII_FIBER )
+    return SOCKET_COLOR_NONE;
+
   const item_enchantment_data_t& data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
 
   enchant::initialize_item_enchant(

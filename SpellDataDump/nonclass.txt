@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61559 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -214558,7 +214558,7 @@ Stacks           : 60 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), No Aura Icon (60), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1073106)  : Unknown(293)
+#1 (id=1073106)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2170 | Target: Self (1)
 Description      : $@spelldesc408667
 
@@ -250564,9 +250564,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172033)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3990.777 (coefficient=1.560262) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0 -> 1.560262)
 #2 (id=1172251)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7691.975 (coefficient=2.008889) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0 -> 2.008889)
 #3 (id=1172345)  : Dummy (3)
                    Base Value: 10779 | Scaled Value: 10779 | PvP Coefficient: 0.25 | Target: Self (1)
 #4 (id=1172536)  : Dummy (3)
@@ -261448,15 +261450,15 @@ Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1231808)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolts
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236110 | Target: Self (1)
+#1 (id=1231808)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Trigger Spell (1236110 -> 0)
 Description      : $@spelldesc1236108
 
 Name             : Charged Bolts (id=1236110) 
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Triggered By     : Charged Bolts (1236109)
 Attributes       : Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231809)  : Apply Aura (6) | Periodic Trigger Spell (23): Lightning Strike every 3 seconds
@@ -261498,7 +261500,6 @@ Attributes       : Aura Points On Client (268), Scales with Casting Item's Level
 Effects          :
 #1 (id=1231818)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 2 (33 -> 30)
 #2 (id=1233319)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236137
 Description      : $@spelldesc1236115
@@ -261598,15 +261599,18 @@ Triggered By     : Lightning Strike (1236111), Cauterizing Bolt (1236116), Criti
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231848)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 61705.98 (coefficient=24.125) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23448.27 (coefficient=9.167499) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (24.124998 -> 9.167499)
 #2 (id=1232811)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 50528.88 (coefficient=19.75512) | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1232881)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1048.931 (coefficient=0.273946) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1311.166 (coefficient=0.342433) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.273946 -> 0.342433)
 #4 (id=1232883)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5828.163 (coefficient=1.522123) | PvP Coefficient: 0.25 | Target: Self (1)
 #5 (id=1232886)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 384.2026 (coefficient=0.100341) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 573.2542 (coefficient=0.149715) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (0.100341 -> 0.149715)
 #6 (id=1232887)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1232950)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
@@ -261622,7 +261626,8 @@ Effects          :
 #12 (id=1232962) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
 #13 (id=1232963) : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 178212.4 (coefficient=69.67516) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 135441.4 (coefficient=52.95312) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (69.675156 -> 52.953117)
 
 Name             : Durable Information Securing Container (id=1236138) [Passive] 
 School           : Physical

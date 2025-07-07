@@ -195,11 +195,13 @@ const trait_data_t* trait_data_t::find_by_trait_definition( unsigned trait_defin
 const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, bool ptr )
 {
   auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
-  auto _it = range::find( _data, id_sub_tree, &std::pair<unsigned, std::string>::first );
+  auto _it = range::find_if( _data, [ id_sub_tree ]( const std::tuple<unsigned, std::string, unsigned>& entry ){
+    return id_sub_tree == std::get<0>( entry );
+  });
 
   if ( _it != _data.end() )
   {
-    return _it->second;
+    return std::get<1>(*_it);
   }
 
   return {};
@@ -208,13 +210,13 @@ const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, b
 unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
 {
   auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
-  auto _it = range::find_if( _data, [ name ]( const std::pair<unsigned, std::string>& entry ) {
-    return util::str_compare_ci( name, util::tokenize_fn( entry.second ) );
+  auto _it = range::find_if( _data, [ name ]( const std::tuple<unsigned, std::string, unsigned>& entry ) {
+    return util::str_compare_ci( name, util::tokenize_fn( std::get<1>( entry ) ) );
   } );
 
   if ( _it != _data.end() )
   {
-    return _it->first;
+    return std::get<0>(*_it);
   }
 
   return 0;

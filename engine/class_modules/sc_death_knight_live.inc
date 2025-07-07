@@ -11239,9 +11239,14 @@ void runeforge::fallen_crusader( special_effect_t& effect )
     return;
   }
 
-  effect.custom_buff = make_buff( effect.player, "unholy_strength", effect.player->find_spell( 53365 ) )
-                           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+  double buff_val = effect.player->find_spell( 53365 )->effectN( 1 ).percent();
+  buff_t* buff = buff_t::find( effect.player, "unholy_strength", effect.player );
+  if ( !buff )
+    buff = make_buff( effect.player, "unholy_strength", effect.player->find_spell( 53365 ) )
+                             ->set_default_value( buff_val )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+
+  effect.custom_buff = buff;
 
   effect.execute_action =
       get_action<fallen_crusader_heal_t>( "unholy_strength", effect.player, effect.driver()->effectN( 1 ).trigger() );

@@ -765,6 +765,9 @@ struct shadow_word_pain_t final : public priest_spell_t
         // its either -0.9 or -0.909. Not too sure right now. Leaning on -0.9
         auto chance = 2.0 / 9.0 * std::pow( priest().get_active_dots( d ), -0.9 );
 
+        if ( d->state->result == RESULT_CRIT )
+          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
+
         if ( priest().talents.shadow.tormented_spirits.enabled() && rng().roll( chance ) )
         {
           priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, false );
@@ -1178,7 +1181,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.surge_of_insanity->trigger();
     }
 
-    if ( priest().tww3_spells.archon_4pc->ok() && priest().buffs.power_surge->check() )
+    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) && priest().buffs.power_surge->check() )
     {
       priest().buffs.tww3_archon_4pc->trigger();
     }

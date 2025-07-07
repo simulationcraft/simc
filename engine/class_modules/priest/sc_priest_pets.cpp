@@ -825,15 +825,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
     triggers_atonement         = true;
 
-    // This is hard coded in the spell
-    // spcoeff * $?a137032[${0.326139}][${0.442}]
-    // spell_power_mod.direct *= p.direct_power_mod;
-
-    // Negative modifier used for point scaling
-    // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
-
-    // Tuning modifier effect
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -845,9 +837,9 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     return m;
   }
 
-  void trigger( player_t* target, double mod_ )
+  void trigger( player_t* target, double deaths_torment_mod )
   {
-    mod = mod_;
+    mod = deaths_torment_mod;
 
     set_target( target );
     execute();
@@ -882,19 +874,19 @@ struct inescapable_torment_t final : public priest_pet_spell_t
     base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
-  void trigger( player_t* target, bool echo, double mod )
+  void trigger( player_t* target, bool deaths_torment_echo, double deaths_torment_mod )
   {
     duration = data().effectN( 2 ).time_value();
 
-    if ( echo )
+    if ( deaths_torment_echo )
     {
-      duration *= mod;
+      duration *= deaths_torment_mod;
     }
 
     set_target( target );
     execute();
 
-    damage->trigger( target, mod );
+    damage->trigger( target, deaths_torment_mod );
   }
 
   void execute() override
@@ -988,7 +980,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
-    
+
     apply_affecting_aura( p.o().talents.shadow.subservient_shadows );
   }
 
@@ -1334,16 +1326,16 @@ void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
   // Void Tendril: 377355
   // Void Lasher: 377355
   auto idol_of_cthun  = p.find_spell( 377355 );
-  auto cthun_duration = idol_of_cthun->duration() + timespan_t::from_millis( 1 ) +
-                        p.talents.shadow.subservient_shadows->effectN( 2 ).time_value();
+  auto cthun_duration = ( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) ) *
+                        ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() );
 
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( cthun_duration );
   void_lasher.set_default_duration( cthun_duration );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
-  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() +
-                                          p.talents.shadow.subservient_shadows->effectN( 2 ).time_value() );
+  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() *
+                                          ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) );
 }
 
 }  // namespace priestspace
