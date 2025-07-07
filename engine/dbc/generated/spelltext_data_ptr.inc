@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.61787
-static const std::array<spelltext_data_t, 28038> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 28039> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27794,6 +27794,7 @@ static const std::array<spelltext_data_t, 28038> __ptr_spelltext_data { {
   { 1236949, "Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.", "Suffering $w1 Spellfrost damage every $t1 sec.", "Blue" },
   { 1236961, "$@spelldesc1236129", 0, 0 },
   { 1236970, "$@spelldesc357211", 0, "Red" },
+  { 1236972, "$@spelldesc1236383", "Sun's Avatar remains active$?a1236384[ and the damage and healing of your Holy Power spenders is increased by $w1%][].", 0 },
   { 1236974, "$@spelldesc1236132", 0, 0 },
   { 1236975, "$@spelldesc1236371", "Your next Withering Fire will fire $s1 additional Black Arrow in its Black Arrow barrages.", 0 },
   { 1236983, "$@spelldesc1236132", 0, 0 },
