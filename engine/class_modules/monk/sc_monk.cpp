@@ -41,11 +41,6 @@ BREWMASTER:
 
 #include "simulationcraft.hpp"
 
-namespace monk_live
-{
-// #include "sc_monk.inc"
-}
-
 // ==========================================================================
 // Monk
 // ==========================================================================
@@ -494,19 +489,13 @@ void monk_action_t<Base>::consume_resource()
     {
       if ( p()->talent.shado_pan.flurry_strikes.ok() )
       {
-        // Tiger Palm, Keg Smash, and Crackling Jade Lightning contribute their current cost to the accumulator
-        if ( base_t::id == p()->baseline.monk.tiger_palm->id() ||
-             base_t::id == p()->talent.brewmaster.keg_smash->id() ||
-             base_t::id == p()->baseline.monk.crackling_jade_lightning->id() )
-          // this needs to be rounded to the nearest whole number
-          p()->flurry_strikes_energy += std::lround( final_cost );
+        p()->flurry_strikes_energy += std::lround( final_cost );
 
         int flurry_strikes_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
         if ( p()->tier.tww3.spm_4pc->ok() &&
              ( p()->buff.weapons_of_order->up() || p()->buff.storm_earth_and_fire->up() ) )
           flurry_strikes_threshold = p()->tier.tww3.spm_4pc->effectN( 2 ).base_value();
 
-        // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
         if ( p()->flurry_strikes_energy >= flurry_strikes_threshold )
         {
           p()->flurry_strikes_energy -= flurry_strikes_threshold;
@@ -9220,6 +9209,9 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
+  if ( splits[ 0 ] == "shado_pan_energy_accumulator" )
+    return make_ref_expr( "shado_pan_energy_accumulator", flurry_strikes_energy );
+
   return base_t::create_expression( name_str );
 }
 
@@ -9318,14 +9310,8 @@ struct monk_module_t : public module_t
 
   player_t *create_player( sim_t *sim, util::string_view name, race_e race ) const override
   {
-    monk_t *player;
-    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
-      player = nullptr /* new monk_live::monk_t( sim, name, race ) */;
-    else
-      player = new monk_t( sim, name, race );
-
+    monk_t *player           = new monk_t( sim, name, race );
     player->report_extension = std::make_unique<monk_report_t>( *player );
-    assert( player );
     return player;
   }
 
