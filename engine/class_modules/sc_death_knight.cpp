@@ -3838,6 +3838,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon->slot      = SLOT_MAIN_HAND;
       base_execute_time = p->main_hand_weapon.swing_time;
     }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = auto_attack_melee_t<dancing_rune_weapon_pet_t>::composite_da_multiplier( state );
+
+      if ( pet()->blood_rush->check() )
+        m *= 1.0 + pet()->blood_rush->check_value();
+
+      return m;
+    }
   };
 
   action_t* drw_auto_attack;
@@ -5935,6 +5945,8 @@ struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
   {
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
     set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 1 ).base_value() / 10 );
+    if ( p->specialization() == DEATH_KNIGHT_BLOOD )
+      set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 3 ).base_value() / 10 );
   }
 
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
@@ -12793,7 +12805,13 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     mod                  = modified_spell.infliction_of_sorrow->effectN( 2 ).percent();
 
     if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ) && t == target )
-      extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
+    {
+      if ( specialization() == DEATH_KNIGHT_UNHOLY )
+        extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
+      else if ( specialization() == DEATH_KNIGHT_BLOOD )
+        extension += spell.tww3_2pc_san->effectN( 4 ).time_value();
+    }
+
     if ( disease_td->is_ticking() )
     {
       disease_td->adjust_duration( extension );
@@ -12868,6 +12886,14 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
     {
       if ( specialization() == DEATH_KNIGHT_UNHOLY && pets.ghoul_pet.active_pet() != nullptr )
         pets.ghoul_pet.active_pet()->blood_rush->trigger();
+
+      else if ( specialization() == DEATH_KNIGHT_BLOOD )
+      {
+        if ( pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+          pets.dancing_rune_weapon_pet.active_pet()->blood_rush->trigger();
+        if ( pets.everlasting_bond_pet.active_pet() != nullptr )
+          pets.everlasting_bond_pet.active_pet()->blood_rush->trigger();
+      }
     }
   }
 }
