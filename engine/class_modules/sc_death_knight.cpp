@@ -6888,7 +6888,7 @@ struct exterminate_t final : public death_knight_spell_t
       debug_cast<exterminate_aoe_t*>( second_hit )->empowered = true;
     }
 
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && rng().roll( p()->talent.deathbringer.exterminate->effectN( 6 ).percent() ) )
       p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.deathbringer.exterminate->effectN( 7 ).time_value() );
 
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
@@ -16237,6 +16237,12 @@ void death_knight_t::parse_player_effects()
     return v;
   } );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
+
+  // Deathbringer
+  if ( specialization() == DEATH_KNIGHT_FROST )
+    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 1 ) );
+  else if ( specialization() == DEATH_KNIGHT_BLOOD )
+    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 2 ) );
 }
 
 void death_knight_t::apply_affecting_auras( buff_t& buff )
