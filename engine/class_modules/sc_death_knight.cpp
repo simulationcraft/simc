@@ -727,6 +727,7 @@ public:
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
     buff_t* bone_shield;
+    propagate_const<buff_t*> bonestorm;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
@@ -893,6 +894,7 @@ public:
     action_t* the_blood_is_life;
 
     // Blood
+    propagate_const<action_t*> bonestorm_tick;
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
     action_t* heart_strike_bloodied_blade;
@@ -1363,6 +1365,8 @@ public:
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
     const spell_data_t* bone_shield;
+    const spell_data_t* bonestorm;
+    const spell_data_t* bonestorm_damage;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* ossified_vitriol_buff;
@@ -6883,9 +6887,11 @@ struct exterminate_t final : public death_knight_spell_t
       empowered = false;
       debug_cast<exterminate_aoe_t*>( second_hit )->empowered = true;
     }
+
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
+      p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.deathbringer.exterminate->effectN( 7 ).time_value() );
+
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
-
-
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7716,10 +7722,10 @@ struct bonestorm_heal_t : public death_knight_heal_t
   }
 };
 
-struct bonestorm_damage_t final : public death_knight_melee_attack_t
+struct bonestorm_tick_t final : public death_knight_melee_attack_t
 {
-  bonestorm_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_melee_attack_t( name, p, p->talent.blood.bonestorm->effectN( 3 ).trigger() ),
+  bonestorm_tick_t( std::string_view name, death_knight_t* p )
+    : death_knight_melee_attack_t( name, p, p->spell.bonestorm_damage ),
       heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ),
       heal_count( 0 ),
       max_heals( p->talent.blood.bonestorm->effectN( 4 ).base_value() )
@@ -7734,6 +7740,16 @@ struct bonestorm_damage_t final : public death_knight_melee_attack_t
   {
     heal_count = 0;
     death_knight_melee_attack_t::execute();
+
+    p()->buffs.bone_shield->trigger();
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+      p()->buffs.piledriver_tww1_4pc->trigger();
+
+    if ( p()->talent.icy_talons.ok() )
+    {
+      p()->buffs.icy_talons->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7742,7 +7758,7 @@ struct bonestorm_damage_t final : public death_knight_melee_attack_t
 
     if ( result_is_hit( state->result ) )
     {
-      // Healing is limited at 5 occurnces per tick, regardless of enemies hit
+      // Healing is limited at 5 occurances per tick, regardless of enemies hit
       if ( heal_count < max_heals )
       {
         heal->execute();
@@ -7764,12 +7780,15 @@ struct bonestorm_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     hasted_ticks = false;
-    tick_action  = get_action<bonestorm_damage_t>( "bonestorm_damage", p );
     max_charges  = data().effectN( 4 ).base_value();
+
+    add_child( p->background_actions.bonestorm_tick );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const override
+  void execute() override
   {
+    death_knight_spell_t::execute();
+
     int charges = std::min( p()->buffs.bone_shield->check(), as<int>( max_charges ) );
     p()->buffs.bone_shield->decrement( charges );
 
@@ -7779,33 +7798,17 @@ struct bonestorm_t final : public death_knight_spell_t
         p()->buffs.ossified_vitriol->trigger( charges );
 
       if ( p()->talent.blood.insatiable_blade->ok() )
-        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                                   charges );
+        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
 
       if ( p()->talent.blood.shattering_bone.ok() )
       {
         // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
-        debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed =
-            charges;
+        debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed = charges;
         p()->background_actions.shattering_bone->execute_on_target( target );
       }
-    }
 
-    p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
-    return p()->talent.blood.bonestorm->duration() * charges;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    death_knight_spell_t::tick( d );
-    p()->buffs.bone_shield->trigger();
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
-      p()->buffs.piledriver_tww1_4pc->trigger();
-
-    if ( p()->talent.icy_talons.ok() )
-    {
-      p()->buffs.icy_talons->trigger();
+      p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
+      p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.blood.bonestorm->duration() * charges );
     }
   }
 
@@ -13127,6 +13130,10 @@ void death_knight_t::create_actions()
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
+    if ( talent.blood.bonestorm.ok() || talent.deathbringer.exterminate.ok() )
+    {
+      background_actions.bonestorm_tick = get_action<bonestorm_tick_t>( "bonestorm_damage", this );
+    }
   }
 
   // Unholy
@@ -14109,6 +14116,9 @@ void death_knight_t::spell_lookups()
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.bonestorm                   = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 194844 );
+  spell.bonestorm_damage            = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 196528 );
+  spell.bonestorm_heal              = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 196545 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.ossified_vitriol_buff       = conditional_spell_lookup( talent.blood.ossified_vitriol.ok(), 458745 );
@@ -14119,7 +14129,6 @@ void death_knight_t::spell_lookups()
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
   spell.voracious_buff           = conditional_spell_lookup( talent.blood.voracious.ok(), 274009 );
-  spell.bonestorm_heal           = conditional_spell_lookup( talent.blood.bonestorm.ok(), 196545 );
   spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
@@ -14921,6 +14930,12 @@ void death_knight_t::create_buffs()
                                           : 0 ) );  // TODO: Remove this if they fix reinforced bones effect2 to be
                                                     // APPLY_AURA instead of E_APPLY_AREA_AURA_PARTY
 
+    buffs.bonestorm = make_buff( this, "bonestorm", spell.bonestorm )
+          ->set_cooldown( 0_ms )  // Handled by the action
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_tick_callback(
+              [ this ]( buff_t*, int, timespan_t ) { background_actions.bonestorm_tick->execute(); } );
+
     buffs.bloodied_blade_stacks =
         make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
             ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).percent() * 0.1 )
@@ -14951,7 +14966,7 @@ void death_knight_t::create_buffs()
                                     ->set_duration( 0_ms )
                                     ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
                                     ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                      if ( talent.sanlayn.the_blood_is_life.ok() )
+                                      if ( talent.sanlayn.the_blood_is_life.ok() && pets.blood_beast.active_pet() != nullptr )
                                         pets.blood_beast.active_pet()->demise();
                                     } );
 
