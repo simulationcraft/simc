@@ -2522,6 +2522,10 @@ struct death_knight_pet_t : public pet_t
 
     m *= 1.0 + grave_mastery->check_value();
 
+    if ( dk()->mastery.dreadblade->ok() )
+      m *= 1.0 + dk()->mastery.dreadblade->effectN( 6 ).percent() +
+           ( dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * dk()->composite_mastery() / 100 );
+
     return m;
   }
 
@@ -3141,16 +3145,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     dt_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
     {
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = auto_attack_melee_t<ghoul_pet_t>::composite_da_multiplier( state );
-
-      if ( pet()->blood_rush->check() )
-        m *= 1.0 + pet()->blood_rush->check_value();
-
-      return m;
-    }
   };
 
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
@@ -3181,6 +3175,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
       if ( ghoulish_frenzy->check() )
         m *= 1.0 + ghoulish_frenzy->check_value();
+
+      if ( blood_rush->check() )
+        m *= 1.0 + blood_rush->check_value();
     }
 
     return m;
@@ -4938,8 +4935,13 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   bool hasted_gcd;
   double rp_per_tick;
 
+  struct
+  {
+    bool mastery_dreadblade_crit_bonus;
+  } affected_by;
+
   death_knight_action_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 ), affected_by{ false }
   {
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
@@ -5001,6 +5003,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         this->not_a_proc = true;
       }
     }
+
+    affected_by.mastery_dreadblade_crit_bonus = p->mastery.dreadblade->ok() && this->data().affected_by( p->mastery.dreadblade->effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -5048,6 +5052,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
 
     return amount;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    auto cd = action_base_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->mastery.dreadblade->ok() && affected_by.mastery_dreadblade_crit_bonus )
+      cd *= 1.0 + p()->mastery.dreadblade->effectN( 5 ).percent() +
+            ( p()->mastery.dreadblade->effectN( 5 ).sp_coeff() * p()->composite_mastery() / 100 );
+
+    return cd;
   }
 
   void init() override
@@ -9281,11 +9296,13 @@ struct frostscythe_t : public frostscythe_base_t
   {
     double m = frostscythe_base_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() &&
          p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
@@ -9375,7 +9392,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     if ( sb )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
-      // 11.2 TODO check if this multi is right
       m *= 1.0 + ri->default_value * ri->max_stack(); 
     }
 
@@ -9700,7 +9716,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     }
 
     // 11.2 TODO find actual proc chance
-    if ( p()->rng().roll( .15 * razorice->check() ) )
+    if ( p()->rng().roll( .05 * razorice->check() ) )
       p()->buffs.frostbane->trigger();
   }
 
@@ -10477,10 +10493,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement 
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() && p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
@@ -12327,10 +12345,8 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     return;
   }
 
-  proc->occur();
-
   // Killing Machine is consumed shortly after casting Obliterate.
-  make_event( sim, total_delay, [ this, aa_action ] {
+  make_event( sim, total_delay, [ this, aa_action, proc ] {
     const int decrement_count = talent.frost.killing_streak.ok() ? buffs.killing_machine->check() : 1;
     buffs.killing_machine->decrement( decrement_count );
 
@@ -12343,24 +12359,25 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
       buffs.breath_of_sindragosa->extend_duration(this, base_extension * decrement_count);
     }
 
+    if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
+    {
+      buffs.bonegrinder_crit->trigger( decrement_count );
+      if ( buffs.bonegrinder_crit->at_max_stacks() )
+      {
+        buffs.bonegrinder_frost->trigger();
+        buffs.bonegrinder_crit->expire();
+      }
+    }
+
+    if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
+    {
+      replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
+                      gains.murderous_efficiency );
+    }
+
     for ( int i = decrement_count; i > 0; --i )
     {
-      if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
-      {
-        buffs.bonegrinder_crit->trigger();
-        if ( buffs.bonegrinder_crit->at_max_stacks() )
-        {
-          buffs.bonegrinder_frost->trigger();
-          buffs.bonegrinder_crit->expire();
-        }
-      }
-
-      if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
-      {
-        replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
-                        gains.murderous_efficiency );
-      }
-
+      proc->occur();
       if ( talent.frost.arctic_assault.ok() )
       {
         // Arctic Assault fires on a delay after consuming Killing Machine.
@@ -16078,13 +16095,20 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.icy_onslaught );
   parse_effects( p()->buffs.remorseless_winter, p()->talent.cleaving_strikes );
   parse_effects( p()->buffs.frozen_dominion_remorseless_winter, p()->talent.cleaving_strikes );
-  parse_effects( p()->buffs.empower_rune_weapon, p()->talent.frost.obliteration->effectN( 1 ).trigger() );
+  parse_effects( p()->buffs.empower_rune_weapon, [ & ]( double v )
+  {
+    if ( !p()->buffs.pillar_of_frost->check() )
+      v = 0;
+    return v;
+  }, p()->talent.frost.obliteration->effectN( 1 ).trigger() );
 
   // Unholy
   parse_effects( p()->buffs.unholy_assault );
   parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
-  parse_effects( p()->mastery.dreadblade );
+  parse_effects( p()->buffs.commander_of_the_dead, p()->talent.unholy.commander_of_the_dead );
+  // Dont parse effect 5 and 6 due to the way this effect works. Manually handled where necessaray.
+  parse_effects( p()->mastery.dreadblade, effect_mask_t( true ).disable( 5, 6 ) );
   parse_effects( p()->buffs.winning_streak_unholy, [ & ]( double v ) {
     v *= 0.1;  // Divides by 10 in spell data
     if ( p()->buffs.dark_transformation->check() )
@@ -16123,6 +16147,8 @@ void death_knight_action_t<Base>::apply_action_effects()
       [ & ]( double v ) {
         if ( p()->spec.blood_death_knight->ok() )
           v += p()->spec.blood_death_knight->effectN( 19 ).percent();
+        if ( p()->spec.unholy_death_knight->ok() )
+          v += p()->spec.unholy_death_knight->effectN( 21 ).percent();
         if ( p()->buffs.gift_of_the_sanlayn->check() )
           v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
         return v;
@@ -16157,6 +16183,8 @@ void death_knight_action_t<Base>::apply_target_effects()
   // Unholy
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), p()->spell.unholy_aura_debuff,
+                        p()->talent.unholy.unholy_aura );
 
   // Rider of the Apocalypse
   if( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) )

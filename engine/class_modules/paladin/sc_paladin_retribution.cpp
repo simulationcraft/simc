@@ -1643,7 +1643,17 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
   buffs.crusade->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-    buffs.herald_of_the_sun.suns_avatar->expire();
+    
+    if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
+    {
+      // 5s with Radiant Glory, 20s without
+      buffs.herald_of_the_sun.solar_wrath->trigger(
+          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+                                        : -sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 4 ).time_value() ) );
+    }
+    else
+      buffs.herald_of_the_sun.suns_avatar->expire();
   } );
 
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )

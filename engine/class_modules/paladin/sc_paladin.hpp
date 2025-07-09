@@ -285,6 +285,7 @@ public:
       buff_t* solar_grace;
       buff_t* morning_star_driver;
       buff_t* suns_avatar;
+      buff_t* solar_wrath;
     } herald_of_the_sun;
 
     buff_t* rise_from_ash; // Ret TWW1 4p
@@ -480,6 +481,7 @@ public:
     {
       const spell_data_t* gleaming_rays;
       const spell_data_t* dawnlight_aoe_metadata;
+      const spell_data_t* solar_wrath;  // Herald TWW3 4p
     } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;
@@ -1212,7 +1214,7 @@ public:
       all_in; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath, luck_of_the_draw;  // Prot
-    bool gleaming_rays; // Herald of the Sun
+    bool gleaming_rays, solar_wrath; // Herald of the Sun
   } affected_by;
 
   // haste scaling bools
@@ -1260,6 +1262,8 @@ public:
 
       this->affected_by.winning_streak = this->data().affected_by( p->spells.winning_streak->effectN( 1 ) );
       this->affected_by.all_in = this->data().affected_by( p->spells.all_in->effectN( 1 ) );
+      this->affected_by.solar_wrath    = p->sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) &&
+                                      this->data().affected_by( p->spells.herald_of_the_sun.solar_wrath->effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -1531,6 +1535,11 @@ public:
     if ( affected_by.luck_of_the_draw && p()->buffs.luck_of_the_draw->up() )
     {
       am *= 1.0 + p()->buffs.luck_of_the_draw->data().effectN( 1 ).percent();
+    }
+
+    if (affected_by.solar_wrath && p()->buffs.herald_of_the_sun.solar_wrath->up())
+    {
+      am *= 1.0 + p()->sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 1 ).percent();
     }
 
     return am;

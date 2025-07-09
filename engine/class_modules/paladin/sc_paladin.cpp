@@ -1723,11 +1723,6 @@ void judgment_t::execute()
       p()->buffs.avenging_wrath->extend_duration( p(), extension );
     }
 
-    if ( p()->buffs.crusade->up() )
-    {
-      p()->buffs.crusade->extend_duration( p(), extension );
-    }
-
     if ( p()->buffs.sentinel->up() )
     {
       p()->buffs.sentinel->extend_duration( p(), extension );
@@ -3008,12 +3003,7 @@ public:
         p()->buffs.avenging_wrath->extend_duration( p(), extension );
       }
 
-      if ( p()->buffs.crusade->up() )
-      {
-        p()->buffs.crusade->extend_duration( p(), extension );
-      }
-
-      if ( p() ->buffs.sentinel->up())
+      if ( p()->buffs.sentinel->up() )
       {
         p()->buffs.sentinel->extend_duration( p(), extension );
         // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
@@ -3281,6 +3271,8 @@ struct dawnlight_t : public paladin_spell_t
     affected_by.highlords_judgment = true;
     tick_may_crit = true;
     dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
+    if ( p->sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
+      apply_affecting_aura( p->sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) );
   }
 
   void execute() override
@@ -4048,7 +4040,18 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
     buffs.heightened_wrath->expire();
-    buffs.herald_of_the_sun.suns_avatar->expire();
+    if (sets->has_set_bonus(HERO_HERALD_OF_THE_SUN, TWW3, B2))
+    {
+      // 5s with Radiant Glory, 10s without
+      buffs.herald_of_the_sun.solar_wrath->trigger(
+          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+                                        : 0_ms ) );
+    }
+    else
+    {
+      buffs.herald_of_the_sun.suns_avatar->expire();
+    }
   } );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
@@ -4207,12 +4210,35 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
-    -> set_max_stack( 2 );
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) );
   buffs.herald_of_the_sun.suns_avatar = make_buff( this, "suns_avatar", find_spell( 431907 ) )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         active.suns_avatar_dmg->execute_on_target( target );
       });
+  
+  buffs.herald_of_the_sun.solar_wrath = make_buff( this, "solar_wrath", find_spell( 1236972 ) )
+                                          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+                                              if ( !( buffs.crusade->up() || buffs.avenging_wrath->up() ) )
+                                                buffs.herald_of_the_sun.suns_avatar->expire();
+                                          } );
+
+  if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) )
+  {
+    int solar_wrath_dawnlight_stacks = sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 2 ).base_value();
+    if ( talents.radiant_glory->ok() )
+      solar_wrath_dawnlight_stacks -= sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 5 ).base_value();
+    else if ( talents.crusade->ok() )
+      solar_wrath_dawnlight_stacks += sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 4 ).base_value();
+
+    buffs.herald_of_the_sun.solar_wrath->set_stack_change_callback(
+        [ this, solar_wrath_dawnlight_stacks ]( buff_t*, int, int new_ ) {
+          if ( new_ )
+          {
+            buffs.herald_of_the_sun.dawnlight->trigger( solar_wrath_dawnlight_stacks );
+          }
+        } );
+  }
+  
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
@@ -4714,6 +4740,7 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
+  spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
 }
 
 // paladin_t::primary_role ==================================================

@@ -3749,6 +3749,9 @@ struct arcane_blast_t final : public dematerialize_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     consume_nether_precision( target );
+
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B2 ) )
+      p()->buffs.arcane_harmony->trigger( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 5 ).base_value() ) );
   }
 
   double action_multiplier() const override
@@ -4434,7 +4437,7 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
       triggers.ignite = true;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( 3 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
     }
   }
 
@@ -5166,7 +5169,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
       {
         triggers.ignite_2pc = true;
-        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
+        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 5 ).percent();
       }
     }
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
@@ -5775,6 +5778,9 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
     // fired. If target dies, Icicles stop.
     if ( !p()->talents.glacial_spike.ok() )
       p()->trigger_icicle( target, true );
+
+    if ( rng().roll( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 7 ).percent() ) )
+      trigger_cold_front( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 6 ).base_value() ) );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -5861,7 +5867,7 @@ struct ice_nova_t final : public frost_mage_spell_t
       triggers.ignite = true;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( 3 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
     }
 
     if ( excess )
@@ -6213,7 +6219,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     if ( type == meteor_type::ISOTHERMIC && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
     {
       triggers.ignite_2pc = true;
-      base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 6 ).percent();
     }
   }
 
@@ -7256,7 +7262,7 @@ struct frostfire_burst_t final : public mage_spell_t
       triggers.ignite_2pc = !is_fire;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( is_fire ? 3 : 4 ).percent();
+      base_multiplier *= 1.0 + set->effectN( is_fire ? 4 : 6 ).percent();
     }
   }
 
@@ -9091,6 +9097,16 @@ parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted
 
     return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ),
              "This should check stacks on player instead of the target." };
+  }
+
+  if ( rule.condition_type == PLAYER_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
+  {
+    assert( rule.condition_value_3 == 0 );
+    if ( bugs )
+      return { "0", "This will never trigger because it checks for stacks of the wrong Arcane Harmony spell." };
+
+    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ),
+             "This should check stacks of the correct spell." };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
