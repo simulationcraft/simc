@@ -7591,6 +7591,9 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
+
+    if ( p()->talent.sanlayn.visceral_strength->ok() && execute_state->n_targets >= p()->talent.sanlayn.visceral_strength->effectN( 2 ).base_value() )
+      p()->buffs.bone_shield->trigger( p()->talent.sanlayn.visceral_strength->effectN( 3 ).base_value() );
   }
 
   void impact( action_state_t* state ) override
