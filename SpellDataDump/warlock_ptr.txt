@@ -909,7 +909,8 @@ Family Flags     : 49, 55, 118
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.10921 | PvP Coefficient: 0.75 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.74197 | PvP Coefficient: 0.576924 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.10921 -> 2.74197), PvP Coefficient (0.75 -> 0.576924)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1224,7 +1225,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.80282 | PvP Coefficient: 1.15 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.70423 | PvP Coefficient: 0.766667 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.80282 -> 2.70423), PvP Coefficient (1.15 -> 0.766667)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1563,14 +1565,18 @@ Family Flags     : 49, 101
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Can Proc From Procs (122), No Caster Aura Icon (187), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=40331)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80408 | PvP Coefficient: 1.43 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.20612 | PvP Coefficient: 0.953333 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (4.80408 -> 7.20612), PvP Coefficient (1.43 -> 0.953333)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Hotfixed         : Base Value (10 -> 12)
 #3 (id=889616)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
-                   Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
+                   Base Value: 12 | Scaled Value: 12 | Target: Enemy (6)
+Hotfixed         : Base Value (10 -> 12)
 #4 (id=889617)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
-                   Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
+                   Base Value: 12 | Scaled Value: 12 | Target: Enemy (6)
+Hotfixed         : Base Value (10 -> 12)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
 
 If the target dies, Haunt's cooldown is reset.
@@ -2334,7 +2340,8 @@ Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.142354 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.163707 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.142354 -> 0.163707)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -3010,7 +3017,8 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4636 | PvP Coefficient: 2.34 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.80996 | PvP Coefficient: 2.12727 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (3.4636 -> 3.80996), PvP Coefficient (2.34 -> 2.12727)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3369,9 +3377,10 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #15 (id=1046968) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 73 | Scaled Value: 73 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
+Hotfixed         : Base Value (38 -> 73)
 #16 (id=1174952) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
@@ -3423,9 +3432,10 @@ Effects          :
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
+Hotfixed         : Base Value (60 -> 148)
 #5 (id=191030)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #6 (id=261067)   : Apply Aura (6) | Dummy (4)
@@ -4188,7 +4198,8 @@ Family Flags     : 46, 49
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=288084)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.474375 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.545531 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (0.474375 -> 0.545531)
 Description      : $@spelldesc196277
 
 Name             : Call Dreadstalkers (id=196281) [Spell Family (5)] 
@@ -4509,7 +4520,8 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Ch
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.556877 | PvP Coefficient: 1.40833 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.696096 | PvP Coefficient: 1.12666 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.556877 -> 0.696096), PvP Coefficient (1.40833 -> 1.12666)
 #2 (id=355424)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5
 #3 (id=734824)   : Dummy (3)
@@ -5873,7 +5885,8 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.9391 | PvP Coefficient: 1.16667 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.96778 | PvP Coefficient: 0.864201 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.9391 -> 3.96778), PvP Coefficient (1.16667 -> 0.864201)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -6819,7 +6832,8 @@ Family Flags     : 120
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=719405)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.697125 | PvP Coefficient: 1.25 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.1154 | PvP Coefficient: 0.78125 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.697125 -> 1.1154), PvP Coefficient (1.25 -> 0.78125)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 
@@ -7497,7 +7511,8 @@ Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 3447 | Scaled Value: 3447 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.692466 | PvP Coefficient: 1.25 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.865583 | PvP Coefficient: 1.25 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.692466 -> 0.865583)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #4 (id=1087592)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -17208,7 +17223,6 @@ Class            : Warlock
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Max Targets      : 8
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -17281,6 +17295,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 245904 | Misc Value 2: 0x18d0 | Target: At Self (18)
 #2 (id=1237750)  : Apply Aura (6) | Periodic Energize Power (24): every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Misc Value: 7 | Target: Self (1)
+#3 (id=1255738)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1236415
 Tooltip          : Your Demonic Soul has been unleashed and is assaulting nearby enemies.
 
