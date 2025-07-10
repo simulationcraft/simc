@@ -10685,7 +10685,9 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
   remorseless_winter_damage_t( std::string_view n, death_knight_t* p, const spell_data_t* data )
     : death_knight_spell_t( n, p, data ),
       biting_cold_target_threshold( 0 ),
-      triggered_biting_cold( false )
+      triggered_biting_cold( false ),
+      triggered_frozen_dominion( false ),
+      frozen_dominion_impacted{ true }
   {
     background = true;
     aoe        = -1;
@@ -10703,6 +10705,49 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
     {
       biting_cold_target_threshold = p->talent.frost.biting_cold->effectN( 1 ).base_value();
     }
+
+    if ( p->talent.frost.frozen_dominion.ok() )
+      p->register_on_kill_callback( [ & ]( player_t* t) {
+        clear_frozen_dominion_impacted( t );
+      } );
+  }
+
+  void reset() override
+  {
+    death_knight_spell_t::reset();
+    clear_state();
+  }
+
+  void clear_state() {
+    triggered_biting_cold = false;
+    if ( p()->talent.frost.frozen_dominion.ok() )
+    {
+      triggered_frozen_dominion = false;
+      for( auto spawn_index : frozen_dominion_impacted.get_entries() ) {
+        if ( spawn_index != nullptr ) *spawn_index = false;
+      }
+    }
+  }
+
+  void clear_frozen_dominion_impacted( const player_t* target )
+  {
+    if ( frozen_dominion_impacted[ target ] != nullptr )
+      *frozen_dominion_impacted[ target ] = false;
+  }
+
+  bool mark_frozen_dominion_impacted( const player_t* target)
+  {
+    if ( frozen_dominion_impacted [ target ] != nullptr )
+    {
+      if ( *frozen_dominion_impacted [ target ] )
+        return false;
+    }
+    else {
+      frozen_dominion_impacted [ target ] = new bool;
+    }
+
+    *frozen_dominion_impacted [ target ] = true;
+    return true;
   }
 
   void impact( action_state_t* state ) override
@@ -10718,13 +10763,21 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
 
     if ( p()->talent.frost.everfrost.ok() )
       get_td( state->target )->debuff.everfrost->trigger();
+
+    if ( p()->talent.frost.frozen_dominion.ok() &&
+         ( !triggered_frozen_dominion || p()->buffs.frozen_dominion->check() ) &&
+         mark_frozen_dominion_impacted( state -> target ) )
+    {
+      triggered_frozen_dominion = true;
+      p()->buffs.frozen_dominion->trigger();
+    }
   }
 
 private:
   double biting_cold_target_threshold;
-
-public:
   bool triggered_biting_cold;
+  bool triggered_frozen_dominion;
+  target_specific_t<bool> frozen_dominion_impacted;
 };
 
 struct remorseless_winter_base_t : public death_knight_spell_t
@@ -10751,7 +10804,7 @@ struct remorseless_winter_base_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    debug_cast<remorseless_winter_damage_t*>( damage )->triggered_biting_cold = false;
+    debug_cast<remorseless_winter_damage_t*>( damage )->clear_state();
     remorseless_winter_buff->trigger();
 
     if ( p()->talent.frost.cryogenic_chamber.ok() && p()->buffs.cryogenic_chamber->check() )
@@ -10771,13 +10824,7 @@ struct frozen_dominion_remorseless_winter_t final : public remorseless_winter_ba
     : remorseless_winter_base_t( name, p,
                                  p->spell.frozen_dominion_remorseless_winter_buff, p->buffs.frozen_dominion_remorseless_winter )
   {
-    background = true;    
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-    p()->buffs.frozen_dominion->trigger();
+    background = true;
   }
 };
 
@@ -15113,7 +15160,7 @@ void death_knight_t::create_buffs()
             else
             {
               debug_cast<remorseless_winter_damage_t*>( background_actions.remorseless_winter_tick )
-                  ->triggered_biting_cold = false;
+                  ->clear_state();
             }
           } );
 
@@ -15132,7 +15179,7 @@ void death_knight_t::create_buffs()
             else
             {
               debug_cast<remorseless_winter_damage_t*>( background_actions.remorseless_winter_tick )
-                  ->triggered_biting_cold = false;
+                  ->clear_state();
             }
           } );
 
@@ -15171,7 +15218,7 @@ void death_knight_t::create_buffs()
   buffs.frozen_dominion =
       make_fallback( talent.frost.frozen_dominion.ok(), this, "frozen_dominion", spell.frozen_dominion_buff )
           ->set_default_value( spell.frozen_dominion_buff->effectN( 1 ).base_value() )
-          ->set_refresh_behavior( buff_refresh_behavior::NONE );
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.cryogenic_chamber = make_fallback<cryogenic_chamber_buff_t>(
       talent.frost.cryogenic_chamber.ok(), this, "cryogenic_chamber", spell.cryogenic_chamber_buff );
