@@ -883,6 +883,10 @@ public:
     proc_t* winning_streak_drop_wasted_from_tww2_havoc_2pc;
     proc_t* winning_streak_wasted_from_tww2_havoc_4pc;
     proc_t* necessary_sacrifice_wasted_from_tww2_havoc_4pc;
+    proc_t* chaos_strike_in_immolation_aura;
+    proc_t* annihilation_in_immolation_aura;
+    proc_t* soul_cleave_in_immolation_aura;
+    proc_t* soul_sunder_in_immolation_aura;
   } proc;
 
   // RPPM objects
@@ -5719,6 +5723,15 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
+
+  void execute() override {
+    chaos_strike_base_t::execute();
+
+    if ( !from_onslaught && p()->buff.immolation_aura->check() )
+    {
+      p()->proc.chaos_strike_in_immolation_aura->occur();
+    }
+  }
 };
 
 // Annihilation =============================================================
@@ -5756,6 +5769,16 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
     }
 
     return base_t::ready();
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( !from_onslaught && p()->buff.immolation_aura->check() )
+    {
+      p()->proc.annihilation_in_immolation_aura->occur();
+    }
   }
 };
 
@@ -6382,6 +6405,16 @@ struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUND
   soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
   }
+
+  void execute() override
+  {
+    soul_cleave_base_t::execute();
+
+    if ( p()->buff.immolation_aura->check() )
+    {
+      p()->proc.soul_sunder_in_immolation_aura->occur();
+    }
+  }
 };
 
 struct soul_cleave_t : public soul_cleave_base_t
@@ -6421,6 +6454,11 @@ struct soul_cleave_t : public soul_cleave_base_t
     }
 
     soul_cleave_base_t::execute();
+
+    if ( p()->buff.immolation_aura->check() )
+    {
+      p()->proc.soul_cleave_in_immolation_aura->occur();
+    }
   }
 };
 
@@ -8396,6 +8434,10 @@ void demon_hunter_t::init_procs()
   proc.winning_streak_drop_wasted_from_tww2_havoc_2pc = get_proc( "winning_streak_drop_wasted_from_tww2_havoc_2pc" );
   proc.winning_streak_wasted_from_tww2_havoc_4pc      = get_proc( "winning_streak_wasted_from_tww2_havoc_4pc" );
   proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc = get_proc( "necessary_sacrifice_wasted_from_tww2_havoc_4pc" );
+  proc.chaos_strike_in_immolation_aura                = get_proc( "chaos_strike_in_immolation_aura" );
+  proc.annihilation_in_immolation_aura                = get_proc( "annihilation_in_immolation_aura" );
+  proc.soul_cleave_in_immolation_aura                 = get_proc( "soul_cleave_in_immolation_aura" );
+  proc.soul_sunder_in_immolation_aura                 = get_proc( "soul_sunder_in_immolation_aura" );
 }
 
 // demon_hunter_t::init_uptimes =============================================

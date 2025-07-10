@@ -536,16 +536,33 @@ class CASCObject:
                 if attempt + 1 < maxAttempts:
                     print(f"Retrying {url} ...")
                     # try a random, different CDN host
-                    if len(self.cdn_host):
-                        cur_host = ''
-                        for host in self.cdn_host:
-                            if url.find(host):
-                                cur_host = host
-                        if cur_host:
-                            other_hosts = [host for host in self.cdn_host if host != cur_host]
-                            url = url.replace(cur_host, random.choice(other_hosts))
-                    time.sleep(2**attempt)
-                    attempt += 1
+                    # TODO: clean this up
+                    # depending on how this gets called the cdn_host is buried in the build object
+                    if self.cdn_host:
+                        if len(self.cdn_host):
+                            cur_host = ''
+                            for host in self.cdn_host:
+                                if url.find(host):
+                                    cur_host = host
+                            if cur_host:
+                                other_hosts = [host for host in self.cdn_host if host != cur_host]
+                                url = url.replace(cur_host, random.choice(other_hosts))
+                        time.sleep(2**attempt)
+                        attempt += 1
+                    elif self.build.cdn_host:
+                        if len(self.build.cdn_host):
+                            cur_host = ''
+                            for host in self.build.cdn_host:
+                                if url.find(host):
+                                    cur_host = host
+                            if cur_host:
+                                other_hosts = [host for host in self.build.cdn_host if host != cur_host]
+                                url = url.replace(cur_host, random.choice(other_hosts))
+                        time.sleep(2**attempt)
+                        attempt += 1
+                    else:
+                        print("Problem parsing cdn_host from self")
+                        exit(1)
         self.options.parser.error(
             'Unable to fetch CDN URL file %s (too many retries), aborting ...' %
             url)

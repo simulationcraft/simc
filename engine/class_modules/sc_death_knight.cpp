@@ -727,6 +727,7 @@ public:
     propagate_const<buff_t*> bloodied_blade_stacks;
     propagate_const<buff_t*> bloodied_blade_final;
     buff_t* bone_shield;
+    propagate_const<buff_t*> bonestorm;
     propagate_const<buff_t*> coagulopathy;
     propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
@@ -893,6 +894,7 @@ public:
     action_t* the_blood_is_life;
 
     // Blood
+    propagate_const<action_t*> bonestorm_tick;
     propagate_const<action_t*> mark_of_blood_heal;
     action_t* shattering_bone;
     action_t* heart_strike_bloodied_blade;
@@ -1363,6 +1365,8 @@ public:
     const spell_data_t* bloodied_blade_stacks_buff;
     const spell_data_t* bloodied_blade_final_buff;
     const spell_data_t* bone_shield;
+    const spell_data_t* bonestorm;
+    const spell_data_t* bonestorm_damage;
     const spell_data_t* sanguine_ground;
     const spell_data_t* ossuary_buff;
     const spell_data_t* ossified_vitriol_buff;
@@ -2518,6 +2522,10 @@ struct death_knight_pet_t : public pet_t
 
     m *= 1.0 + grave_mastery->check_value();
 
+    if ( dk()->mastery.dreadblade->ok() )
+      m *= 1.0 + dk()->mastery.dreadblade->effectN( 6 ).percent() +
+           ( dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * dk()->composite_mastery() / 100 );
+
     return m;
   }
 
@@ -3137,16 +3145,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     dt_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
     {
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = auto_attack_melee_t<ghoul_pet_t>::composite_da_multiplier( state );
-
-      if ( pet()->blood_rush->check() )
-        m *= 1.0 + pet()->blood_rush->check_value();
-
-      return m;
-    }
   };
 
   ghoul_pet_t( death_knight_t* owner, bool guardian = true ) : base_ghoul_pet_t( owner, "ghoul", guardian )
@@ -3177,6 +3175,9 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
 
       if ( ghoulish_frenzy->check() )
         m *= 1.0 + ghoulish_frenzy->check_value();
+
+      if ( blood_rush->check() )
+        m *= 1.0 + blood_rush->check_value();
     }
 
     return m;
@@ -3860,6 +3861,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration  = regen_type::DISABLED;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( school );
+
+    if ( blood_rush->check() )
+      m *= 1.0 + blood_rush->check_value();
+
+    return m;
   }
 
   void create_actions() override
@@ -4675,6 +4686,21 @@ struct trollbane_pet_t final : public horseman_pet_t
       base_multiplier    = dk()->spell.tww3_4pc_rider->effectN( 1 ).percent();
       cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
     }
+
+    void execute() override
+    {
+      if (consumed_km)
+        set_school_override( SCHOOL_FROST );
+      horseman_melee_t::execute();
+
+      if (consumed_km)
+        clear_school_override();
+      
+      consumed_km = false;
+    }
+
+ public:
+    bool consumed_km;
   };
 
   struct frostscythe_trollbane_t final : horseman_melee_t
@@ -4924,8 +4950,13 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   bool hasted_gcd;
   double rp_per_tick;
 
+  struct
+  {
+    bool mastery_dreadblade_crit_bonus;
+  } affected_by;
+
   death_knight_action_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 )
+    : action_base_t( n, p, s ), gain( nullptr ), hasted_gcd( false ), rp_per_tick( 0 ), affected_by{ false }
   {
     this->may_glance = false;
     if ( this->cooldown->duration > 0_s )
@@ -4987,6 +5018,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         this->not_a_proc = true;
       }
     }
+
+    affected_by.mastery_dreadblade_crit_bonus = p->mastery.dreadblade->ok() && this->data().affected_by( p->mastery.dreadblade->effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -5034,6 +5067,17 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
 
     return amount;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    auto cd = action_base_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->mastery.dreadblade->ok() && affected_by.mastery_dreadblade_crit_bonus )
+      cd *= 1.0 + p()->mastery.dreadblade->effectN( 5 ).percent() +
+            ( p()->mastery.dreadblade->effectN( 5 ).sp_coeff() * p()->composite_mastery() / 100 );
+
+    return cd;
   }
 
   void init() override
@@ -5931,6 +5975,8 @@ struct essence_of_the_blood_queen_buff_t final : public death_knight_buff_t
   {
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
     set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 1 ).base_value() / 10 );
+    if ( p->specialization() == DEATH_KNIGHT_BLOOD )
+      set_default_value( p->sets->set( HERO_SANLAYN, TWW3, B2 )->effectN( 3 ).base_value() / 10 );
   }
 
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
@@ -6883,9 +6929,11 @@ struct exterminate_t final : public death_knight_spell_t
       empowered = false;
       debug_cast<exterminate_aoe_t*>( second_hit )->empowered = true;
     }
+
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && rng().roll( p()->talent.deathbringer.exterminate->effectN( 6 ).percent() ) )
+      p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.deathbringer.exterminate->effectN( 7 ).time_value() );
+
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
-
-
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7573,6 +7621,9 @@ struct blood_boil_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
+
+    if ( p()->talent.sanlayn.visceral_strength->ok() && execute_state->n_targets >= p()->talent.sanlayn.visceral_strength->effectN( 2 ).base_value() )
+      p()->buffs.bone_shield->trigger( p()->talent.sanlayn.visceral_strength->effectN( 3 ).base_value() );
   }
 
   void impact( action_state_t* state ) override
@@ -7716,10 +7767,10 @@ struct bonestorm_heal_t : public death_knight_heal_t
   }
 };
 
-struct bonestorm_damage_t final : public death_knight_melee_attack_t
+struct bonestorm_tick_t final : public death_knight_melee_attack_t
 {
-  bonestorm_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_melee_attack_t( name, p, p->talent.blood.bonestorm->effectN( 3 ).trigger() ),
+  bonestorm_tick_t( std::string_view name, death_knight_t* p )
+    : death_knight_melee_attack_t( name, p, p->spell.bonestorm_damage ),
       heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ),
       heal_count( 0 ),
       max_heals( p->talent.blood.bonestorm->effectN( 4 ).base_value() )
@@ -7734,6 +7785,16 @@ struct bonestorm_damage_t final : public death_knight_melee_attack_t
   {
     heal_count = 0;
     death_knight_melee_attack_t::execute();
+
+    p()->buffs.bone_shield->trigger();
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
+      p()->buffs.piledriver_tww1_4pc->trigger();
+
+    if ( p()->talent.icy_talons.ok() )
+    {
+      p()->buffs.icy_talons->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -7742,7 +7803,7 @@ struct bonestorm_damage_t final : public death_knight_melee_attack_t
 
     if ( result_is_hit( state->result ) )
     {
-      // Healing is limited at 5 occurnces per tick, regardless of enemies hit
+      // Healing is limited at 5 occurances per tick, regardless of enemies hit
       if ( heal_count < max_heals )
       {
         heal->execute();
@@ -7764,12 +7825,15 @@ struct bonestorm_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     hasted_ticks = false;
-    tick_action  = get_action<bonestorm_damage_t>( "bonestorm_damage", p );
     max_charges  = data().effectN( 4 ).base_value();
+
+    add_child( get_action<bonestorm_tick_t>( "bonestorm_damage", p ) );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const override
+  void execute() override
   {
+    death_knight_spell_t::execute();
+
     int charges = std::min( p()->buffs.bone_shield->check(), as<int>( max_charges ) );
     p()->buffs.bone_shield->decrement( charges );
 
@@ -7779,33 +7843,17 @@ struct bonestorm_t final : public death_knight_spell_t
         p()->buffs.ossified_vitriol->trigger( charges );
 
       if ( p()->talent.blood.insatiable_blade->ok() )
-        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                                   charges );
+        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
 
       if ( p()->talent.blood.shattering_bone.ok() )
       {
         // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
-        debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed =
-            charges;
+        debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed = charges;
         p()->background_actions.shattering_bone->execute_on_target( target );
       }
-    }
 
-    p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
-    return p()->talent.blood.bonestorm->duration() * charges;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    death_knight_spell_t::tick( d );
-    p()->buffs.bone_shield->trigger();
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
-      p()->buffs.piledriver_tww1_4pc->trigger();
-
-    if ( p()->talent.icy_talons.ok() )
-    {
-      p()->buffs.icy_talons->trigger();
+      p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
+      p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.blood.bonestorm->duration() * charges );
     }
   }
 
@@ -9263,11 +9311,13 @@ struct frostscythe_t : public frostscythe_base_t
   {
     double m = frostscythe_base_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() &&
          p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
@@ -9357,7 +9407,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     if ( sb )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
-      // 11.2 TODO check if this multi is right
       m *= 1.0 + ri->default_value * ri->max_stack(); 
     }
 
@@ -9682,7 +9731,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
     }
 
     // 11.2 TODO find actual proc chance
-    if ( p()->rng().roll( .15 * razorice->check() ) )
+    if ( p()->rng().roll( .05 * razorice->check() ) )
       p()->buffs.frostbane->trigger();
   }
 
@@ -10065,7 +10114,7 @@ struct howling_blast_t final : public death_knight_spell_t
         m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
       }
     }
-    if ( !p()->bugs && p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() &&
+    if ( p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() &&
          ( state->chain_target > 0 && !is_northwinds_target ) )
     {
       m *= 1.0 + p()->talent.frost.everfrost->effectN( 2 ).percent();
@@ -10440,6 +10489,13 @@ struct obliterate_t final : public death_knight_melee_attack_t
                                            500_ms );
     }
 
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+         p()->pets.trollbane.active_pet() != nullptr )
+    {
+      p()->pets.trollbane.active_pet()->obliterate->consumed_km = p()->buffs.killing_machine->up();
+      p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
+    }      
+
     if ( p()->buffs.killing_machine->up() )
     {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay, aa_action );
@@ -10450,19 +10506,18 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p()->buffs.empower_rune_weapon->expire();
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
-      p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
-    // 11.2 TODO it is probably not intended that this is a -100% mod
+    // The way this works in spell data: ERW has effects modified by Obliteration, which in turn modify the actions
+    // We do not have automated parsing for energize, so manually zero the cost.
+    // 11.2 TODO in game behavior is that Obliterate COSTS 8 rp, but this will be painful to implement 
     if ( p()->talent.frost.obliteration.ok() && p()->buffs.pillar_of_frost->check() && p()->buffs.empower_rune_weapon->check() )
     {
-      m *= 1.0 + p()->talent.frost.obliteration->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      m = 0;
     }
 
     return m;
@@ -12309,10 +12364,8 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     return;
   }
 
-  proc->occur();
-
   // Killing Machine is consumed shortly after casting Obliterate.
-  make_event( sim, total_delay, [ this, aa_action ] {
+  make_event( sim, total_delay, [ this, aa_action, proc ] {
     const int decrement_count = talent.frost.killing_streak.ok() ? buffs.killing_machine->check() : 1;
     buffs.killing_machine->decrement( decrement_count );
 
@@ -12325,24 +12378,25 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
       buffs.breath_of_sindragosa->extend_duration(this, base_extension * decrement_count);
     }
 
+    if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
+    {
+      buffs.bonegrinder_crit->trigger( decrement_count );
+      if ( buffs.bonegrinder_crit->at_max_stacks() )
+      {
+        buffs.bonegrinder_frost->trigger();
+        buffs.bonegrinder_crit->expire();
+      }
+    }
+
+    if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
+    {
+      replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
+                      gains.murderous_efficiency );
+    }
+
     for ( int i = decrement_count; i > 0; --i )
     {
-      if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost->up() )
-      {
-        buffs.bonegrinder_crit->trigger();
-        if ( buffs.bonegrinder_crit->at_max_stacks() )
-        {
-          buffs.bonegrinder_frost->trigger();
-          buffs.bonegrinder_crit->expire();
-        }
-      }
-
-      if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
-      {
-        replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
-                        gains.murderous_efficiency );
-      }
-
+      proc->occur();
       if ( talent.frost.arctic_assault.ok() )
       {
         // Arctic Assault fires on a delay after consuming Killing Machine.
@@ -12790,7 +12844,13 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* t, bool is_vampiric
     mod                  = modified_spell.infliction_of_sorrow->effectN( 2 ).percent();
 
     if ( sets->has_set_bonus( HERO_SANLAYN, TWW3, B2 ) && t == target )
-      extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
+    {
+      if ( specialization() == DEATH_KNIGHT_UNHOLY )
+        extension += spell.tww3_2pc_san->effectN( 2 ).time_value();
+      else if ( specialization() == DEATH_KNIGHT_BLOOD )
+        extension += spell.tww3_2pc_san->effectN( 4 ).time_value();
+    }
+
     if ( disease_td->is_ticking() )
     {
       disease_td->adjust_duration( extension );
@@ -12865,6 +12925,14 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric )
     {
       if ( specialization() == DEATH_KNIGHT_UNHOLY && pets.ghoul_pet.active_pet() != nullptr )
         pets.ghoul_pet.active_pet()->blood_rush->trigger();
+
+      else if ( specialization() == DEATH_KNIGHT_BLOOD )
+      {
+        if ( pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+          pets.dancing_rune_weapon_pet.active_pet()->blood_rush->trigger();
+        if ( pets.everlasting_bond_pet.active_pet() != nullptr )
+          pets.everlasting_bond_pet.active_pet()->blood_rush->trigger();
+      }
     }
   }
 }
@@ -13126,6 +13194,10 @@ void death_knight_t::create_actions()
     if ( talent.blood.bloodworms.ok() )
     {
       pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
+    }
+    if ( talent.blood.bonestorm.ok() || talent.deathbringer.exterminate.ok() )
+    {
+      background_actions.bonestorm_tick = get_action<bonestorm_tick_t>( "bonestorm_damage", this );
     }
   }
 
@@ -14109,6 +14181,9 @@ void death_knight_t::spell_lookups()
   spell.bloodied_blade_stacks_buff  = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460499 );
   spell.bloodied_blade_final_buff   = conditional_spell_lookup( talent.blood.bloodied_blade->ok(), 460500 );
   spell.bone_shield                 = conditional_spell_lookup( spec.blood_death_knight->ok(), 195181 );
+  spell.bonestorm                   = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 194844 );
+  spell.bonestorm_damage            = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 196528 );
+  spell.bonestorm_heal              = conditional_spell_lookup( talent.blood.bonestorm->ok() || talent.deathbringer.exterminate->ok(), 196545 );
   spell.sanguine_ground             = conditional_spell_lookup( talent.blood.sanguine_ground.ok(), 391459 );
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.ossified_vitriol_buff       = conditional_spell_lookup( talent.blood.ossified_vitriol.ok(), 458745 );
@@ -14119,7 +14194,6 @@ void death_knight_t::spell_lookups()
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
   spell.voracious_buff           = conditional_spell_lookup( talent.blood.voracious.ok(), 274009 );
-  spell.bonestorm_heal           = conditional_spell_lookup( talent.blood.bonestorm.ok(), 196545 );
   spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
@@ -14830,6 +14904,9 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate =
       make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
+      // Unfortunately blizz removed the aura from reapers onslaught that auto adjusted max stacks.  Looks like they scripted it.
+      if ( talent.deathbringer.reapers_onslaught->ok() )
+          buffs.exterminate->set_max_stack( spell.exterminate_buff->max_stacks() + talent.deathbringer.reapers_onslaught->effectN( 2 ).base_value() );
 
   buffs.reaper_of_souls =
       make_fallback( talent.deathbringer.reapers_mark.ok(), this, "reaper_of_souls", spell.reapers_of_souls_buff )
@@ -14921,6 +14998,12 @@ void death_knight_t::create_buffs()
                                           : 0 ) );  // TODO: Remove this if they fix reinforced bones effect2 to be
                                                     // APPLY_AURA instead of E_APPLY_AREA_AURA_PARTY
 
+    buffs.bonestorm = make_buff( this, "bonestorm", spell.bonestorm )
+          ->set_cooldown( 0_ms )  // Handled by the action
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+          ->set_tick_callback(
+              [ this ]( buff_t*, int, timespan_t ) { background_actions.bonestorm_tick->execute(); } );
+
     buffs.bloodied_blade_stacks =
         make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
             ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).percent() * 0.1 )
@@ -14951,7 +15034,7 @@ void death_knight_t::create_buffs()
                                     ->set_duration( 0_ms )
                                     ->set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
                                     ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                      if ( talent.sanlayn.the_blood_is_life.ok() )
+                                      if ( talent.sanlayn.the_blood_is_life.ok() && pets.blood_beast.active_pet() != nullptr )
                                         pets.blood_beast.active_pet()->demise();
                                     } );
 
@@ -16034,13 +16117,20 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.icy_onslaught );
   parse_effects( p()->buffs.remorseless_winter, p()->talent.cleaving_strikes );
   parse_effects( p()->buffs.frozen_dominion_remorseless_winter, p()->talent.cleaving_strikes );
-  parse_effects( p()->buffs.empower_rune_weapon, p()->talent.frost.obliteration->effectN( 1 ).trigger() );
+  parse_effects( p()->buffs.empower_rune_weapon, [ & ]( double v )
+  {
+    if ( !p()->buffs.pillar_of_frost->check() )
+      v = 0;
+    return v;
+  }, p()->talent.frost.obliteration->effectN( 1 ).trigger() );
 
   // Unholy
   parse_effects( p()->buffs.unholy_assault );
   parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
-  parse_effects( p()->mastery.dreadblade );
+  parse_effects( p()->buffs.commander_of_the_dead, p()->talent.unholy.commander_of_the_dead );
+  // Dont parse effect 5 and 6 due to the way this effect works. Manually handled where necessaray.
+  parse_effects( p()->mastery.dreadblade, effect_mask_t( true ).disable( 5, 6 ) );
   parse_effects( p()->buffs.winning_streak_unholy, [ & ]( double v ) {
     v *= 0.1;  // Divides by 10 in spell data
     if ( p()->buffs.dark_transformation->check() )
@@ -16052,12 +16142,6 @@ void death_knight_action_t<Base>::apply_action_effects()
   // Rider of the Apocalypse
   parse_effects( p()->buffs.mograines_might );
   parse_effects( p()->buffs.a_feast_of_souls );
-
-  // Deathbringer
-  parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
-  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
-  parse_effects( p()->buffs.exterminate );
-  parse_effects( p()->buffs.reaper_of_souls );
   auto tww3_rider_mask = effect_mask_t( true );
   switch ( p()->specialization() )
   {
@@ -16072,6 +16156,25 @@ void death_knight_action_t<Base>::apply_action_effects()
   }
   parse_effects( p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ), tww3_rider_mask );
 
+  // Deathbringer
+  parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
+  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
+  parse_effects( p()->buffs.exterminate );
+  parse_effects( p()->buffs.reaper_of_souls ); 
+  auto tww3_deathbringer_mask = effect_mask_t( true );
+  switch ( p()->specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      tww3_rider_mask.disable( 1, 7 );
+      break;
+    case DEATH_KNIGHT_FROST:
+      tww3_rider_mask.disable( 2, 8 );
+      break;
+    default:
+      break;
+  }
+  parse_effects( p()->sets->set( HERO_DEATHBRINGER, TWW3, B4 ), tww3_deathbringer_mask );
+
   // San'layn
   parse_effects( p()->buffs.visceral_strength_unholy, p()->talent.sanlayn.visceral_strength );
   parse_effects(
@@ -16079,6 +16182,8 @@ void death_knight_action_t<Base>::apply_action_effects()
       [ & ]( double v ) {
         if ( p()->spec.blood_death_knight->ok() )
           v += p()->spec.blood_death_knight->effectN( 19 ).percent();
+        if ( p()->spec.unholy_death_knight->ok() )
+          v += p()->spec.unholy_death_knight->effectN( 21 ).percent();
         if ( p()->buffs.gift_of_the_sanlayn->check() )
           v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
         return v;
@@ -16113,6 +16218,8 @@ void death_knight_action_t<Base>::apply_target_effects()
   // Unholy
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::rotten_touch ), p()->spell.rotten_touch_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::unholy_aura ), p()->spell.unholy_aura_debuff,
+                        p()->talent.unholy.unholy_aura );
 
   // Rider of the Apocalypse
   if( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) )
@@ -16222,6 +16329,12 @@ void death_knight_t::parse_player_effects()
     return v;
   } );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
+
+  // Deathbringer
+  if ( specialization() == DEATH_KNIGHT_FROST )
+    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 1 ) );
+  else if ( specialization() == DEATH_KNIGHT_BLOOD )
+    parse_effects( buffs.empowered_soul, effect_mask_t( false ).enable( 2 ) );
 }
 
 void death_knight_t::apply_affecting_auras( buff_t& buff )

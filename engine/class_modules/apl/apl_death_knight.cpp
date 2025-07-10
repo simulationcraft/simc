@@ -155,7 +155,8 @@ void blood( player_t* p )
   db_cds->add_action( "dancing_rune_weapon" );
   db_cds->add_action( "bonestorm,if=buff.bone_shield.stack>=5&(!talent.shattering_bone.enabled|death_and_decay.ticking)" );
   db_cds->add_action( "tombstone,if=buff.bone_shield.stack>=8&(!talent.shattering_bone.enabled|death_and_decay.ticking)&cooldown.dancing_rune_weapon.remains>=25" );
-  db_cds->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
+  if ( p->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    db_cds->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
 
   deathbringer->add_action( "death_strike,if=runic_power.deficit<variable.rp_deficit_threshold+(pet.dancing_rune_weapon.active*3)+(talent.everlasting_bond*3)" );
   deathbringer->add_action( "marrowrend,if=buff.exterminate.react" );
@@ -172,7 +173,8 @@ void blood( player_t* p )
   deathbringer->add_action( "arcane_torrent,if=runic_power.deficit>20" );
   deathbringer->add_action( "deaths_caress,if=buff.bone_shield.stack<11" );
 
-  san_cds->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
+  if ( p->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    san_cds->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
   san_cds->add_action( "dancing_rune_weapon" );
   san_cds->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>15" );
   san_cds->add_action( "tombstone,if=(!buff.dancing_rune_weapon.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>25" );

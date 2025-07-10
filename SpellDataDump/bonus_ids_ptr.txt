@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -7090,14 +7090,14 @@ bonus_id={ 12219 }, suffix={ on Dark Summons }, stats={ 100% Mastery [0.6666] },
 bonus_id={ 12220 }, suffix={ on Sacrificial Rituals }, stats={ 100% Haste [0.6666] }, effects={ Excerpt on Sacrificial Rituals (id=1225233, index=0, type=equip) }
 bonus_id={ 12221 }, suffix={ on Prophetic Death }, stats={ 100% Crit [0.6666] }, effects={ Excerpt on Prophetic Death (id=1225234, index=0, type=equip) }
 bonus_id={ 12222 }, suffix={ of the Savage }, effects={ Darktide Wavebender's Orb (id=468034, index=0, type=equip) }
-bonus_id={ 12255 }, stats={ 100% Mastery [0.3333] }
-bonus_id={ 12256 }, stats={ 100% Mastery [0.4000] }
-bonus_id={ 12257 }, stats={ 100% Crit [0.4000] }
-bonus_id={ 12258 }, stats={ 100% Haste [0.4000] }
-bonus_id={ 12259 }, stats={ 100% Vers [0.4000] }
-bonus_id={ 12260 }, stats={ 100% Vers [0.3333] }
-bonus_id={ 12261 }, stats={ 100% Crit [0.3333] }
-bonus_id={ 12262 }, stats={ 100% Haste [0.4000] }
+bonus_id={ 12255 }, stats={ 100% Mastery [0.5600] }
+bonus_id={ 12256 }, stats={ 100% Mastery [0.8000] }
+bonus_id={ 12257 }, stats={ 100% Crit [0.8000] }
+bonus_id={ 12258 }, stats={ 100% Haste [0.8000] }
+bonus_id={ 12259 }, stats={ 100% Vers [0.8000] }
+bonus_id={ 12260 }, stats={ 100% Vers [0.5600] }
+bonus_id={ 12261 }, stats={ 100% Crit [0.5600] }
+bonus_id={ 12262 }, stats={ 100% Haste [0.5600] }
 bonus_id={ 12263 }, ilevel={ 24 @plvl 1 - 623 @plvl 80 }
 bonus_id={ 12264 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 587 @plvl 80 }
 bonus_id={ 12265 }, quality={ uncommon }

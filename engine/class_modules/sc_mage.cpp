@@ -575,6 +575,7 @@ public:
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     int embedded_splinters;
+    int remaining_splinterstorm;
     int magis_spark_spells;
     int intuition_blp_count;
     int clearcasting_blp_count;
@@ -3749,6 +3750,9 @@ struct arcane_blast_t final : public dematerialize_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     consume_nether_precision( target );
+
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B2 ) )
+      p()->buffs.arcane_harmony->trigger( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 5 ).base_value() ) );
   }
 
   double action_multiplier() const override
@@ -4434,7 +4438,7 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
       triggers.ignite = true;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( 3 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
     }
   }
 
@@ -5166,7 +5170,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
       {
         triggers.ignite_2pc = true;
-        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
+        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 5 ).percent();
       }
     }
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
@@ -5775,6 +5779,9 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
     // fired. If target dies, Icicles stop.
     if ( !p()->talents.glacial_spike.ok() )
       p()->trigger_icicle( target, true );
+
+    if ( rng().roll( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 7 ).percent() ) )
+      trigger_cold_front( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 6 ).base_value() ) );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -5861,7 +5868,7 @@ struct ice_nova_t final : public frost_mage_spell_t
       triggers.ignite = true;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( 3 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
     }
 
     if ( excess )
@@ -6213,7 +6220,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     if ( type == meteor_type::ISOTHERMIC && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
     {
       triggers.ignite_2pc = true;
-      base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 6 ).percent();
     }
   }
 
@@ -7256,7 +7263,7 @@ struct frostfire_burst_t final : public mage_spell_t
       triggers.ignite_2pc = !is_fire;
       const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
       base_ignite_multiplier = set->effectN( 1 ).percent();
-      base_multiplier *= 1.0 + set->effectN( is_fire ? 3 : 4 ).percent();
+      base_multiplier *= 1.0 + set->effectN( is_fire ? 4 : 6 ).percent();
     }
   }
 
@@ -7741,7 +7748,9 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
+      mage->state.remaining_splinterstorm += splinters;
+      make_repeating_event( sim(), 100_ms, [ m = mage, a = mage->action.splinterstorm, t ]
+        { a->execute_on_target( t ); m->state.remaining_splinterstorm--; }, splinters );
 
       if ( mage->specialization() == MAGE_FROST )
         mage->trigger_brain_freeze( mage->talents.splinterstorm->effectN( 5 ).percent(), mage->procs.brain_freeze_splinterstorm, 0_ms );
@@ -9093,6 +9102,16 @@ parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted
              "This should check stacks on player instead of the target." };
   }
 
+  if ( rule.condition_type == PLAYER_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
+  {
+    assert( rule.condition_value_3 == 0 );
+    if ( bugs )
+      return { "0", "This will never trigger because it checks for stacks of the wrong Arcane Harmony spell." };
+
+    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ),
+             "This should check stacks of the correct spell." };
+  }
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
@@ -9517,6 +9536,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.embedded_splinters; } );
+  }
+
+  if ( util::str_compare_ci( name, "remaining_splinterstorm" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.remaining_splinterstorm; } );
   }
 
   if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )

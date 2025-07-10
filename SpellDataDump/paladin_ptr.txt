@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -19645,9 +19645,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value 2: 5174 (Label) | Target: Self (1)
                    Affected Spells (Label): Hammer and Anvil (433717), Hammer and Anvil (433722)
 #2 (id=1236239)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
 #3 (id=1236240)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Hammer and Anvil's $?c2[damage][healing] is increased by $s1% and it can also be activated by $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] at $?c1[$s2][$s3]% effectiveness.
 
 Name             : Paladin Lightsmith 11.2 Class Set 4pc (id=1236390) [Spell Family (10), Passive, Hidden] 
@@ -19798,7 +19798,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Max Targets      : 5
 Velocity         : 30 yards/sec
 Duration         : 30 seconds
 Labels           : 16: Class Spells
@@ -19819,7 +19818,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Max Targets      : 5
 Velocity         : 30 yards/sec
 Duration         : 30 seconds
 Labels           : 16: Class Spells
