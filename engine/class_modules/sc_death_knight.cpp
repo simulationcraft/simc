@@ -3869,6 +3869,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     if ( blood_rush->check() )
       m *= 1.0 + blood_rush->check_value();
+
+    return m;
   }
 
   void create_actions() override
