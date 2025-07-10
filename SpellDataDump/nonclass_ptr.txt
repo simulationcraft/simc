@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -90104,7 +90104,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=357399)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
-                   Affected Spells: Invisibility (66), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Remove Curse (475), Arcane Explosion (1449), Blink (1953), Flamestrike (2120), Counterspell (2139), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Ice Barrier (11426), Evocation (12051), Icy Veins (12472), Blizzard (12486), Ignite (12654), Spellsteal (30449), Arcane Blast (30451), Ice Lance (30455), Slow (31589), Dragon's Breath (31661), Waterbolt (31707), Invisibility (32612), Freeze (33395), Arcane Charge (36032), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Fingers of Frost (44544), Flurry (44614), Ice Block (45438), Hot Streak! (48108), Mirror Image (55342), Gift of the Naaru (59548), Clearcasting (79684), Time Warp (80353), Ring of Frost (82691), Frozen Orb (84714), Frozen Orb (84721), Cauterize (86949), Blazing Speed (108843), Fire Blast (108853), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Fingers of Frost (112965), Ring of Frost (113724), Greater Invisibility (113862), Nether Tempest (114923), Nether Tempest (114954), Critical Mass (117216), Blink (119415), Greater Invisibility (122293), Fingers of Frost (126084), Conjure Familiar (126578), Alter Time (127140), Water Jet (135029), Ring of Frost (136511), Ring of Frost (140384), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Pyrotechnics (157642), Pyrotechnics (157644), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Brain Freeze (190446), Brain Freeze (190447), Ice Form (198144), Cinderstorm (198928), Glacial Spike (199786), Ray of Frost (205021), Lonely Winter (205024), Presence of Mind (205025), Ice Ward (205036), Conflagration Flare Up (205345), Flame Patch (205472), Chilled (205708), Shimmer (212653), Cone of Cold (212792), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Blazing Barrier (235313), Blazing Barrier (235314), Prismatic Barrier (235450), Time and Space (240689), Living Bomb (244813), Ebonbolt (257537), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Clearcasting (277726), Glacial Assault (279856), Frozen Orb (289308), Radiant Spark (307443), Shifting Power (314791), Mirrors of Torment (314793), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Touch of the Magi (321507), Pyroblast (321712), Deathborne (324220), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Alter Time (342245), Alter Time (342247), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Arcane Surge (365362), Frostbite (378756), Frostbite (378760), Glacial Assault (379029), Shifting Power (382440), Shifting Power (382445), Blast Wave (389631), Displacement (389713), Displacement Beacon (389714), Mass Slow (391104), Icebind (397252), Arcane Explosion (414381), Ice Cold (414658), Mass Barrier (414660), Ice Barrier (414661), Mass Invisibility (414664), Gift of the Naaru (416250), Summon Water Elemental (417486), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438673), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Phoenix Flames (450506), Lit Fuse (453207), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Meteorite (456139), Homebrewed Blink Vial (457733), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Gravity Lapse (473290), Gravity Lapse (473291), Frostbolt Volley (1216910), Invisibility (1228321), Ignite (1236160), Glacial Spike (1236211), Pyroblast (1236212)
+                   Affected Spells: Invisibility (66), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Remove Curse (475), Arcane Explosion (1449), Blink (1953), Flamestrike (2120), Counterspell (2139), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Ice Barrier (11426), Evocation (12051), Icy Veins (12472), Blizzard (12486), Ignite (12654), Spellsteal (30449), Arcane Blast (30451), Ice Lance (30455), Slow (31589), Dragon's Breath (31661), Waterbolt (31707), Invisibility (32612), Freeze (33395), Arcane Charge (36032), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Fingers of Frost (44544), Flurry (44614), Ice Block (45438), Hot Streak! (48108), Mirror Image (55342), Gift of the Naaru (59548), Clearcasting (79684), Time Warp (80353), Ring of Frost (82691), Frozen Orb (84714), Frozen Orb (84721), Cauterize (86949), Blazing Speed (108843), Fire Blast (108853), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Fingers of Frost (112965), Ring of Frost (113724), Greater Invisibility (113862), Nether Tempest (114923), Nether Tempest (114954), Critical Mass (117216), Blink (119415), Greater Invisibility (122293), Fingers of Frost (126084), Conjure Familiar (126578), Alter Time (127140), Water Jet (135029), Ring of Frost (136511), Ring of Frost (140384), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Pyrotechnics (157642), Pyrotechnics (157644), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Brain Freeze (190446), Brain Freeze (190447), Ice Form (198144), Cinderstorm (198928), Glacial Spike (199786), Ray of Frost (205021), Lonely Winter (205024), Presence of Mind (205025), Ice Ward (205036), Conflagration Flare Up (205345), Flame Patch (205472), Chilled (205708), Shimmer (212653), Cone of Cold (212792), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Blazing Barrier (235313), Blazing Barrier (235314), Prismatic Barrier (235450), Time and Space (240689), Living Bomb (244813), Ebonbolt (257537), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Clearcasting (277726), Glacial Assault (279856), Frozen Orb (289308), Radiant Spark (307443), Shifting Power (314791), Mirrors of Torment (314793), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Touch of the Magi (321507), Pyroblast (321712), Deathborne (324220), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Alter Time (342245), Alter Time (342247), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Arcane Surge (365362), Frostbite (378756), Frostbite (378760), Glacial Assault (379029), Shifting Power (382440), Shifting Power (382445), Blast Wave (389631), Displacement (389713), Displacement Beacon (389714), Mass Slow (391104), Icebind (397252), Arcane Explosion (414381), Ice Cold (414658), Mass Barrier (414660), Ice Barrier (414661), Mass Invisibility (414664), Gift of the Naaru (416250), Summon Water Elemental (417486), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438673), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Phoenix Flames (450506), Lit Fuse (453207), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Meteorite (456139), Homebrewed Blink Vial (457733), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Gravity Lapse (473290), Gravity Lapse (473291), Frostbolt Volley (1216910), Invisibility (1228321), Ignite (1236160), Glacial Spike (1236209), Glacial Spike (1236211), Pyroblast (1236212)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126
 Description      : $@spelldesc236373
 Tooltip          : Your spells may be castable while moving.
@@ -222736,7 +222736,7 @@ Internal Cooldown: 0.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Attributes       : Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Allow While Stealthed (37), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1120128)  : Apply Aura (6) | Increase Armor (465) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 1330.739 (coefficient=0.520275) | Target: Self (1)
@@ -222756,7 +222756,7 @@ Category         : 4 (Type 0x0)
 Labels           : 2852
                  : 3062
 Category Cooldown: 300 seconds
-Attributes       : Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354)
+Attributes       : Allow While Stealthed (37), Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1120142)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3990.514 (coefficient=1.04219) | Rating: Crit | Target: Self (1)
@@ -228503,16 +228503,6 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1131774)  : Unknown(90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 219204 | Target: Self (1)
-
-Name             : Opening (id=439051) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1132052)  : Unknown(189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 122337 | Misc Value 2: 0x1b4 | Target: Self (1)
-Description      : Create a soulbound Mythic+ Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 4.
 
 Name             : Heroic Leap (id=439054) [Hidden] 
 School           : Physical
@@ -244573,16 +244563,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc459132|r
 
 $?pc124903[$@spelldesc456525][$@spelldesc455680]
 
-Name             : Opening (id=457036) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1161686)  : Unknown(189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 126326 | Misc Value 2: 0x1b4 | Target: Self (1)
-Description      : Create a soulbound dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 1.
-
 Name             : Well Fed (id=457049) 
 School           : Physical
 Spell Type       : None
@@ -251910,16 +251890,6 @@ Effects          :
 #1 (id=1176406)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Self (1)
 
-Name             : Opening (id=465320) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1177200)  : Unknown(189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 130018 | Misc Value 2: 0x1b4 | Target: Self (1)
-Description      : Create a soulbound dungeon item appropriate for your loot specialization ($@lootspec) during The War Within Season 2.
-
 Name             : Capture Device (id=465697) 
 School           : Physical
 Spell Type       : None
@@ -252341,16 +252311,6 @@ Effects          :
 Description      : Brann's maximum health is increased by $1214502s1% and his damage and healing done is increased by $1214502s2%.
 
 While in combat, Brann may become targeted by mechanical bots that fixate on him which can be destroyed or dispelled. If they reach Brann, he will suffer $1214893s1% of his maximum health in damage and be stunned for $1214893d.
-
-Name             : Opening (id=467241) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1180256)  : Unknown(189)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 128657 | Misc Value 2: 0x1b4 | Target: Self (1)
-Description      : Create a piece of Prized Gladiator's equipment appropriate for your loot specialization ($@lootspec).
 
 Name             : Mister Pick-Me-Up (id=467250) [Passive] 
 School           : Physical
@@ -259205,28 +259165,28 @@ Triggered By     : Ethereal Reaping (1223417)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1200878)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 45592.13 (coefficient=17.82501) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 45592.13 (coefficient=17.82501) | PvP Coefficient: 0.33 | Target: Self (1)
 #2 (id=1211753)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 68391.6 (coefficient=26.73886) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 68391.6 (coefficient=26.73886) | PvP Coefficient: 0.33 | Target: Self (1)
 #3 (id=1211754)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 106383.5 (coefficient=41.59244) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 106383.5 (coefficient=41.59244) | PvP Coefficient: 0.33 | Target: Self (1)
 #4 (id=1211779)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Target: Self (1)
 #5 (id=1211780)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
 #6 (id=1211781)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.33 | Target: Self (1)
 #7 (id=1211782)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.33 | Target: Self (1)
 #8 (id=1211868)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : $?pc136599&(a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217103:
 
 $@spelldesc1217103][]$?pc136599&(a137048|a137028|a137023|a137010|a212613|a137008)[The wraps attune to your specialization granting you $@spellname1217096:
 
 $@spelldesc1217096][]$?pc136599&!(a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217101:
 
-$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Learn to harness the power of the Reshii Wraps to unlock its potential.]
+$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ehtereal energies.]
 
 Name             : Ethereal Protection (id=1217096) 
 School           : Physical
@@ -260623,19 +260583,6 @@ Effects          :
 #1 (id=1211739)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 300 yards | Target: At Self (22) -> In Area (7)
 Description      : $@spelldesc1223134
-
-Name             : Sigil of Chains (id=1223624) 
-School           : Physical
-Spell Type       : None
-Range            : 50000 yards
-Duration         : 6 seconds
-Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41), Encounter End (56)
-Effects          :
-#1 (id=1211750)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 40 | Scaled Value: 40 | Mechanic: Snare | Target: Any Target (25)
-Description      : $@spelldesc1240891
-Tooltip          : Movement speed reduced by $s1%.
 
 Name             : [Do not use]Whip of the Soul (id=1223866) [Hidden] 
 School           : Arcane
@@ -262125,7 +262072,7 @@ Attributes       : Only On Player (104), Do Not Display Range (126), Allow Cast 
 Effects          :
 #1 (id=1215957)  : School Damage (2): arcane
                    Base Value: 45.9024 | Scaled Value: 45.9024 | Radius: 0 - 300 yards | Target: At Self (18) -> At Enemy in Area (16)
-Description      : Energy from collectors feeds the Manaforge. When enough energy is fed, the Manaforge surges inflicting $s1 Arcane damage to players.
+Description      : Upon reaching full energy the Arcane Collector channels into the Manaforge, inflicting $s1 Arcane damage to all players every $1232590t1 sec for $1232590d.
 
 Name             : Dwarven Medicine (id=1226262) [Hidden] 
 School           : Nature
@@ -262221,9 +262168,11 @@ Effects          :
                    Base Value: 1.35 | Scaled Value: 1.35 | Trigger Spell: 1238197 | Target: Any Target (25)
 #2 (id=1233818)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1226322 | Target: Any Target (25)
-Description      : Loom'ithar pulls several players to itself with arcane strands that inflict $1238197s1 Arcane damage and grow in strength every second.
+#3 (id=1255065)  : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40
+Description      : Loom'ithar pulls several players to its location, binding them with silken strands that inflict $1238197s1 Arcane damage each second, growing in intensity over time.
 
-The strand snaps when drawn to 40 yards, creating a splotch of $@spellname1226322 at the player's location.
+Each strand snaps when drawn to $s3 yards, creating a splotch of $@spellname1226322 at the player's location.
 Tooltip          : Inflicts $1238197s1 Arcane damage every $t1 sec, increasing in strength.
 
 Effect ends once far enough from the caster.
@@ -262318,17 +262267,13 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Aura Unique (43), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Only On Player (104), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1247114)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 0x40 | Target: Any Target (25)
-                   Affected School(s): Arcane
-#2 (id=1231306)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Any Target (25)
-#3 (id=1253836)  : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
+#1 (id=1216117)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 25 | Scaled Value: 25 | Mechanic: Snare | Target: Any Target (25)
+#2 (id=1255107)  : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 25.0166 | Scaled Value: 25.0166 | Target: Any Target (25)
-Description      : Fresh tendrils of living silk turn their victims into arcane conduits, inflicting $s3 Nature damage every second, increasing Arcane damage taken by $s1% and reducing movement speed by $s2%.
-Tooltip          : Arcane damage increased by $s1%.
-Movement speed reduced by $s2%.
-Inflicts $s3 Nature damage every sec.
+Description      : Tendrils of arcane silk inflict $s2 Nature damage every second and reduce movement speed by $s1%.
+Tooltip          : Movement speed reduced by $s1%.
+Inflicts $s2 Nature damage every sec.
 
 Name             : Commendation of the Waveblade Ankoan (id=1226379) 
 School           : None
@@ -262470,16 +262415,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1226508 | Target: Self (1)
 Description      : $@spelldesc1226507
 
-Name             : Infusion Tether (id=1226721) 
-School           : Arcane
-Spell Type       : Magic
-Range            : 50000 yards
-Attributes       : Not On Player Controlled NPC (168)
-Effects          :
-#1 (id=1216687)  : School Damage (2): arcane
-                   Base Value: 40 | Scaled Value: 40 | Target: Any Target (25)
-Description      : $@spelldesc1226311
-
 Name             : Hallowed Tome (id=1226749) 
 School           : Holy
 Spell Type       : None
@@ -262508,10 +262443,10 @@ Effects          :
                    Base Value: 5.0033 | Scaled Value: 5.0033 | Misc Value: 50 | Misc Value 2: 0x64 | Target: Any Target (25)
 #3 (id=1250437)  : Knock Back (98)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 50 | Misc Value 2: 0x64 | Target: Any Target (25)
-#4 (id=1247386)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Any player struck by the orb is wracked with searing pain, suffering $?diff16[reduced movement speed by $s2% and haste by $s1%][ $1225629s1 Arcane damage every $t2 sec for $d, and reduced movement speed by $s1%. ]
-Tooltip          : $?diff16 [Reduce movement speed by $s2% and haste by $s1%.][Inflicting $1225629s1 Arcane damage every $t2 sec for $d, and reduced movement speed by $s1%. ]
+#4 (id=1255315)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
+                   Base Value: 16 | Scaled Value: 16 | Target: Any Target (25)
+Description      : An orb of energy that $?diff16[inflicts $s4 Arcane damage every $t4 sec, reduced movement speed by $s2% and haste by $s1% for $d.][inflicts $1225629s1 Arcane damage every $t2 sec, and reduced movement speed by $s1% for $d.]
+Tooltip          : $?diff16[Inflicting $s4 Arcane damage every $t4 sec, reducing movement speed by $s2% and haste by $s1%.][Inflicting $1225629s1 Arcane damage every $t2 sec for $d, and reducing movement speed by $s1%.]
 
 Name             : Primal Spellstorm (id=1226862) [Hidden] 
 School           : Physical
@@ -262533,7 +262468,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1216915)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Radius: 0 - 50000 yards | Target: At Self (18) -> At Enemy in Area (16)
-Description      : Primitive arcane missiles rain down on players, inflicting $1226877s1 Arcane damage within $1226877a1 yards of the impacts.
+Description      : Arcane energy rains down from the chamber above, inflicting $1226877s1 Arcane damage within $1226877a1 yards of the impact locations.
 
 
 Name             : Primal Spellstorm (id=1226875) [Hidden] 
@@ -262697,7 +262632,7 @@ Attributes       : Only On Player (104), Not On Player Controlled NPC (168)
 Effects          :
 #1 (id=1217228)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 300 yards | Target: At Self (22) -> Enemy in Area (15)
-Description      : The Shadowguard Assassin targets a random player, vanishing into the shadows then reappears behind them and delivers a devastating strike infused with shadow energy, $?diff16[inflicting  $1227051s1 Shadow damage and additional $1227051s2 Shadow damage  every $1227051t2 sec for $1227051d to all players within the impact area.][inflicting  $1227051s1 Shadow damage and additional $1227051s2 Shadow damage  every $1227051t2 sec for $1227051d.]
+Description      : The Shadowguard Assassin targets a random player, vanishing into the shadows then reappearing behind them to deliver a devastating strike infused with Shadow energy, $?diff16[inflicting  $1227051s1 Shadow damage and an additional $1227051s2 Shadow damage  every $1227051t2 sec for $1227051d to all players within the impact area.][inflicting  $1227051s1 Shadow damage and an additional $1227051s2 Shadow damage every $1227051t2 sec for $1227051d.]
 
 Name             : Voidblade Ambush (id=1227051) 
 School           : Shadow
@@ -264759,6 +264694,10 @@ Triggered By     : Phase Diving (1214374)
 Effects          :
 #1 (id=1224689)  : Unknown(203)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232001 | Target: Self (1)
+#2 (id=1254800)  : Unknown(203)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250635 | Target: Self (1)
+#3 (id=1255149)  : Unknown(203)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250578 | Target: Self (1)
 
 Name             : Arcane Convergence (id=1232413) [Hidden] 
 School           : Physical
@@ -264861,7 +264800,7 @@ Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1225786)  : Apply Aura (6) | Periodic Dummy (226): every 30 seconds | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 4134.38 (coefficient=1.079763) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4134.38 (coefficient=1.079763) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1238079)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Become Oath-Bound to a nearby ally every $t1 sec.
@@ -264876,7 +264815,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 11025.9 (coefficient=2.879601) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 11025.9 (coefficient=2.879601) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -265093,7 +265032,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spe
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1226730)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 182368.9 (coefficient=71.30021) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 182368.9 (coefficient=71.30021) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1239524)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your attacks have a high chance to charge the Arcanocore. At $1240896u charges, deploy a sentinel to arcanoblast your target for ${$s1*$<rolemult>} Arcane damage split between nearby enemies. Recover $s2 charges if only one enemy is struck.
@@ -266019,7 +265958,7 @@ Triggered By     : Footbomb to the Face (1234219)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1228196)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 60789.5 (coefficient=23.76669) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 60789.5 (coefficient=23.76669) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1228197)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Your harmful attacks, spells, and abilities have a chance to engage the dispenser dropping $s2 footbombs on the field for $1234025d.
@@ -266374,15 +266313,15 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), No Aura Log (202), Absorb Cannot Be Ignore (214), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 179949.3 (coefficient=70.35423) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 179949.3 (coefficient=70.35423) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 7.120324e+08 (coefficient=204.2943) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8.544377e+08 (coefficient=245.1528) | Misc Value: 127 | Target: Self (1)
 #4 (id=1232865)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 #5 (id=1233296)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Taking damage has a high chance to cause you to devour the essence of nearby enemies, dealing $s1 Shadow damage split between them and healing you for $s2% of the damage dealt.
 
 Fatal damage not exceeding $s3 instead restores you to $s5% health and reconstitutes you as unstable void for $1236692d. Exceed $s4% health to stabilize and avoid death. This effect may occur once per $1236691d. The Nucleus is unable to deal damage while recharging.
@@ -267536,6 +267475,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc1235387
 
+Name             : Naazindhri's Mystic Lash (id=1239810) 
+School           : Arcane
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always Line of Sight (185)
+Effects          :
+#1 (id=1237821)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc1235387
+
 Name             : Boon of the Oathsworn (id=1240000) 
 School           : Arcane
 Spell Type       : None
@@ -267583,7 +267534,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1239226)  : Apply Aura (6) | Proc Trigger Spell (42): Ether-Plate | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 759337.2 (coefficient=296.8758) | Trigger Spell: 1240725 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 759337.2 (coefficient=296.8758) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
 #2 (id=1240404)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your spells have a chance to grant you a stack of Ether-Plate up to $1240725u.
@@ -267608,18 +267559,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Tooltip          : Upon taking direct targeted damage break an Ether-Plate reducing upcoming damage taken.
-
-Name             : Sigil of Chains (id=1240891) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2.5 seconds
-Attributes       : AI Doesn't Face Target (179)
-Effects          :
-#1 (id=1239514)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
-Description      : Ilyssa places a Sigil of Chains at their current target's location that activates after ${$s1/2}.1 sec.
-
-All players are pulled to its center and snared, reducing movement speed by $1223624s1% for $1223624d.
 
 Name             : Eradicating Arcanocore (id=1240896) 
 School           : Physical
@@ -267823,6 +267762,7 @@ Name             : Cursed Stone Idol (id=1241801) [Passive]
 School           : Nature
 Spell Type       : None
 Labels           : 3959: Item Effects
+Triggered By     : Cursed Stone Idol (1241809)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1240990)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -267846,6 +267786,20 @@ Effects          :
 #1 (id=1241000)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike increased by $w1.
+
+Name             : Cursed Stone Idol (id=1241809) 
+School           : Nature
+Spell Type       : Melee
+Range            : 50 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1241010)  : School Damage (2): nature | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(87) -> At Enemy in Area (16)
+#2 (id=1241011)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1241801 | Target: Self (1)
+Description      : The force slams the earth, dealing $1241801w2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801w3 per enemy hit, up to a maximum of $1241801w4.
 
 Name             : Eradicating Arcanocore (id=1241847) [Hidden] 
 School           : Physical
@@ -267954,7 +267908,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Raid E
 Effects          :
 #1 (id=1242627)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
-Description      : $@spelldesc1245978$@spelldesc1240891
+Description      : $@spelldesc1245978
 
 Name             : Screams of a Forgotten Sky: An'xoth (id=1242875) 
 School           : Cosmic
@@ -268000,7 +267954,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1242867 | Misc Value 2: 0x12f714 | Trigger Spell: 1242883 | Target: Self (1)
 #2 (id=1243429)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1243162
-Description      : $@spelldesc1245978$@spelldesc1240891
+Description      : $@spelldesc1245978
 
 Name             : Soul Tether (id=1242883) 
 School           : Physical
@@ -268012,8 +267966,8 @@ Attributes       : Do Not Sheath (18), No Active Defense (21), Allow While Mount
 Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1242654)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1242867 | Target: Any Target (25)
-Description      : $@spelldesc1245978$@spelldesc1245978
+                   Base Value: 12 | Scaled Value: 12 | Trigger Spell: 1242867 | Target: Any Target (25)
+Description      : $@spelldesc1245978
 Tooltip          : You are bound to other players. Moving further than $s1 yards away will cause you to snap back towards each other and suffer $1243162s1 Chaos damage.
 
 Name             : Screams of a Forgotten Sky: An'zuq (id=1242895) 
@@ -268054,7 +268008,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1242688)  : Unknown(254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1467 | Target: Unknown(138)
-Description      : $@spelldesc1245978$@spelldesc1240891
+Description      : $@spelldesc1245978
 
 Name             : Abyssal Implosion (id=1242901) 
 School           : Cosmic
@@ -268078,11 +268032,24 @@ Proc Flags       : White Melee, Yellow Melee
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1243051)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 91181.6 (coefficient=35.64899) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 91181.6 (coefficient=35.64899) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1243593)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your melee attacks have a chance to coalesce a warpstalker echo to strike with you, inflicting ${$<rolemult>*$s1} Arcane damage split between enemies in its path.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Incorporeal Warpstrike (id=1243133) 
+School           : Arcane
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 3959: Item Effects
+Attributes       : Treat as Area Effect (175), Always Line of Sight (185)
+Effects          :
+#1 (id=1243070)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
+#2 (id=1243086)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : $@spelldesc1243118
 
 Name             : Soul Tether (id=1243162) 
 School           : Chromatic
@@ -268093,7 +268060,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=1243124)  : School Damage (2): chromatic
                    Base Value: 30 | Scaled Value: 30 | Target: Any Target (25)
-Description      : $@spelldesc1245978$@spelldesc1240891
+Description      : $@spelldesc1245978
 
 Name             : Nullstorm Blast (id=1243304) 
 School           : Nature
@@ -268161,7 +268128,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 15166.49 (coefficient=5.929595) | Target: Self (1)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
-Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.
+Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.
 
 Name             : Azhiccaran Mite (id=1243828) 
 School           : Physical
@@ -268255,7 +268222,7 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244561)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 9191.87 (coefficient=2.400612) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9191.87 (coefficient=2.400612) | PvP Coefficient: 0.5 | Rating: Mastery | Target: Self (1)
 #2 (id=1244562)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Borrow from the fates of those around you, increasing your Mastery by $s1 for $d.
@@ -268298,7 +268265,7 @@ Triggered By     : Manaforged Aethercell (1245397)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1245140)  : Apply Aura (6) | Proc Trigger Spell (42): Manaforged Aethercell | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1993.261 (coefficient=0.779299) | Trigger Spell: 1245397 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1993.261 (coefficient=0.779299) | PvP Coefficient: 0.5 | Trigger Spell: 1245397 | Target: Self (1)
 Description      : Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.
 
 
@@ -268313,9 +268280,9 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245143)  : Apply Aura (6) | Proc Trigger Spell (42): Symbiotic Ethergauze | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 60799.37 (coefficient=23.77055) | Trigger Spell: 1245429 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 60799.37 (coefficient=23.77055) | PvP Coefficient: 0.5 | Trigger Spell: 1245429 | Target: Self (1)
 #2 (id=1246464)  : Apply Aura (6) | Proc Trigger Spell (42): Symbiotic Ethergauze | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 352187.1 (coefficient=137.6935) | Trigger Spell: 1245431 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 352187.1 (coefficient=137.6935) | PvP Coefficient: 0.5 | Trigger Spell: 1245431 | Target: Self (1)
 Description      : Blocking, parrying, or dodging has a chance to awaken the Gauze causing it to lash out dealing $s1 Arcane damage split between nearby enemies while shielding you for $s2 damage for $1245431d.
 
 
@@ -268333,7 +268300,7 @@ Category Cooldown: 20 seconds
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1245150)  : School Damage (2): arcane | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 47395.17 (coefficient=18.52995) | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 47395.17 (coefficient=18.52995) | PvP Coefficient: 0.5 | Target: Any Target (25)
 #2 (id=1249202)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247207 | Target: Any Target (25)
 Description      : Rip magical essence out of your target and consume it dealing ${$s1*$<rolemult>} Arcane damage while granting you $1247205s1 of your lowest secondary stat for $1247207d.
@@ -268360,6 +268327,33 @@ Description      : Your healing spell and abilities have a very high chance to s
 
 
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
+
+Name             : Perfidious Projector (id=1244444) [Hidden] 
+School           : Cosmic
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 0.2 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Always Line of Sight (185)
+Effects          :
+#1 (id=1245195)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38654 | Radius: 8 yards | Target: At Target Radius (75)
+Description      : $@spelldesc1235566
+
+
+
+Name             : Shadowguard, to me! (id=1244448) 
+School           : Cosmic
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1245204)  : School Damage (2): cosmic
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Description      : $@spelldesc1235566
 
 Name             : Perfidious Projector (id=1244636) [Hidden] 
 School           : Cosmic
@@ -268389,10 +268383,11 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 10 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
+Triggered By     : Arcane Insanity (1245643)
 Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1246076)  : Apply Aura (6) | Proc Trigger Spell (42): Mind-Fracturing Odium | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 2519.1 (coefficient=0.984885) | Trigger Spell: 1245637 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2519.1 (coefficient=0.984885) | PvP Coefficient: 0.5 | Trigger Spell: 1245637 | Target: Self (1)
 Description      : Your harmful abilities may cause your mind to tear piece by piece. At the tenth tear, you succumb to Arcane Insanity granting you $s1 Haste while periodically recovering your sanity over time.
 
 Slaying an enemy or witnessing an ally's death instantly tears at your sanity.
@@ -268507,6 +268502,19 @@ Effects          :
 Description      : $@spelldesc1245148
 Tooltip          : At the tenth tear, succumb to Arcane Insanity.
 
+Name             : Arcane Insanity (id=1245643) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 3959: Item Effects
+Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
+Effects          :
+#1 (id=1246814)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#2 (id=1246823)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245148 | Target: Self (1)
+Tooltip          : Haste increased by $1245148w1.
+
 Name             : Soul Tether (id=1245948) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -268524,7 +268532,7 @@ Attributes       : Is Self Channelled (38), No Aura Icon (60)
 Channel Interrupt: Moving (3), Turning (4), Attacking (12)
 Effects          :
 #1 (id=1247297)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1242883 | Misc Value 2: 0x12f702 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 1242883 | Misc Value 2: 0x12f702 | Target: Self (1)
 Description      : The casters bind several players together for $d, causing them to snap towards each other and suffer $1243162s1 Chaos damage if they move further than $s1 yards apart.
 
 Name             : Abyssal Polearm (id=1246065) 
@@ -268973,5 +268981,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc1227048
 Tooltip          : Targeting by Voidblade Ambush.
+
+Name             : Phase Diving Mount (id=1250635) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Phase Diving (1232207)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Aura Never Bounces (148), Visible only to caster (conversations only) (343)
+Effects          :
+#1 (id=1254793)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 

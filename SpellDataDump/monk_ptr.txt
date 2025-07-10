@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -769,7 +769,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Unique (43), Ignore Line of Sight (66), Do Not Display Range (126), No Cast Log (128), Aura Points On Client (268), Do Not Log Aura Refresh (291), Aura Always Shown (438)
 Effects          :
 #1 (id=126739)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1 | Target: Enemy (6)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 0x1 | Target: Enemy (6)
                    Affected School(s): Physical
 Description      : $@spelldesc8647
 Tooltip          : Physical damage taken increased by $w1%.
@@ -19511,7 +19511,7 @@ Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Allow Cast
 Effects          :
 #1 (id=1223613)  : Weapon Damage% (31)
                    Base Value: 25 | Scaled Value: 0.25 | Target: Enemy (6)
-Description      : Harnesses the magic of their enemy, inflicting Arcane damage every $1231540t1 sec for $d.
+Description      : Harnesses the magic of their enemy, inflicting Arcane damage every $1231540t1 sec for $1231540d.
 
 Name             : Monk Master of Harmony 11.2 Class Set 2pc (id=1236377) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -20083,7 +20083,7 @@ Range            : 50000 yards
 Attributes       : No Active Defense (21), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Only On Player (104), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Ignore For Mod Time Rate (196), Reflection Only Defends (253), Allow While Charmed (261), Ignore Sanctuary (263), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308), Ignore Feign Death (346), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1245909)  : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 10 | Target: Any Target (25)
+                   Base Value: 0.75 | Scaled Value: 0.75 | Value Multiplier: 10 | Target: Any Target (25)
 Description      : $@spelldesc1245032
 
 Name             : Dark Massacre (id=1245171) 

@@ -1723,11 +1723,6 @@ void judgment_t::execute()
       p()->buffs.avenging_wrath->extend_duration( p(), extension );
     }
 
-    if ( p()->buffs.crusade->up() )
-    {
-      p()->buffs.crusade->extend_duration( p(), extension );
-    }
-
     if ( p()->buffs.sentinel->up() )
     {
       p()->buffs.sentinel->extend_duration( p(), extension );
@@ -2530,6 +2525,15 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   }
 };
 
+struct lesser_weapon_proc_damage_t :public paladin_spell_t
+{
+  lesser_weapon_proc_damage_t(paladin_t* p) : paladin_spell_t("lesser_weapon_proc_damage", p, p->find_spell(1239282))
+  {
+    background = true;
+    callbacks=false;
+  }
+};
+
 struct sacred_weapon_proc_heal_t : public paladin_heal_t
 {
   sacred_weapon_proc_heal_t( paladin_t* p ) : paladin_heal_t( "sacred_weapon_proc_heal", p, p->find_spell( 441590 ) )
@@ -2559,6 +2563,16 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
   }
 };
 
+struct lesser_weapon_proc_heal_t :public paladin_heal_t
+{
+  lesser_weapon_proc_heal_t( paladin_t* p ) : paladin_heal_t( "lesser_weapon_proc_heal", p, p->find_spell( 1239276 ) )
+  {
+    background = true;
+    callbacks  = false;
+    harmful    = false;
+  }
+};
+
 struct sacred_weapon_cb_t : public dbc_proc_callback_t
 {
   paladin_t* p;
@@ -2577,6 +2591,39 @@ struct sacred_weapon_cb_t : public dbc_proc_callback_t
     else
     {
       p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
+    }
+  }
+};
+
+struct lesser_weapon_cb_t : public dbc_proc_callback_t
+{
+  paladin_t* p;
+  player_t* player;
+  int index;
+  lesser_weapon_cb_t( player_t* pl, paladin_t* paladin, const special_effect_t& effect, int idx = 0 )
+    : dbc_proc_callback_t( pl, effect )
+  {
+    p = paladin;
+    player = pl;
+    index  = idx;
+  }
+  void execute(action_t*, action_state_t* s) override
+  {
+    if (s->target->is_enemy())
+    {
+      p->active.lesser_weapon_proc_damage->execute_on_target( s->target );
+    }
+    else
+    {
+      p->active.lesser_weapon_proc_heal->execute_on_target( s->target );
+    }
+    if (p == player)
+    {
+      p->buffs.lightsmith.lesser_weapon[ index ]->decrement();
+    }
+    else
+    {
+      p->get_target_data( player )->buffs.lesser_weapon->decrement();
     }
   }
 };
@@ -2640,15 +2687,20 @@ struct holy_armaments_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    p()->cast_holy_armaments( execute_state->target->is_enemy() ? p() : execute_state->target, p()->next_armament, true,
-                              false );
+    p()->cast_holy_armaments( execute_state->target->is_enemy() ? p() : execute_state->target, p()->next_armament, LS_HARDCAST );
   }
 };
 
-void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random )
+void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, armament_source src )
 {
   auto nextArmament = active.armament[ usedArmament ];
+  bool changeArmament = src == LS_HARDCAST;
+  bool random         = src == LS_DIVINE_INSPIRATION;
 
+  // Masterwork always prefers to go on other targets, because 
+  int masterwork      = buffs.lightsmith.masterwork->stack();
+
+  buffs.lightsmith.masterwork->expire();
   // Random is not truly random. Starting weapon is semi-random-ish (It's always the opposite from the last and does not reset on combat start)
   // So we just rng the first one
   if (random)
@@ -2686,7 +2738,7 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
           if ( i == 0 )
           {
             if ( ( usedArmament == SACRED_WEAPON && get_target_data( _p )->buffs.sacred_weapon->up() ) ||
-                  ( usedArmament == HOLY_BULWARK && get_target_data( _p )->buffs.holy_bulwark->up() ) )
+                 ( usedArmament == HOLY_BULWARK && get_target_data( _p )->buffs.holy_bulwark->up() ) )
               continue;
           }
 
@@ -2736,11 +2788,55 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
         }
       }
     }
+
+    if ( masterwork > 0 )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        if ( masterwork == 0 )
+          break;
+        for ( auto& _p : sim->player_non_sleeping_list )
+        {
+          if ( masterwork == 0 )
+            break;
+          if ( ( i == 0 && _p->role == ROLE_ATTACK ) || ( i == 1 && _p->type == PLAYER_PET ) ||
+               ( i == 2 && _p->role == ROLE_HEAL ) || ( i == 3 && _p->role == ROLE_TANK ) )
+          {
+            if ( _p != this )
+            {
+              if ( usedArmament == SACRED_WEAPON )
+                get_target_data( _p )->buffs.lesser_weapon->trigger( 5 );
+              else
+                get_target_data( _p )->buffs.lesser_bulwark->execute();
+            }
+            else
+            {
+              if ( usedArmament == SACRED_WEAPON )
+                buffs.lightsmith.lesser_weapon[ 0 ]->trigger( 5 );
+              else
+                buffs.lightsmith.lesser_bulwark->execute();
+            }
+            masterwork--;
+          }
+        }
+      }
+    }
   }
 
   if (options.fake_solidarity)
   {
     buffs.lightsmith.fake_solidarity->trigger();
+    if (masterwork > 0)
+    {
+      if ( usedArmament == SACRED_WEAPON )
+        for ( int i = 0; i < masterwork; i++ )
+        {
+          buffs.lightsmith.lesser_weapon[ i ]->trigger( 5 );
+        }
+      else
+        // Not gonna worry about an array here
+        buffs.lightsmith.lesser_bulwark->trigger();
+    }
   }
 
   if ( changeArmament )
@@ -2759,6 +2855,19 @@ dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source
   target->special_effects.push_back( sacred_weapon_effect );
 
   return new sacred_weapon_cb_t( target, source, *sacred_weapon_effect );
+}
+
+dbc_proc_callback_t* paladin_t::create_lesser_weapon_callback(paladin_t* source, player_t* target, int index)
+{
+  auto lesser_weapon_effect = new special_effect_t( target );
+  lesser_weapon_effect->name_str =
+      fmt::format( "lesser_weapon_cb_{}_{}_{}", source->name_str, target->name_str, index );
+  lesser_weapon_effect->spell_id = 1239091;
+  lesser_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
+  
+
+  target->special_effects.push_back( lesser_weapon_effect );
+  return new lesser_weapon_cb_t( target, source, *lesser_weapon_effect, index );
 }
 
 void paladin_t::trigger_laying_down_arms()
@@ -2894,12 +3003,7 @@ public:
         p()->buffs.avenging_wrath->extend_duration( p(), extension );
       }
 
-      if ( p()->buffs.crusade->up() )
-      {
-        p()->buffs.crusade->extend_duration( p(), extension );
-      }
-
-      if ( p() ->buffs.sentinel->up())
+      if ( p()->buffs.sentinel->up() )
       {
         p()->buffs.sentinel->extend_duration( p(), extension );
         // 2022-11-14 If Sentinel is still at max stacks, Zealot's Paragon increases decay length, too.
@@ -3167,6 +3271,8 @@ struct dawnlight_t : public paladin_spell_t
     affected_by.highlords_judgment = true;
     tick_may_crit = true;
     dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
+    if ( p->sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
+      apply_affecting_aura( p->sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) );
   }
 
   void execute() override
@@ -3528,6 +3634,18 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
     cb->activate_with_buff( buffs.sacred_weapon, true );
   }
 
+  if (paladin->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B4))
+  {
+    buffs.lesser_bulwark = make_buff<buffs::lesser_bulwark_buff_t>( this );
+    buffs.lesser_weapon = make_buff( *this, "lesser_weapon_" + paladin->name_str + "_" + target->name_str,
+                                      paladin->find_spell( 1239091 ) );
+    if ( !target->is_enemy() && target != paladin )
+    {
+      auto cb = paladin->create_lesser_weapon_callback( paladin, target, 0 );
+      cb->activate_with_buff( buffs.lesser_weapon, true );
+    }
+  }
+
   dots.expurgation = target->get_dot( "expurgation", paladin );
   dots.truths_wake = target->get_dot( "truths_wake", paladin );
   dots.dawnlight = target->get_dot( "dawnlight", paladin );
@@ -3596,6 +3714,21 @@ void paladin_t::create_actions()
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
     active.sacred_weapon_proc_damage = new sacred_weapon_proc_damage_t( this );
     active.sacred_weapon_proc_heal   = new sacred_weapon_proc_heal_t( this );
+    if (sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B4))
+    {
+      active.lesser_weapon_proc_damage = new lesser_weapon_proc_damage_t( this );
+      active.lesser_weapon_proc_heal   = new lesser_weapon_proc_heal_t( this );
+      auto cblw                        = create_lesser_weapon_callback( this, this, 0 );
+      cblw->activate_with_buff( buffs.lightsmith.lesser_weapon[ 0 ] );
+      if (options.fake_solidarity)
+      {
+        for ( int i = 1; i < 5; i++ )
+        {
+          auto cblw2 = create_lesser_weapon_callback( this, this, i );
+          cblw2->activate_with_buff( buffs.lightsmith.lesser_weapon[ i ] );
+        }
+      }
+    }
   }
   //Templar
   if (talents.templar.lights_guidance->ok())
@@ -3907,7 +4040,18 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   buffs.avenging_wrath->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
     buffs.heightened_wrath->expire();
-    buffs.herald_of_the_sun.suns_avatar->expire();
+    if (sets->has_set_bonus(HERO_HERALD_OF_THE_SUN, TWW3, B2))
+    {
+      // 5s with Radiant Glory, 10s without
+      buffs.herald_of_the_sun.solar_wrath->trigger(
+          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+                                        : 0_ms ) );
+    }
+    else
+    {
+      buffs.herald_of_the_sun.suns_avatar->expire();
+    }
   } );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
@@ -3974,6 +4118,18 @@ void paladin_t::create_buffs()
                                        ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
                                          trigger_laying_down_arms();
                                        } );
+  buffs.lightsmith.masterwork = make_buff( this, "masterwork", find_spell( 1238903 ) );
+  // Not going to implement this "correctly", too much overhead for too little informational gain
+  buffs.lightsmith.lesser_bulwark = make_buff( this, "lesser_bulwark", find_spell( 1239002 ) );
+  buffs.lightsmith.lesser_weapon[ 0 ] = make_buff( this, "lesser_weapon", find_spell( 1239091 ) );
+  if (options.fake_solidarity)
+  {
+    for ( int i = 1; i < 5; i++ )
+    {
+      buffs.lightsmith.lesser_weapon[ i ] =
+          make_buff( this, fmt::format( "{}{}", "lesser_weapon_", i ), find_spell( 1239091 ) );
+    }
+  }
   buffs.lightsmith.blessed_assurance =
       make_buff( this, "blessed_assurance", find_spell( 433019 ) )->set_default_value_from_effect( 1 );
   buffs.lightsmith.divine_guidance = make_buff( this, "divine_guidance", find_spell( 433106 ) )->set_max_stack( 5 );
@@ -3985,7 +4141,7 @@ void paladin_t::create_buffs()
   buffs.lightsmith.blessing_of_the_forge = make_buff( this, "blessing_of_the_forge", find_spell( 434132 ) )
                                                ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
                                                  if ( new_ )
-                                                   cast_holy_armaments( this, armament::SACRED_WEAPON, false, false );
+                                                   cast_holy_armaments( this, armament::SACRED_WEAPON, LS_WINGS );
                                                } );
   buffs.lightsmith.fake_solidarity = make_buff( this, "fake_solidarity" )
                                          ->set_duration( buffs.lightsmith.sacred_weapon->base_buff_duration )
@@ -4054,12 +4210,35 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
     -> add_invalidate( CACHE_HASTE )
     -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) )
-    -> set_max_stack( 2 );
+  buffs.herald_of_the_sun.dawnlight = make_buff( this, "dawnlight", find_spell( 431522 ) );
   buffs.herald_of_the_sun.suns_avatar = make_buff( this, "suns_avatar", find_spell( 431907 ) )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
         active.suns_avatar_dmg->execute_on_target( target );
       });
+  
+  buffs.herald_of_the_sun.solar_wrath = make_buff( this, "solar_wrath", find_spell( 1236972 ) )
+                                          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
+                                              if ( !( buffs.crusade->up() || buffs.avenging_wrath->up() ) )
+                                                buffs.herald_of_the_sun.suns_avatar->expire();
+                                          } );
+
+  if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) )
+  {
+    int solar_wrath_dawnlight_stacks = sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 2 ).base_value();
+    if ( talents.radiant_glory->ok() )
+      solar_wrath_dawnlight_stacks -= sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 5 ).base_value();
+    else if ( talents.crusade->ok() )
+      solar_wrath_dawnlight_stacks += sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 4 ).base_value();
+
+    buffs.herald_of_the_sun.solar_wrath->set_stack_change_callback(
+        [ this, solar_wrath_dawnlight_stacks ]( buff_t*, int, int new_ ) {
+          if ( new_ )
+          {
+            buffs.herald_of_the_sun.dawnlight->trigger( solar_wrath_dawnlight_stacks );
+          }
+        } );
+  }
+  
 
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
@@ -4311,7 +4490,7 @@ void paladin_t::init_special_effects()
 
       void execute( action_t*, action_state_t* ) override
       {
-        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, false, true );
+        p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, LS_DIVINE_INSPIRATION );
         p->procs.divine_inspiration->occur();
       }
     };
@@ -4552,6 +4731,8 @@ void paladin_t::init_spells()
   spells.lightsmith.holy_bulwark_absorb = find_spell( 432607 );
   spells.lightsmith.forges_reckoning    = find_spell( 447258 );  // Child spell of blessing of the forge, triggered by casting shield of the righteous
   spells.lightsmith.sacred_word         = find_spell( 447246 ); // Child spell of blessing of the forge, triggered by casting Word of Glory
+  spells.lightsmith.lesser_bulwark      = find_spell( 1239002 );
+  spells.lightsmith.lesser_weapon       = find_spell( 1239091 );
   spells.templar.hammer_of_light_driver = find_spell( 427453 );
   spells.templar.hammer_of_light        = find_spell( 429826 );
   spells.templar.empyrean_hammer        = find_spell( 431398 );
@@ -4559,6 +4740,7 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
+  spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
 }
 
 // paladin_t::primary_role ==================================================

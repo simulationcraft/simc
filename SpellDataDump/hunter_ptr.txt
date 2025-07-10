@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -15978,11 +15978,11 @@ Effects          :
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
 #2 (id=1184106)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
 #3 (id=1250755)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 5078 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 5078 (Label) | Target: Self (1)
                    Affected Spells (Label): Bleak Powder (467914), Bleak Powder (472084)
 Description      : Black Arrow damage increased by $s1%.
 

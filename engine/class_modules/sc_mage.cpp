@@ -283,6 +283,7 @@ public:
     action_t* frostfire_infusion;
     action_t* glacial_assault;
     action_t* ignite;
+    action_t* ignite_2pc;
     action_t* isothermic_comet_storm;
     action_t* isothermic_meteor;
     action_t* leydrinker_echo;
@@ -572,9 +573,9 @@ public:
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
-    bool prevent_intuition_damage_amp; // Bug: if Intuition is gained then subsequently consumed, the damage of Barrage will not be amplified.
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     int embedded_splinters;
+    int remaining_splinterstorm;
     int magis_spark_spells;
     int intuition_blp_count;
     int clearcasting_blp_count;
@@ -1917,6 +1918,7 @@ struct mage_spell_t : public spell_t
     bool frostfire_infusion = true;
     bool frostfire_mastery = true;
     bool ignite = false;
+    bool ignite_2pc = false; // Frostfire Frost Ignite
     bool overflowing_energy = true;
     bool touch_of_the_magi = true;
 
@@ -1928,6 +1930,7 @@ struct mage_spell_t : public spell_t
 
   bool calculate_on_impact;
   unsigned impact_flags;
+  double base_ignite_multiplier = 1.0;
 
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -2308,6 +2311,12 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
+    if ( triggers.ignite )
+      trigger_ignite( s );
+
+    if ( triggers.ignite_2pc )
+      trigger_ignite_2pc( s );
+
     if ( triggers.overflowing_energy && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       // TODO: This isn't perfect, but currently describes all "non AoE" spells mages have
@@ -2377,6 +2386,71 @@ public:
 
     if ( channeled && affected_by.ice_floes )
       p()->buffs.ice_floes->decrement();
+  }
+
+  virtual double composite_ignite_multiplier( const action_state_t* s ) const
+  {
+    double m = base_ignite_multiplier;
+
+    if ( !p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
+
+    if ( auto td = find_td( s->target ) )
+      m *= 1.0 + td->debuffs.controlled_destruction->check_stack_value();
+
+    return m;
+  }
+
+  void trigger_ignite( action_state_t* s )
+  {
+    if ( !p()->spec.ignite->ok() )
+      return;
+
+    double m = s->target_da_multiplier;
+    if ( m <= 0.0 )
+      return;
+
+    double trigger_dmg = s->result_total;
+
+    if ( p()->bugs && s->result == RESULT_CRIT )
+    {
+      double spell_bonus  = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
+      double global_bonus = composite_player_critical_multiplier( s );
+      trigger_dmg /= 1.0 + s->result_crit_bonus;
+      trigger_dmg *= ( 1.0 + spell_bonus ) * global_bonus;
+      // TODO: This calculation is incomplete because it doesn't take into
+      // account crit_bonus or the pvp rules. However, in normal situations
+      // it's pretty close to what happens in game.
+    }
+
+    double amount = trigger_dmg / m * p()->cache.mastery_value();
+    if ( amount <= 0.0 )
+      return;
+
+    amount *= composite_ignite_multiplier( s );
+
+    if ( !p()->action.ignite->get_dot( s->target )->is_ticking() )
+      p()->procs.ignite_applied->occur();
+
+    residual_action::trigger( p()->action.ignite, s->target, amount );
+  }
+
+  // Simplified version of trigger_ignite for the Frostfire Frost version.
+  void trigger_ignite_2pc( action_state_t* s )
+  {
+    if ( !p()->action.ignite_2pc )
+      return;
+
+    double m = s->target_da_multiplier;
+    if ( m <= 0.0 )
+      return;
+
+    double amount = s->result_total / m * p()->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 2 ).percent();
+    if ( amount <= 0.0 )
+      return;
+
+    // Note that composite_ignite_multiplier could be different from 1.0. Don't apply it here.
+    residual_action::trigger( p()->action.ignite_2pc, s->target, amount );
   }
 
   void trigger_winters_chill( const action_state_t* s, int stacks = -1 )
@@ -2633,8 +2707,6 @@ struct arcane_mage_spell_t : public mage_spell_t
         }
         make_event( *sim, [ this ] { p()->state.intuition_blp_count = 0; } );
 
-        p()->state.prevent_intuition_damage_amp = true;
-        make_event( *sim, 30_ms, [ this ] { p()->state.prevent_intuition_damage_amp = false; } );
       }
     }
   }
@@ -2742,9 +2814,6 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( triggers.ignite )
-        trigger_ignite( s );
-
       if ( tt_applicable( s, triggers.hot_streak ) )
         handle_hot_streak( s->composite_crit_chance(), s->result == RESULT_CRIT ? HS_CRIT : HS_HIT );
 
@@ -2866,53 +2935,6 @@ struct fire_mage_spell_t : public mage_spell_t
       mul *= 1.0 + p()->buffs.flame_accelerant->check_value();
 
     return mul;
-  }
-
-  virtual double composite_ignite_multiplier( const action_state_t* s ) const
-  {
-    double m = 1.0;
-
-    if ( !p()->buffs.combustion->check() )
-      m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
-
-    if ( auto td = find_td( s->target ) )
-      m *= 1.0 + td->debuffs.controlled_destruction->check_stack_value();
-
-    return m;
-  }
-
-  void trigger_ignite( action_state_t* s )
-  {
-    if ( !p()->spec.ignite->ok() )
-      return;
-
-    double m = s->target_da_multiplier;
-    if ( m <= 0.0 )
-      return;
-
-    double trigger_dmg = s->result_total;
-
-    if ( p()->bugs && s->result == RESULT_CRIT )
-    {
-      double spell_bonus  = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
-      double global_bonus = composite_player_critical_multiplier( s );
-      trigger_dmg /= 1.0 + s->result_crit_bonus;
-      trigger_dmg *= ( 1.0 + spell_bonus ) * global_bonus;
-      // TODO: This calculation is incomplete because it doesn't take into
-      // account crit_bonus or the pvp rules. However, in normal situations
-      // it's pretty close to what happens in game.
-    }
-
-    double amount = trigger_dmg / m * p()->cache.mastery_value();
-    if ( amount <= 0.0 )
-      return;
-
-    amount *= composite_ignite_multiplier( s );
-
-    if ( !p()->action.ignite->get_dot( s->target )->is_ticking() )
-      p()->procs.ignite_applied->occur();
-
-    residual_action::trigger( p()->action.ignite, s->target, amount );
   }
 
   // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
@@ -3419,6 +3441,15 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
   }
 };
 
+struct ignite_2pc_t final : public residual_action::residual_periodic_action_t<spell_t>
+{
+  ignite_2pc_t( std::string_view n, mage_t* p ) :
+    residual_action_t( n, p, p->find_spell( 1236160 ) )
+  {
+    proc = true;
+  }
+};
+
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
   arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
@@ -3650,8 +3681,7 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     am *= arcane_charge_multiplier( true );
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
-    if ( !p()->bugs || !p()->state.prevent_intuition_damage_amp )
-      am *= 1.0 + p()->buffs.intuition->check_value();
+    am *= 1.0 + p()->buffs.intuition->check_value();
     am *= 1.0 + p()->buffs.arcane_soul_damage->check_stack_value();
 
     return am;
@@ -3720,6 +3750,9 @@ struct arcane_blast_t final : public dematerialize_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     consume_nether_precision( target );
+
+    if ( p()->sets->has_set_bonus( HERO_SPELLSLINGER, TWW3, B2 ) )
+      p()->buffs.arcane_harmony->trigger( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 5 ).base_value() ) );
   }
 
   double action_multiplier() const override
@@ -4399,6 +4432,14 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
     aoe = -1;
     background = proc = true;
     affected_by.icicles_aoe = true;
+
+    if ( isothermic_ && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+    {
+      triggers.ignite = true;
+      const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
+      base_ignite_multiplier = set->effectN( 1 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4646,6 +4687,14 @@ struct fireball_t final : public fire_mage_spell_t
       base_td_multiplier *= 1.0 + p->spec.fire_mage->effectN( 9 ).percent();
       enable_calculate_on_impact( 468655 );
       triggers.frostfire_mastery = false; // Manually triggered on impact
+
+      if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+      {
+        const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
+        // TODO: The ignite multiplier part of the set bonus doesn't work
+        base_ignite_multiplier = set->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + set->effectN( 3 ).percent();
+      }
     }
 
     if ( p->talents.master_of_flame.ok() )
@@ -5117,6 +5166,12 @@ struct frostbolt_t final : public frost_mage_spell_t
     {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
       triggers.frostfire_mastery = false; // Manually triggered on impact
+
+      if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+      {
+        triggers.ignite_2pc = true;
+        base_dd_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 5 ).percent();
+      }
     }
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
 
@@ -5423,9 +5478,26 @@ struct frozen_orb_t final : public frost_mage_spell_t
   }
 };
 
+struct pyroblast_4pc_t final : public mage_spell_t
+{
+  pyroblast_4pc_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1236212 ) )
+  {
+    // TODO: This might actually be consuming mana
+    background = proc = triggers.ignite_2pc = true;
+
+    if ( p->talents.splitting_ice.ok() )
+    {
+      aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 5 ).base_value() );
+      base_aoe_multiplier *= data().effectN( 1 ).chain_multiplier();
+    }
+  }
+};
+
 struct glacial_spike_t final : public frost_mage_spell_t
 {
   shatter_source_t* cleave_source = nullptr;
+  action_t* pyroblast_4pc = nullptr;
 
   glacial_spike_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->talents.glacial_spike )
@@ -5441,6 +5513,12 @@ struct glacial_spike_t final : public frost_mage_spell_t
     {
       aoe = 1 + as<int>( p->talents.splitting_ice->effectN( 1 ).base_value() );
       base_aoe_multiplier *= p->talents.splitting_ice->effectN( 4 ).percent();
+    }
+
+    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+    {
+      pyroblast_4pc = get_action<pyroblast_4pc_t>( "pyroblast_4pc", p );
+      add_child( pyroblast_4pc );
     }
   }
 
@@ -5485,6 +5563,19 @@ struct glacial_spike_t final : public frost_mage_spell_t
     am *= 1.0 + p()->cache.mastery() * p()->spec.icicles_2->effectN( 3 ).mastery_value()
               + icicle_coef / spell_power_mod.direct;
 
+    // In game, this actually consists of two separate multipliers. That is, instead
+    // of just doing
+    //
+    //   am *= 1.0 + icicles2_part + icicles1_part
+    //
+    // it's something like
+    //
+    //   am *= 1.0 + icicles2_part;
+    //   am *= 1.0 + icicles1_part / ( 1.0 + icicles2_part );
+    //
+    // Not really relevant for Frost GS, but it does matter for Fire GS where the
+    // first multiplier isn't present.
+
     am *= 1.0 + p()->buffs.wintertide->check_stack_value();
 
     return am;
@@ -5503,6 +5594,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->get_icicle();
       p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
     }
+
+    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 2 ).percent() ) )
+      pyroblast_4pc->execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
@@ -5685,6 +5779,9 @@ struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_l
     // fired. If target dies, Icicles stop.
     if ( !p()->talents.glacial_spike.ok() )
       p()->trigger_icicle( target, true );
+
+    if ( rng().roll( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 7 ).percent() ) )
+      trigger_cold_front( as<int>( p()->sets->set( HERO_SPELLSLINGER, TWW3, B2 )->effectN( 6 ).base_value() ) );
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -5764,6 +5861,15 @@ struct ice_nova_t final : public frost_mage_spell_t
     // TODO: Excess Frost Ice Nova stops ANY Ice Nova cast from consuming Winter's Chill (even after switching hero talents)
     if ( !p->talents.excess_frost.ok() && p->options.ice_nova_consumes_winters_chill )
       consumes_winters_chill = true;
+
+    // TODO: This is most likely a bug
+    if ( p->specialization() == MAGE_FIRE && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+    {
+      triggers.ignite = true;
+      const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
+      base_ignite_multiplier = set->effectN( 1 ).percent();
+      base_multiplier *= 1.0 + set->effectN( 4 ).percent();
+    }
 
     if ( excess )
     {
@@ -6110,6 +6216,12 @@ struct meteor_impact_t final : public fire_mage_spell_t
     double m = 1.0 + p->find_spell( 153561 )->effectN( 2 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
+
+    if ( type == meteor_type::ISOTHERMIC && p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+    {
+      triggers.ignite_2pc = true;
+      base_multiplier *= 1.0 + p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 6 ).percent();
+    }
   }
 
   void execute() override
@@ -6395,14 +6507,53 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   }
 };
 
+struct glacial_spike_4pc_t final : public mage_spell_t
+{
+  double base_icicle_coef;
+  double icicles_mastery_coef;
+  double icicles2_mastery_coef;
+  double icicle_count;
+
+  glacial_spike_4pc_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 1236209 ) )
+  {
+    enable_calculate_on_impact( 1236211 );
+    background = proc = triggers.ignite = true;
+    base_ignite_multiplier = p->sets->set( HERO_FROSTFIRE, TWW3, B2 )->effectN( 1 ).percent();
+
+    base_icicle_coef = p->find_spell( 148022 )->effectN( 1 ).sp_coeff();
+    icicles_mastery_coef = p->find_spell( 76613 )->effectN( 3 ).sp_coeff();
+    icicles2_mastery_coef = p->find_spell( 321684 )->effectN( 3 ).mastery_value();
+    icicle_count = p->find_spell( 76613 )->effectN( 2 ).base_value();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    double icicle_coef = base_icicle_coef + p()->cache.mastery() * icicles_mastery_coef;
+    // See glacial_spike_t for explanation.
+    double icicles1_part = icicle_count * icicle_coef / spell_power_mod.direct;
+    double icicles2_part = p()->cache.mastery() * icicles2_mastery_coef;
+    am *= 1.0 + icicles1_part / ( 1.0 + icicles2_part );
+
+    return am;
+  }
+};
+
 struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
 {
+  action_t* glacial_spike_4pc = nullptr;
+
   pyroblast_pyromaniac_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 460475 ) )
   {
     background = proc = true;
     triggers.ignite = true;
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
+
+    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+      glacial_spike_4pc = get_action<glacial_spike_4pc_t>( "glacial_spike_4pc", p );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -6436,11 +6587,16 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     p()->consume_burden_of_power();
     if ( p()->buffs.hyperthermia->check() )
       p()->buffs.hyperthermia_damage->trigger();
+
+    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 1 ).percent() ) )
+      glacial_spike_4pc->execute_on_target( target );
   }
 };
 
 struct pyroblast_t final : public hot_streak_spell_t
 {
+  action_t* glacial_spike_4pc = nullptr;
+
   pyroblast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     hot_streak_spell_t( n, p, p->talents.pyroblast )
   {
@@ -6450,6 +6606,12 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<pyroblast_pyromaniac_t>( "pyroblast_pyromaniac", p );
+
+    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B4 ) )
+    {
+      glacial_spike_4pc = get_action<glacial_spike_4pc_t>( "glacial_spike_4pc", p );
+      add_child( glacial_spike_4pc );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -6469,6 +6631,14 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     timespan_t t = hot_streak_spell_t::travel_time();
     return std::min( t, 0.75_s );
+  }
+
+  void execute() override
+  {
+    hot_streak_spell_t::execute();
+
+    if ( rng().roll( p()->sets->set( HERO_FROSTFIRE, TWW3, B4 )->effectN( 1 ).percent() ) )
+      glacial_spike_4pc->execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
@@ -7085,6 +7255,16 @@ struct frostfire_burst_t final : public mage_spell_t
 
     if ( data().ok() )
       parse_effect_data( data().effectN( p->specialization() == MAGE_FIRE ? 2 : 1 ) );
+
+    bool is_fire = p->specialization() == MAGE_FIRE;
+    if ( p->sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+    {
+      triggers.ignite = is_fire;
+      triggers.ignite_2pc = !is_fire;
+      const auto* set = p->sets->set( HERO_FROSTFIRE, TWW3, B2 );
+      base_ignite_multiplier = set->effectN( 1 ).percent();
+      base_multiplier *= 1.0 + set->effectN( is_fire ? 4 : 6 ).percent();
+    }
   }
 
   void execute() override
@@ -7306,9 +7486,6 @@ struct splinter_t final : public mage_spell_t
     {
       p()->buffs.arcane_harmony->trigger();
       // TODO: Move the trigger_cold_front function out of frost_mage_spell_t and use it here?
-      // TODO: The proc chance seems to be much lower than the spell data value and there's also
-      // most likely some sort of an ICD. We might have to implement this if it's not fixed by
-      // the time S3 goes live.
       trigger_tracking_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
     }
   }
@@ -7571,7 +7748,9 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
+      mage->state.remaining_splinterstorm += splinters;
+      make_repeating_event( sim(), 100_ms, [ m = mage, a = mage->action.splinterstorm, t ]
+        { a->execute_on_target( t ); m->state.remaining_splinterstorm--; }, splinters );
 
       if ( mage->specialization() == MAGE_FROST )
         mage->trigger_brain_freeze( mage->talents.splinterstorm->effectN( 5 ).percent(), mage->procs.brain_freeze_splinterstorm, 0_ms );
@@ -7881,6 +8060,9 @@ void mage_t::create_actions()
 
   if ( specialization() == MAGE_FROST && sets->has_set_bonus( MAGE_FROST, TWW2, B2 ) )
     action.frostbolt_volley = get_action<frostbolt_volley_t>( "frostbolt_volley", this );
+
+  if ( specialization() == MAGE_FROST && sets->has_set_bonus( HERO_FROSTFIRE, TWW3, B2 ) )
+    action.ignite_2pc = get_action<ignite_2pc_t>( "ignite_2pc", this );
 
   player_t::create_actions();
 
@@ -8640,7 +8822,6 @@ void mage_t::create_buffs()
                                    ->set_chance( talents.glorious_incandescence.ok() );
   buffs.lingering_embers       = make_buff( this, "lingering_embers", find_spell( 461145 ) )
                                    ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 2 : 1 ).percent() )
-                                   // TODO: Currently does not work for fire.
                                    ->modify_default_value( sets->set( HERO_SUNFURY, TWW3, B2 )->effectN( specialization() == MAGE_FIRE ? 2 : 1 ).percent() )
                                    ->set_chance( talents.codex_of_the_sunstriders.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
@@ -8919,6 +9100,16 @@ parsed_assisted_combat_rule_t mage_t::parse_assisted_combat_rule( const assisted
 
     return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ),
              "This should check stacks on player instead of the target." };
+  }
+
+  if ( rule.condition_type == PLAYER_AURA_APPLICATION_GREATER && rule.condition_value_1 == 384452 )
+  {
+    assert( rule.condition_value_3 == 0 );
+    if ( bugs )
+      return { "0", "This will never trigger because it checks for stacks of the wrong Arcane Harmony spell." };
+
+    return { fmt::format( "buff.arcane_harmony.stack>={}", rule.condition_value_2 ),
+             "This should check stacks of the correct spell." };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
@@ -9347,6 +9538,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     { return state.embedded_splinters; } );
   }
 
+  if ( util::str_compare_ci( name, "remaining_splinterstorm" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.remaining_splinterstorm; } );
+  }
+
   if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )
   {
     return make_fn_expr( name, [ this ]
@@ -9357,12 +9554,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return 11 - state.intuition_blp_count; } );
-  }
-
-  if ( util::str_compare_ci( name, "has_intuition_damage_amp" ) )
-  {
-    return make_fn_expr( name, [ this ]
-    { return buffs.intuition->check() && !state.prevent_intuition_damage_amp; } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
@@ -9466,7 +9657,6 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   // Let action.frostbolt/fireball refer to frostfire_bolt
   if ( talents.frostfire_bolt.ok() && splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "action" ) )
   {
-    // TODO: update this once blizz finalizes which spell replaces which
     if ( util::str_compare_ci( splits[ 1 ], "fireball" ) || util::str_compare_ci( splits[ 1 ], "frostbolt" ) )
     {
       if ( auto a = find_action( "frostfire_bolt" ) )

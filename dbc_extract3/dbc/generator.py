@@ -1556,6 +1556,12 @@ class SpellDataGenerator(DataGenerator):
          1242875, 1242895, 1242897, 1242881, 1242901, # Screams of a Forgotten Sky
          1241847, 1241899, 1240916, # Eradicating Arcanocore
          1239403, # Sigil of the Cosmic Hunt
+         1241809, 1241809, # Cursed Stone Idol
+         1239810, # Naazindhris Mystic Lash
+         1244448, 1244444, # Perfidious Projector
+         1243133, # Incorporeal Warpclap
+         1245643, # Mind-Fracturing Odium 
+         1224916, 1224917, 1224918, # Void-Touched Fragment
         ),
 
         # Warrior:
@@ -1659,6 +1665,9 @@ class SpellDataGenerator(DataGenerator):
             ( 1238903, 0),          # Masterwork (TWW3 Lightsmith 4p)
             ( 1239091, 0),          # Lesser Weapon (TWW3 Lightsmith 4p)
             ( 1239002, 0),          # Lesser Bulwark (TWW3 Lightsmith 4p)
+            ( 1239282, 0),          # Lesser Weapon Damage (TWW3 Lightsmith 4p)
+            ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
+            ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
         ),
 
         # Hunter:
@@ -2130,6 +2139,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1216988, 0 ),                           # Recently damaged by Blizzard (Freezing Winds talent)
           ( 1223801, 0 ),                           # Arcane Rebound
           ( 1217750, 0 ),                           # Master of Flame hidden buff
+          ( 1236209, 0 ),                           # Frostfire 4pc Glacial Spike
         ),
 
         # Warlock:
@@ -2570,6 +2580,7 @@ class SpellDataGenerator(DataGenerator):
           ( 442204, 0 ), # Breath of Eons
           ( 1236949, 0 ), # TWW3 Set Disintegrate
           ( 1236970, 0 ), # TWW3 Set Pyre
+          ( 1236943, 0 ), # TWW3 Set Deep Breath on Pet
           # Chronowarden
           ( 431583, 0 ), # Chrono Flame
           ( 431620, 0 ), # Upheaval Dot

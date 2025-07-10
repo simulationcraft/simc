@@ -1328,6 +1328,7 @@ public:
       const spell_data_t *spm_2pc;
       const spell_data_t *spm_2pc_flurry_charge_data;
       propagate_const<buff_t *> spm_2pc_flurry_charge;
+      propagate_const<action_t *> spm_2pc_flurry_strikes;
       const spell_data_t *spm_4pc;
     } tww3;
   } tier;

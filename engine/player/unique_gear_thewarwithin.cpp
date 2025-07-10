@@ -8155,6 +8155,9 @@ void unyielding_netherprism( special_effect_t& effect )
   if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     return;
 
+  if ( unique_gear::create_fallback_buffs( effect, { "latent_energy" } ) )
+    return;
+
   auto equip_driver = effect.player->find_spell( 1233553 );
   assert( equip_driver && "Unyielding Netherprism missing Equip Driver" );
 
@@ -8178,8 +8181,13 @@ void unyielding_netherprism( special_effect_t& effect )
     void execute() override
     {
       generic_proc_t::execute();
-      stat_buff->trigger( stacking->check() );
-      stacking->expire();
+
+      // You can use this without actually having stacks - 07/05/2025
+      if ( stacking->check() )
+      {
+        stat_buff->trigger( stacking->check() );
+        stacking->expire();
+      }
     }
   };
 
@@ -8201,7 +8209,8 @@ void unyielding_netherprism( special_effect_t& effect )
     }
   };
 
-  buff_t* stacking_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1239675 ) );
+  buff_t* stacking_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1239675 ) )
+                              ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   auto equip            = new special_effect_t( effect.player );
   equip->name_str       = fmt::format( "{}_{}", equip_driver->name_cstr(), "equip" );
@@ -8217,6 +8226,7 @@ void unyielding_netherprism( special_effect_t& effect )
                                                                             stacking_buff, equip_driver );
 
   effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI );
+  effect.has_use_buff_override = true;
   effect.disable_buff();
 }
 
@@ -8560,6 +8570,385 @@ void sigil_of_the_cosmic_hunt( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<cosmic_onslaught_t>( "cosmic_onslaught", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Cursed Stone idol
+// 1242326 Driver
+// 1241801 Values
+// 1241806 Crit Buff
+// 1241809 Damage
+void cursed_stone_idol( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct cursed_stone_idol_buff_t final : public stat_buff_t
+  {
+    int n_hit;
+    double inc_per_hit;
+    double max_inc;
+    cursed_stone_idol_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : stat_buff_t( p, n, p->find_spell( 1241806 ) ), n_hit( 0 ), inc_per_hit( 0 ), max_inc( 0 )
+    {
+      const spell_data_t* value_spell = p->find_spell( 1241801 );
+      set_stat_from_effect_type( A_MOD_RATING, 0 );
+      set_default_value( value_spell->effectN( 1 ).average( e ) );
+
+      inc_per_hit = value_spell->effectN( 3 ).average( e );
+      max_inc     = value_spell->effectN( 4 ).average( e );
+    }
+
+    void start( int s, double v, timespan_t d ) override
+    {
+      for ( auto& stat : stats )
+      {
+        double val         = default_value + std::min( inc_per_hit * n_hit, max_inc );
+        double delta       = val - stat.current_value;
+        stat.amount        = val;
+        stat.current_value = val;
+
+        if ( delta > 0 )
+        {
+          player->stat_gain( stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_loss( stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+      }
+      // Skip stat_buff_t::start since we handle stat gain manually
+      buff_t::start( s, v, d );
+    }
+  };
+
+  struct cursed_stone_idol_t final : public generic_aoe_proc_t
+  {
+    buff_t* buff;
+    cursed_stone_idol_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "cursed_stone_idol", e.player->find_spell( 1241809 ) ), buff( nullptr )
+    {
+      const spell_data_t* value_spell = e.player->find_spell( 1241801 );
+      base_dd_min = base_dd_max = value_spell->effectN( 2 ).average( e );
+      split_aoe_damage          = false;
+      buff                      = create_buff<cursed_stone_idol_buff_t>( e.player, "cursed_stone_idol", e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+      cursed_stone_idol_buff_t* stat = debug_cast<cursed_stone_idol_buff_t*>( buff );
+      stat->n_hit                    = as<int>( sim->target_non_sleeping_list.size() );
+      stat->trigger();
+    }
+  };
+
+  effect.stat = STAT_CRIT_RATING;
+  effect.has_use_buff_override = true;
+  effect.execute_action = create_proc_action<cursed_stone_idol_t>( "cursed_stone_idol", effect );
+}
+
+// Naazindhri's Mystic Lash
+// 1235387 Driver
+// 1239809 AoE Radius
+// 1239810 Damage
+void naazindhris_mystic_lash( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct naazindhris_mystic_lash_t final : public generic_aoe_proc_t
+  {
+    naazindhris_mystic_lash_t( const special_effect_t& e, std::string_view n )
+      : generic_aoe_proc_t( e, n, e.player->find_spell( 1239810 ), true )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier           = role_mult( e );
+      radius                    = e.player->find_spell( 1239809 )->effectN( 1 ).radius_max();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_aoe_proc_t::composite_da_multiplier( s );
+
+      m *= 1.0 + ( ( player->composite_mastery() - player->base.mastery ) / 100 );
+
+      return m;
+    }
+  };
+
+  effect.execute_action = create_proc_action<naazindhris_mystic_lash_t>( "naazindhris_mystic_lash", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Perfidious Projector
+// 1244636 Driver
+// 1235557 Value Spell
+// 1235566 Ticking spell
+// 1244444 Ground AoE Area Trigger
+// 1244448 Damage
+void perfidious_projector( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto value_spell = effect.player->find_spell( 1235557 );
+  assert( value_spell && "Perfidious Projector Value Spell not found" );
+
+  auto dot_spell = effect.player->find_spell( 1235566 );
+  auto n_ticks   = dot_spell->duration() / dot_spell->effectN( 1 ).period();
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "shadowguard_to_me", effect, 1244448, true );
+  auto damage_val     = value_spell->effectN( 1 ).average( effect ) / n_ticks;
+  damage->base_dd_min = damage->base_dd_max = damage_val;
+
+  auto dot         = create_proc_action<generic_proc_t>( "perfidious_projector", effect, dot_spell );
+  dot->tick_action = damage;
+
+  effect.execute_action = dot;
+}
+
+// Incorporeal Warpclaw
+// 1243118 Driver
+// 1243133 Damage
+void incorporeal_warpclaw( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "incorporeal_warpstrike", effect, 1243133 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Mind-Fracturing Odium
+// 1245148 Driver
+// 1245637 Stacking Buff
+// 1245643 Haste Buff
+void mind_fracturing_odium( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct mind_fracturing_odium_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* stacking;
+    buff_t* stat;
+    bool decrementing;
+
+    mind_fracturing_odium_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), stacking( nullptr ), stat( nullptr ), decrementing( false )
+    {
+      stat = create_buff<stat_buff_t>( e.player, "arcane_insanity", e.player->find_spell( 1245643 ) )
+                 ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
+
+      stacking = create_buff<buff_t>( e.player, "mindfracturing_odium", e.driver()->effectN( 1 ).trigger() )
+                     ->set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
+                       decrementing = false;
+                       stat->expire();
+                     } );
+
+      e.player->register_on_kill_callback( [ &, e ]( player_t* ) {
+        if ( !e.player->sim->event_mgr.canceled )
+          stacking->increment( 2 );
+      } );
+
+      e.player->register_on_arise_callback( effect.player, [ & ] {
+        make_repeating_event( *listener->sim, e.driver()->effectN( 1 ).trigger()->effectN( 2 ).period(), [ & ] {
+          if ( decrementing )
+            stacking->decrement();
+        } );
+      } );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      decrementing = false;
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if( !decrementing )
+        stacking->trigger();
+      if ( stacking->at_max_stacks() )
+      {
+        decrementing = true;
+        stat->trigger();
+      }
+    }
+  };
+
+  new mind_fracturing_odium_cb_t( effect );
+}
+
+// Incorporeal Essence-Gorger
+// 1244410 Driver & Damage
+// 1247205 Value Spell
+// 1247207 Buff
+void incorporeal_essence_gorger( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct incorporeal_essence_gorger_t final : public generic_proc_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+
+    incorporeal_essence_gorger_t( const special_effect_t& e, std::string_view n ) : generic_proc_t( e, n, e.driver() )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      auto buff_value           = e.player->find_spell( 1247205 )->effectN( 1 ).average( e );
+      create_all_stat_buffs( e, e.player->find_spell( 1247207 ), buff_value, [ &, buff_value ]( stat_e s, buff_t* b ) {
+        b->default_value = buff_value;
+        buffs[ s ]       = b;
+      } );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      buffs.at( util::lowest_stat( player, secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<incorporeal_essence_gorger_t>( "incorporeal_essencegorger", effect );
+}
+
+// Void-Touched Fragment
+// 1224856 Driver
+// 1224918 Mastery Buff
+// 1224917 on Death Trigger
+// 1224916 Stacking Buff
+void voidtouched_fragment( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto stat_buff =
+      create_buff<stat_buff_t>( effect.player, "voidtouched_fragment", effect.player->find_spell( 1224918 ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+  auto stacking_buff =
+      create_buff<buff_t>( effect.player, "voidtouched_fragment_stacking", effect.player->find_spell( 1224916 ) )
+          ->set_expire_callback( [ stat_buff ]( buff_t*, int, timespan_t ) { stat_buff->trigger(); } )
+          ->set_expire_at_max_stack( true );
+
+  effect.player->register_on_kill_callback( [ &effect, stacking_buff ]( player_t* ) {
+    if ( !effect.player->sim->event_mgr.canceled )
+      stacking_buff->trigger();
+  } );
+
+  effect.custom_buff = stacking_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Soulbreaker's Sigil
+// 1224870 Driver
+// 1225149 DoT
+// 1225151 Vers Buff
+void soulbreakers_sigil( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto dot_spell = effect.player->find_spell( 1225149 );
+  auto dot       = create_proc_action<generic_proc_t>( "soulbreakers_sigil", effect, dot_spell );
+  auto n_ticks   = dot_spell->duration() / dot_spell->effectN( 1 ).period();
+  dot->base_td   = effect.driver()->effectN( 1 ).average( effect ) / n_ticks;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "soulbreakers_sigil", effect.player->find_spell( 1225151 ) )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.player->register_on_kill_callback( [ &effect, buff ]( player_t* t ) {
+    if ( !effect.player->sim->event_mgr.canceled )
+    {
+      auto d = t->get_dot( "soublreakers_sigil", effect.player );
+      if ( d->is_ticking() )
+        buff->trigger();
+    }
+  } );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Depleted K'areshi Battery
+// 1231107 Driver
+// 1231099 Values
+// 1231104 Damage
+void depleted_kareshi_battery( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto value_spell = effect.player->find_spell( 1231099 );
+
+  assert( value_spell && "Depleted Kareshi Battery missing value spell." );
+
+  auto dot =
+      create_proc_action<generic_proc_t>( "depleted_kareshi_battery", effect, effect.driver()->effectN( 1 ).trigger() );
+  dot->base_td = value_spell->effectN( 1 ).average( effect );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Azhiccaran Parapodia
+// 1243818 Driver
+// 1243843 Buff
+// 1243828 DoT
+void azhiccaran_parapodia( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  struct azhiccaran_mite_t final : public generic_proc_t
+  {
+    buff_t* buff;
+
+    azhiccaran_mite_t( const special_effect_t& e, std::string_view n )
+      : generic_proc_t( e, n, e.player->find_spell( 1243828 ) ), buff( nullptr )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e );
+
+      buff = create_buff<stat_buff_t>( e.player, "mitey_feast", e.player->find_spell( 1243843 ) )
+                 ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) )
+                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      // Only triggers if the DoT finishes.
+      make_event( *sim, timespan_t::from_seconds( data().missile_min_duration() ), [ & ] { buff->trigger(); } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<azhiccaran_mite_t>( "azhiccaran_mite", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Essence-Hunter's Eyeglass
+// 1244402 Driver
+// 1245376 Buff
+void essence_hunters_eyeglass( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "arcane_hunter", effect.driver()->effectN( 1 ).trigger() )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -9571,6 +9960,7 @@ void ethereal_reaping( special_effect_t& effect )
   missile->impact_action = damage;
 
   effect.execute_action = missile;
+  effect.rppm_modifier_ = 1.0 + effect.player->passive_values.reshii_grace;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -9642,6 +10032,14 @@ void ethereal_energy( special_effect_t& effect )
       effect.spell_id = spell_id;
       break;
   }
+}
+
+void reshii_grace( special_effect_t& effect )
+{
+  if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    return;
+
+  effect.player->passive_values.reshii_grace = effect.driver()->effectN( 1 ).percent();
 }
 
 }  // namespace items
@@ -9931,7 +10329,7 @@ void shards_of_the_void( special_effect_t& effect )
     return;
 
   // Shares a name with the weapon effects, change it here to pevent special effect merging
-  effect.name_str = fmt::format( "{}_{}", effect.driver()->name_cstr(), "set");
+  effect.name_str = fmt::format( "{}_{}", effect.driver()->name_cstr(), "set" );
 
   effect.player->register_init_finished_callback( [ &effect ]( player_t* p ) {
     buff_t* buff = buff_t::find( p, "diamantine_voidcore", p );
@@ -11595,13 +11993,24 @@ void register_special_effects()
   register_special_effect( 1219103, items::gigazaps_zapcap );
   register_special_effect( { 1223886, 1223899, 1223902, 1223904 }, items::hallowed_tome );
   register_special_effect( 1234996, items::diamantine_voidcore );
-  register_special_effect( 1233556, items::unyielding_netherprism );
+  register_special_effect( 1233556, items::unyielding_netherprism, true );
   register_special_effect( 1233553, DISABLED_EFFECT ); // Unyielding Netherprism equip driver
   register_special_effect( 1232802, items::arazs_ritual_forge );
   register_special_effect( 1234714, items::astral_antenna );
   register_special_effect( 1235272, items::screams_of_a_forgotten_sky );
   register_special_effect( 1233384, items::eradicating_arcanocore );
   register_special_effect( 1235360, items::sigil_of_the_cosmic_hunt );
+  register_special_effect( 1242326, items::cursed_stone_idol );
+  register_special_effect( 1235387, items::naazindhris_mystic_lash );
+  register_special_effect( 1244636, items::perfidious_projector );
+  register_special_effect( 1243118, items::incorporeal_warpclaw );
+  register_special_effect( 1245148, items::mind_fracturing_odium );
+  register_special_effect( 1244410, items::incorporeal_essence_gorger );
+  register_special_effect( 1224856, items::voidtouched_fragment );
+  register_special_effect( 1224870, items::soulbreakers_sigil );
+  register_special_effect( 1231107, items::depleted_kareshi_battery );
+  register_special_effect( 1243818, items::azhiccaran_parapodia );
+  register_special_effect( 1244402, items::essence_hunters_eyeglass );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
@@ -11626,6 +12035,7 @@ void register_special_effects()
   register_special_effect( 457683, items::sureki_zealots_insignia );
   register_special_effect( 1214161, items::the_jastor_diamond );
   register_special_effect( 1217091, items::ethereal_energy ); // Reshii Wraps equip driver
+  register_special_effect( 1235409, items::reshii_grace ); // Reshii Grace boot effects
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket

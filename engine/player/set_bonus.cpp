@@ -36,20 +36,31 @@ int composite_idx( const item_set_bonus_t& bonus, player_t* actor )
   // only one spec or hero may be selected, or this does very dangerous things!
   // a proposed rewrite of this subsystem to use the standard data-wrapper-and-cache-on-actor
   // approach solves this :)
-  assert( ( bonus.spec != -1 ) != ( bonus.trait_sub_tree != -1 ) );
-  int index = 0;
 
-  if ( bonus.spec == -1 )
-    index += actor->dbc->specialization_max_per_class();
+  if ( ( bonus.spec != -1 ) != ( bonus.trait_sub_tree != -1 ) )
+  {
+    // sets with either tst xor spec based selection
+    int index = 0;
+
+    if ( bonus.spec == -1 )
+      index += actor->dbc->specialization_max_per_class();
+    else
+      index += dbc::spec_idx( static_cast<specialization_e>( bonus.spec ) );
+
+    if ( bonus.trait_sub_tree == -1 )
+      index += 0;
+    else
+      index += dbc::hero_idx( static_cast<hero_talent_e>( bonus.trait_sub_tree ) );
+
+    return index;
+  }
   else
-    index += dbc::spec_idx( static_cast<specialization_e>( bonus.spec ) );
+  {
+    // sets without tst or spec based selection
+    // every spec/tst index should contain identical data but just to be safe
+    return dbc::spec_idx( actor->_spec );
+  }
 
-  if ( bonus.trait_sub_tree == -1 )
-    index += 0;
-  else
-    index += dbc::hero_idx( static_cast<hero_talent_e>( bonus.trait_sub_tree ) );
-
-  return index;
 }
 
 set_bonus_t::set_bonus_t( player_t* player )
@@ -134,12 +145,14 @@ void set_bonus_t::initialize_items()
 
       bool has_class = bonus.class_id == -1 || bonus.class_id == util::class_id( actor->type );
       bool has_spec  = bonus.spec == static_cast<int>( actor->_spec );
-      bool has_trait_sub_tree = bonus.trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) ) : false;
+      bool has_trait_sub_tree = bonus.trait_sub_tree == -1 ? false : range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) );
+
+      bool has_no_constraint = bonus.spec == -1 && bonus.trait_sub_tree == -1;
 
       if ( range::find( item_ids, item.parsed.data.id ) != item_ids.end() )
         continue;
 
-      if ( has_class && ( has_spec || has_trait_sub_tree ) )
+      if ( has_class && ( has_spec || has_trait_sub_tree || has_no_constraint ) )
       {
         set_bonus_spec_count[ bonus.enum_id ][ composite_idx( bonus, actor ) ]++;
         item_ids.push_back( item.parsed.data.id );
@@ -253,7 +266,7 @@ void set_bonus_t::initialize()
 
         bool is_enabled = is_enabled_2p || is_enabled_4p;
 
-        if ( is_overridden || is_in_range || ( is_equippable && is_enabled ) )
+        if ( is_equippable && ( is_overridden || is_in_range || is_enabled ) )
         {
           if ( is_disabled_2p || is_disabled_4p )
             data.enabled = false;
@@ -279,8 +292,9 @@ void set_bonus_t::enable_all_sets()
   for ( const auto& bonus : set_bonuses )
   {
     bool has_class = bonus.class_id == -1 || bonus.class_id == util::class_id( actor->type );
-    bool has_spec  = bonus.spec == static_cast<int>( actor->_spec );
-    bool has_trait_sub_tree = bonus.trait_sub_tree != -1 ? range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) ) : false;
+    bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
+    bool has_trait_sub_tree = bonus.trait_sub_tree == -1 ? true : range::contains( actor->player_sub_trees, as<unsigned>( bonus.trait_sub_tree ) );
+
     if ( has_class && ( has_spec || has_trait_sub_tree ) )
     {
       set_bonus_spec_data[ bonus.enum_id ][ composite_idx( bonus, actor ) ][ bonus.bonus - 1 ].overridden = 1;
@@ -378,10 +392,17 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
-        if ( data.overridden >= 1 ||
-             ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus->bonus ) )
-        {
+        if ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] < data.bonus->bonus )
+          continue;
+
+        if ( data.bonus->trait_sub_tree == -1 )
           s += fmt::format( "# set_bonus={}_{}pc=1{}", data.bonus->set_opt_name, data.bonus->bonus, newline );
+        else
+        {
+          std::string ht = util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) );
+          util::tolower( ht );
+          s += fmt::format( "# set_bonus=name={},pc={},hero_tree={},enable=1{}", data.bonus->set_opt_name,
+                            data.bonus->bonus, ht, newline );
         }
       }
     }

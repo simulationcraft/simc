@@ -200,10 +200,16 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
+  /*
+   * Heart of the Jade Serpent:
+   *  - priority: celestial > coc_2pc = normal
+   *  - if a higher priority hotjs is applied than the current, disable current hotjs
+   */
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
+  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
-  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -216,6 +222,7 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
+  parse_effects( p()->buff.vigilant_watch );
 
   // TWW S1 Set Effects
   parse_effects(
@@ -490,7 +497,8 @@ void monk_action_t<Base>::consume_resource()
           p()->flurry_strikes_energy += std::lround( final_cost );
 
         int flurry_strikes_threshold = p()->talent.shado_pan.flurry_strikes->effectN( 2 ).base_value();
-        if ( p()->tier.tww3.spm_4pc->ok() )
+        if ( p()->tier.tww3.spm_4pc->ok() &&
+             ( p()->buff.weapons_of_order->up() || p()->buff.storm_earth_and_fire->up() ) )
           flurry_strikes_threshold = p()->tier.tww3.spm_4pc->effectN( 2 ).base_value();
 
         // Detox, Paralysis and Vivify, and Spinning Crane Kick do not count towards Flurry Strikes
@@ -1089,13 +1097,25 @@ struct flurry_strikes_t : public monk_melee_attack_t
     }
   };
 
+  enum flurry_strike_source_e
+  {
+    FLURRY_DEFAULT,
+    FLURRY_TIER
+  };
+
   flurry_strike_t *strike;
   high_impact_t *high_impact;
+  flurry_strike_source_e source;
 
-  flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
+  flurry_strikes_t( monk_t *p, flurry_strike_source_e source )
+    : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes ), source( source )
   {
     strike = new flurry_strike_t( p, this );
     add_child( strike );
+
+    assert( source != FLURRY_TIER || source == FLURRY_TIER && p->sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) );
+    if ( source == FLURRY_TIER )
+      strike->base_multiplier *= p->tier.tww3.spm_2pc->effectN( 3 ).percent();
 
     if ( !p->talent.shado_pan.high_impact->ok() )
       return;
@@ -1113,8 +1133,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   void execute() override
   {
-    bool source_tier    = p()->tier.tww3.spm_2pc_flurry_charge->up();
-    bool source_default = p()->buff.flurry_charge->up();
+    bool source_tier    = source == FLURRY_TIER && p()->tier.tww3.spm_2pc_flurry_charge->check();
+    bool source_default = source == FLURRY_DEFAULT && p()->buff.flurry_charge->check();
 
     int stacks = 0;
     if ( source_tier )
@@ -1127,13 +1147,15 @@ struct flurry_strikes_t : public monk_melee_attack_t
       for ( int charge = 1; charge <= stacks; charge++ )
         make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
 
+    if ( stacks && p()->buff.vigilant_watch->check() )
+      make_event<events::delayed_cb_event_t>( *sim, p(), stacks * 150_ms + 1_ms,
+                                              [ & ] { p()->buff.vigilant_watch->expire(); } );
+
     if ( source_default )
       p()->buff.flurry_charge->expire();
 
     if ( source_tier )
       p()->tier.tww3.spm_2pc_flurry_charge->expire();
-
-    p()->buff.vigilant_watch->expire();
   }
 };
 
@@ -7321,7 +7343,12 @@ void monk_t::init_background_actions()
 
   // Shado-Pan
   if ( talent.shado_pan.flurry_strikes->ok() )
-    active_actions.flurry_strikes = new actions::flurry_strikes_t( this );
+    active_actions.flurry_strikes =
+        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_DEFAULT );
+
+  if ( sets->has_set_bonus( HERO_SHADOPAN, TWW3, B2 ) )
+    tier.tww3.spm_2pc_flurry_strikes =
+        new actions::flurry_strikes_t( this, actions::attacks::flurry_strikes_t::FLURRY_TIER );
 
   // Brewmaster
   if ( specialization() == MONK_BREWMASTER )
@@ -7943,15 +7970,30 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
+            if ( new_ && !old_ )
+              tier.tww3.coc_2pc_heart_of_the_jade_serpent->expire();
+          } )
+          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
+            if ( remains == timespan_t::zero() )
+              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
+          } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
+            if ( new_ && !old_ )
+            {
+              tier.tww3.coc_2pc_heart_of_the_jade_serpent->expire();
+              buff.heart_of_the_jade_serpent_cdr->expire();
+            }
+          } )
+          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
+            if ( remains == timespan_t::zero() )
+              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
+          } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8109,17 +8151,24 @@ void monk_t::create_buffs()
   // TWW S3 Tier Buffs
   // CoC
   tier.tww3.coc_2pc_heart_of_the_jade_serpent =
-      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "Heart of the Jade Serpent",
+      make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
-          ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
+            if ( new_ && !old_ )
+              buff.heart_of_the_jade_serpent_cdr->expire();
+          } )
+          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
+            if ( remains == timespan_t::zero() )
+              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
+          } );
 
-  tier.tww3.coc_4pc_jade_serpents_blessing = make_buff_fallback(
-      tier.tww3.coc_4pc->ok(), this, "Jade Serpent's Blessing", tier.tww3.coc_4pc_jade_serpents_blessing_data );
+  tier.tww3.coc_4pc_jade_serpents_blessing =
+      make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
+                          tier.tww3.coc_4pc_jade_serpents_blessing_data );
 
   // SPM
-  tier.tww3.spm_2pc_flurry_charge =
-      make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "Flurry Charge", tier.tww3.spm_2pc_flurry_charge_data );
+  tier.tww3.spm_2pc_flurry_charge = make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "flurry_charge_tww3_tier",
+                                                        tier.tww3.spm_2pc_flurry_charge_data );
 
   // ------------------------------
   // Movement
@@ -8555,11 +8604,15 @@ void monk_t::init_special_effects()
 
   if ( tier.tww3.spm_2pc->ok() )
   {
+    // if `create_proc_callback` gets rewritten to use `std::function`, this
+    // can be simplified and filter on buff status, or use the dbc_proc_callback
+    // enable/disable system
     create_proc_callback( tier.tww3.spm_2pc_flurry_charge_data, []( monk_t *, action_state_t * ) { return true; } );
     callbacks.register_callback_execute_function(
         tier.tww3.spm_2pc_flurry_charge_data->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          active_actions.flurry_strikes->execute();
+          if ( tier.tww3.spm_2pc_flurry_charge->check() )
+            tier.tww3.spm_2pc_flurry_strikes->execute();
         } );
   }
 

@@ -1070,8 +1070,9 @@ public:
 
     // Doom Winds damage
     action_t* doom_winds;
-    
+
     action_t* set_ascendance;
+    action_t* tww3_primordial_storm;
   } action;
 
   // Pets
@@ -1891,6 +1892,7 @@ public:
   void trigger_arc_discharge( const action_state_t* state );
   void trigger_flowing_spirits( action_t* action );
   void trigger_lively_totems( const action_state_t* state );
+  void trigger_tww3_totemic_enh_2pc( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -6650,7 +6652,7 @@ struct chained_base_t : public shaman_spell_t
 
     std::vector<player_t*> shuffled_targets;
 
-    for ( auto i = 1U; i < tl.size(); ++i )
+    for ( size_t i = 1U; i < tl.size(); ++i )
     {
       // Don't shuffle already shuffled targets
       if ( range::find( shuffled_targets, tl[ i ] ) != shuffled_targets.end() )
@@ -7021,6 +7023,9 @@ struct storms_eye_t : public shaman_spell_t
     background = true;
     may_crit   = true;
     dual       = true;
+    aoe = -1;
+    reduced_aoe_targets = 1.0;
+    full_amount_targets = 1;
   }
 };
 
@@ -9561,12 +9566,12 @@ struct ascendance_t : public shaman_spell_t
         if (p()->specialization() == SHAMAN_ENHANCEMENT)
         {
           duration = p()->spell.tww3_stormbringer_2pc->effectN( 1 )
-                         .time_value();  // TODO: double check which is which but both are equal rn anyway
+                         .time_value();
         }
         else
         {
           duration = p()->spell.tww3_stormbringer_2pc->effectN( 4 )
-                         .time_value();  // TODO: double check which is which but both are equal rn anyway
+                         .time_value();
         }
       }
       assert( ( duration != timespan_t::zero() ) );
@@ -9631,7 +9636,7 @@ struct ascendance_t : public shaman_spell_t
 
 struct ascendance_dre_t : public ascendance_t
 {
-  ascendance_dre_t( shaman_t* player, spell_variant var_ ) : ascendance_t( player, "ascendance_dre", {}, var_) 
+  ascendance_dre_t( shaman_t* player, spell_variant var_ ) : ascendance_t( player, "ascendance_dre", {}, var_)
   {
     background = true;
     cooldown->duration = 0_s;
@@ -10898,8 +10903,9 @@ struct primordial_storm_t : public shaman_spell_t
 {
   struct primordial_damage_t : public shaman_attack_t
   {
-    primordial_damage_t( primordial_storm_t* parent, util::string_view name, const spell_data_t* s ) :
-      shaman_attack_t( name, parent->p(), s )
+    primordial_damage_t( primordial_storm_t* parent, util::string_view name, const spell_data_t* s,
+      spell_variant type_ ) :
+      shaman_attack_t( ::action_name( name, type_ ), parent->p(), s, type_ )
     {
       // Inherit Maelstrom Weapon stacks from the parent cast
       mw_parent = parent;
@@ -10907,6 +10913,14 @@ struct primordial_storm_t : public shaman_spell_t
 
       aoe          = -1;
       reduced_aoe_targets = p()->talent.primordial_storm->effectN( 3 ).base_value();
+
+      switch ( type_ )
+      {
+        case spell_variant::TWW3:
+          base_multiplier *= 1.0 + p()->sets->set( HERO_TOTEMIC, TWW3, B2 )->effectN( 1 ).percent();
+        default:
+          break;
+      }
     }
 
     double action_multiplier() const override
@@ -10926,17 +10940,18 @@ struct primordial_storm_t : public shaman_spell_t
 
   primordial_damage_t* fire, *frost, *nature;
 
-  primordial_storm_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "primordial_storm", player, player->find_spell( 1218090 ) )
+  primordial_storm_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} ) :
+    shaman_spell_t( ::action_name( "primordial_storm", type_ ), player,
+      player->find_spell( 1218090 ), type_ )
   {
     parse_options( options_str );
 
     fire = new primordial_damage_t( this, "primordial_fire",
-      player->find_spell( 1218113 ) );
+      player->find_spell( 1218113 ), type_ );
     frost = new primordial_damage_t( this, "primordial_frost",
-      player->find_spell( 1218116 ) );
+      player->find_spell( 1218116 ), type_ );
     nature = new primordial_damage_t( this, "primordial_lightning",
-      player->find_spell( 1218118 ) );
+      player->find_spell( 1218118 ), type_ );
 
     add_child( fire );
     add_child( frost );
@@ -10944,6 +10959,15 @@ struct primordial_storm_t : public shaman_spell_t
 
     // Spell data does not indicate this, textual description does
     affected_by_maelstrom_weapon = true;
+
+    switch ( type_ )
+    {
+      case spell_variant::TWW3:
+        background = true;
+        break;
+      default:
+        break;
+    }
   }
 
   void trigger_lightning_damage()
@@ -11292,6 +11316,8 @@ struct voltaic_blaze_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.whirling_earth->decrement();
+
+    p()->trigger_tww3_totemic_enh_2pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -11590,7 +11616,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "voltaic_blaze" )
     return new voltaic_blaze_t( this, options_str );
   if ( name == "primordial_storm" )
-    return new primordial_storm_t( this, options_str );
+    return new primordial_storm_t( this, spell_variant::NORMAL, options_str );
 
   // restoration
   if ( name == "spiritwalkers_grace" )
@@ -11861,6 +11887,11 @@ void shaman_t::create_actions()
   if (spell.tww3_stormbringer_2pc->ok())
   {
     action.set_ascendance = new ascendance_dre_t( this, spell_variant::TWW3 );
+  }
+
+  if ( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B2 ) && specialization() == SHAMAN_ENHANCEMENT )
+  {
+    action.tww3_primordial_storm = new primordial_storm_t( this, spell_variant::TWW3 );
   }
 
   if ( talent.tempest_strikes.ok() )
@@ -12563,10 +12594,10 @@ void shaman_t::init_spells()
   spell.flowing_spirits_feral_spirit = find_spell( 469329 );
   spell.hot_hand            = find_spell( 201900 );
   spell.elemental_weapons   = find_spell( 408390 );
-  spell.tww3_farseer_2pc             = conditional_spell_lookup( options.tww3_farseer_set >= 2, 1236406 );
-  spell.tww3_farseer_4pc             = conditional_spell_lookup( options.tww3_farseer_set >= 4, 1236407 );
-  spell.tww3_stormbringer_2pc        = conditional_spell_lookup( options.tww3_stormbringer_set >= 2, 1236408 );
-  spell.tww3_stormbringer_4pc        = conditional_spell_lookup( options.tww3_stormbringer_set >= 4, 1236409 );
+  spell.tww3_farseer_2pc      = conditional_spell_lookup( sets->has_set_bonus( HERO_FARSEER, TWW3, B2), 1236406 );
+  spell.tww3_farseer_4pc      = conditional_spell_lookup( sets->has_set_bonus( HERO_FARSEER, TWW3, B4 ), 1236407 );
+  spell.tww3_stormbringer_2pc = conditional_spell_lookup( sets->has_set_bonus( HERO_STORMBRINGER, TWW3, B2 ), 1236408 );
+  spell.tww3_stormbringer_4pc = conditional_spell_lookup( sets->has_set_bonus( HERO_STORMBRINGER, TWW3, B4 ), 1236409 );
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
@@ -13567,6 +13598,8 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
   buff.hot_hand->extend_duration_or_trigger( buff.whirling_fire->data().effectN( 1 ).time_value() );
 
   buff.whirling_fire->decrement();
+
+  trigger_tww3_totemic_enh_2pc( state );
 }
 
 void shaman_t::trigger_stormblast( const action_state_t* state )
@@ -13629,9 +13662,9 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   {
     aws_counter++;
 
-    unsigned int proc_on_x = specialization() == SHAMAN_ELEMENTAL
+    unsigned int proc_on_x = static_cast<unsigned int> (specialization() == SHAMAN_ELEMENTAL
                                  ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
-                                 : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value();
+                                 : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value());
 
     if ( aws_counter % proc_on_x == 0 )
     {
@@ -13695,6 +13728,8 @@ void shaman_t::trigger_whirling_air( const action_state_t* state )
   }
 
   buff.whirling_air->decrement();
+
+  trigger_tww3_totemic_enh_2pc( state );
 }
 
 void shaman_t::trigger_reactivity( const action_state_t* state )
@@ -14021,6 +14056,22 @@ void shaman_t::trigger_lively_totems( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_tww3_totemic_enh_2pc( const action_state_t* state )
+{
+  if ( !sets->has_set_bonus( HERO_TOTEMIC, TWW3, B2 ) || specialization() != SHAMAN_ENHANCEMENT )
+  {
+    return;
+  }
+
+  if ( buff.whirling_air->check() || buff.whirling_earth->check() || buff.whirling_fire->check() )
+  {
+    return;
+  }
+
+  sim->print_debug( "{} triggering tww3 totemic enhancement 2pc set bonus", this->name() );
+  action.tww3_primordial_storm->execute_on_target( state->target );
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -14331,7 +14382,7 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 ) );
   buff.ancestral_wisdom = make_buff( this, "ancestral_wisdom", find_spell( 1238279 ) )
                               ->set_trigger_spell( spell.tww3_farseer_4pc )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
+                              ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                 cooldown.lava_burst->adjust_recharge_multiplier();
                               } );
   buff.storms_eye = make_buff( this, "storms_eye", find_spell(1239315) )

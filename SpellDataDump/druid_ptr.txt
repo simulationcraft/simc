@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -21350,7 +21350,7 @@ Effects          :
 #4 (id=1233556)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.33 | Target: Self (1)
 #5 (id=1233557)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.33 | Target: Self (1)
 #6 (id=1233558)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : $?c2[Bloodseeker Vines][Symbiotic Blooms] have a $?c2[$s1][$s2]% chance to trigger Bursting Growth every 2 sec at $?c2[$s3][$s4]% effectiveness. Each stack of $?c2[Bloodseeker Vines][Symbiotic Blooms] on an $?c2[enemy][ally] increases Bursting Growth $?c2[damage][healing] taken by $?c2[$s5][$s6]%.

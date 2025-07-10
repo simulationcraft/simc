@@ -348,6 +348,7 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
   {
     haa->set_target( s->target );
     haa->execute();
+    p->buffs.lightsmith.masterwork->trigger();
     p->cooldowns.tww3_lightsmith_2p_icd->start();
   }
 }

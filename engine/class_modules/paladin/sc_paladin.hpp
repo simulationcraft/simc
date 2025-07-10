@@ -39,6 +39,13 @@ enum armament : unsigned int
   NUM_ARMAMENT  = 2,
 };
 
+enum armament_source : unsigned int
+{
+  LS_HARDCAST           = 0,
+  LS_WINGS              = 1,
+  LS_DIVINE_INSPIRATION = 2,
+};
+
 enum consecration_source : unsigned int
 {
   HARDCAST         = 0,
@@ -86,6 +93,8 @@ struct paladin_td_t : public actor_target_data_t
   {
     buff_t* holy_bulwark;
     buff_t* sacred_weapon;
+    buff_t* lesser_weapon;
+    buff_t* lesser_bulwark;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -150,6 +159,8 @@ public:
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
+    action_t* lesser_weapon_proc_damage;
+    action_t* lesser_weapon_proc_heal;
     action_t* refining_fire;
     action_t* eye_for_an_eye;
 
@@ -247,6 +258,9 @@ public:
       buff_t* rite_of_adjuration;
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
       buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
+      buff_t* masterwork;
+      buff_t* lesser_weapon[5];
+      buff_t* lesser_bulwark;
     } lightsmith;
 
     struct
@@ -271,6 +285,7 @@ public:
       buff_t* solar_grace;
       buff_t* morning_star_driver;
       buff_t* suns_avatar;
+      buff_t* solar_wrath;
     } herald_of_the_sun;
 
     buff_t* rise_from_ash; // Ret TWW1 4p
@@ -450,6 +465,8 @@ public:
       const spell_data_t* holy_bulwark_absorb;
       const spell_data_t* forges_reckoning; // Spell triggered by Blessing of the Forge (Shield of the Righteous)
       const spell_data_t* sacred_word;      // Spell triggered by Blessing of the Forge (Word of Glory)
+      const spell_data_t* lesser_bulwark; // TWW3 Absorb
+      const spell_data_t* lesser_weapon; // TWW3 Damage
     } lightsmith;
 
     struct
@@ -464,6 +481,7 @@ public:
     {
       const spell_data_t* gleaming_rays;
       const spell_data_t* dawnlight_aoe_metadata;
+      const spell_data_t* solar_wrath;  // Herald TWW3 4p
     } herald_of_the_sun;
 
     const spell_data_t* highlords_judgment_hidden;
@@ -874,7 +892,7 @@ public:
   bool standing_in_consecration() const;
   bool standing_in_hallow() const;
   void adjust_health_percent();
-  void cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random );
+  void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
   void trigger_greater_judgment( paladin_td_t* targetdata, int num_stacks );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
@@ -935,7 +953,8 @@ public:
   {
     return !( talents.crusading_strikes->ok() );
   }
-  dbc_proc_callback_t* create_sacred_weapon_callback(paladin_t* source, player_t* target);
+  dbc_proc_callback_t* create_sacred_weapon_callback( paladin_t* source, player_t* target );
+  dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target, int index );
 };
 
 namespace buffs
@@ -1086,6 +1105,18 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
   }
 };
 
+struct lesser_bulwark_buff_t : public absorb_buff_t
+{
+  paladin_t* caster;
+  lesser_bulwark_buff_t(paladin_td_t* td)
+    : absorb_buff_t(td->target, "lesser_bulwark_ally_" + td->source->name_str + "_" + td->target->name_str,
+      debug_cast<paladin_t*>(td->source)->spells.lightsmith.lesser_bulwark)
+  {
+    caster = debug_cast<paladin_t*>( td->source );
+    set_absorb_source( caster->get_stats( "lesser_bulwark_absorb_" + td->target->name_str ) );
+  }
+};
+
 struct holy_bulwark_buff_t : public buff_t
 {
   holy_bulwark_absorb_t* absorb;
@@ -1183,7 +1214,7 @@ public:
       all_in; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath, luck_of_the_draw;  // Prot
-    bool gleaming_rays; // Herald of the Sun
+    bool gleaming_rays, solar_wrath; // Herald of the Sun
   } affected_by;
 
   // haste scaling bools
@@ -1231,6 +1262,8 @@ public:
 
       this->affected_by.winning_streak = this->data().affected_by( p->spells.winning_streak->effectN( 1 ) );
       this->affected_by.all_in = this->data().affected_by( p->spells.all_in->effectN( 1 ) );
+      this->affected_by.solar_wrath    = p->sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B4 ) &&
+                                      this->data().affected_by( p->spells.herald_of_the_sun.solar_wrath->effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -1502,6 +1535,11 @@ public:
     if ( affected_by.luck_of_the_draw && p()->buffs.luck_of_the_draw->up() )
     {
       am *= 1.0 + p()->buffs.luck_of_the_draw->data().effectN( 1 ).percent();
+    }
+
+    if (affected_by.solar_wrath && p()->buffs.herald_of_the_sun.solar_wrath->up())
+    {
+      am *= 1.0 + p()->sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B4 )->effectN( 1 ).percent();
     }
 
     return am;

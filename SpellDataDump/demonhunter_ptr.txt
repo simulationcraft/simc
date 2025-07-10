@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61787 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -12977,19 +12977,19 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1232276)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Target: Self (1)
 #2 (id=1238271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198813), Blade Dance (199552), Blade Dance (200685), Shear (203782), Death Sweep (210153), Death Sweep (210155), Fracture (225919), Fracture (225921), Throw Glaive (337819), Throw Glaive (346665), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979)
                    Family Flags: 58
 #3 (id=1238272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Vengeful Retreat (198813), Blade Dance (199552), Blade Dance (200685), Shear (203782), Death Sweep (210153), Death Sweep (210155), Fracture (225919), Fracture (225921), Throw Glaive (337819), Throw Glaive (346665), Reaver's Glaive (442294), Warblade's Hunger (442507), Fury of the Aldrachi (444806), Preemptive Strike (444979)
                    Family Flags: 58
 #4 (id=1238280)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Target: Self (1)
 #5 (id=1238287)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.33 | Misc Value 2: 3349 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value 2: 3349 (Label) | Target: Self (1)
                    Affected Spells (Label): Reaver's Glaive (442294), Reaver's Glaive (444686), Reaver's Glaive (444764)
 Description      : Reaver's Glaive damage is increased by $s1% and other Physical-only damage is increased by $s2%.
 
@@ -13034,7 +13034,7 @@ Effects          :
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
 #2 (id=1235640)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Immolation Aura deals $s1% increased damage and increases $?a212613[Soul Cleave][Chaos Strike] damage by $1238462s1% while active.
 
 Name             : Demon Hunter Fel-Scarred 11.2 Class Set 4pc (id=1236362) [Spell Family (107), Passive, Hidden] 
@@ -13071,7 +13071,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1235645)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518), Soul Cleave (228478)
                    Family Flags: 6, 14, 31, 50, 127
 Description      : $@spelldesc1236361
