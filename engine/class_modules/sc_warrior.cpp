@@ -1170,6 +1170,8 @@ public:
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7 ) );
+      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 8 ) );
       if ( p()->talents.warrior.unstoppable_force->ok() )
         parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
