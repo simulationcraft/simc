@@ -3835,16 +3835,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon->slot      = SLOT_MAIN_HAND;
       base_execute_time = p->main_hand_weapon.swing_time;
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = auto_attack_melee_t<dancing_rune_weapon_pet_t>::composite_da_multiplier( state );
-
-      if ( pet()->blood_rush->check() )
-        m *= 1.0 + pet()->blood_rush->check_value();
-
-      return m;
-    }
   };
 
   action_t* drw_auto_attack;
@@ -3871,6 +3861,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration  = regen_type::DISABLED;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( school );
+
+    if ( blood_rush->check() )
+      m *= 1.0 + blood_rush->check_value();
   }
 
   void create_actions() override
