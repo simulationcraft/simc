@@ -7024,6 +7024,16 @@ struct storms_eye_t : public shaman_spell_t
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+      attack_power_mod.direct = 0;
+    }
+    else
+    {
+      spell_power_mod.direct  = 0;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    }
   }
 };
 
@@ -14648,7 +14658,12 @@ void shaman_t::apply_affecting_auras( action_t& action )
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
-  action.apply_affecting_aura( spell.tww3_stormbringer_4pc );
+  if ( action.player->specialization() == SHAMAN_ELEMENTAL )
+    for ( int ix : { 1, 2 } )
+      action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
+  if ( action.player->specialization() == SHAMAN_ENHANCEMENT )
+    for ( int ix : { 3, 4 } )
+      action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
 
   // Custom
 
