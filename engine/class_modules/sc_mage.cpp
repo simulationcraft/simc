@@ -575,6 +575,7 @@ public:
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     int embedded_splinters;
+    int remaining_splinterstorm;
     int magis_spark_spells;
     int intuition_blp_count;
     int clearcasting_blp_count;
@@ -7747,7 +7748,9 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
+      mage->state.remaining_splinterstorm += splinters;
+      make_repeating_event( sim(), 100_ms, [ m = mage, a = mage->action.splinterstorm, t ]
+        { a->execute_on_target( t ); m->state.remaining_splinterstorm--; }, splinters );
 
       if ( mage->specialization() == MAGE_FROST )
         mage->trigger_brain_freeze( mage->talents.splinterstorm->effectN( 5 ).percent(), mage->procs.brain_freeze_splinterstorm, 0_ms );
@@ -9533,6 +9536,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return state.embedded_splinters; } );
+  }
+
+  if ( util::str_compare_ci( name, "remaining_splinterstorm" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.remaining_splinterstorm; } );
   }
 
   if ( util::str_compare_ci( name, "clearcasting_blp_remains" ) )

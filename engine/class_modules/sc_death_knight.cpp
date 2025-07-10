@@ -4686,6 +4686,21 @@ struct trollbane_pet_t final : public horseman_pet_t
       base_multiplier    = dk()->spell.tww3_4pc_rider->effectN( 1 ).percent();
       cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
     }
+
+    void execute() override
+    {
+      if (consumed_km)
+        set_school_override( SCHOOL_FROST );
+      horseman_melee_t::execute();
+
+      if (consumed_km)
+        clear_school_override();
+      
+      consumed_km = false;
+    }
+
+ public:
+    bool consumed_km;
   };
 
   struct frostscythe_trollbane_t final : horseman_melee_t
@@ -10099,7 +10114,7 @@ struct howling_blast_t final : public death_knight_spell_t
         m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
       }
     }
-    if ( !p()->bugs && p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() &&
+    if ( p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() &&
          ( state->chain_target > 0 && !is_northwinds_target ) )
     {
       m *= 1.0 + p()->talent.frost.everfrost->effectN( 2 ).percent();
@@ -10474,6 +10489,13 @@ struct obliterate_t final : public death_knight_melee_attack_t
                                            500_ms );
     }
 
+    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+         p()->pets.trollbane.active_pet() != nullptr )
+    {
+      p()->pets.trollbane.active_pet()->obliterate->consumed_km = p()->buffs.killing_machine->up();
+      p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
+    }      
+
     if ( p()->buffs.killing_machine->up() )
     {
       p()->consume_killing_machine( p()->procs.killing_machine_oblit, total_delay, aa_action );
@@ -10484,9 +10506,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p()->buffs.empower_rune_weapon->expire();
     }
 
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
-         p()->pets.trollbane.active_pet() != nullptr )
-      p()->pets.trollbane.active_pet()->obliterate->execute_on_target( target );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -16120,12 +16139,6 @@ void death_knight_action_t<Base>::apply_action_effects()
   // Rider of the Apocalypse
   parse_effects( p()->buffs.mograines_might );
   parse_effects( p()->buffs.a_feast_of_souls );
-
-  // Deathbringer
-  parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
-  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
-  parse_effects( p()->buffs.exterminate );
-  parse_effects( p()->buffs.reaper_of_souls );
   auto tww3_rider_mask = effect_mask_t( true );
   switch ( p()->specialization() )
   {
@@ -16139,6 +16152,25 @@ void death_knight_action_t<Base>::apply_action_effects()
       break;
   }
   parse_effects( p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ), tww3_rider_mask );
+
+  // Deathbringer
+  parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
+  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
+  parse_effects( p()->buffs.exterminate );
+  parse_effects( p()->buffs.reaper_of_souls ); 
+  auto tww3_deathbringer_mask = effect_mask_t( true );
+  switch ( p()->specialization() )
+  {
+    case DEATH_KNIGHT_BLOOD:
+      tww3_rider_mask.disable( 1, 7 );
+      break;
+    case DEATH_KNIGHT_FROST:
+      tww3_rider_mask.disable( 2, 8 );
+      break;
+    default:
+      break;
+  }
+  parse_effects( p()->sets->set( HERO_DEATHBRINGER, TWW3, B4 ), tww3_deathbringer_mask );
 
   // San'layn
   parse_effects( p()->buffs.visceral_strength_unholy, p()->talent.sanlayn.visceral_strength );

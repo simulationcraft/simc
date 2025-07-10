@@ -435,6 +435,16 @@ public:
     spell_data_ptr_t tww_s2_mm_4pc;
     spell_data_ptr_t tww_s2_sv_2pc;
     spell_data_ptr_t tww_s2_sv_4pc;
+
+    // TWW Season 3 - Manaforge Omega
+    spell_data_ptr_t tww_s3_dark_ranger_2pc;
+    spell_data_ptr_t tww_s3_dark_ranger_4pc;
+    spell_data_ptr_t tww_s3_dark_ranger_4pc_buff;
+
+    spell_data_ptr_t tww_s3_sentinel_2pc;
+    spell_data_ptr_t tww_s3_sentinel_4pc;
+    spell_data_ptr_t tww_s3_pack_leader_2pc;
+    spell_data_ptr_t tww_s3_pack_leader_4pc;
   } tier_set;
 
   struct buffs_t
@@ -500,6 +510,8 @@ public:
     buff_t* jackpot; // MM 2pc
     buff_t* winning_streak; // SV 2pc - Wildfire Bomb damage stacking buff
     buff_t* strike_it_rich; // SV 4pc - Mongoose Bite damage buff, consuming it reduces Wildfire Bomb cooldown
+    // TWW - S3
+    buff_t* blighted_quiver; // Dark Ranger 4pc
 
     // Hero Talents 
 
@@ -1007,6 +1019,7 @@ public:
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     ground_aoe_event_t* current_boar_charge = nullptr;
+    int blighted_quiver_count = 0;
   } state;
 
   struct options_t {
@@ -1295,6 +1308,8 @@ public:
     ab::apply_affecting_aura( p->tier_set.tww_s1_mm_2pc );
     ab::apply_affecting_aura( p->tier_set.tww_s1_mm_4pc );
     ab::apply_affecting_aura( p->tier_set.tww_s1_sv_2pc );
+    ab::apply_affecting_aura( p->tier_set.tww_s3_dark_ranger_2pc );
+    ab::apply_affecting_aura( p->tier_set.tww_s3_dark_ranger_4pc );
 
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.sentinel_precision );
@@ -1883,8 +1898,8 @@ struct fenryr_t final : public dire_critter_t
 
   fenryr_t( hunter_t* owner, util::string_view n = "fenryr" ) : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 0.37;
-    auto_attack_multiplier = 7;
+    // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
+    owner_coeff.ap_from_ap = 2;
     main_hand_weapon.swing_time = 1.5_s;
   }
 
@@ -1919,8 +1934,8 @@ struct hati_t final : public dire_critter_t
 {
   hati_t( hunter_t* owner, util::string_view n = "hati" ) : dire_critter_t( owner, n )
   {
-    owner_coeff.ap_from_ap = 0.37;
-    auto_attack_multiplier = 7;
+   // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
+    owner_coeff.ap_from_ap = 2;
     main_hand_weapon.swing_time = 1.5_s;
   }
 };
@@ -1956,9 +1971,9 @@ struct bear_t final : public dire_critter_t
 
   bear_t( hunter_t* owner, util::string_view n = "bear" ) : dire_critter_t( owner, n )
   {
-    // TODO check and update
-    owner_coeff.ap_from_ap = 0.7;
-    auto_attack_multiplier = o()->specialization() == HUNTER_SURVIVAL ? 10 : 8;
+    owner_coeff.ap_from_ap = 1;
+    // TODO check both specs
+    auto_attack_multiplier = o()->specialization() == HUNTER_SURVIVAL ? 6.5625 : 5.25;
     main_hand_weapon.swing_time = 1.5_s;
   }
 
@@ -3565,7 +3580,7 @@ void hunter_t::trigger_bloodseeker_update()
     // accomplished by adding the bleed mechanic flags to both the spell and the dot effect, not applying a stack of Bloodseeker, that more stringent requirements
     // exist for Bloodseeker to count the target as "bleeding". This requirement is also apparent with the new Dire Beast behavior of 11.2, neither for which 
     // Rend Flesh was an eligible bleed until the aforesaid fix. This is further complicated by Flayed Shot, a shadow damage dot that is yet referred to as a 
-    // bleed in its descriptions and has the bleed mechanic set on the ability (but not the dot effect), working as a valid cadidate for Bloodseeker (though 
+    // bleed in its descriptions and has the bleed mechanic set on the ability (but not the dot effect), working as a valid candidate for Bloodseeker (though 
     // seemingly still not a candidate for 11.2 Dire Beast).
     if ( t -> is_enemy() && t -> debuffs.bleeding -> check() )
       bleeding_targets++;
@@ -4505,6 +4520,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   double health_threshold_pct;
   razor_fragments_t* razor_fragments = nullptr;
   double precise_shots_multiplier = 0;
+  double blighted_quiver_chance = 0;
 
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
@@ -4516,25 +4532,23 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     precise_shots_multiplier = p->talents.headshot->effectN( 1 ).percent() + p->talents.unmatched_precision->effectN( 3 ).percent();
     if ( p->talents.windrunner_quiver.ok() )
       precise_shots_multiplier *= 1 + p->talents.windrunner_quiver->effectN( 5 ).percent();
+
+    if ( p->specialization() == HUNTER_BEAST_MASTERY )
+      blighted_quiver_chance = p->tier_set.tww_s3_dark_ranger_4pc->effectN( 2 ).percent();
+
+    if ( p->specialization() == HUNTER_MARKSMANSHIP )
+      blighted_quiver_chance = p->tier_set.tww_s3_dark_ranger_4pc->effectN( 3 ).percent();
   }
 
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    // TODO 17/4/25: if a cast that would consume an existing Deathblow is queued after a cast that triggers a new one, the new Deathblow is saved;
-    // this can be handled by having Deathblow's activated flag set false and using trigger() to force it to increment after the buff delay,
-    // which would occur after the queued execute. Here though we have to make sure we don't cancel the delayed increment when modeling that bug(?)
-    if ( p()->bugs )
-    {
-      p()->buffs.deathblow->expire();
-      p()->buffs.razor_fragments->expire();
-    }
-    else
-    {
-      p()->buffs.deathblow->cancel();
-      p()->buffs.razor_fragments->cancel();
-    }
+    p()->buffs.deathblow->expire();
+    p()->buffs.razor_fragments->expire();
+    
+    if ( rng().roll( blighted_quiver_chance ) )
+      p()->buffs.blighted_quiver->trigger();
 
     if ( p()->talents.headshot.ok() )
       p()->consume_precise_shots();
@@ -4812,7 +4826,7 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( p->talents.withering_fire.ok() )
     {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( 12 ).base_value() );
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
       withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
       add_child( withering_fire.action );
     }
@@ -4836,8 +4850,9 @@ struct black_arrow_t final : public kill_shot_base_t
       } );
       target_cache.is_valid = false;
 
+      int count = withering_fire.count + p()->state.blighted_quiver_count;
       int t = 1;
-      while ( t <= withering_fire.count )
+      while ( t <= count )
         withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
     }
 
@@ -8364,6 +8379,16 @@ void hunter_t::init_spells()
   tier_set.tww_s2_sv_2pc = sets -> set( HUNTER_SURVIVAL, TWW2, B2 );
   tier_set.tww_s2_sv_4pc = sets -> set( HUNTER_SURVIVAL, TWW2, B4 );
 
+  tier_set.tww_s3_dark_ranger_2pc = sets->set( HERO_DARK_RANGER, TWW3, B2 );
+  tier_set.tww_s3_dark_ranger_4pc = sets->set( HERO_DARK_RANGER, TWW3, B4 );
+  tier_set.tww_s3_dark_ranger_4pc_buff = tier_set.tww_s3_dark_ranger_4pc.ok() ? find_spell( 1236975 ) : spell_data_t::not_found();
+  
+  tier_set.tww_s3_sentinel_2pc = sets->set( HERO_SENTINEL, TWW3, B2 );
+  tier_set.tww_s3_sentinel_4pc = sets->set( HERO_SENTINEL, TWW3, B4 );
+  
+  tier_set.tww_s3_pack_leader_2pc = sets->set( HERO_PACK_LEADER, TWW3, B2 );
+  tier_set.tww_s3_pack_leader_4pc = sets->set( HERO_PACK_LEADER, TWW3, B4 );
+
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
   cooldowns.salvo->duration = talents.volley->duration();
@@ -8452,6 +8477,7 @@ void hunter_t::create_buffs()
   buffs.deathblow =
     make_buff( this, "deathblow", talents.deathblow_buff )
       ->set_activated( false );
+  // Allows us to use may_react() in a ready check.
   buffs.deathblow->reactable = true;
 
   // Marksmanship Tree
@@ -8750,6 +8776,9 @@ void hunter_t::create_buffs()
     make_buff( this, "strike_it_rich", find_spell( 1216879 ) ) 
       ->set_default_value_from_effect( 1 ); // Damage increase to mongoose/raptor strike
 
+  buffs.blighted_quiver = 
+    make_buff( this, "blighted_quiver", tier_set.tww_s3_dark_ranger_4pc_buff );
+
   // Hero Talents
 
   buffs.howl_of_the_pack_leader_wyvern = 
@@ -8819,7 +8848,19 @@ void hunter_t::create_buffs()
       } );
 
   buffs.withering_fire =
-    make_buff( this, "withering_fire", talents.withering_fire_buff );
+    make_buff( this, "withering_fire", talents.withering_fire_buff )
+      ->set_stack_change_callback(
+        [ this ]( buff_t*, int, int cur ) {
+          if ( cur == 0 )
+          {
+            state.blighted_quiver_count = 0;
+          }
+          else
+          {
+            state.blighted_quiver_count = buffs.blighted_quiver->check();
+            buffs.blighted_quiver->expire();
+          }
+        } );
 
   if ( specialization() == HUNTER_BEAST_MASTERY )
     buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow(); } );
