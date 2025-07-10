@@ -7827,7 +7827,7 @@ struct bonestorm_t final : public death_knight_spell_t
     hasted_ticks = false;
     max_charges  = data().effectN( 4 ).base_value();
 
-    add_child( p->background_actions.bonestorm_tick );
+    add_child( get_action<bonestorm_tick_t>( "bonestorm_damage", p ) );
   }
 
   void execute() override
