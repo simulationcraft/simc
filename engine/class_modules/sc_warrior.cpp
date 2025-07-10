@@ -7201,8 +7201,10 @@ struct storm_bolt_t : public warrior_attack_t
 
 struct tough_as_nails_t : public warrior_attack_t
 {
+  bool critical_block;
   tough_as_nails_t( warrior_t* p ) :
-    warrior_attack_t( "tough_as_nails", p, p -> find_spell( 385890 ) )
+    warrior_attack_t( "tough_as_nails", p, p -> find_spell( 385890 ) ),
+    critical_block( false )
   {
     may_crit = false;
     ignores_armor = true;
@@ -7210,11 +7212,26 @@ struct tough_as_nails_t : public warrior_attack_t
     background = true;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    // TODO this does not seem to currently work on PTR, so stub it out
+    // if ( p()->sim->dbc->wowv() > wowv_t { 11, 2, 0 } )
+    // {
+    //   if ( critical_block )
+    //     m *= 2.0;  // Not in spelldata, but critical blocks deal double damage
+    // }
+
+    return m;
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
 
-    p() -> cooldown.tough_as_nails_icd -> start();
+    if ( p()->sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
+      p() -> cooldown.tough_as_nails_icd -> start();
   }
 };
 
@@ -10669,6 +10686,13 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
     ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ) &&
     s -> action -> player -> is_enemy() )
   {
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    {
+      if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+        debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = true;
+      else
+        debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = false;
+    }
     active.tough_as_nails -> execute_on_target( s -> action -> player );
   }
 }
