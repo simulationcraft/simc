@@ -14904,6 +14904,9 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate =
       make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
+      // Unfortunately blizz removed the aura from reapers onslaught that auto adjusted max stacks.  Looks like they scripted it.
+      if ( talent.deathbringer.reapers_onslaught->ok() )
+          buffs.exterminate->set_max_stack( spell.exterminate_buff->max_stacks() + talent.deathbringer.reapers_onslaught->effectN( 2 ).base_value() );
 
   buffs.reaper_of_souls =
       make_fallback( talent.deathbringer.reapers_mark.ok(), this, "reaper_of_souls", spell.reapers_of_souls_buff )
