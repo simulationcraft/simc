@@ -14707,10 +14707,10 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
   if ( action.player->specialization() == SHAMAN_ELEMENTAL )
-    for ( int ix : { 1, 2 } )
+    for ( int ix : { 3, 4 } )
       action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
   if ( action.player->specialization() == SHAMAN_ENHANCEMENT )
-    for ( int ix : { 3, 4 } )
+    for ( int ix : { 1, 2 } )
       action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
 
   // Custom
