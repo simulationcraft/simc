@@ -4351,7 +4351,7 @@ struct thunder_blast_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.show_of_force->check() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
     }
@@ -4372,7 +4372,7 @@ struct thunder_blast_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( p()->buff.show_of_force->up() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->up() )
     {
       p()->buff.show_of_force->expire();
     }
@@ -4589,7 +4589,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.show_of_force->check() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
     }
@@ -4610,7 +4610,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     warrior_attack_t::execute();
 
-    if ( p()->buff.show_of_force->up() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->buff.show_of_force->up() )
     {
       p()->buff.show_of_force->expire();
     }
@@ -6652,7 +6652,8 @@ struct revenge_seismic_reverberation_t : public warrior_attack_t
             p()->buff.revenge->data().effectN( 2 ).percent();
     }
 
-    am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
 
     am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
 
@@ -6747,7 +6748,7 @@ struct revenge_t : public warrior_attack_t
         p()->buff.expert_strategist->trigger();
     }
 
-    if ( p()->talents.protection.show_of_force->ok() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->talents.protection.show_of_force->ok() )
     {
       p()->buff.show_of_force->trigger();
     }
@@ -6799,7 +6800,8 @@ struct revenge_t : public warrior_attack_t
             p()->buff.revenge->data().effectN( 2 ).percent();
     }
 
-    am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
 
     return am;
   }
@@ -8715,7 +8717,8 @@ void warrior_t::init_spells()
   talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
 
   talents.protection.disrupting_shout       = find_talent_spell( talent_tree::SPECIALIZATION, "Disrupting Shout" );
-  talents.protection.show_of_force          = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.show_of_force          = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
   talents.protection.sudden_death           = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Death", WARRIOR_PROTECTION );
   talents.protection.thunderlord            = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderlord" );
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
@@ -9575,8 +9578,11 @@ void warrior_t::create_buffs()
 
   buff.conquerors_mastery = make_buff<stat_buff_t>( this, "conquerors_mastery", find_spell( 325862 ) );
 
-  buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
-                           ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+  {
+    buff.show_of_force = make_buff( this, "show_of_force", talents.protection.show_of_force -> effectN( 1 ).trigger() )
+                            ->set_default_value( talents.protection.show_of_force -> effectN( 1 ).percent() );
+  }
 
   // Arma: 2022 Nov 4.  Unnerving focus seems to get the value from the parent, not the value set in the buff
   buff.unnerving_focus = make_buff( this, "unnerving_focus", talents.protection.unnerving_focus -> effectN( 1 ).trigger() )
