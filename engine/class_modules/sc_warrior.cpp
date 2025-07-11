@@ -6490,7 +6490,8 @@ struct ravager_tick_t : public warrior_attack_t
     background = true;
     rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
-    rage_from_storm_of_steel += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
+    if ( p->sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
+      rage_from_storm_of_steel += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
   }
 
   void execute() override
@@ -8742,7 +8743,8 @@ void warrior_t::init_spells()
   talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
-  talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
+  if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
+    talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
   // 11.2 New talents
   talents.protection.armor_specialization   = find_talent_spell( talent_tree::SPECIALIZATION, "Armor Specialization", WARRIOR_PROTECTION );
@@ -10874,7 +10876,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.fury.titanic_rage );
 
   // Protection Auras
-  action.apply_affecting_aura( talents.protection.storm_of_steel );
+  if ( sim->dbc->wowv() < wowv_t{11, 2, 0 } )
+    action.apply_affecting_aura( talents.protection.storm_of_steel );
   action.apply_affecting_aura( talents.protection.bloodborne );
   action.apply_affecting_aura( talents.protection.defenders_aegis );
   action.apply_affecting_aura( talents.protection.battering_ram );
