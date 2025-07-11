@@ -6963,7 +6963,8 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
       soul_rupture_effect_idx( p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1 ),
       mod( 0.0 ),
       grim_reaper_max( 0 ),
-      grim_reaper_threshold( 0 )
+      grim_reaper_threshold( 0 ),
+      exterminate_stacks( p->talent.deathbringer.exterminate->effectN( 3 ).base_value() )
   {
     background              = true;
     cooldown->duration      = 0_ms;
@@ -6976,6 +6977,8 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
       grim_reaper_max       = p->talent.deathbringer.grim_reaper->effectN( 1 ).percent();
       grim_reaper_threshold = p->talent.deathbringer.grim_reaper->effectN( 2 ).base_value();
     }
+    if ( p->talent.deathbringer.reapers_onslaught->ok() )
+      exterminate_stacks += as<int>( p->talent.deathbringer.reapers_onslaught->effectN( 2 ).base_value() );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7004,7 +7007,7 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
 
     if ( target != nullptr && p()->talent.deathbringer.exterminate->ok() )
     {
-      p()->buffs.exterminate->trigger( p()->buffs.exterminate->max_stack() );
+      p()->buffs.exterminate->trigger( exterminate_stacks );
     }
 
     if ( p()->sets->has_set_bonus( HERO_DEATHBRINGER, TWW3, B2 ) )
@@ -7026,6 +7029,7 @@ private:
   double mod;
   double grim_reaper_max;
   double grim_reaper_threshold;
+  int exterminate_stacks;
 };
 
 struct wave_of_souls_t final : public death_knight_spell_t
@@ -14952,9 +14956,6 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate =
       make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
-      // Unfortunately blizz removed the aura from reapers onslaught that auto adjusted max stacks.  Looks like they scripted it.
-      if ( talent.deathbringer.reapers_onslaught->ok() )
-          buffs.exterminate->set_max_stack( spell.exterminate_buff->max_stacks() + as<int>( talent.deathbringer.reapers_onslaught->effectN( 2 ).base_value() ) );
 
   buffs.reaper_of_souls =
       make_fallback( talent.deathbringer.reapers_mark.ok(), this, "reaper_of_souls", spell.reapers_of_souls_buff )
