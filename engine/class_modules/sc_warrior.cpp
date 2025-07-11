@@ -10344,12 +10344,17 @@ double warrior_t::composite_armor_multiplier() const
 {
   double ar = parse_player_effects_t::composite_armor_multiplier();
 
+  // Handle this manually, as we can't auto apply armor for prot due to attt
+  auto reinforced_plates_armor_mult = talents.warrior.reinforced_plates->effectN( 2 ).percent();
+  if ( specialization() == WARRIOR_PROTECTION && sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    reinforced_plates_armor_mult *= 1.0 + spec.protection_warrior->effectN( 31 ).percent();
+
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
   if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
   {
       auto q = spec.vanguard -> effectN( 1 ).percent() *
                 talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
-                ( 1+talents.warrior.reinforced_plates->effectN( 2 ).percent()) *
+                ( 1+reinforced_plates_armor_mult) *
                 ( 1+talents.protection.armor_specialization->effectN( 1 ).percent()) *
                 ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
                 ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
@@ -10358,7 +10363,7 @@ double warrior_t::composite_armor_multiplier() const
 
  // Generally Modify Armor% (101)
 
-  ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 2 ).percent();
+  ar *= 1.0 + reinforced_plates_armor_mult;
 
   ar *= 1.0 + talents.protection.armor_specialization -> effectN( 1 ).percent();
   ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
