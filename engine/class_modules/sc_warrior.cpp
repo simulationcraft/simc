@@ -1164,7 +1164,8 @@ public:
     }
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
-      parse_effects( p()->buff.battering_ram );
+      if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->buff.battering_ram );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
@@ -6851,7 +6852,7 @@ struct shield_charge_damage_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->talents.protection.champions_bulwark->ok() )
+    if ( p()->talents.protection.champions_bulwark->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
       am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 2 ).percent();
     }
@@ -6862,7 +6863,7 @@ struct shield_charge_damage_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.protection.champions_bulwark->ok() )
+    if ( p()->talents.protection.champions_bulwark->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
       if ( p()->buff.shield_block->check() )
       {
@@ -6874,8 +6875,12 @@ struct shield_charge_damage_t : public warrior_attack_t
       }
       p()->buff.revenge->trigger();
     }
+    else
+    {
+      p()->buff.shield_block->extend_duration_or_trigger( p()->buff.shield_block->buff_duration() );
+    }
 
-    if ( p()->talents.protection.battering_ram->ok() )
+    if ( p()->talents.protection.battering_ram->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
       p()->buff.battering_ram->trigger();
     }
@@ -6916,7 +6921,7 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->talents.protection.champions_bulwark->ok() )
+    if ( p()->talents.protection.champions_bulwark->ok() && p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
       am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 2 ).percent();
     }
@@ -8739,8 +8744,10 @@ void warrior_t::init_spells()
   talents.protection.violent_outburst       = find_talent_spell( talent_tree::SPECIALIZATION, "Violent Outburst" );
   talents.protection.ravager                = find_talent_spell( talent_tree::SPECIALIZATION, "Ravager", WARRIOR_PROTECTION );
 
-  talents.protection.battering_ram          = find_talent_spell( talent_tree::SPECIALIZATION, "Battering Ram" );
-  talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.battering_ram          = find_talent_spell( talent_tree::SPECIALIZATION, "Battering Ram" );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
   talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
@@ -9407,7 +9414,8 @@ void warrior_t::create_buffs()
   buff.dancing_blades = make_buff( this, "dancing_blades", find_spell( 391688 ) )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC);
 
-  buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    buff.battering_ram = make_buff( this, "battering_ram", find_spell( 394313 ) );
 
   buff.berserker_rage = make_buff( this, "berserker_rage", spell.berserker_rage )
       ->set_cooldown( timespan_t::zero() );
@@ -10830,7 +10838,8 @@ void warrior_t::parse_player_effects()
   else if ( specialization() == WARRIOR_PROTECTION )
   {
     parse_effects( spec.protection_warrior );
-    parse_effects( buff.battering_ram );
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      parse_effects( buff.battering_ram );
     parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
     parse_effects( buff.into_the_fray );
     // Str and armor are handled manually.
@@ -10880,7 +10889,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( talents.protection.storm_of_steel );
   action.apply_affecting_aura( talents.protection.bloodborne );
   action.apply_affecting_aura( talents.protection.defenders_aegis );
-  action.apply_affecting_aura( talents.protection.battering_ram );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    action.apply_affecting_aura( talents.protection.battering_ram );
   action.apply_affecting_aura( talents.protection.punish );
   action.apply_affecting_aura( talents.protection.red_right_hand );
 
