@@ -8710,7 +8710,8 @@ void warrior_t::init_spells()
   talents.protection.brace_for_impact       = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
   talents.protection.unnerving_focus        = find_talent_spell( talent_tree::SPECIALIZATION, "Unnerving Focus" );
 
-  talents.protection.challenging_shout      = find_talent_spell( talent_tree::SPECIALIZATION, "Challenging Shout" );
+  if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.challenging_shout      = find_talent_spell( talent_tree::SPECIALIZATION, "Challenging Shout" );
   talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
   talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_PROTECTION );
   talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
