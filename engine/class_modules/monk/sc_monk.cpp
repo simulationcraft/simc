@@ -1100,7 +1100,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
     int stacks = 0;
     if ( source_tier )
-      stacks += 10;
+      stacks += p()->tier.tww3.spm_2pc->effectN( 2 ).base_value();
     if ( source_default )
       stacks += p()->buff.flurry_charge->stack();
 
