@@ -9227,8 +9227,8 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
-  if ( splits[ 0 ] == "shado_pan_energy_accumulator" )
-    return make_ref_expr( "shado_pan_energy_accumulator", flurry_strikes_energy );
+  if ( splits[ 0 ] == "monk.shadopan.energy_accumulator" )
+    return make_ref_expr( "monk.shadopan.energy_accumulator", flurry_strikes_energy );
 
   return base_t::create_expression( name_str );
 }
