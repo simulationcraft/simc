@@ -399,8 +399,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
           s += fmt::format( "# set_bonus={}_{}pc=1{}", data.bonus->set_opt_name, data.bonus->bonus, newline );
         else
         {
-          std::string ht = util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) );
-          util::tolower( ht );
+          std::string ht = util::tokenize_fn( util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) ) );
           s += fmt::format( "# set_bonus=name={},pc={},hero_tree={},enable=1{}", data.bonus->set_opt_name,
                             data.bonus->bonus, ht, newline );
         }
