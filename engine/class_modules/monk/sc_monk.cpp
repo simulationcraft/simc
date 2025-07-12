@@ -6924,11 +6924,12 @@ void monk_t::init_spells()
     talent.brewmaster.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
     if ( wowv_l( { 11, 2, 0 } ) )
       talent.brewmaster.celestial_flames = _ST( "Celestial Flames" );
-    talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
-    talent.brewmaster.purified_chi                        = find_spell( 325092 );
-    talent.brewmaster.autumn_blessing                     = _ST( "Autumn Blessing" );
-    talent.brewmaster.one_with_the_wind                   = _ST( "One With the Wind" );
-    talent.brewmaster.zen_meditation                      = _ST( "Zen Meditation" );
+    talent.brewmaster.celestial_brew    = _ST( "Celestial Brew" );
+    talent.brewmaster.purified_chi      = find_spell( 325092 );
+    talent.brewmaster.autumn_blessing   = _ST( "Autumn Blessing" );
+    talent.brewmaster.one_with_the_wind = _ST( "One With the Wind" );
+    if ( wowv_l( { 11, 2, 0 } ) )
+      talent.brewmaster.zen_meditation = _ST( "Zen Meditation" );
     talent.brewmaster.strike_at_dawn                      = _ST( "Strike at Dawn" );
     talent.brewmaster.breath_of_fire                      = _ST( "Breath of Fire" );
     talent.brewmaster.breath_of_fire_dot                  = find_spell( 123725 );
