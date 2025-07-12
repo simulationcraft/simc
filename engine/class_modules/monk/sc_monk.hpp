@@ -1462,6 +1462,8 @@ public:
   double resource_regen_per_second( resource_e ) const override;
 
   // Other
+  bool wowv_l( wowv_t value ) const;
+  bool wov_ge( wowv_t value ) const;
   const monk_td_t *find_target_data( const player_t *target ) const override
   {
     return target_data[ target ];

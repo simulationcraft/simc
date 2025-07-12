@@ -6368,6 +6368,16 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   user_options.squirm_frequency          = 15;
 }
 
+bool monk_t::wowv_l( wowv_t value ) const
+{
+  return sim->dbc->wowv() < value;
+}
+
+bool monk_t::wowv_ge( wowv_t value ) const
+{
+  return sim->dbc->wowv() >= value;
+}
+
 void monk_t::parse_player_effects()
 {
   /*
