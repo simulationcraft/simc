@@ -2188,7 +2188,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( chi_x && p()->buff.chi_energy->up() )
       chi_x->execute();
 
-    if ( p()->buff.celestial_flames->up() )
+    if ( p()->wowv_l( { 11, 2, 0 } ) && p()->buff.celestial_flames->up() )
       p()->active_actions.breath_of_fire->execute_on_target( execute_state->target );
 
     p()->buff.transfer_the_power->trigger();
@@ -5306,7 +5306,8 @@ template <class base_action_t>
 void brew_t<base_action_t>::execute()
 {
   base_action_t::execute();
-  base_action_t::p()->buff.celestial_flames->trigger();
+  if ( base_action_t::p()->wowv_l( { 11, 2, 0 } ) )
+    base_action_t::p()->buff.celestial_flames->trigger();
 }
 
 void brews_t::insert_cooldown( action_t *action )
@@ -6904,24 +6905,25 @@ void monk_t::init_spells()
 
   // monk_t::talent::brewmaster
   {
-    current_spec                                          = MONK_BREWMASTER;
-    talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
-    talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
-    talent.brewmaster.shuffle                             = _ST( "Shuffle" );
-    talent.brewmaster.shuffle_buff                        = find_spell( 215479 );
-    talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
-    talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
-    talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox" );
-    talent.brewmaster.gift_of_the_ox_buff                 = find_spell( 124506 );
-    talent.brewmaster.gift_of_the_ox_heal_trigger         = find_spell( 124507 );
-    talent.brewmaster.gift_of_the_ox_heal_expire          = find_spell( 178173 );
-    talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
-    talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
-    talent.brewmaster.elixir_of_determination             = _ST( "Elixir of Determination" );
-    talent.brewmaster.special_delivery                    = _ST( "Special Delivery" );
-    talent.brewmaster.special_delivery_missile            = find_spell( 196732 );
-    talent.brewmaster.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
-    talent.brewmaster.celestial_flames                    = _ST( "Celestial Flames" );
+    current_spec                                  = MONK_BREWMASTER;
+    talent.brewmaster.keg_smash                   = _ST( "Keg Smash" );
+    talent.brewmaster.purifying_brew              = _ST( "Purifying Brew" );
+    talent.brewmaster.shuffle                     = _ST( "Shuffle" );
+    talent.brewmaster.shuffle_buff                = find_spell( 215479 );
+    talent.brewmaster.staggering_strikes          = _ST( "Staggering Strikes" );
+    talent.brewmaster.gift_of_the_ox              = _ST( "Gift of the Ox" );
+    talent.brewmaster.spirit_of_the_ox            = _ST( "Spirit of the Ox" );
+    talent.brewmaster.gift_of_the_ox_buff         = find_spell( 124506 );
+    talent.brewmaster.gift_of_the_ox_heal_trigger = find_spell( 124507 );
+    talent.brewmaster.gift_of_the_ox_heal_expire  = find_spell( 178173 );
+    talent.brewmaster.quick_sip                   = _ST( "Quick Sip" );
+    talent.brewmaster.hit_scheme                  = _ST( "Hit Scheme" );
+    talent.brewmaster.elixir_of_determination     = _ST( "Elixir of Determination" );
+    talent.brewmaster.special_delivery            = _ST( "Special Delivery" );
+    talent.brewmaster.special_delivery_missile    = find_spell( 196732 );
+    talent.brewmaster.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
+    if ( wowv_l( { 11, 2, 0 } ) )
+      talent.brewmaster.celestial_flames = _ST( "Celestial Flames" );
     talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
     talent.brewmaster.purified_chi                        = find_spell( 325092 );
     talent.brewmaster.autumn_blessing                     = _ST( "Autumn Blessing" );
@@ -7665,10 +7667,11 @@ void monk_t::create_buffs()
                                            talent.brewmaster.counterstrike->effectN( 1 ).trigger() )
                            ->set_cooldown( talent.brewmaster.counterstrike->internal_cooldown() );
 
-  buff.celestial_flames =
-      make_buff( this, "celestial_flames", talent.brewmaster.celestial_flames->effectN( 1 ).trigger() )
-          ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
-          ->set_default_value_from_effect( 1 );
+  if ( wowv_l( { 11, 2, 0 } ) )
+    buff.celestial_flames =
+        make_buff( this, "celestial_flames", talent.brewmaster.celestial_flames->effectN( 1 ).trigger() )
+            ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
+            ->set_default_value_from_effect( 1 );
 
   buff.elusive_brawler = make_buff( this, "elusive_brawler", baseline.brewmaster.mastery->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
@@ -9095,8 +9098,13 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
 
   // If Breath of Fire is ticking on the source target, the player receives 5% less damage
   if ( target_td->dot.breath_of_fire->is_ticking() )
-    s->result_amount *=
-        1.0 + active_actions.breath_of_fire->data().effectN( 2 ).percent() + buff.celestial_flames->value() / 100.0;
+  {
+    double mult = 1.0;
+    mult += active_actions.breath_of_fire->data().effectN( 2 ).percent();
+    if ( wowv_l( { 11, 2, 0 } ) )
+      mult += buff.celestial_flames->value() / 100.0;
+    s->result_amount *= mult;
+  }
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew->up() )
