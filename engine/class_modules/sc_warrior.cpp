@@ -8725,7 +8725,8 @@ void warrior_t::init_spells()
   talents.protection.shield_wall            = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Wall" );
   talents.protection.bolster                = find_talent_spell( talent_tree::SPECIALIZATION, "Bolster" );
   talents.protection.tough_as_nails         = find_talent_spell( talent_tree::SPECIALIZATION, "Tough as Nails" );
-  talents.protection.spell_block            = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Block" );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.spell_block            = find_talent_spell( talent_tree::SPECIALIZATION, "Spell Block" );
   talents.protection.bloodborne             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodborne", WARRIOR_PROTECTION );
 
   talents.protection.heavy_repercussions    = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Repercussions" );
