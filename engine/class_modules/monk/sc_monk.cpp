@@ -1242,10 +1242,16 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
     apply_affecting_aura( p->talent.windwalker.inner_peace );
 
+    std::function<bool()> fp_condition;
+    if ( p->wowv_l( { 11, 2, 0 } ) )
+      fp_condition = [ & ] { return face_palm; };
+    else
+      fp_condition = [] { return true; };
+
     if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
-          .set_func( [ & ] { return face_palm; } )
-          .set_value( effect.percent() - 1.0 )
+          .set_func( fp_condition )
+          .set_value( effect.percent() - p->wowv_l( { 11, 2, 0 } ) ? 1.0 : 0.0 )
           .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
@@ -1270,7 +1276,8 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     // Pre-Execute
     //============
 
-    if ( ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+    if ( p()->wowv_l( { 11, 2, 0 } ) &&
+         ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
       p()->proc.face_palm->occur();
 
     if ( p()->buff.blackout_combo->up() )
@@ -1298,7 +1305,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
-    if ( face_palm )
+    if ( face_palm || p()->wowv_ge( { 11, 2, 0 } ) )
       p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
