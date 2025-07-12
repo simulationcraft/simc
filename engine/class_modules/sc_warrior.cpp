@@ -1167,7 +1167,8 @@ public:
       if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
         parse_effects( p()->buff.battering_ram );
       parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
-      parse_effects( p()->buff.juggernaut_prot );
+      if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7 ) );
@@ -4880,7 +4881,7 @@ struct execute_arms_t : public warrior_attack_t
     {
       p()->buff.juggernaut->trigger();
     }
-    if ( p()->talents.protection.juggernaut.ok() )
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } && p()->talents.protection.juggernaut.ok() )
     {
       p()->buff.juggernaut_prot->trigger();
     }
@@ -8735,7 +8736,8 @@ void warrior_t::init_spells()
   talents.protection.defenders_aegis        = find_talent_spell( talent_tree::SPECIALIZATION, "Defender's Aegis" );
   talents.protection.impenetrable_wall      = find_talent_spell( talent_tree::SPECIALIZATION, "Impenetrable Wall" );
   talents.protection.punish                 = find_talent_spell( talent_tree::SPECIALIZATION, "Punish" );
-  talents.protection.juggernaut             = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_PROTECTION );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    talents.protection.juggernaut             = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_PROTECTION );
 
   talents.protection.focused_vigor          = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Vigor" );
   talents.protection.shield_specialization  = find_talent_spell( talent_tree::SPECIALIZATION, "Shield Specialization" );
@@ -9479,10 +9481,13 @@ void warrior_t::create_buffs()
     ->set_duration( talents.arms.juggernaut->effectN( 1 ).trigger()->duration() )
     ->set_cooldown( talents.arms.juggernaut->internal_cooldown() );
 
-  buff.juggernaut_prot = make_buff( this, "juggernaut_prot", talents.protection.juggernaut->effectN( 1 ).trigger() )
-    ->set_default_value( talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-    ->set_duration( talents.protection.juggernaut->effectN( 1 ).trigger()->duration() )
-    ->set_cooldown( talents.protection.juggernaut->internal_cooldown() );
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+  {
+    buff.juggernaut_prot = make_buff( this, "juggernaut_prot", talents.protection.juggernaut->effectN( 1 ).trigger() )
+      ->set_default_value( talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->set_duration( talents.protection.juggernaut->effectN( 1 ).trigger()->duration() )
+      ->set_cooldown( talents.protection.juggernaut->internal_cooldown() );
+  }
 
   buff.last_stand = new buffs::last_stand_buff_t( *this, "last_stand", talents.protection.last_stand );
 
