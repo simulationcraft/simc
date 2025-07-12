@@ -8752,7 +8752,8 @@ void warrior_t::init_spells()
   if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     talents.protection.champions_bulwark      = find_talent_spell( talent_tree::SPECIALIZATION, "Champion's Bulwark" );
   talents.protection.battle_scarred_veteran = find_talent_spell( talent_tree::SPECIALIZATION, "Battle-Scarred Veteran" );
-  talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
+  if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
+    talents.protection.dance_of_death         = find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Death", WARRIOR_PROTECTION );
   if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
     talents.protection.storm_of_steel         = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Steel", WARRIOR_PROTECTION );
 
@@ -8830,7 +8831,10 @@ void warrior_t::init_spells()
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.fury.ravager, &talents.protection.ravager } );
   talents.shared.rend = find_shared_talent( { &talents.arms.rend, &talents.protection.rend } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
-  talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
+  if ( sim->dbc->wowv() < wowv_t { 11, 2, 0 } )
+    talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
+  else
+    talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
 
   // Convenant Abilities
