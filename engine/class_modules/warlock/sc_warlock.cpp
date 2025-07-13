@@ -974,6 +974,8 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+
+  action.apply_affecting_aura( sets->set( HERO_SOUL_HARVESTER, TWW3, B4 ) );
 }
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
@@ -1055,7 +1057,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     mothers( "mother_of_chaos", w ),
     pit_lords( "pit_lord", w ),
     fragments( "infernal_fragment", w ),
-    diabolic_imps( "diabolic_imp", w )
+    diabolic_imps( "diabolic_imp", w ),
+    demonic_souls( "demonic_soul", w )
 { }
 }  // namespace warlock
 

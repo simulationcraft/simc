@@ -2532,5 +2532,94 @@ namespace diabolist
 
   /// Diabolic Imp End
 }  // namespace diabolist
+
+namespace soul_harvester
+{
+/// Rampaging Demonic Soul Begin
+struct rampaging_demonic_soul_shard_event_t : public event_t
+{
+  rampaging_demonic_soul_shard_event_t( rampaging_demonic_soul_t* pet, timespan_t delay )
+    : event_t( *pet->sim, delay ), pet( pet )
+  {
+  }
+
+  void execute() override
+  {
+    if ( !pet->is_sleeping() )
+    {
+      pet->o()->resource_gain( RESOURCE_SOUL_SHARD, pet->summon_spell->effectN( 2 ).base_value(),
+                               pet->o()->gains.rampaging_demonic_soul );
+      make_event<rampaging_demonic_soul_shard_event_t>( *pet->sim, pet, pet->summon_spell->effectN( 2 ).period() );
+    }
+  }
+
+  rampaging_demonic_soul_t* pet;
+};
+
+struct soul_swipe_aoe_t : public warlock_pet_spell_t
+{
+  soul_swipe_aoe_t( warlock_pet_t* p, std::string_view n = "soul_swipe_aoe" )
+    : warlock_pet_spell_t( n, p, p->find_spell( 1239714 ) )
+  {
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    aoe                    = -1;
+    background             = true;
+  }
+
+  // Doesnt hit the main target, so we need to override this
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    warlock_pet_spell_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
+
+struct soul_swipe_t : public warlock_pet_spell_t
+{
+  soul_swipe_t( warlock_pet_t* p, std::string_view n ) : warlock_pet_spell_t( n, p, p->find_spell( 1239714 ) )
+  {
+    // Actually just an auto attack with a 1s swing time. Simplifying the code doing it this way.
+    trigger_gcd = 1_s;
+    min_gcd = 0_s;
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    aoe                    = 0;  // Single target spell
+    impact_action          = new soul_swipe_aoe_t( p );
+    add_child( impact_action );
+  }
+};
+
+rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true ), summon_spell( nullptr )
+{
+  resource_regeneration  = regen_type::DISABLED;
+  action_list_str        = "soul_swipe";
+  owner_coeff.sp_from_sp = 1.0;
+  summon_spell           = owner->find_spell( 1239689 );  // Rampaging Demonic Soul
+}
+
+void rampaging_demonic_soul_t::arise()
+{
+  warlock_pet_t::arise();
+  if ( o()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B4 ) )
+    make_event<rampaging_demonic_soul_shard_event_t>( *sim, this, find_spell( 1239689 )->effectN( 2 ).period() );
+}
+
+action_t* rampaging_demonic_soul_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "soul_swipe" )
+    return new soul_swipe_t( this, name );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+/// Rampaging Demonic Soul End
+
+}  // namespace soul_harvester
 }  // namespace pets
 }  // namespace warlock

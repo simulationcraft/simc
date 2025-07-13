@@ -1011,6 +1011,7 @@ namespace warlock
   {
     gains.feast_of_souls = get_gain( "feast_of_souls" );
     gains.shadow_of_death = get_gain( "shadow_of_death" );
+    gains.rampaging_demonic_soul = get_gain( "rampaging_demonic_soul" );
   }
 
   void warlock_t::init_procs()
