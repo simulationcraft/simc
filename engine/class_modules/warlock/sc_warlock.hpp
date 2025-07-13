@@ -609,6 +609,9 @@ public:
     const spell_data_t* spliced_destro_jackpot;
     const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
 
+    // Soul Harvester
+    const spell_data_t* sh_tww3_rampaging_demonic_soul;
+
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets

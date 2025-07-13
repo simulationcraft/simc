@@ -2499,7 +2499,7 @@ using namespace helpers;
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
         if ( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) )
         {
-          p()->warlock_pet_list.demonic_souls.spawn( p()->find_spell( 1239689 )->duration() );
+          p()->warlock_pet_list.demonic_souls.spawn( p()->tier.sh_tww3_rampaging_demonic_soul->duration() );
         }
       }
     }
@@ -3368,7 +3368,7 @@ using namespace helpers;
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
         if( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) )
         {
-          p()->warlock_pet_list.demonic_souls.spawn( p()->find_spell( 1239689 )->duration() );
+          p()->warlock_pet_list.demonic_souls.spawn( p()->tier.sh_tww3_rampaging_demonic_soul->duration() );
         }
       }
     }

@@ -2588,6 +2588,7 @@ struct soul_swipe_t : public warlock_pet_spell_t
     // Actually just an auto attack with a 1s swing time. Simplifying the code doing it this way.
     trigger_gcd = 1_s;
     min_gcd = 0_s;
+
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     aoe                    = 0;  // Single target spell
     impact_action          = new soul_swipe_aoe_t( p );
