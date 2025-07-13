@@ -5724,7 +5724,8 @@ struct chaos_strike_t : public chaos_strike_base_t
     return chaos_strike_base_t::ready();
   }
 
-  void execute() override {
+  void execute() override
+  {
     chaos_strike_base_t::execute();
 
     if ( !from_onslaught && p()->buff.immolation_aura->check() )
@@ -7384,6 +7385,10 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     if ( p()->talent.felscarred.enduring_torment->ok() )
     {
       p()->buff.enduring_torment->trigger();
+    }
+    if ( p()->talent.felscarred.demonic_intensity->ok() )
+    {
+      p()->buff.demonsurge->expire();
     }
 
     auto demonsurge_spec_abilities =
