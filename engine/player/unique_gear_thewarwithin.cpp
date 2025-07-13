@@ -8759,7 +8759,7 @@ void mind_fracturing_odium( special_effect_t& effect )
                  ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
 
       stacking = create_buff<buff_t>( e.player, "mindfracturing_odium", e.driver()->effectN( 1 ).trigger() )
-                     ->set_period( 0_s )
+                     ->set_period( 0_ms )  // Handled by the repeating event
                      ->set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
                        decrementing = false;
                        stat->expire();
