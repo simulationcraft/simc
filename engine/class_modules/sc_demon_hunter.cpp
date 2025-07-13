@@ -7386,10 +7386,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.enduring_torment->trigger();
     }
-    if ( p()->talent.felscarred.demonic_intensity->ok() )
-    {
-      p()->buff.demonsurge->expire();
-    }
 
     auto demonsurge_spec_abilities =
         p()->specialization() == DEMON_HUNTER_HAVOC ? demonsurge_havoc_abilities : demonsurge_vengeance_abilities;
@@ -7397,6 +7393,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.demonsurge_abilities[ ability ]->expire();
     }
+    p()->buff.demonsurge->expire();
     p()->buff.demonsurge_demonic->expire();
     p()->buff.demonsurge_hardcast->expire();
   }
