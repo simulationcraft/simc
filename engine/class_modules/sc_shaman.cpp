@@ -980,7 +980,6 @@ public:
 
   unsigned dre_attempts;
   unsigned aws_counter;
-  unsigned int tww3_mod_value;
   double lava_surge_attempts_normalized;
 
   // Elemental Shamans can extend Ascendance by x sec via Further Beyond (talent)
@@ -1739,7 +1738,6 @@ public:
       lvs_samples( "lvs_tracker", false ),
       dre_attempts( 0U ),
       aws_counter(0U),
-      tww3_mod_value( 0U ),
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
       ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
@@ -3246,9 +3244,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::reset();
 
     accumulated_lightning_rod_damage = 0.0;
-   unsigned int tww3_mod_value = static_cast<unsigned int>(
-        p()->specialization() == SHAMAN_ELEMENTAL ? p()->spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
-                                                  : p()->spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
     lr_event = nullptr;
   }
 
@@ -11700,7 +11695,11 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_fn_expr( name, [ this ]() { return as<double>( aws_counter ); } );
 
   if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
-    return make_fn_expr( name, [ this ]() { return as<double>( tww3_mod_value-(aws_counter % tww3_mod_value) ); } );
+    return make_fn_expr( name, [ this ]() { 
+          unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+                                                      ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                                      : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
+      return as<double>( tww3_mod_value-(aws_counter % tww3_mod_value) ); } );
 
   auto splits = util::string_split<util::string_view>( name, "." );
 
@@ -13681,6 +13680,10 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   if(spell.tww3_stormbringer_2pc->ok())
   {
     aws_counter++;
+
+    unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+                                                    ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                                    : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
 
     if ( aws_counter % tww3_mod_value == 0 )
     {
