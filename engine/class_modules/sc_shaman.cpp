@@ -11698,7 +11698,9 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
   if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
     return make_fn_expr( name, [ this ]() { 
-          unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+      if ( !spell.tww3_stormbringer_2pc )
+        return 0.0;
+      unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
                                                       ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
                                                       : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
       return as<double>( tww3_mod_value-(aws_counter % tww3_mod_value) ); } );
