@@ -935,28 +935,16 @@ namespace warlock
             ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
               double val = 1.0 + b->data().effectN( specialization() == WARLOCK_AFFLICTION ? 2 : 3 ).percent();
 
-              if ( new_ == 0 )
+              for ( auto& target : sim->target_non_sleeping_list )
               {
-                for ( auto& target : sim->target_non_sleeping_list )
+                warlock_td_t* td = get_target_data( target );
+                if ( td && td->debuffs_blackened_soul->check() )
                 {
-                  warlock_td_t* td = get_target_data( target );
-                  if ( td && td->debuffs_blackened_soul->check() )
-                  {
-                    buff_t* debuff = td->debuffs_blackened_soul;
+                  buff_t* debuff = td->debuffs_blackened_soul;
+                  if ( new_ == 0 )
                     debuff->modify_period( debuff->buff_period / val );
-                  }
-                }
-              }
-              else
-              {
-                for ( auto& target : sim->target_non_sleeping_list )
-                {
-                  warlock_td_t* td = get_target_data( target );
-                  if ( td && td->debuffs_blackened_soul->check() )
-                  {
-                    buff_t* debuff = td->debuffs_blackened_soul;
+                  else
                     debuff->modify_period( debuff->buff_period * val );
-                  }
                 }
               }
             } );
