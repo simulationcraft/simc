@@ -2609,7 +2609,7 @@ void rampaging_demonic_soul_t::arise()
 {
   warlock_pet_t::arise();
   if ( o()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B4 ) )
-    make_event<rampaging_demonic_soul_shard_event_t>( *sim, this, find_spell( 1239689 )->effectN( 2 ).period() );
+    make_event<rampaging_demonic_soul_shard_event_t>( *sim, this, summon_spell->effectN( 2 ).period() );
 }
 
 action_t* rampaging_demonic_soul_t::create_action( util::string_view name, util::string_view options_str )
