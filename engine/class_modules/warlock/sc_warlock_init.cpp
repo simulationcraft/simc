@@ -929,6 +929,37 @@ namespace warlock
                             ->set_cooldown( hero.malevolence_buff->cooldown() - 1_s )
                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                             ->set_default_value_from_effect( 1 );
+
+    buffs.maintained_withering =
+        make_buff( this, "maintained_withering", find_spell( 1239577 ) )
+            ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+              double val = 1.0 + b->data().effectN( specialization() == WARLOCK_AFFLICTION ? 2 : 3 ).percent();
+
+              if ( new_ == 0 )
+              {
+                for ( auto& target : sim->target_non_sleeping_list )
+                {
+                  warlock_td_t* td = get_target_data( target );
+                  if ( td && td->debuffs_blackened_soul->check() )
+                  {
+                    buff_t* debuff = td->debuffs_blackened_soul;
+                    debuff->modify_period( debuff->buff_period / val );
+                  }
+                }
+              }
+              else
+              {
+                for ( auto& target : sim->target_non_sleeping_list )
+                {
+                  warlock_td_t* td = get_target_data( target );
+                  if ( td && td->debuffs_blackened_soul->check() )
+                  {
+                    buff_t* debuff = td->debuffs_blackened_soul;
+                    debuff->modify_period( debuff->buff_period * val );
+                  }
+                }
+              }
+            } );
   }
 
   void warlock_t::create_buffs_soul_harvester()

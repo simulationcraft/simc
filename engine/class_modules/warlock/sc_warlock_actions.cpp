@@ -1416,7 +1416,19 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( target );
 
       if ( p()->hero.mark_of_xavius.ok() )
-        m *= 1.0 + td( target )->dots_wither->current_stack() * p()->hero.mark_of_xavius->effectN( 3 ).percent();
+      {
+        double val = p()->hero.mark_of_xavius->effectN( 3 ).percent();
+
+        if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
+        {
+          if ( p()->specialization() == WARLOCK_AFFLICTION )
+            val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 3 ).percent();
+          if ( p()->specialization() == WARLOCK_DESTRUCTION )
+            val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 2 ).percent();
+        }
+
+        m *= 1.0 + td( target )->dots_wither->current_stack() * val;
+      }
 
       return m;
     }
@@ -1427,7 +1439,7 @@ using namespace helpers;
 
       player_t* tar = s->target;
 
-      if ( td( tar )->dots_wither->current_stack() > 1 )
+      if ( td( tar )->dots_wither->current_stack() > 1 && !p()->buffs.maintained_withering->check() )
         td( tar )->dots_wither->decrement( 1 );
 
       if ( td( tar )->dots_wither->current_stack() <= 1 )
@@ -1479,6 +1491,13 @@ using namespace helpers;
       p()->buffs.malevolence->trigger();
 
       helpers::trigger_blackened_soul( p(), true );
+
+      if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B4 ) )
+      {
+        p()->buffs.backdraft->trigger(
+            as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 2 ).base_value() ) );
+        p()->buffs.maintained_withering->trigger();
+      }
     }
   };
 
@@ -4751,7 +4770,16 @@ using namespace helpers;
       if ( !tdata->dots_wither->is_ticking() )
         continue;
 
-      tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+      int stacks = 1;
+
+      if( malevolence )
+      {
+        stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
+        if( p->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
+          stacks += as<int>( p->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 1 ).base_value() );
+      }
+
+      tdata->dots_wither->increment( stacks );
       stack_gained = true;
 
       if ( p->buffs.malevolence->check() && !malevolence )

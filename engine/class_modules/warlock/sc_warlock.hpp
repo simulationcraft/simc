@@ -683,6 +683,7 @@ public:
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;
+    propagate_const<buff_t*> maintained_withering; // TWW3 Hellcaller 4pc buff
 
     // Soul Harvester Buffs
     propagate_const<buff_t*> succulent_soul;
