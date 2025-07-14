@@ -9415,8 +9415,11 @@ void warrior_t::create_buffs()
           }
         );
 
+  // In game the accumumlator counts the number of stacks, and the buff is triggered with the total number of stacks
+  // as a result, it allows you to exceed the 20 max_stacks that exists in spelldata
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
-      -> set_default_value_from_effect( 1 );
+      -> set_default_value_from_effect( 1 )
+      -> set_max_stack( 99 );
 
   buff.wild_strikes = make_buff( this, "wild_strikes", talents.warrior.wild_strikes->effectN( 2 ).trigger() )
       ->set_cooldown( talents.warrior.wild_strikes->internal_cooldown() )
