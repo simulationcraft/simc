@@ -354,6 +354,7 @@ void demonology( player_t* p )
 }
 //demonology_apl_end
 
+//destruction_apl_start
 void destruction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
