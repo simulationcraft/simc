@@ -233,6 +233,7 @@ public:
     buff_t* battering_ram;
     buff_t* berserker_rage;
     buff_t* berserker_stance;
+    buff_t* best_served_cold;
     buff_t* bladestorm;
     buff_t* bloodcraze;
     buff_t* bounding_stride;
@@ -1176,6 +1177,12 @@ public:
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 8 ) );
       if ( p()->talents.warrior.unstoppable_force->ok() )
         parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 11, 12 ) );
+
+      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->buff.revenge, p()->talents.protection.best_served_cold );
+
+      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->buff.best_served_cold );
 
       // TWW1 Tier
       parse_effects( p()->buff.expert_strategist );   // Prot 2pc
@@ -6637,17 +6644,21 @@ struct revenge_seismic_reverberation_t : public warrior_attack_t
     background = true;
     proc = true;
     impact_action = p->active.deep_wounds_PROT;
-    base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-    if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
-      am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
-      am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
-            p()->buff.revenge->data().effectN( 2 ).percent();
+      if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+      {
+        am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
+        am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
+              p()->buff.revenge->data().effectN( 2 ).percent();
+      }
     }
 
     if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
@@ -6690,7 +6701,10 @@ struct revenge_t : public warrior_attack_t
       parse_options( options_str );
       aoe           = -1;
       impact_action = p->active.deep_wounds_PROT;
-      base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
+
+      if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+        base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
+
       if ( seismic )
       {
         background = proc = true;
@@ -6723,8 +6737,9 @@ struct revenge_t : public warrior_attack_t
   double cost_pct_multiplier() const override
   {
     double cost = warrior_attack_t::cost_pct_multiplier();
-    cost *= 1.0 + p()->buff.revenge->check_value();
-    //cost *= 1.0 + p()->buff.vengeance_revenge->check_value();
+    // Converted this to parse_effects for 11.2
+    if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      cost *= 1.0 + p()->buff.revenge->check_value();
     return cost;
   }
 
@@ -6791,11 +6806,14 @@ struct revenge_t : public warrior_attack_t
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
-    if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     {
-      am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
-      am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
-            p()->buff.revenge->data().effectN( 2 ).percent();
+      if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+      {
+        am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
+        am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
+              p()->buff.revenge->data().effectN( 2 ).percent();
+      }
     }
 
     if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
@@ -9574,6 +9592,9 @@ void warrior_t::create_buffs()
                          -> set_default_value( talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 1 ).percent() )
                          -> set_initial_stack( 1 );
 
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+    buff.best_served_cold = make_buff( this, "best_served_cold", find_spell( 1234772 ) );
+
   // Covenant Abilities====================================================================================================
 
   buff.conquerors_banner = make_buff( this, "conquerors_banner", covenant.conquerors_banner )
@@ -9685,6 +9706,11 @@ void warrior_t::init_rng()
   parse_player_effects_t::init_rng();
   rppm.fatal_mark       = get_rppm( "fatal_mark", talents.arms.fatality );
   rppm.revenge          = get_rppm( "revenge_trigger", spec.revenge_trigger );
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.protection.best_served_cold->ok() )
+  {
+    // The 20% benefit when you have best served cold is not in spelldata.  Just in the description of 202560 (Best Served Cold)
+    rppm.revenge->set_modifier( rppm.revenge->get_modifier() + 0.20 );
+  }
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
                                                     talents.protection.sudden_death );
