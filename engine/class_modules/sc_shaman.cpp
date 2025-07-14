@@ -980,6 +980,7 @@ public:
 
   unsigned dre_attempts;
   unsigned aws_counter;
+  unsigned int tww3_mod_value;
   double lava_surge_attempts_normalized;
 
   // Elemental Shamans can extend Ascendance by x sec via Further Beyond (talent)
@@ -1738,6 +1739,7 @@ public:
       lvs_samples( "lvs_tracker", false ),
       dre_attempts( 0U ),
       aws_counter(0U),
+      tww3_mod_value( 0U ),
       lava_surge_attempts_normalized( 0.0 ),
       accumulated_ascendance_extension_time( timespan_t::from_seconds( 0 ) ),
       ascendance_extension_cap( timespan_t::from_seconds( 0 ) ),
@@ -3244,6 +3246,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::reset();
 
     accumulated_lightning_rod_damage = 0.0;
+   unsigned int tww3_mod_value = static_cast<unsigned int>(
+        p()->specialization() == SHAMAN_ELEMENTAL ? p()->spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                                  : p()->spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
     lr_event = nullptr;
   }
 
@@ -10092,7 +10097,6 @@ struct shaman_totem_t : public BASE
       return this->player->create_expression( "pet." + this->name_str + ".remains" );
     else if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, totem_duration );
-
     return BASE::create_expression( name );
   }
 };
@@ -11691,6 +11695,12 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
       return 100.0 * std::max( 0.0, dre_attempts * 0.01 - 0.01 * options.dre_forced_failures );
     } );
   }
+
+  if ( util::str_compare_ci( name, "total_awaken_count" ) )
+    return make_fn_expr( name, [ this ]() { return as<double>( aws_counter ); } );
+
+  if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
+    return make_fn_expr( name, [ this ]() { return as<double>( tww3_mod_value-(aws_counter % tww3_mod_value) ); } );
 
   auto splits = util::string_split<util::string_view>( name, "." );
 
@@ -13672,11 +13682,7 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   {
     aws_counter++;
 
-    unsigned int proc_on_x = static_cast<unsigned int> (specialization() == SHAMAN_ELEMENTAL
-                                 ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
-                                 : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value());
-
-    if ( aws_counter % proc_on_x == 0 )
+    if ( aws_counter % tww3_mod_value == 0 )
     {
       action.set_ascendance->execute_on_target( state->target );
     }
