@@ -109,11 +109,21 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_duration( 0_ms )
                                ->set_tick_zero( false )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
-                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } )
+                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t ) {
+                                 warlock.proc_actions.blackened_soul->execute_on_target( target );
+                               } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true );
+                               ->set_freeze_stacks( true )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
+                               ->set_tick_time_callback( [ & ]( const buff_t* b, unsigned int ) {
+                                 timespan_t period = b->buff_period;
+
+                                 if ( p.buffs.maintained_withering->check() )
+                                   period *= 1.0 + p.buffs.maintained_withering->data()
+                                                       .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
+                                                       .percent();
+                                 return period;
+                               } );
 
   // Soul Harvester
   dots_soul_anathema = target->get_dot( "soul_anathema", &p );

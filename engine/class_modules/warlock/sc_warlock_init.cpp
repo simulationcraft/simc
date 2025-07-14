@@ -930,24 +930,7 @@ namespace warlock
                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                             ->set_default_value_from_effect( 1 );
 
-    buffs.maintained_withering =
-        make_buff( this, "maintained_withering", find_spell( 1239577 ) )
-            ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-              double val = 1.0 + b->data().effectN( specialization() == WARLOCK_AFFLICTION ? 2 : 3 ).percent();
-
-              for ( auto& target : sim->target_non_sleeping_list )
-              {
-                warlock_td_t* td = get_target_data( target );
-                if ( td && td->debuffs_blackened_soul->check() )
-                {
-                  buff_t* debuff = td->debuffs_blackened_soul;
-                  if ( new_ == 0 )
-                    debuff->modify_period( debuff->buff_period / val );
-                  else
-                    debuff->modify_period( debuff->buff_period * val );
-                }
-              }
-            } );
+    buffs.maintained_withering = make_buff( this, "maintained_withering", find_spell( 1239577 ) );
   }
 
   void warlock_t::create_buffs_soul_harvester()
