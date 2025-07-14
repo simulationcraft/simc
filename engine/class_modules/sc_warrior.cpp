@@ -2158,10 +2158,7 @@ struct melee_t : public warrior_attack_t
     warrior_attack_t::impact( s );
 
     if ( sidearm && result_is_hit( s->result ) && rng().roll( sidearm_chance ) )
-    {
-      sidearm->set_target( s->target );
-      sidearm->execute();
-    }
+      sidearm->execute_on_target( s->target );
 
     if ( p()->talents.warrior.wild_strikes->ok() && s->result == RESULT_CRIT )
     {
@@ -8710,7 +8707,7 @@ void warrior_t::init_spells()
   talents.protection.brace_for_impact       = find_talent_spell( talent_tree::SPECIALIZATION, "Brace for Impact" );
   talents.protection.unnerving_focus        = find_talent_spell( talent_tree::SPECIALIZATION, "Unnerving Focus" );
 
-  if ( p()->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     talents.protection.challenging_shout      = find_talent_spell( talent_tree::SPECIALIZATION, "Challenging Shout" );
   talents.protection.instigate              = find_talent_spell( talent_tree::SPECIALIZATION, "Instigate" );
   talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_PROTECTION );
