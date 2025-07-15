@@ -1220,7 +1220,7 @@ public:
         parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 3 ), p()->talents.mountain_thane.crashing_thunder );
       }
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
-      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
         parse_effects( p()->buff.severe_thunder );
     }
   }
