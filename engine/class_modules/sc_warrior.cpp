@@ -222,6 +222,7 @@ public:
     action_t* torment_recklessness;
     action_t* tough_as_nails;
     action_t* slayers_strike;
+    action_t* ravager_whirling_blade;
   } active;
 
   // Buffs
@@ -329,6 +330,7 @@ public:
     real_ppm_t* revenge;
     real_ppm_t* sudden_death;
     real_ppm_t* slayers_dominance;
+    real_ppm_t* whirling_blade;
     real_ppm_t* tww2_arms_2pc;
     real_ppm_t* tww2_fury_2pc;
   } rppm;
@@ -1659,6 +1661,12 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   void impact( action_state_t* s ) override
   {
     warrior_action_t::impact( s );
+
+    if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p()->talents.protection.whirling_blade->ok() &&
+            s->target == p()->target && p()->rppm.whirling_blade->trigger() )
+    {
+      p()->active.ravager_whirling_blade->execute_on_target( s->target );
+    }
 
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
@@ -6518,12 +6526,16 @@ struct ravager_t : public warrior_attack_t
   mortal_strike_t* mortal_strike;
   bloodthirst_t* bloodthirst;
   bloodbath_t* bloodbath;
+  timespan_t duration;
+  int num_ticks;
   ravager_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
       ravager( new ravager_tick_t( p, "ravager_tick" ) ),
       mortal_strike( nullptr ),
       bloodthirst( nullptr ),
-      bloodbath( nullptr )
+      bloodbath( nullptr ),
+      duration( 0_s ),
+      num_ticks( 0 )
   {
     parse_options( options_str );
     ignore_false_positive   = true;
@@ -6533,6 +6545,9 @@ struct ravager_t : public warrior_attack_t
     radius     = data().effectN( 2 ).radius_max();
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
+    duration = p->buff.ravager->data().duration();
+    num_ticks = 6;  // Not in spelldata, can be found in the variables in 228920
+
     add_child( ravager );
 
     if ( p->talents.arms.unhinged->ok() )
@@ -6554,6 +6569,29 @@ struct ravager_t : public warrior_attack_t
     }
   }
 
+  // This background version is strictly for use with whirling blade talent
+  ravager_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->talents.shared.ravager ),
+    ravager( new ravager_tick_t( p, "ravager_tick_whirling_blade" ) ),
+    mortal_strike( nullptr ),
+    bloodthirst( nullptr ),
+    bloodbath( nullptr )
+    {
+      ignore_false_positive = true;
+      hasted_ticks = true;
+      ground_aoe = true;
+      base_tick_time = dot_duration = 0_ms; // Handled by the event
+      radius = data().effectN( 2 ).radius_max();
+      internal_cooldown->duration = 0_s;
+      attack_power_mod.direct = attack_power_mod.tick = 0;
+      duration = p->talents.protection.whirling_blade->effectN( 1 ).time_value();
+      num_ticks = 2;  // Not in spelldata, but we get 2 ticks from the 4s buff.
+      cooldown->duration = 0_ms;  // No cooldown for whirling blade
+
+      add_child( ravager );
+    }
+
+
   void init_finished() override
   {
     warrior_attack_t::init_finished();
@@ -6566,7 +6604,7 @@ struct ravager_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.ravager->trigger( p()->buff.ravager->data().duration() * p()->cache.attack_haste() );
+    p()->buff.ravager->trigger( duration * p()->cache.attack_haste() );
 
     // Make sure the buff is expired on fresh cast
     if ( p()->talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_ravager->check() )
@@ -6578,7 +6616,7 @@ struct ravager_t : public warrior_attack_t
           .target( target )
           .pulse_time( compute_tick_time() )
           .action( ravager )
-          .n_pulses( 6 )
+          .n_pulses( num_ticks )
           .hasted( ground_aoe_params_t::ATTACK_HASTE )
           .x( target->x_position )
           .y( target->y_position )
@@ -9715,6 +9753,7 @@ void warrior_t::init_rng()
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
                                                     talents.protection.sudden_death );
   rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
+  rppm.whirling_blade    = get_rppm( "whirling_blade", talents.protection.whirling_blade );
   rppm.tww2_arms_2pc     = get_rppm( "tww2_arms_2pc", find_spell( 1215713 ) );
   rppm.tww2_fury_2pc     = get_rppm( "tww2_fury_2pc", find_spell( 1215714 ) );
 }
@@ -10256,6 +10295,11 @@ void warrior_t::create_actions()
     active.slayers_strike = new slayers_strike_t( this );
   }
 
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.protection.whirling_blade->ok() )
+  {
+    active.ravager_whirling_blade = new ravager_t( "ravager_whirling_blade", this );
+  }
+
   parse_player_effects_t::create_actions();
 }
 
@@ -10405,6 +10449,8 @@ double warrior_t::composite_armor_multiplier() const
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
   if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
   {
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    {
       auto q = spec.vanguard -> effectN( 1 ).percent() *
                 talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
                 ( 1+reinforced_plates_armor_mult) *
@@ -10412,15 +10458,30 @@ double warrior_t::composite_armor_multiplier() const
                 ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
                 ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
       ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
+    }
+    else
+    {
+      auto q = spec.vanguard -> effectN( 1 ).percent() *
+                talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
+                ( 1+reinforced_plates_armor_mult) *
+                ( 1+talents.protection.armor_specialization->effectN( 1 ).percent());
+      ar *= 1 + ( q/(1 - q) );
+    }
   }
+
+
 
  // Generally Modify Armor% (101)
 
   ar *= 1.0 + reinforced_plates_armor_mult;
 
   ar *= 1.0 + talents.protection.armor_specialization -> effectN( 1 ).percent();
-  ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
-  ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
+
+  if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+  {
+    ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
+    ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
+  }
 
   return ar;
 }
