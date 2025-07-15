@@ -1008,10 +1008,10 @@ struct flurry_strikes_t : public monk_melee_attack_t
       // I really don't like this solution. Using a custom action state would be
       // more appropriate, but scheduling the execute with an action state that
       // needs to be copied k times (once for each trigger) sounds scary.
-      if ( action_t *action = p()->active_actions.flurry_strikes; action )
-        action->flurry_strike->recent_shadow_trigger = state;
-      if ( action_t *action = p()->tier.tww3.spm_2pc_flurry_strikes; action )
-        action->flurry_strike->recent_shadow_trigger = state;
+      if ( flurry_strikes_t *action = debug_cast<flurry_strikes_t *>( p()->active_actions.flurry_strikes ); action )
+        action->strike->recent_shadow_trigger = state;
+      if ( flurry_strikes_t *action = debug_cast<flurry_strikes_t *>( p()->tier.tww3.spm_2pc_flurry_strikes ); action )
+        action->strike->recent_shadow_trigger = state;
     }
 
     void impact( action_state_t *s ) override
@@ -1262,7 +1262,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
           .set_func( fp_condition )
-          .set_value( effect.percent() - p->wowv_l( { 11, 2, 0 } ) ? 1.0 : 0.0 )
+          .set_value( effect.percent() - ( p->wowv_l( { 11, 2, 0 } ) ? 1.0 : 0.0 ) )
           .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
