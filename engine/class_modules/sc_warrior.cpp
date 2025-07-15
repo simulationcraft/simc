@@ -3338,7 +3338,7 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      p()->buff.critical_conclusion->decrement();
+      p()->buff.critical_conclusion->expire();
     }
   }
 
@@ -7125,7 +7125,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
     {
-      p()->buff.critical_conclusion->decrement();
+      p()->buff.critical_conclusion->expire();
     }
   }
 
@@ -7269,7 +7269,8 @@ struct tough_as_nails_t : public warrior_attack_t
     critical_block( false )
   {
     may_crit = false;
-    ignores_armor = true;
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      ignores_armor = true;
 
     background = true;
   }
@@ -9705,9 +9706,8 @@ void warrior_t::create_buffs()
   // TWW3 Tier
   if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
   {
-    buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ) // Colossus 4pc
-      ->set_initial_stack( find_spell( 1239144 )->max_stacks() );
-    buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );            // Colossus 4pc
+    buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ); // Colossus 4pc
+    buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );             // Colossus 4pc
   }
 }
 
