@@ -5065,14 +5065,15 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( p()->talent.trickster.devious_distractions->ok() && weapon->slot == SLOT_MAIN_HAND )
+    if ( p()->talent.trickster.devious_distractions->ok() && weapon != nullptr && weapon->slot == SLOT_MAIN_HAND )
     {
       p()->get_target_data( state->target )->debuffs.fazed->trigger();
     }
   }
 
   bool procs_main_gauche() const override
-  { return weapon->slot == SLOT_MAIN_HAND; }
+  // 2025-07-14 -- TOCHECK: Killing Spree's offhand spell does not have an assigned weapon on PTR
+  { return weapon != nullptr && weapon->slot == SLOT_MAIN_HAND; }
 
   // OH hits do not proc Combat Potency
   bool procs_fatal_flourish() const override
@@ -5092,7 +5093,7 @@ struct killing_spree_t : public rogue_attack_t
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
-    interrupt_auto_attack = p->is_ptr(); // 06-28-2025 -- TOCHECK: Auto attacks are now interrupted on PTR
+    interrupt_auto_attack = p->is_ptr(); // 2025-06-28- -- TOCHECK: Auto attacks are now interrupted on PTR
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
@@ -7388,6 +7389,20 @@ struct coup_de_grace_t : public rogue_attack_t
       return cast_state( state )->get_combo_points();
     }
 
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_da_multiplier( state );
+
+      // 2025-07-14 -- TOCHECK: 4pc damage bonus applies to the first Coup de Grace instead of the second
+      //               Also does not apply to Shadowed Finishers
+      if ( p()->set_bonuses.tww3_trickster_4pc->ok() && p()->buffs.tww3_trickster_4pc->check() )
+      {
+        m *= p()->buffs.tww3_trickster_4pc->value();
+      }
+
+      return m;
+    }
+
     void impact( action_state_t* state ) override
     {
       // 2024-08-08 -- Due to the animation, Danse Macabre is triggered prior to the impact and is self-affecting
@@ -7487,7 +7502,7 @@ struct coup_de_grace_t : public rogue_attack_t
     const int trigger_cp = cast_state( execute_state )->get_combo_points();
     attacks[ 0 ]->trigger_secondary_action( execute_state->target, trigger_cp );
     attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
-    attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
+    attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1_s );
 
     // 2025-03-11 -- Similar to the Black Powder shadow damage timing, Finality affects every CdG additional attack
     //               The initial hit will reapply the buff, causing the 2nd and 3rd impacts to always have it
@@ -7503,7 +7518,7 @@ struct coup_de_grace_t : public rogue_attack_t
       else
       {
         // Delay the expiration so that it works on all three impacts
-        p()->buffs.finality_eviscerate->expire( 1.2_s );
+        p()->buffs.finality_eviscerate->expire( 1_s );
       }
     }
 
@@ -12479,8 +12494,8 @@ void rogue_t::create_buffs()
   buffs.tww3_trickster_4pc = make_buff( this, "tww3_trickster_4pc", set_bonuses.tww3_trickster_4pc );
   if ( set_bonuses.tww3_trickster_4pc->ok() )
   {
-    // Buff is active on Coup cast but does not begin counting down until 1.2s into the cast, effectively adding 1.2s to its duration
-    buffs.tww3_trickster_4pc->set_duration( timespan_t::from_seconds( set_bonuses.tww3_trickster_4pc->effectN( 2 ).base_value() ) + 1.2_s )
+    // Buff is active on Coup cast but does not begin counting down until 1s into the cast, effectively adding 1s to its duration
+    buffs.tww3_trickster_4pc->set_duration( timespan_t::from_seconds( set_bonuses.tww3_trickster_4pc->effectN( 2 ).base_value() ) + 1_s )
       ->set_default_value_from_effect( 1 ) // TOCHECK -- Currently the "dealing $s1% of normal damage" is set to 100% but may change
       ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
         if ( new_ == 0 )
