@@ -1003,12 +1003,23 @@ struct flurry_strikes_t : public monk_melee_attack_t
       parent->add_child( wisdom_flurry );
     }
 
+    void set_recent_trigger( bool state )
+    {
+      // I really don't like this solution. Using a custom action state would be
+      // more appropriate, but scheduling the execute with an action state that
+      // needs to be copied k times (once for each trigger) sounds scary.
+      if ( action_t *action = p()->active_actions.flurry_strikes; action )
+        action->flurry_strike->recent_shadow_trigger = state;
+      if ( action_t *action = p()->tier.tww3.spm_2pc_flurry_strikes; action )
+        action->flurry_strike->recent_shadow_trigger = state;
+    }
+
     void impact( action_state_t *s ) override
     {
       monk_melee_attack_t::impact( s );
 
       if ( last_used + 10 * 150_ms < sim->current_time() )
-        recent_shadow_trigger = false;
+        set_recent_trigger( false );
 
       if ( p()->talent.shado_pan.wisdom_of_the_wall->ok() )
       {
@@ -1029,7 +1040,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
               p()->buff.wisdom_of_the_wall_dodge->trigger();
               break;
             case WISDOM_OF_THE_WALL_FLURRY:
-              recent_shadow_trigger = true;
+              set_recent_trigger( true );
               p()->buff.wisdom_of_the_wall_flurry->trigger();
               break;
             case WISDOM_OF_THE_WALL_MASTERY:
