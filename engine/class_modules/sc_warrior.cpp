@@ -320,6 +320,7 @@ public:
     // TWW3 Tier
     buff_t* critical_conclusion; // Colossus 4pc Crit buff
     buff_t* deeper_wounds;       // Colossus 4pc Deep Wounds and Rend amp
+    buff_t* severe_thunder;      // Mountain Thane 4pc Thunder Blast amp
   } buff;
 
   struct rppm_t
@@ -1219,6 +1220,8 @@ public:
         parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 3 ), p()->talents.mountain_thane.crashing_thunder );
       }
       parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        parse_effects( p()->buff.severe_thunder );
     }
   }
 
@@ -4355,6 +4358,9 @@ struct thunder_blast_t : public warrior_attack_t
       p()->buff.show_of_force->expire();
     }
 
+    if ( p()->sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && p()->buff.severe_thunder->up() )
+      p()->buff.severe_thunder->expire();
+
     if ( rng().roll( shield_slam_reset ) )
     {
       p()->cooldown.shield_slam->reset( true );
@@ -4414,26 +4420,19 @@ struct thunder_blast_t : public warrior_attack_t
       if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && rng().roll( p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 2 ).percent() ) )
       {
         size_t ionizing_bolt_target = 0;
-        // Thunder Blast can only proc on mobs it has not procced on for this execute
-        int tb_proc_occured_on_mob[5] = { 0 };
         for ( int i = 0; i < p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 )->effectN( 1 ).base_value(); i++ )
         {
           ionizing_strike->execute_on_target( p()->sim->target_non_sleeping_list[ionizing_bolt_target] );
-          if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
-          {
-            // Only attempt to proc on mobs we have not got a proc on in this execute
-            if ( tb_proc_occured_on_mob[ionizing_bolt_target] == 0 )
-            {
-              if ( rng().roll(p()->sets->set( HERO_MOUNTAIN_THANE, TWW3, B4 )->effectN( 2 ).percent() ) )
-              {
-                p()->buff.thunder_blast->trigger();
-                tb_proc_occured_on_mob[ionizing_bolt_target] = 1;
-              }
-            }
-          }
           ionizing_bolt_target++;
           if ( ionizing_bolt_target >= p()->sim->target_non_sleeping_list.size() )
             ionizing_bolt_target = 0;
+        }
+
+        if ( p()->sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
+        {
+          p()->buff.thunder_blast->trigger();
+          p()->cooldown.thunder_clap->reset( true );
+          p()->buff.severe_thunder->trigger();
         }
       }
     }
@@ -5573,6 +5572,7 @@ struct raging_blow_t : public warrior_attack_t
       if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
+        reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
         add_child( reap_the_storm );
       }
     }
@@ -5785,6 +5785,7 @@ struct crushing_blow_t : public warrior_attack_t
       if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_crushing_blow", p );
+        reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
         add_child( reap_the_storm );
       }
     }
@@ -6201,6 +6202,7 @@ struct overpower_t : public warrior_attack_t
       if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
       {
         reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
+        reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
         add_child( reap_the_storm );
       }
     }
@@ -9569,6 +9571,7 @@ void warrior_t::create_buffs()
     buff.critical_conclusion = make_buff( this, "critical_conclusion", find_spell( 1239144 ) ) // Colossus 4pc
       ->set_initial_stack( find_spell( 1239144 )->max_stacks() );
     buff.deeper_wounds = make_buff( this, "deeper_wounds", find_spell( 1239153 ) );            // Colossus 4pc
+    buff.severe_thunder = make_buff( this, "severe_thunder", find_spell( 1252096 ) );          // Mountain Thane 4pc
   }
 }
 
