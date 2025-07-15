@@ -1,5 +1,5 @@
-// Spell text, wow build 11.2.0.61871
-static const std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
+// Spell text, wow build 11.2.0.61981
+static const std::array<spelltext_data_t, 28039> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27023,9 +27023,9 @@ static const std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
   { 1217017, "Casting Barkskin$?a137012[ or Ironbark][] sprouts thorns on $?a[its target][you] for $305497d. When victim to melee attacks, thorns deals $305496s1 Nature damage back to the attacker.\r\n\r\nAttackers also have their movement speed reduced by $232559s1% for $232559d.", 0, "PvP Talent" },
   { 1217055, "$@spelldesc1215732", "Sacrificed a |cFFFFFFFFWinning Streak!|r to increase critical strike chance by $w1%.", 0 },
   { 1217078, "$@spelldesc1215720", "On a|cFFFFFFFF Winning Streak!|r Dispatch damage increased by $w1%.", 0 },
-  { 1217091, "$?pc136599&(a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217103:\r\n\r\n$@spelldesc1217103][]$?pc136599&(a137048|a137028|a137023|a137010|a212613|a137008)[The wraps attune to your specialization granting you $@spellname1217096:\r\n\r\n$@spelldesc1217096][]$?pc136599&!(a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217101:\r\n\r\n$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ehtereal energies.]", 0, 0 },
+  { 1217091, "$?pc136599&(a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217103:\r\n\r\n$@spelldesc1217103][]$?pc136599&(a137048|a137028|a137023|a137010|a212613|a137008)[The wraps attune to your specialization granting you $@spellname1217096:\r\n\r\n$@spelldesc1217096][]$?pc136599&!(a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217101:\r\n\r\n$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ethereal energies.]", 0, 0 },
   { 1217096, "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091s8% up to $1217091s3 total damage.\r\n\r\nUpon falling below $1217091s6% health, gain this effect at  ${$1217091s7*100}% effectiveness. This effect may only occur once every $1223611d.", "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091w8% up to $1217091w3 total damage.\r\n\r\nUpon falling below $1217091w6% health, gain this effect at  ${$1217091w7*100}% effectiveness. This effect may only occur once every $1223611d.", 0 },
-  { 1217101, "Your harmful spells and abilities have a chance to focus latent energies around you to deal $1217091s1 Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.", "Your harmful spells and abilities have a chance to focus latent energies around you to deal $1217091w1 Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.", 0 },
+  { 1217101, "Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091s1 Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.", "Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091w1 Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.", 0 },
   { 1217103, "Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091s2. Overhealing from this effect grants an absorb shield for $1223453d.", "Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally for $1217091w2. Overhealing from this effect grants an absorb shield for $1223453d.", 0 },
   { 1217116, "$@spelldesc427453", 0, 0 },
   { 1217184, "$@spelldesc466810", 0, 0 },
@@ -27756,11 +27756,13 @@ static const std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
   { 1236419, "Demolish damage increased by $s1% and critical strike damage of your abilities is increased by up to ${$447513s3*$447513u*0.1}% on targets affected by your Demolish for $447513d based on the number of stacks of Colossal Might consumed.", 0, 0 },
   { 1236420, "Demolish increases the critical strike chance of your next $1239144u $?c1[$LMortal Strike:Mortal Strikes;][$LShield Slam:Shield Slams;] by $1239144s1%. $?c1[Mortal Strike][Shield Slam] critical strikes increase your Rend and Deep Wounds damage by $1239153s1% for $1239153d.", 0, 0 },
   { 1236421, "Thunder Blast has a $s2% chance to call down $s1 Ionizing Strikes on affected targets. Each strike deals $1238042s1 Nature damage.", 0, 0 },
-  { 1236422, "Ionizing Strikes deal $s1% more damage and have a $s2% chance to grant a charge of Thunder Blast.", 0, 0 },
+  { 1236422, "Ionizing Strikes deal $s1% more damage and when you trigger Ionizing Strikes, you gain a charge of Thunder Blast and your next Thunder Blast deals $1252096s1% additional damage.", 0, 0 },
   { 1236423, "Execute damage increased by $s1% and Executes from Sudden Death have a $s2% chance per stack of Overwhelmed on the target to trigger a Slayer's Strike at $s3% effectiveness.", 0, 0 },
   { 1236424, "$?c1[Overpower][Raging Blow] damage increased by $s1% and $?c1[Overpower][Raging Blow] has a $s2% chance per stack of Overwhelmed on the target to trigger Reap the Storm at $s3% effectiveness.", 0, 0 },
   { 1236556, "$@spelldesc1236334", "A dryad is assisting you!", 0 },
   { 1236564, "$@spelldesc1236372", "Your Mastery is increased by $s1%.", 0 },
+  { 1236565, "$@spelldesc1236372", "Your Haste is increased by $s1%.", 0 },
+  { 1236566, "$@spelldesc1236372", "Your critical strike chance is increased by $s1%.", 0 },
   { 1236573, "$@spelldesc740", "Heals $w2 damage every $t2 sec.", 0 },
   { 1236623, "Scan the environment highlighting Mislaid Curiosities for the rest of the delve.", 0, 0 },
   { 1236644, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
@@ -27854,6 +27856,7 @@ static const std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
   { 1239091, "$@spelldesc1236390", "Your next $s1 $Lability:abilities; will deal additional Holy damage or healing.", 0 },
   { 1239144, "$@spelldesc1236420", "Critical Strike chance of your next $?c1[Mortal Strike][Shield Slam] increased by $w1%.", 0 },
   { 1239153, "$@spelldesc1236420", "Rend and Deep Wounds damage increased by $w1%.", 0 },
+  { 1239170, "$@spelldesc1236411", "$?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.", 0 },
   { 1239221, "$@spelldesc1234996", "Intellect increased by $w1.", 0 },
   { 1239231, "$@spelldesc1236400", "Deathstalker effects increased by $w1%.", 0 },
   { 1239232, "$@spelldesc1236400", "Deathstalker effects increased by $w1%.", 0 },
@@ -28031,15 +28034,18 @@ static const std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
   { 1248603, "$@spelldesc51690", 0, 0 },
   { 1248604, "$@spelldesc51690", 0, 0 },
   { 1248979, "$@spelldesc1227048", "Targeting by Voidblade Ambush.", 0 },
+  { 1249464, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
   { 1249658, "Call upon Sindragosa's aid in battle for $d, continuously dealing ${$155166s2*$<CAP>/$AP} Frost damage every $t1 sec to enemies in a cone in front of you. Consuming Killing Machine or Rime increases the duration by ${$s3/1000}.1 sec. Deals reduced damage to secondary targets.\r\n\r\n|cFFFFFFFFGrants a charge of Empower Rune Weapon at the start and 2 Runes at the end.|r", "Continuously dealing Frost damage every $t1 sec to enemies in a cone in front of you.", 0 },
+  { 1250068, "Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.", 0, 0 },
+  { 1252024, "$@spelldesc1236336", "$?c1[The damage of your next Starsurge is increased by $w1 and it splashes $w2% of its damage done to nearby enemies, reduced beyond $w4 targets.][The healing of your next Swiftmend is increased by $w1 and it splashes $w3% of its healing done to nearby allies, reduced beyond $w4 targets.]", 0 },
+  { 1252096, "$@spelldesc1236422", "Thunder Blast damage increased by $w1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.0.61871
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
-  { 1235959,  0, "$?c1[Arcane Blast][Ice Lance and Icicle] damage increased by $?c1[$s3][$s4]%. Direct Splinter damage has a $?c1[$s1][$s2]% chance to grant a stack of $?c1[Arcane Harmony][Cold Front].", "$?c1[Arcane Blast][Ice Lance and Icicle] damage increased by $?c1[$s3% and Arcane Blast grants $s5 $Lstack:stacks; of Arcane Harmony][$s4% and Ice Lance has a $s7% chance to generate $s6 $Lstack:stacks; of Cold Front]. Direct Splinter damage has a $?c1[$s1][$s2]% chance to grant a stack of $?c1[Arcane Harmony][Cold Front]." },
+// spelltext hotfix entries, wow build 11.2.0.61981
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.2.0.61871
+// Spell description variables, wow build 11.2.0.61981
 static const std::array<spelldesc_vars_data_t, 670> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28713,7 +28719,7 @@ static const std::array<spelldesc_vars_data_t, 670> __ptr_spelldesc_vars_data { 
   { 1249658, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.0.61871
+// spelldesc_vars hotfix entries, wow build 11.2.0.61981
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

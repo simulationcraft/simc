@@ -1205,6 +1205,99 @@ namespace warlock
     return player_t::parse_assisted_combat_rule( rule, step );
   }
 
+  std::vector<std::string> warlock_t::action_names_from_spell_id( unsigned int spell_id ) const
+  {
+    if ( spell_id == 172 )  // Wither from corruption
+    {
+      if ( specialization() == WARLOCK_DESTRUCTION )
+        return { "wither" };
+
+      return { "wither", "corruption" };
+    }
+
+    if ( spell_id == 348 )  // Wither from immolate
+      return { "wither", "immolate" };
+
+    if ( spell_id == 686 )  // Shadowbolt
+    {
+      if ( specialization() == WARLOCK_DESTRUCTION )
+        return { "infernal_bolt", "incinerate" };
+
+      return { "infernal_bolt", "shadow_bolt" };
+    }
+
+    if ( spell_id == 105174 )  // Hand of guldan
+      return { "ruination", "hand_of_guldan" };
+
+    if ( spell_id == 116858 )  // Chaos bolt
+      return { "ruination", "chaos_bolt" };
+
+    if ( spell_id == 688 || spell_id == 691 )  // imp & felhunter. Stop infinite summon issue.
+      return { };
+
+    return player_t::action_names_from_spell_id( spell_id );
+  }
+
+  
+  void warlock_t::init_blizzard_action_list()
+  {
+    action_priority_list_t* default_ = get_action_priority_list( "default" );
+    player_t::init_blizzard_action_list();
+
+    // precombat overrides
+    action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+
+    pre_c->add_action( "summon_pet" );
+
+    switch ( specialization() )
+    {
+      case WARLOCK_DEMONOLOGY:
+        pre_c->add_action( "power_siphon" );
+        pre_c->add_action( "demonbolt,if=!buff.power_siphon.up" );
+        pre_c->add_action( "shadow_bolt" );
+        break;
+      case WARLOCK_DESTRUCTION:
+        pre_c->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
+        pre_c->add_action( "soul_fire" );
+        pre_c->add_action( "incinerate" );
+        break;
+      case WARLOCK_AFFLICTION:
+        pre_c->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
+        pre_c->add_action( "haunt" );
+        pre_c->add_action( "unstable_affliction" );
+        break;
+      default:
+        break;
+    }
+
+    // cooldown overrides
+    action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+    // reset this from player.cpp
+    cooldowns->action_list.clear();
+
+    cooldowns->add_action( "potion" );
+    cooldowns->add_action( "blood_fury" );
+    cooldowns->add_action( "berserking" );
+    cooldowns->add_action( "fireblood" );
+    cooldowns->add_action( "ancestral_call" );
+    cooldowns->add_action( "use_items" );
+
+    switch ( specialization() )
+    {
+      case WARLOCK_DEMONOLOGY:
+        cooldowns->add_action( "summon_demonic_tyrant,if=buff.dreadstalkers.up" );
+        break;
+      case WARLOCK_DESTRUCTION:
+        cooldowns->add_action( "summon_infernal" );
+        break;
+      case WARLOCK_AFFLICTION:
+        cooldowns->add_action( "summon_darkglare,if=dot.soul_rot.ticking|!talent.soul_rot" );
+        break;
+      default:
+        break;
+    }
+  }
+
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
     add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );

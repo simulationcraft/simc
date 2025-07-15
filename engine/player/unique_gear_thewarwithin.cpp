@@ -8623,11 +8623,11 @@ void cursed_stone_idol( special_effect_t& effect )
     }
   };
 
-  struct cursed_stone_idol_t final : public generic_aoe_proc_t
+  struct cursed_stone_idol_damage_t final : public generic_aoe_proc_t
   {
     buff_t* buff;
-    cursed_stone_idol_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "cursed_stone_idol", e.player->find_spell( 1241809 ) ), buff( nullptr )
+    cursed_stone_idol_damage_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "cursed_stone_idol_damage", e.player->find_spell( 1241809 ) ), buff( nullptr )
     {
       const spell_data_t* value_spell = e.player->find_spell( 1241801 );
       base_dd_min = base_dd_max = value_spell->effectN( 2 ).average( e );
@@ -8641,6 +8641,17 @@ void cursed_stone_idol( special_effect_t& effect )
       cursed_stone_idol_buff_t* stat = debug_cast<cursed_stone_idol_buff_t*>( buff );
       stat->n_hit                    = as<int>( sim->target_non_sleeping_list.size() );
       stat->trigger();
+    }
+  };
+
+  struct cursed_stone_idol_t final : public generic_proc_t
+  {
+    cursed_stone_idol_t( const special_effect_t& e )
+      : generic_proc_t( e, "cursed_stone_idol", e.driver() )
+    {
+      impact_action = create_proc_action<cursed_stone_idol_damage_t>( "cursed_stone_idol_damage", e );
+      add_child( impact_action );
+      use_off_gcd = false;
     }
   };
 
@@ -8748,6 +8759,7 @@ void mind_fracturing_odium( special_effect_t& effect )
                  ->set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
 
       stacking = create_buff<buff_t>( e.player, "mindfracturing_odium", e.driver()->effectN( 1 ).trigger() )
+                     ->set_period( 0_ms )  // Handled by the repeating event
                      ->set_expire_callback( [ & ]( buff_t*, int, timespan_t ) {
                        decrementing = false;
                        stat->expire();
@@ -8776,7 +8788,8 @@ void mind_fracturing_odium( special_effect_t& effect )
     {
       if( !decrementing )
         stacking->trigger();
-      if ( stacking->at_max_stacks() )
+      // Check for stat even though not required to remove refreshes from report to avoid confusion.
+      if ( stacking->at_max_stacks() && !stat->check() )
       {
         decrementing = true;
         stat->trigger();
@@ -9503,20 +9516,33 @@ void shadow_quake( special_effect_t& effect )
 // Voidglass Shards
 // 1235136 Driver
 // 1238693 Damage
+// TODO: implement Absorb if it ever matters in sims rather than fizzling
 void voidglass_shards( special_effect_t& effect )
 {
   if ( effect.player->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
     return;
 
-  action_t* damage =
-      create_proc_action<generic_proc_t>( "voidglass_shards", effect, effect.player->find_spell( 1238693 ) );
+  struct voidglass_shards_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
 
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  damage->base_multiplier *= role_mult( effect );
+    voidglass_shards_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), damage( nullptr )
+    {
+      damage = create_proc_action<generic_proc_t>( "voidglass_shards", e, 1238693 );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+    }
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      // Implementing as a 50/50 split between damage and absorb for now, need more data to confirm
+      if ( rng().roll( 0.5 ) )
+        return;
 
-  effect.execute_action = damage;
+      damage->execute_on_target( s->target );
+    }
+  };
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new voidglass_shards_cb_t( effect );
 }
 
 // Armor

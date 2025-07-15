@@ -1277,9 +1277,9 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
       base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( 9 ).percent();
     crit_bonus_multiplier *= 1.0 + o()->talents.overflowing_energy->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + o()->talents.wildfire->effectN( 2 ).percent();
-    // TODO: Does this work with the unbugged meteorite (which isn't a mage spell)?
-    if ( data().affected_by_label( o()->spec.arcane_mage->effectN( 11 ) ) )
-      base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( 11 ).percent();
+    for ( int ix : { 10, 11 } )
+      if ( data().affected_by_label( o()->spec.arcane_mage->effectN( ix ) ) )
+        base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( ix ).percent();
   }
 
   double action_multiplier() const override

@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.2.0.61871
-static const std::array<item_enchantment_data_t, 5080> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 11.2.0.61981
+static const std::array<item_enchantment_data_t, 5081> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5080,5 +5080,6 @@ static const std::array<item_enchantment_data_t, 5080> __ptr_spell_item_ench_dat
   { 7931,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227312,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233394, "Lesser Void Ritual"                },
   { 7933,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227314,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1227311, "Greater Void Ritual"               },
   { 8058,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "11.2 - FX - Arcane - Enchants"     },
+  { 8246,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Sha Corruption"                    },
 } };
 

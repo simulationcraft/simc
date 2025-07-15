@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -19229,5 +19229,26 @@ Description      : $@spelldesc1236407
 Tooltip          : Cast time of your damage and healing spells reduced by $s1%.
 Mana cost of healing spells reduced by $s2%
 Recharge time of Lava Burst$?s137039[ and Riptide][] reduced by $s6%
+
+Name             : Elemental Overflow (id=1239170) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 295
+                 : 5061
+Internal Cooldown: 0.75 seconds
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
+Effects          :
+#1 (id=1236671)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.33 | Target: Self (1)
+Description      : $@spelldesc1236411
+Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
 
 

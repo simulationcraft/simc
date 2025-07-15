@@ -34,6 +34,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     beacon_target( nullptr ),
     next_season( SUMMER ),
     next_armament( SACRED_WEAPON ),
+    next_lesser_armament( LESSER_WEAPON ),
     radiant_glory_accumulator( 0.0 ),
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 ),
@@ -116,6 +117,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
+  fake_lesser_weapon_set.clear();
 }
 
 const paladin_td_t* paladin_t::find_target_data( const player_t* target ) const
@@ -2532,6 +2534,16 @@ struct lesser_weapon_proc_damage_t :public paladin_spell_t
     background = true;
     callbacks=false;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = paladin_spell_t::composite_da_multiplier( s );
+    if (p()->options.fake_solidarity)
+    {
+      m *= 1.0 + p()->fake_lesser_weapon_set.size() - 1.0;
+    }
+    return m;
+  }
 };
 
 struct sacred_weapon_proc_heal_t : public paladin_heal_t
@@ -2619,7 +2631,23 @@ struct lesser_weapon_cb_t : public dbc_proc_callback_t
     }
     if (p == player)
     {
-      p->buffs.lightsmith.lesser_weapon[ index ]->decrement();
+      if (p->options.fake_solidarity)
+      {
+        for (buff_t* buff : p->fake_lesser_weapon_set )
+        {
+          buff->decrement();
+          if ( buff->stack() <= 0 )
+          {
+            p->fake_lesser_weapon_set.erase( buff );
+            if ( p->fake_lesser_weapon_set.size() <= 0 )
+              p->buffs.lightsmith.lesser_weapon->expire();
+          }
+        }
+      }
+      else
+      {
+        p->buffs.lightsmith.lesser_weapon->decrement();
+      }
     }
     else
     {
@@ -2697,10 +2725,6 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, ar
   bool changeArmament = src == LS_HARDCAST;
   bool random         = src == LS_DIVINE_INSPIRATION;
 
-  // Masterwork always prefers to go on other targets, because 
-  int masterwork      = buffs.lightsmith.masterwork->stack();
-
-  buffs.lightsmith.masterwork->expire();
   // Random is not truly random. Starting weapon is semi-random-ish (It's always the opposite from the last and does not reset on combat start)
   // So we just rng the first one
   if (random)
@@ -2788,61 +2812,83 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, ar
         }
       }
     }
-
-    if ( masterwork > 0 )
-    {
-      for ( int i = 0; i < 3; i++ )
-      {
-        if ( masterwork == 0 )
-          break;
-        for ( auto& _p : sim->player_non_sleeping_list )
-        {
-          if ( masterwork == 0 )
-            break;
-          if ( ( i == 0 && _p->role == ROLE_ATTACK ) || ( i == 1 && _p->type == PLAYER_PET ) ||
-               ( i == 2 && _p->role == ROLE_HEAL ) || ( i == 3 && _p->role == ROLE_TANK ) )
-          {
-            if ( _p != this )
-            {
-              if ( usedArmament == SACRED_WEAPON )
-                get_target_data( _p )->buffs.lesser_weapon->trigger( 5 );
-              else
-                get_target_data( _p )->buffs.lesser_bulwark->execute();
-            }
-            else
-            {
-              if ( usedArmament == SACRED_WEAPON )
-                buffs.lightsmith.lesser_weapon[ 0 ]->trigger( 5 );
-              else
-                buffs.lightsmith.lesser_bulwark->execute();
-            }
-            masterwork--;
-          }
-        }
-      }
-    }
   }
 
   if (options.fake_solidarity)
   {
     buffs.lightsmith.fake_solidarity->trigger();
-    if (masterwork > 0)
-    {
-      if ( usedArmament == SACRED_WEAPON )
-        for ( int i = 0; i < masterwork; i++ )
-        {
-          buffs.lightsmith.lesser_weapon[ i ]->trigger( 5 );
-        }
-      else
-        // Not gonna worry about an array here
-        buffs.lightsmith.lesser_bulwark->trigger();
-    }
   }
+  if ( src != LS_DIVINE_INSPIRATION )
+  {
+    cast_lesser_armament( buffs.lightsmith.masterwork->stack(),
+                          usedArmament == SACRED_WEAPON ? LESSER_WEAPON : LESSER_BULWARK );
+    buffs.lightsmith.masterwork->expire();
+  }
+
 
   if ( changeArmament )
     next_armament = armament( ( next_armament + 1 ) % NUM_ARMAMENT );
   if ( random )
     divine_inspiration_next = (divine_inspiration_next + 1) % NUM_ARMAMENT;
+}
+
+void paladin_t::cast_lesser_armament(int amount, lesser_armament usedArmament)
+{
+  // Masterwork always prefers to go on other targets, because
+
+  if ( amount > 0 && !options.fake_solidarity)
+  {
+    for ( int j = 0; j < 2; j++ )
+    {
+      for ( int i = 0; i < 3; i++ )
+      {
+        if ( amount == 0 )
+          break;
+        for ( auto& _p : sim->player_non_sleeping_list )
+        {
+          if ( amount == 0 )
+            break;
+          if ( ( i == 0 && _p->role == ROLE_ATTACK ) || ( i == 1 && _p->role == ROLE_HEAL ) ||
+               ( i == 2 && _p->role == ROLE_TANK ) )
+          {
+            if ( _p != this )
+            {
+              if ( usedArmament == LESSER_WEAPON && ( j == 1 || !get_target_data( _p )->buffs.lesser_weapon->up() ) )
+                get_target_data( _p )->buffs.lesser_weapon->trigger( 5 );
+              else if ( usedArmament == LESSER_BULWARK &&
+                        ( j == 1 || !get_target_data( _p )->buffs.lesser_bulwark->up() ) )
+                get_target_data( _p )->buffs.lesser_bulwark->trigger();
+            }
+            else
+            {
+              if ( usedArmament == LESSER_WEAPON && ( j == 1 || !buffs.lightsmith.lesser_weapon->up() ) )
+                buffs.lightsmith.lesser_weapon->trigger( 5 );
+              else if ( usedArmament == LESSER_BULWARK && ( j == 1 || !buffs.lightsmith.lesser_bulwark->up() ) )
+                buffs.lightsmith.lesser_bulwark->trigger();
+            }
+            amount--;
+          }
+        }
+      }
+    }
+  }
+  if ( amount > 0 && options.fake_solidarity)
+  {
+    if ( usedArmament == LESSER_BULWARK )
+      buffs.lightsmith.lesser_bulwark->trigger();
+    else
+    {
+      if ( !buffs.lightsmith.lesser_weapon->up() )
+        buffs.lightsmith.lesser_weapon->trigger();
+
+      buff_t* b = make_buff( this, "fake_lesser_weapon" )
+                      ->set_chance( 1 )
+                      ->set_max_stack( buffs.lightsmith.lesser_weapon->max_stack() )
+        ->set_quiet(true);
+      b->trigger(5);
+      fake_lesser_weapon_set.insert( b );
+    }
+  }
 }
 
 dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source, player_t* target )
@@ -2857,11 +2903,11 @@ dbc_proc_callback_t* paladin_t::create_sacred_weapon_callback( paladin_t* source
   return new sacred_weapon_cb_t( target, source, *sacred_weapon_effect );
 }
 
-dbc_proc_callback_t* paladin_t::create_lesser_weapon_callback(paladin_t* source, player_t* target, int index)
+dbc_proc_callback_t* paladin_t::create_lesser_weapon_callback(paladin_t* source, player_t* target)
 {
   auto lesser_weapon_effect = new special_effect_t( target );
   lesser_weapon_effect->name_str =
-      fmt::format( "lesser_weapon_cb_{}_{}_{}", source->name_str, target->name_str, index );
+      fmt::format( "lesser_weapon_cb_{}_{}", source->name_str, target->name_str );
   lesser_weapon_effect->spell_id = 1239091;
   lesser_weapon_effect->type     = SPECIAL_EFFECT_EQUIP;
   
@@ -3641,7 +3687,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                       paladin->find_spell( 1239091 ) );
     if ( !target->is_enemy() && target != paladin )
     {
-      auto cb = paladin->create_lesser_weapon_callback( paladin, target, 0 );
+      auto cb = paladin->create_lesser_weapon_callback( paladin, target );
       cb->activate_with_buff( buffs.lesser_weapon, true );
     }
   }
@@ -3718,16 +3764,8 @@ void paladin_t::create_actions()
     {
       active.lesser_weapon_proc_damage = new lesser_weapon_proc_damage_t( this );
       active.lesser_weapon_proc_heal   = new lesser_weapon_proc_heal_t( this );
-      auto cblw                        = create_lesser_weapon_callback( this, this, 0 );
-      cblw->activate_with_buff( buffs.lightsmith.lesser_weapon[ 0 ] );
-      if (options.fake_solidarity)
-      {
-        for ( int i = 1; i < 5; i++ )
-        {
-          auto cblw2 = create_lesser_weapon_callback( this, this, i );
-          cblw2->activate_with_buff( buffs.lightsmith.lesser_weapon[ i ] );
-        }
-      }
+      auto cblw                        = create_lesser_weapon_callback( this, this );
+      cblw->activate_with_buff( buffs.lightsmith.lesser_weapon );
     }
   }
   //Templar
@@ -3930,12 +3968,14 @@ void paladin_t::reset()
 
   next_season = SUMMER;
   next_armament = SACRED_WEAPON;
+  next_lesser_armament = LESSER_WEAPON;
   radiant_glory_accumulator = 0.0;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
   divine_inspiration_next = -1;
+  fake_lesser_weapon_set.clear();
 }
 
 // paladin_t::init_gains ====================================================
@@ -3948,11 +3988,12 @@ void paladin_t::init_gains()
   gains.mana_beacon_of_light = get_gain( "beacon_of_light" );
 
   // Health
-  gains.holy_shield   = get_gain( "holy_shield_absorb" );
-  gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
+  gains.holy_shield        = get_gain( "holy_shield_absorb" );
+  gains.bulwark_of_order   = get_gain( "bulwark_of_order_absorb" );
   gains.sacrosanct_crusade = get_gain( "sacrosanct_crusade_absorb" );
-  gains.moment_of_glory  = get_gain( "moment_of_glory_absorb" );
-
+  gains.moment_of_glory    = get_gain( "moment_of_glory_absorb" );
+  gains.holy_bulwark       = get_gain( "holy_bulwark_absorb" );
+  gains.lesser_bulwark     = get_gain( "lesser_bulwark_absorb" );
 
   // Holy Power
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
@@ -4120,16 +4161,8 @@ void paladin_t::create_buffs()
                                        } );
   buffs.lightsmith.masterwork = make_buff( this, "masterwork", find_spell( 1238903 ) );
   // Not going to implement this "correctly", too much overhead for too little informational gain
-  buffs.lightsmith.lesser_bulwark = make_buff( this, "lesser_bulwark", find_spell( 1239002 ) );
-  buffs.lightsmith.lesser_weapon[ 0 ] = make_buff( this, "lesser_weapon", find_spell( 1239091 ) );
-  if (options.fake_solidarity)
-  {
-    for ( int i = 1; i < 5; i++ )
-    {
-      buffs.lightsmith.lesser_weapon[ i ] =
-          make_buff( this, fmt::format( "{}{}", "lesser_weapon_", i ), find_spell( 1239091 ) );
-    }
-  }
+  buffs.lightsmith.lesser_bulwark = make_buff<buffs::lesser_bulwark_buff_t>( this );
+  buffs.lightsmith.lesser_weapon = make_buff( this, "lesser_weapon", find_spell( 1239091 ) );
   buffs.lightsmith.blessed_assurance =
       make_buff( this, "blessed_assurance", find_spell( 433019 ) )->set_default_value_from_effect( 1 );
   buffs.lightsmith.divine_guidance = make_buff( this, "divine_guidance", find_spell( 433106 ) )->set_max_stack( 5 );
@@ -5423,6 +5456,7 @@ void paladin_t::combat_begin()
   // evidently it resets to summer on combat start
   next_season = SUMMER;
   next_armament = SACRED_WEAPON;
+  next_lesser_armament = LESSER_WEAPON;
 
   // this does not appear to reset on combat start, so we initialize it at random
   radiant_glory_accumulator = rng().range( 0.0, 1.0 );

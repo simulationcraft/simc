@@ -1073,6 +1073,7 @@ public:
 
     action_t* set_ascendance;
     action_t* tww3_primordial_storm;
+    action_t* tww3_lava_lash;
   } action;
 
   // Pets
@@ -1202,6 +1203,7 @@ public:
     buff_t* tww2_enh_2pc; // Winning Streak!
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
     buff_t* tww2_enh_4pc_damage; // Electrostatic Wager (hidden damage to CL)
+    buff_t* tww3_enh_4pc; // Elemental Overflow
 
     // Shared talent stuff
     buff_t* tempest;
@@ -1306,6 +1308,8 @@ public:
     cooldown_t* flowing_spirit;
     cooldown_t* stormblast; // Stormblast ICD custom implementation
     cooldown_t* arc_discharge;
+
+    cooldown_t* tww3_enh_4pc_icd; // Elemental Overflow ICD for presumably consuming the buff
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -1782,6 +1786,7 @@ public:
     cooldown.flowing_spirit     = get_cooldown( "flowing_spirit" );
     cooldown.stormblast         = get_cooldown( "stormblast_icd" );
     cooldown.arc_discharge      = get_cooldown( "arc_discharge" );
+    cooldown.tww3_enh_4pc_icd   = get_cooldown( "elemental_overflow" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -1893,6 +1898,7 @@ public:
   void trigger_flowing_spirits( action_t* action );
   void trigger_lively_totems( const action_state_t* state );
   void trigger_tww3_totemic_enh_2pc( const action_state_t* state );
+  void trigger_tww3_totemic_enh_4pc( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -5393,8 +5399,8 @@ struct lava_lash_t : public shaman_attack_t
 
   stats::proc_tracker_t* proc_lively_totems;
 
-  lava_lash_t( shaman_t* player, util::string_view options_str ) :
-    shaman_attack_t( "lava_lash", player, player->talent.lava_lash ),
+  lava_lash_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} ) :
+    shaman_attack_t( "lava_lash", player, player->talent.lava_lash, type_ ),
     mw_dot( nullptr ),
     max_spread_targets( as<unsigned>( p()->talent.molten_assault->effectN( 2 ).base_value() ) ),
     proc_lively_totems( nullptr )
@@ -5413,6 +5419,17 @@ struct lava_lash_t : public shaman_attack_t
     {
       mw_dot = new molten_weapon_dot_t( player );
       add_child( mw_dot );
+    }
+
+    switch ( type_ )
+    {
+      case spell_variant::TWW3:
+        background = true;
+        cooldown = player->get_cooldown( "lava_lash_tww3" );
+        base_multiplier *= player->sets->set( HERO_TOTEMIC, TWW3, B4 )->effectN( 2 ).percent();
+        break;
+      default:
+        break;
     }
   }
 
@@ -5505,6 +5522,8 @@ struct lava_lash_t : public shaman_attack_t
       p()->pet.searing_totem.spawn( timespan_t::from_seconds( 8.0 + rng().range( 0.85 ) ) );
       proc_lively_totems->occur();
     }
+
+    p()->trigger_tww3_totemic_enh_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -7026,6 +7045,16 @@ struct storms_eye_t : public shaman_spell_t
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+      attack_power_mod.direct = 0;
+    }
+    else
+    {
+      spell_power_mod.direct  = 0;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    }
   }
 };
 
@@ -7367,6 +7396,7 @@ struct fire_nova_t : public shaman_spell_t
 
     p()->trigger_lively_totems( execute_state );
     p()->trigger_whirling_fire( execute_state );
+    p()->trigger_tww3_totemic_enh_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -10082,7 +10112,6 @@ struct shaman_totem_t : public BASE
       return this->player->create_expression( "pet." + this->name_str + ".remains" );
     else if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, totem_duration );
-
     return BASE::create_expression( name );
   }
 };
@@ -10917,7 +10946,7 @@ struct primordial_storm_t : public shaman_spell_t
       switch ( type_ )
       {
         case spell_variant::TWW3:
-          base_multiplier *= 1.0 + p()->sets->set( HERO_TOTEMIC, TWW3, B2 )->effectN( 1 ).percent();
+          base_multiplier *= p()->sets->set( HERO_TOTEMIC, TWW3, B2 )->effectN( 1 ).percent();
         default:
           break;
       }
@@ -11003,6 +11032,8 @@ struct primordial_storm_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    p()->buff.tww3_enh_4pc->trigger();
+
     // Set targets early so we can use fire target list to figure out whether LB or CL can be shot,
     // before the fire damage spell executes.
     fire->set_target( execute_state->target );
@@ -11046,6 +11077,8 @@ struct primordial_storm_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
+
+    p()->buff.tww3_enh_4pc->trigger();
   }
 
   bool ready() override
@@ -11151,7 +11184,9 @@ struct tempest_t : public shaman_spell_t
   {
     if ( p()->buff.storms_eye->up())
     {
-      storms_eye->execute();
+      make_event(sim, p()->find_spell(1235836)->duration(), [ this ]() {
+        storms_eye->execute();
+	  });
     }
 
     p()->buff.tempest->decrement();
@@ -11596,7 +11631,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "ice_strike" )
     return new ice_strike_t( this, options_str );
   if ( name == "lava_lash" )
-    return new lava_lash_t( this, options_str );
+    return new lava_lash_t( this, spell_variant::NORMAL, options_str );
   if ( name == "lightning_shield" )
     return new lightning_shield_t( this, options_str );
   if ( name == "spirit_walk" )
@@ -11681,6 +11716,18 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
       return 100.0 * std::max( 0.0, dre_attempts * 0.01 - 0.01 * options.dre_forced_failures );
     } );
   }
+
+  if ( util::str_compare_ci( name, "total_awaken_count" ) )
+    return make_fn_expr( name, [ this ]() { return as<double>( aws_counter ); } );
+
+  if ( util::str_compare_ci( name, "tww3_procs_to_asc" ) )
+    return make_fn_expr( name, [ this ]() { 
+      if ( !spell.tww3_stormbringer_2pc )
+        return 0.0;
+      unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+                                                      ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                                      : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
+      return as<double>( tww3_mod_value-(aws_counter % tww3_mod_value) ); } );
 
   auto splits = util::string_split<util::string_view>( name, "." );
 
@@ -11892,6 +11939,11 @@ void shaman_t::create_actions()
   if ( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B2 ) && specialization() == SHAMAN_ENHANCEMENT )
   {
     action.tww3_primordial_storm = new primordial_storm_t( this, spell_variant::TWW3 );
+  }
+
+  if ( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) && specialization() == SHAMAN_ENHANCEMENT )
+  {
+    action.tww3_lava_lash = new lava_lash_t( this, spell_variant::TWW3 );
   }
 
   if ( talent.tempest_strikes.ok() )
@@ -13662,11 +13714,11 @@ void shaman_t::trigger_awakening_storms( const action_state_t* state )
   {
     aws_counter++;
 
-    unsigned int proc_on_x = static_cast<unsigned int> (specialization() == SHAMAN_ELEMENTAL
-                                 ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
-                                 : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value());
+    unsigned int tww3_mod_value = static_cast<unsigned int>( specialization() == SHAMAN_ELEMENTAL
+                                                    ? spell.tww3_stormbringer_2pc->effectN( 3 ).base_value()
+                                                    : spell.tww3_stormbringer_2pc->effectN( 4 ).base_value() );
 
-    if ( aws_counter % proc_on_x == 0 )
+    if ( aws_counter % tww3_mod_value == 0 )
     {
       action.set_ascendance->execute_on_target( state->target );
     }
@@ -14072,6 +14124,32 @@ void shaman_t::trigger_tww3_totemic_enh_2pc( const action_state_t* state )
   action.tww3_primordial_storm->execute_on_target( state->target );
 }
 
+void shaman_t::trigger_tww3_totemic_enh_4pc( const action_state_t* state )
+{
+  if ( !sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4) )
+  {
+    return;
+  }
+
+  if ( cooldown.tww3_enh_4pc_icd->down() || !buff.tww3_enh_4pc->up() )
+  {
+    return;
+  }
+
+  auto delay = rng().gauss( 500_ms, 33_ms );
+  sim->print_debug( "{} triggering enhancement tww3 4 piece set bonus on {}, delay={}",
+    name(), state->target->name(), delay );
+  make_event( sim, delay, [ t = state->target, this ]() {
+    if ( t->is_sleeping() )
+    {
+      return;
+    }
+    action.tww3_lava_lash->execute_on_target( t );
+  } );
+  buff.tww3_enh_4pc->decrement();
+  cooldown.tww3_enh_4pc_icd->start( buff.tww3_enh_4pc->data().internal_cooldown() );
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -14380,6 +14458,8 @@ void shaman_t::create_buffs()
   buff.tww2_enh_4pc_damage = make_buff( this, "electrostatic_wager_dmg", find_spell( 1223332 ) )
     ->set_quiet( true )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 ) );
+  buff.tww3_enh_4pc = make_buff( this, "elemental_overflow", find_spell( 1239170 ) )
+    ->set_trigger_spell( sets->set( HERO_TOTEMIC, TWW3, B4 ) );
   buff.ancestral_wisdom = make_buff( this, "ancestral_wisdom", find_spell( 1238279 ) )
                               ->set_trigger_spell( spell.tww3_farseer_4pc )
                               ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
@@ -14696,7 +14776,12 @@ void shaman_t::apply_affecting_auras( action_t& action )
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
-  action.apply_affecting_aura( spell.tww3_stormbringer_4pc );
+  if ( action.player->specialization() == SHAMAN_ELEMENTAL )
+    for ( int ix : { 3, 4 } )
+      action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
+  if ( action.player->specialization() == SHAMAN_ENHANCEMENT )
+    for ( int ix : { 1, 2 } )
+      action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
 
   // Custom
 

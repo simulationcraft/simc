@@ -261769,13 +261769,14 @@ Effects          :
 Description      : $@spelldesc1236134
 
 Name             : Charged Crystal (id=1236279) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow While Mounted (24), Allow Aura While Dead (116), Can Proc From Procs (122), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1232112)  : Apply Aura (6) | Proc Trigger Spell (42): Charged Bolt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237033 | Target: Self (1)

@@ -70,6 +70,7 @@ actions.aoe+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff
 
 # AoE Burst
 actions.aoe_burst=festering_strike,if=buff.festering_scythe.react
+actions.aoe_burst+=/death_and_decay,if=death_knight.fwounded_targets=active_enemies&talent.desecrate
 actions.aoe_burst+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!buff.vampiric_strike.react&active_enemies<variable.epidemic_targets&(!talent.bursting_sores|talent.bursting_sores&buff.sudden_doom.react&death_knight.fwounded_targets<active_enemies*0.4|buff.sudden_doom.react&(talent.doomed_bidding&talent.menacing_magus|talent.rotten_touch|debuff.death_rot.remains<gcd)|rune<2)|(rune<4|active_enemies<4|raid_event.pull.has_boss)&active_enemies<variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
 actions.aoe_burst+=/epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&buff.sudden_doom.react&death_knight.fwounded_targets<active_enemies*0.4|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10)|rune<2)|(rune<4|raid_event.pull.has_boss)&active_enemies>=variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
 actions.aoe_burst+=/wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up
@@ -216,7 +217,7 @@ actions.variables+=/variable,name=epidemic_targets,value=3+talent.improved_death
 head=wing_commanders_helmet,id=178812,bonus_id=1611/6935,ilevel=723,gem_id=213497
 neck=sin_stained_pendant,id=178827,bonus_id=1611/6935,ilevel=723,gem_id=213497
 shoulders=hollow_sentinels_perches,id=237626,ilevel=723
-back=reshii_wraps,id=235499,bonus_id=12399/12262/9893
+back=reshii_wraps,id=235499,bonus_id=12399/12258/9893
 chest=hollow_sentinels_breastplate,id=237631,ilevel=723,enchant=crystalline_radiance_3,enchant_id=7364
 wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213743,crafted_stats=40/49
 hands=hollow_sentinels_gauntlets,id=237629,ilevel=723
@@ -234,9 +235,9 @@ main_hand=photon_sabre_prime,id=237737,bonus_id=7187/1520,ilevel=723,enchant=run
 # gear_strength=84187
 # gear_stamina=664468
 # gear_crit_rating=2688
-# gear_haste_rating=20818
+# gear_haste_rating=21736
 # gear_mastery_rating=26497
 # gear_versatility_rating=3156
 # gear_armor=97070
-# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=san'layn,enable=1
-# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=san'layn,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=rider of the apocalypse,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=rider of the apocalypse,enable=1

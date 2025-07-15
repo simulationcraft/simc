@@ -348,8 +348,17 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
   {
     haa->set_target( s->target );
     haa->execute();
-    p->buffs.lightsmith.masterwork->trigger();
-    p->cooldowns.tww3_lightsmith_2p_icd->start();
+    if ( p->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B2) )
+      p->cooldowns.tww3_lightsmith_2p_icd->start();
+    if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B4 ) )
+    {
+      if ( p->buffs.lightsmith.masterwork->at_max_stacks() )
+      {
+        p->cast_lesser_armament( 1, p->next_lesser_armament );
+        p->next_lesser_armament = p->next_lesser_armament == LESSER_WEAPON ? LESSER_BULWARK : LESSER_WEAPON;
+      }
+      p->buffs.lightsmith.masterwork->trigger();
+    }
   }
 }
 

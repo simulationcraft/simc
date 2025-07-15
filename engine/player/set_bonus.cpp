@@ -399,8 +399,7 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
           s += fmt::format( "# set_bonus={}_{}pc=1{}", data.bonus->set_opt_name, data.bonus->bonus, newline );
         else
         {
-          std::string ht = util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) );
-          util::tolower( ht );
+          std::string ht = util::tokenize_fn( util::hero_talent_string( static_cast<hero_talent_e>( data.bonus->trait_sub_tree ) ) );
           s += fmt::format( "# set_bonus=name={},pc={},hero_tree={},enable=1{}", data.bonus->set_opt_name,
                             data.bonus->bonus, ht, newline );
         }
@@ -512,9 +511,19 @@ bool set_bonus_t::new_parse_set_bonus_option( util::string_view opt_str, set_bon
     }
     if ( util::str_compare_ci( value_pair[ 0 ], "hero_tree" ) )
     {
-      hero = util::parse_hero_talent_type( value_pair[ 1 ] );
-      if ( hero == HERO_NONE )
+      hero          = util::parse_hero_talent_type( value_pair[ 1 ] );
+      bool is_valid = false;
+
+      if( hero != HERO_NONE )
+        is_valid = util::is_valid_hero_tree_for_class( hero, actor->type );
+
+      if ( !is_valid && hero != HERO_NONE )
+        actor->sim->error( "Invalid hero tree set bonus '{}' for class '{}'.", value_pair[ 1 ],
+                           util::player_type_string( actor->type ) );
+
+      if ( hero == HERO_NONE || !is_valid )
         return false;
+
       continue;
     }
     if ( util::str_compare_ci( value_pair[ 0 ], "0" ) || util::str_compare_ci( value_pair[ 0 ], "1" ) )

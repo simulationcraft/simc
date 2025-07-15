@@ -157,7 +157,7 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 bool scale_metric_is_raid( scale_metric_e );
-
+bool is_valid_hero_tree_for_class( hero_talent_e hero_talent, player_e class_type );
 
 template<typename StringType = std::string>
 inline std::vector<StringType> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true )

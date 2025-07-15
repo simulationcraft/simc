@@ -46,6 +46,12 @@ enum armament_source : unsigned int
   LS_DIVINE_INSPIRATION = 2,
 };
 
+enum lesser_armament : unsigned int
+{
+  LESSER_WEAPON  = 0,
+  LESSER_BULWARK = 1,
+};
+
 enum consecration_source : unsigned int
 {
   HARDCAST         = 0,
@@ -94,7 +100,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* holy_bulwark;
     buff_t* sacred_weapon;
     buff_t* lesser_weapon;
-    buff_t* lesser_bulwark;
+    absorb_buff_t* lesser_bulwark;
   } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -259,8 +265,9 @@ public:
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
       buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
       buff_t* masterwork;
-      buff_t* lesser_weapon[5];
-      buff_t* lesser_bulwark;
+      buff_t* lesser_weapon;
+      absorb_buff_t* lesser_bulwark;
+      buff_t* fake_lesser_weapon;
     } lightsmith;
 
     struct
@@ -302,6 +309,8 @@ public:
     gain_t* sacrosanct_crusade;
     gain_t* blessed_hammer;
     gain_t* moment_of_glory;
+    gain_t* holy_bulwark;
+    gain_t* lesser_bulwark;
 
     // Mana
     gain_t* mana_beacon_of_light;
@@ -805,6 +814,7 @@ public:
 
   season next_season;
   armament next_armament;
+  lesser_armament next_lesser_armament;
   double radiant_glory_accumulator;
 
   int holy_power_generators_used;
@@ -893,6 +903,7 @@ public:
   bool standing_in_hallow() const;
   void adjust_health_percent();
   void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
+  void cast_lesser_armament( int amount, lesser_armament usedArmament );
   void trigger_greater_judgment( paladin_td_t* targetdata, int num_stacks );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
@@ -954,7 +965,8 @@ public:
     return !( talents.crusading_strikes->ok() );
   }
   dbc_proc_callback_t* create_sacred_weapon_callback( paladin_t* source, player_t* target );
-  dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target, int index );
+  dbc_proc_callback_t* create_lesser_weapon_callback( paladin_t* source, player_t* target );
+  std::set<buff_t*> fake_lesser_weapon_set;
 };
 
 namespace buffs
@@ -1114,6 +1126,19 @@ struct lesser_bulwark_buff_t : public absorb_buff_t
   {
     caster = debug_cast<paladin_t*>( td->source );
     set_absorb_source( caster->get_stats( "lesser_bulwark_absorb_" + td->target->name_str ) );
+  }
+  lesser_bulwark_buff_t( paladin_t* p ) : absorb_buff_t( p, "lesser_bulwark", p->spells.lightsmith.lesser_bulwark )
+  {
+    caster = p;
+    set_absorb_source( caster->get_stats( "lesser_bulwark_absorb" ) );
+  }
+
+  bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  {
+    value      = value < 0 ? 0 : value;
+    double MAP = caster->composite_melee_attack_power() *caster->spells.lightsmith.lesser_bulwark->effectN( 1 ).ap_coeff();
+    MAP *= 1.0 + caster->composite_heal_versatility();
+    return absorb_buff_t::trigger( stacks, value + MAP, chance, duration );
   }
 };
 

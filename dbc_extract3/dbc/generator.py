@@ -1560,7 +1560,7 @@ class SpellDataGenerator(DataGenerator):
          1239810, # Naazindhris Mystic Lash
          1244448, 1244444, # Perfidious Projector
          1243133, # Incorporeal Warpclap
-         1245643, # Mind-Fracturing Odium 
+         1245643, # Mind-Fracturing Odium
          1224916, 1224917, 1224918, # Void-Touched Fragment
         ),
 
@@ -1722,6 +1722,9 @@ class SpellDataGenerator(DataGenerator):
           ( 471947, 0 ), ( 472020, 0 ), # Boar Charge (Pack Leader)
           ( 1225858, 0 ), # Bear Summon (Pack Leader)
           ( 1232922, 0 ), # Kill Command (for Dire Beasts via Wildspeaker)
+          ( 1249464, 0 ), # Boon of Elune (Sentinel 4pc buff)
+          ( 1236564, 0 ), ( 1236565, 0 ), ( 1236566, 0 ), # Grizzled Fur, Hasted Hooves, Sharpened Fangs (Pack Leader 2pc buffs)
+          ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
         ),
 
         # Rogue:
@@ -2069,6 +2072,7 @@ class SpellDataGenerator(DataGenerator):
           ( 470058, 0 ),                                # Voltaic Blaze override buff
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
+          ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
         ),
 
         # Mage:

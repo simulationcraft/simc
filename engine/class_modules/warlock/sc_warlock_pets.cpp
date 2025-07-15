@@ -478,7 +478,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   if ( owner->talents.soul_strike.ok() )
-    action_list_str += "/soul_strike";
+    action_list_str += "/soul_strike,use_while_casting=1";
 
   felstorm_cd = get_cooldown( "felstorm" );
   dstr_cd = get_cooldown( "felstorm_demonic_strength" );
@@ -541,6 +541,7 @@ struct axe_toss_t : public warlock_pet_spell_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     ignore_false_positive = is_interrupt = true;
+    usable_while_casting = true;
   }
 };
 
@@ -749,6 +750,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     cooldown->duration = p->o()->talents.soul_strike_pet->cooldown();
     trigger_gcd = p->o()->talents.soul_strike_pet->gcd();
+    usable_while_casting = true;
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );

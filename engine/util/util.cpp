@@ -1868,6 +1868,35 @@ bool util::scale_metric_is_raid( scale_metric_e sm )
   }
 }
 
+// is_valid_hero_tree_for_class ===============================================
+bool util::is_valid_hero_tree_for_class( hero_talent_e hero_talent, player_e class_type )
+{
+  player_e parsed_class = PLAYER_NONE;
+
+  for ( const auto& entry : __trait_sub_tree_data )
+    if ( hero_talent == std::get<0>( entry ) )
+    {
+      switch ( std::get<2>( entry ) )
+      {
+        case 1: parsed_class = WARRIOR; break;
+        case 2: parsed_class = PALADIN; break;
+        case 3: parsed_class = HUNTER; break;
+        case 4: parsed_class = ROGUE; break;
+        case 5: parsed_class = PRIEST; break;
+        case 6: parsed_class = DEATH_KNIGHT; break;
+        case 7: parsed_class = SHAMAN; break;
+        case 8: parsed_class = MAGE; break;
+        case 9: parsed_class = WARLOCK; break;
+        case 10: parsed_class = MONK; break;
+        case 11: parsed_class = DRUID; break;
+        case 12: parsed_class = DEMON_HUNTER; break;
+        case 13: parsed_class = EVOKER; break;
+      }
+    }
+
+  return ( parsed_class == class_type );
+}
+
 // scale_metric_type_string ===================================================
 
 const char* util::scale_metric_type_string( scale_metric_e sm )
@@ -2852,7 +2881,7 @@ specialization_e util::parse_specialization_type( util::string_view name )
 hero_talent_e util::parse_hero_talent_type( util::string_view name )
 {
   for ( const auto& entry : __trait_sub_tree_data )
-    if ( util::str_compare_ci( tokenize_fn( std::get<1>( entry ) ), name ) )
+    if ( util::str_compare_ci( name, tokenize_fn( std::get<std::string>( entry ) ) ) )
       return static_cast<hero_talent_e>( std::get<0>( entry ) );
 
   return HERO_NONE;

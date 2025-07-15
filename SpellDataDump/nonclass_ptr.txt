@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -252480,7 +252480,7 @@ Effects          :
 #2 (id=1180905)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1180906)  : Dummy (3)
-                   Base Value: 250 | Scaled Value: 250
+                   Base Value: 0 | Scaled Value: 0
 Description      : Combine $M2 Fractured Sparks of Fortunes with $M3 Valorstones to create a Spark of Fortunes.
 
 Name             : Wayward Vrykul's Lantern (id=467767) [Passive, Hidden] 
@@ -259186,7 +259186,7 @@ $@spelldesc1217103][]$?pc136599&(a137048|a137028|a137023|a137010|a212613|a137008
 
 $@spelldesc1217096][]$?pc136599&!(a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a356810|a137012)[The wraps attune to your specialization granting you $@spellname1217101:
 
-$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ehtereal energies.]
+$@spelldesc1217101][]$?pc136599[][|cnRED_FONT_COLOR:Speak to Hashim to enable your Reshii Wraps to harness ethereal energies.]
 
 Name             : Ethereal Protection (id=1217096) 
 School           : Physical
@@ -259222,8 +259222,8 @@ Attributes       : No Aura Icon (60), Can Proc From Procs (122), Aura Points On 
 Effects          :
 #1 (id=1200894)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your harmful spells and abilities have a chance to focus latent energies around you to deal $1217091s1 Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.
-Tooltip          : Your harmful spells and abilities have a chance to focus latent energies around you to deal $1217091w1 Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.
+Description      : Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091s1 Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.
+Tooltip          : Your harmful spells and abilities have a chance to focus latent energies around you to inflict $1217091w1 Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.
 
 Name             : Ethereal Reconstitution (id=1217103) 
 School           : Physical
@@ -262494,7 +262494,7 @@ Description      : $@spelldesc1226867
 Name             : Primal Spellstorm (id=1226877) 
 School           : Arcane
 Spell Type       : Magic
-Range            : 50000 yards
+Range            : 100 yards
 Triggered By     : Primal Spellstorm (1226876)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
@@ -267250,8 +267250,8 @@ Triggered By     : Infusion Tether (1226311)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Aura Interrupt   : Enter World (22), Encounter End (56)
 Effects          :
-#1 (id=1235305)  : School Damage (2): arcane
-                   Base Value: 2.25 | Scaled Value: 2.25 | Target: Any Target (25)
+#1 (id=1256584)  : School Damage (2): arcane
+                   Base Value: 2.8125 | Scaled Value: 2.8125 | Target: Any Target (25)
 Description      : $@spelldesc1226311
 
 Name             : Voidglass Shards (id=1238693) 
@@ -268079,8 +268079,8 @@ Spell Type       : Magic
 Triggered By     : Devour (1229038)
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Only On Player (104), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1251109)  : School Damage (2): shadow
-                   Base Value: 32 | Scaled Value: 32 | Radius: 0 - 300 yards | Target: At Self (22) -> Enemy in Area (15)
+#1 (id=1257208)  : School Damage (2): shadow
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 300 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc1229038
 
 Name             : Warplance Strike (id=1243411) 
@@ -268125,7 +268125,7 @@ Triggered By     : Azhiccaran Mite (1243828), Mite-y Feast (1243843)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244264)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 15166.49 (coefficient=5.929595) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15166.49 (coefficient=5.929595) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
 Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.
@@ -268156,7 +268156,7 @@ Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1244299)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Stat: Int | Target: Self (1)
 #2 (id=1244300)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1243818 | Target: Self (1)
 #3 (id=1244404)  : Trigger Spell (64): Azhiccaran Mite
@@ -268544,7 +268544,7 @@ Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Do 
 Aura Interrupt   : Leave World (19), Enter World (22), Encounter Start (55), Encounter End (56)
 Effects          :
 #1 (id=1247445)  : Apply Aura (6) | Unknown(293)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3410 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3410 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Whirl an Abyssal Polearm for $1246066d, dealing $1246067s1 Shadow damage to enemies within $1246067A1 yards every $1246066t1 sec.
 Tooltip          : Carrying an Abyssal Polearm.
 

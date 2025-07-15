@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61871 PTR
+SimulationCraft 1115-02 for World of Warcraft 11.2.0.61981 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3876,7 +3876,7 @@ Talent Entry     : Holy [tree=spec, row=8, col=1, max_rank=1, req_points=20, sel
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Resource         : 4.5% Base Mana (0) (id=11456)
+Resource         : 3.5% Base Mana (0) (id=11456)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3940,8 +3940,7 @@ Effects          :
 Description      : Aura Mastery also increases all healing received by party or raid members within $211210A1 yards by $s1%.
 
 Name             : Power of the Silver Hand (id=200474) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=7, max_rank=1, req_points=20]
-                 : Holy [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
@@ -11767,7 +11766,7 @@ Description      : $@spelldesc392938
 Tooltip          : Hammer of Wrath can be used on any target.
 
 Name             : Boundless Salvation (id=392951) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14843,7 +14842,7 @@ Effects          :
 Description      : $@spelldesc414720
 
 Name             : Reclamation (id=415364) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16274,7 +16273,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : No Aura Cancel (31), No Aura Icon (60), DoT Stacking Rule (103), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : No Aura Cancel (31), No Redirection (35), No Reflection (39), No Aura Icon (60), DoT Stacking Rule (103), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120102)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 15 | Scaled Value: 15 | Target: Any Target (25) -> Self (1)
@@ -16579,7 +16578,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Max Targets      : 1
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -16594,7 +16592,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
-Max Targets      : 1
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19647,7 +19644,7 @@ Effects          :
 #2 (id=1236239)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
 #3 (id=1236240)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Hammer and Anvil's $?c2[damage][healing] is increased by $s1% and it can also be activated by $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] at $?c1[$s2][$s3]% effectiveness.
 
 Name             : Paladin Lightsmith 11.2 Class Set 4pc (id=1236390) [Spell Family (10), Passive, Hidden] 
@@ -19676,7 +19673,7 @@ Labels           : 16: Class Spells
                  : 5061
 Proc Chance      : 50%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1232312)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value: 15 | Misc Value 2: 3086 (Label) | Target: Self (1)
@@ -19808,7 +19805,7 @@ Family Flags     : 46
 Attributes       : Aura Is Buff (140), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1236427)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5 | PvP Coefficient: 0.33 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5 | PvP Coefficient: 0.33 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): All
 Description      : $@spelldesc432459
 Tooltip          : Absorbing $w1 damage.
@@ -19846,7 +19843,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 
 Family Flags     : 46
 Effects          :
 #1 (id=1236909)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=5) | AP Coefficient: 1.2 | PvP Coefficient: 0.33 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | PvP Coefficient: 0.33 | Target: Friendly (21)
 Description      : $@spelldesc1236390
 
 Name             : Lesser Weapon (id=1239282) [Spell Family (10)] 
@@ -19860,7 +19857,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 65
 Effects          :
 #1 (id=1236923)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=5) | AP Coefficient: 1.2 | PvP Coefficient: 0.33 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2 | PvP Coefficient: 0.33 | Target: Enemy (6)
 Description      : $@spelldesc1236390
 
 
