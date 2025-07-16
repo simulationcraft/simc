@@ -2585,6 +2585,20 @@ struct soul_swipe_base_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    if ( p()->o()->talents.shadowtouched.ok() )
+    {
+      warlock_td_t* td = p()->o()->get_target_data( target );
+      if ( td->debuffs_wicked_maw->check() )
+        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct soul_swipe_aoe_t : public soul_swipe_base_t
