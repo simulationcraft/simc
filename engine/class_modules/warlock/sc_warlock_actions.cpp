@@ -1494,8 +1494,14 @@ using namespace helpers;
 
       if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B4 ) )
       {
-        p()->buffs.backdraft->trigger(
-            as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 2 ).base_value() ) );
+        if ( p()->specialization() == WARLOCK_AFFLICTION )
+          p()->buffs.tormented_crescendo->trigger(
+              as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 1 ).base_value() ) );
+
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          p()->buffs.backdraft->trigger(
+              as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 2 ).base_value() ) );
+
         p()->buffs.maintained_withering->trigger();
       }
     }
