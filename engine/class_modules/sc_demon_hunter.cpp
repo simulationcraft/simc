@@ -6463,186 +6463,10 @@ struct soul_cleave_t : public soul_cleave_base_t
   }
 };
 
-// Throw Glaive =============================================================
-
-struct throw_glaive_t : public demon_hunter_attack_t
-{
-  enum class glaive_source
-  {
-    THROWN                                = 0,
-    SCREAMING_BRUTALITY_SLASH_PROC_THROW  = 1,
-    SCREAMING_BRUTALITY_BLADE_DANCE_THROW = 2,
-    SCREAMING_BRUTALITY_DEATH_SWEEP_THROW = 3
-  };
-
-  struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
-  {
-    glaive_source source;
-
-    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN )
-      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
-    {
-      background = dual = true;
-      radius            = 10.0;
-
-      switch ( source )
-      {
-        case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
-          // slash procs have one multiplier
-          base_multiplier *= p->talent.havoc.screaming_brutality->effectN( 1 ).percent();
-          break;
-        case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
-        case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
-          // regular procs have a different multiplier
-          base_multiplier *= p->talent.havoc.screaming_brutality->effectN( 3 ).percent();
-          break;
-        default:
-          // this handles THROWN (multiplier of 1 by default) and any new sources
-          break;
-      }
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      base_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
-      {
-        if ( p()->spec.burning_wound_debuff->ok() )
-        {
-          p()->active.burning_wound->execute_on_target( state->target );
-        }
-
-        if ( p()->talent.havoc.serrated_glaive->ok() )
-        {
-          td( state->target )->debuffs.serrated_glaive->trigger();
-        }
-      }
-    }
-  };
-
-  throw_glaive_damage_t* furious_throws;
-
-  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str,
-                  glaive_source source = glaive_source::THROWN )
-    : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
-  {
-    throw_glaive_damage_t* damage;
-
-    switch ( source )
-    {
-      case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
-        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_slash_proc_throw", source );
-        break;
-      case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
-        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_bd_throw", source );
-        break;
-      case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
-        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_ds_throw", source );
-        break;
-      default:
-        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage", source );
-        break;
-    }
-
-    execute_action        = damage;
-    execute_action->stats = stats;
-
-    if ( source == glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW ||
-         source == glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW )
-    {
-      cooldown->duration = 0_s;
-      cooldown->charges  = 0;
-
-      cooldown = p->cooldown.throw_glaive;
-    }
-    if ( source == glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW )
-    {
-      cooldown->duration = 0_s;
-      cooldown->charges  = 0;
-    }
-
-    if ( p->talent.havoc.furious_throws->ok() )
-    {
-      if ( source == glaive_source::THROWN )
-      {
-        resource_current            = RESOURCE_FURY;
-        base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
-      }
-
-      switch ( source )
-      {
-        case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
-          furious_throws = p->get_background_action<throw_glaive_damage_t>(
-              "throw_glaive_furious_throws_sb_slash_proc_throw", source );
-          break;
-        case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw", source );
-          break;
-        case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw", source );
-          break;
-        default:
-          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source );
-          break;
-      }
-
-      add_child( furious_throws );
-    }
-  }
-
-  void init() override
-  {
-    track_cd_waste = false;
-    demon_hunter_attack_t::init();
-
-    track_cd_waste = true;
-    cd_wasted_exec =
-        p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>( "throw_glaive", p()->cd_waste_exec );
-    cd_wasted_cumulative = p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
-        "throw_glaive", p()->cd_waste_cumulative );
-    cd_wasted_iter =
-        p()->template get_data_entry<simple_sample_data_t, simple_data_t>( "throw_glaive", p()->cd_waste_iter );
-  }
-
-  void execute() override
-  {
-    demon_hunter_attack_t::execute();
-
-    if ( hit_any_target && furious_throws )
-    {
-      make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
-    }
-
-    if ( td( target )->debuffs.serrated_glaive->up() )
-    {
-      p()->proc.throw_glaive_in_serrated_glaive->occur();
-    }
-
-    if ( p()->active.preemptive_strike )
-    {
-      p()->active.preemptive_strike->execute_on_target( target );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.reavers_glaive->up() )
-    {
-      return false;
-    }
-
-    return demon_hunter_attack_t::ready();
-  }
-};
-
 // Reaver's Glaive ==========================================================
 struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
 {
-  reavers_glaive_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "reavers_glaive", p, p->hero_spec.reavers_glaive, options_str )
+  reavers_glaive_t( demon_hunter_t* p ) : base_t( "reavers_glaive", p, p->hero_spec.reavers_glaive )
   {
     if ( p->talent.aldrachi_reaver.keen_engagement->ok() )
     {
@@ -6685,6 +6509,180 @@ struct reavers_glaive_t : public soulscar_trigger_t<demon_hunter_attack_t>
     }
 
     return base_t::ready();
+  }
+};
+
+// Throw Glaive =============================================================
+
+struct throw_glaive_t : public demon_hunter_attack_t
+{
+  enum class glaive_source
+  {
+    THROWN                                = 0,
+    SCREAMING_BRUTALITY_SLASH_PROC_THROW  = 1,
+    SCREAMING_BRUTALITY_BLADE_DANCE_THROW = 2,
+    SCREAMING_BRUTALITY_DEATH_SWEEP_THROW = 3,
+    FURIOUS_THROWS                        = 4,
+  };
+
+  struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
+  {
+    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, double damage_multiplier = 1.0 )
+      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() )
+    {
+      background = dual = true;
+      radius            = 10.0;
+      base_multiplier *= damage_multiplier;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      base_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        if ( p()->spec.burning_wound_debuff->ok() )
+        {
+          p()->active.burning_wound->execute_on_target( state->target );
+        }
+
+        if ( p()->talent.havoc.serrated_glaive->ok() )
+        {
+          td( state->target )->debuffs.serrated_glaive->trigger();
+        }
+      }
+    }
+  };
+
+  throw_glaive_t* furious_throws;
+  reavers_glaive_t* reavers_glaive;
+  double reavers_glaive_cost;
+  glaive_source source;
+
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str,
+                  glaive_source source = glaive_source::THROWN )
+    : demon_hunter_attack_t( name, p, p->spell.throw_glaive, options_str ),
+      furious_throws( nullptr ),
+      reavers_glaive( nullptr ),
+      reavers_glaive_cost( 0 ),
+      source( source )
+  {
+    // set the execute action based on the source
+    switch ( source )
+    {
+      case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
+        execute_action = p->get_background_action<throw_glaive_damage_t>(
+            fmt::format( "{}_damage_sb_slash", name ), p->talent.havoc.screaming_brutality->effectN( 1 ).percent() );
+        break;
+      case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
+        execute_action = p->get_background_action<throw_glaive_damage_t>(
+            fmt::format( "{}_damage_sb_bd", name ), p->talent.havoc.screaming_brutality->effectN( 3 ).percent() );
+        break;
+      case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
+        execute_action = p->get_background_action<throw_glaive_damage_t>(
+            fmt::format( "{}_damage_sb_ds", name ), p->talent.havoc.screaming_brutality->effectN( 3 ).percent() );
+        break;
+      default:
+        execute_action = p->get_background_action<throw_glaive_damage_t>( fmt::format( "{}_damage", name ) );
+        break;
+    }
+    execute_action->stats = stats;
+
+    if ( source == glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW ||
+         source == glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW )
+    {
+      cooldown = p->cooldown.throw_glaive;
+    }
+    if ( source == glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW || source == glaive_source::FURIOUS_THROWS )
+    {
+      cooldown->duration = 0_s;
+      cooldown->charges  = 0;
+    }
+
+    if ( source != glaive_source::FURIOUS_THROWS && p->talent.havoc.furious_throws->ok() )
+    {
+      if ( source == glaive_source::THROWN )
+      {
+        resource_current            = RESOURCE_FURY;
+        base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+      }
+
+      furious_throws = p->get_background_action<throw_glaive_t>( fmt::format( "{}_furious_throws", name ), "",
+                                                                 glaive_source::FURIOUS_THROWS );
+      add_child( furious_throws );
+    }
+
+    if ( source == glaive_source::THROWN && p->talent.aldrachi_reaver.art_of_the_glaive->ok() )
+    {
+      reavers_glaive      = new reavers_glaive_t( p );
+      reavers_glaive_cost = p->hero_spec.reavers_glaive->cost( POWER_FURY );
+      add_child( reavers_glaive );
+    }
+  }
+
+  void init() override
+  {
+    track_cd_waste = false;
+    demon_hunter_attack_t::init();
+
+    track_cd_waste = true;
+    cd_wasted_exec =
+        p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>( "throw_glaive", p()->cd_waste_exec );
+    cd_wasted_cumulative = p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
+        "throw_glaive", p()->cd_waste_cumulative );
+    cd_wasted_iter =
+        p()->template get_data_entry<simple_sample_data_t, simple_data_t>( "throw_glaive", p()->cd_waste_iter );
+  }
+
+  double cost() const override
+  {
+    if ( p()->talent.aldrachi_reaver.art_of_the_glaive.ok() && p()->buff.reavers_glaive->up() )
+    {
+      return reavers_glaive_cost;
+    }
+    else
+    {
+      return base_costs[ RESOURCE_FURY ];
+    }
+  }
+
+  void execute() override
+  {
+    if ( reavers_glaive && p()->buff.reavers_glaive->up() )
+    {
+      reavers_glaive->execute_on_target( target );
+      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    demon_hunter_attack_t::execute();
+
+    if ( source != glaive_source::FURIOUS_THROWS && furious_throws && hit_any_target )
+    {
+      make_event<delayed_execute_event_t>( *sim, p(), furious_throws, target, 400_ms );
+    }
+
+    if ( td( target )->debuffs.serrated_glaive->up() )
+    {
+      p()->proc.throw_glaive_in_serrated_glaive->occur();
+    }
+
+    if ( p()->active.preemptive_strike )
+    {
+      p()->active.preemptive_strike->execute_on_target( target );
+    }
+  }
+
+  bool ready() override
+  {
+    // 2024-07-11 -- Reaver's Glaive can't be cast unless a GCD is available, but doesn't trigger a GCD.
+    if ( source == glaive_source::THROWN && reavers_glaive && p()->buff.reavers_glaive->up() &&
+         p()->gcd_ready > sim->current_time() )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -7871,8 +7869,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new vengeful_retreat_t( this, options_str );
   if ( name == "soul_carver" )
     return new soul_carver_t( this, options_str );
-  if ( name == "reavers_glaive" )
-    return new reavers_glaive_t( this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -9059,7 +9055,7 @@ void demon_hunter_t::init_spells()
     active.screaming_brutality_death_sweep_throw_glaive = get_background_action<throw_glaive_t>(
         "throw_glaive_sb_ds_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW );
     active.screaming_brutality_slash_proc_throw_glaive = get_background_action<throw_glaive_t>(
-        "throw_glaive_sb_slash_proc_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW );
+        "throw_glaive_sb_slash_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW );
   }
 
   if ( talent.vengeance.retaliation->ok() )
