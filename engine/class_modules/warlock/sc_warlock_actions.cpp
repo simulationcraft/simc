@@ -2497,7 +2497,7 @@ using namespace helpers;
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
-        if ( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) )
+        if ( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) && p()->tier.sh_tww3_rampaging_demonic_soul->ok() )
         {
           p()->warlock_pet_list.demonic_souls.spawn( p()->tier.sh_tww3_rampaging_demonic_soul->duration() );
         }
@@ -3366,7 +3366,7 @@ using namespace helpers;
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
-        if( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) )
+        if( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) && p()->tier.sh_tww3_rampaging_demonic_soul->ok() )
         {
           p()->warlock_pet_list.demonic_souls.spawn( p()->tier.sh_tww3_rampaging_demonic_soul->duration() );
         }

@@ -2592,8 +2592,7 @@ struct soul_swipe_base_t : public warlock_pet_spell_t
 
     if ( p()->o()->talents.shadowtouched.ok() )
     {
-      warlock_td_t* td = p()->o()->get_target_data( target );
-      if ( td->debuffs_wicked_maw->check() )
+      if ( owner_td( target )->debuffs_wicked_maw->check() )
         m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
     }
 
