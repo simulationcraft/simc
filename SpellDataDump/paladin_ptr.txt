@@ -601,7 +601,8 @@ Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.17 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.5504 | PvP Coefficient: 0.899 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (3.17 -> 3.5504), PvP Coefficient (1 -> 0.899)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -2031,7 +2032,8 @@ Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.48 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.914 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.50368 | PvP Coefficient: 0.899 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+Hotfixed         : SP Coefficient (4.914 -> 5.50368), PvP Coefficient (1 -> 0.899)
 #3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> To Area (8)
 Description      : $@spelldesc114165
@@ -2057,7 +2059,8 @@ Family Flags     : 65, 90
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.34 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.7008 | PvP Coefficient: 0.899 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (11.34 -> 12.7008), PvP Coefficient (1 -> 0.899)
 #2 (id=128397)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.457 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
 #3 (id=128398)   : Server Side Script (77)
@@ -2638,9 +2641,10 @@ Effects          :
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=1032421) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 129 | Scaled Value: 129 | Target: Self (1)
+                   Base Value: 157 | Scaled Value: 157 | PvP Coefficient: 0.823 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
+Hotfixed         : Base Value (129 -> 157), PvP Coefficient (1 -> 0.823)
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
@@ -3895,9 +3899,9 @@ Effects          :
 #1 (id=294436)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=338282)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 4 | Scaled Value: 4 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
 #3 (id=1170128)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
                    Affected School(s): All
 Description      : Apply a Beacon of Light to your target and $s2 injured allies within $A2 yds for $d.
 
@@ -5149,7 +5153,8 @@ Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.85472 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.07729 | PvP Coefficient: 0.899 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (1.85472 -> 2.07729), PvP Coefficient (1 -> 0.899)
 Description      : $@spelldesc85222
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 

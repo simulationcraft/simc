@@ -34,7 +34,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.7% Base Mana (0) (id=35) w/ Holy Priest (id=137031)
-Resource         : 2.4% Base Mana (0) (id=265695) w/ Discipline Priest (id=137032)
+Resource         : 1.7% Base Mana (0) (id=265695) w/ Discipline Priest (id=137032)[Hotfixed: Percent Cost (2.4 -> 1.7)]
 Resource         : 8% Base Mana (0) (id=265696) w/ Shadow Priest (id=137033)
 Spell Level      : 12
 Range            : 40 yards
@@ -3301,9 +3301,10 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 23 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
 #31 (id=1169928) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -27 | Scaled Value: -27 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
+Hotfixed         : Base Value (-27 -> -5)
 #32 (id=1248502) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Misc Value 2: 5555 (Label) | Target: Self (1)
                    Affected Spells (Label): Priest Voidweaver 11.2 Class Set 4pc (1236397)
@@ -3932,7 +3933,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holyfire
 Spell Type       : Magic
-Resource         : 5.4% Base Mana (0) (id=10498)
+Resource         : 4.9% Base Mana (0) (id=10498)[Hotfixed: Percent Cost (5.4 -> 4.9)]
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -10672,9 +10673,10 @@ Effects          :
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7, 108
 #2 (id=1027857)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.667 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+Hotfixed         : Base Value (5 -> 3), PvP Coefficient (1 -> 1.667)
 Description      : $@spelldesc390786
 Tooltip          : The damage of your next Smite is increased by $w1%, or the absorb of your next Power Word: Shield is increased by $w2%.
 
@@ -13313,9 +13315,10 @@ Effects          :
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.625 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.834 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+Hotfixed         : Base Value (40 -> 30), PvP Coefficient (0.625 -> 0.834)
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215), Penance (1232571), Dark Reprimand (1232592)
