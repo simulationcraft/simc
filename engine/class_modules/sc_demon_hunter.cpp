@@ -2233,7 +2233,8 @@ struct art_of_the_glaive_trigger_t : public BASE
 
   art_of_the_glaive_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : BASE( n, p, s, o ),
-      // 2024-07-16 -- This is seems to be 700ms for everything but Death Sweep
+      // 2025-07-18 -- Death sweep triggers this with the same delay as other abilities, also proccing the second
+      // art of the glaive buff early before the final hit of death sweep
       thrill_delay( 700_ms )
   {
   }
