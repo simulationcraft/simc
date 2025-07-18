@@ -2478,6 +2478,10 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
+          ( 1236851, 1 ), # Balance S3 2pc Dryad's Favor Starsurge cleave
+          ( 1236640, 1 ), # Balance S3 2pc Dryad Starsurge
+          ( 1236607, 1 ), # Balance S3 2pc Dryad Starfall buff
+          ( 1236613, 1 ), # Balance S3 2pc Dryad Starfall spell
           # Feral
           # Guardian
           # Restoration
