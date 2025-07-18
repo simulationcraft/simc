@@ -264037,6 +264037,7 @@ Description      : $@spelldesc1229209
 Tooltip          : Haste increased by $w1%.
 
 Name             : Pack of Runed Ethereal Crests (id=1230660) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264049,6 +264050,7 @@ Effects          :
 Description      : Collect 15 Runed Ethereal Crests. These Crests ignore the seasonal cap.
 
 Name             : Satchel of Carved Ethereal Crests (id=1230662) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264061,6 +264063,7 @@ Effects          :
 Description      : Collect 15 Carved Ethereal Crests. These Crests ignore the seasonal cap.
 
 Name             : Pouch of Weathered Ethereal Crests (id=1230663) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264073,6 +264076,7 @@ Effects          :
 Description      : Collect 15 Weathered Ethereal Crests. These Crests ignore the seasonal cap.
 
 Name             : Glorious Cluster of Gilded Ethereal Crests (id=1230665) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264085,6 +264089,7 @@ Effects          :
 Description      : Collect 15 Gilded Ethereal Crests.
 
 Name             : Celebratory Pack of Runed Ethereal Crests (id=1230667) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264097,6 +264102,7 @@ Effects          :
 Description      : Collect 15 Runed Ethereal Crests.
 
 Name             : Triumphant Satchel of Carved Ethereal Crests (id=1230668) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
