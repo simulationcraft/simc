@@ -2297,8 +2297,9 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
+        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+
         make_event( *BASE::p()->sim, thrill_delay, [ this ] {
-          BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
           BASE::p()->buff.thrill_of_the_fight_damage->trigger();
         } );
       }
@@ -5436,7 +5437,6 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
     winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
