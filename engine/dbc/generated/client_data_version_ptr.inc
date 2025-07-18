@@ -11,6 +11,6 @@ static const wowv_t __ptr_client_data_version { 11, 2, 0, 62049 };
 
 #define PTR_CLIENT_DATA_HOTFIX_DATE "2025-07-18"
 #define PTR_CLIENT_DATA_HOTFIX_BUILD (62049)
-#define PTR_CLIENT_DATA_HOTFIX_HASH "f0a24385811e194f2da84da0b94aef689444ca1cdecf19dbdb073193a94d3a56"
+#define PTR_CLIENT_DATA_HOTFIX_HASH "e314d8ea4e7c770e6c4df104ca4900e59b02cdfa3bcd467e6d9c71a800ec1f7a"
 
 #endif /* PTR_CLIENT_DATA_VERSION_INC*/
