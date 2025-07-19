@@ -4712,6 +4712,10 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
+      // In its own effect on mastery, so just manually applying it here rather than adding the affected_by to warlock_spell_t
+      if ( p()->warlock_base.master_demonologist->ok() )
+        m *= 1.0 + p()->cache.mastery_value();
+
       m *= p()->buffs.demonic_oculus->check();
 
       return m;
@@ -4755,11 +4759,18 @@ using namespace helpers;
       add_child( impact_action );
     }
 
+    void execute() override
+    {
+      // In game happens just before the damage
+      if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B4 ) )
+        p()->buffs.demonic_intelligence->trigger( p()->buffs.demonic_oculus->check() );
+
+      eye_blast_base_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       eye_blast_base_t::impact( s );
-      if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B4 ) )
-        p()->buffs.demonic_intelligence->trigger( p()->buffs.demonic_oculus->check() );
 
       p()->buffs.demonic_oculus->expire();
     }
