@@ -12049,7 +12049,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1062: Brutal Grasp (338651 effect#1)
                  : 2927
-                 : 5163: Unholy Aura (377445 effect#3), Commander of the Dead (390260 effect#3), Grave Mastery (1238900 effect#1)
+                 : 5163: Unholy Aura (377445 effect#3), Grave Mastery (1238900 effect#1)
 Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2)
 Triggered By     : Legion of Souls (383269)
 Family Flags     : 43, 78
@@ -12223,9 +12223,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Unknown(120)
 #2 (id=1051086)  : Apply Party Aura (35) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 28179 | Target: Self (1)
-#3 (id=1255736)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value 2: 5163 (Label) | Target: Self (1)
-                   Affected Spells (Label): Legion of Souls (383313)
 Description      : $@spelldesc390259
 Tooltip          : Your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead ghouls deal $390264s1% increased damage.
 
