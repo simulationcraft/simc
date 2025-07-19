@@ -267,15 +267,17 @@ using namespace helpers;
 
       if ( diabolist() && triggers.demonic_art )
       {
+        if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) )
+          make_event( *sim, 0_ms, [ this ] {
+            if ( p()->buffs.demonic_oculus->check() &&
+                 ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() ||
+                   p()->buffs.art_pit_lord->check() ) )
+              p()->proc_actions.eye_blast->execute_on_target( this->target );
+          } );
         // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
-        if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) )
-          make_event( *sim, 1_ms, [ this ] {
-            if ( p()->buffs.demonic_oculus->check() )
-              p()->proc_actions.eye_blast->execute_on_target( this->target );
-          } );
       }
     }
 
@@ -4758,8 +4760,8 @@ using namespace helpers;
       eye_blast_base_t::impact( s );
       if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B4 ) )
         p()->buffs.demonic_intelligence->trigger( p()->buffs.demonic_oculus->check() );
-      // Delay expiration of the buff minorly to ensure the damage multiplier is properly applied.
-      p()->buffs.demonic_oculus->expire( 10_ms );
+
+      p()->buffs.demonic_oculus->expire();
     }
   };
 
