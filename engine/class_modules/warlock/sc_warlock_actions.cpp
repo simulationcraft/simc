@@ -4217,6 +4217,9 @@ using namespace helpers;
 
       if ( p()->talents.burn_to_ashes.ok() )
         p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
+
+      if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) )
+        p()->buffs.demonic_oculus->trigger();
     }
 
     double composite_target_crit_chance( player_t* t ) const override
