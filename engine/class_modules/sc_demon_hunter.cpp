@@ -2256,7 +2256,13 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       BASE::p()->buff.glaive_flurry->expire();
       make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
-        BASE::p()->buff.art_of_the_glaive_first->expire();
+        // 2025-07-19 -- Using glaive flurry as havoc causes all subsequent death sweeps and blade dances to
+        // gain the first art of the glaive buff, even after all related reavers glaives buffs expire until
+        // either chaos strike of annihilation are used.
+        if ( !BASE::p()->specialization() == DEMON_HUNTER_HAVOC )
+        {
+          BASE::p()->buff.art_of_the_glaive_first->expire();
+        }
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
         if ( !second_ability )
@@ -2281,6 +2287,14 @@ struct art_of_the_glaive_trigger_t : public BASE
         BASE::td( BASE::target )
             ->debuffs.reavers_mark->trigger( second_ability ? second_ability_amount : first_ability_amount );
       }
+      // 2025-07-19 -- Consuming rending strike as havoc during a death sweep before the final hit causes the
+      // final death sweep hit to also gain the second art of the glaive damage buff. This applies that buff
+      // temporarily during the rending strike even to ensure the final death sweep hit also gains the buff.
+      if ( ( BASE::p()->specialization() == DEMON_HUNTER_HAVOC ) && second_ability )
+      {
+        BASE::p()->buff.art_of_the_glaive_first->expire();
+        BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->trigger();
+      }
 
       BASE::p()->buff.rending_strike->expire();
       make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
@@ -2300,9 +2314,8 @@ struct art_of_the_glaive_trigger_t : public BASE
       {
         BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
 
-        make_event( *BASE::p()->sim, thrill_delay, [ this ] {
-          BASE::p()->buff.thrill_of_the_fight_damage->trigger();
-        } );
+        make_event( *BASE::p()->sim, thrill_delay,
+                    [ this ] { BASE::p()->buff.thrill_of_the_fight_damage->trigger(); } );
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
