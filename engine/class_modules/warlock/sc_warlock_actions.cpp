@@ -271,10 +271,11 @@ using namespace helpers;
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_pit_lord->decrement(); } );
-        // Manually handle Demonic Oculus decrement and eye blast trigger in HoG for Demo due to only consuming on 1-2 shard casts.
-        if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) && p()->specialization() == WARLOCK_DESTRUCTION &&
-             p()->buffs.demonic_oculus->check() )
-          make_event( sim, 0_ms, [ this ] { p()->proc_actions.eye_blast->execute_on_target( this->target ); } );
+        if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) )
+          make_event( *sim, 1_ms, [ this ] {
+            if ( p()->buffs.demonic_oculus->check() )
+              p()->proc_actions.eye_blast->execute_on_target( this->target );
+          } );
       }
     }
 
@@ -2766,13 +2767,8 @@ using namespace helpers;
 
       p()->procs.hand_of_guldan_shards[ lrc ]->occur();
 
-      if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) )
-      {
-        if ( lrc == 2 /*data().cost( POWER_SOUL_SHARDS ) unsure how this is read with the data being a range, manually hardcoding for now.*/ )
-          p()->buffs.demonic_oculus->trigger();
-        else if ( p()->buffs.demonic_oculus->check() )
-          make_event( sim, 0_ms, [ this ] { p()->proc_actions.eye_blast->execute_on_target( target ); } );
-      }
+      if ( p()->sets->has_set_bonus( HERO_DIABLOIST, TWW3, B2 ) && lrc == 2 /*Manually hardcoding for now since im not sure how the cost data is read*/)
+        p()->buffs.demonic_oculus->trigger();
     }
 
     void impact( action_state_t* s ) override
