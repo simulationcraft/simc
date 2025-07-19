@@ -205,11 +205,9 @@ void monk_action_t<Base>::apply_buff_effects()
    *  - priority: celestial > coc_2pc = normal
    *  - if a higher priority hotjs is applied than the current, disable current hotjs
    */
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
-  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent,
-                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+  parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
@@ -6496,13 +6494,11 @@ void monk_t::parse_player_effects()
 
   // TWW S3 Set Effects
   parse_effects( tier.tww3.coc_4pc_jade_serpents_blessing );
-  parse_effects(
-      buff.heart_of_the_jade_serpent_cdr, [ & ] { return !buff.heart_of_the_jade_serpent_cdr_celestial->check(); },
-      tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
-  parse_effects( buff.heart_of_the_jade_serpent_cdr_celestial,
-                 tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
-  parse_effects( tier.tww3.coc_2pc_heart_of_the_jade_serpent,
-                 tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 ) );
+
+  effect_mask_t em = tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 );
+  parse_effects( buff.heart_of_the_jade_serpent_cdr, em );
+  parse_effects( buff.heart_of_the_jade_serpent_cdr_celestial, em );
+  parse_effects( tier.tww3.coc_2pc_heart_of_the_jade_serpent, em );
 
   // TWW S4 Set Effects
 }
@@ -7987,14 +7983,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
-          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
-            if ( new_ && !old_ )
-              tier.tww3.coc_2pc_heart_of_the_jade_serpent->expire();
-          } )
-          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
-            if ( remains == timespan_t::zero() )
-              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
-          } );
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8002,15 +7992,10 @@ void monk_t::create_buffs()
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
           ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
             if ( new_ && !old_ )
-            {
-              tier.tww3.coc_2pc_heart_of_the_jade_serpent->expire();
               buff.heart_of_the_jade_serpent_cdr->expire();
-            }
           } )
-          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
-            if ( remains == timespan_t::zero() )
-              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
-          } );
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8170,14 +8155,8 @@ void monk_t::create_buffs()
   tier.tww3.coc_2pc_heart_of_the_jade_serpent =
       make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
-          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
-            if ( new_ && !old_ )
-              buff.heart_of_the_jade_serpent_cdr->expire();
-          } )
-          ->set_expire_callback( [ & ]( buff_t *, int, timespan_t remains ) {
-            if ( remains == timespan_t::zero() )
-              tier.tww3.coc_4pc_jade_serpents_blessing->trigger();
-          } );
+          ->set_expire_callback(
+              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
