@@ -578,6 +578,7 @@ public:
     action_t* demonfire_infusion;
     action_t* jackpot_ua;
     action_t* jackpot_cdf;
+    action_t* eye_blast;  // Diabolist 2pc damage proc
   } proc_actions;
 
   struct tier_sets_t
@@ -610,7 +611,12 @@ public:
     const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
 
     // Soul Harvester
-    const spell_data_t* sh_tww3_rampaging_demonic_soul;
+    const spell_data_t* rampaging_demonic_soul;
+
+    // Diabolist
+    const spell_data_t* demonic_oculus;        // TWW3 Diabolist 2pc stacking buff
+    const spell_data_t* eye_blast;             // TWW3 Diablist 2pc damage proc
+    const spell_data_t* demonic_intelligence;  // TWW3 Diabolist 4pc stacking buff
 
   } tier;
 
@@ -685,6 +691,8 @@ public:
     propagate_const<buff_t*> infernal_bolt;
     propagate_const<buff_t*> abyssal_dominion;
     propagate_const<buff_t*> ruination;
+    propagate_const<buff_t*> demonic_oculus;        // TWW3 Diabolist 2pc buff
+    propagate_const<buff_t*> demonic_intelligence;  // TWW3 Diabolist 4pc buff
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;

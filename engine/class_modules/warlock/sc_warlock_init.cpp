@@ -511,7 +511,10 @@ namespace warlock
     // Manaforge omega
     if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
     {
-      tier.sh_tww3_rampaging_demonic_soul = find_spell( 1239689 );
+      tier.rampaging_demonic_soul = find_spell( 1239689 );
+      tier.demonic_oculus         = find_spell( 1238810 );
+      tier.eye_blast              = find_spell( 1239510 );
+      tier.demonic_intelligence   = find_spell( 1239569 );
     }
 
     // Initialize some default values for pet spawners
@@ -927,6 +930,12 @@ namespace warlock
     buffs.abyssal_dominion = make_buff( this, "Abyssal Dominion", hero.abyssal_dominion_buff );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
+
+    buffs.demonic_oculus = make_buff( this, "demonic_oculus", tier.demonic_oculus );
+
+    buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
   }
 
   void warlock_t::create_buffs_hellcaller()
