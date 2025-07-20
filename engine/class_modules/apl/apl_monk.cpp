@@ -850,43 +850,6 @@ void default_apl( monk_t* player )
 // Shared Defaults
 namespace monk
 {
-bool monk_t::validate_actor()
-{
-  if ( specialization() == MONK_MISTWEAVER )
-  {
-    if ( !quiet )
-      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
-    return false;
-  }
-
-  if ( main_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( !quiet )
-      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
-    return false;
-  }
-
-  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
-  {
-    if ( !quiet )
-      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
-    return false;
-  }
-
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:
-    case MONK_MISTWEAVER:
-    case MONK_WINDWALKER:
-      return true;
-    default:
-      sim->error( "No specialization was selected for {}.", *this );
-      return false;
-  }
-
-  return false;
-}
-
 void monk_t::init_blizzard_action_list()
 {
   action_priority_list_t* default_ = get_action_priority_list( "default" );

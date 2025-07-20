@@ -3315,6 +3315,9 @@ struct slicing_winds_t : public monk_melee_attack_t
     parse_options( options_str );
 
     execute_action = new damage_t( player );
+
+    // override gcd as we are not properly handling it as an empowered channel
+    trigger_gcd = timespan_t::from_millis( 1400 );
   }
 
   void execute() override
@@ -6686,6 +6689,66 @@ void monk_t::collect_resource_timeline_information()
   // stagger->sample_data->effectiveness.add( sim->current_time(), stagger->percent( target->level() ) );
 }
 
+bool monk_t::validate_actor()
+{
+  if ( specialization() == MONK_MISTWEAVER )
+  {
+    if ( !quiet )
+      sim->error( "Mistweaver Monk for {} is not currently supported.", *this );
+    return false;
+  }
+
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( !quiet )
+      sim->error( "{} has no weapon equipped at the Main-Hand slot.", *this );
+    return false;
+  }
+
+  if ( main_hand_weapon.group() == WEAPON_2H && off_hand_weapon.group() == WEAPON_1H )
+  {
+    if ( !quiet )
+      sim->error( "{} both a 1-hand and 2-hand weapon equipped at once.", *this );
+    return false;
+  }
+
+  if ( specialization() == MONK_WINDWALKER &&
+       range::contains( player_sub_trees, static_cast<unsigned>( HERO_CONDUIT_OF_THE_CELESTIALS ) ) )
+  {
+    auto count =
+        range::count_if( player_traits, [ is_ptr = is_ptr() ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+            return false;
+          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+          if ( !trait )
+            return false;
+          return static_cast<hero_talent_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
+        } );
+
+    if ( count < 11 )
+    {
+      // Report without counting the hidden talent that activates the subtree
+      sim->error( fmt::format(
+          "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
+          count - 1 ) );
+      return false;
+    }
+  }
+
+  switch ( specialization() )
+  {
+    case MONK_BREWMASTER:
+    case MONK_MISTWEAVER:
+    case MONK_WINDWALKER:
+      return true;
+    default:
+      sim->error( "No specialization was selected for {}.", *this );
+      return false;
+  }
+
+  return false;
+}
+
 bool monk_t::validate_fight_style( fight_style_e style ) const
 {
   if ( specialization() == MONK_BREWMASTER )
@@ -7984,7 +8047,7 @@ void monk_t::create_buffs()
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
           ->apply_affecting_aura( baseline.windwalker.aura_3 )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -7995,7 +8058,7 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent_cdr->expire();
           } )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8156,11 +8219,12 @@ void monk_t::create_buffs()
       make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
           ->set_expire_callback(
-              [ & ]( buff_t *, int, timespan_t remains ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+              [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
-                          tier.tww3.coc_4pc_jade_serpents_blessing_data );
+                          tier.tww3.coc_4pc_jade_serpents_blessing_data )
+          ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   // SPM
   tier.tww3.spm_2pc_flurry_charge = make_buff_fallback( tier.tww3.spm_2pc->ok(), this, "flurry_charge_tww3_tier",

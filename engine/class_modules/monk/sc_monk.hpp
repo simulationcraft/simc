@@ -1417,10 +1417,10 @@ public:
   void parse_assisted_combat_step( const assisted_combat_step_data_t &step,
                                    action_priority_list_t *assisted_combat ) override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
-  bool validate_actor() override;
-  bool validate_fight_style( fight_style_e style ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
                                                             const assisted_combat_step_data_t &step ) const override;
+  bool validate_actor() override;
+  bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
   void create_pets() override;
