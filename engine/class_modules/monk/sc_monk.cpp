@@ -6725,9 +6725,10 @@ bool monk_t::validate_actor()
           return static_cast<hero_talent_e>( trait->id_sub_tree ) == HERO_CONDUIT_OF_THE_CELESTIALS;
         } );
 
-    if ( count < 11 )
+    // Report without counting the hidden talent that activates the subtree
+    count -= 1;
+    if ( count < 10 )
     {
-      // Report without counting the hidden talent that activates the subtree
       sim->error( fmt::format(
           "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
           count - 1 ) );
