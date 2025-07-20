@@ -4709,6 +4709,7 @@ using namespace helpers;
     eye_blast_base_t( std::string_view n, warlock_t* p, const spell_data_t* s )
       : warlock_spell_t( n, p, s )
     {
+      affected_by.chaotic_energies = true;
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
