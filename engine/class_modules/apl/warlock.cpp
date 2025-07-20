@@ -291,8 +291,8 @@ void demonology( player_t* p )
   opener->add_action( "infernal_bolt" );
   opener->add_action( "shadow_bolt,if=soul_shard<5&buff.dreadstalkers.remains&pet.wild_imp.active<3" );
   opener->add_action( "hand_of_guldan,if=soul_shard>=3&pet.wild_imp.active<10" );
+  opener->add_action( "demonbolt,if=buff.demonic_core.react&buff.dreadstalkers.remains&soul_shard<4" );
   opener->add_action( "hand_of_guldan,if=variable.first_tyrant_time<gcd.max+action.summon_demonic_tyrant.cast_time" );
-  opener->add_action( "demonbolt,if=buff.demonic_core.react&buff.dreadstalkers.remains" );
   opener->add_action( "shadow_bolt,if=buff.dreadstalkers.remains" );
 
 
