@@ -8913,10 +8913,11 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
     }
   }
 
-  // 2025-07-19 -- Grand Melee used to be 10% additive, now creates a multiplier equivalent to 10% additive using Blade Flurry's base damage
+  // 2025-07-19 -- Grand Melee used to be 10% additive, now creates a multiplier equivalent to 10% additive using Blade Flurry's base amount
+  //               Uses default_value in case a Blade Flurry with an overridden coefficient is still scripted to use the base amount
   if ( p()->buffs.grand_melee->up() )
   {
-    multiplier *= 1.0 + ( p()->spec.grand_melee->effectN( 2 ).percent() / p()->buffs.blade_flurry->check_value() );
+    multiplier *= 1.0 + ( p()->spec.grand_melee->effectN( 2 ).percent() / p()->buffs.blade_flurry->default_value );
   }
 
   // 2024-08-12 -- This effect is multiplicative, even though it uses the same tooltip as additive mods
@@ -13379,6 +13380,10 @@ public:
   { return true; }
 
   void static_init() const override
+  {
+  }
+
+  void register_hotfixes() const override
   {
   }
 
