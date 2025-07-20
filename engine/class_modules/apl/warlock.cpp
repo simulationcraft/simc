@@ -359,7 +359,7 @@ void destruction( player_t* p )
 {
   if ( p->sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
   {
-	action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+    action_priority_list_t* default_ = p->get_action_priority_list( "default" );
     action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
     action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
     action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
