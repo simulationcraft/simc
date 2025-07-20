@@ -2,6 +2,8 @@
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "dbc/dbc.hpp"
+#include "sim/sim.hpp"
 
 namespace warlock_apl{
   std::string potion( const player_t* p )
