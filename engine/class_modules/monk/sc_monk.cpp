@@ -6718,9 +6718,9 @@ bool monk_t::validate_actor()
     count -= 1;
     if ( count < 10 )
     {
-      sim->error( fmt::format(
+      sim->error(
           "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
-          count ) );
+          count );
       return false;
     }
   }
