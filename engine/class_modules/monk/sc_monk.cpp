@@ -200,12 +200,8 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
-  /*
-   * Heart of the Jade Serpent:
-   *  - priority: celestial > coc_2pc = normal
-   *  - if a higher priority hotjs is applied than the current, disable current hotjs
-   */
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
+                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
   parse_effects( p()->tier.tww3.coc_2pc_heart_of_the_jade_serpent );
   parse_effects( p()->buff.jade_sanctuary );
@@ -6731,7 +6727,7 @@ bool monk_t::validate_actor()
     {
       sim->error( fmt::format(
           "Invalid Conduit of the Celestials Hero Talent tree, possibly low level. Found {} talents, expected 10.",
-          count - 1 ) );
+          count ) );
       return false;
     }
   }
