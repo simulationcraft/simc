@@ -799,11 +799,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   void execute() override
   {
     snapshot_stats_t::execute();
-
-    // auto *monk                                              = debug_cast<monk_t *>( player );
-    // monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
-    // monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
-    // monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
   }
 };
 
@@ -1495,9 +1490,7 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     ww_mastery = true;
 
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
-
+    ap_type    = attack_power_type::WEAPON_BOTH;
     background = dual = true;
     may_crit          = true;
   }
@@ -1753,9 +1746,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       tier_tww2_opportunistic_strike( false )
   {
     parse_options( options_str );
-    if ( p->specialization() == MONK_WINDWALKER )
-      ap_type = attack_power_type::WEAPON_BOTH;
 
+    ap_type                = attack_power_type::WEAPON_BOTH;
     sef_ability            = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     ww_mastery             = true;
     may_combo_strike       = true;
@@ -2057,8 +2049,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     dual = background   = true;
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-
-    ap_type = attack_power_type::WEAPON_BOTH;
+    ap_type             = attack_power_type::WEAPON_BOTH;
 
     parse_effects( p->talent.windwalker.crane_vortex );
 
