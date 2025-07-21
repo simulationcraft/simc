@@ -249,7 +249,7 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*6+cast_time" );
   default_->add_action( "summon_demonic_tyrant,if=variable.imp_despawn&pet.vilefiend.active&pet.dreadstalker.active&(variable.imp_despawn<time+gcd.max*6+cast_time|buff.wild_imps.stack>=9-2*prev_gcd.1.hand_of_guldan)" );
-  default_->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains>=60|cooldown.summon_demonic_tyrant.remains<=15&cooldown.call_dreadstalkers.remains<10" );
+  default_->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<=15&cooldown.call_dreadstalkers.remains<10" );
   default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>=25+cast_time|cooldown.summon_demonic_tyrant.remains<=13&cooldown.call_dreadstalkers.remains<10" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>=10|cooldown.summon_demonic_tyrant.remains<=10" );
   default_->add_action( "demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.stack>=3-(talent.doom&debuff.doom.down)*2&soul_shard<=3&talent.doom" );
