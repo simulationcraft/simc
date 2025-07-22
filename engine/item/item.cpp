@@ -1058,6 +1058,7 @@ void item_t::parse_options()
       std::throw_with_nested( std::runtime_error( "Crafted Stats" ) );
     }
   }
+
   if ( !option_titan_disc_driver_id.empty() )
     parsed.titan_disc_driver_id = util::to_unsigned( option_titan_disc_driver_id );
 }

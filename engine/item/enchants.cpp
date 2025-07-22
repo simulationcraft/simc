@@ -385,6 +385,9 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
     return initialize_relic( item, gem_idx, gem_prop );
   }
 
+  if ( gem_prop.color == SOCKET_COLOR_RESHII_FIBER )
+    remove_other_reshii_bonuses( item );
+
   const item_enchantment_data_t& data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
 
   enchant::initialize_item_enchant(
@@ -560,5 +563,57 @@ std::string enchant::encoded_enchant_name(
   else
   {
     return entry.tokenized_name;
+  }
+}
+
+void enchant::remove_other_reshii_bonuses( item_t& item )
+{
+  const std::array<int, 8> reshii_bonus_ids = { 12255, 12256, 12257, 12258, 12259, 12260, 12261, 12262 };
+  // Remove all Reshii bonus ids, as they can be additive with the gem parsing
+  auto& item_bonus_ids = item.parsed.bonus_id;
+  bool found           = false;
+
+  for ( auto bonus_id : item_bonus_ids )
+  {
+    if ( range::find( reshii_bonus_ids, bonus_id ) != reshii_bonus_ids.end() )
+    {
+      item.sim->print_debug( "Removing Reshii Wraps Stat bonus id {} from item {}", bonus_id, item.name() );
+      found = true;
+    }
+  }
+
+  if ( found )
+  {
+    item_bonus_ids.erase( std::remove_if( item_bonus_ids.begin(), item_bonus_ids.end(),
+                                          [ &reshii_bonus_ids ]( int bonus_id ) {
+                                            return range::find( reshii_bonus_ids, bonus_id ) != reshii_bonus_ids.end();
+                                          } ),
+                          item_bonus_ids.end() );
+
+    // Remove all Reshii stats, as they are additive with the gem parsing
+    for ( size_t i = 0; i < item.parsed.data.stat_type_e.size(); i++ )
+    {
+      stat_e s = item.stat( i );
+      switch ( s )
+      {
+        case STAT_STRENGTH:
+        case STAT_AGILITY:
+        case STAT_INTELLECT:
+        case STAT_STAMINA:
+        case STAT_STR_AGI_INT:
+        case STAT_STR_AGI:
+        case STAT_STR_INT:
+        case STAT_AGI_INT:
+          break;  // Do not remove these stats
+        default:
+          // Remove all other stats
+          item.base_stats.add_stat( s, -item.parsed.stat_val[ s ] );
+          item.stats.add_stat( s, -item.parsed.stat_val[ s ] );
+          item.parsed.stat_val[ s ]         = 0;
+          item.parsed.data.stat_type_e[ i ] = -1;
+          item.parsed.data.stat_alloc[ i ]  = 0;
+          break;
+      }
+    }
   }
 }
