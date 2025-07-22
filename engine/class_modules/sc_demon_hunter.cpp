@@ -2259,7 +2259,7 @@ struct art_of_the_glaive_trigger_t : public BASE
         // 2025-07-19 -- Using glaive flurry as havoc causes all subsequent death sweeps and blade dances to
         // gain the first art of the glaive buff, even after all related reavers glaives buffs expire until
         // either chaos strike of annihilation are used.
-        if ( !BASE::p()->specialization() == DEMON_HUNTER_HAVOC )
+        if ( BASE::p()->specialization() != DEMON_HUNTER_HAVOC )
         {
           BASE::p()->buff.art_of_the_glaive_first->expire();
         }
