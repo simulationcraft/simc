@@ -470,6 +470,7 @@ public:
     const spell_data_t* dance_of_death_bs_buff; // Bladestorm
     const spell_data_t* fatal_mark_debuff;
     const spell_data_t* concussive_blows_debuff;
+    const spell_data_t* ravager;
     const spell_data_t* recklessness_buff;
     const spell_data_t* shield_block_buff;
     const spell_data_t* whirlwind_buff;
@@ -6577,7 +6578,7 @@ struct ravager_t : public warrior_attack_t
 
   // This background version is strictly for use with whirling blade talent
   ravager_t( util::string_view name, warrior_t* p )
-    : warrior_attack_t( name, p, p->talents.shared.ravager ),
+    : warrior_attack_t( name, p, p->spell.ravager ),
     ravager( new ravager_tick_t( p, "ravager_tick_whirling_blade" ) ),
     mortal_strike( nullptr ),
     bloodthirst( nullptr ),
@@ -8557,6 +8558,7 @@ void warrior_t::init_spells()
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
+  spell.ravager                 = find_spell( 228920 );
 
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
