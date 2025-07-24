@@ -8720,7 +8720,7 @@ void cursed_stone_idol( special_effect_t& effect )
       max_inc     = value_spell->effectN( 4 ).average( e );
     }
 
-    void start( int s, double v, timespan_t d ) override
+    void bump( int s, double v ) override
     {
       for ( auto& stat : stats )
       {
@@ -8739,7 +8739,7 @@ void cursed_stone_idol( special_effect_t& effect )
         }
       }
       // Skip stat_buff_t::start since we handle stat gain manually
-      buff_t::start( s, v, d );
+      buff_t::bump( s, v );
     }
   };
 
