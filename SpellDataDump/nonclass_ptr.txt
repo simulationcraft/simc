@@ -261565,6 +261565,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
+Labels           : 4945
 Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1214065)  : Enchant Item (53)
@@ -264968,6 +264969,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3.5 seconds
 Requires armor   : Head
+Labels           : 4945
 Attributes       : Not Shapeshifted (16), No Threat (42), Enchant own item only (77)
 Effects          :
 #1 (id=1226501)  : Enchant Item (53)
@@ -267788,14 +267790,18 @@ Labels           : 3959: Item Effects
 Triggered By     : Cursed Stone Idol (1241809)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1240990)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 2440.889 (coefficient=0.954307) | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1240990)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 8272.531 (coefficient=2.160511) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.954307 -> 2.160511), Scaling Class (-9 -> -7)
 #2 (id=1241002)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 23271.03 (coefficient=9.098203) | Target: Self (1)
-#3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 151.8671 (coefficient=0.059375) | Target: Self (1)
-#4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 2995.205 (coefficient=1.171026) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 25598.02 (coefficient=10.00798) | Target: Self (1)
+Hotfixed         : Coefficient (9.098203 -> 10.007978)
+#3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 426.8918 (coefficient=0.11149) | Target: Self (1)
+Hotfixed         : Coefficient (0.059375 -> 0.11149), Scaling Class (-9 -> -7)
+#4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 9650.776 (coefficient=2.520463) | Target: Self (1)
+Hotfixed         : Coefficient (1.171026 -> 2.520463), Scaling Class (-9 -> -7)
 #5 (id=1241595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
