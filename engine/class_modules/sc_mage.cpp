@@ -574,6 +574,7 @@ public:
     bool trigger_glorious_incandescence;
     bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    bool has_unqueueable_burden; // For Arcane, Burden of Power has a 15ms delay before it triggers -- this expression is used to track it within the APL.
     int embedded_splinters;
     int remaining_splinterstorm;
     int magis_spark_spells;
@@ -3638,7 +3639,10 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     if ( p()->buffs.glorious_incandescence->check() )
     {
       p()->buffs.glorious_incandescence->decrement();
-      p()->trigger_arcane_charge( glorious_incandescence_charges );
+      // Probably(?) a bug: Barrage together with BoP and GI doesn't grant Arcane Charges from consuming GI, 
+      // yet they still both amplify Barrage's damage, and GI'll summon meteorites.
+      if ( !p()->bugs || !p()->buffs.burden_of_power->check() )
+        p()->trigger_arcane_charge( glorious_incandescence_charges );
       p()->state.trigger_glorious_incandescence = true;
     }
     p()->consume_burden_of_power();
@@ -9556,6 +9560,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     { return 11 - state.intuition_blp_count; } );
   }
 
+  if ( util::str_compare_ci( name, "unqueueable_burden" ) )
+  {
+    return make_fn_expr( name, [ this ]
+    { return state.has_unqueueable_burden; } );
+  }
+
   auto splits = util::string_split<std::string_view>( name, "." );
 
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
@@ -9882,19 +9892,26 @@ void mage_t::trigger_spellfire_spheres()
   if ( !talents.spellfire_spheres.ok() )
     return;
 
-  int max_stacks = buffs.spellfire_spheres->max_stack();
-
   buffs.spellfire_spheres->trigger();
 
-  auto check_stacks = [ this, s = max_stacks ]
+  // Expiration of Spellfire Spheres needs to occur instantly as to have Blast (while at 5 spheres) with a queued Barrage end with 1 spheres.
+  // Otherwise, the 15ms delay will nullify the queued increment because spheres are at max stacks for an extra 10ms.
+  bool max_stacks = buffs.spellfire_spheres->at_max_stacks();
+  if ( max_stacks )
   {
-    if ( buffs.spellfire_spheres->check() >= s )
+    state.has_unqueueable_burden = true;
+    buffs.spellfire_spheres->expire();
+  }
+
+  auto check_stacks = [ this, max_stacks ]
+  {
+    if ( max_stacks )
     {
       if ( talents.ignite_the_future.ok() && pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && !buffs.spellfire_sphere->at_max_stacks() )
         debug_cast<pets::arcane_phoenix::arcane_phoenix_pet_t*>( pets.arcane_phoenix )->exceptional_spells_remaining++;
       buffs.spellfire_sphere->trigger();
-      buffs.spellfire_spheres->expire();
       buffs.burden_of_power->trigger();
+      state.has_unqueueable_burden = false;
     }
   };
 
