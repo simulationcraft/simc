@@ -2324,13 +2324,15 @@ namespace diabolist
     {
       double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
 
-        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+        if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
-        return m;
+        if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY)
+          m *= 1.0 +p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent(); // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5. 
+      return m;
      }
 
     void impact( action_state_t* s ) override
@@ -2403,13 +2405,15 @@ namespace diabolist
     {
       double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
 
-        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+        if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
-        return m;
+        if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY)
+          m *= 1.0 +p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent(); // Chaos Salvo is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+      return m;
      }
   };
 
@@ -2478,13 +2482,15 @@ namespace diabolist
     {
       double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
 
-        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+        if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
-        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+        if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
           m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
-        return m;
+         if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY)
+          m *= 1.0 +p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent(); // Felseeker is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+      return m;
      }
   };
 
