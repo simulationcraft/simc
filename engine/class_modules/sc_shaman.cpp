@@ -2395,7 +2395,9 @@ public:
 
   bool affected_by_ele_tww2_4pc_da;
 
-  bool affected_by_ancestral_wisdom;
+  bool affected_by_ancestral_wisdom_da;
+  bool affected_by_ancestral_wisdom_ta;
+
 
   bool may_proc_flowing_spirits;
   stats::proc_tracker_t* proc_fs;
@@ -2502,7 +2504,8 @@ public:
 
     affected_by_ele_tww2_4pc_da = ab::data().affected_by( player->buff.jackpot->data().effectN( 1 ) );
 
-    affected_by_ancestral_wisdom = ab::data().affected_by( player->buff.ancestral_wisdom->data().effectN( 1 ) );
+    affected_by_ancestral_wisdom_da = ab::data().affected_by( player->buff.ancestral_wisdom->data().effectN( 1 ) );
+    affected_by_ancestral_wisdom_ta = ab::data().affected_by( player->buff.ancestral_wisdom->data().effectN( 7 ) );
 
     if ( this->data().ok() )
     {
@@ -2759,6 +2762,11 @@ public:
       m *= 1.0 + p()->buff.jackpot->data().effectN( 1 ).percent();
     }
 
+    if ( affected_by_ancestral_wisdom_da && p()->buff.ancestral_wisdom->up() )
+    {
+      m *= 1.0 + p()->buff.ancestral_wisdom->data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -2786,6 +2794,11 @@ public:
       m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
     }
 
+    if ( affected_by_ancestral_wisdom_ta && p()->buff.ancestral_wisdom->up() )
+    {
+      m *= 1.0 + p()->buff.ancestral_wisdom->data().effectN( 7 ).percent();
+    }
+
     return m;
   }
 
@@ -2804,11 +2817,6 @@ public:
   double execute_time_pct_multiplier() const override
   {
     auto mul = ab::execute_time_pct_multiplier();
-
-    if ( affected_by_ancestral_wisdom && p()->buff.ancestral_wisdom->check() && !ab::background )
-    {
-      mul *= 1.0 + p()->buff.ancestral_wisdom->data().effectN( 1 ).percent();
-    }
 
     if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
