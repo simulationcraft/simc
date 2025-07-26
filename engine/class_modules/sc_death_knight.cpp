@@ -12516,12 +12516,6 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
       }
     }
 
-    if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
-    {
-      replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
-                      gains.murderous_efficiency );
-    }
-
     for ( int i = decrement_count; i > 0; --i )
     {
       proc->occur();
@@ -12532,6 +12526,12 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
         make_event( *sim, 500_ms, [ this, aa_action ]() {
           aa_action->execute();
         } );
+      }
+
+      if ( rng().roll( talent.frost.murderous_efficiency->effectN( 1 ).percent() ) )
+      {
+        replenish_rune( as<int>( spell.murderous_efficiency_gain->effectN( 1 ).base_value() ),
+                        gains.murderous_efficiency );
       }
     }
 
