@@ -2320,6 +2320,19 @@ namespace diabolist
       debug_cast<overlord_t*>( p() )->cleaves--;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
+
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
+        return m;
+     }
+
     void impact( action_state_t* s ) override
     {
       warlock_pet_spell_t::impact( s );
@@ -2385,6 +2398,19 @@ namespace diabolist
 
       debug_cast<mother_of_chaos_t*>( p() )->salvos--;
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
+
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
+        return m;
+     }
   };
 
   void mother_of_chaos_t::arise()
@@ -2447,6 +2473,19 @@ namespace diabolist
 
       debug_cast<pit_lord_t*>( p() )->felseekers--;
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
+
+        if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
+        return m;
+     }
   };
 
   void pit_lord_t::arise()
@@ -2470,18 +2509,7 @@ namespace diabolist
 
     return warlock_pet_t::create_action( name, options_str );
   }
-double composite_da_multiplier( const action_state_t* s ) const override
-{
-  double m = warlock_pet_spell_t::composite_da_multiplier( s ); // base value
 
-  if ( p()->specialization() == WARLOCK_DEMONOLOGY )
-    m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent(); // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology 
-  if ( p()->specialization() == WARLOCK_DESTRUCTION )
-    m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent(); // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
-  if ( p()->specialization() == WARLOCK_DESTRUCTION )
-    m *= 1.15; // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for Destruction, No reference spell for it in the hotfix located.
-  return m;
-}
   /// Diabolic Ritual Demons End
 
   /// Infernal Fragment Begin
