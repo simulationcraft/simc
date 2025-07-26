@@ -4726,7 +4726,7 @@ using namespace helpers;
       // In its own effect on mastery, so just manually applying it here rather than adding the affected_by to warlock_spell_t
       if ( p()->warlock_base.master_demonologist->ok() )
         m *= 1.0 + p()->cache.mastery_value();
-      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      if ( p()->specialization() == WARLOCK_DEMONOLOGY )
         m *= 1.0 + p()->sets->set( HERO_DIABOLIST, TWW3, B2 )->effectN( 2 ).percent();
     
       m *= p()->buffs.demonic_oculus->check();
