@@ -1569,7 +1569,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
 
-      // TOCHECK: 2025-04-16 Despite what is listed in spell data, Shadowtouched increases the damage of Demonic Soul (+10% for main target (demoniacs_fervor), +20% for the rest) (bug?)
+      // TOCHECK: 2025-07-27 Despite what is listed in spell data, Shadowtouched increases the damage of Demonic Soul (+10% for main target (demoniacs_fervor), +20% for the rest) (bug?)
       if ( demonology() && p()->bugs && p()->talents.shadowtouched.ok() && td( t )->debuffs_wicked_maw->check() )
       {
         if ( demoniacs_fervor )
@@ -1630,7 +1630,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
 
-      // TOCHECK: 2025-04-16 Despite what is listed in spell data, Shadowtouched increases the damage of Wicked Reaping (+50%) bug?
+      // TOCHECK: 2025-07-27 Despite what is listed in spell data, Shadowtouched increases the damage of Wicked Reaping (+50%) (bug?)
       if ( demonology() && p()->bugs && p()->talents.shadowtouched.ok() && td( t )->debuffs_wicked_maw->check() )
         m *= 1.0 + shadowtouched_value;
 
@@ -3152,7 +3152,7 @@ using namespace helpers;
         callbacks = false;
         radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
 
-        // TOCHECK: 2025-04-16 Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Bilescourge Bombers (bug?)
+        // TOCHECK: 2025-07-27 Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Bilescourge Bombers (bug?)
         affected_by.wicked_maw = p->bugs && p->talents.shadowtouched.ok();
 
         base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();
@@ -3199,7 +3199,7 @@ using namespace helpers;
       callbacks = false;
       radius = p->find_spell( 267211 )->effectN( 1 ).radius();
 
-      // TOCHECK: 2025-04-16 Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Bilescourge Bombers (bug?)
+      // TOCHECK: 2025-07-27 Despite what is listed in spell data, Wicked Maw seems to only work with Shadowtouched now for Bilescourge Bombers (bug?)
       affected_by.wicked_maw = p->bugs && p->talents.shadowtouched.ok();
 
       base_dd_multiplier *= 1.0 + p->talents.shadow_invocation->effectN( 1 ).percent();

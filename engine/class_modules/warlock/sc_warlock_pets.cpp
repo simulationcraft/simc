@@ -2346,7 +2346,7 @@ namespace diabolist
     {
       double m = spell_t::composite_target_multiplier( target );
 
-      // TOCHECK: 2025-04-16 Wicked Cleave spell from Overlord does not benefit from Shadowtouched talent even though its damage school is Shadowflame (bug?)
+      // TOCHECK: 2025-07-27 Wicked Cleave spell from Overlord does not benefit from Shadowtouched talent even though its damage school is Shadowflame (bug?)
       if ( !p()->bugs && p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
         m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
 
@@ -2437,6 +2437,8 @@ namespace diabolist
 
   struct felseeker_tick_t : public warlock_pet_spell_t
   {
+    const double shadowtouched_value = 0.25;
+
     felseeker_tick_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Felseeker (tick)", p, p->o()->hero.felseeker_dmg )
     {
@@ -2444,6 +2446,18 @@ namespace diabolist
       aoe = -1;
 
       base_costs[ RESOURCE_ENERGY ] = 0.0;
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = spell_t::composite_target_multiplier( target );
+
+      // TOCHECK: 2025-07-27 Despite what is listed in spell data, Shadowtouched increases the damage of Feelseeker spell from Pit Lord by 25% instead of 20% (bug?)
+      // TODO: After 11.2.0 goes live, remove the wow version check
+      if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
+        m *= 1.0 + ( ( p()->bugs && ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } ) ) ? shadowtouched_value : p()->o()->talents.shadowtouched->effectN( 1 ).percent() );
+
+      return m;
     }
   };
 
