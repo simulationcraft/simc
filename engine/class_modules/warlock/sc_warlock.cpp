@@ -372,6 +372,10 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     // 2022-11-27 Rolling Havoc is missing the aura for guardians
     if ( talents.rolling_havoc.ok() && !guardian )
       m *= 1.0 + buffs.rolling_havoc->check_stack_value();
+    
+    if ( !guardian && talents.summoners_embrace.ok() )
+      m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
+  
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
