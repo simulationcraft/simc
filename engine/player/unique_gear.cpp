@@ -4443,6 +4443,28 @@ struct item_has_use_expr_t : public item_effect_expr_t
   }
 };
 
+struct item_cooldown_category_expr_t : public item_effect_base_expr_t
+{
+  item_cooldown_category_expr_t( player_t& player, const std::vector<slot_e>& slots,
+                                 util::string_view full_expression )
+    : item_effect_base_expr_t( player, slots, full_expression )
+  {
+  }
+
+  bool is_constant() override
+  {
+    return true;
+  }
+
+  double evaluate() override
+  {
+    for ( auto effect : effects )
+      if ( auto cd_group = effect->cooldown_group(); cd_group )
+        return cd_group;
+    return 0.0;
+  }
+};
+
 /**
  * Create "trinket" expressions, or anything relating to special effects.
  *
@@ -4646,6 +4668,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return std::make_unique<item_ready_expr_t>( player, slots, name_str );
   }
 
+  if ( util::str_compare_ci (splits[ ptype_idx ], "cooldown_category" ) )
+    return std::make_unique<item_cooldown_category_expr_t>( player, slots, name_str );
+
   throw std::invalid_argument( fmt::format( "Unsupported unique gear expression '{}'.", splits.back() ) );
 }
 
@@ -4710,6 +4735,20 @@ void proc_attack_t::override_data(const special_effect_t& e)
 
 } // unique_gear
 
+wrapper_callback_t::wrapper_callback_t( custom_cb_t cb_, wowv_t min_, wowv_t max_ )
+  : scoped_callback_t(), cb( std::move( cb_ ) ), min_build( min_ ), max_build( max_ )
+{}
+
+bool wrapper_callback_t::valid( const special_effect_t& effect ) const
+{
+  return effect.player->dbc->wowv() >= min_build && effect.player->dbc->wowv() < max_build;
+}
+
+void wrapper_callback_t::initialize( special_effect_t& effect )
+{
+  cb( effect );
+}
+
 static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
@@ -4761,21 +4800,22 @@ void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
     __fallback_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback )
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback,
+                                           wowv_t min_build, wowv_t max_build )
 {
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
-  dbitem.cb_obj = new wrapper_callback_t( std::move(init_callback) );
+  dbitem.cb_obj = new wrapper_callback_t( std::move( init_callback ), min_build, max_build );
   dbitem.fallback = fallback;
 
   add_effect( dbitem );
 }
 
 void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                                           bool fallback )
+                                           bool fallback, wowv_t min_build, wowv_t max_build )
 {
   for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback );
+    register_special_effect( id, init_callback, fallback, min_build, max_build );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )

@@ -45,9 +45,9 @@ actions+=/natures_vigil,if=spell_targets.swipe_cat>0&variable.regrowth
 actions+=/renewal,if=spell_targets.swipe_cat>0&variable.regrowth
 actions+=/adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack<3&(!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2),if=!action.adaptive_swarm_damage.in_flight&(spell_targets=1|!talent.unbridled_swarm)&(dot.rip.ticking|hero_tree.druid_of_the_claw)
 actions+=/adaptive_swarm,target_if=max:(1+dot.adaptive_swarm_damage.stack)*dot.adaptive_swarm_damage.stack<3*time_to_die,if=buff.cat_form.up&dot.adaptive_swarm_damage.stack<3&talent.unbridled_swarm.enabled&spell_targets.swipe_cat>1&dot.rip.ticking
-actions+=/ferocious_bite,if=buff.apex_predators_craving.up&!(variable.need_bt&active_bt_triggers=2)
+actions+=/ferocious_bite,if=buff.apex_predators_craving.up&!(variable.need_bt&active_bt_triggers=2)&!buff.bs_inc.up
 actions+=/call_action_list,name=cooldown,if=dot.rip.ticking
-# keep using this archaic 'nonsense' for veinripper because its better idk ill fix soon tm
+# keep using this archaic 'nonsense' for veinripper because its better idk ill fix soon tm (i lied about the soon part)
 actions+=/rip,if=talent.veinripper&spell_targets=1&hero_tree.wildstalker&!(talent.raging_fury&talent.veinripper)&(buff.bloodtalons.up|!talent.bloodtalons)&(dot.rip.remains<5&buff.tigers_fury.remains>10&combo_points>=3|((buff.tigers_fury.remains<3&combo_points=5)|buff.tigers_fury.remains<=1)&buff.tigers_fury.up&combo_points>=3&remains<cooldown.tigers_fury.remains)
 # fix to work with veinripper idk
 actions+=/rip,if=!talent.veinripper&spell_targets=1&hero_tree.wildstalker&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons)&(combo_points>=3&refreshable&cooldown.tigers_fury.remains>25|buff.tigers_fury.remains<5&variable.rip_duration>cooldown.tigers_fury.remains&cooldown.tigers_fury.remains>=dot.rip.remains)
@@ -59,7 +59,7 @@ actions+=/call_action_list,name=aoe_builder,if=spell_targets.swipe_cat>=2&combo_
 actions+=/regrowth,if=buff.predatory_swiftness.up&variable.regrowth
 
 # maintain thrash highest prio
-actions.aoe_builder=thrash_cat,if=refreshable&!talent.thrashing_claws&!(variable.need_bt&buff.bt_thrash.up)
+actions.aoe_builder=thrash_cat,target_if=max:time_to_die,if=refreshable&!talent.thrashing_claws&!(variable.need_bt&buff.bt_thrash.up)&remains<time_to_die
 # avoid capping brs charges. Also send brutal slashes/ws swipe in aoe, even if we need to proc bloodtalons, during berserk.
 actions.aoe_builder+=/brutal_slash,target_if=min:time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|time_to_die<4|raid_event.adds.remains<4|(buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw))&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))
 actions.aoe_builder+=/swipe_cat,target_if=min:time_to_die,if=talent.wild_slashes&(time_to_die<4|raid_event.adds.remains<4|buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw)&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))
@@ -87,7 +87,7 @@ actions.aoe_builder+=/moonfire_cat,target_if=max:ticks_gained_on_refresh,if=vari
 actions.aoe_builder+=/rake,target_if=max:ticks_gained_on_refresh,if=buff.sudden_ambush.up&variable.need_bt&buff.bt_rake.down
 actions.aoe_builder+=/shred,if=variable.need_bt&buff.bt_shred.down&!variable.easy_swipe
 actions.aoe_builder+=/rake,target_if=dot.rake.pmultiplier<1.6,if=variable.need_bt&buff.bt_rake.down
-actions.aoe_builder+=/thrash_cat,if=variable.need_bt&buff.bt_shred.down
+actions.aoe_builder+=/thrash_cat,if=variable.need_bt&buff.bt_thrash.down
 
 actions.builder=prowl,if=gcd.remains=0&energy>=35&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!(variable.need_bt&buff.bt_rake.up)&buff.tigers_fury.up&!buff.shadowmeld.up
 actions.builder+=/shadowmeld,if=gcd.remains=0&energy>=35&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!(variable.need_bt&buff.bt_rake.up)&buff.tigers_fury.up&!buff.prowl.up
@@ -139,6 +139,8 @@ actions.cooldown+=/convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buff.bs
 actions.finisher=primal_wrath,target_if=max:dot.bloodseeker_vines.ticking,if=spell_targets.primal_wrath>1&((dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)|(!talent.rampant_ferocity.enabled&(spell_targets.primal_wrath>1&!dot.bloodseeker_vines.ticking&!buff.ravage.up|spell_targets.primal_wrath>6+talent.ravage)))
 # rip if single target or pw isnt up. Rip with bloodtalons if talented. If tigers fury will be up before rip falls off, then delay refresh
 actions.finisher+=/rip,target_if=refreshable,if=(!talent.primal_wrath|spell_targets=1)&(buff.bloodtalons.up|!talent.bloodtalons)&(buff.tigers_fury.up|dot.rip.remains<cooldown.tigers_fury.remains)&(remains<fight_remains|remains<4&buff.ravage.up)
+# only bite with ravage in aoe with berserk
+actions.finisher+=/call_action_list,name=aoe_builder,if=hero_tree.druid_of_the_claw&buff.bs_inc.up&!buff.ravage.up&spell_targets>=2
 actions.finisher+=/pool_resource,for_next=1
 actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:dot.bloodseeker_vines.ticking,if=!buff.bs_inc.up
 actions.finisher+=/pool_resource,for_next=1
@@ -179,33 +181,32 @@ actions.variable+=/variable,name=regrowth,op=reset
 # optional variable that forgoes shredding in AoE. Turned off by default
 actions.variable+=/variable,name=easy_swipe,op=reset
 
-head=branches_of_reclaiming_blight,id=229307,ilevel=678,gem_id=213743
-neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213491/213491
-shoulders=jaws_of_reclaiming_blight,id=229305,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960,enchant_id=7403,crafted_stats=32/49
-chest=robes_of_reclaiming_blight,id=229310,ilevel=678,enchant_id=7364
-wrists=knots_of_reclaiming_blight,id=229303,ilevel=678,gem_id=213491,enchant_id=7391
-hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/9627/8791/10222/12043/12040/11303/8960,crafted_stats=36/49
-waist=hitmans_holster,id=228880,ilevel=678,gem_id=213491
-legs=moccasins_of_reclaiming_blight,id=229306,ilevel=678,enchant_id=7601
-feet=machinists_treasured_treads,id=168975,ilevel=678,enchant_id=7424
-finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,gem_id=228638/228639/228640,enchant_id=7346
-finger2=the_jastor_diamond,id=231265,ilevel=678,gem_id=213491/213491,enchant_id=7346
-trinket1=house_of_cards,id=230027,ilevel=678
-trinket2=eye_of_kezan,id=230198,bonus_id=1527/11996/11964
-main_hand=bestinslots,id=232526,ilevel=678,enchant_id=7445
+head=branches_of_reclaiming_blight,id=229307,bonus_id=10356/11960/6652/12178/12376/1533/10255/12055,gem_id=213473,enchant_id=7933
+neck=strapped_rescuekeg,id=221060,bonus_id=10390/41/10383/10879/10396/12376/3176/10255,gem_id=213482/213458
+shoulders=jaws_of_reclaiming_blight,id=229305,bonus_id=43/10356/8095/12179/11962/12376/1533/10255
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/9627/12040/11303/8960/8793/12043/12373,enchant_id=7409,crafted_stats=32/36
+chest=robes_of_reclaiming_blight,id=229310,bonus_id=11958/10390/6652/12178/12376/1533/10255,enchant_id=7364
+wrists=hustlers_anteuppers,id=228885,bonus_id=6652/11998/10356/12376/1533/10255/12055,gem_id=213491,enchant_id=7391
+hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/9627/12043/11303/8960/8794/12040/12373,crafted_stats=36/49
+waist=durable_information_securing_container,id=245964,bonus_id=12531/1482,gem_id=213473,titan_disc_id=1236275
+legs=breeches_of_reclaiming_blight,id=229306,bonus_id=11961/10390/6652/12178/12376/1533/10255,enchant_id=7601
+feet=dragsters_last_stride,id=228876,bonus_id=6652/11998/10356/12376/1533/10255,enchant_id=7424
+finger1=the_jastor_diamond,id=231265,bonus_id=6652/10356/12376/1533/10255/10879/10396,gem_id=213458/213458,enchant_id=7346
+finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10394/10879/9627/12040/11941/8790/12043/12373,gem_id=213743/213494,enchant_id=7346,crafted_stats=36/32
+trinket1=improvised_seaforium_pacemaker,id=232541,bonus_id=10390/6652/10383/12376/1520/10255
+trinket2=house_of_cards,id=230027,bonus_id=6652/10356/12376/1533/10255
+main_hand=bestinslots,id=232526,bonus_id=6652/10356/9418/12376/1533/10255,enchant_id=7460
 
 # Gear Summary
-# gear_ilvl=676.27
-# gear_agility=51186
-# gear_stamina=387109
+# gear_ilvl=684.07
+# gear_agility=59931
+# gear_stamina=425466
 # gear_attack_power=469
-# gear_crit_rating=7444
-# gear_haste_rating=12018
-# gear_mastery_rating=15606
-# gear_versatility_rating=934
-# gear_leech_rating=2040
-# gear_avoidance_rating=545
-# gear_armor=33928
+# gear_crit_rating=6743
+# gear_haste_rating=15459
+# gear_mastery_rating=17280
+# gear_versatility_rating=2196
+# gear_leech_rating=4438
+# gear_armor=35609
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

@@ -109,11 +109,21 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_duration( 0_ms )
                                ->set_tick_zero( false )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t )
-                                 { warlock.proc_actions.blackened_soul->execute_on_target( target ); } )
+                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t ) {
+                                 warlock.proc_actions.blackened_soul->execute_on_target( target );
+                               } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true );
+                               ->set_freeze_stacks( true )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::CUSTOM )
+                               ->set_tick_time_callback( [ & ]( const buff_t* b, unsigned int ) {
+                                 timespan_t period = b->buff_period;
+
+                                 if ( p.buffs.maintained_withering->check() )
+                                   period *= 1.0 + p.buffs.maintained_withering->data()
+                                                       .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
+                                                       .percent();
+                                 return period;
+                               } );
 
   // Soul Harvester
   dots_soul_anathema = target->get_dot( "soul_anathema", &p );
@@ -470,6 +480,16 @@ double warlock_t::composite_player_critical_damage_multiplier( const action_stat
 
   if ( specialization() == WARLOCK_DEMONOLOGY && talents.demonic_brutality.ok() )
     m *= 1.0 + talents.demonic_brutality->effectN( 1 ).percent();
+
+  return m;
+}
+
+double warlock_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.master_summoner.ok() )
+    m += talents.master_summoner->effectN( 3 ).base_value();
 
   return m;
 }
@@ -974,6 +994,8 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+
+  action.apply_affecting_aura( sets->set( HERO_SOUL_HARVESTER, TWW3, B4 ) );
 }
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
@@ -1055,7 +1077,8 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     mothers( "mother_of_chaos", w ),
     pit_lords( "pit_lord", w ),
     fragments( "infernal_fragment", w ),
-    diabolic_imps( "diabolic_imp", w )
+    diabolic_imps( "diabolic_imp", w ),
+    demonic_souls( "demonic_soul", w )
 { }
 }  // namespace warlock
 

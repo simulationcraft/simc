@@ -4197,7 +4197,7 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
     preternatural_charge_t( const special_effect_t& effect )
       : proc_spell_t( "preternatural_charge", effect.player, effect.player->find_spell( 351561 ), effect.item )
     {
-      base_dd_min = base_dd_max = effect.trigger()->effectN( 1 ).average( effect.item );
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
     }
   };
 

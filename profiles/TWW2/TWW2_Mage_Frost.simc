@@ -25,7 +25,7 @@ actions.precombat=arcane_intellect
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter
 actions.precombat+=/use_item,name=treacherous_transmitter
-actions.precombat+=/use_item,name=ingenious_mana_battery
+actions.precombat+=/use_item,name=ingenious_mana_battery,target=self
 actions.precombat+=/blizzard,if=active_enemies>=3
 actions.precombat+=/frostbolt,if=active_enemies<=2
 
@@ -157,32 +157,33 @@ actions.st_ss+=/ice_lance,if=buff.fingers_of_frost.react|remaining_winters_chill
 actions.st_ss+=/frostbolt
 actions.st_ss+=/call_action_list,name=movement
 
-head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
-neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213485/213455
-shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
-back=candlebearers_shroud,id=221109,bonus_id=3170/11996/11964,enchant_id=7403
-chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
-hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
-waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213467
-legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
-finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213467/213467,enchant_id=7352
-finger2=bloodoath_signet,id=178871,bonus_id=4786/9987/11996/8781,gem_id=213467/213467,enchant_id=7352
-trinket1=candle_confidant,id=225648,bonus_id=3194/11990
-trinket2=mister_locknstalk,id=230193,ilevel=678
-main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/11144/8792,ilevel=675,crafted_stats=40/32
+head=inventors_ingenious_trifocals,id=235226,bonus_id=3176/12376/11964/1808,gem_id=213743,enchant_id=7924
+neck=flickering_glowtorc,id=221103,bonus_id=3176/12376/11964/8781,gem_id=213467/213467
+shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=12179/1533/12376
+back=trashmasters_mantle,id=199921,bonus_id=11346/12376/11964,enchant_id=7409
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=12178/1533/12376,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/12373/11109/8960/1808,gem_id=213467,enchant_id=7397,crafted_stats=32/40
+hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=12179/1533/12376
+waist=tuneup_toolbelt,id=228861,bonus_id=1533/12376/11964/1808,gem_id=213467
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=12178/1533/12376,enchant_id=7534
+feet=nonconductive_killosocks,id=234497,bonus_id=1533/12376/11964,enchant_id=7418
+finger1=wicks_golden_loop,id=221099,bonus_id=3176/12376/11964/8781,gem_id=213467/213497,enchant_id=7352
+finger2=bloodoath_signet,id=178871,bonus_id=9993/12376/11964/8781,gem_id=213485/213461,enchant_id=7352
+trinket1=candle_confidant,id=225648,ilevel=671
+trinket2=mister_locknstalk,id=230193,bonus_id=1533/12376/11964
+main_hand=blastfurious_machete,id=231268,bonus_id=1533/12376/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/12373/11300/8960,crafted_stats=36/40
 
 # Gear Summary
-# gear_ilvl=676.81
-# gear_stamina=392511
-# gear_intellect=69281
-# gear_crit_rating=13696
-# gear_haste_rating=18782
-# gear_mastery_rating=2746
-# gear_versatility_rating=11806
-# gear_avoidance_rating=1635
-# gear_armor=20744
+# gear_ilvl=682.81
+# gear_stamina=421565
+# gear_intellect=73156
+# gear_crit_rating=14277
+# gear_haste_rating=18573
+# gear_mastery_rating=2806
+# gear_versatility_rating=12626
+# gear_leech_rating=1020
+# gear_speed_rating=1250
+# gear_armor=21621
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

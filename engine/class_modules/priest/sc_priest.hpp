@@ -70,6 +70,8 @@ struct entropic_rift_t;
 struct entropic_rift_damage_t;
 struct collapsing_void_damage_t;
 struct halo_t;
+struct horrific_vision_t;
+struct vision_of_nzoth_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -80,6 +82,7 @@ struct divine_aegis_t;
 struct cauterizing_shadows_t;
 struct crystalline_reflection_heal_t;
 struct crystalline_reflection_damage_t;
+struct echo_of_light_t;
 }  // namespace actions::heals
 
 /**
@@ -111,6 +114,7 @@ public:
     propagate_const<buff_t*> psychic_horror;
     buff_t* atonement;
     propagate_const<buff_t*> resonant_energy;
+    propagate_const<buff_t*> horrific_visions;
   } buffs;
 
   priest_t& priest()
@@ -188,6 +192,7 @@ public:
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> words_of_the_pious;
+    propagate_const<buff_t*> surge_of_light;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -240,6 +245,12 @@ public:
     propagate_const<buff_t*> deathspeaker;
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> last_shadowy_apparition_crit;
+    propagate_const<buff_t*> call_of_the_void;
+    propagate_const<buff_t*> overburdened_mind;
+    propagate_const<buff_t*> shattered_psyche;
+    propagate_const<buff_t*> void_volley;
+    propagate_const<buff_t*> horrific_vision;
+    propagate_const<buff_t*> vision_of_nzoth;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -247,9 +258,11 @@ public:
     propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> darkflame_embers;
     propagate_const<buff_t*> darkflame_shroud;
-    propagate_const<buff_t*> deaths_torment;
     propagate_const<buff_t*> devouring_chorus;
     propagate_const<buff_t*> darkness_from_light;
+    propagate_const<buff_t*> ascension;         // TWW3 Archon Set 2pc
+    propagate_const<buff_t*> tww3_archon_4pc;   // TWW3 Archon Set 4pc helper
+    propagate_const<buff_t*> overflowing_void;  // TWW3 VW Set 4pc
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -338,6 +351,7 @@ public:
     const spell_data_t* cauterizing_shadows_spell;
     // Row 9
     player_talent_t surge_of_light;
+    const spell_data_t* surge_of_light_buff;
     player_talent_t lights_inspiration;
     player_talent_t crystalline_reflection;
     player_talent_t improved_fade;
@@ -374,40 +388,50 @@ public:
       player_talent_t surge_of_insanity;
       const spell_data_t* mind_spike_insanity_spell;
       // Row 5
-      player_talent_t shadow_crash;
-      player_talent_t shadow_crash_target;
+      player_talent_t shadowy_insight;
+      player_talent_t voidtouched;
       player_talent_t unfurling_darkness;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
       player_talent_t dark_ascension;
       player_talent_t mental_decay;
+      player_talent_t shattered_psyche;
       player_talent_t mind_spike;
+      player_talent_t shadow_crash;
+      player_talent_t shadow_crash_target;
       // Row 6
-      player_talent_t whispering_shadows;
-      player_talent_t shadowy_insight;
-      player_talent_t ancient_madness;
-      player_talent_t voidtouched;
-      player_talent_t mind_melt;
-      // Row 7
+      player_talent_t subservient_shadows;
+      player_talent_t dark_thoughts;
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
+      player_talent_t whispering_shadows;
+      player_talent_t ancient_madness;
+      player_talent_t mind_melt;
+      player_talent_t phantom_menace;
       player_talent_t dark_evangelism;
-      player_talent_t mind_devourer;
-      player_talent_t phantasmal_pathogen;
+      player_talent_t descending_darkness;
+      // Row 7
+      player_talent_t mastermind;
       player_talent_t minds_eye;
       player_talent_t distorted_reality;
+      player_talent_t phantasmal_pathogen;
+      player_talent_t instilled_doubt;
       // Row 8
-      // player_talent_t mindbender; - Shared Talent
       player_talent_t deathspeaker;
+      player_talent_t mind_devourer;
       player_talent_t auspicious_spirits;
       player_talent_t void_torrent;
       // Row 9
-      // player_talent_t inescapable_torment; - Shared Talent
-      player_talent_t mastermind;
+      player_talent_t madness_weaving;
+      player_talent_t deaths_torment;
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
       player_talent_t malediction;
+      player_talent_t void_volley;
+      const spell_data_t* void_volley_buff;
+      const spell_data_t* void_volley_missile;
+      const spell_data_t* void_volley_damage;
       // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* devoured_pride;
@@ -415,11 +439,18 @@ public:
       const spell_data_t* devoured_anger;
       const spell_data_t* devoured_fear;
       const spell_data_t* devoured_violence;
+      const spell_data_t* call_of_the_void;
+      const spell_data_t* overburdened_mind;
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_cthun;
       const spell_data_t* echoing_void;
       const spell_data_t* echoing_void_debuff;
+      const spell_data_t* horrific_visions;        // enemy debuff
+      const spell_data_t* horrific_vision_damage;  // 50 stack damage
+      const spell_data_t* vision_of_nzoth_damage;  // 100 stack damage
+      const spell_data_t* horrific_vision_buff;    // 50 stack buff
+      const spell_data_t* vision_of_nzoth_buff;    // 100 stack buff
     } shadow;
 
     struct
@@ -507,29 +538,69 @@ public:
       // Row 1
       player_talent_t holy_word_serenity;
       // Row 2
+      player_talent_t holy_word_sanctify;
+      player_talent_t guardian_spirit;
       player_talent_t holy_word_chastise;
       // Row 3
+      player_talent_t prayer_of_healing;
+      player_talent_t guardian_angel;
+      player_talent_t restitution;
+      player_talent_t censure;
       player_talent_t empyreal_blaze;
-      player_talent_t holy_word_sanctify;
+      const spell_data_t* empyreal_blaze_buff;
       // Row 4
+      player_talent_t prayer_circle;
+      player_talent_t cosmic_ripple;
+      player_talent_t afterlife;
+      player_talent_t voice_of_harmony;
       player_talent_t searing_light;
-      // Row 8
-      player_talent_t apotheosis;
-      // Row 9
       player_talent_t burning_vehemence;
       const spell_data_t* burning_vehemence_damage;
-      player_talent_t harmonious_apparatus;
+      // Row 5
+      player_talent_t everlasting_light;
+      player_talent_t holy_mending;
+      player_talent_t divine_hymn;
+      player_talent_t enlightenment;
+      player_talent_t benediction;
+      // Row 6
+      player_talent_t prayerful_litany;
+      player_talent_t renewed_faith;
+      player_talent_t seraphic_crescendo;
+      player_talent_t gales_of_song;
+      player_talent_t symbol_of_hope;
+      player_talent_t divine_service;
+      // Row 7
+      player_talent_t crisis_management;
+      player_talent_t empowered_renew;
+      player_talent_t apotheosis;
+      player_talent_t prayers_of_the_virtuous;
+      // Row 8
+      player_talent_t resonant_words;
+      player_talent_t miracle_worker;
+      player_talent_t divinity;
+      player_talent_t eternal_sanctity;
+      player_talent_t holy_celerity;
+      player_talent_t say_your_prayers;
+      // Row 9
+      player_talent_t trail_of_light;
+      player_talent_t dispersing_light;
       player_talent_t light_of_the_naaru;
-      player_talent_t answered_prayers;
+      player_talent_t light_in_the_darkness;
+      player_talent_t prismatic_echoes;
+      player_talent_t desperate_times;
+      player_talent_t epiphany;
       // Row 10
-      player_talent_t divine_word;
-      const spell_data_t* divine_favor_chastise;
+      player_talent_t lightweaver;
+      player_talent_t lightwell;
       player_talent_t divine_image;
       const spell_data_t* divine_image_buff;
       const spell_data_t* divine_image_summon;
       const spell_data_t* divine_image_searing_light;
       const spell_data_t* divine_image_light_eruption;
-      player_talent_t miracle_worker;
+      player_talent_t lasting_words;
+      player_talent_t divine_word;
+      const spell_data_t* divine_favor_chastise;
+      player_talent_t answered_prayers;
     } holy;
 
     struct
@@ -639,6 +710,7 @@ public:
     // Holy
     const spell_data_t* holy_priest;  // General holy data
     const spell_data_t* holy_fire;
+    const spell_data_t* echo_of_light;
 
     // Shadow
     const spell_data_t* mind_flay;
@@ -663,7 +735,15 @@ public:
   {
     const spell_data_t* grace;
     const spell_data_t* shadow_weaving;
+    const spell_data_t* echo_of_light;
   } mastery_spells;
+
+  struct
+  {
+    const spell_data_t* voidweaver_4pc_buff;
+    const spell_data_t* archon_2pc_buff;
+    std::unique_ptr<modified_spell_data_t> voidweaver_4pc;
+  } tww3_spells;
 
   // Cooldowns
   struct
@@ -698,6 +778,7 @@ public:
     propagate_const<real_ppm_t*> idol_of_cthun;
     propagate_const<real_ppm_t*> deathspeaker;
     propagate_const<real_ppm_t*> power_of_the_dark_side;
+    propagate_const<real_ppm_t*> idol_of_yshaarj;
   } rppm;
 
   struct threshold_rngs_t
@@ -720,9 +801,12 @@ public:
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> insanity_maddening_touch;
-    propagate_const<gain_t*> insanity_t30_2pc;
     propagate_const<gain_t*> cauterizing_shadows_health;
     propagate_const<gain_t*> shield_discipline;
+    propagate_const<gain_t*> ascension_tww3_2pc;
+    propagate_const<gain_t*> insanity_dark_thoughts;
+    propagate_const<gain_t*> insanity_horrific_vision;
+    propagate_const<gain_t*> insanity_vision_of_nzoth;
   } gains;
 
   // Benefits
@@ -782,7 +866,6 @@ public:
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::expiation_t*> expiation;
     propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
-    propagate_const<action_t*> holy_fire;
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
@@ -796,6 +879,9 @@ public:
     propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
     propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
     propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
+    propagate_const<action_t*> echo_of_light;
+    propagate_const<actions::spells::horrific_vision_t*> horrific_vision;
+    propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
   } background_actions;
 
   // Items
@@ -821,6 +907,7 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
+    void set_pet_defaults( priest_t& p );
   } pets;
 
   // Options
@@ -873,8 +960,8 @@ public:
 
     bool shadow_tww2_4pc_insanity = true;
 
-    // 10% Chance that a Fire Mage steals the proc because you are slow or you just dont hit it.
-    double synergistic_brewterializer_tof_chance = 0.9;
+    // 30% Chance that a Fire Mage steals the proc because you are slow or you just dont hit it or it just bugs out.
+    double synergistic_brewterializer_tof_chance = 0.7;
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
   } options;
@@ -904,6 +991,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void assess_damage( school_e school, result_amount_type dtype, action_state_t* s ) override;
+  double composite_mastery_value() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_spell_crit_chance() const override;
@@ -919,6 +1007,13 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void parse_assisted_combat_step( const assisted_combat_step_data_t& step,
+                                   action_priority_list_t* assisted_combat ) override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                            const assisted_combat_step_data_t& step ) const override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const override;
   void combat_begin() override;
   void init_rng() override;
   const priest_td_t* find_target_data( const player_t* target ) const override;
@@ -959,13 +1054,14 @@ private:
   void create_buffs_holy();
   void init_spells_holy();
   void init_rng_holy();
-  void generate_apl_holy();
   expr_t* create_expression_holy( action_t* a, util::string_view name_str );
   action_t* create_action_holy( util::string_view name, util::string_view options_str );
   target_specific_t<priest_td_t> _target_data;
 
 public:
-  void generate_insanity( double num_amount, gain_t* g, action_t* action );
+  void do_holy_word_cdr( cooldown_t* cd, timespan_t amount, bool affected_by_apotheosis = true,
+                         bool affected_by_naaru = true );
+  double generate_insanity( double num_amount, gain_t* g, action_t* action );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
   void trigger_idol_of_yshaarj( player_t* target );
@@ -981,15 +1077,17 @@ public:
   void refresh_insidious_ire_buff( action_state_t* s );
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
-  int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
+  void trigger_idol_of_nzoth( player_t* target, int stacks );
+  double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_essence_devourer();
   spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet();
   // Stores the currently active Entropic Rift event
   void trigger_entropic_rift();
   void extend_entropic_rift();
-  void expand_entropic_rift();
+  void expand_entropic_rift( int stacks = -1 );
   void trigger_cauterizing_shadows();
+  std::string blizzard_apl_action_replace( std::string options );
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1208,21 +1306,36 @@ public:
     parse_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
     parse_effects( p().buffs.rhapsody, p().specs.discipline_priest );
+    if ( p().specialization() == PRIEST_HOLY )
+      parse_effects( p().buffs.surge_of_light, p().talents.archon.empowered_surges, IGNORE_STACKS );
+    else
+      parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
       parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
                      p().talents.archon.perfected_form );
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
-      parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
+
+      if ( p().sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      {
+        parse_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
+        parse_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
+        parse_effects( p().buffs.mind_melt,
+                       p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+        parse_effects( p().buffs.unfurling_darkness );
+      }
+      if ( p().sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+      {
+        parse_effects( p().buffs.shattered_psyche,
+                       p().talents.shadow.shattered_psyche );  // Mind Blast critical strike chance
+      }
+
       parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
-                     p().talents.archon.perfected_form );                  // Buffs non-periodic spells
-      parse_effects( p().buffs.mind_melt, p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+                     p().talents.archon.perfected_form );  // Buffs non-periodic spells
       parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
-      parse_effects( p().buffs.unfurling_darkness );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
@@ -1235,11 +1348,6 @@ public:
         {
           parse_effects( p().buffs.ancient_madness, effect_mask_t( false ).enable( 3 ), USE_DEFAULT );  // Enable E3
         }
-      }
-
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
-      {
-        parse_effects( p().buffs.deaths_torment );
       }
 
       if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW1, B4 ) )
@@ -1303,7 +1411,7 @@ public:
     if ( p().talents.archon.resonant_energy.enabled() )
     {
       parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
-                            p().talents.archon.resonant_energy_shadow );
+                            p().talents.archon.resonant_energy_shadow, p().sets->set( HERO_ARCHON, TWW3, B2 ) );
     }
   }
 
@@ -1358,15 +1466,15 @@ public:
     return c;
   }
 
-  void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
+  double gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
     if ( resource_type == RESOURCE_INSANITY )
     {
-      priest().generate_insanity( amount, gain, this );
+      return priest().generate_insanity( amount, gain, this );
     }
     else
     {
-      ab::gain_energize_resource( resource_type, amount, gain );
+      return ab::gain_energize_resource( resource_type, amount, gain );
     }
   }
 
@@ -1435,15 +1543,24 @@ public:
 
     return target_list.size();
   }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( priest().talents.surge_of_light.enabled() )
+      priest().buffs.surge_of_light->trigger();
+  }
 };
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
   bool disc_mastery;
+  bool holy_mastery;
   bool divine_aegis;
 
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), disc_mastery( false ), divine_aegis( true )
+    : base_t( name, player, s ), disc_mastery( false ), divine_aegis( true ), holy_mastery( false )
   {
     target = &player;
   }
@@ -1501,6 +1618,15 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     base_t::impact( s );
 
+    if ( s->result_total > 0 )
+    {
+      if ( priest().specialization() == PRIEST_HOLY && holy_mastery )
+      {
+        residual_action::trigger( p().background_actions.echo_of_light, s->target,
+                                  s->result_total * p().composite_mastery_value() );
+      }
+    }
+
     if ( s->result_amount > 0 )
     {
       // TODO: Use proper base_value() from talent struct when fixed
@@ -1516,6 +1642,14 @@ struct priest_heal_t : public priest_action_t<heal_t>
       }
     }
   }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( priest().talents.surge_of_light.enabled() )
+      priest().buffs.surge_of_light->trigger();
+  }
 };
 
 struct priest_spell_t : public priest_action_t<spell_t>
@@ -1523,12 +1657,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool affected_by_shadow_weaving;
   bool triggers_atonement;
   bool ignores_automatic_mastery;
+  int idol_of_nzoth_execute_stacks;
+  int idol_of_nzoth_tick_stacks;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
       triggers_atonement( false ),
-      ignores_automatic_mastery( false )
+      ignores_automatic_mastery( false ),
+      idol_of_nzoth_execute_stacks( 0 ),
+      idol_of_nzoth_tick_stacks( 0 )
   {
     weapon_multiplier = 0.0;
 
@@ -1592,6 +1730,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->expire();
       }
     }
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.idol_of_nzoth.enabled() &&
+         idol_of_nzoth_execute_stacks > 0 )
+    {
+      priest().trigger_idol_of_nzoth( target, idol_of_nzoth_execute_stacks );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1610,7 +1754,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
       }
 
       if ( triggers_atonement && ( s->chain_target == 0 || split_aoe_damage ) )
+      {
         p().trigger_atonement( s, composite_atonement_multiplier( s ) );
+      }
+
+      // Double check that this cant proc while the buff or debuff is active
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.idol_of_yshaarj.enabled() &&
+           !priest().buffs.call_of_the_void->check() && !priest().buffs.overburdened_mind->check() )
+      {
+        if ( priest().rppm.idol_of_yshaarj->trigger() )
+        {
+          priest().buffs.call_of_the_void->trigger();
+        }
+      }
     }
   }
 
@@ -1621,6 +1777,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( triggers_atonement && result_is_hit( d->state->result ) )
     {
       p().trigger_atonement( d->state, composite_atonement_multiplier( d->state ) );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && priest().talents.shadow.idol_of_nzoth.enabled() &&
+         idol_of_nzoth_tick_stacks > 0 )
+    {
+      priest().trigger_idol_of_nzoth( d->target, idol_of_nzoth_tick_stacks );
     }
   }
 

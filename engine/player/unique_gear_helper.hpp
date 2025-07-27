@@ -31,10 +31,13 @@ namespace unique_gear
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_callback,
-                              bool fallback = false );
+                              bool fallback = false, wowv_t min_build = wowv_t(),
+                              wowv_t max_build = wowv_t( UINT8_MAX ) );
 // register multiple IDs to the same callback
 void register_special_effect( std::initializer_list<unsigned> spell_ids,
-                              std::function<void( special_effect_t& )> init_callback, bool fallback = false );
+                              std::function<void( special_effect_t& )> init_callback, bool fallback = false,
+                              wowv_t min_build = wowv_t(),
+                              wowv_t max_build = wowv_t( UINT8_MAX ) );
 
 // New-style special effect registering function
 template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>

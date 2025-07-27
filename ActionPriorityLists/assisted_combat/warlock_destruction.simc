@@ -1,0 +1,49 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/summon_pet
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/soul_fire
+actions.precombat+=/incinerate
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=grimoire_of_sacrifice,if=pet.any.active&buff.grimoire_of_sacrifice.down
+actions.assisted_combat+=/cataclysm
+actions.assisted_combat+=/wither,if=!dot.immolate.ticking&!talent.wither
+actions.assisted_combat+=/wither,if=!dot.wither.ticking&talent.wither
+actions.assisted_combat+=/infernal_bolt,if=buff.infernal_bolt.up&buff.infernal_bolt.remains<=5
+actions.assisted_combat+=/incinerate,if=buff.infernal_bolt.up&buff.infernal_bolt.remains<=5
+actions.assisted_combat+=/malevolence
+actions.assisted_combat+=/channel_demonfire,if=target.distance<=40
+actions.assisted_combat+=/rain_of_fire,if=active_enemies>3
+actions.assisted_combat+=/rain_of_fire,if=active_enemies>3
+actions.assisted_combat+=/soul_fire,if=buff.decimation.up&soul_shard<=4
+actions.assisted_combat+=/shadowburn,if=active_enemies<=2
+actions.assisted_combat+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5&active_enemies<=2
+actions.assisted_combat+=/ruination,if=active_enemies<=2&soul_shard>=4,cooldown_allow_casting_success=1
+actions.assisted_combat+=/chaos_bolt,if=active_enemies<=2&soul_shard>=4,cooldown_allow_casting_success=1
+actions.assisted_combat+=/ruination,if=active_enemies<=2&soul_shard>=2&buff.ritual_of_ruin.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/chaos_bolt,if=active_enemies<=2&soul_shard>=2&buff.ritual_of_ruin.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/ruination,if=active_enemies<=2
+actions.assisted_combat+=/chaos_bolt,if=active_enemies<=2
+actions.assisted_combat+=/dimensional_rift
+actions.assisted_combat+=/infernal_bolt,if=buff.backdraft.stack>=2
+actions.assisted_combat+=/incinerate,if=buff.backdraft.stack>=2
+actions.assisted_combat+=/conflagrate,if=charges>=2
+actions.assisted_combat+=/infernal_bolt,cooldown_allow_casting_success=1
+actions.assisted_combat+=/incinerate,cooldown_allow_casting_success=1
+actions.assisted_combat+=/infernal_bolt
+actions.assisted_combat+=/incinerate
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/use_items
+actions.cooldowns+=/summon_infernal

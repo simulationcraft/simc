@@ -1,0 +1,44 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/battle_stance,toggle=on
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+actions+=/auto_attack
+actions+=/charge,if=time<=0.5|movement.distance>5
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=whirlwind,if=active_enemies>3&buff.merciless_bonegrinder.up&buff.sweeping_strikes.up
+actions.assisted_combat+=/thunder_clap,if=!dot.rend.ticking&active_enemies>3&talent.rend
+actions.assisted_combat+=/rend,if=!dot.rend.ticking
+actions.assisted_combat+=/sweeping_strikes,if=active_enemies>2
+actions.assisted_combat+=/thunderous_roar,if=target.distance<=10&dot.rend.ticking
+actions.assisted_combat+=/ravager
+# (Overridden from 'target.distance<=5')
+actions.assisted_combat+=/colossus_smash,if=target.distance<=6
+actions.assisted_combat+=/champions_spear,if=target.distance<=25
+# (Overridden from 'target.distance<=5&talent.cleave&active_enemies>3')
+actions.assisted_combat+=/whirlwind,if=target.distance<=6&talent.cleave&active_enemies>3
+actions.assisted_combat+=/demolish
+actions.assisted_combat+=/bladestorm,if=target.distance<=10
+actions.assisted_combat+=/overpower,if=buff.overpower.down
+actions.assisted_combat+=/overpower,if=buff.overpower.stack<=1
+actions.assisted_combat+=/mortal_strike
+actions.assisted_combat+=/skullsplitter
+actions.assisted_combat+=/execute
+actions.assisted_combat+=/whirlwind,if=active_enemies>3
+actions.assisted_combat+=/slam,if=rage>=50
+actions.assisted_combat+=/heroic_throw,if=target.distance>15
+actions.assisted_combat+=/mortal_strike
+actions.assisted_combat+=/slam
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/avatar

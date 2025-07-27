@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.60257 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -44,7 +44,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
                  : 741
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effects: #5, #6), Enhancement Shaman (137041 effects: #13, #20), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Surging Shields (382033 effect#4), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Therazane's Resilience (1217622 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #12, #13), Elemental Shaman (137040 effects: #5, #6), Enhancement Shaman (137041 effects: #13, #20), Elemental Fury (343190 effect#1), Nature's Fury (381655 effect#1), Surging Shields (382033 effect#4), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Therazane's Resilience (1217622 effect#1)
 Family Flags     : 41, 70
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -371,13 +371,12 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Earthshatter (468626 effect#1)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Earthshatter (468626 effect#1)
 Family Flags     : 20, 39, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=3248)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.49569 | PvP Coefficient: 0.787 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (5.0886 -> 5.49569), PvP Coefficient (0.85 -> 0.787)
 Description      : Instantly shocks the target with concussive force, causing $s1 Nature damage.$?a190493[
 
 Earth Shock will consume all stacks of Fulmination to deal extra Nature damage to your target.][]
@@ -809,7 +808,7 @@ Velocity         : 50 yards/sec
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
 Family Flags     : 39, 79, 96, 126
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -826,7 +825,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Surge of Power (395457 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Surge of Power (395457 effect#1), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effect#2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
 Family Flags     : 39, 63, 79, 126
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Always Line of Sight (185), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
@@ -853,7 +852,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 15, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=120544)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Unknown(87)
@@ -876,7 +875,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 588
 Category Cooldown: 30 seconds
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Traveling Storms (204403 effect#1), Crackling Surge (224127 effects: #1, #2), Thundershock (378779 effect#1), Nature's Fury (381655 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Traveling Storms (204403 effect#1), Crackling Surge (224127 effects: #1, #2), Thundershock (378779 effect#1), Nature's Fury (381655 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 45, 126
 Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
@@ -1041,6 +1040,7 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
+Hotfixed         : Max stacks (9 -> 0), Proc Stacks (0 -> 9), Attributes
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1061,6 +1061,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Proc Trigger Spell (42): Water Shield
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25 | Trigger Spell: 52128 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42), SP Coefficient (1 -> 0.25), Base Value (0 -> 40), Trigger Spell (0 -> 52128)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2015.248 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
@@ -1245,7 +1246,6 @@ Stance Mask      : 0x00008000
 Affecting Spells : Time Spiral (375256 effect#1)
 Family Flags     : 104
 Attributes       : Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=52248)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
@@ -1752,7 +1752,7 @@ Family Flags     : 41, 87
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3411 | PvP Coefficient: 1.2 | Radius: 0 - 11 yards | Target: Unknown(87) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3411 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: Unknown(87) -> At Friendly in Area (31)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -1990,7 +1990,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Requires Equipped Inv Types (276), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87561)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Stat: Agi | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only Mail armor.
 
 Name             : Mail Specialization (desc=Passive) (id=86100) [Passive, Hidden] 
@@ -2006,7 +2006,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Requires Equipped Inv Types (276), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87562)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
 Name             : Mail Specialization (desc=Passive) (id=86108) [Passive, Hidden] 
@@ -2022,7 +2022,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Requires Equipped Inv Types (276), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87579)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Stat: Int | Target: Self (1)
 Description      : Increases your Intellect by $s1% while wearing only Mail armor.
 
 Name             : Dual Wield (id=86629) [Spell Family (11), Passive, Hidden] 
@@ -2379,6 +2379,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 0x6 | Target: Self (1)
 #14 (id=1189101) : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 0x6 | Target: Self (1)
+#15 (id=1239481) : Apply Aura (6) | Unknown(285)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
 Description      : Transform into an Air Ascendant for $114051d, immediately dealing $344548s1 Nature damage to any enemy within $344548A1 yds, reducing the cooldown and cost of Stormstrike by $s9%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $114089r yd range.$?s384411[
 
 While Ascendance is active, generate $s1 Maelstrom Weapon $lstack:stacks; every $384437t1 sec.][]
@@ -2680,7 +2682,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 737
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20), Enhancement Shaman (137041 effects: #1, #2, #5, #12, #22, #23), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#3), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 24, 39, 56, 98, 103, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
 Effects          :
@@ -2798,7 +2800,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #9, #20), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Improved Flametongue Weapon (382028 effect#1), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 24, 39, 79, 103, 108, 126
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -2961,10 +2963,14 @@ Effects          :
                    Family Flags: 31
 #11 (id=883953)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 1638 (Label)
-#12 (id=915672)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 1739 (Label) | Target: Self (1)
-#13 (id=1006576) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 23 | Misc Value 2: 1739 (Label) | Target: Self (1)
+#12 (id=915672)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Earth Shield (379)
+                   Family Flags: 70
+#13 (id=1006576) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Earth Shield (379)
+                   Family Flags: 70
 #14 (id=1014668) : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0
 #15 (id=1014669) : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3064,7 +3070,6 @@ Effects          :
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645)
                    Family Flags: 98, 108
-Hotfixed         : Base Value (12 -> 21)
 #10 (id=1012733) : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Chain Lightning (188443)
@@ -3472,7 +3477,7 @@ Effects          :
                    Family Flags: 126
 Description      : $@spelldesc192249
 
-Name             : Storm Elemental (id=157319) [Spell Family (11)] 
+Name             : Primal Storm Elemental (id=157319) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -3485,7 +3490,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Affecting Spells : Call of Flame (338303 effect#1), Everlasting Elements (462867 effect#1)
 Family Flags     : 124
-Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
+Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=219302)   : Summon (28)
@@ -3517,7 +3522,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
                  : 292
-Affecting Spells : Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 126
 Attributes       : Not Shapeshifted (16), AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
 Effects          :
@@ -3539,7 +3544,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
                  : 292
-Affecting Spells : Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -3565,7 +3570,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
                  : 292
-Affecting Spells : Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Channel Interrupt: Action (2), Moving (3)
@@ -3771,7 +3776,7 @@ Labels           : 16: Class Spells
                  : 3924: Elemental Fury (60188 effect#2)
                  : 3983
                  : 4013: Stormcaller (454021 effect#3)
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 126
 Attributes       : No Reflection (39), Not In Spellbook (143), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -3863,7 +3868,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1183: Crash Lightning (333964 effect#1), Electrostatic Wager (1223332 effect#1)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Electrostatic Wager (1223410)
 Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -3988,7 +3993,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 4639
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effects: #3, #4, #16), Elemental Shaman (137040 effects: #1, #2, #12, #22), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Stormkeeper (205495 effects: #1, #3), Crackling Surge (224127 effects: #1, #2), Lightning Bolt (318044 effect#1), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Jackpot! (1218612 effect#1)
 Family Flags     : 0, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
 Effects          :
@@ -4018,7 +4023,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 737
                  : 1406
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18, #27, #28), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Earth (453406 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Erupting Lava (468574 effects: #1, #4, #5)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18, #27, #28), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Earth (453406 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Erupting Lava (468574 effects: #1, #4, #5)
 Triggered By     : Flame Shock (470411)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Aura Never Bounces (148), Limit N (165), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow during spell override (404), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -4081,7 +4086,7 @@ Category         : 85 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25), Enhancement Shaman (137041 effects: #1, #2, #5, #24), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Summon Lightning Elemental (191716 effects: #2, #3), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effect#3), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #6), Elemental Shaman (137040 effects: #1, #2, #10, #11, #25), Enhancement Shaman (137041 effects: #1, #2, #5, #24), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Summon Lightning Elemental (191716 effects: #2, #3), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Crackling Surge (224127 effects: #1, #2), Lightningburn (263792 effect#1), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Crashing Storms (334308 effect#2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #2, #3), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Crackling Thunder (409834 effect#2), Primal Fracture (410018 effect#2), Initial Shaman (417374 effects: #1, #2), Ancestral Swiftness (443454 effects: #2, #3), Stormcaller (454021 effects: #1, #2), Voltaic Surge (454919 effect#1), Arc Discharge (455097 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Arc Discharge (470532 effects: #1, #2), Enhancement Shaman (1214207 effect#3), Jackpot! (1218612 effect#1)
 Family Flags     : 1, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
@@ -4324,7 +4329,7 @@ Category         : 19 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 126
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -4339,7 +4344,7 @@ Spell Type       : Magic
 Resource         : 0.15% Base Mana (0) (id=10368)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 126
 Attributes       : Enforce Facing on Primary Target Only (351), Chain by Most Hit (440)
 Effects          :
@@ -4556,7 +4561,7 @@ Max Targets      : 1
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Energized Shield (24499 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Surging Shields (382033 effects: #1, #2, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Lightning Shield (192106)
 Family Flags     : 10, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Disable Aura While Dead (226), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
@@ -4755,7 +4760,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 4620: Crash Lightning (187878 effect#2)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effects: #2, #3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Storm's Eye (263795 effect#1), Crashing Storms (334308 effect#1), Nature's Fury (381655 effect#1), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Shaman Enhancement 11.0 Class Set 2pc (454838 effect#1), Voltaic Surge (454919 effect#1), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
@@ -5311,7 +5316,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294502)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.667 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #2 (id=1172085)  : Apply Aura (6) | Dummy (4)
@@ -5455,7 +5460,7 @@ Effects          :
                    Family Flags: 76
 #6 (id=363023)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self (1)
-#7 (id=1185735)  : Unknown(293)
+#7 (id=1185735)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 | Target: Self (1)
 Description      : $@spelldesc201845
 Tooltip          : Stormstrike cooldown has been reset$?$?a319930[ and will deal $319930w1% additional damage as Nature][].
@@ -6661,7 +6666,7 @@ Labels           : 16: Class Spells
                  : 1681: Master of the Elements (16166 effect#2)
 Triggered By     : Master of the Elements (16166)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cannot Be Stolen (134), Allow Cast While Casting (135), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=486101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6889,7 +6894,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Triggered By     : Storm Elemental (157299), Storm Elemental (157319), Lesser Storm Elemental (462990), Lesser Storm Elemental (462993)
+Triggered By     : Storm Elemental (157299), Primal Storm Elemental (157319), Lesser Storm Elemental (462990), Lesser Storm Elemental (462993)
 Attributes       : Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=706799)   : Apply Aura (6) | Modify All Haste% (193)
@@ -6945,7 +6950,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Stormfury (157375)
 Family Flags     : 39, 126
 Attributes       : Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
@@ -7916,7 +7921,7 @@ Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Fury (60188 effect#1), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 82, 121, 126
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), No Aura Icon (60), Active Threat (94), AI Doesn't Face Target (179), No Aura Log (202), Taps immediately (215), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Channel Interrupt: Action (2), Use Item (13)
@@ -7936,7 +7941,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1679: Nature's Fury (381655 effect#2)
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 56, 82, 121, 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Channel Interrupt: Action (2), Use Item (13)
@@ -7958,7 +7963,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1679: Nature's Fury (381655 effect#2)
 Mechanic         : Stun
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 56, 82, 121, 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Channel Interrupt: Action (2), Use Item (13)
@@ -8136,7 +8141,7 @@ Labels           : 16: Class Spells
                  : 1678: Improved Flametongue Weapon (382028 effect#3)
 Proc Chance      : 101%
 Proc Flags       : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Helpful Periodic
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 24, 39, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
@@ -8631,7 +8636,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1046
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 126
 Attributes       : Active Threat (94), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269)
 Effects          :
@@ -9642,7 +9647,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=836805)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Storm Elemental (157299), Storm Elemental (157319), Fire Elemental (188592), Storm Elemental (192249), Fire Elemental (198067), Fire Elemental (263819), Lesser Storm Elemental (462990), Lesser Fire Elemental (462992), Lesser Storm Elemental (462993)
+                   Affected Spells: Storm Elemental (157299), Primal Storm Elemental (157319), Fire Elemental (188592), Storm Elemental (192249), Fire Elemental (198067), Fire Elemental (263819), Lesser Storm Elemental (462990), Lesser Fire Elemental (462992), Lesser Storm Elemental (462993)
                    Family Flags: 55, 124
 Description      : $?s192249[Storm Elemental][Fire Elemental] lasts |cFFFFFFFF$s1%|r longer.
 
@@ -10054,7 +10059,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Raging Maelstrom (384143 effect#1)
 Family Flags     : 49
-Attributes       : No Threat (42), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : No Threat (42), Not an Action (92), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=868298)   : Apply Aura (6) | Dummy (4)
@@ -10092,7 +10097,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1679: Nature's Fury (381655 effect#2)
                  : 4013: Stormcaller (454021 effect#3)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Ascendance (114051)
 Family Flags     : 39, 56, 102, 126
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -10385,16 +10390,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.1 | Radius: 0 - 15 yards | Target: Unknown(87) -> At Friendly in Area (31)
 Description      : $@spelldesc324386
 
-Name             : [DNT] Test Effect 1 (id=357917) [Spell Family (11), Hidden] 
+Name             : [DNT] Test Effect 1 (id=357917) [Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 4 seconds
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 117
-                 : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=892832)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
@@ -10775,7 +10776,7 @@ Labels           : 16: Class Spells
                  : 1679: Nature's Fury (381655 effect#2)
                  : 2938: Elemental Shaman (137040 effect#29), Enhancement Shaman (137041 effect#21)
                  : 3924: Elemental Fury (60188 effect#2)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 24, 56, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Ignore Line of Sight (66), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
@@ -11206,9 +11207,9 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2676: Overflowing Shores (383222 effect#2), Surging Totem (455630 effect#9)
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 126
-Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Target Procs (113), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Not an Action (92), Suppress Target Procs (113), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1007012)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6725 | PvP Coefficient: 1.3 | Radius: 0 - 11 yards | Target: Unknown(87) -> At Enemy in Area (16)
@@ -11441,13 +11442,12 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 1679: Nature's Fury (381655 effect#2)
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Earthshatter (468626 effect#1)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lava Shock (273453 effect#1), Bottle of Swirling Maelstrom (329580 effect#4), Nature's Fury (381655 effect#1), Swelling Maelstrom (381707 effect#2), Eye of the Storm (381708 effect#1), Initial Shaman (417374 effects: #1, #2), Maelstrom Supremacy (443447 effect#1), Shaman Elemental 11.0 Class Set 2pc (453684 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Earthshatter (468626 effect#1)
 Family Flags     : 20, 39, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012742)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.49569 | PvP Coefficient: 0.787 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (5.0886 -> 5.49569), PvP Coefficient (1 -> 0.787)
 Description      : Instantly shocks the target with concussive force, causing ${$381726s1/100*$s1} Nature damage.
 
 Name             : Mountains Will Fall (id=381726) [Passive, Hidden] 
@@ -11806,7 +11806,7 @@ Family Flags     : 41, 81
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1013214)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.315 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.315 | PvP Coefficient: 1.2 | Target: Friendly (21)
 Description      : $@spelldesc382021
 Tooltip          : Heals $w1 every $t1 sec.
 
@@ -12500,7 +12500,7 @@ Effects          :
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
 #2 (id=1015161)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.25 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
                    Family Flags: 100
 #3 (id=1076485)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
@@ -12656,7 +12656,7 @@ Family Flags     : 16, 39, 58
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1016910)  : Trigger Spell (64): Doom Winds
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 466772 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 466772 | Target: Self (1)
 #2 (id=1183511)  : Trigger Spell (64): Doom Winds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 469270 | Target: At Self (18)
 Description      : Unleash a devastating storm around yourself, dealing $469270s1 Stormstrike damage every $466772s5 sec to nearby enemies for $466772d.
@@ -12765,6 +12765,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+Triggered By     : Ascendance (114051)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1017055)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -12862,7 +12863,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Sundering (197214), Alpha Wolf (198455), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Echoing Shock (320125), Fire Nova (333977), Ice Strike (342240), Primordial Wave (375984), Doom Winds (384352), Tremor (455622), Doom Winds (466772), Sundering (467283), Doom Winds (469270), Ice Strike (470194), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 24, 58
-#3 (id=1185734)  : Unknown(293)
+#3 (id=1185734)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 | Target: Self (1)
 Description      : $@spelldesc335899
 Tooltip          : Damage dealt by your Physical and Frost abilities increased by $w1%.
@@ -12890,7 +12891,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 126
 Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
@@ -13242,7 +13243,7 @@ Tooltip          : Critical Strike increased by $w1%.
 Name             : Mana Spring (id=395192) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
-Spell Type       : Magic
+Spell Type       : None
 Spell Level      : 10
 Range            : 100 yards
 Labels           : 16: Class Spells
@@ -13425,7 +13426,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Triggered By     : Spiritwalker's Tidal Totem (404522)
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1052127)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -14218,7 +14219,7 @@ Labels           : 16: Class Spells
                  : 1679: Nature's Fury (381655 effect#2)
                  : 4012: Stormcaller (454021 effect#4)
                  : 4013: Stormcaller (454021 effect#3)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Tempest Strikes (428071)
 Family Flags     : 39, 56, 126
 Effects          :
@@ -14275,11 +14276,11 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #3 (id=1144386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #4 (id=1144387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
@@ -14459,7 +14460,7 @@ Effects          :
                    Affected Spells: Earth Shock (8042), Earthquake (61882), Earthquake (77478), Elemental Blast (117014), Elemental Blast Overload (120588), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740), Elemental Blast (344645), Earth Shock Overload (381725), Earthquake (462620)
                    Family Flags: 20, 83, 98, 108
 #2 (id=1144457)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Wellspring (197995), Wellspring (197997), Downpour (207778), Downpour (462603)
                    Family Flags: 7, 8, 33, 51, 80
 Description      : $?a137040[Increases the damage of Earth Shock, Elemental Blast, and Earthquake by $s1%.
@@ -14480,7 +14481,7 @@ Effects          :
 #1 (id=1139368)  : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 25 | Scaled Value: 25 | Resource: maelstrom | Target: Self (1)
 #2 (id=1144361)  : Apply Aura (6) | Modify Mana Pool% (419)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1159296)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Tidal Waves (53390)
@@ -14543,7 +14544,7 @@ Effects          :
 #1 (id=1139371)  : Apply Aura (6) | Dummy (4)
                    Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
 #2 (id=1142670)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -2000 | Scaled Value: -2000 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.6667 | Target: Self (1)
 Description      : When an Ancestor is called, they reduce the cooldown of $?a137040[Fire Elemental and Storm Elemental by ${$s1/-1000} sec.][Riptide by ${$s2/-1000} sec.]
 
 Name             : Ancestral Swiftness (id=443454) [Spell Family (11)] 
@@ -14599,7 +14600,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -14608,7 +14609,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1140967)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.3 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.875 | PvP Coefficient: 0.8 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #2 (id=1145390)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Chain Friendly (45)
@@ -14906,7 +14907,7 @@ Effects          :
 #4 (id=1176666)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Misc Value 2: 2626 (Label) | Target: Self (1)
                    Affected Spells (Label): Cloudburst Totem (157504)
-Description      : $?a137041[While Hot Hand is active Lash Lava shatters the earth, causing a Sundering at $s1% effectiveness.
+Description      : $?a137041[While Hot Hand is active Lava Lash shatters the earth, causing a Sundering at $s1% effectiveness.
 
 Sunderings from this effect do not Incapacitate.][Your Healing Stream Totems now also heals a second ally at $s3% effectiveness. 
 
@@ -15024,12 +15025,10 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=1145367)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.73988 | PvP Coefficient: 0.38 | Target: Any Target (25)
-Hotfixed         : SP Coefficient (1.51294 -> 1.73988), PvP Coefficient (0.44 -> 0.38)
 #2 (id=1146251)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1146252)  : Dummy (3)
                    Base Value: 38 | Scaled Value: 38
-Hotfixed         : Base Value (44 -> 38)
 Description      : Hurls molten lava at the target, critically dealing $?a134735[${$s1*(1+$s3/100)}][${$s1*(1+$s2/100)}] Fire damage.
 
 Name             : Chain Lightning (id=447425) [Spell Family (11)] 
@@ -15160,7 +15159,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Enhancement Shaman (1214207 effects: #4, #5, #10, #11), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Enhancement Shaman (1214207 effects: #4, #5, #10, #11), Jackpot! (1218612 effect#1)
 Family Flags     : 39, 56, 107, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217)
 Effects          :
@@ -15450,7 +15449,6 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Mechanic         : Snare
 Triggered By     : Electroshock (454022)
 Attributes       : Ignore Line of Sight (66), Suppress Caster Procs (112), Show Mechanic as Combat Text (213), Aura Points On Client (268)
 Effects          :
@@ -15787,7 +15785,7 @@ Labels           : 16: Class Spells
                  : 3924: Elemental Fury (60188 effect#2)
                  : 4013: Stormcaller (454021 effect#3)
                  : 4065: Enhancement Shaman (137041 effect#30), Enhancement Shaman (1214207 effect#14), Enhancement Shaman (1214207 effect#15)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Awakening Storms (455129)
 Family Flags     : 39, 56, 126
 Effects          :
@@ -16150,7 +16148,7 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1164066)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.5 | Target: Self (1)
 Description      : $@spelldesc445034
 
 Name             : Chain Heal (id=458235) [Spell Family (11), Hidden] 
@@ -16195,7 +16193,7 @@ Labels           : 16: Class Spells
                  : 1679: Nature's Fury (381655 effect#2)
                  : 3022
                  : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 126
 Effects          :
 #1 (id=1164134)  : School Damage (2): nature
@@ -16422,7 +16420,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Triggered By     : Master of the Elements (462375)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cannot Be Stolen (134), Allow Cast While Casting (135), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1172079)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -16838,7 +16836,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3945: Enhanced Imbues (462796 effect#9)
                  : 4013: Stormcaller (454021 effect#3)
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 126
 Attributes       : Do Not Display Range (126), Not In Spellbook (143)
 Effects          :
@@ -17193,7 +17191,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1173081)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Storm Elemental (157299), Storm Elemental (157319), Fire Elemental (188592), Earth Elemental (188616), Summon Lightning Elemental (191716), Storm Elemental (192249), Fire Elemental (198067), Earth Elemental (198103), Fire Elemental (263819), Lesser Storm Elemental (462990), Lesser Fire Elemental (462992), Lesser Storm Elemental (462993)
+                   Affected Spells: Storm Elemental (157299), Primal Storm Elemental (157319), Fire Elemental (188592), Earth Elemental (188616), Summon Lightning Elemental (191716), Storm Elemental (192249), Fire Elemental (198067), Earth Elemental (198103), Fire Elemental (263819), Lesser Storm Elemental (462990), Lesser Fire Elemental (462992), Lesser Storm Elemental (462993)
                    Family Flags: 54, 55, 71, 124
 #2 (id=1218078)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 4739 (Label) | Target: Self (1)
@@ -17311,7 +17309,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #31), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #31), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Jackpot! (1218612 effect#1)
 Family Flags     : 39, 56, 64, 79, 126
 Attributes       : Always AOE Line of Sight (186), Doesn't Reset Swing Timer if Instant (217)
 Effects          :
@@ -17412,7 +17410,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=1177886)  : School Damage (2): elemental
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.99562 | PvP Coefficient: 0.38 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.60489 -> 2.99562), PvP Coefficient (0.44 -> 0.38)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.
 
 Name             : Windfury (id=466440) [Spell Family (11), Hidden] 
@@ -17547,7 +17544,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1679: Nature's Fury (381655 effect#2)
                  : 4013: Stormcaller (454021 effect#3)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Elemental Rebalancers (208777 effect#1), Crackling Surge (224127 effects: #1, #2), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 102, 126
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -17832,7 +17829,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 4622: Winning Streak! (1218616 effect#2)
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Doom Winds (384352)
 Family Flags     : 39, 56, 58, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -18057,7 +18054,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 4143
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
@@ -18173,7 +18170,7 @@ Labels           : 16: Class Spells
                  : 737
                  : 1406
                  : 4639
-Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18, #27, #28), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Earth (453406 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Erupting Lava (468574 effects: #1, #4, #5)
+Affecting Spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4, #17, #18, #27, #28), Elemental Shaman (137040 effects: #1, #2, #16, #17), Enhancement Shaman (137041 effects: #1, #2, #8, #14, #15), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Elemental Bellows (184919 effects: #1, #2, #3), Fire Elemental (188592 effects: #2, #3, #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Lashing Flames (334168 effect#1), Skybreaker's Fiery Demise (336734 effect#3), Maelstrom (343725 effect#11), Flames of the Cauldron (378266 effects: #1, #2), Nature's Fury (381655 effect#1), Improved Flametongue Weapon (382028 effects: #1, #2), Fire and Ice (382886 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Whirling Earth (453406 effect#1), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #2, #3, #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Erupting Lava (468574 effects: #1, #4, #5)
 Family Flags     : 28, 39, 56, 103, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Aura Never Bounces (148), Limit N (165), Spell Haste Affects Periodic (173), Do Not Consume Resources (197), Periodic Can Crit (265), Aura Points On Client (268), Allow during spell override (404), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -18273,7 +18270,6 @@ Effects          :
                    Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : Base Value (-10 -> 17)
 #6 (id=1213820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
@@ -18290,12 +18286,10 @@ Hotfixed         : Base Value (-10 -> 17)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : Base Value (-15 -> 0)
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : Base Value (0 -> -2)
 #12 (id=1215591) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 4700 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455129)
@@ -18305,19 +18299,15 @@ Hotfixed         : Base Value (0 -> -2)
 #14 (id=1235101) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4065 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455130)
-Hotfixed         : NEW EFFECT
 #15 (id=1235102) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 4065 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455130)
-Hotfixed         : NEW EFFECT
 #16 (id=1235103) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 5149 (Label) | Target: Self (1)
                    Affected Spells (Label): Stormcaller (454021)
-Hotfixed         : NEW EFFECT
 #17 (id=1235104) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Misc Value 2: 5149 (Label) | Target: Self (1)
                    Affected Spells (Label): Stormcaller (454021)
-Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -18522,10 +18512,12 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-99 -> -8)
 #3 (id=1201819)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-99 -> -8)
 #4 (id=1201820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
@@ -18538,10 +18530,12 @@ Effects          :
                    Base Value: -9 | Scaled Value: -9 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-99 -> -9), Affects Spells
 #7 (id=1201823)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -9 | Scaled Value: -9 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+Hotfixed         : Base Value (-99 -> -9), Affects Spells
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
@@ -18635,7 +18629,7 @@ Spell Type       : Melee
 Labels           : 16: Class Spells
                  : 292
                  : 4353
-Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effect#2), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effect#2), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Triggered By     : Primordial Storm (1218090)
 Family Flags     : 39, 56, 58, 125, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Allow Class Ability Procs (416)
@@ -18835,6 +18829,22 @@ Tooltip          : Transformed into a powerful Fire Ascendant, empowering your M
 
 Haste increased by $w3%.][]
 
+Name             : Storm Lunge (id=1221246) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 5 yards
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Proc Chance      : 101%
+Attributes       : Do Not Sheath (18), Aura Points On Client (268), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1207665)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Target: Self (1)
+Description      : $@spelldesc196884
+
 Name             : Electrostatic Wager (id=1223332) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
@@ -18896,6 +18906,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187874 | Target: Self (1)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $1223332w1%.
+
+Name             : Single-Button Assistant (id=1229376) 
+Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker
+School           : Physical
+Spell Type       : None
+Range            : 30 yards
+Cast Time        : 2 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Is Ability (4), Spellbook Hidden Until Overridden (335), Displayed Outside Of Spellbook (432)
+Effects          :
+#1 (id=1220649)  : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
+Description      : Casts damaging abilities for use in combat, rotating through them based on priority.
+
+The global cooldown of abilities used through the Single-Button Assistant is $s1% longer.
 
 Name             : Elemental Shaman (id=1231772) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Shaman

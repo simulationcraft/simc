@@ -225,7 +225,7 @@ struct priest_pet_melee_t : public melee_attack_t
       mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
 
     // TODO: Check if applies
-    //if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
+    // if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
     //     ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
     //  mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
 
@@ -293,9 +293,13 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
                      p().o().talents.archon.perfected_form );
       parse_effects( p().o().buffs.shadowform );
-      parse_effects( p().o().buffs.devoured_pride );
       parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
                      p().o().talents.archon.perfected_form );  // Buffs non-periodic spells
+
+      if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+      {
+        parse_effects( p().o().buffs.devoured_pride );
+      }
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -554,7 +558,7 @@ struct void_flay_t final : public priest_pet_spell_t
     gcd_type    = gcd_haste_type::SPELL_HASTE;
     trigger_gcd = 1.5_s;
 
-    damage_mul = data().effectN( 2 ).percent();
+    damage_mul           = data().effectN( 2 ).percent();
     affected_by_reveries = false;
   }
 
@@ -821,15 +825,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
     triggers_atonement         = true;
 
-    // This is hard coded in the spell
-    // spcoeff * $?a137032[${0.326139}][${0.442}]
-    // spell_power_mod.direct *= p.direct_power_mod;
-
-    // Negative modifier used for point scaling
-    // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
-
-    // Tuning modifier effect
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -841,9 +837,9 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     return m;
   }
 
-  void trigger( player_t* target, double mod_ )
+  void trigger( player_t* target, double deaths_torment_mod )
   {
-    mod = mod_;
+    mod = deaths_torment_mod;
 
     set_target( target );
     execute();
@@ -878,19 +874,19 @@ struct inescapable_torment_t final : public priest_pet_spell_t
     base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
   }
 
-  void trigger( player_t* target, bool echo, double mod )
+  void trigger( player_t* target, bool deaths_torment_echo, double deaths_torment_mod )
   {
     duration = data().effectN( 2 ).time_value();
 
-    if ( echo )
+    if ( deaths_torment_echo )
     {
-      duration *= mod;
+      duration *= deaths_torment_mod;
     }
 
     set_target( target );
     execute();
 
-    damage->trigger( target, mod );
+    damage->trigger( target, deaths_torment_mod );
   }
 
   void execute() override
@@ -984,6 +980,8 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
+
+    apply_affecting_aura( p.o().talents.shadow.subservient_shadows );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1076,6 +1074,8 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+
+    apply_affecting_aura( p.o().talents.shadow.subservient_shadows );
   }
 
   // You only get the Insanity on your main target
@@ -1207,10 +1207,14 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
   if ( get_current_main_pet().n_active_pets() > 0 )
   {
     auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
-    buffs.devoured_pride->extend_duration( this, extend );
-    buffs.devoured_anger->extend_duration( this, extend );
-    buffs.devoured_despair->extend_duration( this, extend );
     buffs.shadow_covenant->extend_duration( this, extend );
+
+    if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
+    {
+      buffs.devoured_pride->extend_duration( this, extend );
+      buffs.devoured_anger->extend_duration( this, extend );
+      buffs.devoured_despair->extend_duration( this, extend );
+    }
 
     for ( auto a_pet : get_current_main_pet() )
     {
@@ -1223,8 +1227,10 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
 
 void priest_t::trigger_idol_of_yshaarj( player_t* target )
 {
-  if ( !talents.shadow.idol_of_yshaarj.enabled() )
+  if ( !talents.shadow.idol_of_yshaarj.enabled() || sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+  {
     return;
+  }
 
   // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
   if ( ( target->buffs.stunned->check() && options.forced_yshaarj_type == "default" ) ||
@@ -1310,15 +1316,26 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
+}
+
+void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
+{
+  // Pet defaults are setup here instead of the constructors because otherwise talents have not been initialized yet and
+  // that is a pain.
+
   // Void Tendril: 377355
   // Void Lasher: 377355
-  auto idol_of_cthun = p.find_spell( 377355 );
+  auto idol_of_cthun  = p.find_spell( 377355 );
+  auto cthun_duration = ( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) ) *
+                        ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() );
+
   // Add 1ms to ensure pet is dismissed after last dot tick.
-  void_tendril.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
-  void_lasher.set_default_duration( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) );
+  void_tendril.set_default_duration( cthun_duration );
+  void_lasher.set_default_duration( cthun_duration );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
-  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
+  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() *
+                                          ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) );
 }
 
 }  // namespace priestspace

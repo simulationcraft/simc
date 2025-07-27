@@ -19,7 +19,6 @@ class_modules/apl/apl_death_knight.hpp
 class_modules/apl/apl_demon_hunter.hpp
 class_modules/apl/apl_evoker.hpp
 class_modules/apl/apl_hunter.hpp
-class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_paladin.hpp
 class_modules/apl/apl_priest.hpp
 class_modules/apl/apl_rogue.hpp
@@ -36,6 +35,7 @@ class_modules/warlock/sc_warlock.hpp
 class_modules/warlock/sc_warlock_pets.hpp
 config.hpp
 dbc/active_spells.hpp
+dbc/assisted_combat.hpp
 dbc/azerite.hpp
 dbc/character_loadout.hpp
 dbc/client_data.hpp
@@ -251,6 +251,7 @@ class_modules/warlock/sc_warlock_actions.cpp
 class_modules/warlock/sc_warlock_init.cpp
 class_modules/warlock/sc_warlock_pets.cpp
 dbc/active_spells.cpp
+dbc/assisted_combat.cpp
 dbc/azerite.cpp
 dbc/character_loadout.cpp
 dbc/client_data.cpp

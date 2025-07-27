@@ -27,6 +27,7 @@ actions.precombat+=/battle_stance,toggle=on
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/charge,if=time=0
+actions+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
 actions+=/use_items
 actions+=/avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2
 actions+=/shield_wall,if=talent.immovable_object.enabled&buff.avatar.down

@@ -41,17 +41,18 @@ head=,id=229262,bonus_id=4800/4786/1527/11996/523,gem_id=213743
 neck=,id=228841,bonus_id=4800/4786/1527/11996/8781,gem_id=213473/213494
 shoulder=,id=229260,bonus_id=4800/4786/1527/11996
 back=,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/10520/8960,enchant_id=7403,crafted_stats=40/36
-chest=,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3
+chest=,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364
 wrist=,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/1808/10520/8960,enchant_id=7385,gem_id=213494,crafted_stats=40/36
 hands=,id=229263,bonus_id=4800/4786/1527/11996
 waist=,id=221101,bonus_id=3170/11996/11964/1808,gem_id=213494
-legs=,id=158341,bonus_id=4786/11359/11996,enchant_id=7534,enchant=sunset_spellthread_3
+legs=,id=158341,bonus_id=4786/11359/11996,enchant_id=7534
 feet=,id=168982,bonus_id=10067/11996/11964,enchant_id=7424
-finger1=,id=231265,bonus_id=4800/4786/1527/11996/8781,enchant_id=7346,enchant=radiant_mastery_3,gem_id=213482/213458
+finger1=,id=231265,bonus_id=4800/4786/1527/11996/8781,enchant_id=7346,gem_id=213482/213458
 finger2=,id=228411,bonus_id=1511/11988/11964,enchant_id=7346,gem_id=228639/228638/228646
 trinket1=,id=230027,bonus_id=4800/4786/1527/11996
 trinket2=,id=230192,bonus_id=1527/11996/11964
-main_hand=,id=232805,bonus_id=4800/4786/1527/11996,enchant_id=7463,enchant=authority_of_radiant_power_3
+main_hand=,id=228901,bonus_id=1527/11996/11964,enchant_id=7460
+off_hand=,id=228889,bonus_id=1527/11996/11964
 
 save=TWW2_Shaman_Elemental.simc
 
@@ -63,22 +64,22 @@ role=attack
 position=back
 talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzMWGAAAAAAAAAAgFYDmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
 
-head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
-neck=gobfathers_gifted_bling,id=228842,ilevel=678,gem_id=213491/213491
-shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,ilevel=675,crafted_stats=49/36
-chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant=crystalline_radiance_3
-wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant=chant_of_armored_avoidance_3
-hands=gale_sovereigns_grasps,id=229263,ilevel=678
-waist=gale_sovereigns_ritual_belt,id=229259,ilevel=678,gem_id=213491
-legs=gale_sovereigns_pantaloons,id=229261,ilevel=678,enchant=stormbound_armor_kit_3
-feet=dubious_tablerunners,id=228883,ilevel=678,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant=radiant_mastery_3
-trinket1=house_of_cards,id=230027,ilevel=678
-trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
+head=gale_sovereigns_charged_hood,id=229262,ilevel=684,gem_id=213743,enchant_id=7933
+neck=semicharmed_amulet,id=228841,ilevel=684,gem_id=213470/213470
+shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=12040/9627/12373/12043/8793/1485/11303,ilevel=681,crafted_stats=49/36,enchant=chant_of_burrowing_rapidity_3
+chest=blazer_of_glory,id=228852,ilevel=684,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=12040/9627/12373/12043/8793/1485/11303,ilevel=681,crafted_stats=49/36,gem_id=213470,enchant=chant_of_armored_speed_3
+hands=gale_sovereigns_grasps,id=229263,ilevel=684
+waist=shalebiter_interlinked_chain,id=159361,ilevel=684,gem_id=213491
+legs=gale_sovereigns_pantaloons,id=229261,ilevel=684,enchant=stormbound_armor_kit_3
+feet=shrapnelridden_sabatons,id=228862,ilevel=684,enchant=scouts_march_3
+finger1=the_jastor_diamond,id=231265,ilevel=684,gem_id=213473/213482,enchant=radiant_haste_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=12376/8781/1533/11964,crafted_stats=49/36,ilevel=684,gem_id=213458/213455,enchant=radiant_haste_3
+trinket1=house_of_cards,id=230027,ilevel=684
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=684
+main_hand=gallywixs_iron_thumb,id=228899,ilevel=684,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,ilevel=684,enchant=authority_of_the_depths_3
 
 save=TWW2_Shaman_Enhancement.simc
 
@@ -90,22 +91,22 @@ role=attack
 position=back
 talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzwCmZmx2MzMD2mZsMbDAAAAAAAAAwGgFzYYjsAzwQDWAwsMZGYZZmZmZYmZGGLzMT2YZYYGAgxA
 
-head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
-neck=strapped_rescuekeg,id=221060,ilevel=678,gem_id=213491/213491
-shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,ilevel=675,crafted_stats=49/36
-chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant=crystalline_radiance_3
-wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant=chant_of_armored_avoidance_3
-hands=gale_sovereigns_grasps,id=229263,ilevel=678
-waist=gale_sovereigns_ritual_belt,id=229259,ilevel=678,gem_id=213491
-legs=chemical_blasters_legguards,id=158341,ilevel=678,enchant=stormbound_armor_kit_3
-feet=treads_of_the_galvanic_skysoarer,id=221035,ilevel=678,enchant=defenders_march_3
-finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant=radiant_mastery_3
-trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
-trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
+head=gale_sovereigns_charged_hood,id=229262,ilevel=684,gem_id=213743,enchant_id=7933
+neck=strapped_rescuekeg,id=221060,ilevel=684,gem_id=213491/213473
+shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=684
+back=consecrated_cloak,id=222817,bonus_id=12040/9627/12373/12043/8793/1485/11303,ilevel=681,crafted_stats=49/36,enchant=chant_of_burrowing_rapidity_3
+chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=684,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=12040/9627/12373/12043/8793/1485/11303,ilevel=681,crafted_stats=49/36,gem_id=213470,enchant=chant_of_armored_speed_3
+hands=gale_sovereigns_grasps,id=229263,ilevel=684
+waist=gale_sovereigns_ritual_belt,id=229259,ilevel=684,gem_id=213470
+legs=chemical_blasters_legguards,id=158341,ilevel=684,enchant=stormbound_armor_kit_3
+feet=dubious_tablerunners,id=228883,ilevel=684,enchant=scouts_march_3
+finger1=the_jastor_diamond,id=231265,ilevel=684,gem_id=213470/213494,enchant=radiant_haste_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=12376/8781/1533/11964,crafted_stats=36/49,ilevel=684,gem_id=213482/213458,enchant=radiant_haste_3
+trinket1=eye_of_kezan,id=230198,ilevel=684
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=684
+main_hand=gallywixs_iron_thumb,id=228899,ilevel=684,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,ilevel=684,enchant=authority_of_the_depths_3
 
 save=TWW2_Shaman_Enhancement_Stormbringer.simc
 

@@ -18,7 +18,7 @@ else
   echo 'Skipped PreRaids, directory not found.'
 fi
 # TWWX profiles generation
-for season in TWW1 TWW2
+for season in TWW1 TWW2 TWW3
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"

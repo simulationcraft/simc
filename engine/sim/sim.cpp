@@ -1473,8 +1473,6 @@ sim_t::sim_t()
     dbc_override( std::make_unique<dbc_override_t>() ),
     timewalk( -1 ),
     scale_to_itemlevel( -1 ),
-    keystone_level( 10 ),
-    keystone_pct_hp( 27 ),
     dungeon_route_smart_targeting( true ),
     challenge_mode( false ),
     scale_itemlevel_down_only( false ),
@@ -3788,8 +3786,8 @@ void sim_t::create_options()
   add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
-  add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
-  add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+  add_option( opt_obsoleted( "keystone_level" ) );
+  add_option( opt_obsoleted( "keystone_pct_hp" ) );
   add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
 
   // Character Creation

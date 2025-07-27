@@ -207,7 +207,9 @@ bool event_manager_t::execute()
   unsigned n_events = 0U;
   std::vector<std::string> debug_list;
   static const unsigned MAX_EVENTS =
-      750U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) );
+      75U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) ) *
+      // Increase max event count for AOE sims slightly (10% per defined enemy)
+      ( 10U + as<unsigned>( sim->target_list.size() ) );
 
   while ( event_t* e = next_event() )
   {

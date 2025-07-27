@@ -91,7 +91,7 @@ double real_ppm_t::proc_chance()
   return rppm_chance;
 }
 
-void real_ppm_t::reset()
+void real_ppm_t::reset( reset_type_e /* reset_type */)
 {
   last_trigger_attempt = 0_ms;
   accumulated_blp = 0_ms;
@@ -146,7 +146,7 @@ void shuffled_rng_t::init( initializer data )
     entries.emplace_back( shuffled_rng_e::FAIL );
 }
 
-void shuffled_rng_t::reset()
+void shuffled_rng_t::reset( reset_type_e /* reset_type */)
 {
   player->rng().shuffle( entries.begin(), entries.end() );
   position = entries.begin();
@@ -155,7 +155,7 @@ void shuffled_rng_t::reset()
 int shuffled_rng_t::trigger()
 {
   if ( position == entries.end() )
-    reset();
+    reset( reset_type_e::COMBAT );
 
   return *position++;
 }
@@ -179,7 +179,7 @@ accumulated_rng_t::accumulated_rng_t( std::string_view n, player_t* p, double c,
     trigger_count( initial_count )
 {}
 
-void accumulated_rng_t::reset()
+void accumulated_rng_t::reset( reset_type_e /* reset_type */)
 {
   trigger_count = initial_count;
 }
@@ -201,7 +201,7 @@ int accumulated_rng_t::trigger()
   }
 
   if ( result )
-    reset();
+    reset( reset_type_e::COMBAT );
 
   return result;
 }
@@ -217,7 +217,7 @@ threshold_rng_t::threshold_rng_t( std::string_view n, player_t* p, double increm
 {
 }
 
-void threshold_rng_t::reset()
+void threshold_rng_t::reset( reset_type_e /* reset_type */)
 {
   accumulated_chance = random_initial_state ? player->rng().real() : 0;
 }

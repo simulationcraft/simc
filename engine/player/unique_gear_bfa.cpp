@@ -4718,6 +4718,7 @@ void items::ingenious_mana_battery( special_effect_t& effect )
     ingenious_mana_battery_stored_mana_buff_t* mana_buff;
     ingenious_mana_battery_recovery_buff_t* recovery_buff;
     const special_effect_t* driver_effect;
+    double mana_drain_amount;
 
     ingenious_mana_battery_channel_t( const special_effect_t& e, ingenious_mana_battery_versatility_buff_t* vers_buff,
                                       ingenious_mana_battery_stored_mana_buff_t* mana_buff,
@@ -4734,9 +4735,8 @@ void items::ingenious_mana_battery( special_effect_t& effect )
       tick_zero             = false;
       hasted_ticks          = false;
       target_cache.is_valid = false;
-      energize_amount       = data().effectN( 1 ).average( e );
-      energize_type         = action_energize::PER_TICK;
-      energize_resource     = RESOURCE_MANA;
+      energize_type         = action_energize::NONE;
+      mana_drain_amount     = -data().effectN( 1 ).average( e );
       harmful               = false;
 
       for ( auto a : player->action_list )
@@ -4753,9 +4753,10 @@ void items::ingenious_mana_battery( special_effect_t& effect )
 
     void tick( dot_t* d ) override
     {
-      auto mana_before = player->resources.current[ RESOURCE_MANA ];
       proc_spell_t::tick( d );
 
+      auto mana_before = player->resources.current[ RESOURCE_MANA ];
+      player->resource_loss( RESOURCE_MANA, mana_drain_amount, nullptr, this );
       auto mana_drained = mana_before - player->resources.current[ RESOURCE_MANA ];
 
       mana_buff->trigger( -1, mana_drained, -1.0, timespan_t::min() );
@@ -4853,11 +4854,11 @@ void items::ingenious_mana_battery( special_effect_t& effect )
       }
 
       double total_ticks      = static_cast<int>( dot_duration / base_tick_time );
-      double max_mana_drained = total_ticks * -energize_amount;
+      double max_mana_drained = total_ticks * mana_drain_amount;
       double actual_drained   = std::min( max_mana_drained, player->resources.current[ RESOURCE_MANA ] );
 
       sim->print_debug( "{} {} precombat usage stats: ticks {}, drain_per: {}, total_drain: {}", *player, *this,
-                        total_ticks, -energize_amount, actual_drained );
+                        total_ticks, mana_drain_amount, actual_drained );
 
       player->resource_loss( RESOURCE_MANA, actual_drained );
       mana_buff->trigger( -1, actual_drained, -1.0, timespan_t::min() );

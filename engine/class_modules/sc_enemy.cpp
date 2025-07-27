@@ -1469,10 +1469,8 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
   // values were a bit lower, so this one was also lowered.
   constexpr std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 6.5, 4.0, 2.5, 1.6, 1 };
-  // temporarily toned back a bit as this is an estimate from heroic
-  // double aa_damage_base        = 10'400'000;
-  constexpr double aa_damage_base        = 8'000'000;
-  constexpr double dummy_strike_base     = aa_damage_base * 1.5;
+  constexpr double aa_damage_base        = 14'000'000;
+  constexpr double dummy_strike_base     = aa_damage_base * 2.0;
   constexpr double background_spell_base = aa_damage_base * 0.1;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );

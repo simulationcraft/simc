@@ -9,6 +9,7 @@
 
 #include "actor.hpp"
 #include "assessor.hpp"
+#include "dbc/assisted_combat.hpp"
 #include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
 #include "gear_stats.hpp"
@@ -109,6 +110,30 @@ public:
   virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
+struct parsed_assisted_combat_rule_t
+{
+  std::string expr;
+  std::string comment;
+  bool show_diff;
+
+  parsed_assisted_combat_rule_t( const char* expr )
+    : expr( expr ), comment( {} ), show_diff( false ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr )
+    : expr( expr ), comment( {} ), show_diff( false ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, bool show_diff )
+    : expr( expr ), comment( {} ), show_diff( show_diff ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, const char* comment )
+    : expr( expr ), comment( comment ), show_diff( true ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff )
+    : expr( expr ), comment( comment ), show_diff( show_diff ) {}
+
+  operator std::string() { return expr; }
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = MAX_LEVEL;
@@ -177,6 +202,10 @@ struct player_t : public actor_t
   // Latency
   rng::truncated_gauss_t world_lag, brain_lag;
   timespan_t  cooldown_tolerance_;
+
+  // Spell Queue
+  bool enable_spell_queue;
+  timespan_t spell_queue_window;
 
   // Data access
   std::unique_ptr<dbc_t> dbc;
@@ -288,6 +317,7 @@ struct player_t : public actor_t
   event_t* readying;
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
+  event_t* spell_queue_event;
   std::vector<std::pair<const cooldown_t*,const cooldown_t*>> off_gcd_cd;
   std::vector<std::pair<const cooldown_t*, const cooldown_t*>> cast_while_casting_cd;
   timespan_t off_gcd_ready;
@@ -297,6 +327,7 @@ struct player_t : public actor_t
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
+  action_t* spell_queued_action;
   std::vector<action_t*> prev_gcd_actions;
   std::vector<action_t*> off_gcdactions; // Returns all off gcd abilities used since the last gcd.
 
@@ -313,6 +344,7 @@ struct player_t : public actor_t
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
   std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
+  std::vector<std::function<void( player_t* )>> callbacks_on_init_finished;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -324,6 +356,9 @@ struct player_t : public actor_t
   std::string modify_action;
   std::string use_apl;
   bool use_default_action_list;
+  bool use_blizzard_action_list;
+  bool use_cds_with_blizzard_action_list;
+  bool one_button_mode;
   auto_dispose< std::vector<dot_t*> > dot_list;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
@@ -694,10 +729,12 @@ struct player_t : public actor_t
   {
     double amplification_1;
     double amplification_2;
+    double reshii_grace;
   } passive_values;
 
   bool active_during_iteration;
   const spell_data_t* spec_spell;
+  const spell_data_t* single_button_assistant;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
@@ -857,7 +894,7 @@ struct player_t : public actor_t
     // harvester's edict chance to intercept
     double harvesters_edict_intercept_chance = 0.2;
     // Dawn/Duskthread Lining
-    double dawn_dusk_thread_lining_uptime = 0.6;
+    double dawn_dusk_thread_lining_uptime = 0.7;
     // Interval between checking blue_silken_lining_uptime
     timespan_t dawn_dusk_thread_lining_update_interval = 10_s;
     // Standard Deviation of interval
@@ -877,15 +914,19 @@ struct player_t : public actor_t
     // time to pick up Fury of the Stormrook lightning orb
     timespan_t fury_of_the_stormrook_pickup_delay  = 3_s;
     timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
-    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high becauee pets exist and its
+    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high because pets exist and its
     // currently bugged to trigger on them.
-    double mereldars_toll_ally_trigger_chance             = 0.7;
+    double mereldars_toll_ally_trigger_chance             = 0.6;
     double sureki_zealots_insignia_rppm_multiplier        = 0.9;
     player_option_t<std::string> windsingers_passive_stat = "";
     // Mister Lock-n-Stalk mode of operation
     player_option_t<std::string> mister_locknstalk_mode = "dynamic";
     player_option_t<std::string> jastor_diamond_ally_stat = "none";
     double suspicious_energy_drink_bonus_chance           = 0;
+    timespan_t additional_gcd_time                        = 0_s;
+    // Alchemical Chaos Flask
+    player_option_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
+    player_option_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
   } thewarwithin_opts;
 
 private:
@@ -1084,6 +1125,8 @@ public:
   virtual void validate_sim_options() {}
   virtual bool validate_fight_style( fight_style_e ) const
   { return true; }
+  virtual bool validate_actor()
+  { return true; }
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
@@ -1115,6 +1158,13 @@ public:
   virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
+  virtual void init_blizzard_action_list();
+  virtual std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const;
+  virtual std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const;
+  virtual void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat );
+
+  virtual parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                    const assisted_combat_step_data_t& step ) const;
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
@@ -1485,6 +1535,7 @@ public:
   void register_on_kill_callback( std::function<void( player_t* )> fn );
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
   void register_movement_callback( std::function<void( bool )> fn );
+  void register_init_finished_callback( std::function<void( player_t* )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

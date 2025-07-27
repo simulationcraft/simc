@@ -72,9 +72,9 @@ actions.aoe=fire_elemental
 actions.aoe+=/storm_elemental,if=!buff.storm_elemental.up|!talent.echo_of_the_elementals
 actions.aoe+=/stormkeeper
 # Spread Flame shocks for Pwave.
-actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!talent.primordial_wave)&(active_dot.flame_shock<=active_enemies-3|active_dot.flame_shock<(active_enemies>?3))&cooldown.ascendance.remains>10
-actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&!dot.flame_shock.ticking&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
-actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem
+actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!talent.primordial_wave)&(active_dot.flame_shock<=active_enemies-3|active_dot.flame_shock<(active_enemies>?3))
+actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&active_dot.flame_shock=0&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
+actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|(cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem)&cooldown.ascendance.remains>15
 actions.aoe+=/ancestral_swiftness
 actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|variable.trinket_1_buffs&!trinket.1.is.spymasters_web&trinket.1.ready_cooldown|variable.trinket_2_buffs&!trinket.2.is.spymasters_web&trinket.2.ready_cooldown|equipped.neural_synapse_enhancer&cooldown.neural_synapse_enhancer.remains=0|equipped.bestinslots&cooldown.bestinslots.remains=0)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)
 # Surge of Power is strong and should be used. ©
@@ -129,8 +129,7 @@ actions.single_target+=/tempest,if=buff.storm_frenzy.stack=2&!talent.surge_of_po
 actions.single_target+=/liquid_magma_totem,if=dot.flame_shock.refreshable&!buff.master_of_the_elements.up
 # Maintain Flame shock if talented into Erupting Lava.
 actions.single_target+=/flame_shock,if=dot.flame_shock.refreshable&!buff.surge_of_power.up&!buff.master_of_the_elements.up&talent.erupting_lava
-# Spend if close to overcaping or MotE buff is up. Respect Echoes of Great Sundering.
-actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up)
+# Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering.
 actions.single_target+=/elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
 actions.single_target+=/earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
 # Use Icefury to proc Fusion of Elements.
@@ -138,7 +137,7 @@ actions.single_target+=/icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusi
 # Use Lava Burst to proc Master of the Elements.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(!talent.master_of_the_elements|buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_eb.up|!talent.elemental_blast))
 # Spend to activate Surge of Power buff for Tempest or Stormkeeper.
-actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
+actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering_eb.up&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/elemental_blast,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/earth_shock,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/tempest
@@ -156,27 +155,29 @@ head=gale_sovereigns_charged_hood,id=229262,bonus_id=4800/4786/1527/11996/523,ge
 neck=semicharmed_amulet,id=228841,bonus_id=4800/4786/1527/11996/8781,gem_id=213473/213494
 shoulders=gale_sovereigns_zephyrs,id=229260,bonus_id=4800/4786/1527/11996
 back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/10520/8960,enchant_id=7403,crafted_stats=40/36
-chest=gale_sovereigns_clouded_hauberk,id=229265,bonus_id=4800/4786/1527/11996,enchant=crystalline_radiance_3,enchant_id=7364
+chest=gale_sovereigns_clouded_hauberk,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364
 wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/1808/10520/8960,gem_id=213494,enchant_id=7385,crafted_stats=40/36
 hands=gale_sovereigns_grasps,id=229263,bonus_id=4800/4786/1527/11996
 waist=scentstrong_candlecord,id=221101,bonus_id=3170/11996/11964/1808,gem_id=213494
-legs=chemical_blasters_legguards,id=158341,bonus_id=4786/11359/11996,enchant=sunset_spellthread_3,enchant_id=7534
+legs=chemical_blasters_legguards,id=158341,bonus_id=4786/11359/11996,enchant_id=7534
 feet=regal_mekanospurs,id=168982,bonus_id=10067/11996/11964,enchant_id=7424
-finger1=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,gem_id=213482/213458,enchant=radiant_mastery_3,enchant_id=7346
+finger1=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,gem_id=213482/213458,enchant_id=7346
 finger2=cyrces_circlet,id=228411,bonus_id=1511/11988/11964,gem_id=228639/228638/228646,enchant_id=7346
 trinket1=house_of_cards,id=230027,bonus_id=4800/4786/1527/11996
 trinket2=mugs_moxie_jug,id=230192,bonus_id=1527/11996/11964
-main_hand=bestinslots,id=232805,bonus_id=4800/4786/1527/11996,enchant=authority_of_radiant_power_3,enchant_id=7463
+main_hand=big_earners_bludgeon,id=228901,bonus_id=1527/11996/11964,enchant_id=7460
+off_hand=titan_of_industry,id=228889,bonus_id=1527/11996/11964
 
 # Gear Summary
-# gear_ilvl=676.27
+# gear_ilvl=676.38
+# gear_strength=2729
 # gear_stamina=387381
-# gear_intellect=75206
-# gear_crit_rating=2918
-# gear_haste_rating=15968
-# gear_mastery_rating=11510
+# gear_intellect=75207
+# gear_crit_rating=4058
+# gear_haste_rating=16801
+# gear_mastery_rating=11917
 # gear_versatility_rating=4374
 # gear_avoidance_rating=1635
-# gear_armor=48977
+# gear_armor=86080
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1

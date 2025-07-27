@@ -1044,6 +1044,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       dot_duration = timespan_t::zero();
       trigger_gcd  = timespan_t::zero();
+
+      school = SCHOOL_NATURE;
     }
   };
 
@@ -1173,7 +1175,8 @@ public:
     o()->buff.storm_earth_and_fire->decrement();
   }
 
-  void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, [[maybe_unused]] bool combo_strike = false )
+  void trigger_attack( actions::sef_ability_e ability, const action_t *source_action,
+                       [[maybe_unused]] bool combo_strike = false )
   {
     if ( channeling && !source_action->background )
       channeling->cancel();

@@ -21,6 +21,12 @@ namespace rng {
   struct rng_t;
 }
 
+enum class reset_type_e : int
+{
+  COMBAT = 0,
+  ITERATION = 1
+};
+
 struct proc_rng_t
 {
 protected:
@@ -36,7 +42,7 @@ public:
   virtual ~proc_rng_t() = default;
 
   virtual int trigger() = 0;
-  virtual void reset() = 0;
+  virtual void reset( reset_type_e reset_type ) = 0;
 
   std::string_view name() const
   { return name_str; }
@@ -55,7 +61,7 @@ public:
 
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
-  void reset() override {}
+  void reset( reset_type_e /* reset_type */ ) override {}
   int trigger() override;
 };
 
@@ -90,7 +96,7 @@ public:
 
   double proc_chance();
 
-  void reset() override;
+  void reset( reset_type_e reset_type ) override;
   int trigger() override;
 
   void set_scaling( unsigned s )
@@ -138,20 +144,21 @@ enum shuffled_rng_e : int
   SUCCESS = 1
 };
 
-struct shuffled_rng_t final : public proc_rng_t
+struct shuffled_rng_t : public proc_rng_t
 {
   using initializer = std::initializer_list<std::pair<int, int>>;
 private:
-  std::vector<int> entries;
-  std::vector<int>::iterator position;
   void init( initializer data );
+protected:
+  std::vector<int>::iterator position;
+  std::vector<int> entries;
 
 public:
   static constexpr rng_type_e rng_type = RNG_SHUFFLE;
 
   shuffled_rng_t( std::string_view n, player_t* p, initializer data );
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
-  void reset() override;
+  void reset( reset_type_e reset_type ) override;
   int trigger() override;
 
   int count_remains( int key );
@@ -187,7 +194,7 @@ public:
   accumulated_rng_t( std::string_view n, player_t* p, double c, std::function<double( double, unsigned )> fn = nullptr,
                      unsigned initial_count = 0 );
 
-  void reset() override;
+  void reset( reset_type_e reset_type ) override;
   int trigger() override;
 };
 
@@ -218,7 +225,7 @@ public:
   threshold_rng_t( std::string_view n, player_t* p, double increment_max, std::function<double( double )> fn = nullptr,
                    bool random_initial_state = true, bool roll_over = false );
 
-  void reset() override;
+  void reset( reset_type_e reset_type ) override;
   int trigger() override;
 
   double get_accumulated_chance();

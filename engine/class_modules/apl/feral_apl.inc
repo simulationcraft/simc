@@ -23,9 +23,9 @@ def->add_action( "natures_vigil,if=spell_targets.swipe_cat>0&variable.regrowth" 
 def->add_action( "renewal,if=spell_targets.swipe_cat>0&variable.regrowth" );
 def->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack<3&(!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2),if=!action.adaptive_swarm_damage.in_flight&(spell_targets=1|!talent.unbridled_swarm)&(dot.rip.ticking|hero_tree.druid_of_the_claw)" );
 def->add_action( "adaptive_swarm,target_if=max:(1+dot.adaptive_swarm_damage.stack)*dot.adaptive_swarm_damage.stack<3*time_to_die,if=buff.cat_form.up&dot.adaptive_swarm_damage.stack<3&talent.unbridled_swarm.enabled&spell_targets.swipe_cat>1&dot.rip.ticking" );
-def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up&!(variable.need_bt&active_bt_triggers=2)" );
+def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up&!(variable.need_bt&active_bt_triggers=2)&!buff.bs_inc.up" );
 def->add_action( "call_action_list,name=cooldown,if=dot.rip.ticking" );
-def->add_action( "rip,if=talent.veinripper&spell_targets=1&hero_tree.wildstalker&!(talent.raging_fury&talent.veinripper)&(buff.bloodtalons.up|!talent.bloodtalons)&(dot.rip.remains<5&buff.tigers_fury.remains>10&combo_points>=3|((buff.tigers_fury.remains<3&combo_points=5)|buff.tigers_fury.remains<=1)&buff.tigers_fury.up&combo_points>=3&remains<cooldown.tigers_fury.remains)","keep using this archaic 'nonsense' for veinripper because its better idk ill fix soon tm" );
+def->add_action( "rip,if=talent.veinripper&spell_targets=1&hero_tree.wildstalker&!(talent.raging_fury&talent.veinripper)&(buff.bloodtalons.up|!talent.bloodtalons)&(dot.rip.remains<5&buff.tigers_fury.remains>10&combo_points>=3|((buff.tigers_fury.remains<3&combo_points=5)|buff.tigers_fury.remains<=1)&buff.tigers_fury.up&combo_points>=3&remains<cooldown.tigers_fury.remains)","keep using this archaic 'nonsense' for veinripper because its better idk ill fix soon tm (i lied about the soon part)" );
 def->add_action( "rip,if=!talent.veinripper&spell_targets=1&hero_tree.wildstalker&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons)&(combo_points>=3&refreshable&cooldown.tigers_fury.remains>25|buff.tigers_fury.remains<5&variable.rip_duration>cooldown.tigers_fury.remains&cooldown.tigers_fury.remains>=dot.rip.remains)","fix to work with veinripper idk" );
 def->add_action( "call_action_list,name=builder,if=(buff.bs_inc.up&!buff.ravage.up&!buff.coiled_to_spring.up&hero_tree.druid_of_the_claw&talent.coiled_to_spring&spell_targets<=2)|buff.bloodtalons.stack=0&active_bt_triggers=2" );
 def->add_action( "wait,sec=action.tigers_fury.ready,if=combo_points=5&cooldown.tigers_fury.remains<3&spell_targets=1" );
@@ -34,7 +34,7 @@ def->add_action( "call_action_list,name=builder,if=spell_targets.swipe_cat=1&com
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets.swipe_cat>=2&combo_points<5" );
 def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
-aoe_builder->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws&!(variable.need_bt&buff.bt_thrash.up)","maintain thrash highest prio" );
+aoe_builder->add_action( "thrash_cat,target_if=max:time_to_die,if=refreshable&!talent.thrashing_claws&!(variable.need_bt&buff.bt_thrash.up)&remains<time_to_die","maintain thrash highest prio" );
 aoe_builder->add_action( "brutal_slash,target_if=min:time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|time_to_die<4|raid_event.adds.remains<4|(buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw))&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))","avoid capping brs charges. Also send brutal slashes/ws swipe in aoe, even if we need to proc bloodtalons, during berserk." );
 aoe_builder->add_action( "swipe_cat,target_if=min:time_to_die,if=talent.wild_slashes&(time_to_die<4|raid_event.adds.remains<4|buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw)&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))" );
 aoe_builder->add_action( "swipe_cat,if=time_to_die<4|(talent.wild_slashes&spell_targets.swipe_cat>4&!(variable.need_bt&buff.bt_swipe.up))","with wild slashes we swipe at 5+ targets over raking/moonfire" );
@@ -54,7 +54,7 @@ aoe_builder->add_action( "moonfire_cat,target_if=max:ticks_gained_on_refresh,if=
 aoe_builder->add_action( "rake,target_if=max:ticks_gained_on_refresh,if=buff.sudden_ambush.up&variable.need_bt&buff.bt_rake.down" );
 aoe_builder->add_action( "shred,if=variable.need_bt&buff.bt_shred.down&!variable.easy_swipe" );
 aoe_builder->add_action( "rake,target_if=dot.rake.pmultiplier<1.6,if=variable.need_bt&buff.bt_rake.down" );
-aoe_builder->add_action( "thrash_cat,if=variable.need_bt&buff.bt_shred.down" );
+aoe_builder->add_action( "thrash_cat,if=variable.need_bt&buff.bt_thrash.down" );
 
 builder->add_action( "prowl,if=gcd.remains=0&energy>=35&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!(variable.need_bt&buff.bt_rake.up)&buff.tigers_fury.up&!buff.shadowmeld.up" );
 builder->add_action( "shadowmeld,if=gcd.remains=0&energy>=35&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!(variable.need_bt&buff.bt_rake.up)&buff.tigers_fury.up&!buff.prowl.up" );
@@ -93,6 +93,7 @@ cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|buff.bs_inc.up&buf
 
 finisher->add_action( "primal_wrath,target_if=max:dot.bloodseeker_vines.ticking,if=spell_targets.primal_wrath>1&((dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)|(!talent.rampant_ferocity.enabled&(spell_targets.primal_wrath>1&!dot.bloodseeker_vines.ticking&!buff.ravage.up|spell_targets.primal_wrath>6+talent.ravage)))","maintain/upgrade pws, if we have 6.5+s left on pw, we will instead bite if we have rampant ferocity talented. Without rampant, we will bite a vined target with 6 or fewer targets. If we have Ravage, we use specifically Ravage at 7 or fewer targets." );
 finisher->add_action( "rip,target_if=refreshable,if=(!talent.primal_wrath|spell_targets=1)&(buff.bloodtalons.up|!talent.bloodtalons)&(buff.tigers_fury.up|dot.rip.remains<cooldown.tigers_fury.remains)&(remains<fight_remains|remains<4&buff.ravage.up)","rip if single target or pw isnt up. Rip with bloodtalons if talented. If tigers fury will be up before rip falls off, then delay refresh" );
+finisher->add_action( "call_action_list,name=aoe_builder,if=hero_tree.druid_of_the_claw&buff.bs_inc.up&!buff.ravage.up&spell_targets>=2","only bite with ravage in aoe with berserk" );
 finisher->add_action( "pool_resource,for_next=1" );
 finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:dot.bloodseeker_vines.ticking,if=!buff.bs_inc.up" );
 finisher->add_action( "pool_resource,for_next=1" );

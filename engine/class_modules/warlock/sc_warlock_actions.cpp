@@ -34,6 +34,7 @@ using namespace helpers;
       bool wicked_maw = false;
       bool shadowtouched = false;
       bool soul_conduit_base_cost = false;
+      bool master_summoner = false;
 
       // Destruction
       bool chaotic_energies = false;
@@ -128,6 +129,9 @@ using namespace helpers;
       affected_by.xalans_cruelty_dd = data().affected_by( p->hero.xalans_cruelty->effectN( 3 ) );
       affected_by.xalans_cruelty_td = data().affected_by( p->hero.xalans_cruelty->effectN( 4 ) );
       affected_by.xalans_cruelty_crit = data().affected_by( p->hero.xalans_cruelty->effectN( 1 ) );
+
+      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        affected_by.master_summoner = data().affected_by( p->talents.master_summoner->effectN( 2 ) );
 
       triggers.decimation = p->talents.decimation.ok();
     }
@@ -268,6 +272,13 @@ using namespace helpers;
 
       if ( diabolist() && triggers.demonic_art )
       {
+        if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B2 ) )
+          make_event( *sim, 0_ms, [ this ] {
+            if ( p()->buffs.demonic_oculus->check() &&
+                 ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() ||
+                   p()->buffs.art_pit_lord->check() ) )
+              p()->proc_actions.eye_blast->execute_on_target( this->target );
+          } );
         // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_overlord->decrement(); } );
         make_event( sim, 0_ms, [ this ] { p()->buffs.art_mother->decrement(); } );
@@ -342,35 +353,6 @@ using namespace helpers;
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && !p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->rng_settings.dimension_ripper.setting_value )  )
-      {
-        if ( p()->talents.dimensional_rift.ok() )
-        {
-          p()->cooldowns.dimensional_rift->reset( true, 1 );
-        }
-        else
-        {
-          int rift = rng().range( 3 );
-
-          switch ( rift )
-          {
-          case 0:
-            p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
-            break;
-          case 1:
-            p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
-            break;
-          case 2:
-            p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
-            break;
-          default:
-            break;
-          }
-        }
-
-        p()->procs.dimension_ripper->occur();
-      }
-
       if ( destruction() && active_2pc( TWW2 ) && triggers.jackpot_destruction )
       {
         if ( p()->jackpot_destruction_rng->trigger() )
@@ -400,7 +382,7 @@ using namespace helpers;
           p()->procs.reverse_entropy->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() ) )
+      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
       {
         int rift = rng().range( 3 );
 
@@ -618,6 +600,9 @@ using namespace helpers;
         if ( p()->buffs.art_pit_lord->check() )
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 2 ).percent();
       }
+
+      if( demonology() && p()->talents.master_summoner.ok() && affected_by.master_summoner )
+        m *= 1.0 + p()->talents.master_summoner->effectN( 2 ).percent();
 
       return m;
     }
@@ -1449,7 +1434,19 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( target );
 
       if ( p()->hero.mark_of_xavius.ok() )
-        m *= 1.0 + td( target )->dots_wither->current_stack() * p()->hero.mark_of_xavius->effectN( 3 ).percent();
+      {
+        double val = p()->hero.mark_of_xavius->effectN( 3 ).percent();
+
+        if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
+        {
+          if ( p()->specialization() == WARLOCK_AFFLICTION )
+            val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 3 ).percent();
+          if ( p()->specialization() == WARLOCK_DESTRUCTION )
+            val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 2 ).percent();
+        }
+
+        m *= 1.0 + td( target )->dots_wither->current_stack() * val;
+      }
 
       return m;
     }
@@ -1460,7 +1457,7 @@ using namespace helpers;
 
       player_t* tar = s->target;
 
-      if ( td( tar )->dots_wither->current_stack() > 1 )
+      if ( td( tar )->dots_wither->current_stack() > 1 && !p()->buffs.maintained_withering->check() )
         td( tar )->dots_wither->decrement( 1 );
 
       if ( td( tar )->dots_wither->current_stack() <= 1 )
@@ -1512,6 +1509,19 @@ using namespace helpers;
       p()->buffs.malevolence->trigger();
 
       helpers::trigger_blackened_soul( p(), true );
+
+      if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B4 ) )
+      {
+        if ( p()->specialization() == WARLOCK_AFFLICTION )
+          p()->buffs.tormented_crescendo->trigger(
+              as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 1 ).base_value() ) );
+
+        if ( p()->specialization() == WARLOCK_DESTRUCTION )
+          p()->buffs.backdraft->trigger(
+              as<int>( p()->sets->set( HERO_HELLCALLER, TWW3, B4 )->effectN( 2 ).base_value() ) );
+
+        p()->buffs.maintained_withering->trigger();
+      }
     }
   };
 
@@ -2563,6 +2573,10 @@ using namespace helpers;
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
+        if ( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) && p()->tier.rampaging_demonic_soul->ok() )
+        {
+          p()->warlock_pet_list.demonic_souls.spawn( p()->tier.rampaging_demonic_soul->duration() );
+        }
       }
     }
 
@@ -2798,6 +2812,9 @@ using namespace helpers;
       assert( lrc < as<int>( p()->procs.hand_of_guldan_shards.size() ) && "The procs.hand_of_guldan_shards array needs to be expanded." );
 
       p()->procs.hand_of_guldan_shards[ lrc ]->occur();
+
+      if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B2 ) && lrc == 2 /*Manually hardcoding for now since im not sure how the cost data is read*/)
+        p()->buffs.demonic_oculus->trigger();
     }
 
     void impact( action_state_t* s ) override
@@ -2808,7 +2825,7 @@ using namespace helpers;
 
       if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
       {
-        make_event( *sim, 0_ms, [this, t = target ]{ impact_spell->execute_on_target( t ); } );
+        make_event( *sim, 0_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
         p()->procs.pact_of_the_imp_mother->occur();
       }
     }
@@ -3432,6 +3449,10 @@ using namespace helpers;
       {
         p()->resource_gain( RESOURCE_SOUL_SHARD, p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0, p()->gains.shadow_of_death );
         p()->buffs.succulent_soul->trigger( as<int>( p()->hero.shadow_of_death_energize->effectN( 1 ).base_value() / 10.0 ) );
+        if( p()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B2 ) && p()->tier.rampaging_demonic_soul->ok() )
+        {
+          p()->warlock_pet_list.demonic_souls.spawn( p()->tier.rampaging_demonic_soul->duration() );
+        }
       }
     }
   };
@@ -3558,8 +3579,6 @@ using namespace helpers;
         affected_by.chaotic_energies = true;
         affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
-        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
-
         base_multiplier *= p->talents.fire_and_brimstone->effectN( 1 ).percent();
 
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); // TOCHECK: Does this apply in-game correctly?
@@ -3646,7 +3665,6 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
-      triggers.dimension_ripper = p->talents.dimension_ripper.ok();
       triggers.jackpot_destruction = true;
 
       add_child( fnb_action );
@@ -3924,6 +3942,9 @@ using namespace helpers;
 
     void execute() override
     {
+      if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B2 ) )
+        p()->buffs.demonic_oculus->trigger();
+
       warlock_spell_t::execute();
 
       // 2022-10-15: Backdraft is not consumed for Ritual of Ruin empowered casts, but IS hasted by it
@@ -4111,6 +4132,9 @@ using namespace helpers;
 
     void execute() override
     {
+      if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B2 ) )
+        p()->buffs.demonic_oculus->trigger();
+
       warlock_spell_t::execute();
 
       if ( p()->talents.burn_to_ashes.ok() )
@@ -4229,6 +4253,9 @@ using namespace helpers;
 
     void execute() override
     {
+      if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B2 ) )
+        p()->buffs.demonic_oculus->trigger();
+
       warlock_spell_t::execute();
 
       p()->buffs.conflagration_of_chaos_sb->expire();
@@ -4725,6 +4752,85 @@ using namespace helpers;
     }
   };
 
+  struct eye_blast_base_t : public warlock_spell_t
+  {
+    eye_blast_base_t( std::string_view n, warlock_t* p, const spell_data_t* s )
+      : warlock_spell_t( n, p, s )
+    {
+      affected_by.chaotic_energies = true;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      // In its own effect on mastery, so just manually applying it here rather than adding the affected_by to warlock_spell_t
+      if ( p()->warlock_base.master_demonologist->ok() )
+        m *= 1.0 + p()->cache.mastery_value();
+      if ( p()->specialization() == WARLOCK_DEMONOLOGY )
+        m *= 1.0 + p()->sets->set( HERO_DIABOLIST, TWW3, B2 )->effectN( 2 ).percent();
+    
+      m *= p()->buffs.demonic_oculus->check();
+    
+
+      return m;
+    }
+  };
+
+  struct eye_blast_aoe_t final : public eye_blast_base_t
+  {
+    eye_blast_aoe_t( warlock_t* p, std::string_view n ) : eye_blast_base_t( n, p, p->tier.eye_blast )
+    {
+      background             = true;
+      may_miss               = false;
+      spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+      aoe                    = -1;
+    }
+
+    // Doesnt hit the main target, so we need to override this
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      eye_blast_base_t::available_targets( tl );
+
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
+    }
+  };
+
+  struct eye_blast_t final : public eye_blast_base_t
+  {
+    eye_blast_t( warlock_t* p, std::string_view n ) : eye_blast_base_t( n, p, p->tier.eye_blast )
+    {
+      background             = true;
+      may_miss               = false;
+      spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+      aoe                    = 0;  // Single Target version, triggers aoe version on impact
+      impact_action          = new eye_blast_aoe_t( p, "eye_blast_aoe" );
+      add_child( impact_action );
+    }
+
+    void execute() override
+    {
+      // In game happens just before the damage
+      if ( p()->sets->has_set_bonus( HERO_DIABOLIST, TWW3, B4 ) )
+        p()->buffs.demonic_intelligence->trigger( p()->buffs.demonic_oculus->check() );
+
+      eye_blast_base_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      eye_blast_base_t::impact( s );
+
+      p()->buffs.demonic_oculus->expire();
+    }
+  };
+
   // Diabolist Actions End
   // Helper Functions Begin
 
@@ -4824,7 +4930,16 @@ using namespace helpers;
       if ( !tdata->dots_wither->is_ticking() )
         continue;
 
-      tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+      int stacks = 1;
+
+      if( malevolence )
+      {
+        stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
+        if( p->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
+          stacks += as<int>( p->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 1 ).base_value() );
+      }
+
+      tdata->dots_wither->increment( stacks );
       stack_gained = true;
 
       if ( p->buffs.malevolence->check() && !malevolence )
@@ -5143,7 +5258,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_diabolist_proc_actions()
-  { }
+  {
+    proc_actions.eye_blast = new eye_blast_t( this, "eye_blast" );
+  }
 
   void warlock_t::create_hellcaller_proc_actions()
   {

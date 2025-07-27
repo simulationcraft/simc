@@ -72,9 +72,9 @@ actions.aoe=fire_elemental
 actions.aoe+=/storm_elemental,if=!buff.storm_elemental.up|!talent.echo_of_the_elementals
 actions.aoe+=/stormkeeper
 # Spread Flame shocks for Pwave.
-actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!talent.primordial_wave)&(active_dot.flame_shock<=active_enemies-3|active_dot.flame_shock<(active_enemies>?3))&cooldown.ascendance.remains>10
-actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&!dot.flame_shock.ticking&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
-actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem
+actions.aoe+=/liquid_magma_totem,if=(cooldown.primordial_wave.remains<5*gcd|!talent.primordial_wave)&(active_dot.flame_shock<=active_enemies-3|active_dot.flame_shock<(active_enemies>?3))
+actions.aoe+=/flame_shock,target_if=min:debuff.lightning_rod.remains,if=cooldown.primordial_wave.remains<gcd&active_dot.flame_shock=0&(talent.primordial_wave|spell_targets.chain_lightning<=3)&cooldown.ascendance.remains>10
+actions.aoe+=/primordial_wave,if=active_dot.flame_shock=active_enemies>?6|(cooldown.liquid_magma_totem.remains>15|!talent.liquid_magma_totem)&cooldown.ascendance.remains>15
 actions.aoe+=/ancestral_swiftness
 actions.aoe+=/ascendance,if=(talent.first_ascendant|fight_remains>200|fight_remains<80|buff.spymasters_web.up|variable.trinket_1_buffs&!trinket.1.is.spymasters_web&trinket.1.ready_cooldown|variable.trinket_2_buffs&!trinket.2.is.spymasters_web&trinket.2.ready_cooldown|equipped.neural_synapse_enhancer&cooldown.neural_synapse_enhancer.remains=0|equipped.bestinslots&cooldown.bestinslots.remains=0)&(buff.fury_of_storms.up|!talent.fury_of_the_storms)
 # Surge of Power is strong and should be used. ©
@@ -129,8 +129,7 @@ actions.single_target+=/tempest,if=buff.storm_frenzy.stack=2&!talent.surge_of_po
 actions.single_target+=/liquid_magma_totem,if=dot.flame_shock.refreshable&!buff.master_of_the_elements.up
 # Maintain Flame shock if talented into Erupting Lava.
 actions.single_target+=/flame_shock,if=dot.flame_shock.refreshable&!buff.surge_of_power.up&!buff.master_of_the_elements.up&talent.erupting_lava
-# Spend if close to overcaping or MotE buff is up. Respect Echoes of Great Sundering.
-actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up)
+# Spend if close to overcaping or MotE buff is up. Friendship ended with Echoes of Great Sundering.
 actions.single_target+=/elemental_blast,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
 actions.single_target+=/earth_shock,if=maelstrom>variable.mael_cap-15|buff.master_of_the_elements.up
 # Use Icefury to proc Fusion of Elements.
@@ -138,7 +137,7 @@ actions.single_target+=/icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusi
 # Use Lava Burst to proc Master of the Elements.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>=2,if=!buff.master_of_the_elements.up&(!talent.master_of_the_elements|buff.lava_surge.up|buff.tempest.up|buff.stormkeeper.up|cooldown.lava_burst.charges_fractional>1.8|maelstrom>82-10*talent.eye_of_the_storm|maelstrom>52-5*talent.eye_of_the_storm&(buff.echoes_of_great_sundering_eb.up|!talent.elemental_blast))
 # Spend to activate Surge of Power buff for Tempest or Stormkeeper.
-actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
+actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering_eb.up&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/elemental_blast,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/earth_shock,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power&!talent.master_of_the_elements
 actions.single_target+=/tempest

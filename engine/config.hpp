@@ -82,19 +82,6 @@
 
 
 // ==========================================================================
-// Compiler Workarounds
-// ==========================================================================
-
-/* This header defines eleven macro constants with alternative spellings for those C++ operators
- * not supported by the ISO646 standard character set.
- * eg. and == &&, or == ||, etc.
- * This is required for MSVC, which without the /ZA option does not conform to the standard, but which
- * we don't want to use for other reasons.
- */
-#include <ciso646>
-
-
-// ==========================================================================
 // General Macros/Defines
 // ==========================================================================
 
@@ -176,7 +163,7 @@ constexpr double m_pi = 3.14159265358979323846;
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "1100"
+#define SC_MAJOR_VERSION "1115"
 #define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0

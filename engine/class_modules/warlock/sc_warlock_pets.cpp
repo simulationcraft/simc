@@ -478,7 +478,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   if ( owner->talents.soul_strike.ok() )
-    action_list_str += "/soul_strike";
+    action_list_str += "/soul_strike,use_while_casting=1";
 
   felstorm_cd = get_cooldown( "felstorm" );
   dstr_cd = get_cooldown( "felstorm_demonic_strength" );
@@ -494,17 +494,9 @@ struct felguard_melee_t : public warlock_pet_melee_t
   {
     fiendish_wrath_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Fiendish Wrath", p, p->o()->talents.fiendish_wrath_dmg )
     {
+      weapon_multiplier = 1.0;
       background = dual = true;
       aoe = -1;
-    }
-
-    void init_finished() override
-    {
-      warlock_pet_melee_attack_t::init_finished();
-
-      snapshot_flags &= ~STATE_MUL_PET;
-      snapshot_flags &= ~STATE_TGT_MUL_PET;
-      snapshot_flags &= ~STATE_VERSATILITY;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -533,12 +525,10 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
   void impact( action_state_t* s ) override
   {
-    auto amount = s->result_raw;
-
     warlock_pet_melee_t::impact( s );
 
     if ( p()->buffs.fiendish_wrath->check() )
-      fiendish_wrath->execute_on_target( s->target, amount );
+      fiendish_wrath->execute_on_target( s->target );
   }
 };
 
@@ -551,6 +541,7 @@ struct axe_toss_t : public warlock_pet_spell_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     ignore_false_positive = is_interrupt = true;
+    usable_while_casting = true;
   }
 };
 
@@ -586,16 +577,6 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
       m *= p()->o()->tier.empowered_legion_strike->effectN( 1 ).percent();
 
     return m;
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = warlock_pet_melee_attack_t::cost_pct_multiplier();
-
-    if ( !main_pet && p()->buffs.demonic_power->check() && p()->bugs )
-      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
-
-    return c;
   }
 };
 
@@ -732,7 +713,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       background = dual = true;
       aoe = -1;
-      ignores_armor = true;
+      ignores_armor = !p->bugs; // TOCHECK: 2025-04-17 This spell currently does not ignore armor (bug?)
       base_dd_min = base_dd_max = 0;
     }
 
@@ -740,7 +721,10 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
     {
       warlock_pet_melee_attack_t::init_finished();
 
-      snapshot_flags &= STATE_NO_MULTIPLIER;
+      // TOCHECK: 2025-04-17 Although this spell is not supposed to be affected by modifiers, it is currently affected by them (bug?)
+      if ( !p()->bugs )
+        snapshot_flags &= STATE_NO_MULTIPLIER;
+
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -766,6 +750,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     cooldown->duration = p->o()->talents.soul_strike_pet->cooldown();
     trigger_gcd = p->o()->talents.soul_strike_pet->gcd();
+    usable_while_casting = true;
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
@@ -905,6 +890,7 @@ void felguard_pet_t::init_base_stats()
   owner_coeff.sp_from_sp = 1.4519;
 
   melee_attack->base_dd_multiplier *= 1.42;
+  debug_cast<felguard_melee_t*>( melee_attack )->fiendish_wrath->base_dd_multiplier = melee_attack->base_dd_multiplier;
 
   special_action = new axe_toss_t( this, "" );
 
@@ -2334,6 +2320,32 @@ namespace diabolist
       debug_cast<overlord_t*>( p() )->cleaves--;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
+        // Destruction, No reference spell for it in the hotfix located.
+        m *= 1.15;
+      }
+
+      return m;
+    }
+
     void impact( action_state_t* s ) override
     {
       warlock_pet_spell_t::impact( s );
@@ -2384,6 +2396,32 @@ namespace diabolist
       aoe = -1;
 
       travel_speed = p->o()->hero.chaos_salvo_missile->missile_speed();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
+        // Destruction, No reference spell for it in the hotfix located.
+        m *= 1.15;
+      }
+
+      return m;
     }
   };
 
@@ -2456,6 +2494,32 @@ namespace diabolist
       // TODO: After 11.2.0 goes live, remove the wow version check
       if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
         m *= 1.0 + ( ( p()->bugs && ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } ) ) ? shadowtouched_value : p()->o()->talents.shadowtouched->effectN( 1 ).percent() );
+
+      return m;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+          m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
+        // Destruction, No reference spell for it in the hotfix located.
+        m *= 1.15;
+      }
 
       return m;
     }
@@ -2573,5 +2637,139 @@ namespace diabolist
 
   /// Diabolic Imp End
 }  // namespace diabolist
+
+namespace soul_harvester
+{
+/// Rampaging Demonic Soul Begin
+struct rampaging_demonic_soul_shard_event_t : public event_t
+{
+  rampaging_demonic_soul_shard_event_t( rampaging_demonic_soul_t* pet, timespan_t delay )
+    : event_t( *pet->sim, delay ), pet( pet )
+  {
+  }
+
+  void execute() override
+  {
+    pet->o()->resource_gain( RESOURCE_SOUL_SHARD, pet->summon_spell->effectN( 2 ).base_value() / 10.0,
+                             pet->o()->gains.rampaging_demonic_soul );
+
+    if ( !pet->is_sleeping() )
+    {
+      make_event<rampaging_demonic_soul_shard_event_t>( *pet->sim, pet, pet->summon_spell->effectN( 2 ).period() );
+    }
+  }
+
+  rampaging_demonic_soul_t* pet;
+};
+
+struct soul_swipe_base_t : public warlock_pet_spell_t
+{
+  soul_swipe_base_t( std::string_view n, warlock_pet_t* p, const spell_data_t* s ) : warlock_pet_spell_t( n, p, s )
+  {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
+
+    m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
+    // Not in whitelist but appears to scale, likely a bug.
+    if ( p()->o()->bugs )
+      m *= 1.0 + p()->o()->hero.wicked_reaping->effectN( 1 ).percent();
+
+    if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+    {
+      m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+    }
+    if ( p()->o()->specialization() == WARLOCK_AFFLICTION )
+    {
+      m *= 1.0 + p()->o()->warlock_base.affliction_warlock->effectN( 1 ).percent();
+      // Oddly a scripted dummy effect. Needs to be double checked to be sure this actually works.
+      m *= 1.0 + p()->o()->sets->set( HERO_SOUL_HARVESTER, TWW3, B2 )->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    if ( p()->o()->talents.shadowtouched.ok() )
+    {
+      if ( owner_td( target )->debuffs_wicked_maw->check() )
+        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
+struct soul_swipe_aoe_t : public soul_swipe_base_t
+{
+  soul_swipe_aoe_t( warlock_pet_t* p, std::string_view n = "soul_swipe_aoe" )
+    : soul_swipe_base_t( n, p, p->find_spell( 1239714 ) )
+  {
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    aoe                    = -1;
+    background             = true;
+  }
+
+  // Doesnt hit the main target, so we need to override this
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    soul_swipe_base_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
+
+struct soul_swipe_t : public soul_swipe_base_t
+{
+  soul_swipe_t( warlock_pet_t* p, std::string_view n ) : soul_swipe_base_t( n, p, p->find_spell( 1239714 ) )
+  {
+    // Actually just an auto attack with a 1s swing time. Simplifying the code doing it this way.
+    trigger_gcd = 1_s;
+    min_gcd = 0_s;
+
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    aoe                    = 0;  // Single target spell
+    impact_action          = new soul_swipe_aoe_t( p );
+    add_child( impact_action );
+  }
+};
+
+rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true ), summon_spell( nullptr )
+{
+  resource_regeneration  = regen_type::DISABLED;
+  action_list_str        = "soul_swipe";
+  owner_coeff.sp_from_sp = 1.0;
+  summon_spell           = owner->find_spell( 1239689 );  // Rampaging Demonic Soul
+}
+
+void rampaging_demonic_soul_t::arise()
+{
+  warlock_pet_t::arise();
+  if ( o()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B4 ) )
+    make_event<rampaging_demonic_soul_shard_event_t>( *sim, this, summon_spell->effectN( 2 ).period() );
+}
+
+action_t* rampaging_demonic_soul_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "soul_swipe" )
+    return new soul_swipe_t( this, name );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+/// Rampaging Demonic Soul End
+
+}  // namespace soul_harvester
 }  // namespace pets
 }  // namespace warlock

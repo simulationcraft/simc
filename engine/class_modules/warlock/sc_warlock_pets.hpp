@@ -572,6 +572,18 @@ namespace diabolist
     action_t* create_action( util::string_view, util::string_view ) override;
   };
 }  // namespace diabolist
+
+namespace soul_harvester
+{
+  struct rampaging_demonic_soul_t : public warlock_pet_t
+  {
+    const spell_data_t* summon_spell;
+
+    rampaging_demonic_soul_t( warlock_t*, util::string_view = "demonic_soul" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
+}  // namespace soul_harvester
 }  // namespace pets
 }  // namespace warlock
 
