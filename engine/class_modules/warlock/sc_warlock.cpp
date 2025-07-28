@@ -1076,6 +1076,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     overlords( "overlord", w ),
     mothers( "mother_of_chaos", w ),
     pit_lords( "pit_lord", w ),
+    rocs( "infernal_roc", w ),
     fragments( "infernal_fragment", w ),
     diabolic_imps( "diabolic_imp", w ),
     demonic_souls( "demonic_soul", w )

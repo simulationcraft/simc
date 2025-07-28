@@ -1902,6 +1902,17 @@ double infernal_t::composite_player_multiplier( school_e school ) const
 
 /// Infernal End
 
+/// Infernal Rain of Chaos Begin
+
+infernal_roc_t::infernal_roc_t( warlock_t* owner, util::string_view name ) : destruction::infernal_t( owner, name )
+{
+  type                   = RAIN;
+  owner_coeff.ap_from_sp = 1.5;
+  owner_coeff.sp_from_sp = 1.5;
+}
+
+/// Infernal Rain of Chaos End
+/// 
 /// Dimensional Rifts Begin
 
 struct dimensional_cinder_t : public warlock_pet_spell_t

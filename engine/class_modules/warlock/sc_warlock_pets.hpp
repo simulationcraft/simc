@@ -482,6 +482,11 @@ struct infernal_t : public warlock_pet_t
   double composite_player_multiplier( school_e ) const override;
 };
 
+struct infernal_roc_t : public destruction::infernal_t
+{
+  infernal_roc_t( warlock_t*, util::string_view = "infernal_roc" );
+};
+
 struct shadowy_tear_t : public warlock_pet_t
 {
   int barrages;
