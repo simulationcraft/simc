@@ -2579,7 +2579,7 @@ namespace diabolist
   /// Infernal Fragment Begin
 
   infernal_fragment_t::infernal_fragment_t( warlock_t* owner, util::string_view name )
-    : destruction::infernal_t( owner, name )
+    : warlock_pet_t( owner, name )
   {
     type = FRAG;
     owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
