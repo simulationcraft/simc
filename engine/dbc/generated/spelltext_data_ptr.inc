@@ -16209,7 +16209,7 @@ static const std::array<spelltext_data_t, 28021> __ptr_spelltext_data { {
   {  351489, "Your Phial of Serenity reduces damage taken by $353192s1% for $353192d and its effects are also granted to your lowest-health ally.", 0, 0 },
   {  351491, "Your Valiant Strikes grant ${$S1/100}.2% critical strike chance per stack. When your Valiant Strikes heals an ally, you each gain $352981s1% critical strike chance for $352981d.", 0, 0 },
   {  351527, "$@spelldesc351531", 0, 0 },
-  {  351531, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.", "Reaching $u stacks will cause your next critical strike to consume Preternatural Charge, dealing Arcane damage.", 0 },
+  {  351531, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $351527s1 Arcane damage.", "Reaching $u stacks will cause your next critical strike to consume Preternatural Charge, dealing Arcane damage.", 0 },
   {  351561, "$@spelldesc351531", 0, 0 },
   {  351631, "$@spelldesc336165", 0, 0 },
   {  351679, "$@spelldesc351682", "$@auradesc351682", 0 },
@@ -28024,7 +28024,8 @@ static const std::array<spelltext_data_t, 28021> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62253
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  351531,  0, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.", "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $351527s1 Arcane damage." },
 } };
 
 // Spell description variables, wow build 11.2.0.62253
