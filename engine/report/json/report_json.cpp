@@ -1419,7 +1419,13 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   if ( !sim.error_list.empty() )
   {
-    root[ "notifications" ] = sim.error_list;
+    auto node = root[ "notifications" ];
+    node.make_array();
+    range::for_each( sim.error_list, [ & ]( const auto& error ) {
+      auto entry = node.add();
+      entry[ "level" ] = error.first;
+      entry[ "message" ] = error.second;
+    } );
   }
 
   std::array<char, 16384> buffer;

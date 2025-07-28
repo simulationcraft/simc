@@ -88,13 +88,13 @@ void SC_SimulateThread::run()
     else
     {
       error_category = tr( "Simulation runtime error" );
-      range::for_each( sim->error_list, [ this ]( const std::string& str ) {
+      range::for_each( sim->error_list, [ this ]( const auto& error ) {
         if ( !error_str.isEmpty() )
         {
           error_str += "\n";
         }
 
-        error_str += QString::fromStdString( str );
+        error_str += QString::fromStdString( error.second );
       } );
     }
   }
@@ -104,13 +104,13 @@ void SC_SimulateThread::run()
     error_category = tr( "Simulation runtime error" );
     std::string error_str_;
     print_exception( error_str_, e );
-    range::for_each( sim->error_list, [ this ]( const std::string& str ) {
+    range::for_each( sim->error_list, [ this ]( const auto& error ) {
       if ( !error_str.isEmpty() )
       {
         error_str += "\n";
       }
 
-      error_str += QString::fromStdString( str );
+      error_str += QString::fromStdString( error.second );
     } );
     error_str += QString::fromStdString( error_str_ );
   }

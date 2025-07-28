@@ -1044,7 +1044,7 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
     os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
     for ( const auto& error : sim.error_list )
-      os << util::encode_html( error ) << "\n";
+      os.format( "{}: {}\n", util::error_level_string( error.first ), error.second );
 
     os << "</pre>\n\n";
   }

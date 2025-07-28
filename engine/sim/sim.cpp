@@ -3141,13 +3141,13 @@ void sim_t::do_pause()
   }
 }
 
-void sim_t::set_error(std::string error)
+void sim_t::set_error( error_level_e level, std::string error )
 {
-    util::replace_all( error, "\n", "" );
-    fmt::print( stderr, "{}\n", error );
-    std::fflush( stderr );
+  util::replace_all( error, "\n", "" );
+  fmt::print( stderr, "{}\n", error );
+  std::fflush( stderr );
 
-    error_list.push_back( std::move( error ) );
+  error_list.emplace_back( level, std::move( error ) );
 }
 
 /// merge sims

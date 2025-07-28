@@ -495,7 +495,7 @@ void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_
   if ( sim )
   {
     std::list<std::string> files;
-    std::vector<std::string> errorListCopy( sim->error_list );
+    std::vector<std::pair<error_level_e, std::string> errorListCopy( sim->error_list );
     files.push_back( sim->output_file_str );
     files.push_back( sim->html_file_str );
     files.push_back( sim->json_file_str );
@@ -734,9 +734,9 @@ void SC_MainWindow::importFinished()
       simulateTab->append_Text( QString( "# " ) + importThread->error );
     }
 
-    for ( const std::string& error : import_sim->error_list )
+    for ( const auto& error : import_sim->error_list )
     {
-      simulateTab->append_Text( QString( "# " ) + QString::fromStdString( error ) );
+      simulateTab->append_Text( QString( "# " ) + QString::fromStdString( error.second ) );
     }
     deleteSim( import_sim, simulateTab->current_Text() );
   }

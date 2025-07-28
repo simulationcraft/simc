@@ -12738,7 +12738,9 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     case DRUID_BALANCE:
       if ( style == FIGHT_STYLE_DUNGEON_SLICE && !sim->allow_experimental_specializations )
       {
-        sim->error( "DungeonSlice is disabled for Balance Druids. To force enable, use allow_experimental_specializations=1 option." );
+        sim->error( error_level_e::FIGHT_STYLE,
+                    "DungeonSlice is disabled for Balance Druids. To force enable, use "
+                    "allow_experimental_specializations=1 option." );
         sim->cancel();
       }
 
@@ -12769,18 +12771,18 @@ bool druid_t::validate_actor()
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
          sim->desired_targets > 1 )
     {
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-      sim->error( "!! The effect of multiple targets on Bloodseeker Vines is unknown.    !!" );
-      sim->error( "!! Results will be incorrect.                                         !!" );
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( error_level_e::SEVERE, "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( error_level_e::SEVERE, "!! The effect of multiple targets on Bloodseeker Vines is unknown.    !!" );
+      sim->error( error_level_e::SEVERE, "!! Results will be incorrect.                                         !!" );
+      sim->error( error_level_e::SEVERE, "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
     }
 
     if ( sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
     {
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-      sim->error( "!! The effect of 11.2 Wildstalker 2-piece set bonus is unknown.       !!" );
-      sim->error( "!! Results will be incorrect.                                         !!" );
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( error_level_e::SEVERE, "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+      sim->error( error_level_e::SEVERE, "!! The effect of 11.2 Wildstalker 2-piece set bonus is unknown.       !!" );
+      sim->error( error_level_e::SEVERE, "!! Results will be incorrect.                                         !!" );
+      sim->error( error_level_e::SEVERE, "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
     }
   }
 
