@@ -171806,6 +171806,7 @@ Effects          :
 Description      : $@spelldesc351531
 
 Name             : Preternatural Charge (id=351531) 
+Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
@@ -171820,7 +171821,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1250847)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351527
-Description      : Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.
+Description      : Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $351527s1 Arcane damage.
 Tooltip          : Reaching $u stacks will cause your next critical strike to consume Preternatural Charge, dealing Arcane damage.
 
 Name             : Preternatural Charge (id=351561) 
