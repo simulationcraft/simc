@@ -4612,6 +4612,7 @@ using namespace helpers;
       if ( demonology() )
       {
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent(); //  Sargerei Technique Appears to Double dip for Infernal Bolt due to Destro modifier
         base_dd_multiplier *= 1.0 + p->talents.rune_of_shadows->effectN( 3 ).percent();
 
         if ( active_2pc( TWW1 ) )
@@ -4620,6 +4621,7 @@ using namespace helpers;
 
       if ( destruction() )
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent(); //  Sargerei Technique Appears to Double dip for Infernal Bolt due to Demo modifier
     }
 
     bool ready() override
