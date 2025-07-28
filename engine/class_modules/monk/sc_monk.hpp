@@ -34,9 +34,26 @@ struct monk_td_t;
 
 namespace pets
 {
+struct monk_pet_t : public pet_t
+{
+  monk_pet_t( monk_t *owner, std::string_view name, pet_e pet_type, bool guardian, bool dynamic );
+  monk_t *o();
+  const monk_t *o() const;
+  void init_assessors() override;
+};
 struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-struct niuzao_pet_t;
+namespace  // niuzao
+{
+struct niuzao_pet_t : public monk_pet_t
+{
+  action_t *stomp;
+  niuzao_pet_t( std::string_view name, monk_t *player );
+  void init_action_list() override;
+  action_t *create_action( std::string_view name, std::string_view options_str ) override;
+  void init_spells() override;
+};
+}  // namespace
 struct call_to_arms_niuzao_pet_t;
 struct chiji_pet_t;
 struct yulon_pet_t;
@@ -1334,12 +1351,12 @@ public:
   {
     std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
-    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pets::niuzao_pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pets::niuzao_pet_t, monk_t> call_to_arms_niuzao;
 
     pet_t *bron;
 

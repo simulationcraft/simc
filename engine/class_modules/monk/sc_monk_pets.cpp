@@ -19,28 +19,25 @@ namespace pets
 // Base Monk Pet Action
 // ==========================================================================
 
-struct monk_pet_t : public pet_t
+monk_pet_t::monk_pet_t( monk_t *owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
+  : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
 {
-  monk_pet_t( monk_t *owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
-    : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
-  {
-  }
+}
 
-  monk_t *o()
-  {
-    return static_cast<monk_t *>( owner );
-  }
+monk_t *monk_pet_t::o()
+{
+  return static_cast<monk_t *>( owner );
+}
 
-  const monk_t *o() const
-  {
-    return static_cast<monk_t *>( owner );
-  }
+const monk_t *monk_pet_t::o() const
+{
+  return static_cast<monk_t *>( owner );
+}
 
-  void init_assessors() override
-  {
-    base_t::init_assessors();
-  }
-};
+void monk_pet_t::init_assessors()
+{
+  base_t::init_assessors();
+}
 
 template <typename BASE, typename PET_TYPE = monk_pet_t>
 struct pet_action_base_t : public BASE
@@ -1280,80 +1277,91 @@ public:
 // ==========================================================================
 // Niuzao Pet
 // ==========================================================================
-struct niuzao_pet_t : public monk_pet_t
+namespace
 {
-  struct melee_t : public pet_melee_t
+struct melee_t : public pet_melee_t
+{
+  melee_t( niuzao_pet_t *pet, weapon_t *weapon ) : pet_melee_t( "melee_main_hand", pet, weapon )
   {
-    melee_t( niuzao_pet_t *pet, weapon_t *weapon ) : pet_melee_t( "melee_main_hand", pet, weapon )
-    {
-    }
-  };
-
-  struct stomp_t : public pet_melee_attack_t
-  {
-    stomp_t( niuzao_pet_t *pet, std::string_view options_str )
-      : pet_melee_attack_t( "stomp", pet, pet->o()->talent.brewmaster.invoke_niuzao_the_black_ox_stomp )
-    {
-      parse_options( options_str );
-      aoe      = -1;
-      may_crit = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = pet_melee_attack_t::action_multiplier();
-      am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
-      am *= 1.0 + o()->buff.recent_purifies->check_value();
-      return am;
-    }
-
-    void execute() override
-    {
-      pet_melee_attack_t::execute();
-      o()->buff.recent_purifies->cancel();
-    }
-  };
-
-  struct auto_attack_t : public pet_auto_attack_t
-  {
-    auto_attack_t( niuzao_pet_t *pet, std::string_view options_str ) : pet_auto_attack_t( pet )
-    {
-      parse_options( options_str );
-      player->main_hand_attack                    = new melee_t( pet, &( pet->main_hand_weapon ) );
-      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-    }
-  };
-
-  niuzao_pet_t( std::string_view name, monk_t *player ) : monk_pet_t( player, name, PET_NIUZAO, false, true )
-  {
-    npc_id                      = (int)o()->find_spell( 132578 )->effectN( 1 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap      = 1;
-  }
-
-  void init_action_list() override
-  {
-    action_list_str = "auto_attack";
-    action_list_str += "/stomp";
-
-    pet_t::init_action_list();
-  }
-
-  action_t *create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "stomp" )
-      return new stomp_t( this, options_str );
-
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this, options_str );
-
-    return pet_t::create_action( name, options_str );
   }
 };
+
+struct stomp_t : public pet_melee_attack_t
+{
+  stomp_t( niuzao_pet_t *pet, std::string_view options_str )
+    : pet_melee_attack_t( "stomp", pet, pet->o()->talent.brewmaster.invoke_niuzao_the_black_ox_stomp )
+  {
+    if ( o()->wowv_l( { 11, 2, 0 } ) )
+      parse_options( options_str );
+    aoe      = -1;
+    may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = pet_melee_attack_t::action_multiplier();
+    am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
+    am *= 1.0 + o()->buff.recent_purifies->check_value();
+    return am;
+  }
+
+  void execute() override
+  {
+    pet_melee_attack_t::execute();
+    o()->buff.recent_purifies->cancel();
+  }
+};
+
+struct auto_attack_t : public pet_auto_attack_t
+{
+  auto_attack_t( niuzao_pet_t *pet, std::string_view options_str ) : pet_auto_attack_t( pet )
+  {
+    parse_options( options_str );
+    player->main_hand_attack                    = new melee_t( pet, &( pet->main_hand_weapon ) );
+    player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+  }
+};
+
+niuzao_pet_t::niuzao_pet_t( std::string_view name, monk_t *player )
+  : monk_pet_t( player, name, PET_NIUZAO, false, true ), stomp( nullptr )
+{
+  npc_id                      = (int)o()->find_spell( 132578 )->effectN( 1 ).misc_value1();
+  main_hand_weapon.type       = WEAPON_BEAST;
+  main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+  main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+  main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+  main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+  owner_coeff.ap_from_ap      = 1;
+}
+
+void niuzao_pet_t::init_spells()
+{
+  monk_pet_t::init_spells();
+
+  stomp = new stomp_t( this, "" );
+}
+
+void niuzao_pet_t::init_action_list()
+{
+  action_list_str = "auto_attack";
+  if ( o()->wowv_l( { 11, 2, 0 } ) )
+    action_list_str += "/stomp";
+
+  monk_pet_t::init_action_list();
+}
+
+action_t *niuzao_pet_t::create_action( std::string_view name, std::string_view options_str )
+{
+  if ( name == "auto_attack" )
+    return new auto_attack_t( this, options_str );
+
+  if ( name == "stomp" && o()->wowv_l( { 11, 2, 0 } ) )
+    return new stomp_t( this, options_str );
+
+  return monk_pet_t::create_action( name, options_str );
+}
+
+}  // namespace
 
 struct invoke_niuzao_pet_t : public niuzao_pet_t
 {

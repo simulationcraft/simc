@@ -4033,6 +4033,24 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
 
+    pets::niuzao_pet_t *pet = nullptr;
+    if ( p()->buff.invoke_niuzao->check() && !p()->buff.call_to_arms_invoke_niuzao->check() )
+      pet = p()->pets.niuzao.active_pet();
+    if ( p()->buff.call_to_arms_invoke_niuzao->check() && !p()->buff.invoke_niuzao->check() )
+      pet = p()->pets.call_to_arms_niuzao.active_pet();
+    if ( p()->buff.call_to_arms_invoke_niuzao->check() && p()->buff.invoke_niuzao->check() )
+    {
+      if ( p()->buff.invoke_niuzao->last_trigger_time() < p()->buff.call_to_arms_invoke_niuzao->last_trigger_time() )
+        pet = p()->pets.niuzao.active_pet();
+      else if ( p()->buff.invoke_niuzao->last_trigger_time() >
+                p()->buff.call_to_arms_invoke_niuzao->last_trigger_time() )
+        pet = p()->pets.call_to_arms_niuzao.active_pet();
+      else
+        assert( false );
+    }
+    if ( pet && p()->wowv_ge( { 11, 2, 0 } ) )
+      pet->stomp->execute();
+
     auto stacks = as<unsigned>( p()->find_stagger( "Stagger" )->level_index() );
     if ( stacks > 0 )
     {
@@ -4477,6 +4495,8 @@ struct niuzao_spell_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+
+    apply_affecting_aura( p->talent.brewmaster.walk_with_the_ox );
   }
 
   void execute() override
@@ -4770,8 +4790,6 @@ struct weapons_of_order_t : public monk_spell_t
 
     if ( p()->talent.brewmaster.call_to_arms->ok() )
       p()->active_actions.niuzao_call_to_arms_summon->execute();
-
-    p()->buff.invoke_niuzao->trigger( p()->talent.brewmaster.call_to_arms_buff->duration() );
   }
 };
 
