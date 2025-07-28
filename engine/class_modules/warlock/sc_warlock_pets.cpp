@@ -2582,8 +2582,8 @@ namespace diabolist
     : destruction::infernal_t( owner, name )
   {
     type = FRAG;
-    owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
-    owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
+      owner_coeff.ap_from_sp = 1.5*owner->hero.abyssal_dominion->effectN( 4 ).percent();
+      owner_coeff.sp_from_sp = 1.5*owner->hero.abyssal_dominion->effectN( 4 ).percent();
   }
 
   /// Infernal Fragment End
