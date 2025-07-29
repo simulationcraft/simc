@@ -1007,16 +1007,13 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
         commit_link.c_str(), git_info::revision());
   }
 
-  std::time_t rawtime = std::time(nullptr);
-  const tm localtime  = fmt::localtime( rawtime );
-
   os << "<ul class=\"params\">\n";
   if constexpr ( SC_NO_NETWORKING_ON )
   {
     os.format( "<li><b>No Networking</b></li>\n" );
   }
-  os.format( "<li><b>Timestamp:</b> {:%Y-%m-%d %H:%M:%S%z}</li>\n", localtime);
-  os.printf( "<li><b>Iterations:</b> %d</li>\n", sim.iterations );
+  os.format( "<li><b>Timestamp:</b> {}</li>\n", util::sc_time_str() );
+  os.format( "<li><b>Iterations:</b> {}</li>\n", sim.iterations );
 
   if ( sim.vary_combat_length > 0.0 )
   {

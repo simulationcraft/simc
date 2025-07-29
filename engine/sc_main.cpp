@@ -8,7 +8,7 @@
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
-#include "lib/fmt/core.h"
+#include "lib/fmt/format.h"
 #include "player/player.hpp"
 #include "player/unique_gear.hpp"
 #include "report/reports.hpp"

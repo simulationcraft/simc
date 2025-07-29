@@ -9,13 +9,13 @@
 
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"
-#include "sc_enums.hpp"
-#include "util/timespan.hpp"
-#include "util/span.hpp"
-#include "util/string_view.hpp"
-
 #include "fmt/format.h"
 #include "fmt/ostream.h"
+#include "fmt/ranges.h"
+#include "sc_enums.hpp"
+#include "util/span.hpp"
+#include "util/string_view.hpp"
+#include "util/timespan.hpp"
 
 #include <exception>
 #include <iosfwd>
@@ -242,6 +242,8 @@ bool contains_non_ascii( util::string_view );
 void print_chained_exception( const std::exception& e, std::FILE* out, int level = 0 );
 void print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level = 0 );
 
+std::string sc_time_str();
+
 } // namespace util
 
 template <typename T>
@@ -258,12 +260,12 @@ std::string util::string_join( const T& container, util::string_view delim )
 
 // fmtlib formatters for enums
 namespace fmt {
-#define SC_ENUM_FORMATTER( EnumType, ToStringFn )                          \
-  template <> struct formatter<EnumType> : formatter<string_view> {        \
-    template <typename FormatContext>                                      \
-    auto format(EnumType val, FormatContext& ctx) -> decltype(ctx.out()) { \
-      return formatter<string_view>::format(ToStringFn(val), ctx);         \
-    }                                                                      \
+#define SC_ENUM_FORMATTER( EnumType, ToStringFn )                                \
+  template <> struct formatter<EnumType> : formatter<string_view> {              \
+    template <typename FormatContext>                                            \
+    auto format(EnumType val, FormatContext& ctx) const -> decltype(ctx.out()) { \
+      return formatter<string_view>::format(ToStringFn(val), ctx);               \
+    }                                                                            \
   }
 
 SC_ENUM_FORMATTER( attribute_e,             util::attribute_type_string );
