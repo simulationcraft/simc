@@ -1561,6 +1561,9 @@ using namespace helpers;
 
       base_dd_multiplier *= 1.0 + p->hero.wicked_reaping->effectN( 1 ).percent();
 
+      if ( affliction() && sim->dbc->wowv() >= wowv_t{ 11, 2, 0 }  )
+        base_dd_multiplier *= p->warlock_base.affliction_warlock->effectN( 27 ).percent();
+
       if ( p->hero.soul_anathema.ok() )
         impact_action = new soul_anathema_t( p );
     }
@@ -1631,6 +1634,8 @@ using namespace helpers;
 
       if ( demonology() )
         base_dd_multiplier *= p->hero.wicked_reaping->effectN( 2 ).percent();
+      if ( affliction() && sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
+        base_dd_multiplier *= p->warlock_base.affliction_warlock->effectN( 26 ).percent();
 
       if ( p->hero.soul_anathema.ok() )
         impact_action = new soul_anathema_t( p );
