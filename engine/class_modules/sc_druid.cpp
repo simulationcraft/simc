@@ -12738,7 +12738,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     case DRUID_BALANCE:
       if ( style == FIGHT_STYLE_DUNGEON_SLICE && !sim->allow_experimental_specializations )
       {
-        sim->error( error_level_e::FIGHT_STYLE,
+        sim->error( error_level_e::SEVERE,
                     "DungeonSlice is disabled for Balance Druids. To force enable, use "
                     "allow_experimental_specializations=1 option." );
         sim->cancel();

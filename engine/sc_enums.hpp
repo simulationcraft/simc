@@ -1526,9 +1526,7 @@ enum trait_definition_op : int
 // sim_t::error() severity level
 enum error_level_e : unsigned short
 {
-  TRIVIAL = 0,
+  TRIVIAL,
   MODERATE,
-  SEVERE,
-  FIGHT_STYLE = 10,
-  TALENT_HASH,
+  SEVERE
 };
