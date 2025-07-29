@@ -264004,6 +264004,7 @@ Name             : Observer's Soul Fetters (id=1230285)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
+Cooldown         : 120 seconds
 Labels           : 3959: Item Effects
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
