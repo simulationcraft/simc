@@ -1531,5 +1531,4 @@ enum error_level_e : unsigned short
   SEVERE,
   FIGHT_STYLE = 10,
   TALENT_HASH,
-  WORK_IN_PROGRESS
 };

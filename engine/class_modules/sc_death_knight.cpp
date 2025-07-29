@@ -15738,10 +15738,7 @@ bool death_knight_t::validate_actor()
 {
   if ( talent.frost.frostbane.ok() )
   {
-    sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-    sim->error( "!! The precise proc chance of Frostbane is unknown.    !!" );
-    sim->error( "!! Results will be incorrect.                                         !!" );
-    sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
+    sim->error( error_level_e::SEVERE, "The precise proc chance of Frostbane is unknown. Results will be incorrect." );
   }
 
   return true;

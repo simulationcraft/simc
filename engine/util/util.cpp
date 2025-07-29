@@ -2779,7 +2779,6 @@ const char* util::error_level_string( error_level_e level )
     case error_level_e::SEVERE:           return "Severe";
     case error_level_e::FIGHT_STYLE:      return "Invalid Fight Style";
     case error_level_e::TALENT_HASH:      return "Invalid Talent String";
-    case error_level_e::WORK_IN_PROGRESS: return "Work-in-Progress";
     default:                              return "Unknown";
   }
 }
