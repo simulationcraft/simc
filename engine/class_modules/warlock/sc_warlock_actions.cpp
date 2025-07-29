@@ -4620,8 +4620,10 @@ using namespace helpers;
       }
 
       if ( destruction() )
-        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
+      {
+       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 2 ).percent();
        base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent(); //  Sargerei Technique Appears to Double dip for Infernal Bolt due to Demo modifier
+      }
     }
 
     bool ready() override
