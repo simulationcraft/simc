@@ -5097,7 +5097,7 @@ struct killing_spree_t : public rogue_attack_t
 
     // Assume we can react to the ending of Killing Spree faster than the 250ms channel_lag setting
     // through the use of [nochannel] macros, or in some cases reacting to the combo point generation
-    // to cancel early it with another action
+    // to cancel it early with another action
     ability_lag = p->world_lag;
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
