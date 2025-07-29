@@ -1419,13 +1419,17 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
 
   if ( !sim.error_list.empty() )
   {
+    std::map<error_level_e, std::vector<std::string_view>> error_map;
+    for ( const auto& error : sim.error_list )
+      error_map[ error.first ].emplace_back( error.second );
+
     auto node = root[ "notifications" ];
-    node.make_array();
-    range::for_each( sim.error_list, [ & ]( const auto& error ) {
-      auto entry = node.add();
-      entry[ "level" ] = error.first;
-      entry[ "message" ] = error.second;
-    } );
+    for ( const auto& error_list : error_map )
+    {
+      auto level = node[ util::tokenize_fn( util::error_level_string( error_list.first ) ) ];
+      for ( size_t i = 0; i < error_list.second.size(); i++ )
+        level[ util::to_string( i ) ] = error_list.second[ i ];
+    }
   }
 
   std::array<char, 16384> buffer;
