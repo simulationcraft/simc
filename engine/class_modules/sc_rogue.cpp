@@ -13411,6 +13411,12 @@ public:
 
   void register_hotfixes() const override
   {
+    // 2025-07-29 -- Fatebound Lucky Coin expires 15s after leaving combat
+    hotfix::register_effect( "Rogue", "2025-07-29", "Fatebound Lucky Coin Expiry", 1156957 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 15 )
+        .verification_value( 10 );
   }
 
   void init( player_t* ) const override {}
