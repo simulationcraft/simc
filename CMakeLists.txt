@@ -48,6 +48,7 @@ function(sc_common_compiler_options target)
     $<$<CXX_COMPILER_ID:MSVC>:/permissive->
     $<$<CXX_COMPILER_ID:MSVC>:/W3>
     $<$<CXX_COMPILER_ID:MSVC>:/bigobj> # required for dbc item data object files
+    $<$<CXX_COMPILER_ID:MSVC>:/utf-8> # required for fmt 11.2
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
   )
 endfunction()
