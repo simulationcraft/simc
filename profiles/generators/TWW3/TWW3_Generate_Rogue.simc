@@ -43,7 +43,7 @@ wrist=armbands_of_the_sudden_eclipse,id=237660,bonus_id=12676/1533/12361/1808,ge
 hands=gloves_of_haunting_fixation,id=178832,bonus_id=12361,ilevel=723
 waist=runebranded_waistband,id=219331,bonus_id=10421/9633/1808/12053/12050/1485,crafted_stats=32/40,gem_id=213461
 legs=pants_of_the_sudden_eclipse,id=237663,bonus_id=12676/1533/12361,enchant_id=7601
-feet=interlopers_reinforced_sandals,id=243306,bonus_id=12676/1533/12361
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=12676/1533/12361/13504
 finger1=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10878/12053/12050/1485/10520/8960,crafted_stats=32/40,enchant_id=7352,gem_id=213461/213461
 finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10878/12053/12050/1485/10520/8960,crafted_stats=40/36,enchant_id=7352,gem_id=213461/213461
 trinket1=sigil_of_the_cosmic_hunt,id=242397,bonus_id=12676/1533/12361
