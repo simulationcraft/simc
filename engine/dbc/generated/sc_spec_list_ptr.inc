@@ -1,7 +1,7 @@
-#define MAX_SPECS_PER_CLASS (4)
-#define MAX_SPEC_CLASS  (14)
+#define PTR_MAX_SPECS_PER_CLASS (4)
+#define PTR_MAX_SPEC_CLASS  (14)
 
-static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
+static constexpr specialization_e __ptr_class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
 {
   {
     PET_FEROCITY,

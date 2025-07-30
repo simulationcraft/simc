@@ -1,5 +1,5 @@
 // Player trait definitions, wow build 11.2.0.62253
-static const std::array<trait_data_t, 3194> __ptr_trait_data_data { {
+static constexpr std::array<trait_data_t, 3194> __ptr_trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  1,  -1,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },  0, 0 },
   { 1,  1, 112179,  90322, 2, 20, 117184,  382896,      0,      0,  8,  1,  -1,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 1,  1, 112180,  90323, 1, 20, 117185,  386284,      0,      0, 10,  5,  -1,                       "Champion's Might", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -3197,7 +3197,7 @@ static const std::array<trait_data_t, 3194> __ptr_trait_data_data { {
 } };
 
 // Player trait definition effect entries, wow build 11.2.0.62253
-static const std::array<trait_definition_effect_entry_t, 377> __ptr_trait_definition_effect_data { {
+static constexpr std::array<trait_definition_effect_entry_t, 377> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
   { 85159, 0, 0, 52496 },
@@ -3980,10 +3980,10 @@ static const std::array<uint16_t, 3194> __ptr_trait_spell_id_index { {
     198,  1441,
 } };
 
-#define MAX_HERO_TREES_PER_CLASS (4)
+#define PTR_MAX_HERO_TREES_PER_CLASS (4)
 
 // Hero trees, wow build 11.2.0.62253
-static const std::array<std::tuple<unsigned, std::string, unsigned>, 39> __ptr_trait_sub_tree_data { {
+static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 39> __ptr_trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },
   { 20, "Oracle", 5 },
@@ -4025,44 +4025,3 @@ static const std::array<std::tuple<unsigned, std::string, unsigned>, 39> __ptr_t
   { 66, "Master of Harmony", 10 },
 } };
 
-static constexpr unsigned __ptr_trait_sub_tree_map_data[39][2] = {
-  { 18, 5 },
-  { 19, 5 },
-  { 20, 5 },
-  { 21, 11 },
-  { 22, 11 },
-  { 23, 11 },
-  { 24, 11 },
-  { 31, 6 },
-  { 32, 6 },
-  { 33, 6 },
-  { 34, 12 },
-  { 35, 12 },
-  { 36, 13 },
-  { 37, 13 },
-  { 38, 13 },
-  { 39, 8 },
-  { 40, 8 },
-  { 41, 8 },
-  { 42, 3 },
-  { 43, 3 },
-  { 44, 3 },
-  { 48, 2 },
-  { 49, 2 },
-  { 50, 2 },
-  { 51, 4 },
-  { 52, 4 },
-  { 53, 4 },
-  { 54, 7 },
-  { 55, 7 },
-  { 56, 7 },
-  { 57, 9 },
-  { 58, 9 },
-  { 59, 9 },
-  { 60, 1 },
-  { 61, 1 },
-  { 62, 1 },
-  { 64, 10 },
-  { 65, 10 },
-  { 66, 10 },
-};

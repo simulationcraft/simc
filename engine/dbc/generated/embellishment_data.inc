@@ -1,5 +1,5 @@
-// Embellishment data, wow build 11.1.7.61609
-static const std::array<embellishment_data_t, 32> __embellishment_data { {
+// Embellishment data, wow build 11.1.7.61967
+static constexpr std::array<embellishment_data_t, 32> __embellishment_data { {
   { "Armor Spikes", 8188, 147859 },
   { "Potion Absorption Inhibitor", 8175, 147812 },
   { "Alchemical Flavor Pocket", 8174, 147811 },
