@@ -363,7 +363,7 @@ class DataGenerator(object):
         if header_str:
             self._out.write('// {}, wow build {}\n'.format(header_str, self._options.build))
 
-        self._out.write('static const std::array<{}, {}> __{}_data {{ {{\n'.format(
+        self._out.write('static constexpr std::array<{}, {}> __{}_data {{ {{\n'.format(
             typename, l, self.format_str(arrayname)))
 
     def output_footer(self):
@@ -3245,7 +3245,7 @@ class SpellDataGenerator(DataGenerator):
             class_id = 0
             if spec_data.id > 0:
                 class_id = spec_data.class_id
-            elif tst_data.id > 0:
+            elif tst_data and tst_data.id > 0:
                 ttid = tst_data.id_trait_tree
                 class_id = 0
                 for ttl in self.db('TraitTreeLoadout').values():
@@ -5221,7 +5221,7 @@ class TraitGenerator(DataGenerator):
 
         self.output_header(
             header='Hero trees',
-            type='std::tuple<unsigned, std::string, unsigned>',
+            type='std::tuple<unsigned, const char*, unsigned>',
             array='trait_sub_tree',
             length=len(subtrees)
         )
