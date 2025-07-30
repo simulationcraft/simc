@@ -275,9 +275,9 @@ void outlaw( player_t* p )
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "Inside stealth, 2FTH builds can consume Opportunity for Greenskins, or with max stacks + Broadside active + minimal CPs." );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
-  vanish->add_action( "vanish,if=!talent.unseen_blade&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4", "Vanish usage for standard builds  Fatebound attempts to hold Vanish for when BtE is on cooldown and Ruthless Precision is active." );
-  vanish->add_action( "vanish,if=!talent.unseen_blade&!talent.killing_spree&buff.supercharge_1.up", "Supercharger builds that do not use Killing Spree should also Vanish if Supercharger becomes active." );
-  vanish->add_action( "vanish,if=talent.unseen_blade&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)", "Trickster builds with Killing Spree should Vanish if Killing Spree is not up soon. With TWW3 Trickster, attempt to align Vanish with a recently used Coup de Grace." );
+  vanish->add_action( "vanish,if=(!talent.unseen_blade|!talent.killing_spree)&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4", "Vanish usage for standard builds  Fatebound or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active." );
+  vanish->add_action( "vanish,if=(!talent.unseen_blade|!talent.killing_spree)&buff.supercharge_1.up", "Fatebound or builds without Killing Spree should also Vanish if Supercharger becomes active." );
+  vanish->add_action( "vanish,if=talent.unseen_blade&talent.killing_spree&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)", "Trickster builds with Killing Spree should Vanish if Killing Spree is not up soon. With TWW3 Trickster, attempt to align Vanish with a recently used Coup de Grace." );
   vanish->add_action( "vanish,if=cooldown.vanish.full_recharge_time<15|fight_remains<charges*8", "Vanish if it is about to cap charges or sim duration is ending soon." );
 }
 //outlaw_apl_end

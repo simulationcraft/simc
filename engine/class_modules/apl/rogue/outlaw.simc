@@ -129,11 +129,11 @@ actions.stealth+=/pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&
 actions.stealth+=/ambush,if=talent.hidden_opportunity
 
 # Vanish usage for standard builds
-# Fatebound attempts to hold Vanish for when BtE is on cooldown and Ruthless Precision is active.
-actions.vanish=vanish,if=!talent.unseen_blade&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4
-# Supercharger builds that do not use Killing Spree should also Vanish if Supercharger becomes active.
-actions.vanish+=/vanish,if=!talent.unseen_blade&!talent.killing_spree&buff.supercharge_1.up
+# Fatebound or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active.
+actions.vanish=vanish,if=(!talent.unseen_blade|!talent.killing_spree)&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4
+# Fatebound or builds without Killing Spree should also Vanish if Supercharger becomes active.
+actions.vanish+=/vanish,if=(!talent.unseen_blade|!talent.killing_spree)&buff.supercharge_1.up
 # Trickster builds with Killing Spree should Vanish if Killing Spree is not up soon. With TWW3 Trickster, attempt to align Vanish with a recently used Coup de Grace. 
-actions.vanish+=/vanish,if=talent.unseen_blade&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)
+actions.vanish+=/vanish,if=talent.unseen_blade&talent.killing_spree&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)
 # Vanish if it is about to cap charges or sim duration is ending soon.
 actions.vanish+=/vanish,if=cooldown.vanish.full_recharge_time<15|fight_remains<charges*8
