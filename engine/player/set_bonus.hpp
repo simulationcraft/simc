@@ -22,8 +22,6 @@ struct player_t;
 
 // Set Bonus ================================================================
 
-int composite_idx( specialization_e spec, hero_talent_e hero );
-
 struct set_bonus_t
 {
   // Some magic constants
@@ -92,4 +90,10 @@ struct set_bonus_t
   std::string generate_set_bonus_options() const;
 
   friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );
+
+private:
+  int spec_idx( specialization_e ) const;
+  int hero_idx( hero_talent_e ) const;
+  int composite_idx( specialization_e, hero_talent_e ) const;
+  int composite_idx( const item_set_bonus_t& ) const;
 };

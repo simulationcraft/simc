@@ -10,10 +10,8 @@
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim.hpp"
 #include "dbc/dbc.hpp"
-#include "dbc/trait_data.hpp"
 
 #include "lib/utf8-cpp/utf8.h"
-#include "dbc/generated/trait_data.inc"
 
 #include <cctype>
 #include <limits>

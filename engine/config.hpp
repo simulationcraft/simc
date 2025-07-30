@@ -175,5 +175,8 @@ constexpr int MAX_LEVEL = 80;
 constexpr int MAX_SCALING_LEVEL = 80;
 constexpr int MAX_ILEVEL = 1300;
 constexpr int MAX_CLASS = 14;
+#if SC_USE_PTR
+constexpr int PTR_MAX_CLASS = 14;
+#endif
 
 #endif // CONFIG_H

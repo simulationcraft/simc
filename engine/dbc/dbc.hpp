@@ -75,11 +75,9 @@ uint32_t get_school_mask( school_e s );
 school_e get_school_type( uint32_t school_id );
 bool is_school( school_e s, school_e s2 );
 bool has_common_school( school_e s1, school_e s2 );
-unsigned specialization_max_per_class();
-unsigned hero_trees_max_per_class();
-specialization_e spec_by_idx( const player_e c, unsigned idx );
-int spec_idx( specialization_e spec );
-int hero_idx( hero_talent_e hero_talent );
+int spec_idx( specialization_e spec, bool ptr = false );
+int hero_idx( hero_talent_e hero_talent, bool ptr = false );
+int composite_idx( specialization_e spec, hero_talent_e hero, bool ptr = false );
 
 // Data Access
 const char* wow_ptr_status( bool ptr );

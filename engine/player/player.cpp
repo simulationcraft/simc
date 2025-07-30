@@ -842,15 +842,16 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   player_t* p = sim->active_player;
 
-  set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus          = B_NONE;
+  set_bonus_type_e tier = SET_BONUS_NONE;
+  set_bonus_e bonus = B_NONE;
   bool enabled = false;
   specialization_e spec = SPEC_NONE;
   hero_talent_e hero = HERO_NONE;
 
-  if ( p->sets->parse_set_bonus_option_verbose( value, set_bonus, bonus, enabled, spec, hero ) )
+  if ( p->sets->parse_set_bonus_option_verbose( value, tier, bonus, enabled, spec, hero ) )
   {
-    p->sets->set_bonus_spec_data[ set_bonus ][ composite_idx( spec, hero ) ][ bonus ].overridden = enabled;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::composite_idx( spec, hero, sim->dbc->ptr ) ][ bonus ].overridden =
+      enabled;
     return true;
   }
 
@@ -869,7 +870,7 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
-  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus, hero ) )
+  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], tier, bonus, hero ) )
   {
     sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
@@ -877,12 +878,13 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   if ( hero != HERO_NONE )
   {
-    p->sets->set_bonus_spec_data[ set_bonus ][ composite_idx( spec, hero ) ][ bonus ].overridden = opt_val;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::composite_idx( spec, hero, sim->dbc->ptr ) ][ bonus ].overridden =
+      opt_val;
     return true;
   }
 
   const auto* item_set_bonus =
-    p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].bonus;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::spec_idx( p->specialization(), sim->dbc->ptr ) ][ bonus ].bonus;
 
   if ( !item_set_bonus || item_set_bonus->trait_sub_tree != -1 )
   {
@@ -892,7 +894,8 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
-  p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
+  p->sets->set_bonus_spec_data[ tier ][ dbc::spec_idx( p->specialization(), sim->dbc->ptr ) ][ bonus ].overridden =
+    opt_val;
 
   return true;
 }
