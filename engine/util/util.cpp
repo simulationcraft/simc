@@ -3467,12 +3467,12 @@ std::string util::sc_time_str()
 {
   const auto cur_time = std::time( nullptr );
   const auto utc_time = std::mktime( std::gmtime( &cur_time ) );
-  const auto local_tm = std::localtime( &cur_time );
+  const auto local_tm = std::localtime( &cur_time );  // overwrite tm from std::gmtime()
 
   const auto offset = cur_time - utc_time + ( local_tm->tm_isdst ? 3600 : 0 );
 
   return fmt::format( "{:%Y-%m-%d %H:%M:%S}{:c}{:02d}{:02d}",
-                      *std::localtime( &cur_time ),  // overwrite tm from std::gmtime()
+                      *local_tm,
                       offset < 0 ? '-' : '+',
                       std::abs( offset ) / 3600,
                       offset % 3600 );

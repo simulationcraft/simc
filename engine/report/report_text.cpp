@@ -747,9 +747,6 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 
 void sim_summary_performance( std::ostream& os, sim_t* sim )
 {
-  const auto now = std::chrono::system_clock::now();
-  const auto now_t = std::chrono::system_clock::to_time_t( now );
-
   std::string iterations_str;
   if ( sim -> threads > 1 )
     iterations_str = fmt::format( " ({})", fmt::join( sim -> work_per_thread, ", " ) );
@@ -778,7 +775,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
               "  MergeSeconds  = {}\n"
               "  AnalyzeSeconds= {}\n"
               "  SpeedUp       = {:.0f}\n"
-              "  EndTime       = {:%Y-%m-%d %H:%M:%S} ({})\n\n",
+              "  EndTime       = {}\n\n",
               SC_NO_NETWORKING_ON ? "disabled" : "enabled",
               sim->rng().name(),
               sim->deterministic ? " (deterministic)" : "",
@@ -803,8 +800,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
               chrono::to_fp_seconds( sim->merge_time ),
               chrono::to_fp_seconds( sim->analyze_time ),
               sim->iterations * sim->simulation_length.mean() / chrono::to_fp_seconds( sim->elapsed_cpu ),
-              *std::localtime( &now_t ),
-              now_t );
+              util::sc_time_str() );
 #ifdef EVENT_QUEUE_DEBUG
   double total_p = 0;
 
