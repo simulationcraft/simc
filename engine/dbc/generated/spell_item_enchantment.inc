@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.1.7.61609
-static const std::array<item_enchantment_data_t, 5071> __spell_item_ench_data { {
+// Item enchantment data, wow build 11.1.7.61967
+static constexpr std::array<item_enchantment_data_t, 5071> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },

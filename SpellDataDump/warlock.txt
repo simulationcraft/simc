@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -17021,6 +17021,21 @@ Effects          :
 #2 (id=1201804)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 265 | Scaled Value: 265 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215679
+
+Name             : Warlock Demonology 11.1 Class Set 4pc (id=1217647) [Spell Family (5)] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+                 : 295
+Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1201864)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc1215682
 
 Name             : Demonfire Flurry (id=1217731) [Spell Family (5)] 
 Class            : Warlock

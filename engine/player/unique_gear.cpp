@@ -3741,6 +3741,18 @@ bool action_has_damage( const action_t* action )
     return true;
   }
 
+  // check tick action
+  if ( action->tick_action && action_has_damage( action->tick_action ) )
+  {
+    return true;
+  }
+
+  // check impact action
+  if ( action->impact_action && action_has_damage( action->impact_action ) )
+  {
+    return true;
+  }
+
   return false;
 }
 } // UNNAMED NAMESPACE

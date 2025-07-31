@@ -3013,7 +3013,8 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.80996 | PvP Coefficient: 2.12727 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.57195 | PvP Coefficient: 1.77273 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (3.80996 -> 4.57195), PvP Coefficient (2.12727 -> 1.77273)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3492,8 +3493,9 @@ Effects          :
                    Base Value: -24 | Scaled Value: -24 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
 #8 (id=261059)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 143 | Scaled Value: 143 | Misc Value 2: 3456 (Label) | Target: Self (1)
+                   Base Value: 130 | Scaled Value: 130 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
+Hotfixed         : Base Value (143 -> 130)
 #9 (id=261060)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Misc Value 2: 4045 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Bolt (434506)
@@ -3513,11 +3515,13 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #15 (id=1187048) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 79 | Scaled Value: 79 | PvP Coefficient: 0 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: 52 | Scaled Value: 52 | PvP Coefficient: 0 | Misc Value 2: 3444 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445468)
+Hotfixed         : Base Value (79 -> 52)
 #16 (id=1187049) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 0 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 0 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
+Hotfixed         : Base Value (96 -> 66)
 #17 (id=1222482) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 3344 (Label) | Target: Self (1)
                    Affected Spells (Label): Xalan's Ferocity (440044)
@@ -11994,7 +11998,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1043910)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.08 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.125 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.08 -> 0.125)
 Description      : Malefic Rapture deals $s1% increased damage to targets suffering from Unstable Affliction.
 
 Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 

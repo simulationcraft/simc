@@ -729,7 +729,6 @@ struct player_t : public actor_t
   {
     double amplification_1;
     double amplification_2;
-    double reshii_grace;
   } passive_values;
 
   bool active_during_iteration;
@@ -1100,11 +1099,10 @@ public:
   shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
   accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
-                                          std::function<double( double, unsigned )> accumulator_fn = nullptr,
-                                          unsigned initial_count                                   = 0 );
+                                          accumulated_rng_fn accumulator_fn = nullptr, unsigned initial_count = 0 );
   threshold_rng_t* get_threshold_rng( std::string_view name, double increment_max = 0.0,
-                                      std::function<double( double )> accumulator_fn = nullptr,
-                                      bool random_initial_state = true, bool roll_over = false );
+                                      threshold_rng_fn accumulator_fn = nullptr, bool random_initial_state = true,
+                                      bool roll_over = false );
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );

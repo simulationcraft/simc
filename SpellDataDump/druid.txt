@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -20794,6 +20794,50 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1198522)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.8 | PvP Coefficient: 0.5 | Target: Friendly (21)
+Description      : $@spelldesc1215502
+
+Name             : Insurance! (id=1215544) [Spell Family (53)] 
+Class            : Monk, Druid
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+                 : 295
+Proc Chance      : 100%
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
+Triggered By     : Monk Mistweaver 11.1 Class Set 2pc (1215543)
+Family Flags     : 48
+Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
+Aura Interrupt   : Change Specialization (38)
+Effects          :
+#1 (id=1198567)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55223 | PvP Coefficient: 0.5 | Target: Friendly (21)
+#2 (id=1198568)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Target: Friendly (21)
+Description      : $@spelldesc1215502
+Tooltip          : Healing $s1 every $t sec.
+
+|cFFFFFFFFInsurance!|r is consumed to heal for $1215545s1 if brought below $s2% health.
+
+Name             : Insurance! (id=1215545) [Spell Family (53)] 
+Class            : Monk, Druid
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+                 : 295
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
+Family Flags     : 48
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Unknown (452)
+Effects          :
+#1 (id=1198569)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65669 | PvP Coefficient: 0.5 | Target: Friendly (21)
 Description      : $@spelldesc1215502
 
 Name             : Druid Restoration 11.1 Class Set 4pc (id=1215619) [Spell Family (7), Passive, Hidden] 

@@ -123,7 +123,7 @@ wrist=,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_sta
 hands=,id=237526,bonus_id=7187/1520,ilevel=723
 waist=,id=222431,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
 legs=,id=237627,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
-feet=,id=243307,enchant=defenders_march_3,ilevel=723
+feet=interlopers_plated_sabatons,id=243307,bonus_id=13504,ilevel=723,enchant=defenders_march_3
 finger1=,id=246281,bonus_id=1611/8781,enchant_id=7334,gem_id=213491/213491,ilevel=723
 finger2=,id=242491,bonus_id=1611/8781,enchant_id=7334,gem_id=213491/213491,ilevel=723
 trinket1=,id=242402,bonus_id=7187/1520,ilevel=723
@@ -149,7 +149,7 @@ wrist=,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_sta
 hands=breached_containment_guards,id=237526,bonus_id=7187/1520,ilevel=723
 waist=,id=222431,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
 legs=hollow_sentinels_stonekilt,id=237627,ilevel=723,enchant=stormbound_armor_kit_3,enchant_id=7601
-feet=interlopers_plated_sabatons,id=243307,ilevel=723,enchant=defenders_march_3
+feet=interlopers_plated_sabatons,id=243307,bonus_id=13504,ilevel=723,enchant=defenders_march_3
 finger1=ring_of_the_panoply,id=246281,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
 finger2=whispers_of_karesh,id=242491,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
 trinket1=,id=242402,bonus_id=7187/1520,ilevel=723

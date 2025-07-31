@@ -1,5 +1,5 @@
-// Item effects, wow build 11.1.7.61609
-static const std::array<item_effect_t, 10023> __item_effect_data { {
+// Item effects, wow build 11.1.7.61967
+static constexpr std::array<item_effect_t, 10023> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve

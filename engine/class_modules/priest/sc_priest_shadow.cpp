@@ -2744,7 +2744,7 @@ void priest_t::init_rng_shadow()
 
   threshold_rng.shadowy_insight =
       get_threshold_rng( "shadowy_insight", talents.shadow.shadowy_insight.ok() ? 0.1558 * mod : 0.0,
-                         [ this, shadow_word_pain ]( double increment_max ) {
+                         [ this, shadow_word_pain ]( double increment_max, action_state_t* ) {
                            unsigned active_dots = get_active_dots( shadow_word_pain );
                            if ( active_dots == 0 )
                              return 0.0;

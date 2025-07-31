@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1040,7 +1040,6 @@ Effects          :
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
-Hotfixed         : Max stacks (9 -> 0), Proc Stacks (0 -> 9), Attributes
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
@@ -1061,7 +1060,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Proc Trigger Spell (42): Water Shield
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25 | Trigger Spell: 52128 | Target: Self (1)
-Hotfixed         : Sub Type (4 -> 42), SP Coefficient (1 -> 0.25), Base Value (0 -> 40), Trigger Spell (0 -> 52128)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2015.248 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
@@ -12996,6 +12994,32 @@ Effects          :
 Description      : $@spelldesc262624
 Tooltip          : Increases physical damage dealt from your abilities by $s1%.
 
+Name             : Stormkeeper (id=392714) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1031134)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2074 (Category) | Target: Self (1)
+Description      : $@spelltooltip191634
+
+Name             : Stormkeeper (id=392763) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1031215)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2074 (Category) | Target: Self (1)
+Description      : $@spelltooltip191634
+
 Name             : Healing Stream Totem (id=392915) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0, override="Healing Stream Totem" (id=5394)]
 Class            : Shaman
@@ -18493,6 +18517,20 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.67 | Target: Self (1)
 Description      : $s1% of Healing Wave's healing from you and your ancestors is duplicated onto each of your targets with Riptide.
 
+Name             : Whispering Waves (id=1217600) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Range            : 100 yards
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Attributes       : Can't Crit (93), Ignore Healing Modifiers (219)
+Effects          :
+#1 (id=1201766)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
+Description      : $@spelldesc1217598
+
 Name             : Therazane's Resilience (id=1217622) [Spell Family (11), Passive] 
 Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=1, req_points=20, select_idx=100]
 Class            : Shaman
@@ -18512,12 +18550,10 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-99 -> -8)
 #3 (id=1201819)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-99 -> -8)
 #4 (id=1201820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
@@ -18530,12 +18566,10 @@ Hotfixed         : Base Value (-99 -> -8)
                    Base Value: -9 | Scaled Value: -9 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-99 -> -9), Affects Spells
 #7 (id=1201823)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -9 | Scaled Value: -9 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-Hotfixed         : Base Value (-99 -> -9), Affects Spells
 Description      : Earth Shield and Water Shield no longer lose charges and are ${100+$s1}% effective.
 
 Name             : Primordial Storm (id=1218047) [Spell Family (11), Passive] 
@@ -18906,6 +18940,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187874 | Target: Self (1)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $1223332w1%.
+
+Name             : Whispering Waves (id=1223524) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Can Proc From Procs (122), Not In Spellbook (143)
+Effects          :
+#1 (id=1211575)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2.5 | Target: Self (1)
+Description      : $@spelldesc1217598
 
 Name             : Single-Button Assistant (id=1229376) 
 Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker

@@ -4290,13 +4290,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 0.79 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
+Hotfixed         : Base Value (22 -> 23)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 0.79 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
+Hotfixed         : Base Value (22 -> 23)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
@@ -4310,9 +4312,11 @@ Effects          :
 #6 (id=260767)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | Resource: energy | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 0.79 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
+Hotfixed         : Base Value (22 -> 23)
 #8 (id=260769)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 0.79 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
+Hotfixed         : Base Value (22 -> 23)
 #9 (id=260770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -6300,7 +6304,8 @@ Effects          :
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
 #2 (id=753677)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.67 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 5), PvP Coefficient (0.67 -> 0.6)
 Description      : Ferocious Bite deals $s1% increased damage.
 
 For each Combo Point spent, Ferocious Bite's primary target takes $s2% increased damage from your Cat Form bleed and other periodic abilities for $391722d.
@@ -18404,8 +18409,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1133806)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 3245 (Label) | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 12 | Misc Value 2: 3245 (Label) | Target: Self (1)
                    Affected Spells (Label): Bloodseeker Vines (439531)
+Hotfixed         : Base Value (5 -> 6)
 #2 (id=1133807)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 3246 (Label) | Target: Self (1)
                    Affected Spells (Label): Symbiotic Blooms (439530)

@@ -2586,13 +2586,19 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 3988 (Label) | Target: Self (1)
                    Affected Spells (Label): Symphonic Arsenal (451194)
 #13 (id=1196243) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
+Hotfixed         : Base Value (20 -> 12)
 #14 (id=1196831) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
+Hotfixed         : Base Value (20 -> 12)
+#15 (id=1262478) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Misc Value 2: 5612 (Label) | Target: Self (1)
+                   Affected Spells (Label): Hunter Sentinel 11.2 Class Set 4pc (1236375)
+Hotfixed         : NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -18386,6 +18392,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
+                 : 5612: Marksmanship Hunter (137016 effect#15)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1232293)  : Apply Aura (6) | Dummy (4)

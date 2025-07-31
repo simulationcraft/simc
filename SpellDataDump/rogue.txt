@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -15876,56 +15876,6 @@ Effects          :
 #1 (id=1192064)  : School Damage (2): physical
                    Base Value: 0.249 | Scaled Value: 0.249 (delta=0.05) | Target: Enemy (6)
 Description      : $@spelldesc193315
-
-Name             : Void Barrage (id=1214742) 
-Class            : Rogue
-School           : Shadow
-Spell Type       : Magic
-Range            : 25 yards
-Cast Time        : 1 seconds
-Duration         : 1.5 seconds
-Attributes       : Do Not Sheath (18), Is Channelled (34), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Extra Initial Period (169), AI Primary Ranged Attack (206), Uses Ranged Slot (Cosmetic Only) (322)
-Channel Interrupt: Moving (3), Attacking (12)
-Effects          :
-#1 (id=1197159)  : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Alleria fires a barrage of void arrows each inflicting Shadow damage. The volley culminates with a massive void blast, inflicting Shadow damage in an area around the target.
-
-Name             : Void Barrage (id=1214743) 
-Class            : Rogue
-School           : Shadow
-Spell Type       : Magic
-Range            : 50000 yards
-Velocity         : 50 yards/sec
-Attributes       : Uses Ranged Slot (1), Do Not Sheath (18), Ignore Line of Sight (66), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1197160)  : Weapon Damage% (31)
-                   Base Value: 25 | Scaled Value: 0.25 | Target: Enemy (6)
-Description      : $@spelldesc1214742
-
-Name             : Void Barrage (id=1214744) [Hidden] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Range            : 50000 yards
-Velocity         : 30 yards/sec
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Always Show Ground Texture (190), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1197162)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1214745 | Target: Enemy (6)
-Description      : $@spelldesc1214742
-
-Name             : Void Barrage (id=1214745) 
-Class            : Rogue
-School           : Shadow
-Spell Type       : Magic
-Range            : 50000 yards
-Triggered By     : Void Barrage (1214744)
-Attributes       : Uses Ranged Slot (1), Do Not Sheath (18), Ignore Line of Sight (66), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1197163)  : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Description      : $@spelldesc1214742
 
 Name             : Rogue Assassination 11.1 Class Set 2pc (id=1215719) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue

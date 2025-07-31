@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12835,17 +12835,6 @@ Effects          :
                    Family Flags: 54
 Description      : Reduces the cooldown of Divine Hymn by ${$s1/-1000} sec.
 
-Name             : Brann's Epic Egg (id=421382) [Passive, Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Labels           : 3206
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=1095637)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brann summons a devilsaur egg. Hopefully it hatches.
-
 Name             : Ultimate Penitence (id=421434) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -15762,156 +15751,6 @@ Effects          :
 #1 (id=1198258)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.1425 | PvP Coefficient: 0.5 | Target: Friendly (21)
 Description      : $@spelldesc1215319
-
-Name             : Mechasaur EZ-Build Kit (id=1215365) 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 3957: Spatial Paradox (406732 effect#5)
-                 : 4299
-Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
-Effects          :
-#1 (id=1198276)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
-#2 (id=1200107)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : $@spellname421382 now houses $s2 mechasaurs that taunt enemies for ${$s1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-Tooltip          : $@spellname421382 now houses $w2 mechasaurs that taunt enemies for ${$w1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-
-Name             : Mechasaur EZ-Build Kit (desc=Rank 2/4) (id=1215366) [Passive, Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Labels           : 3206
-                 : 3975
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
-Effects          :
-#1 (id=1198277)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1215365
-Tooltip          : $@spelldesc1215365
-
-Name             : Mechasaur EZ-Build Kit (desc=Rank 3/4) (id=1215367) [Passive, Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Labels           : 3206
-                 : 3975
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
-Effects          :
-#1 (id=1198279)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1215368
-Tooltip          : $@spelldesc1215368
-
-Name             : Mechasaur EZ-Build Kit (id=1215368) 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 3957: Spatial Paradox (406732 effect#5)
-                 : 4299
-Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
-Effects          :
-#1 (id=1198280)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
-#2 (id=1200106)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : $@spellname421382 now houses $s2 mechasaurs that taunt enemies for ${$s1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-Tooltip          : $@spellname421382 now houses $w2 mechasaurs that taunt enemies for ${$w1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-
-Name             : Mechasaur EZ-Build Kit (id=1215369) 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Labels           : 3957: Spatial Paradox (406732 effect#5)
-                 : 4299
-Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
-Effects          :
-#1 (id=1198281)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10000 | Scaled Value: 10000 | Target: Self (1)
-#2 (id=1200101)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : $@spellname421382 now houses $s2 mechasaurs that taunt enemies for ${$s1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-Tooltip          : $@spellname421382 now houses $w2 mechasaurs that taunt enemies for ${$w1/1000} sec while within the egg.
-
-Mechasaurs will periodically stomp in addition to their usual abilities, dealing moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking moderate Fire damage.
-
-$@spellicon421382$@spellname421382
-$@spelldesc421382
-
-Name             : Mechasaur EZ-Build Kit (desc=Rank 4/4) (id=1215370) [Passive, Hidden] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Labels           : 3206
-                 : 3975
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
-Effects          :
-#1 (id=1198282)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1215369
-Tooltip          : $@spelldesc1215369
-
-Name             : Mecha Stomp (id=1215401) 
-Class            : Priest
-School           : Fire
-Spell Type       : Magic
-Range            : 100 yards
-Cast Time        : 1.5 seconds
-Duration         : 5 seconds
-Attributes       : Heartbeat Resist (30), No Redirection (35), No Reflection (39)
-Effects          :
-#1 (id=1198333)  : School Damage (2): fire
-                   Base Value: 2 | Scaled Value: 2 (delta=0.05) | AP Coefficient: 2 | Radius: 0 - 12 yards | Target: At Self (22) -> Enemy in Area (15)
-#2 (id=1198334)  : Apply Aura (6) | Periodic Damage (3): fire every 5 seconds
-                   Base Value: 2 | Scaled Value: 2 | AP Coefficient: 2 | Radius: 0 - 12 yards | Target: At Self (22) -> Enemy in Area (15)
-Description      : Stomp the ground dealing Moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking Moderate Fire damage.
-
-Tooltip          : About to explode for fire damage.
-
-Name             : Hatch (id=1215406) 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-GCD              : 1.5 seconds
-Duration         : 45 seconds
-Cooldown         : 99 seconds
-Category         : 1152 (Type 0x0)
-Category Cooldown: 99 seconds
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore Default Rated Battleground Restrictions (302), Allow Cast While Channeling (308), Ignore instance lock and farm limit on teleport (327), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1198339)  : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 236031 | Misc Value 2: 0x177b | Target: Unknown(87)
-Description      : $@spelldesc421382
 
 Name             : Priest Discipline 11.1 Class Set 2pc (id=1215500) [Spell Family (6), Passive, Hidden] 
 Class            : Priest

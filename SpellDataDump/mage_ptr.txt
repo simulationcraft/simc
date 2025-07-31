@@ -270,7 +270,8 @@ Family Flags     : 2, 3, 99
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), Periodic Can Crit (265), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.313 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.105 | Radius: 8 yards | Target: At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.313 -> 1.105)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 8 yards | Mechanic: Snare | Target: At Enemy in Area (16)
 #3 (id=1096694)  : Dummy (3)
@@ -2483,17 +2484,21 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212)
                    Family Flags: 3
+Hotfixed         : Base Value (3 -> 0)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212)
                    Family Flags: 3
+Hotfixed         : Base Value (3 -> 0)
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 0)
 #4 (id=191127)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 0)
 #5 (id=191128)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
@@ -2530,8 +2535,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Frostfire Burst (470596)
                    Family Flags: 92
-#14 (id=260865)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#14 (id=260865)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value 2: 5133 (Label) | Target: Self (1)
+                   Affected Spells (Label): Flamestrike (450462), Arcane Barrage (450499), Arcane Surge (453326), Meteorite (456139)
+Hotfixed         : Sub Type (4 -> 218), Base Value (0 -> -10), Misc Value 2 (0 -> 5133)
 #15 (id=260866)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #16 (id=360480)  : Apply Aura (6) | Dummy (4)
@@ -2559,6 +2566,10 @@ Effects          :
 #23 (id=1223945) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0 | Misc Value: 23 | Misc Value 2: 4891 (Label) | Target: Self (1)
                    Affected Spells (Label): Frostfire Empowerment (431177)
+#24 (id=1262474) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 3210 (Label) | Target: Self (1)
+                   Affected Spells (Label): Excess Frost (438600)
+Hotfixed         : NEW EFFECT
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -2660,8 +2671,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 4137 (Label) | Target: Self (1)
                    Affected Spells (Label): Meteorite (449569)
 #11 (id=1234348) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 5133 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 5133 (Label) | Target: Self (1)
                    Affected Spells (Label): Flamestrike (450462), Arcane Barrage (450499), Arcane Surge (453326), Meteorite (456139)
+Hotfixed         : Base Value (30 -> 20)
 
 Name             : Arcane Missiles (id=139678) 
 Class            : Mage
@@ -4095,7 +4107,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302655)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 12)
 Description      : Arcane Barrage deals $s1% increased damage per target it hits beyond the first.
 
 Name             : Flame On (id=205029) [Spell Family (3), Passive] 
@@ -12544,7 +12557,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3210: Fire Mage (137019 effect#19)
+                 : 3210: Fire Mage (137019 effect#19), Fire Mage (137019 effect#24)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1131310)  : Apply Aura (6) | Dummy (4)
@@ -13753,7 +13766,8 @@ Family Flags     : 3, 96, 122
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1148836)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Radius: 0 - 4 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.02 | Radius: 0 - 4 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.2 -> 1.02)
 Description      : $@spelldesc449559
 
 Name             : Rondurmancy (id=449596) [Spell Family (3), Passive, Hidden] 
@@ -13969,7 +13983,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5133: Arcane Mage (137021 effect#11)
+                 : 5133: Fire Mage (137019 effect#14), Arcane Mage (137021 effect#11)
 Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6, #7), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2, #9), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #2, #3, #4), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Spherical Sorcery (1247525 effects: #1, #2)
 Family Flags     : 3, 109
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Can't Crit (93), Active Threat (94), Do Not Display Range (126), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Cooldown On Tooltip (192), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
@@ -13993,7 +14007,7 @@ Velocity         : 24 yards/sec
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5133: Arcane Mage (137021 effect#11)
+                 : 5133: Fire Mage (137019 effect#14), Arcane Mage (137021 effect#11)
 Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6, #7), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2, #9), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #2, #3, #4), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Spherical Sorcery (1247525 effects: #1, #2)
 Family Flags     : 3, 109
 Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Can't Crit (93), Active Threat (94), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Do Not Chain To Crowd-Controlled Targets (200), Do Not Display Cast Time (441)
@@ -14610,7 +14624,7 @@ Cast Time        : 2.5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5133: Arcane Mage (137021 effect#11)
+                 : 5133: Fire Mage (137019 effect#14), Arcane Mage (137021 effect#11)
 Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6, #7), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2, #9), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #2, #3, #4), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Spherical Sorcery (1247525 effects: #1, #2)
 Family Flags     : 3, 109
 Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Can't Crit (93), Active Threat (94), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -15214,7 +15228,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5133: Arcane Mage (137021 effect#11)
+                 : 5133: Fire Mage (137019 effect#14), Arcane Mage (137021 effect#11)
 Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6, #7), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2, #9), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #2, #3, #4), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Flame Quills (1236145 effects: #1, #2, #3, #4), Spherical Sorcery (1247525 effects: #1, #2)
 Triggered By     : Meteorite (456137)
 Family Flags     : 3, 109

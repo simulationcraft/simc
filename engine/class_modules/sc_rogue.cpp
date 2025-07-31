@@ -5095,6 +5095,11 @@ struct killing_spree_t : public rogue_attack_t
     channeled = tick_zero = true;
     interrupt_auto_attack = p->is_ptr(); // 2025-06-28 -- TOCHECK: Auto attacks are now interrupted on PTR
 
+    // Assume we can react to the ending of Killing Spree faster than the 250ms channel_lag setting
+    // through the use of [nochannel] macros, or in some cases reacting to the combo point generation
+    // to cancel early it with another action
+    ability_lag = p->world_lag;
+
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
     add_child( attack_mh );
@@ -12167,6 +12172,7 @@ void rogue_t::create_buffs()
     }
   }
   buffs.fatebound_coin_heads
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
       {
@@ -12175,10 +12181,10 @@ void rogue_t::create_buffs()
         else
           buffs.fatebound_lucky_coin->trigger();
       }
-    } )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    } );
 
   buffs.fatebound_coin_tails = make_buff( this, "fatebound_coin_tails", spell.fatebound_coin_tails_buff )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stacks ) {
       if ( new_stacks == 7 && talent.fatebound.fateful_ending->ok() )
       {
@@ -12187,8 +12193,8 @@ void rogue_t::create_buffs()
         else
           buffs.fatebound_lucky_coin->trigger();
       }
-    } )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    } );
+    
   if ( talent.fatebound.chosens_revelry->ok() )
   {
     buffs.fatebound_coin_tails->add_invalidate( CACHE_LEECH );
@@ -12196,28 +12202,21 @@ void rogue_t::create_buffs()
   }
   
   buffs.fatebound_lucky_coin = make_buff<stat_buff_t>( this, "fatebound_lucky_coin", spell.fatebound_lucky_coin_buff );
-  buffs.fatebound_lucky_coin->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() );
-  // TODO: lucky coin still has effects for non-primary stat buffs, but definitely only affects primary stat in game
-  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
-  buffs.fatebound_lucky_coin->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
-    if ( !buffs.fatebound_lucky_coin->check() )
-      return;
+  buffs.fatebound_lucky_coin->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+    ->set_default_value( spell.fatebound_lucky_coin_buff->effectN( 1 ).percent() )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old_, int ) {
+      // 07-29-2025 -- Testing shows this also reduces the active cooldowns by the amount when the buff is triggered
+      if ( old_ == 0 && set_bonuses.tww3_fatebound_4pc->ok() && this->bugs )
+      {
+        cooldowns.adrenaline_rush->adjust( set_bonuses.tww3_fatebound_4pc->effectN( 1 ).time_value() );
+        cooldowns.deathmark->adjust( set_bonuses.tww3_fatebound_4pc->effectN( 2 ).time_value() );
+        cooldowns.ghostly_strike->adjust( set_bonuses.tww3_fatebound_4pc->effectN( 3 ).time_value() );
+        cooldowns.kingsbane->adjust( set_bonuses.tww3_fatebound_4pc->effectN( 4 ).time_value() );
+      }
+    } );
 
-    if ( !in_combat )
-    {
-      sim->print_debug( "{}: Countdown started", *buffs.fatebound_lucky_coin );
-      buffs.fatebound_lucky_coin->expire( timespan_t::from_seconds( talent.fatebound.fateful_ending->effectN( 2 ).base_value() ) );
-    }
-    else
-    {
-      sim->print_debug( "{}: Countdown suspended", *buffs.fatebound_lucky_coin );
-      buffs.fatebound_lucky_coin->cancel();
-      buffs.fatebound_lucky_coin->trigger();
-    }
-  });
-
-  // Likewise, double jeopardy isn't a buff in-game, but treating it as such makes tracking it simpler
+  // Double jeopardy isn't actually a buff in-game, but treating it as such makes tracking it simpler
   buffs.double_jeopardy = make_buff( this, "double_jeopardy", talent.fatebound.double_jeopardy )
     ->set_duration( timespan_t::zero() )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT ); // Shouldn't expire, used to track state
@@ -12280,7 +12279,7 @@ void rogue_t::create_buffs()
   } );
 
   buffs.kingsbane = make_buff<damage_buff_t>( this, "kingsbane", spec.kingsbane_buff );
-  buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE )
+  buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->apply_affecting_aura( set_bonuses.tww3_fatebound_2pc );
 
   buffs.master_assassin = make_buff<damage_buff_t>( this, "master_assassin", spec.master_assassin_buff );
@@ -13064,6 +13063,23 @@ struct restealth_callback_t
 void rogue_t::activate()
 {
   player_t::activate();
+
+  register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
+    if ( buffs.fatebound_lucky_coin->check() )
+    {
+      if ( !in_combat )
+      {
+        sim->print_debug( "{}: Countdown started", *buffs.fatebound_lucky_coin );
+        buffs.fatebound_lucky_coin->expire( timespan_t::from_seconds( talent.fatebound.fateful_ending->effectN( 2 ).base_value() ) );
+      }
+      else if( buffs.fatebound_lucky_coin->expiration_delay )
+      {
+        sim->print_debug( "{}: Countdown suspended at {}", *buffs.fatebound_lucky_coin,
+                          buffs.fatebound_lucky_coin->expiration_delay->remains() );
+        event_t::cancel( buffs.fatebound_lucky_coin->expiration_delay );
+      }
+    }
+  } );
 
   sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
 }

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -458,7 +458,7 @@ Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
-Category         : 1614 (Type 0x1): Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5)
+Category         : 1614 (Type 0x1): Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5), Empower Rune Weapon (392962 effect#1), Empower Rune Weapon (392963 effect#1)
 Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
@@ -12859,6 +12859,34 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : When empowered by Rime, Howling Blast deals $s1% increased damage to your primary target.
 
+Name             : Empower Rune Weapon (id=392962) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Frost
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1031568)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1614 (Category) | Target: Self (1)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
+Description      : $@spelltooltip47568
+
+Name             : Empower Rune Weapon (id=392963) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Frost
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1031570)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1614 (Category) | Target: Self (1)
+                   Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
+Description      : $@spelltooltip47568
+
 Name             : Death Knight Blood Class Set 2pc (id=393621) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -16107,6 +16135,20 @@ Description      : After $d, if the target is below $s3% health this effect will
 Tooltip          : Afflicted by Soul Reaper, if the target is below $s3% health this effect will explode dealing an additional $343295s1 Shadowfrost damage.
 Variables        : $dmg=${$o1}
 
+Name             : Reaper's Mark (id=448473) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Shadowfrost
+Spell Type       : Magic
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 3022
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Hide Passive From Tooltip (451)
+Effects          :
+#1 (id=1146968)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelltooltip439843
+
 Name             : Anti-Magic Shell (id=451777) [Spell Family (15), Hidden] 
 Class            : Death Knight
 School           : Shadow
@@ -17773,7 +17815,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
-                 : 4304
+                 : 4304: Winning Streak! (1216859 effect#1)
 Internal Cooldown: 0.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 15%
@@ -17788,6 +17830,23 @@ Effects          :
                    Family Flags: 64, 121
 Description      : $@spelldesc1215726
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%.
+
+Name             : Winning Streak! (id=1216859) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 295
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1200525)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 4304 (Label) | Target: Self (1)
+                   Affected Spells (Label): Winning Streak! (1216813)
+Description      : $@spelldesc1215728
 
 Name             : Winning Streak! (id=1217897) [Spell Family (15)] 
 Class            : Death Knight
@@ -17867,6 +17926,21 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215729
 Tooltip          : Your Mastery is increased by ${$w1*$mastery}%.
+
+Name             : Death Knight Frost 11.1 Class Set 4pc (id=1222722) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 295
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1210212)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Description      : $@spelldesc1215727
 
 Name             : Breath of Sindragosa (id=1226969) [Spell Family (15)] 
 Class            : Death Knight

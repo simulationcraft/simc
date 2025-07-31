@@ -684,8 +684,8 @@ void unholy( player_t* p )
     cds_aoe_san->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain&(buff.death_and_decay.up|active_enemies<=3|rune<3)" );
     cds_aoe_san->add_action( "outbreak,if=(dot.virulent_plague.ticks_remain<5|set_bonus.tww2_4pc&talent.superstrain&dot.frost_fever.ticks_remain<5&!pet.abomination.active)&(talent.unholy_blight&!cooldown.dark_transformation.ready|!talent.unholy_blight)&(dot.virulent_plague.refreshable|talent.morbidity&!buff.gift_of_the_sanlayn.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!dot.virulent_plague.ticking&variable.epidemic_targets<active_enemies|(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>5)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>5))|buff.visceral_strength_unholy.up" );
 
-    cds_cleave_san->add_action( "dark_transformation,if=buff.death_and_decay.up|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20", "Sanlayn CDs Cleave" );
-    cds_cleave_san->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=buff.death_and_decay.up|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20" );
+    cds_cleave_san->add_action( "dark_transformation", "Sanlayn CDs Cleave" );
+    cds_cleave_san->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack" );
     cds_cleave_san->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=buff.dark_transformation.up&buff.dark_transformation.remains<12|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20" );
     cds_cleave_san->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>6)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>6)|buff.visceral_strength_unholy.up" );
 
@@ -704,7 +704,7 @@ void unholy( player_t* p )
     cds_shared->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2" );
     cds_shared->add_action( "desecrate,if=active_enemies>=2&((!raid_event.adds.exists&fight_remains<6|raid_event.adds.exists&raid_event.adds.remains<6)|(!talent.festering_scythe|buff.festering_scythe_stacks.stack<active_enemies&!buff.festering_scythe.up)&(active_enemies>1&death_knight.fwounded_targets<active_enemies|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=0&talent.festering_scythe&!buff.festering_scythe.up&buff.festering_scythe_stacks.stack<10))" );
 
-    cleave->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(cooldown.apocalypse.remains|!talent.apocalypse)", "Cleave" );
+    cleave->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain|talent.gift_of_the_sanlayn", "Cleave" );
     cleave->add_action( "death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil" );
     cleave->add_action( "wound_spender,if=buff.vampiric_strike.react" );
     cleave->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.improved_death_coil" );

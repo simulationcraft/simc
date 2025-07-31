@@ -1280,6 +1280,8 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     for ( int ix : { 10, 11 } )
       if ( data().affected_by_label( o()->spec.arcane_mage->effectN( ix ) ) )
         base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( ix ).percent();
+    if ( data().affected_by_label( o()->spec.fire_mage->effectN( 14 ) ) )
+      base_dd_multiplier *= 1.0 + o()->spec.fire_mage->effectN( 14 ).percent();
   }
 
   double action_multiplier() const override
@@ -5875,7 +5877,10 @@ struct ice_nova_t final : public frost_mage_spell_t
     {
       background = proc = true;
       cooldown->duration = 0_ms;
-      base_multiplier *= p->talents.excess_frost->effectN( 1 ).percent();
+
+      double excess_mult = p->talents.excess_frost->effectN( 1 ).percent();
+      excess_mult += p->spec.fire_mage->effectN( 24 ).percent();
+      base_multiplier *= excess_mult;
     }
     else
     {

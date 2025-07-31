@@ -929,7 +929,8 @@ Family Flags     : 27, 49, 65, 91
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Always Line of Sight (185), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16409 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2805 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.16409 -> 1.2805)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 #3 (id=1050419)  : Trigger Spell (64): Lightforged Blessing
@@ -5110,7 +5111,8 @@ Family Flags     : 27, 65, 91
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Suppress Target Procs (113), Do Not Display Range (126), Treat as Area Effect (175), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16409 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2805 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.16409 -> 1.2805)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5751,7 +5753,8 @@ Family Flags     : 27, 65, 68
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.926 | PvP Coefficient: 0.727272 | Radius: 14 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.2186 | PvP Coefficient: 0.727272 | Radius: 14 yards | Target: Cone to Enemy (104)
+Hotfixed         : AP Coefficient (2.926 -> 3.2186)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
@@ -12688,7 +12691,8 @@ Effects          :
 #1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: -50 | Scaled Value: -50 | Radius: 14 yards | Mechanic: Snare | Target: Cone to Enemy (104)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.544 | Radius: 14 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.6528 | Radius: 14 yards | Target: Cone to Enemy (104)
+Hotfixed         : AP Coefficient (0.544 -> 0.6528)
 #3 (id=1144192)  : Apply Aura (6) | Ignore Armor% (345)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.544 | Radius: 14 yards | Target: Cone to Enemy (104)
 #4 (id=1144330)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13165,7 +13169,8 @@ Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
 Effects          :
 #1 (id=1053556)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.89312 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
+Hotfixed         : AP Coefficient (1.89312 -> 2.27174)
 Description      : $@spelldesc255937
 
 Name             : Wake of Ashes (id=405350) [Spell Family (10)] 
@@ -13182,7 +13187,8 @@ Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
 Effects          :
 #1 (id=1053566)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.89312 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
+Hotfixed         : AP Coefficient (1.89312 -> 2.27174)
 Description      : $@spelldesc255937
 
 
@@ -15806,7 +15812,8 @@ Family Flags     : 27, 65
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1119175)  : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.06 -> 0.12)
 Description      : $@spelldesc431413
 Tooltip          : Dealing $w1 Radiant damage every $t1 sec.
 
@@ -15824,7 +15831,8 @@ Family Flags     : 41, 46
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1119176)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.135 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.27 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (0.135 -> 0.27)
 Description      : $@spelldesc431377
 Tooltip          : Healing $w1 every $t1 sec.
 

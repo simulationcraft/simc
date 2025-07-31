@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1010,7 +1010,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 1.7 (Haste multiplier)
+Real PPM         : 1.7 (Haste multiplier, /w Warrior Fury Set 4pc (id=393709): 4.25)
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -5569,7 +5569,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 1.7 (Haste multiplier)
+Real PPM         : 1.7 (Haste multiplier, /w Warrior Fury Set 4pc (id=393709): 4.25)
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -15809,6 +15809,21 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 18 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
 #13 (id=1233016) : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 13 | Radius: 0 - 40 yards | Target: At Self (18) -> At Party in Area (34)
+Description      : $@spelldesc1219201
+Tooltip          : The duration of the next crowd control effect on you is reduced by $w1%.
+
+Name             : Berserker Roar (desc=PvP Talent) (id=1227751) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 118
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Hide Passive From Tooltip (451)
+Effects          :
+#1 (id=1218369)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1219201
 Tooltip          : The duration of the next crowd control effect on you is reduced by $w1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.1.7.61609 Live
+SimulationCraft 1115-02 for World of Warcraft 11.1.7.61967 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -19405,6 +19405,35 @@ Description      : $@spelldesc1215709
 Tooltip          : You cannot lose Holy Power!
 Holy Power spenders deal $w1% increased damage.
 
+Name             : All in! (id=1216841) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1200491)  : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Resource: holy_power | Target: Self (1)
+Description      : $@spelldesc1215709
+
+Name             : Winning Streak! (id=1217003) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1200764)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Description      : $@spelldesc1215707
+
 Name             : Hammer of Light (id=1217116) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Holy
@@ -19443,6 +19472,34 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215987
 Tooltip          : Damage increased by $s1%.$?a1215989[ Shield of the Righteous refunds Holy Power.][]
+
+Name             : Luck of the Draw! (id=1218115) [Spell Family (10)] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+Effects          :
+#1 (id=1202742)  : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | Resource: holy_power | Target: Self (1)
+Description      : $@spelldesc1215987
+
+Name             : Winning Streak! (id=1224560) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 295
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1213295)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+Description      : $@spelldesc1215707
 
 Name             : Divine Guidance (id=1228455) [Spell Family (10), Hidden] 
 Class            : Paladin

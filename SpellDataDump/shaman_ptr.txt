@@ -3901,11 +3901,11 @@ Description      : $@spelldesc187874
 Tooltip          : Stormstrike, Ice Strike, and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
+Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Talent Entry     : Enhancement [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Spell Level      : 12
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292

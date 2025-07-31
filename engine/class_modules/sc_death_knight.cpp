@@ -869,7 +869,6 @@ public:
     propagate_const<cooldown_t*> dark_transformation;
 
     // Rider of the Apocalypse
-    propagate_const<target_specific_cooldown_t*> undeath_spread;
     propagate_const<cooldown_t*> whitemane_ams_cd;
     propagate_const<cooldown_t*> trollbane_ams_cd;
     propagate_const<cooldown_t*> nazgrim_ams_cd;
@@ -1801,9 +1800,6 @@ public:
     cooldown.frostwyrms_fury        = get_cooldown( "frostwyrms_fury" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.soul_reaper            = get_cooldown( "soul_reaper" );
-
-    // Target Specific
-    cooldown.undeath_spread = get_target_specific_cooldown( "undeath_spread" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -9765,11 +9761,15 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       }
     }
 
-    const int other_targets = execute_state->n_targets - targets_max_razorice;
-    // 11.2 TODO find actual proc chance
-    // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
-    if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
-      p()->buffs.frostbane->trigger();    
+    if ( execute_state && p()->talent.frost.frostbane )
+    {
+      const int other_targets = execute_state->n_targets - targets_max_razorice;
+      // 11.2 TODO find actual proc chance
+      // This is a very dumb formula that is only here to emulate a very high proc chance when 3+ targets have 5 stacks
+      if ( p()->rng().roll( std::min( .10 * other_targets + .275 * targets_max_razorice, .95 ) ) )
+        p()->buffs.frostbane->trigger();    
+    }
+    
   }
 
   void impact( action_state_t* state ) override
@@ -12205,15 +12205,17 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
-    // If an action is linked, fetch its base cost. Exclude Bonestorm from this otherwise it uses the base cost for
-    // Insatiable Hunger instead of the actual rp spent
-    if ( action && action->id != 194844 )
+    // If an action is linked, fetch its base cost.
+    if ( action )
       base_rp_cost = action->base_costs[ RESOURCE_RUNIC_POWER ];
+
+    double calc_rp_cost = std::max( base_rp_cost, actual_amount );
 
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic
     // Presence, RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
-    trigger_runic_empowerment( base_rp_cost );
-    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
+    // 2025-07-28 If an ability costs more than its base_cost, RE takes the higher cost.
+    trigger_runic_empowerment( calc_rp_cost );
+    trigger_runic_corruption( procs.rp_runic_corruption, calc_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() )
     {
@@ -12222,7 +12224,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       // Free Death Coils are still handled in the action
       for ( auto& gargoyle : pets.gargoyle )
       {
-        gargoyle->increase_power( base_rp_cost );
+        gargoyle->increase_power( calc_rp_cost );
       }
     }
 
@@ -12234,13 +12236,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
       if ( pets.whitemane.active_pet() != nullptr )
-        extend_rider( amount, pets.whitemane.active_pet() );
+        extend_rider( calc_rp_cost, pets.whitemane.active_pet() );
       if ( pets.mograine.active_pet() != nullptr )
-        extend_rider( amount, pets.mograine.active_pet() );
+        extend_rider( calc_rp_cost, pets.mograine.active_pet() );
       if ( pets.nazgrim.active_pet() != nullptr )
-        extend_rider( amount, pets.nazgrim.active_pet() );
+        extend_rider( calc_rp_cost, pets.nazgrim.active_pet() );
       if ( pets.trollbane.active_pet() != nullptr )
-        extend_rider( amount, pets.trollbane.active_pet() );
+        extend_rider( calc_rp_cost, pets.trollbane.active_pet() );
     }
 
     // Effects that only trigger if resources were spent
@@ -12868,50 +12870,45 @@ void death_knight_t::sort_undeath_targets( std::vector<player_t*> tl )
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 {
   auto td = get_target_data( main_target );
-  auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  if ( !cd->down() )
+  td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+
+  if ( sim->target_non_sleeping_list.size() > 1 )
   {
-    td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
-    cd->start();
-
-    if ( sim->target_non_sleeping_list.size() > 1 )
+    std::vector<player_t*> tl = undeath_tl;
+    auto it                   = range::find( tl, main_target );
+    if ( it != tl.end() )
     {
-      std::vector<player_t*> tl = undeath_tl;
-      auto it                   = range::find( tl, main_target );
-      if ( it != tl.end() )
+      tl.erase( it );
+    }
+
+    player_t* undeath_target = tl[ 0 ];
+
+    auto undeath_td = get_target_data( undeath_target );
+
+    if ( undeath_td->dot.undeath->is_ticking() )
+    {
+      undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+    }
+    else
+    {
+      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
+    }
+
+    std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
+
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
+    {
+      player_t* next_target = tl[ 0 ];
+      auto next_td          = get_target_data( next_target );
+
+      if ( next_td->dot.undeath->is_ticking() )
       {
-        tl.erase( it );
-      }
-
-      player_t* undeath_target = tl[ 0 ];
-
-      auto undeath_td = get_target_data( undeath_target );
-
-      if ( undeath_td->dot.undeath->is_ticking() )
-      {
-        undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+        next_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
       }
       else
       {
-        td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
-      }
-
-      std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
-
-      if ( specialization() == DEATH_KNIGHT_UNHOLY && sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B2 ) )
-      {
-        player_t* next_target = tl[ 0 ];
-        auto next_td          = get_target_data( next_target );
-
-        if ( next_td->dot.undeath->is_ticking() )
-        {
-          next_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
-        }
-        else
-        {
-          td->dot.undeath->copy( next_target, DOT_COPY_CLONE );
-        }
+        td->dot.undeath->copy( next_target, DOT_COPY_CLONE );
       }
     }
   }
@@ -14555,9 +14552,6 @@ void death_knight_t::set_icds()
   if ( talent.frost.inexorable_assault.ok() )
     cooldown.inexorable_assault_icd->duration =
         spell.inexorable_assault_buff->internal_cooldown();  // Inexorable Assault buff spell id
-
-  if ( talent.rider.whitemanes_famine.ok() )
-    cooldown.undeath_spread->base_duration = pet_spell.undeath_dot->internal_cooldown();
 }
 
 // death_knight_t::init_action_list =========================================
@@ -15380,8 +15374,8 @@ void death_knight_t::create_buffs()
 
   buffs.killing_streak =
       make_fallback( talent.frost.killing_streak.ok(), this, "killing_streak", spell.killing_streak_buff )
-          ->set_default_value( talent.frost.killing_streak->effectN( 1 ).percent() )
-          ->add_invalidate( CACHE_ATTACK_HASTE )
+          ->set_default_value( spell.killing_streak_buff->effectN( 1 ).percent() / 10 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Unholy
@@ -16167,7 +16161,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
       tww3_rider_mask.disable( 3, 5, 8 );
       break;
     case DEATH_KNIGHT_FROST:
-      tww3_rider_mask.disable( 2, 4 );
+      tww3_rider_mask.disable( 2, 4, 6 );
       break;
     default:
       break;
@@ -16310,7 +16304,7 @@ void death_knight_action_t<Base>::apply_action_effects()
       tww3_rider_mask.disable( 3, 5, 8 );
       break;
     case DEATH_KNIGHT_FROST:
-      tww3_rider_mask.disable( 2, 4 );
+      tww3_rider_mask.disable( 2, 4, 6 );
       break;
     default:
       break;
@@ -16326,10 +16320,10 @@ void death_knight_action_t<Base>::apply_action_effects()
   switch ( p()->specialization() )
   {
     case DEATH_KNIGHT_BLOOD:
-      tww3_rider_mask.disable( 1, 7 );
+      tww3_deathbringer_mask.disable( 1, 4, 7 );
       break;
     case DEATH_KNIGHT_FROST:
-      tww3_rider_mask.disable( 2, 8 );
+      tww3_deathbringer_mask.disable( 2, 5, 8 );
       break;
     default:
       break;
@@ -16446,7 +16440,6 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
     parse_effects( buffs.icy_vigor );
     parse_effects( buffs.swift_and_painful );
-    parse_effects( buffs.killing_streak );
   }
 
   // Unholy
