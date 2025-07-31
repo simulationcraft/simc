@@ -2294,6 +2294,8 @@ class SpellDataGenerator(DataGenerator):
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
           ( 387179, 1 ), # Weapons of Order (Debuff)
+          ( 1242373, 1 ), # Walk With the Ox Stomp
+          ( 1242352, 1 ), # Walk With the Ox Driver
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc

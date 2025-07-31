@@ -407,6 +407,32 @@ public:
   monk_td_t( player_t *target, monk_t *p );
 };
 
+struct monk_effect_callback_t : dbc_proc_callback_t
+{
+  monk_t *player;
+
+  monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
+  void trigger( action_t *action, action_state_t *state ) override;
+  void execute( action_t *action, action_state_t *state ) override;
+
+  monk_effect_callback_t *register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type t,
+                                                              const dbc_proc_callback_t::trigger_fn_t &fn );
+  monk_effect_callback_t *register_callback_execute_function( const dbc_proc_callback_t::execute_fn_t &fn );
+};
+
+struct monk_callback_init_t
+{
+  const spell_data_t *effect_driver;
+  proc_flag pf_override;
+  proc_flag2 pf2_override;
+  action_t *action_override;
+  double ppm;
+
+  monk_callback_init_t( const spell_data_t *sd = nullptr, proc_flag pf = static_cast<proc_flag>( 0ull ),
+                        proc_flag2 pf2 = static_cast<proc_flag2>( 0ull ), action_t *ac = nullptr, double ppm = 0.0 )
+    : effect_driver( sd ), pf_override( pf ), pf2_override( pf2 ), action_override( ac ), ppm( ppm ) {};
+};
+
 // utility to create target_effect_t compatible functions from monk_td_t member references
 // adapted from sc_death_knight.cpp
 template <typename T>
@@ -478,6 +504,8 @@ public:
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
     propagate_const<action_t *> chi_surge;
+    propagate_const<action_t *> walk_with_the_ox;
+    propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
     // Mistweaver
     propagate_const<action_t *> lesson_of_anger_damage;
@@ -972,13 +1000,15 @@ public:
       player_talent_t shuffle;
       const spell_data_t *shuffle_buff;
       // row 3
-      player_talent_t staggering_strikes;
+      player_talent_t august_blessing;
       player_talent_t gift_of_the_ox;
-      player_talent_t spirit_of_the_ox;
       const spell_data_t *gift_of_the_ox_buff;
       const spell_data_t *gift_of_the_ox_heal_trigger;
       const spell_data_t *gift_of_the_ox_heal_expire;
+      player_talent_t staggering_strikes;
       player_talent_t quick_sip;
+      player_talent_t spirit_of_the_ox;
+      player_talent_t strike_at_dawn;
       // row 4
       player_talent_t hit_scheme;
       player_talent_t elixir_of_determination;
@@ -989,10 +1019,13 @@ public:
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
       const spell_data_t *purified_chi;
+      player_talent_t celestial_infusion;
+      player_talent_t niuzaos_resolve;
       player_talent_t autumn_blessing;
       player_talent_t one_with_the_wind;
       player_talent_t zen_meditation;
-      player_talent_t strike_at_dawn;
+      player_talent_t shadowboxing_treads;
+      player_talent_t fluidity_of_motion;
       // row 6
       player_talent_t breath_of_fire;
       const spell_data_t *breath_of_fire_dot;
@@ -1001,8 +1034,7 @@ public:
       player_talent_t invoke_niuzao_the_black_ox;
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       player_talent_t tranquil_spirit;
-      player_talent_t shadowboxing_treads;
-      player_talent_t fluidity_of_motion;
+      player_talent_t pretense_of_instability;
       // row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
@@ -1010,9 +1042,10 @@ public:
       player_talent_t bob_and_weave;
       player_talent_t black_ox_brew;
       player_talent_t walk_with_the_ox;
+      const spell_data_t *walk_with_the_ox_stomp;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
-      player_talent_t pretense_of_instability;
+      player_talent_t zen_state;
       player_talent_t counterstrike;
       // row 8
       player_talent_t dragonfire_brew;
@@ -1495,18 +1528,7 @@ public:
     return td;
   }
   void parse_player_effects();
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             proc_flag2 PF2_OVERRIDE, action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ),
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
+  monk_effect_callback_t *create_proc_callback( monk_callback_init_t params );
 
   // Actions
   void trigger_celestial_fortune( action_state_t * );

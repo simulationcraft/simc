@@ -1072,6 +1072,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
   flurry_strikes_t( monk_t *p, flurry_strike_source_e source )
     : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes ), source( source )
   {
+    background = true;
+
     strike = new flurry_strike_t( p, this );
     add_child( strike );
 
@@ -1118,6 +1120,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
     if ( source_tier )
       p()->tier.tww3.spm_2pc_flurry_charge->expire();
+
+    base_t::execute();
   }
 };
 
@@ -2924,6 +2928,14 @@ struct keg_smash_t : monk_melee_attack_t
     get_td( state->target )->debuff.keg_smash->trigger();
     if ( p()->buff.weapons_of_order->up() )
       get_td( state->target )->debuff.weapons_of_order->trigger();
+  }
+};
+
+struct stomp_t : monk_melee_attack_t
+{
+  stomp_t( monk_t *player ) : monk_melee_attack_t( player, "stomp", player->talent.brewmaster.walk_with_the_ox_stomp )
+  {
+    background = true;
   }
 };
 
@@ -5555,7 +5567,8 @@ void shuffle_t::trigger( timespan_t duration )
   duration = std::min( duration + remains(), max_duration );
   monk_buff_t::extend_duration_or_trigger( duration );
 
-  p().cooldown.invoke_niuzao->adjust( p().talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value() );
+  if ( p().wowv_l( { 11, 2, 0 } ) )
+    p().cooldown.invoke_niuzao->adjust( p().talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value() );
 
   if ( !p().talent.brewmaster.quick_sip->ok() )
     return;
@@ -6996,13 +7009,15 @@ void monk_t::init_spells()
     talent.brewmaster.purifying_brew              = _ST( "Purifying Brew" );
     talent.brewmaster.shuffle                     = _ST( "Shuffle" );
     talent.brewmaster.shuffle_buff                = find_spell( 215479 );
-    talent.brewmaster.staggering_strikes          = _ST( "Staggering Strikes" );
+    talent.brewmaster.august_blessing             = _ST( "August Blessing" );
     talent.brewmaster.gift_of_the_ox              = _ST( "Gift of the Ox" );
-    talent.brewmaster.spirit_of_the_ox            = _ST( "Spirit of the Ox" );
     talent.brewmaster.gift_of_the_ox_buff         = find_spell( 124506 );
     talent.brewmaster.gift_of_the_ox_heal_trigger = find_spell( 124507 );
     talent.brewmaster.gift_of_the_ox_heal_expire  = find_spell( 178173 );
+    talent.brewmaster.staggering_strikes          = _ST( "Staggering Strikes" );
     talent.brewmaster.quick_sip                   = _ST( "Quick Sip" );
+    talent.brewmaster.spirit_of_the_ox            = _ST( "Spirit of the Ox" );
+    talent.brewmaster.strike_at_dawn              = _ST( "Strike at Dawn" );
     talent.brewmaster.hit_scheme                  = _ST( "Hit Scheme" );
     talent.brewmaster.elixir_of_determination     = _ST( "Elixir of Determination" );
     talent.brewmaster.special_delivery            = _ST( "Special Delivery" );
@@ -7010,13 +7025,15 @@ void monk_t::init_spells()
     talent.brewmaster.rushing_jade_wind           = _ST( "Rushing Jade Wind" );
     if ( wowv_l( { 11, 2, 0 } ) )
       talent.brewmaster.celestial_flames = _ST( "Celestial Flames" );
-    talent.brewmaster.celestial_brew    = _ST( "Celestial Brew" );
-    talent.brewmaster.purified_chi      = find_spell( 325092 );
-    talent.brewmaster.autumn_blessing   = _ST( "Autumn Blessing" );
-    talent.brewmaster.one_with_the_wind = _ST( "One With the Wind" );
+    talent.brewmaster.celestial_brew      = _ST( "Celestial Brew" );
+    talent.brewmaster.purified_chi        = find_spell( 325092 );
+    talent.brewmaster.celestial_infusion  = _ST( "Celestial Infusion" );
+    talent.brewmaster.niuzaos_resolve     = _ST( "Niuzao's Resolve" );
+    talent.brewmaster.one_with_the_wind   = _ST( "One With the Wind" );
+    talent.brewmaster.shadowboxing_treads = _ST( "Shadowboxing Treads" );
+    talent.brewmaster.fluidity_of_motion  = _ST( "Fluidity of Motion" );
     if ( wowv_l( { 11, 2, 0 } ) )
       talent.brewmaster.zen_meditation = _ST( "Zen Meditation" );
-    talent.brewmaster.strike_at_dawn                      = _ST( "Strike at Dawn" );
     talent.brewmaster.breath_of_fire                      = _ST( "Breath of Fire" );
     talent.brewmaster.breath_of_fire_dot                  = find_spell( 123725 );
     talent.brewmaster.gai_plins_imperial_brew             = _ST( "Gai Plin's Imperial Brew" );
@@ -7024,17 +7041,17 @@ void monk_t::init_spells()
     talent.brewmaster.invoke_niuzao_the_black_ox          = _ST( "Invoke Niuzao, the Black Ox" );
     talent.brewmaster.invoke_niuzao_the_black_ox_stomp    = find_spell( 227291 );
     talent.brewmaster.tranquil_spirit                     = _ST( "Tranquil Spirit" );
-    talent.brewmaster.shadowboxing_treads                 = _ST( "Shadowboxing Treads" );
-    talent.brewmaster.fluidity_of_motion                  = _ST( "Fluidity of Motion" );
+    talent.brewmaster.pretense_of_instability             = _ST( "Pretense of Instability" );
     talent.brewmaster.scalding_brew                       = _ST( "Scalding Brew" );
     talent.brewmaster.salsalabims_strength                = _ST( "Sal'salabim's Strength" );
     talent.brewmaster.fortifying_brew_determination       = _ST( "Fortifying Brew: Determination" );
     talent.brewmaster.bob_and_weave                       = _ST( "Bob and Weave" );
     talent.brewmaster.black_ox_brew                       = _ST( "Black Ox Brew" );
     talent.brewmaster.walk_with_the_ox                    = _ST( "Walk With the Ox" );
+    talent.brewmaster.walk_with_the_ox_stomp              = find_spell( 1242373 );
     talent.brewmaster.light_brewing                       = _ST( "Light Brewing" );
     talent.brewmaster.training_of_niuzao                  = _ST( "Training of Niuzao" );
-    talent.brewmaster.pretense_of_instability             = _ST( "Pretense of Instability" );
+    talent.brewmaster.zen_state                           = _ST( "Zen State" );
     talent.brewmaster.counterstrike                       = _ST( "Counterstrike" );
     talent.brewmaster.dragonfire_brew                     = _ST( "Dragonfire Brew" );
     talent.brewmaster.dragonfire_brew_hit                 = find_spell( 387621 );
@@ -7444,6 +7461,7 @@ void monk_t::init_background_actions()
     active_actions.celestial_fortune          = new actions::heals::celestial_fortune_t( this );
     active_actions.exploding_keg              = new actions::spells::exploding_keg_proc_t( this );
     active_actions.niuzao_call_to_arms_summon = new actions::spells::niuzao_call_to_arms_summon_t( this );
+    active_actions.walk_with_the_ox           = new actions::attacks::stomp_t( this );
 
     active_actions.chi_surge = new actions::spells::chi_surge_t( this );
   }
@@ -8329,46 +8347,91 @@ void monk_t::init_assessors()
   base_t::init_assessors();
 }
 
-void monk_t::create_proc_callback( const spell_data_t *effect_driver,
-                                   bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                                   proc_flag2 PF2_OVERRIDE, action_t *proc_action_override )
+monk_effect_callback_t::monk_effect_callback_t( const special_effect_t &effect, monk_t *player )
+  : dbc_proc_callback_t( effect.player, effect ), player( player )
 {
-  auto effect = new special_effect_t( this );
+}
 
-  effect->spell_id     = effect_driver->id();
-  effect->cooldown_    = effect_driver->internal_cooldown();
-  effect->proc_chance_ = effect_driver->proc_chance();
-  effect->ppm_         = effect_driver->_rppm;
+void monk_effect_callback_t::trigger( action_t *action, action_state_t *state )
+{
+  dbc_proc_callback_t::trigger( action, state );
+
+  if ( player->sim->debug )
+  {
+    // Debug reporting
+    auto find_a = range::find_if( player->proc_tracking[ effect.name() ],
+                                  [ & ]( action_t *it ) { return it->id == action->id; } );
+
+    if ( find_a == player->proc_tracking[ effect.name() ].end() )
+      player->proc_tracking[ effect.name() ].push_back( action );
+  }
+}
+
+void monk_effect_callback_t::execute( action_t *action, action_state_t *state )
+{
+  if ( !state->target->is_sleeping() )
+  {
+    // Dynamically find and execute proc tracking
+    auto effect_proc = player->find_proc( effect.trigger()->_name );
+    if ( effect_proc )
+      effect_proc->occur();
+  }
+
+  dbc_proc_callback_t::execute( action, state );
+}
+
+monk_effect_callback_t *monk_effect_callback_t::register_callback_trigger_function(
+    dbc_proc_callback_t::trigger_fn_type t, const dbc_proc_callback_t::trigger_fn_t &fn )
+{
+  player->callbacks.register_callback_trigger_function( effect.spell_id, t, fn );
+  return this;
+}
+
+monk_effect_callback_t *monk_effect_callback_t::register_callback_execute_function(
+    const dbc_proc_callback_t::execute_fn_t &fn )
+{
+  player->callbacks.register_callback_execute_function( effect.spell_id, fn );
+  return this;
+}
+
+monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t params )
+{
+  special_effect_t *effect = new special_effect_t( this );
+
+  effect->spell_id     = params.effect_driver->id();
+  effect->cooldown_    = params.effect_driver->internal_cooldown();
+  effect->proc_chance_ = params.effect_driver->proc_chance();
+  effect->ppm_         = params.ppm ? params.ppm : params.effect_driver->_rppm;
 
   sim->print_debug( "initializing driver {} {} {}", effect->name_str, effect->spell_id, effect->cooldown_ );
 
-  if ( proc_action_override == nullptr )
+  if ( !params.action_override )
   {
     // If we didn't define a custom action in initialization then
     // search action list for the first trigger we have a valid action for
-    for ( const auto &e : effect_driver->effects() )
+    for ( const auto &e : params.effect_driver->effects() )
     {
       for ( auto t : action_list )
         if ( e.trigger()->ok() && t->id == e.trigger()->id() )
-          proc_action_override = t;
+          params.action_override = t;
 
-      if ( proc_action_override != nullptr )
+      if ( params.action_override )
         break;
     }
   }
 
-  if ( proc_action_override != nullptr )
+  if ( params.action_override )
   {
-    effect->name_str         = proc_action_override->name_str;
-    effect->trigger_str      = proc_action_override->name_str;
-    effect->trigger_spell_id = proc_action_override->id;
+    effect->name_str         = params.action_override->name_str;
+    effect->trigger_str      = params.action_override->name_str;
+    effect->trigger_spell_id = params.action_override->id;
     effect->action_disabled  = false;
     effect->execute_action   = effect->create_action();
 
-    if ( effect->execute_action == nullptr )
-      effect->execute_action = proc_action_override;
+    if ( !effect->execute_action )
+      effect->execute_action = params.action_override;
 
-    if ( proc_action_override->harmful )
+    if ( params.action_override->harmful )
     {
       // Translate harmful proc_flags
       // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
@@ -8392,14 +8455,15 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
   }
 
   // defer configuration of proc flags in case proc_action_override is used
-  effect->proc_flags_  = PF_OVERRIDE ? PF_OVERRIDE : effect_driver->proc_flags();
-  effect->proc_flags2_ = PF2_OVERRIDE;
+  effect->proc_flags_ = params.pf_override != 0ull ? params.pf_override : params.effect_driver->proc_flags();
+  if ( params.pf2_override != 0ull )
+    effect->proc_flags2_ = params.pf2_override;
 
   // We still haven't assigned a name, it is most likely a buff
   // dynamically find buff
   if ( effect->name_str == "" )
   {
-    for ( const auto &e : effect_driver->effects() )
+    for ( const auto &e : params.effect_driver->effects() )
     {
       for ( auto t : buff_list )
       {
@@ -8415,281 +8479,152 @@ void monk_t::create_proc_callback( const spell_data_t *effect_driver,
     }
   }
 
-  struct monk_effect_callback : dbc_proc_callback_t
-  {
-    monk_t *p;
-    bool ( *callback_trigger )( monk_t *p, action_state_t *state );
-
-    monk_effect_callback( const special_effect_t &effect, monk_t *p,
-                          bool ( *trigger )( monk_t *p, action_state_t *state ) )
-      : dbc_proc_callback_t( effect.player, effect ), p( p ), callback_trigger( trigger )
-    {
-    }
-
-    void trigger( action_t *a, action_state_t *state ) override
-    {
-      if ( callback_trigger == NULL )
-      {
-        assert( 0 );
-        return;
-      }
-
-      if ( a->internal_id == 0 && state->action->id == effect.trigger_spell_id )
-        return;
-
-      if ( callback_trigger( p, state ) )
-      {
-        dbc_proc_callback_t::trigger( a, state );
-
-        if ( p->sim->debug )
-        {
-          // Debug reporting
-          auto action =
-              range::find_if( p->proc_tracking[ effect.name() ], [ a ]( action_t *it ) { return it->id == a->id; } );
-
-          if ( action == p->proc_tracking[ effect.name() ].end() )
-            p->proc_tracking[ effect.name() ].push_back( a );
-        }
-      }
-    }
-
-    void execute( action_t *a, action_state_t *state ) override
-    {
-      if ( !state->target->is_sleeping() )
-      {
-        // Dynamically find and execute proc tracking
-        auto effect_proc = p->find_proc( effect.trigger()->_name );
-        if ( effect_proc )
-          effect_proc->occur();
-      }
-
-      dbc_proc_callback_t::execute( a, state );
-    }
-  };
-
   special_effects.push_back( effect );  // Garbage collection
 
-  new monk_effect_callback( *effect, this, trigger );
-}
-
-void monk_t::create_proc_callback( const spell_data_t *effect_driver,
-                                   bool ( *trigger )( monk_t *player, action_state_t *state ),
-                                   action_t *proc_action_override )
-{
-  create_proc_callback( effect_driver, trigger, static_cast<proc_flag>( 0 ), static_cast<proc_flag2>( 0 ),
-                        proc_action_override );
-}
-
-void monk_t::create_proc_callback( const spell_data_t *effect_driver,
-                                   bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                                   action_t *proc_action_override )
-{
-  create_proc_callback( effect_driver, trigger, PF_OVERRIDE, static_cast<proc_flag2>( 0 ), proc_action_override );
-}
-
-void monk_t::create_proc_callback( const spell_data_t *effect_driver,
-                                   bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
-                                   action_t *proc_action_override )
-{
-  create_proc_callback( effect_driver, trigger, static_cast<proc_flag>( 0 ), PF2_OVERRIDE, proc_action_override );
+  return new monk_effect_callback_t( *effect, this );
 }
 
 // monk_t::init_special_effects ===========================================
 
 void monk_t::init_special_effects()
 {
-  // ======================================
-  // Exploding Keg Talent
-  // ======================================
+  // TODO: CXX20: use designated initializers to make this suck less
 
   if ( talent.brewmaster.exploding_keg.ok() )
-    create_proc_callback( talent.brewmaster.exploding_keg.spell(), []( monk_t *p, action_state_t *state ) {
-      // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
-      if ( !p->buff.exploding_keg->up() )
-        return false;
-      p->active_actions.exploding_keg->set_target( state->target );
-      return true;
-    } );
-
-  // ======================================
-  // Flurry of Xuen ( Windwalker Talent )
-  // ======================================
+    create_proc_callback( { talent.brewmaster.exploding_keg.spell() } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+                                                // Exploding keg damage is only triggered when the player buff is up,
+                                                // regardless if the enemy has the debuff
+                                                return buff.exploding_keg->check();
+                                              } );
 
   if ( talent.windwalker.flurry_of_xuen.ok() )
-  {
-    create_proc_callback( talent.windwalker.flurry_of_xuen.spell(), []( monk_t *p, action_state_t *state ) {
-      if ( state->action->id == p->active_actions.flurry_of_xuen->id ||
-           state->action->id == p->active_actions.empowered_tiger_lightning->id )
-        return false;
-      return true;
-    } );
-
-    callbacks.register_callback_execute_function(
-        talent.windwalker.flurry_of_xuen.spell()->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+    create_proc_callback( { talent.windwalker.flurry_of_xuen.spell() } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                return state->action->id != active_actions.flurry_of_xuen->id &&
+                                                       state->action->id !=
+                                                           active_actions.empowered_tiger_lightning->id;
+                                              } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           active_actions.flurry_of_xuen->set_target( state->target );
           buff.flurry_of_xuen->trigger();
         } );
-  }
-
-  // ======================================
-  // Veteran's Eye ( Shado-pan Talent )
-  // ======================================
 
   if ( talent.shado_pan.veterans_eye->ok() )
-    create_proc_callback(
-        talent.shado_pan.veterans_eye.spell(),
-        []( monk_t *p, action_state_t *state ) {
-          auto td = p->get_target_data( state->target );
-          if ( td )
+    create_proc_callback( { talent.shado_pan.veterans_eye.spell(), static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+          monk_td_t *td = get_target_data( state->target );
+          if ( !td )
+            return;
+          td->debuff.veterans_eye->trigger();
+          if ( td->debuff.veterans_eye->at_max_stacks() )
           {
-            td->debuff.veterans_eye->trigger();
-            if ( td->debuff.veterans_eye->at_max_stacks() )
-            {
-              p->buff.veterans_eye->trigger();
-              td->debuff.veterans_eye->reset();
-            }
+            buff.veterans_eye->trigger();
+            td->debuff.veterans_eye->reset();
           }
-          return true;
-        },
-        PF2_ALL_HIT );
+        } );
 
-  // ======================================
-  // Chi Burst ( Monk Talent )
-  // ======================================
   if ( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER )
-    create_proc_callback( talent.monk.chi_burst.spell(), []( monk_t *, action_state_t * ) { return true; } );
+    create_proc_callback( { talent.monk.chi_burst.spell() } );
 
-  // ======================================
-  // Spirit of the Ox ( Brewmaster Talent )
-  // ======================================
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
-  {
-    create_proc_callback( talent.brewmaster.spirit_of_the_ox.spell(), []( monk_t *player, action_state_t *state ) {
-      if ( state->action->id != player->talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
-           state->action->id != player->baseline.brewmaster.blackout_kick->id() )
-        return false;
-      return true;
-    } );
-    callbacks.register_callback_execute_function(
-        talent.brewmaster.spirit_of_the_ox.spell()->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+    create_proc_callback( { talent.brewmaster.spirit_of_the_ox.spell() } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                return state->action->id ==
+                                                           talent.monk.rising_sun_kick->effectN( 1 ).trigger()->id() ||
+                                                       state->action->id == baseline.brewmaster.blackout_kick->id();
+                                              } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           buff.gift_of_the_ox->spawn_orb( 1 );
         } );
-  }
 
-  // ======================================
-  // Master of Harmony
-  // ======================================
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
-  {
-    create_proc_callback( talent.master_of_harmony.aspect_of_harmony_driver,
-                          []( monk_t *, action_state_t * ) { return true; } );
-    callbacks.register_callback_execute_function(
-        talent.master_of_harmony.aspect_of_harmony_driver->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+    create_proc_callback( { talent.master_of_harmony.aspect_of_harmony_driver } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           buff.aspect_of_harmony.trigger( state );
         } );
-  }
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
-  {
-    create_proc_callback( talent.master_of_harmony.balanced_stratagem, []( monk_t *, action_state_t *state ) {
-      if ( state->action->school == SCHOOL_NONE )
-        return false;
-      return true;
-    } );
-    callbacks.register_callback_execute_function(
-        talent.master_of_harmony.balanced_stratagem->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+    create_proc_callback( { talent.master_of_harmony.balanced_stratagem } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                                return state->action->school != SCHOOL_NONE;
+                                              } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           if ( state->action->school == SCHOOL_PHYSICAL )
             buff.balanced_stratagem_magic->trigger();
           if ( state->action->school != SCHOOL_PHYSICAL )
             buff.balanced_stratagem_physical->trigger();
         } );
-  }
 
-  // ======================================
-  // Courage of the White Tiger
-  // ======================================
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
-  {
-    create_proc_callback(
-        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell(), []( monk_t *p, action_state_t *state ) {
-          if ( ( p->specialization() == MONK_MISTWEAVER && state->action->id == p->baseline.monk.vivify->id() ) ||
-               state->action->id == p->baseline.monk.tiger_palm->id() )
-            return true;
+    create_proc_callback( { talent.conduit_of_the_celestials.courage_of_the_white_tiger, static_cast<proc_flag>( 0ull ),
+                            static_cast<proc_flag2>( 0ull ), active_actions.courage_of_the_white_tiger.base } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+              if ( specialization() == MONK_MISTWEAVER && state->action->id == baseline.monk.vivify->id() )
+                return true;
+              if ( state->action->id == baseline.monk.tiger_palm->id() )
+                return true;
+              return false;
+            } );
 
-          return false;
-        } );
-
-    callbacks.register_callback_execute_function(
-        talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          active_actions.courage_of_the_white_tiger.base->execute_on_target( state->target );
-        } );
-  }
-
-  // ======================================
-  // Flight of the Red Crane
-  // ======================================
   if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
-  {
-    create_proc_callback(
-        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell(), []( monk_t *p, action_state_t *state ) {
-          if ( ( p->specialization() == MONK_MISTWEAVER &&
-                 state->action->id == p->talent.mistweaver.refreshing_jade_wind_tick->id() ) ||
-               ( p->specialization() == MONK_WINDWALKER &&
-                 state->action->id == p->passives.rushing_jade_wind_tick->id() ) ||
-               state->action->id == p->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() )
-            return true;
+    create_proc_callback( { talent.conduit_of_the_celestials.flight_of_the_red_crane, static_cast<proc_flag>( 0ull ),
+                            static_cast<proc_flag2>( 0ull ), active_actions.flight_of_the_red_crane.base } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+              if ( specialization() == MONK_MISTWEAVER &&
+                   state->action->id == talent.mistweaver.refreshing_jade_wind_tick->id() )
+                return true;
+              if ( specialization() == MONK_WINDWALKER && state->action->id == passives.rushing_jade_wind_tick->id() )
+                return true;
+              if ( state->action->id == baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() )
+                return true;
+              return false;
+            } );
 
-          return false;
-        } );
-
-    callbacks.register_callback_execute_function(
-        talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          active_actions.flight_of_the_red_crane.base->execute_on_target( state->target );
-        } );
-  }
-
-  // TWW2 Tier
   if ( tier.tww2.ww_2pc->ok() )
-    create_proc_callback( tier.tww2.ww_2pc, []( monk_t *, action_state_t * ) { return true; } );
+    create_proc_callback( { tier.tww2.ww_2pc } );
   if ( tier.tww2.brm_2pc->ok() )
-    create_proc_callback( tier.tww2.brm_2pc, []( monk_t *, action_state_t * ) { return true; }, PF2_ALL_HIT );
+    create_proc_callback( { tier.tww2.brm_2pc, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } );
 
-  // ======================================
-  // Dance of Chi-Ji (mistweaver talent)
-  // ======================================
   if ( talent.mistweaver.dance_of_chiji.ok() )
-  {
-    create_proc_callback( talent.mistweaver.dance_of_chiji.spell(), []( monk_t *, action_state_t * ) { return true; } );
-
-    callbacks.register_callback_execute_function(
-        talent.mistweaver.dance_of_chiji.spell()->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm cooldown
+    create_proc_callback( { talent.mistweaver.dance_of_chiji } )
+        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm side affects
           proc.dance_of_chiji->occur();
         } );
-  }
 
   if ( tier.tww3.spm_2pc->ok() )
-  {
-    // if `create_proc_callback` gets rewritten to use `std::function`, this
-    // can be simplified and filter on buff status, or use the dbc_proc_callback
-    // enable/disable system
-    create_proc_callback( tier.tww3.spm_2pc_flurry_charge_data, []( monk_t *, action_state_t * ) { return true; } );
-    callbacks.register_callback_execute_function(
-        tier.tww3.spm_2pc_flurry_charge_data->id(),
-        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          if ( tier.tww3.spm_2pc_flurry_charge->check() )
-            tier.tww3.spm_2pc_flurry_strikes->execute();
-        } );
-  }
+    create_proc_callback( { tier.tww3.spm_2pc_flurry_charge_data, static_cast<proc_flag>( 0ull ),
+                            static_cast<proc_flag2>( 0ull ), tier.tww3.spm_2pc_flurry_strikes } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+                                                return tier.tww3.spm_2pc_flurry_charge->check();
+                                              } );
 
-  // ======================================
+  if ( talent.brewmaster.walk_with_the_ox.ok() && wowv_ge( { 11, 2, 0 } ) )
+  {
+    active_actions.walk_with_the_ox_rng = get_accumulated_rng(
+        "walk_with_the_ox", 0.0075 * talent.brewmaster.walk_with_the_ox->effectN( 1 ).base_value() );
+    // active_actions.walk_with_the_ox_icd =
+    create_proc_callback( { talent.brewmaster.walk_with_the_ox, static_cast<proc_flag>( 0ull ),
+                            static_cast<proc_flag2>( 0ull ), active_actions.walk_with_the_ox } )
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            [ & ]( const dbc_proc_callback_t *dbc_proc_cb, action_t *, action_state_t * ) {
+              if ( dbc_proc_cb->cooldown->down() )
+                return false;
+              dbc_proc_cb->cooldown->start();
+              return static_cast<bool>( active_actions.walk_with_the_ox_rng->trigger() );
+            } );
+  }
 
   base_t::init_special_effects();
 }
