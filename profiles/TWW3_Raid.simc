@@ -58,10 +58,10 @@ TWW3_Priest_Shadow_Archon.simc
 # TWW3_Shaman_Enhancement_Stormbringer.simc
 
 # TWW3_Warlock_Affliction_Soul_Harvester.simc
-# TWW3_Warlock_Affliction.simc
+TWW3_Warlock_Affliction.simc
 # TWW3_Warlock_Demonology_Soul_Harvester.simc
-# TWW3_Warlock_Demonology.simc
-# TWW3_Warlock_Destruction.simc
+TWW3_Warlock_Demonology.simc
+TWW3_Warlock_Destruction.simc
 # TWW3_Warlock_Destruction_Hellcaller.simc
 
 # TWW3_Warrior_Arms.simc
