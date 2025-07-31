@@ -37,16 +37,16 @@ spec=affliction
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAAzMzMzMjYWMwsNzMDzyAAAAmZMziZmxyMzMbmxMDAYGLwAziRjZAZWALzAAAAAAAAAjZD
 default_pet=sayaad
 
-head=cowl_of_ranching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
+head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
 neck=salhadaars_folly,id=242406,bonus_id=1533/12361/12239/8781,gem_id=213470/213491
-shoulder=inquisitors_gaze_of_madnes,id=237698,bonus_id=12675/1533/12361
+shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
 back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
 chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
 wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213491,crafted_stats=36/49
 hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
 waist=durable_information_securing_container,id=242664,bonus_id=1489/12352/12239,gem_id=213491,titan_disc_id=1236275
 legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
-feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239,enchant_id=7424
+feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7334,gem_id=213491/213491
 finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7346,gem_id=213479/213455
 trinket1=arazs_ritual_forge,id=242402,bonus_id=1533/12361/12239
@@ -92,16 +92,16 @@ role=spell
 position=ranged_back
 talents=CoQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAAAAAAAAzAGzYYBGYb0CNswMmhtZmZZGzMzYMjhZmxYYmZAAA
 
-head=cowl_of_ranching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
+head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
 neck=chrysalis_of_sundered_souls,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213467/213491
-shoulder=inquisitors_gaze_of_madnes,id=237698,bonus_id=12675/1533/12361
+shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
 back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
 chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
 wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213455,crafted_stats=36/49
 hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
 waist=forgeweavers_journal_holster,id=237538,bonus_id=1533/12361/12239/1808,gem_id=213455
 legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
-feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239,enchant_id=7424
+feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213455/213485
 finger2=devout_zealots_ring,id=221136,bonus_id=3215/12361/12239/8781,enchant_id=7352,gem_id=213473/213482
 trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
@@ -120,16 +120,16 @@ position=ranged_back
 default_pet=sayaad
 talents=CsQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEziBmtZmZYWmFzwMzsYGjFzMAAAAwYmZZZmZZGwYGDLkB2GWoxCGAAAAAAAzYMDAA
 
-head=cowl_of_ranching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
+head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
 neck=salhadaars_folly,id=242406,bonus_id=1533/12361/12239/8781,gem_id=213461/213485
-shoulder=inquisitors_gaze_of_madnes,id=237698,bonus_id=12675/1533/12361
+shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
 back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
 chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
-wrist=consecrated_cuff,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213473,crafted_stats=36/49
+wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213473,crafted_stats=36/49
 hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
 waist=cord_of_the_dark_word,id=178822,bonus_id=10032/12361/12239/1808,gem_id=213473
 legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
-feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239,enchant_id=7424
+feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213473/213494
 finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213467/213482
 trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
