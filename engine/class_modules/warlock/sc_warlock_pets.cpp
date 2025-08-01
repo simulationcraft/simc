@@ -2342,7 +2342,7 @@ namespace diabolist
         m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
-        if ( p()->o()->o()->talents.summoners_embrace.ok() )
+        if ( p()->o()->talents.summoners_embrace.ok() )
           m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
@@ -2423,7 +2423,7 @@ namespace diabolist
         m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
-        if ( p()->o()->o()->talents.summoners_embrace.ok() )
+        if ( p()->o()->talents.summoners_embrace.ok() )
           m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
@@ -2526,7 +2526,7 @@ namespace diabolist
         m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
         // Destruction Summoners Embrace also Double Dip due to the same fact.
         // Those two effects together is what made me believe the May 27 buff got applied.
-        if ( p()->o()->o()->talents.summoners_embrace.ok() )
+        if ( p()->o()->talents.summoners_embrace.ok() )
           m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
