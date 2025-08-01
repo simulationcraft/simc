@@ -7259,3 +7259,7 @@ bonus_id={ 12682 }, desc={ Rank 1/4 }, quality={ uncommon }, effects={ Adding (i
 bonus_id={ 12683 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474616, index=0, type=use) }
 bonus_id={ 12684 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474617, index=0, type=use) }
 bonus_id={ 12922 }, socket={ 1 }
+bonus_id={ 13501 }, effects={ Reshii Grace (id=1254906, index=0, type=equip) }
+bonus_id={ 13502 }, effects={ Reshii Grace (id=1254904, index=0, type=equip) }
+bonus_id={ 13503 }, effects={ Reshii Grace (id=1254905, index=0, type=equip) }
+bonus_id={ 13504 }, effects={ Reshii Grace (id=1235409, index=0, type=equip) }

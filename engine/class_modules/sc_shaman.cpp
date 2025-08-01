@@ -613,9 +613,9 @@ public:
       pos.emplace_back( rng_idx );
 
       player->sim->print_debug(
-        "{} DRE deck reset type={}, success={}, index={}, gap={}, prev_dist={}, high_idx={}, max_draw={}",
+        "{} DRE deck reset type={}, success={}, index={}, gap={}, prev_dist={}, high_idx={}, max_draw={}, deck_size={}",
         player->name(), static_cast<int>( reset_type ), i, rng_idx, gap, as<int>( end_distance + rng_idx ), m_high_idx,
-        m_max_draw );
+        m_max_draw, entries.size() );
     }
 
     position = entries.begin();
@@ -1346,8 +1346,6 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
-    double dre_flat_chance = -1.0;
-    unsigned dre_forced_failures = 2U;
 
     // Tempest options
     int init_tempest_counter = -1;
@@ -1377,9 +1375,6 @@ public:
     double ice_strike_base_chance = 0.07;
     double lively_totems_base_chance = 0.06;
 
-    double dre_enhancement_base_chance = 0.0024;
-    unsigned dre_enhancement_forced_failures = 0;
-
     // Surging totem whiff
     double surging_totem_miss_chance = 0.0;
 
@@ -1395,7 +1390,6 @@ public:
     int tww3_stormbringer_set = 0;
 
     // New deck dre implementation
-    bool use_new_dre = false; // Use, defaults to false for now
     unsigned n_dre_draw_success = 2; // Number of successs in the deck
     int n_dre_draws = -1; // Total cards in the deck
   } options;
@@ -1832,7 +1826,6 @@ public:
     shuffled_rng_t* flowing_spirits;
 
     accumulated_rng_t* imbuement_mastery;
-    accumulated_rng_t* dre_enhancement;
     accumulated_rng_t* ice_strike;
     accumulated_rng_t* lively_totems_ptr;
 
@@ -11901,13 +11894,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     } );
   }
 
-  if ( util::str_compare_ci( name, "dre_chance_pct" ) )
-  {
-    return make_fn_expr( name, [ this ]() {
-      return 100.0 * std::max( 0.0, dre_attempts * 0.01 - 0.01 * options.dre_forced_failures );
-    } );
-  }
-
   if ( util::str_compare_ci( name, "total_awaken_count" ) )
     return make_fn_expr( name, [ this ]() { return as<double>( aws_counter ); } );
 
@@ -12223,8 +12209,8 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.initial_tempest_counter", options.init_tempest_counter, -1, 299 ) );
 
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
-  add_option( opt_float( "shaman.dre_flat_chance", options.dre_flat_chance, -1.0, 1.0 ) );
-  add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
+  add_option( opt_obsoleted( "shaman.dre_flat_chance" ) );
+  add_option( opt_obsoleted( "shaman.dre_forced_failures" ) );
 
   add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 0U, 100U ) );
   add_option( opt_uint( "shaman.icefury_total", options.icefury_total , 0U, 100U ) );
@@ -12244,8 +12230,8 @@ void shaman_t::create_options()
 
   add_option( opt_float( "shaman.imbuement_mastery_base_chance", options.imbuement_mastery_base_chance, 0.0, 1.0 ) );
 
-  add_option( opt_float( "shaman.dre_enhancement_base_chance", options.dre_enhancement_base_chance, 0.0, 1.0 ) );
-  add_option( opt_uint( "shaman.dre_enhancement_forced_failures", options.dre_enhancement_forced_failures, 0, 100 ) );
+  add_option( opt_obsoleted( "shaman.dre_enhancement_base_chance" ) );
+  add_option( opt_obsoleted( "shaman.dre_enhancement_forced_failures" ) );
 
   add_option( opt_float( "shaman.lively_totems_base_chance", options.lively_totems_base_chance, 0.0, 1.0 ) );
 
@@ -12286,7 +12272,6 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.tww3_stormbringer_set", options.tww3_stormbringer_set, 0, 4 ) );
 
   // New DRE shuffled deck options
-  add_option( opt_bool( "shaman.use_new_dre", options.use_new_dre ) );
   add_option( opt_uint( "shaman.dre_deck_success", options.n_dre_draw_success, 0, 10000U ) );
   add_option( opt_int( "shaman.dre_deck_total", options.n_dre_draws, 1, 10000U ) );
 }
@@ -12320,8 +12305,6 @@ void shaman_t::copy_from( player_t* source )
 
   options.init_tempest_counter = p->options.init_tempest_counter;
 
-  options.dre_flat_chance = p->options.dre_flat_chance;
-  options.dre_forced_failures = p->options.dre_forced_failures;
   options.icefury_positive = p->options.icefury_positive;
   options.icefury_total = p->options.icefury_total;
   options.ancient_fellowship_positive = p->options.ancient_fellowship_positive;
@@ -12335,9 +12318,6 @@ void shaman_t::copy_from( player_t* source )
   options.lively_totems_base_chance = p->options.lively_totems_base_chance;
   options.flowing_spirits_chances = p->options.flowing_spirits_chances;
 
-  options.dre_enhancement_base_chance = p->options.dre_enhancement_base_chance;
-  options.dre_enhancement_forced_failures = p->options.dre_enhancement_forced_failures;
-
   options.surging_totem_miss_chance = p->options.surging_totem_miss_chance;
 
   options.flowing_spirits_procs = p->options.flowing_spirits_procs;
@@ -12346,7 +12326,6 @@ void shaman_t::copy_from( player_t* source )
 
   options.chain_lightning_target_rng = p->options.chain_lightning_target_rng;
 
-  options.use_new_dre = p->options.use_new_dre;
   options.n_dre_draws = p->options.n_dre_draws;
   options.n_dre_draw_success = p->options.n_dre_draw_success;
 }
@@ -13318,75 +13297,29 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
     return;
   }
 
-  if ( options.use_new_dre )
+  auto spell = debug_cast<shaman_spell_t*>( state->action );
+  unsigned draws = specialization() == SHAMAN_ENHANCEMENT
+    ? spell->mw_consumed_stacks
+    : spell->last_resource_cost;
+
+  bool success = false;
+  for ( auto draw = 0U; draw < draws; ++draw )
   {
-    auto spell = debug_cast<shaman_spell_t*>( state->action );
-    unsigned draws = specialization() == SHAMAN_ENHANCEMENT
-      ? spell->mw_consumed_stacks
-      : spell->last_resource_cost;
-
-    bool success = false;
-    for ( auto draw = 0U; draw < draws; ++draw )
+    dre_attempts++;
+    if ( rng_obj.deeply_rooted_elements->trigger() )
     {
-      dre_attempts++;
-      if ( rng_obj.deeply_rooted_elements->trigger() )
-      {
-        assert( !success );
-        success = true;
-      }
-    }
-
-    if ( success )
-    {
-      dre_samples.add( as<double>( dre_attempts ) );
-      dre_attempts = 0U;
-
-      action.dre_ascendance->execute_on_target( state->target );
-      spell->proc_deeply_rooted_elements->occur();
+      assert( !success );
+      success = true;
     }
   }
-  else
+
+  if ( success )
   {
-    double proc_chance = 0.0;
-    if ( options.dre_flat_chance == -1.0 )
-    {
-      auto spell = debug_cast<shaman_spell_t*>( state->action );
+    dre_samples.add( as<double>( dre_attempts ) );
+    dre_attempts = 0U;
 
-      switch ( specialization() )
-      {
-        case SHAMAN_ELEMENTAL:
-          proc_chance = 0.01 * talent.deeply_rooted_elements->effectN( 2 ).base_value() * 0.01 *
-            spell->last_resource_cost;
-          break;
-        case SHAMAN_ENHANCEMENT:
-          proc_chance = 0.01 * talent.deeply_rooted_elements->effectN( 3 ).base_value() * 0.1 *
-            spell->mw_consumed_stacks;
-          break;
-        default:
-          break;
-      }
-    }
-    else
-    {
-      proc_chance = options.dre_flat_chance;
-    }
-
-    if ( proc_chance <= 0.0 )
-    {
-      return;
-    }
-
-    dre_attempts++;
-
-    if ( rng().roll( proc_chance ) )
-    {
-      dre_samples.add( as<double>( dre_attempts ) );
-      dre_attempts = 0U;
-
-      action.dre_ascendance->execute_on_target( state->target );
-      auto spell = debug_cast<shaman_spell_base_t<spell_t>*>( state->action );
-      spell->proc_deeply_rooted_elements->occur();
-    }
+    action.dre_ascendance->execute_on_target( state->target );
+    spell->proc_deeply_rooted_elements->occur();
   }
 }
 
@@ -14867,12 +14800,6 @@ void shaman_t::init_rng()
 
   rng_obj.imbuement_mastery = get_accumulated_rng( "imbuement_mastery",
     options.imbuement_mastery_base_chance );
-  rng_obj.dre_enhancement = get_accumulated_rng( "deeply_rooted_elements_enh",
-    options.dre_enhancement_base_chance, [ this ]( double base_chance, unsigned attempt ) {
-      return attempt <= options.dre_enhancement_forced_failures
-        ? 0.0
-        : ( attempt - options.dre_enhancement_forced_failures ) * base_chance;
-    } );
   rng_obj.ice_strike = get_accumulated_rng( "ice_strike",
     options.ice_strike_base_chance );
   rng_obj.lively_totems_ptr = get_accumulated_rng( "lively_totems_ptr",
@@ -14881,7 +14808,7 @@ void shaman_t::init_rng()
   rng_obj.flowing_spirits = get_shuffled_rng( "flowing_spirits",
     options.flowing_spirits_procs, options.flowing_spirits_total );
 
-  if ( talent.deeply_rooted_elements.ok() && options.use_new_dre )
+  if ( talent.deeply_rooted_elements.ok() )
   {
     auto n_dre_draws = options.n_dre_draws != -1 ? as<unsigned>( options.n_dre_draws ) : 0U;
     auto max_dre_draw = 0;
@@ -14906,9 +14833,11 @@ void shaman_t::init_rng()
 
         if ( options.n_dre_draws == -1 )
         {
+          // Note, experimentally verified fits better with 0.12% chance per maelstrom, instead of
+          // 0.116% (spell data)
           n_dre_draws = static_cast<unsigned>(
             options.n_dre_draw_success /
-              ( talent.deeply_rooted_elements->effectN( 2 ).base_value() / 100.0 / 100.0 )
+              ( util::round( talent.deeply_rooted_elements->effectN( 2 ).base_value() / 100.0, 2 ) / 100.0 )
           );
         }
         break;
@@ -16539,7 +16468,7 @@ public:
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.options.dre_forced_failures + 1 );
+    chart.set( "plotOptions.column.pointStart", 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );

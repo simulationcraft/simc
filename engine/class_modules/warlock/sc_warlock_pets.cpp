@@ -1902,6 +1902,17 @@ double infernal_t::composite_player_multiplier( school_e school ) const
 
 /// Infernal End
 
+/// Infernal Rain of Chaos Begin
+
+infernal_roc_t::infernal_roc_t( warlock_t* owner, util::string_view name ) : destruction::infernal_t( owner, name )
+{
+  type                   = RAIN;
+  owner_coeff.ap_from_sp = 1.5;
+  owner_coeff.sp_from_sp = 1.5;
+}
+
+/// Infernal Rain of Chaos End
+/// 
 /// Dimensional Rifts Begin
 
 struct dimensional_cinder_t : public warlock_pet_spell_t
@@ -2338,9 +2349,12 @@ namespace diabolist
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
-        // Destruction, No reference spell for it in the hotfix located.
-        m *= 1.15;
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
       return m;
@@ -2416,9 +2430,12 @@ namespace diabolist
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
-        // Destruction, No reference spell for it in the hotfix located.
-        m *= 1.15;
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
       return m;
@@ -2516,9 +2533,12 @@ namespace diabolist
         // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
         if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
           m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
-        // Buff  from May 27, 2025 Hotfix Increased the damage of Felseeker, Chaos Salvo and Wicked Cleave by 15% for
-        // Destruction, No reference spell for it in the hotfix located.
-        m *= 1.15;
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
       }
 
       return m;
@@ -2582,8 +2602,8 @@ namespace diabolist
     : destruction::infernal_t( owner, name )
   {
     type = FRAG;
-    owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
-    owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
+    owner_coeff.ap_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
+    owner_coeff.sp_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
   }
 
   /// Infernal Fragment End

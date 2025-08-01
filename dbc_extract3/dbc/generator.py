@@ -363,7 +363,7 @@ class DataGenerator(object):
         if header_str:
             self._out.write('// {}, wow build {}\n'.format(header_str, self._options.build))
 
-        self._out.write('static const std::array<{}, {}> __{}_data {{ {{\n'.format(
+        self._out.write('static constexpr std::array<{}, {}> __{}_data {{ {{\n'.format(
             typename, l, self.format_str(arrayname)))
 
     def output_footer(self):
@@ -525,10 +525,15 @@ class SpecializationEnumGenerator(DataGenerator):
 
 class SpecializationListGenerator(SpecializationEnumGenerator):
     def generate(self, enum_ids = None):
-        self._out.write('#define MAX_SPECS_PER_CLASS (%u)\n' % (max(len(specs) for specs in enum_ids)))
-        self._out.write('#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids))
+        self._out.write('#define {}MAX_SPECS_PER_CLASS ({})\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            max(len(specs) for specs in enum_ids)))
+        self._out.write('#define {}MAX_SPEC_CLASS  ({})\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            len(enum_ids)))
 
-        self._out.write('static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =\n{\n')
+        self._out.write('static constexpr specialization_e __{}class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =\n{{\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix) or ''))
 
         for specs in enum_ids:
             self._out.write('  {\n')
@@ -1551,7 +1556,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.2
          1224916, # Void-Touched Fragment stacking buff
          1238693, # Voidglass Shards
-         1223417, 1223419, # Reshii Wraps: Ethereal Reaping
+         1223417, 1223419, 1251545, 1251549, 1251553, # Reshii Wraps
          1239674, # Unyielding Netherprism Damage
          1242875, 1242895, 1242897, 1242881, 1242901, # Screams of a Forgotten Sky
          1241847, 1241899, 1240916, # Eradicating Arcanocore
@@ -3245,7 +3250,7 @@ class SpellDataGenerator(DataGenerator):
             class_id = 0
             if spec_data.id > 0:
                 class_id = spec_data.class_id
-            elif tst_data.id > 0:
+            elif tst_data and tst_data.id > 0:
                 ttid = tst_data.id_trait_tree
                 class_id = 0
                 for ttl in self.db('TraitTreeLoadout').values():
@@ -5217,11 +5222,13 @@ class TraitGenerator(DataGenerator):
             }
             for class_ in self.db('ChrClasses').values()
         }
-        self._out.write('#define MAX_HERO_TREES_PER_CLASS (%u)\n\n' % (max(len(v) for v in ht_per_class.values())))
+        self._out.write('#define {}MAX_HERO_TREES_PER_CLASS ({})\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            max(len(v) for v in ht_per_class.values())))
 
         self.output_header(
             header='Hero trees',
-            type='std::tuple<unsigned, std::string, unsigned>',
+            type='std::tuple<unsigned, const char*, unsigned>',
             array='trait_sub_tree',
             length=len(subtrees)
         )
@@ -5235,26 +5242,9 @@ class TraitGenerator(DataGenerator):
             }
             assert(len(class_ids) == 1)
             class_id = class_ids.pop()
-            self.output_record([str(e),
-                                '"{}"'.format(self.db('TraitSubTree')[e].name),
-                                '{}'.format(class_id)])
+            self.output_record(['{}, "{}", {}'.format(e, self.db('TraitSubTree')[e].name, class_id)])
 
         self.output_footer()
-
-        self._out.write('static constexpr unsigned __{}_data[{}][2] = {{\n'.format(self.format_str('trait_sub_tree_map'), len(subtrees)))
-        for e in sorted(subtrees):
-            ttid = self.db('TraitSubTree')[e].id_trait_tree
-            class_ids = {
-                str(e.ref('id_spec').class_id)
-                for e in self.db('TraitTreeLoadout').values()
-                if e.id_trait_tree == ttid
-            }
-            assert(len(class_ids) == 1)
-            class_id = class_ids.pop()
-            self._out.write('  {{ {}, {} }},\n'.format(e, class_id))
-
-        self._out.write('};')
-
         """
         print(
             f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '
@@ -5353,7 +5343,7 @@ class CharacterLoadoutGenerator(DataGenerator):
         _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
         _ilevels.sort(reverse=True)
         self._out.write('static constexpr int {}MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
             _ilevels[0] + 5 * 13))
 
         self.output_header(

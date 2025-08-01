@@ -164,7 +164,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
-
+    spawner::pet_spawner_t<pets::destruction::infernal_roc_t, warlock_t> rocs;
     spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
 
     spawner::pet_spawner_t<pets::diabolist::overlord_t, warlock_t> overlords;

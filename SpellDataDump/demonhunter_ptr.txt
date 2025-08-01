@@ -1724,7 +1724,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 8)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc203720

@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.62253
-static const std::array<spelltext_data_t, 28021> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28027> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28018,9 +28018,15 @@ static const std::array<spelltext_data_t, 28021> __ptr_spelltext_data { {
   { 1249464, "$@spelldesc1236374", "Your next $?c2[Aimed Shot][Wildfire Bomb] deals Arcane damage and its damage is increased by $?c2[$s1][$s3]%.", 0 },
   { 1249658, "Call upon Sindragosa's aid in battle for $d, continuously dealing ${$155166s2*$<CAP>/$AP} Frost damage every $t1 sec to enemies in a cone in front of you. Consuming Killing Machine or Rime increases the duration by ${$s3/1000}.1 sec. Deals reduced damage to secondary targets.\r\n\r\n|cFFFFFFFFGrants a charge of Empower Rune Weapon at the start and 2 Runes at the end.|r", "Continuously dealing Frost damage every $t1 sec to enemies in a cone in front of you.", 0 },
   { 1250068, "Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.", 0, 0 },
+  { 1251545, "Your harmful spells and abilities have a chance to focus latent energies around you to inflict Arcane damage split between your target and nearby enemies. Enemies below $1217091s4% health take $1217091s5% additional damage.", "Your harmful spells and abilities have a chance to focus latent energies around you to inflict Arcane damage split between your target and nearby enemies. Enemies below $1217091w4% health take $1217091w5% additional damage.", 0 },
+  { 1251549, "Your helpful spells and abilities have a chance to gather dormant energy to heal an injured ally. Overhealing from this effect grants an absorb shield.", "Your helpful spells and abilities have a chance to gather dormant energy to  heal an injured ally. Overhealing from this effect grants an absorb shield.", 0 },
+  { 1251553, "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091s8% up to a threshold.\r\n\r\nUpon falling below $1217091s6% health, gain this effect at  ${$1217091s7*100}% effectiveness. This effect may only occur once every $1223611d.", "Your spells and abilities have a high chance to coalesce the energy around you, granting you a shield that reduces damage taken by $1217091w8% up to a threshold.\r\n\r\nUpon falling below $1217091w6% health, gain this effect at  ${$1217091w7*100}% effectiveness. This effect may only occur once every $1223611d.", 0 },
   { 1251951, "Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.", 0, 0 },
   { 1252024, "$@spelldesc1236336", "$?c1[The damage of your next Starsurge is increased by $w1 and it splashes $w2% of its damage done to nearby enemies, reduced beyond $w4 targets.][The healing of your next Swiftmend is increased by $w1 and it splashes $w3% of its healing done to nearby allies, reduced beyond $w4 targets.]", 0 },
   { 1252096, "$@spelldesc1236422", "Thunder Blast damage increased by $w1%.", 0 },
+  { 1254904, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
+  { 1254905, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
+  { 1254906, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62253
@@ -28029,7 +28035,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 11.2.0.62253
-static const std::array<spelldesc_vars_data_t, 671> __ptr_spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 672> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28672,6 +28678,7 @@ static const std::array<spelldesc_vars_data_t, 671> __ptr_spelldesc_vars_data { 
   { 1227288, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1227293, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   { 1227294, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1232721, "$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]" },
   { 1233152, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   { 1233223, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1233351, "$dmg=${$o1}" },

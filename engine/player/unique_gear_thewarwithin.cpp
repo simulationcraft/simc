@@ -8092,7 +8092,7 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
   };
 
   auto buff_spell = effect.driver();
-  buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
+  buff_t* buff    = create_buff<stat_buff_t>( effect.player, "ascension_trinket", buff_spell )
                      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
                      ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) )
                      ->add_stat_from_effect( 4, effect.driver()->effectN( 4 ).average( effect ) )
@@ -8226,6 +8226,7 @@ void gigazaps_zapcap( special_effect_t& effect )
 // Diamantine Voidcore
 // 1234996 Driver
 // 1239221 Buff
+// 1239233 low mana rppm modifier script
 void diamantine_voidcore( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1239221 ) )
@@ -8233,22 +8234,28 @@ void diamantine_voidcore( special_effect_t& effect )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   effect.custom_buff = buff;
-  
+
   struct diamantine_voidcore_cb_t : public dbc_proc_callback_t
   {
     double mana_threshold;
-    double rppm_boost;
+    double rppm_mod_orig;
+    double rppm_mod_boost;
+
     diamantine_voidcore_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         mana_threshold( e.driver()->effectN( 2 ).percent() ),
-        rppm_boost( e.driver()->effectN( 3 ).percent() )
-    {
-    }
+        rppm_mod_orig( e.rppm_modifier() ),
+        rppm_mod_boost( e.player->dbc->real_ppm_modifier( e.driver()->id(), e.player, e.item->item_level(), 1239233 ) )
+    {}
 
     void trigger( action_t* a, action_state_t* state ) override
     {
       if ( listener->resources.active_resource[ RESOURCE_MANA ] )
-        rppm->set_modifier( listener->resources.pct( RESOURCE_MANA ) <= mana_threshold ? 1.0 + rppm_boost : 1.0 );
+      {
+        rppm->set_modifier( listener->resources.pct( RESOURCE_MANA ) <= mana_threshold ? rppm_mod_boost
+                                                                                       : rppm_mod_orig );
+      }
+
       dbc_proc_callback_t::trigger( a, state );
     }
   };
@@ -8436,7 +8443,7 @@ void arazs_ritual_forge( special_effect_t& effect )
 
 // Astral Antenna
 // 1234714 Driver
-// 1239640 Area Trigger? Has a Heartbeat proc flag and full driver data oddly
+// 1239640 Orb Buff
 // 1239641 Buff
 // TODO: Investigate the area trigger, see if has importance for sims
 void astral_antenna( special_effect_t& effect )
@@ -8445,7 +8452,17 @@ void astral_antenna( special_effect_t& effect )
                   ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
                   ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  effect.custom_buff = buff;
+  auto orb = create_buff<buff_t>( effect.player, "astral_antenna_orb", effect.player->find_spell( 1239640 ) )
+                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                 ->set_stack_change_callback( [ buff ]( buff_t* b, int old_, int new_ ) {
+                   if ( new_ )
+                     make_event( *b->source->sim, b->source->rng().range( 500_ms, 3500_ms ), [ b, buff ] {
+                       buff->trigger();
+                       b->decrement();
+                     } );
+                 } );
+
+  effect.custom_buff = orb;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -9033,6 +9050,8 @@ void essence_hunters_eyeglass( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
+  effect.proc_flags2_ = PF2_CRIT;
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -9373,6 +9392,18 @@ void manaforged_aethercell( special_effect_t& effect )
     ->set_reverse( true );
 
   effect.custom_buff = buff;
+
+  if ( effect.player->specialization() == PRIEST_SHADOW )
+  {
+    effect.player->callbacks.register_callback_trigger_function(
+        effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+          // Renew or Flashheal
+          if ( a->id == 139 || a->id == 2061 )
+            return true;
+          return false;
+        } );
+  }
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10403,6 +10434,23 @@ void the_jastor_diamond( special_effect_t& effect )
   new the_jastor_diamond_cb_t( effect );
 }
 
+double reshii_wraps_rppm( special_effect_t& effect )
+{
+  // 50%, 40%, 30%, 20%
+  static constexpr std::array<unsigned, 4> aura_ids = { 1235409, 1254905, 1254904, 1254906 };
+
+  for ( auto id : aura_ids )
+  {
+    if ( auto reshii_grace = find_special_effect( effect.player, id ) )
+    {
+      return effect.player->dbc->real_ppm_modifier(
+        effect.driver()->id(), effect.player, effect.item->item_level(), id );
+    }
+  }
+
+  return effect.rppm_modifier();
+}
+
 // Reshii Wraps: Ethereal Reaping
 // 1217091 Value Spell
 // 1217101 Driver
@@ -10443,7 +10491,7 @@ void ethereal_reaping( special_effect_t& effect )
   missile->impact_action = damage;
 
   effect.execute_action = missile;
-  effect.rppm_modifier_ = 1.0 + effect.player->passive_values.reshii_grace;
+  effect.rppm_modifier_ = reshii_wraps_rppm( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -10513,12 +10561,6 @@ void ethereal_energy( special_effect_t& effect )
       break;
   }
 }
-
-void reshii_grace( special_effect_t& effect )
-{
-  effect.player->passive_values.reshii_grace = effect.driver()->effectN( 1 ).percent();
-}
-
 }  // namespace items
 
 namespace sets
@@ -12509,7 +12551,10 @@ void register_special_effects()
   register_special_effect( 1214161, items::the_jastor_diamond );
   set_min_version( wowv_t( 11, 2, 0 ) );
   register_special_effect( 1217091, items::ethereal_energy ); // Reshii Wraps equip driver
-  register_special_effect( 1235409, items::reshii_grace ); // Reshii Grace boot effects
+  register_special_effect( 1254906, DISABLED_EFFECT ); // Reshii Grace 20%
+  register_special_effect( 1254904, DISABLED_EFFECT ); // Reshii Grace 30%
+  register_special_effect( 1254905, DISABLED_EFFECT ); // Reshii Grace 50%
+  register_special_effect( 1235409, DISABLED_EFFECT ); // Reshii Grace 50%
   reset_version_check();
 
   // Sets

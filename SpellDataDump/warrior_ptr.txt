@@ -479,7 +479,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Real PPM         : 3 (Haste multiplier, /w Best Served Cold (id=202560): 3.5999999999999996)
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -1010,7 +1010,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 1.7 (Haste multiplier)
+Real PPM         : 1.7 (Haste multiplier, /w Warrior Fury Set 4pc (id=393709): 4.25)
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -5565,7 +5565,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 1.7 (Haste multiplier)
+Real PPM         : 1.7 (Haste multiplier, /w Warrior Fury Set 4pc (id=393709): 4.25)
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :

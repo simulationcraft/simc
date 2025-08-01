@@ -2559,6 +2559,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
                                           ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
+        case RPPM_MODIFIER_AURA:
+        {
+          s.precision( real_ppm_decimals( spell, modifier ) );
+          mods.emplace_back( fmt::format( "/w {} (id={}): {}", dbc.spell( modifier.type )->name_cstr(), modifier.type,
+                                          spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) );
+          break;
+        }
         default:
           break;
       }

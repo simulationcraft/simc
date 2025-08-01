@@ -634,7 +634,17 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
   auto b = buff_t::find( p, name );
   if ( b != nullptr )
   {
-    return debug_cast<BUFF*>( b );
+#ifdef NDEBUG
+    return static_cast<BUFF*>( b );
+#else
+    BUFF* result = dynamic_cast<BUFF*>( b );
+    if ( b && !result )
+    {
+      p->sim->error( "{} has duplicate buff '{}'", *p, name );
+      assert( result );
+    }
+    return result;
+#endif
   }
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );

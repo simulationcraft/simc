@@ -2983,7 +2983,9 @@ Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 0.2% Base Mana (0) (id=7897)
+Resource         : 0.4% Base Mana (0) (id=7897) w/ Discipline Priest (id=137032)[Hotfixed: Aura Id (0 -> 137032), Percent Cost (0.2 -> 0.4)]
+Resource         : 0.2% Base Mana (0) (id=311593) w/ Holy Priest (id=137031)[Hotfixed: NEW POWER]
+Resource         : 0.2% Base Mana (0) (id=311594) w/ Shadow Priest (id=137033)[Hotfixed: NEW POWER]
 Spell Level      : 31
 GCD              : 1.5 seconds
 Labels           : 16: Class Spells

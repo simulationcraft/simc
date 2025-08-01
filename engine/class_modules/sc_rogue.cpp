@@ -13072,11 +13072,11 @@ void rogue_t::activate()
         sim->print_debug( "{}: Countdown started", *buffs.fatebound_lucky_coin );
         buffs.fatebound_lucky_coin->expire( timespan_t::from_seconds( talent.fatebound.fateful_ending->effectN( 2 ).base_value() ) );
       }
-      else
+      else if( buffs.fatebound_lucky_coin->expiration_delay )
       {
-        sim->print_debug( "{}: Countdown suspended", *buffs.fatebound_lucky_coin );
-        buffs.fatebound_lucky_coin->cancel();
-        buffs.fatebound_lucky_coin->trigger();
+        sim->print_debug( "{}: Countdown suspended at {}", *buffs.fatebound_lucky_coin,
+                          buffs.fatebound_lucky_coin->expiration_delay->remains() );
+        event_t::cancel( buffs.fatebound_lucky_coin->expiration_delay );
       }
     }
   } );

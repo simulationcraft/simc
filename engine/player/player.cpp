@@ -842,15 +842,16 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   player_t* p = sim->active_player;
 
-  set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus          = B_NONE;
+  set_bonus_type_e tier = SET_BONUS_NONE;
+  set_bonus_e bonus = B_NONE;
   bool enabled = false;
   specialization_e spec = SPEC_NONE;
   hero_talent_e hero = HERO_NONE;
 
-  if ( p->sets->parse_set_bonus_option_verbose( value, set_bonus, bonus, enabled, spec, hero ) )
+  if ( p->sets->parse_set_bonus_option_verbose( value, tier, bonus, enabled, spec, hero ) )
   {
-    p->sets->set_bonus_spec_data[ set_bonus ][ composite_idx( spec, hero ) ][ bonus ].overridden = enabled;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::composite_idx( spec, hero, sim->dbc->ptr ) ][ bonus ].overridden =
+      enabled;
     return true;
   }
 
@@ -869,7 +870,7 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
-  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus, hero ) )
+  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], tier, bonus, hero ) )
   {
     sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
     return false;
@@ -877,12 +878,13 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 
   if ( hero != HERO_NONE )
   {
-    p->sets->set_bonus_spec_data[ set_bonus ][ composite_idx( spec, hero ) ][ bonus ].overridden = opt_val;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::composite_idx( spec, hero, sim->dbc->ptr ) ][ bonus ].overridden =
+      opt_val;
     return true;
   }
 
   const auto* item_set_bonus =
-    p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].bonus;
+    p->sets->set_bonus_spec_data[ tier ][ dbc::spec_idx( p->specialization(), sim->dbc->ptr ) ][ bonus ].bonus;
 
   if ( !item_set_bonus || item_set_bonus->trait_sub_tree != -1 )
   {
@@ -892,7 +894,8 @@ bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
     return false;
   }
 
-  p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
+  p->sets->set_bonus_spec_data[ tier ][ dbc::spec_idx( p->specialization(), sim->dbc->ptr ) ][ bonus ].overridden =
+    opt_val;
 
   return true;
 }
@@ -1413,7 +1416,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( error_level_e::SEVERE, "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
@@ -2748,7 +2751,8 @@ static std::string generate_traits_hash( player_t* player )
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
-    player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
+    player->sim->error( error_level_e::SEVERE, "Player {} has invalid talent tree hash {}{}{}", player->name(),
+                        talents_str, msg.empty() ? "" : ": ", msg );
   };
 
   if ( talents_str.find_first_not_of( base64_char ) != std::string::npos )
@@ -8820,15 +8824,15 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_e
 }
 
 accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
-                                                  std::function<double( double, unsigned )> accumulator_fn,
+                                                  accumulated_rng_fn accumulator_fn,
                                                   unsigned initial_count )
 {
   return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
 
 threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
-                                              std::function<double( double )> accumulator_fn, bool random_initial_state,
-                                              bool roll_over )
+                                              threshold_rng_fn accumulator_fn,
+                                              bool random_initial_state, bool roll_over )
 {
   return get_rng<threshold_rng_t>( name, increment_max, accumulator_fn, random_initial_state, roll_over );
 }

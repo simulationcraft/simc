@@ -13,6 +13,7 @@
 #include <functional>
 #include <string>
 
+struct action_state_t;
 struct item_t;
 struct player_t;
 struct sim_t;
@@ -41,7 +42,7 @@ public:
   proc_rng_t( rng_type_e type_, std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
 
-  virtual int trigger() = 0;
+  virtual int trigger( action_state_t* = nullptr ) = 0;
   virtual void reset( reset_type_e reset_type ) = 0;
 
   std::string_view name() const
@@ -62,7 +63,7 @@ public:
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
   void reset( reset_type_e /* reset_type */ ) override {}
-  int trigger() override;
+  int trigger( action_state_t* = nullptr ) override;
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
@@ -97,7 +98,7 @@ public:
   double proc_chance();
 
   void reset( reset_type_e reset_type ) override;
-  int trigger() override;
+  int trigger( action_state_t* = nullptr) override;
 
   void set_scaling( unsigned s )
   { scales_with = s; }
@@ -159,7 +160,7 @@ public:
   shuffled_rng_t( std::string_view n, player_t* p, initializer data );
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
   void reset( reset_type_e reset_type ) override;
-  int trigger() override;
+  int trigger( action_state_t* = nullptr ) override;
 
   int count_remains( int key );
   int entry_remains();
@@ -180,10 +181,12 @@ public:
 //
 // initial_count is an optional parameter that sets the initial trigger count. If initial_count is set, the first
 // trigger after a successful proc will have a trigger count of initial_count + 1.
-struct accumulated_rng_t final : public proc_rng_t
+using accumulated_rng_fn = std::function<double( double, unsigned, action_state_t* )>;
+
+struct accumulated_rng_t : public proc_rng_t
 {
 private:
-  std::function<double( double, unsigned )> accumulator_fn;
+  accumulated_rng_fn accumulator_fn;
   double proc_chance;
   unsigned initial_count;
   unsigned trigger_count;
@@ -191,11 +194,11 @@ private:
 public:
   static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
 
-  accumulated_rng_t( std::string_view n, player_t* p, double c, std::function<double( double, unsigned )> fn = nullptr,
+  accumulated_rng_t( std::string_view n, player_t* p, double c, accumulated_rng_fn fn = nullptr,
                      unsigned initial_count = 0 );
 
   void reset( reset_type_e reset_type ) override;
-  int trigger() override;
+  int trigger( action_state_t* = nullptr ) override;
 };
 
 // Threshold RNG rng helper class ==========================
@@ -210,10 +213,12 @@ public:
 //
 // accumulator_fn is an optional functor that takes the increment_max value as a parameter and returns the amount accumulated
 // by that call.
-struct threshold_rng_t final : public proc_rng_t
+using threshold_rng_fn = std::function<double( double, action_state_t* )>;
+
+struct threshold_rng_t : public proc_rng_t
 {
 private:
-  std::function<double( double )> accumulator_fn;
+  threshold_rng_fn accumulator_fn;
   double increment_max;
   double accumulated_chance;
   bool random_initial_state;
@@ -222,11 +227,11 @@ private:
 public:
   static constexpr rng_type_e rng_type = RNG_THRESHOLD;
 
-  threshold_rng_t( std::string_view n, player_t* p, double increment_max, std::function<double( double )> fn = nullptr,
+  threshold_rng_t( std::string_view n, player_t* p, double increment_max, threshold_rng_fn fn = nullptr,
                    bool random_initial_state = true, bool roll_over = false );
 
   void reset( reset_type_e reset_type ) override;
-  int trigger() override;
+  int trigger( action_state_t* = nullptr ) override;
 
   double get_accumulated_chance();
   double get_increment_max();

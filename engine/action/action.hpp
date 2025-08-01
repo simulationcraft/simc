@@ -755,6 +755,9 @@ public:
         || (weapon && weapon_multiplier > 0);
   }
 
+  bool does_periodic_damage() const;
+  bool does_direct_damage() const;
+
   void parse_spell_data( const spell_data_t& );
 
   void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );

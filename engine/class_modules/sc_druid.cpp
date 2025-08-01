@@ -548,7 +548,6 @@ struct druid_t final : public parse_player_effects_t
   moon_stage_e moon_stage;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
-  buff_t* lycaras_meditation_buff;  // TODO: remove in 11.2
   struct dot_list_t
   {
     std::vector<dot_t*> moonfire;
@@ -557,6 +556,9 @@ struct druid_t final : public parse_player_effects_t
     std::vector<dot_t*> rip;
     std::vector<dot_t*> thrash_bear;
     std::vector<dot_t*> dreadful_wound;
+    std::vector<dot_t*> wild_growth;
+    std::vector<dot_t*> regrowth;
+    std::vector<dot_t*> efflorescence;
   } dot_lists;
   // !!!==========================================================================!!!
 
@@ -575,6 +577,8 @@ struct druid_t final : public parse_player_effects_t
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     int initial_orbit_breaker_stacks = -1;
+    double dryads_favor_cap_multiplier = 6.0;
+    bool enable_dungeon_slice_for_balance = false;
 
     // Feral
     double adaptive_swarm_jump_distance_melee = 5.0;
@@ -583,7 +587,6 @@ struct druid_t final : public parse_player_effects_t
     unsigned adaptive_swarm_melee_targets = 7;
     unsigned adaptive_swarm_ranged_targets = 12;
     std::string adaptive_swarm_prepull_setup = "";
-    double ws_tww3_2pc_bonus = 0.16;
 
     // Guardian
 
@@ -645,6 +648,8 @@ struct druid_t final : public parse_player_effects_t
     // Hero sets
     action_t* starsurge_tww3;          // EC TWW3 2pc
     action_t* dryad_tww3;              // KOTG TWW3 2pc proxy
+    action_t* dryad_tww3_starfall_1;
+    action_t* dryad_tww3_Starfall_2;
     action_t* bloodseeker_vines_tww3;  // WS TWW3 2pc TF proc
     action_t* bursting_growth_tww3;    // WS TWW3 4pc
   } active;
@@ -911,7 +916,6 @@ struct druid_t final : public parse_player_effects_t
     player_talent_t lingering_healing;
     player_talent_t lore_of_the_grove;
     player_talent_t lycaras_inspiration;
-    player_talent_t lycaras_meditation;  // TODO: remove in 11.2
     player_talent_t lycaras_teachings;
     player_talent_t maim;
     player_talent_t matted_fur;
@@ -1331,7 +1335,7 @@ struct druid_t final : public parse_player_effects_t
   void init_absorb_priority() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
-  std::vector<std::string> action_names_from_spell_id( unsigned int ) const;
+  std::vector<std::string> action_names_from_spell_id( unsigned int ) const override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t&, action_priority_list_t* ) override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t&,
@@ -1532,8 +1536,8 @@ struct dryad_t final : public pet_t
     }
   };
 
+  action_t* starfall_action;
   buff_t* starfall_buff;
-  action_t* starfall;
   unsigned starsurge_count = 0;
 
   dryad_t( druid_t* p ) : pet_t( p->sim, p, "Dryad", true, true )
@@ -1545,16 +1549,9 @@ struct dryad_t final : public pet_t
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
-  void arise() override
-  {
-    pet_t::arise();
-
-    starfall->execute();
-    starsurge_count = 0;
-  }
-
+  void arise() override;
+  void demise() override;
   void create_buffs() override;
-  void create_actions() override;
   action_t* create_action( std::string_view n, std::string_view opt ) override;
 };
 
@@ -2494,37 +2491,103 @@ struct ravage_base_t : public BASE
   }
 };
 
-// Proc chance:
-//   0.6 - 1.13 ^ ( A * B - C )
-// where:
-//   A = percent value of corresponding effect index on the talent spell data
-//   B = 3 - base_tick_time in seconds
-//   C = cumulative count value where each failure adds A to the value
-// via community testing (~257k ticks)
+// community testing (~257k ticks) memorial
 // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-struct bloodseeker_vine_rng_t : public proc_rng_t
+struct thriving_growth_rng_t : public proc_rng_t
 {
   static constexpr rng_type_e rng_type = RNG_CUSTOM;
+  static constexpr double threshold = 1000.0;
+  static constexpr double rng_mult = 2.0;
+
+  struct coeffs_t
+  {
+    std::vector<dot_t*>* dot_list = nullptr;
+    action_t* action = nullptr;
+    double scale = 0.0;
+    double scale_mul = 1.0;
+    double dot_exp = 1.0;
+  };
+
+  coeffs_t c_rip;
+  coeffs_t c_rake;
+  coeffs_t c_wild_growth;
+  coeffs_t c_regrowth;
+  coeffs_t c_efflorescence;
+  druid_t*p;
   double count = 0.0;
 
-  bloodseeker_vine_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p ) {}
-
-  int trigger() override { return 0; }
-  void reset( reset_type_e ) override { count = 0.0; }
-
-  bool trigger( double scale, unsigned shift, double bonus, double mult )
+  thriving_growth_rng_t( std::string_view n, player_t* p_ )
+    : proc_rng_t( rng_type, n, p_ ), p( static_cast<druid_t*>( p_ ) )
   {
-    count += scale;
-    auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) + bonus ) * mult;
-    auto result = player->rng().roll( chance );
+    auto vine_mul  = p->specialization() == DRUID_FERAL
+                       ? 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 1 ).percent()
+                       : 1.0;
+    auto bloom_mul = p->specialization() == DRUID_RESTORATION
+                       ? 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 4 ).percent()
+                       : 1.0;
+
+    auto vine_exp  = p->is_ptr() ? p->talent.thriving_growth->effectN( 6 ).percent() : 0.75;
+    auto bloom_exp = p->is_ptr() ? p->talent.thriving_growth->effectN( 7 ).percent() : 0.75;
+
+    c_rip  = { &p->dot_lists.rip, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 1 ).base_value(),
+               vine_mul, vine_exp };
+    c_rake = { &p->dot_lists.rake, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 2 ).base_value(),
+               vine_mul, vine_exp };
+
+    c_wild_growth   = { &p->dot_lists.wild_growth, nullptr, p->talent.thriving_growth->effectN( 3 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_regrowth      = { &p->dot_lists.regrowth, nullptr, p->talent.thriving_growth->effectN( 4 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_efflorescence = { &p->dot_lists.efflorescence, nullptr, p->talent.thriving_growth->effectN( 5 ).base_value(),
+                        bloom_mul, bloom_exp };
+  }
+
+  void reset( reset_type_e r_type ) override
+  {
+    if ( r_type == reset_type_e::COMBAT )
+      count -= threshold;
+    else
+      count = 0.0;
+  }
+
+  int _calculate( const coeffs_t& c, action_state_t* s )
+  {
+    auto raw = c.scale * c.scale_mul / std::pow( as<double>( c.dot_list->size() ), c.dot_exp );
+    auto val = player->rng().range( 0.0, raw * rng_mult );
+
+    count += val;
+
+    auto result = count >= threshold;
 
     if ( player->sim->debug )
-      player->sim->print_debug( "{} RNG: count={} scale={} chance={:.5f}%", name(), count, scale, chance * 100.0 );
+    {
+      player->sim->print_debug(
+        "{} from {}: scale={} scale_mul={} num_dots={} dot_exp={} raw={} value={} count={} result={}",
+        name(), *s->action, c.scale, c.scale_mul, c.dot_list->size(), c.dot_exp, raw, val, count, result );
+    }
 
     if ( result )
+    {
+      if ( c.action )
+        c.action->execute_on_target( s->target );
+
       reset( reset_type_e::COMBAT );
+    }
 
     return result;
+  }
+
+  int trigger( action_state_t* s ) override
+  {
+    switch ( s->action->id )
+    {
+      case 1079:  return _calculate( c_rip, s );            // rip
+      case 155722: return _calculate( c_rake, s );           // rake
+      case 48438:  return _calculate( c_wild_growth, s );    // wild growth
+      case 8936:   return _calculate( c_regrowth, s );     // regrowth
+      case 81269:  return _calculate( c_efflorescence, s );  // efflorescence
+      default:     return 0;
+    }
   }
 };
 
@@ -2532,55 +2595,24 @@ template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 protected:
-  bloodseeker_vine_rng_t vine_rng;
-  double vine_scale = 0.0;
-  double vine_bonus = 0.0;
-  double aoe_scale;
-  unsigned vine_shift = 0;
+  thriving_growth_rng_t* _rng = nullptr;
 
   using base_t = trigger_thriving_growth_t<BASE>;
 
 public:
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), vine_rng( "bloodseeker_vine", p )
+    : BASE( n, p, s, f )
   {
-    if ( p->is_ptr() )
-      aoe_scale = p->talent.thriving_growth->effectN( 7 ).percent() * 0.5;
-    else
-      aoe_scale = 0.375;
-
-    if ( p->sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
-      vine_bonus = p->options.ws_tww3_2pc_bonus;  // TODO: wild ass guess, results in ~36.6% more executes
+    if ( p->talent.thriving_growth.ok() )
+      _rng = p->get_rng<thriving_growth_rng_t>( "thriving_growth" );
   }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( !vine_scale )
-      return;
-
-    size_t extra = 0;
-    size_t total_dots = 0;
-    size_t num_rake = BASE::p()->dot_lists.rake.size();
-    size_t num_rip = BASE::p()->dot_lists.rip.size();
-
-    if ( num_rake > 1 )
-    {
-      extra += num_rake - 1;
-      total_dots += num_rake;
-    }
-
-    if ( num_rip > 1 )
-    {
-      extra += num_rip - 1;
-      total_dots += num_rip;
-    }
-
-    double mult = !total_dots ? 1.0 : 1.0 / total_dots;
-
-    if ( vine_rng.trigger( vine_scale + aoe_scale * extra, vine_shift, vine_bonus, mult ) )
-      BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
+    if ( _rng )
+      _rng->trigger( d->state );
   }
 };
 
@@ -3814,14 +3846,9 @@ struct druid_form_t : public druid_spell_t
 {
   buff_t* form_buff = nullptr;
   buff_t* lycara_buff = nullptr;
-  timespan_t meditation_dur;  // TODO: remove in 11.2
-  timespan_t meditation_required;  // TODO: remove in 11.2
   form_e form = NO_FORM;
 
-  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : druid_spell_t( n, p, s, f ),
-      meditation_dur( p->talent.lycaras_meditation->effectN( 1 ).time_value() ),
-      meditation_required( p->talent.lycaras_meditation->effectN( 2 ).time_value() )
+  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
     harmful = reset_melee_swing = false;
     ignore_false_positive = true;
@@ -3877,33 +3904,11 @@ struct druid_form_t : public druid_spell_t
     if ( old_form == form )
       return;
 
-    auto old_buff = get_form_buff( old_form );
-    if ( old_buff )
+    if ( auto old_buff = get_form_buff( old_form ) )
       old_buff->expire();
 
-    if ( p()->talent.lycaras_teachings.ok() )
-    {
-      // TODO: confirm meditation required scales with spell haste
-      if ( old_buff && meditation_dur > 0_ms &&
-           ( sim->current_time() == 0_ms ||
-             old_buff->elapsed( sim->current_time() ) >= meditation_required * p()->cache.spell_haste() ) )
-      {
-        // remove old lycaras meditation
-        if ( p()->lycaras_meditation_buff )
-        {
-          p()->lycaras_meditation_buff->expire();
-          p()->lycaras_meditation_buff = nullptr;
-        }
-
-        // apply new lycaras meditation
-        p()->lycaras_meditation_buff = get_lycara_buff( old_form );
-        p()->lycaras_meditation_buff->trigger( meditation_dur );
-      }
-      else
-      {
-        get_lycara_buff( old_form )->expire();
-      }
-    }
+    if ( lycara_buff )
+      get_lycara_buff( old_form )->expire();
 
     p()->form = form;
 
@@ -5149,7 +5154,6 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
 
       dot_name = "rake";
       dot_list = &p->dot_lists.rake;
-      vine_scale = p->talent.thriving_growth->effectN( 2 ).percent();
     }
   };
 
@@ -5257,8 +5261,6 @@ struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<trigger_wan
   {
     dot_name = "rip";
     dot_list = &p->dot_lists.rip;
-    vine_scale = p->talent.thriving_growth->effectN( 1 ).percent();
-    vine_shift = 1;
 
     if ( p->talent.rip_and_tear.ok() )
     {
@@ -6640,14 +6642,14 @@ struct nourish_t final : public druid_heal_t
 };
 
 // Regrowth =================================================================
-struct regrowth_t final : public druid_heal_t
+struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_heal_t>>
 {
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
   bool is_direct = false;
 
-  DRUID_ABILITY( regrowth_t, druid_heal_t, "regrowth", p->find_class_spell( "Regrowth" ) ),
+  DRUID_ABILITY( regrowth_t, base_t, "regrowth", p->find_class_spell( "Regrowth" ) ),
     gcd_add( find_effect( p->spec.cat_form_passive, this, A_ADD_FLAT_MODIFIER, P_GCD ).time_value() ),
     bonus_crit( p->talent.improved_regrowth->effectN( 1 ).percent() ),
     sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
@@ -6655,6 +6657,7 @@ struct regrowth_t final : public druid_heal_t
     form_mask = NO_FORM | MOONKIN_FORM;
 
     affected_by.soul_of_the_forest = true;
+    dot_list = &p->dot_lists.regrowth;
 
     if ( !p->buff.dream_of_cenarius->is_fallback )
     {
@@ -6668,7 +6671,7 @@ struct regrowth_t final : public druid_heal_t
 
   timespan_t gcd() const override
   {
-    timespan_t g = druid_heal_t::gcd();
+    timespan_t g = base_t::gcd();
 
     if ( p()->form == CAT_FORM )
       g += gcd_add;
@@ -6681,12 +6684,12 @@ struct regrowth_t final : public druid_heal_t
     if ( p()->buff.incarnation_tree->check() )
       return 0_ms;
 
-    return druid_heal_t::execute_time();
+    return base_t::execute_time();
   }
 
   double composite_target_crit_chance( player_t* t ) const override
   {
-    double tcc = druid_heal_t::composite_target_crit_chance( t );
+    double tcc = base_t::composite_target_crit_chance( t );
 
     if ( is_direct && td( t )->hots.regrowth->is_ticking() )
       tcc += bonus_crit;
@@ -6696,7 +6699,7 @@ struct regrowth_t final : public druid_heal_t
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double ctm = druid_heal_t::composite_target_multiplier( t );
+    double ctm = base_t::composite_target_multiplier( t );
 
     if ( t == player && p()->talent.harmonious_constitution.ok() )
     {
@@ -6712,7 +6715,7 @@ struct regrowth_t final : public druid_heal_t
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    auto pm = druid_heal_t::composite_persistent_multiplier( s );
+    auto pm = base_t::composite_persistent_multiplier( s );
 
     if ( p()->buff.soul_of_the_forest_tree->check() )
       pm *= 1.0 + sotf_mul;
@@ -6722,7 +6725,7 @@ struct regrowth_t final : public druid_heal_t
 
   timespan_t dot_duration_flat_modifier( const action_state_t* s ) const override
   {
-    auto mod = druid_heal_t::dot_duration_flat_modifier( s );
+    auto mod = base_t::dot_duration_flat_modifier( s );
 
     if ( s->target == player )
       mod += p()->talent.lingering_healing->effectN( 2 ).time_value();
@@ -6735,13 +6738,13 @@ struct regrowth_t final : public druid_heal_t
     if ( p()->buff.predatory_swiftness->check() || p()->buff.dream_of_cenarius->check() )
       return true;
 
-    return druid_heal_t::check_form_restriction();
+    return base_t::check_form_restriction();
   }
 
   void execute() override
   {
     is_direct = true;
-    druid_heal_t::execute();
+    base_t::execute();
     is_direct = false;
 
     p()->buff.forestwalk->trigger( this );
@@ -6754,7 +6757,7 @@ struct regrowth_t final : public druid_heal_t
 
   void last_tick( dot_t* d ) override
   {
-    druid_heal_t::last_tick( d );
+    base_t::last_tick( d );
 
     if ( d->target == p() )
       p()->buff.protective_growth->expire();
@@ -7449,88 +7452,6 @@ public:
     {
       BASE::execute();
     }
-  }
-};
-
-template <typename BASE>
-struct consume_dryads_favor_t : public BASE
-{
-  struct dryads_favor_data_t
-  {
-    bool consumed = false;
-  };
-
-  struct dryads_favor_t final : public druid_residual_action_t<druid_spell_t>
-  {
-    dryads_favor_t( druid_t* p ) : base_t( "dryads_favor", p, p->find_spell( 1236851 ) )
-    {
-      background = proc = true;
-      aoe = -1;
-
-      // tooltip goes off buff spell data (1236807) but actual in-game goes off unused aura spell (1252024)
-      auto splash_data = p->bugs ? p->find_spell( 1252024 ) : &p->buff.dryads_favor->data();
-      residual_mul = splash_data->effectN( p->specialization() == DRUID_RESTORATION ? 3 : 2 ).percent();
-      reduced_aoe_targets = splash_data->effectN( 4 ).base_value();
-
-      p->active.dryad_tww3->add_child( this );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      return splash_target_list();
-    }
-  };
-
-protected:
-  using base_t = consume_dryads_favor_t<BASE>;
-  using state_t = druid_action_state_t<dryads_favor_data_t>;
-
-public:
-  dryads_favor_t* splash = nullptr;
-
-  consume_dryads_favor_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f )
-  {
-    if ( p->sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B4 ) )
-      splash = p->get_secondary_action<dryads_favor_t>( "dryads_favor" );
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    return BASE::bonus_da( s ) + BASE::p()->buff.dryads_favor->check_value();
-  }
-
-  action_state_t* new_state() override
-  { return new state_t( this, BASE::target ); }
-
-  state_t* cast_state( action_state_t* s )
-  { return static_cast<state_t*>( s ); }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  { return static_cast<const state_t*>( s ); }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    BASE::snapshot_state( s, rt );
-
-    if ( BASE::p()->buff.dryads_favor->check() && BASE::p()->buff.dryads_favor->can_expire( this ) )
-      cast_state( s )->consumed = true;
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( cast_state( BASE::execute_state )->consumed )
-      BASE::p()->buff.dryads_favor->decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( cast_state( s )->consumed && splash && splash->splash_target_list( s->target ).empty() )
-      splash->execute_on_target( s->target, s->result_amount );
   }
 };
 
@@ -8789,9 +8710,8 @@ struct starfall_t final : public ap_spender_t
   timespan_t dot_ext = 0_ms;
   timespan_t max_ext = 0_ms;
 
-  DRUID_ABILITY_C( starfall_t, base_t, "starfall", p->spec.starfall, const spell_data_t* damage_spell = nullptr,
-                   buff_t* b = nullptr ),
-    buff( b ? b : p->buff.starfall ),
+  DRUID_ABILITY_C( starfall_t, base_t, "starfall", p->spec.starfall, const spell_data_t* damage_spell = nullptr ),
+    buff( p->buff.starfall ),
     dot_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 1 ).base_value() ) ),
     max_ext( timespan_t::from_seconds( p->talent.aetherial_kindling->effectN( 2 ).base_value() ) )
   {
@@ -9104,46 +9024,8 @@ struct starsurge_base_t : public ap_spender_t
   }
 };
 
-struct starsurge_t final : public consume_dryads_favor_t<starsurge_base_t>
-{
-  DRUID_ABILITY( starsurge_t, base_t, "starsurge", p->talent.starsurge ) {}
-
-  void init() override
-  {
-    base_t::init();
-
-    if ( is_precombat )
-    {
-      moonkin_form_in_precombat = range::any_of( p()->precombat_action_list, []( action_t* a ) {
-        return util::str_compare_ci( a->name(), "moonkin_form" );
-      } );
-
-      // hardcode travel time to 100ms
-      travel_speed = 0.0;
-      min_travel_time = 0.1;
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !is_precombat )
-      return base_t::ready();
-
-    // in precombat, so hijack standard ready() procedure
-    // emulate performing check_form_restriction()
-    if ( !moonkin_form_in_precombat )
-      return false;
-
-    // emulate performing resource_available( current_resource(), cost() )
-    if ( !p()->talent.natures_balance.ok() && p()->options.initial_astral_power < cost() )
-      return false;
-
-    return true;
-  }
-};
-
 template <typename BASE>
-struct starsurge_tww3_t final : public BASE
+struct starsurge_ec_tww3_t final : public BASE
 {
   struct starsurge_splash_t final : public druid_residual_action_t<druid_spell_t>
   {
@@ -9175,7 +9057,7 @@ struct starsurge_tww3_t final : public BASE
   starsurge_splash_t* splash = nullptr;
   double chance = 0.0;
 
-  starsurge_tww3_t( druid_t* p, const spell_data_t* s ) : BASE( "starsurge_tww3", p, s, flag_e::TWW3SET )
+  starsurge_ec_tww3_t( druid_t* p, const spell_data_t* s ) : BASE( "starsurge_tww3", p, s, flag_e::TWW3SET )
   {
     BASE::proc = true;
     BASE::name_str_reporting = "TWW3 Set";
@@ -9220,6 +9102,126 @@ struct starsurge_tww3_t final : public BASE
 
     if ( splash && !splash->splash_target_list( s->target ).empty() )
       splash->execute_on_target( s->target, s->result_amount );
+  }
+};
+
+struct starsurge_kotg_tww3_t final : public starsurge_base_t
+{
+  struct dryads_favor_t final : public druid_residual_action_t<druid_spell_t>
+  {
+    dryads_favor_t( druid_t* p ) : base_t( "dryads_favor", p, p->find_spell( 1236851 ) )
+    {
+      background = proc = true;
+      aoe = -1;
+
+      // tooltip goes off buff spell data (1236807) but actual in-game goes off unused aura spell (1252024)
+      auto splash_data = p->bugs ? p->find_spell( 1252024 ) : &p->buff.dryads_favor->data();
+      residual_mul = splash_data->effectN( 2 ).percent();
+      reduced_aoe_targets = splash_data->effectN( 4 ).base_value();
+
+      if ( p->active.dryad_tww3 )
+        p->active.dryad_tww3->add_child( this );
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      return splash_target_list();
+    }
+  };
+
+  dryads_favor_t* splash = nullptr;
+
+  starsurge_kotg_tww3_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f )
+    : starsurge_base_t( n, p, s, f )
+  {
+    name_str_reporting = "Dryad's Favor";
+
+    if ( p->sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B4 ) )
+      splash = p->get_secondary_action<dryads_favor_t>( "dryads_favor" );
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    return starsurge_base_t::bonus_da( s ) + p()->buff.dryads_favor->check_value();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    starsurge_base_t::impact( s );
+
+    if ( splash && !splash->splash_target_list( s->target ).empty() )
+      splash->execute_on_target( s->target, s->result_amount );
+  }
+};
+
+struct starsurge_t final : public starsurge_base_t
+{
+  starsurge_kotg_tww3_t* starsurge_dryad = nullptr;
+
+  DRUID_ABILITY( starsurge_t, starsurge_base_t, "starsurge", p->talent.starsurge )
+  {
+    if ( !p->buff.dryads_favor->is_fallback )
+    {
+      auto suf = get_suffix( name_str, "starsurge" );
+      starsurge_dryad = p->get_secondary_action<starsurge_kotg_tww3_t>( "starsurge_dryad_" + suf, &data(), f );
+      add_child( starsurge_dryad );
+    }
+  }
+
+  void init() override
+  {
+    starsurge_base_t::init();
+
+    if ( is_precombat )
+    {
+      moonkin_form_in_precombat = range::any_of( p()->precombat_action_list, []( action_t* a ) {
+        return util::str_compare_ci( a->name(), "moonkin_form" );
+      } );
+
+      // hardcode travel time to 100ms
+      travel_speed = 0.0;
+      min_travel_time = 0.1;
+    }
+
+    // copy characteristic to dryad's favor version, specifically for convoke as get_convoke_action will set variables
+    // post construction.
+    if ( starsurge_dryad )
+    {
+      starsurge_dryad->gain = gain;
+      starsurge_dryad->proc = proc;
+      starsurge_dryad->trigger_gcd = trigger_gcd;
+      starsurge_dryad->action_flags |= action_flags;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !is_precombat )
+      return starsurge_base_t::ready();
+
+    // in precombat, so hijack standard ready() procedure
+    // emulate performing check_form_restriction()
+    if ( !moonkin_form_in_precombat )
+      return false;
+
+    // emulate performing resource_available( current_resource(), cost() )
+    if ( !p()->talent.natures_balance.ok() && p()->options.initial_astral_power < cost() )
+      return false;
+
+    return true;
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.dryads_favor->check() && p()->buff.dryads_favor->can_expire( this ) )
+    {
+      p()->last_foreground_action = starsurge_dryad;
+      starsurge_dryad->execute_on_target( target );
+      p()->buff.dryads_favor->decrement();
+      return;
+    }
+
+    starsurge_base_t::execute();
   }
 };
 
@@ -10229,31 +10231,44 @@ struct stacked_deck_t : public action_t
 
 namespace pets
 {
+void dryad_t::arise()
+{
+  pet_t::arise();
+
+  starsurge_count = 0;
+
+  auto one = static_cast<spells::starfall_t*>( o()->active.dryad_tww3_starfall_1 );
+  auto two = static_cast<spells::starfall_t*>( o()->active.dryad_tww3_Starfall_2 );
+
+  assert( !one->buff || !two->buff );
+
+  if ( !one->buff )
+  {
+    starfall_action = one;
+    one->buff = starfall_buff;
+    one->execute();
+  }
+  else if ( !two->buff )
+  {
+    starfall_action = two;
+    two->buff = starfall_buff;
+    two->execute();
+  }
+}
+
+void dryad_t::demise()
+{
+  pet_t::demise();
+
+  static_cast<spells::starfall_t*>( starfall_action )->buff = nullptr;
+}
+
 void dryad_t::create_buffs()
 {
   pet_t::create_buffs();
 
   starfall_buff = make_buff( actor_pair_t( this, owner ), "starfall", find_spell( 1236607 ) )
     ->set_freeze_stacks( true );
-}
-
-void dryad_t::create_actions()
-{
-  pet_t::create_actions();
-
-  auto a = new spells::starfall_t( o(), "dryad_starfall", find_spell( 1236607 ), flag_e::NONE, find_spell( 1236613 ),
-                                   starfall_buff );
-  a->background = a->proc = true;
-  a->hail_dur = 0_ms;
-  a->name_str_reporting = "starfall";
-
-  // manually init since this is created on the owner during runtime
-  a->init();
-  a->driver->init();
-  a->driver->damage->init();
-
-  o()->active.dryad_tww3->add_child( a );
-  starfall = a;
 }
 
 action_t* dryad_t::create_action( std::string_view n, std::string_view opt )
@@ -10362,6 +10377,10 @@ struct druid_melee_t : public Base
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
+
+    // TODO: remove if ever fixed
+    if ( ab::p()->buff.dryads_favor->data().proc_flags() & PF_MELEE )
+      ab::p()->buff.dryads_favor->decrement();
 
     if ( ab::result_is_hit( s->result ) )
     {
@@ -10868,7 +10887,6 @@ void druid_t::init_spells()
   talent.lingering_healing              = CT( "Lingering Healing" );
   talent.lore_of_the_grove              = CT( "Lore of the Grove" );
   talent.lycaras_inspiration            = CT( "Lycara's Inspiration" );
-  talent.lycaras_meditation             = CT( "Lycara's Meditation" );  // TODO: remove in 11.2
   talent.lycaras_teachings              = CT( "Lycara's Teachings" );
   talent.maim                           = CT( "Maim" );
   talent.mass_entanglement              = CT( "Mass Entanglement" );
@@ -12180,7 +12198,8 @@ void druid_t::create_buffs()
   buff.dryad = make_fallback( kotg_tww3_2pc->ok(), this, "dryad", find_trigger( kotg_tww3_2pc ).trigger() )
     ->set_default_value( 0.0 )
     ->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      buff.dryads_favor->trigger( -1, b->current_value );
+      auto cap = cache.intellect() * options.dryads_favor_cap_multiplier;
+      buff.dryads_favor->trigger( -1, std::min( b->current_value, cap ) );
     } );
 
   buff.dryads_favor = make_fallback( sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B4 ),
@@ -12476,11 +12495,35 @@ void druid_t::create_actions()
       if ( sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B2 ) )
       {
         active.starsurge_tww3 =
-          get_secondary_action<starsurge_tww3_t<starsurge_base_t>>( "starsurge_tww3", find_spell( 78674 ) );
+          get_secondary_action<starsurge_ec_tww3_t<starsurge_base_t>>( "starsurge_tww3", find_spell( 78674 ) );
       }
       if ( sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B2 ) )
       {
         active.dryad_tww3 = get_secondary_action<dryad_tww3_t>( "dryad" );
+
+        // do not use get_secondary_action so we can create two actions with the same name to use the same stat obj
+        auto one = new starfall_t( this, "dryad_starfall", find_spell( 1236607 ), flag_e::NONE, find_spell( 1236613 ) );
+        one->background = one->proc = true;
+        one->buff = nullptr;
+        one->hail_dur = 0_ms;
+        one->name_str_reporting = "starfall";
+
+        auto two = new starfall_t( this, "dryad_starfall", find_spell( 1236607 ), flag_e::NONE, find_spell( 1236613 ) );
+        two->background = two->proc = true;
+        two->buff = nullptr;
+        two->hail_dur = 0_ms;
+        two->name_str_reporting = "starfall";
+
+/*        one->replace_stats( two );
+        two->driver->stats = one->stats;
+        two->driver->damage->stats = one->stats;
+        range::erase_remove( one->stats->action_list, two->driver->damage );
+        one->stats->action_list.push_back( two->driver->damage );*/
+
+        active.dryad_tww3->add_child( one );
+
+        active.dryad_tww3_starfall_1 = one;
+        active.dryad_tww3_Starfall_2 = two;
       }
       break;
 
@@ -12491,7 +12534,7 @@ void druid_t::create_actions()
       if ( sets->has_set_bonus( HERO_ELUNES_CHOSEN, TWW3, B2 ) )
       {
         active.starsurge_tww3 =
-          get_secondary_action<starsurge_tww3_t<starsurge_offspec_t>>( "starsurge_tww3", find_spell( 197626 ) );
+          get_secondary_action<starsurge_ec_tww3_t<starsurge_offspec_t>>( "starsurge_tww3", find_spell( 197626 ) );
       }
       break;
 
@@ -12737,12 +12780,15 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_DUNGEON_SLICE && !sim->allow_experimental_specializations )
+#ifdef NDEBUG
+      if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice_for_balance )
       {
-        sim->error( "DungeonSlice is disabled for Balance Druids. To force enable, use allow_experimental_specializations=1 option." );
+        sim->error( error_level_e::SEVERE,
+                    "DungeonSlice is disabled for Balance Druids. To force enable, use "
+                    "druid.enable_dungeon_slice_for_balance=1 option." );
         sim->cancel();
       }
-
+#endif
       if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
         return false;
 
@@ -12765,26 +12811,6 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
 bool druid_t::validate_actor()
 {
-  if ( talent.thriving_growth.ok() )
-  {
-    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
-         sim->desired_targets > 1 )
-    {
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-      sim->error( "!! The effect of multiple targets on Bloodseeker Vines is unknown.    !!" );
-      sim->error( "!! Results will be incorrect.                                         !!" );
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-    }
-
-    if ( sets->has_set_bonus( HERO_WILDSTALKER, TWW3, B2 ) )
-    {
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-      sim->error( "!! The effect of 11.2 Wildstalker 2-piece set bonus is unknown.       !!" );
-      sim->error( "!! Results will be incorrect.                                         !!" );
-      sim->error( "****** UNRELIABLE SIM ****** UNRELIABLE SIM ****** UNRELIABLE SIM ******" );
-    }
-  }
-
   return true;
 }
 
@@ -13381,21 +13407,19 @@ void druid_t::init_special_effects()
           mul( s->effectN( p->specialization() == DRUID_BALANCE ? 4 : 3 ).percent() )
       {}
 
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        // heal NYI
+        if ( s->result_amount && ( s->result_type == result_amount_type::DMG_DIRECT ||
+                                   s->result_type == result_amount_type::DMG_OVER_TIME ) )
+        {
+          druid_cb_t::trigger( a, s );
+        }
+      }
+
       void execute( action_t*, action_state_t* s ) override
       {
-        auto amount =
-          s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME
-            ? s->result_total
-            : s->result_amount;
-
-        if ( amount )
-        {
-          p()->buff.dryad->current_value += amount * mul;
-
-          auto cap = p()->cache.intellect() * 25.0;  // not in spell data, per blue post
-          if ( p()->buff.dryad->current_value > cap )
-            p()->buff.dryad->current_value = cap;
-        }
+        p()->buff.dryad->current_value += s->result_amount * mul;
       }
     };
 
@@ -13542,7 +13566,6 @@ void druid_t::reset()
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
-  lycaras_meditation_buff = nullptr;  // TODO: remove in 11.2
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.rake.clear();
@@ -14186,6 +14209,8 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
+  add_option( opt_float( "druid.dryads_favor_cap_multiplier", options.dryads_favor_cap_multiplier ) );
+  add_option( opt_bool( "druid.enable_dungeon_slice_for_balance", options.enable_dungeon_slice_for_balance ) );
 
   // Feral
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
@@ -14194,7 +14219,6 @@ void druid_t::create_options()
   add_option( opt_uint( "druid.adaptive_swarm_melee_targets", options.adaptive_swarm_melee_targets, 1U, 29U ) );
   add_option( opt_uint( "druid.adaptive_swarm_ranged_targets", options.adaptive_swarm_ranged_targets, 1U, 29U ) );
   add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
-  add_option( opt_float( "druid.ws_tww3_2pc_bonus", options.ws_tww3_2pc_bonus ) );
 
   // Guardian
 
@@ -14398,13 +14422,13 @@ inline buff_t* druid_td_t::make_debuff( bool b, Args&&... args )
   return buff_t::make_buff_fallback<Buff>( target->is_enemy() && b, std::forward<Args>( args )... );
 }
 
-struct bloodseeker_vines_debuff_t : public buff_t
+struct bloodseeker_vines_debuff_t : public buffs::druid_buff_t
 {
   druid_td_t* target_data;
   bool initial_twin_sprouts = false;
 
   bloodseeker_vines_debuff_t( druid_td_t& td, druid_t* p )
-    : buff_t( td, "bloodseeker_vines", p->spec.bloodseeker_vines ), target_data( &td )
+    : buffs::druid_buff_t( td, "bloodseeker_vines", p->spec.bloodseeker_vines ), target_data( &td )
   {
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
     apply_affecting_aura( p->talent.resilient_flourishing );
@@ -14413,8 +14437,10 @@ struct bloodseeker_vines_debuff_t : public buff_t
     // show root network expiring first, but bursting growth damage is calculated before buff expiration.
     if ( p->talent.bursting_growth.ok() )
     {
-      add_stack_change_callback( [ p = p ]( buff_t* b, int old_, int new_ ) {
-        if ( new_ < old_ )
+      add_stack_change_callback( [ p = p ]( buff_t* b, int, int new_ ) {
+        // NOTE: we only account for the expiration burst here, which doesn't benefit from vine-debuff multipliers.
+        // burst from scripted "expiration" which doesn't fully expire the actual dot is handled in decrement()
+        if ( !new_ )
           p->active.bursting_growth->execute_on_target( b->player );
       } );
     }
@@ -14436,13 +14462,21 @@ struct bloodseeker_vines_debuff_t : public buff_t
   {
     initial_twin_sprouts = s == 2 && !check();
 
-    buff_t::start( s, v, d );
+    buffs::druid_buff_t::start( s, v, d );
   }
 
-  // if the initial dot is doubled via twin sprouts, only one is decremented after 6s. it's possible to have remaining
-  // stacks upon dot expiration so handle this by completely removing all stacks if the dot is no longer ticking.
   void decrement( int s, double v ) override
   {
+    // if this is not a real expiration but scripted decrement, burst happens before the decrement gaining bonuses of
+    // the pre-decrement number of stacks
+    if ( current_stack - s > 0 )
+    {
+      if ( p()->active.bursting_growth )
+        p()->active.bursting_growth->execute_on_target( player );
+    }
+
+    // if the initial dot is doubled via twin sprouts, only one is decremented after 6s. it's possible to have remaining
+    // stacks upon dot expiration so handle this by completely removing all stacks if the dot is no longer ticking.
     if ( !target_data->dots.bloodseeker_vines->is_ticking() )
     {
       s = current_stack;
@@ -14453,7 +14487,7 @@ struct bloodseeker_vines_debuff_t : public buff_t
       initial_twin_sprouts = false;
     }
 
-    buff_t::decrement( s, v );
+    buffs::druid_buff_t::decrement( s, v );
   }
 };
 

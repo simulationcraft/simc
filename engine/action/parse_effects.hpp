@@ -968,9 +968,33 @@ public:
     }
   }
 
+  template <typename U>
+  void remove_damage_entries( std::vector<U>& vec, std::string_view vec_name )
+  {
+    for ( const auto& data : vec )
+    {
+      BASE::sim->print_debug( "action-effects: non-damage action {} ({}) removing {} entry from {} ({}#{})",
+                              BASE::name(), BASE::id, vec_name, data.eff->spell()->name_cstr(), data.eff->spell_id(),
+                              data.eff->index() );
+    }
+
+    vec.clear();
+  }
+
   void init_finished() override
   {
     BASE::init_finished();
+
+    // We do this in action_t::init_finished() instead of at parsing so that we can account for any damage values set in
+    // the final derived constructor.
+    if ( !BASE::does_direct_damage() && !BASE::does_periodic_damage() )
+    {
+      remove_damage_entries( ta_multiplier_effects, "tick damage" );
+      remove_damage_entries( da_multiplier_effects, "direct damage" );
+      remove_damage_entries( crit_bonus_effects, "crit bonus multiplier" );
+      remove_damage_entries( target_multiplier_effects, "damage to target" );
+    }
+
     initialize_cooldown_buffs();
   }
 

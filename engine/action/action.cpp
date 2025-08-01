@@ -609,6 +609,19 @@ bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
   return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
 
+bool action_t::does_direct_damage() const
+{
+  return has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
+         attack_power_mod.direct > 0 || weapon_multiplier > 0;
+}
+
+bool action_t::does_periodic_damage() const
+{
+  return has_periodic_damage_effect( data() ) ||
+         ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
+           dot_duration > 0_ms );
+}
+
 /**
  * Parse spell data values and write them into corresponding action_t members.
  */
@@ -2682,15 +2695,12 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( has_periodic_damage_effect( data() ) ||
-       ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
-         dot_duration > 0_ms ) )
+  if ( does_periodic_damage() )
   {
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
-  if ( has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
-       attack_power_mod.direct > 0 || weapon_multiplier > 0 )
+  if ( does_direct_damage() )
   {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
