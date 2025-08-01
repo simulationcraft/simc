@@ -7398,11 +7398,10 @@ struct coup_de_grace_t : public rogue_attack_t
     {
       double m = rogue_attack_t::composite_da_multiplier( state );
 
-      // 2025-07-14 -- TOCHECK: 4pc damage bonus applies to the first Coup de Grace instead of the second
-      //               Also does not apply to Shadowed Finishers
-      if ( p()->set_bonuses.tww3_trickster_4pc->ok() && p()->buffs.tww3_trickster_4pc->check() )
+      // 2025-07-31 -- TOCHECK: 4pc damage bonus does not apply to Shadowed Finishers
+      if ( p()->set_bonuses.tww3_trickster_4pc->ok() && !p()->buffs.tww3_trickster_4pc->check() )
       {
-        m *= p()->buffs.tww3_trickster_4pc->value();
+        m *= p()->buffs.tww3_trickster_4pc->default_value;
       }
 
       return m;
