@@ -2567,9 +2567,9 @@ Hotfixed         : Sub Type (4 -> 218), Base Value (0 -> -10), Misc Value 2 (0 -
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0 | Misc Value: 23 | Misc Value 2: 4891 (Label) | Target: Self (1)
                    Affected Spells (Label): Frostfire Empowerment (431177)
 #24 (id=1262474) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 3210 (Label) | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 3210 (Label) | Target: Self (1)
                    Affected Spells (Label): Excess Frost (438600)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Base Value (-50 -> 50)
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -12561,8 +12561,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1131310)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 200)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 150)
 #2 (id=1131311)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Consuming Excess Fire causes your next $?c2[Phoenix Flames]?c3[Flurry][] to also cast Ice Nova at $s1% effectiveness. Ice Novas cast this way do not freeze enemies in place.

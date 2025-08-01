@@ -557,6 +557,9 @@ struct druid_t final : public parse_player_effects_t
     std::vector<dot_t*> rip;
     std::vector<dot_t*> thrash_bear;
     std::vector<dot_t*> dreadful_wound;
+    std::vector<dot_t*> wild_growth;
+    std::vector<dot_t*> regrowth;
+    std::vector<dot_t*> efflorescence;
   } dot_lists;
   // !!!==========================================================================!!!
 
@@ -575,7 +578,8 @@ struct druid_t final : public parse_player_effects_t
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     int initial_orbit_breaker_stacks = -1;
-    double dryads_favor_cap_multiplier = 25.0;
+    double dryads_favor_cap_multiplier = 6.0;
+    bool enable_dungeon_slice_for_balance = false;
 
     // Feral
     double adaptive_swarm_jump_distance_melee = 5.0;
@@ -2491,31 +2495,54 @@ struct ravage_base_t : public BASE
 
 // community testing (~257k ticks) memorial
 // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-struct bloodseeker_vines_rng_t : public proc_rng_t
+struct thriving_growth_rng_t : public proc_rng_t
 {
   static constexpr rng_type_e rng_type = RNG_CUSTOM;
   static constexpr double threshold = 1000.0;
+  static constexpr double rng_mult = 2.0;
 
-  double count = 0.0;
-  double dot_exp = 0.62;
-  double scale_mul = 1.0;
-
-  bloodseeker_vines_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p )
+  struct coeffs_t
   {
-    if ( !p->is_ptr() ) return;
-    if ( p->specialization() == DRUID_RESTORATION )
-    {
-      dot_exp = static_cast<druid_t*>( p )->talent.thriving_growth->effectN( 7 ).percent();
-      scale_mul = 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 4 ).percent();
-    }
-    else
-    {
-      dot_exp = static_cast<druid_t*>( p )->talent.thriving_growth->effectN( 6 ).percent();
-      scale_mul = 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 1 ).percent();
-    }
-  }
+    std::vector<dot_t*>* dot_list = nullptr;
+    action_t* action = nullptr;
+    double scale = 0.0;
+    double scale_mul = 1.0;
+    double dot_exp = 1.0;
+  };
 
-  int trigger( action_state_t* ) override { return 0; }
+  coeffs_t c_rip;
+  coeffs_t c_rake;
+  coeffs_t c_wild_growth;
+  coeffs_t c_regrowth;
+  coeffs_t c_efflorescence;
+  druid_t*p;
+  double count = 0.0;
+
+  thriving_growth_rng_t( std::string_view n, player_t* p_ )
+    : proc_rng_t( rng_type, n, p_ ), p( static_cast<druid_t*>( p_ ) )
+  {
+    auto vine_mul  = p->specialization() == DRUID_FERAL
+                       ? 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 1 ).percent()
+                       : 1.0;
+    auto bloom_mul = p->specialization() == DRUID_RESTORATION
+                       ? 1.0 + p->sets->set( HERO_WILDSTALKER, TWW3, B2 )->effectN( 4 ).percent()
+                       : 1.0;
+
+    auto vine_exp  = p->is_ptr() ? p->talent.thriving_growth->effectN( 6 ).percent() : 0.75;
+    auto bloom_exp = p->is_ptr() ? p->talent.thriving_growth->effectN( 7 ).percent() : 0.75;
+
+    c_rip  = { &p->dot_lists.rip, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 1 ).base_value(),
+               vine_mul, vine_exp };
+    c_rake = { &p->dot_lists.rake, p->active.bloodseeker_vines, p->talent.thriving_growth->effectN( 2 ).base_value(),
+               vine_mul, vine_exp };
+
+    c_wild_growth   = { &p->dot_lists.wild_growth, nullptr, p->talent.thriving_growth->effectN( 3 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_regrowth      = { &p->dot_lists.regrowth, nullptr, p->talent.thriving_growth->effectN( 4 ).base_value(),
+                        bloom_mul, bloom_exp };
+    c_efflorescence = { &p->dot_lists.efflorescence, nullptr, p->talent.thriving_growth->effectN( 5 ).base_value(),
+                        bloom_mul, bloom_exp };
+  }
 
   void reset( reset_type_e r_type ) override
   {
@@ -2525,24 +2552,44 @@ struct bloodseeker_vines_rng_t : public proc_rng_t
       count = 0.0;
   }
 
-  bool trigger( double scale, double num_dots )
+  int _calculate( const coeffs_t& c, action_state_t* s )
   {
-    auto raw = scale * scale_mul / std::pow( num_dots, dot_exp );
-    auto val = player->rng().range( 0.0, raw * 2.0 );
+    auto raw = c.scale * c.scale_mul / std::pow( as<double>( c.dot_list->size() ), c.dot_exp );
+    auto val = player->rng().range( 0.0, raw * rng_mult );
+
     count += val;
 
-    bool result = count >= threshold;
+    auto result = count >= threshold;
 
     if ( player->sim->debug )
     {
-      player->sim->print_debug( "{} RNG: scale={} num_dots={} raw={} value={} count={} result={}",
-                                name(), scale, num_dots, raw, val, count, result );
+      player->sim->print_debug(
+        "{} from {}: scale={} scale_mul={} num_dots={} dot_exp={} raw={} value={} count={} result={}",
+        name(), *s->action, c.scale, c.scale_mul, c.dot_list->size(), c.dot_exp, raw, val, count, result );
     }
 
     if ( result )
+    {
+      if ( c.action )
+        c.action->execute_on_target( s->target );
+
       reset( reset_type_e::COMBAT );
+    }
 
     return result;
+  }
+
+  int trigger( action_state_t* s ) override
+  {
+    switch ( s->action->id )
+    {
+      case 1079:  return _calculate( c_rip, s );            // rip
+      case 155722: return _calculate( c_rake, s );           // rake
+      case 48438:  return _calculate( c_wild_growth, s );    // wild growth
+      case 8936:   return _calculate( c_regrowth, s );     // regrowth
+      case 81269:  return _calculate( c_efflorescence, s );  // efflorescence
+      default:     return 0;
+    }
   }
 };
 
@@ -2550,27 +2597,24 @@ template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 protected:
-  bloodseeker_vines_rng_t* vine_rng;
-  double vine_scale = 0.0;
+  thriving_growth_rng_t* _rng = nullptr;
 
   using base_t = trigger_thriving_growth_t<BASE>;
 
 public:
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f ), vine_rng( p->get_rng<bloodseeker_vines_rng_t>( "bloodseeker_vines" ) )
+    : BASE( n, p, s, f )
   {
-    static_assert( std::is_pointer_v<decltype( BASE::dot_list )> );
+    if ( p->talent.thriving_growth.ok() )
+      _rng = p->get_rng<thriving_growth_rng_t>( "thriving_growth" );
   }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( !vine_scale )
-      return;
-
-    if ( vine_rng->trigger( vine_scale, as<double>( BASE::dot_list->size() ) ) )
-      BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
+    if ( _rng )
+      _rng->trigger( d->state );
   }
 };
 
@@ -5139,7 +5183,6 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
 
       dot_name = "rake";
       dot_list = &p->dot_lists.rake;
-      vine_scale = p->talent.thriving_growth->effectN( 2 ).base_value();
     }
   };
 
@@ -5247,7 +5290,6 @@ struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<trigger_wan
   {
     dot_name = "rip";
     dot_list = &p->dot_lists.rip;
-    vine_scale = p->talent.thriving_growth->effectN( 1 ).base_value();
 
     if ( p->talent.rip_and_tear.ok() )
     {
@@ -6629,14 +6671,14 @@ struct nourish_t final : public druid_heal_t
 };
 
 // Regrowth =================================================================
-struct regrowth_t final : public druid_heal_t
+struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_heal_t>>
 {
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
   bool is_direct = false;
 
-  DRUID_ABILITY( regrowth_t, druid_heal_t, "regrowth", p->find_class_spell( "Regrowth" ) ),
+  DRUID_ABILITY( regrowth_t, base_t, "regrowth", p->find_class_spell( "Regrowth" ) ),
     gcd_add( find_effect( p->spec.cat_form_passive, this, A_ADD_FLAT_MODIFIER, P_GCD ).time_value() ),
     bonus_crit( p->talent.improved_regrowth->effectN( 1 ).percent() ),
     sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
@@ -6644,6 +6686,7 @@ struct regrowth_t final : public druid_heal_t
     form_mask = NO_FORM | MOONKIN_FORM;
 
     affected_by.soul_of_the_forest = true;
+    dot_list = &p->dot_lists.regrowth;
 
     if ( !p->buff.dream_of_cenarius->is_fallback )
     {
@@ -6657,7 +6700,7 @@ struct regrowth_t final : public druid_heal_t
 
   timespan_t gcd() const override
   {
-    timespan_t g = druid_heal_t::gcd();
+    timespan_t g = base_t::gcd();
 
     if ( p()->form == CAT_FORM )
       g += gcd_add;
@@ -6670,12 +6713,12 @@ struct regrowth_t final : public druid_heal_t
     if ( p()->buff.incarnation_tree->check() )
       return 0_ms;
 
-    return druid_heal_t::execute_time();
+    return base_t::execute_time();
   }
 
   double composite_target_crit_chance( player_t* t ) const override
   {
-    double tcc = druid_heal_t::composite_target_crit_chance( t );
+    double tcc = base_t::composite_target_crit_chance( t );
 
     if ( is_direct && td( t )->hots.regrowth->is_ticking() )
       tcc += bonus_crit;
@@ -6685,7 +6728,7 @@ struct regrowth_t final : public druid_heal_t
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double ctm = druid_heal_t::composite_target_multiplier( t );
+    double ctm = base_t::composite_target_multiplier( t );
 
     if ( t == player && p()->talent.harmonious_constitution.ok() )
     {
@@ -6701,7 +6744,7 @@ struct regrowth_t final : public druid_heal_t
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    auto pm = druid_heal_t::composite_persistent_multiplier( s );
+    auto pm = base_t::composite_persistent_multiplier( s );
 
     if ( p()->buff.soul_of_the_forest_tree->check() )
       pm *= 1.0 + sotf_mul;
@@ -6711,7 +6754,7 @@ struct regrowth_t final : public druid_heal_t
 
   timespan_t dot_duration_flat_modifier( const action_state_t* s ) const override
   {
-    auto mod = druid_heal_t::dot_duration_flat_modifier( s );
+    auto mod = base_t::dot_duration_flat_modifier( s );
 
     if ( s->target == player )
       mod += p()->talent.lingering_healing->effectN( 2 ).time_value();
@@ -6724,13 +6767,13 @@ struct regrowth_t final : public druid_heal_t
     if ( p()->buff.predatory_swiftness->check() || p()->buff.dream_of_cenarius->check() )
       return true;
 
-    return druid_heal_t::check_form_restriction();
+    return base_t::check_form_restriction();
   }
 
   void execute() override
   {
     is_direct = true;
-    druid_heal_t::execute();
+    base_t::execute();
     is_direct = false;
 
     p()->buff.forestwalk->trigger( this );
@@ -6743,7 +6786,7 @@ struct regrowth_t final : public druid_heal_t
 
   void last_tick( dot_t* d ) override
   {
-    druid_heal_t::last_tick( d );
+    base_t::last_tick( d );
 
     if ( d->target == p() )
       p()->buff.protective_growth->expire();
@@ -12763,14 +12806,15 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_DUNGEON_SLICE && !sim->allow_experimental_specializations )
+#ifdef NDEBUG
+      if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice_for_balance )
       {
         sim->error( error_level_e::SEVERE,
                     "DungeonSlice is disabled for Balance Druids. To force enable, use "
-                    "allow_experimental_specializations=1 option." );
+                    "druid.enable_dungeon_slice_for_balance=1 option." );
         sim->cancel();
       }
-
+#endif
       if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
         return false;
 
@@ -14189,6 +14233,7 @@ void druid_t::create_options()
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
   add_option( opt_float( "druid.dryads_favor_cap_multiplier", options.dryads_favor_cap_multiplier ) );
+  add_option( opt_bool( "druid.enable_dungeon_slice_for_balance", options.enable_dungeon_slice_for_balance ) );
 
   // Feral
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );

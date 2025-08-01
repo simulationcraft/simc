@@ -167629,7 +167629,8 @@ Category Cooldown: 20 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845135)   : School Damage (2): shadow | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 907627.4 (coefficient=354.8523) | PvP Coefficient: 0.6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 1089150 (coefficient=425.8215) | PvP Coefficient: 0.6 | Target: Enemy (6)
+Hotfixed         : Coefficient (354.852295 -> 425.821472)
 #2 (id=845136)   : Trigger Spell (64): Anima Font
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344414 | Target: At Self (18)
 Description      : Tear the anima from your target dealing $s1 Shadow damage and forming a font of power at your feet, increasing your Intellect by $343397s1 for $343394d while you stand within it. 
@@ -172720,7 +172721,8 @@ Proc Flags       : White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=883338)   : Apply Aura (6) | Proc Trigger Spell (42): Miniscule Mailemental in an Envelope | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 413913.1 (coefficient=161.8264) | Trigger Spell: 352436 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 496695.7 (coefficient=194.1916) | Trigger Spell: 352436 | Target: Self (1)
+Hotfixed         : Coefficient (161.826355 -> 194.19162)
 Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.
 
 Name             : Miniscule Mailemental in an Envelope (id=352436) 
@@ -182858,7 +182860,8 @@ Proc Flags       : White Melee, Yellow Melee
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=911943)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 620870.4 (coefficient=242.7398) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 745044.4 (coefficient=291.2878) | Target: Self (1)
+Hotfixed         : Coefficient (242.739822 -> 291.28775)
 Description      : $@spelldesc367902
 Tooltip          : $@auradesc367902
 
@@ -231724,11 +231727,14 @@ Effects          :
 #1 (id=1139506)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1144329)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 3590.455 (coefficient=0.937708) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3231.409 (coefficient=0.843937) | Target: Self (1)
+Hotfixed         : Coefficient (0.937708 -> 0.843937)
 #3 (id=1144413)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 187360.3 (coefficient=73.25169) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 168624.3 (coefficient=65.92652) | Target: Self (1)
+Hotfixed         : Coefficient (73.251686 -> 65.926521)
 #4 (id=1144414)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 4142.945 (coefficient=1.082) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4556.6 (coefficient=1.190033) | Target: Self (1)
+Hotfixed         : Coefficient (1.082 -> 1.190033)
 #5 (id=1144420)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 379033.1 (coefficient=148.1894) | Target: Self (1)
 Description      : $?a443534[Advance to the $s1 Verses of Inner Radiance, reading as you are attacked.
@@ -231790,7 +231796,8 @@ Triggered By     : Void Pulse (450960), Void Pactstone (450962)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1139516)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 83896.51 (coefficient=32.80076) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 100675.8 (coefficient=39.36092) | Target: Self (1)
+Hotfixed         : Coefficient (32.800762 -> 39.360916)
 #2 (id=1146254)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1195.293 (coefficient=0.312171) | Target: Self (1)
 Description      : Your attacks have a chance to call to the pact, exploding for ${$<rolemult>*$s1} Shadow damage split between nearby enemies and increasing your Haste by $s2 for $450962d.
@@ -231845,7 +231852,8 @@ Effects          :
 #1 (id=1139520)  : Apply Aura (6) | Proc Trigger Spell (42): Egg Sac | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 743.5859 (coefficient=0.1942) | Trigger Spell: 452146 | Target: Self (1)
 #2 (id=1146261)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 7451.185 (coefficient=2.913167) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8941.423 (coefficient=3.495801) | Target: Self (1)
+Hotfixed         : Coefficient (2.913167 -> 3.495801)
 Description      : Your abilities have a chance to stir the sac, releasing an egg which grants you $s1 $pri. Each egg hatches after $452146d, and the new brood attacks your next target, inflicting ${$<rolemult>*$s2*$452229d/$452229t1} Nature damage over $452229d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -231875,9 +231883,11 @@ Triggered By     : Ceaseless Swarm (450969)
 Attributes       : Passive (6), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139531)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 6468.035 (coefficient=2.528788) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7761.641 (coefficient=3.034545) | Target: Self (1)
+Hotfixed         : Coefficient (2.528788 -> 3.034545)
 #2 (id=1146262)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: -9787.017 (coefficient=-3.8264) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -10765.81 (coefficient=-4.209075) | Target: Self (1)
+Hotfixed         : Coefficient (-3.8264 -> -4.209075)
 Description      : The gland releases pheromones that attract a Ceaseless Swarm of insects to surround you. Taking damage has a high chance to retaliate against attackers, inflicting ${$s1*$450969d/$450969t1} Nature damage over $450969d and reducing damage dealt to you by $s2.
 
 Name             : Harvester's Edict (id=443549) 
@@ -237766,7 +237776,8 @@ Effects          :
 #1 (id=1150678)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2084.491 (coefficient=0.5444) | Target: Self (1)
 #2 (id=1150679)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 127977.9 (coefficient=50.03514) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 153573.5 (coefficient=60.04218) | Target: Self (1)
+Hotfixed         : Coefficient (50.035145 -> 60.042175)
 #3 (id=1150680)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
@@ -238086,7 +238097,8 @@ Triggered By     : Volatile Blood Blast (451292), Volatile Energy (451303)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1151381)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 132667.6 (coefficient=51.86865) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 159201.1 (coefficient=62.24238) | Target: Self (1)
+Hotfixed         : Coefficient (51.868649 -> 62.242378)
 #2 (id=1151382)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5237.648 (coefficient=1.3679) | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to send an orb of volatile black blood drifting to your target, exploding for ${$<rolemult>*$s1} Shadow damage split between all nearby enemies on impact. Intercepting the orb allows you to siphon its power, instead increasing your Mastery by $s2 for $451303d.
@@ -252080,7 +252092,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1179410)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 10478.34 (coefficient=2.736594) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9430.775 (coefficient=2.463006) | Target: Self (1)
+Hotfixed         : Coefficient (2.736594 -> 2.463006)
 #2 (id=1203336)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=1204644)  : Dummy (3)
@@ -252328,7 +252341,8 @@ Proc Flags       : Yellow Melee, Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1180273)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 23749.03 (coefficient=9.285087) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20186.68 (coefficient=7.892323) | Target: Self (1)
+Hotfixed         : Coefficient (9.285087 -> 7.892323)
 #2 (id=1194407)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1194408)  : Dummy (3)
@@ -252920,7 +252934,8 @@ Triggered By     : Vigor of Kezan (1216594)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1184546)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 166.1811 (coefficient=0.043401) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 149.5634 (coefficient=0.039061) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.043401 -> 0.039061)
 #2 (id=1200098)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 23624.88 (coefficient=9.236547) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200099)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -253868,7 +253883,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1189149)  : Apply Aura (6) | Proc Trigger Spell (42): Mug's Moxie Jug | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1060.188 (coefficient=0.276886) | Trigger Spell: 474376 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.6432 (coefficient=0.24906) | Trigger Spell: 474376 | Target: Self (1)
+Hotfixed         : Coefficient (0.276886 -> 0.24906)
 #2 (id=1206354)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Your spells have a chance to send you into a frenzy, granting you $s1 Critical Strike for $474285d. While frenzied, each spell cast grants an additional $s1 Critical Strike but does not refresh the duration. This effect may only occur every $s2 sec.
@@ -260337,7 +260353,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1203775)  : Apply Aura (6) | Proc Trigger Spell (42): Explosive Adrenaline | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 3915.198 (coefficient=1.02252) | Trigger Spell: 1218713 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3523.678 (coefficient=0.920268) | Trigger Spell: 1218713 | Target: Self (1)
+Hotfixed         : Coefficient (1.02252 -> 0.920268)
 #2 (id=1204550)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60
 Description      : Repurpose a Seaforium charge to give your heart a kick, causing your first ability every $s2 sec to trigger Explosive Adrenaline, granting $s1 Critical Strike for $1218713d.
@@ -260446,7 +260463,8 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1204552)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 6 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 8708.46 (coefficient=3.40472) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10450.15 (coefficient=4.085664) | Target: Self (1)
+Hotfixed         : Coefficient (3.40472 -> 4.085664)
 #2 (id=1204553)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1204554)  : Apply Aura (6) | Dummy (4)
@@ -260749,9 +260767,11 @@ Triggered By     : Darkfuse Medichopper (1219104)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1206646)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 47190.53 (coefficient=18.44994) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54269.11 (coefficient=21.21743) | Target: Self (1)
+Hotfixed         : Coefficient (18.449938 -> 21.217428)
 #2 (id=1206647)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1605.414 (coefficient=0.419281) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1846.226 (coefficient=0.482173) | Target: Self (1)
+Hotfixed         : Coefficient (0.419281 -> 0.482173)
 
 Name             : Xal'atath's Gift (id=1221063) 
 School           : Shadow
@@ -264895,6 +264915,7 @@ Name             : Loom'ithar's Living Silk (id=1232721)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Max Targets      : 5
 Velocity         : 20 yards/sec
 Duration         : 10 seconds
 Cooldown         : 90 seconds
@@ -264904,16 +264925,20 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1225685)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 50 yards | Target: Party in Area (20)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
                    Affected School(s): All
+Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 #2 (id=1225746)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Radius: 50 yards | Target: Party in Area (20)
+                   Base Value: 75 | Scaled Value: 75 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
+Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 #3 (id=1232718)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 50 yards | Target: Party in Area (20)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
+Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 Description      : Weave an arcane cocoon around yourself and four nearby allies for $d, reducing their damage taken by $s2% until $1232719s1 damage has been prevented.
 
 If a cocoon expires, it bursts to heal an injured ally for $s3% of its remaining power.
 Tooltip          : Absorbing $s2% of incoming damage until ${$w1} is prevented.
+Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Nexus-King's Command (id=1232776) [Passive] 
 School           : Physical
@@ -264940,7 +264965,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 11025.9 (coefficient=2.879601) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9923.139 (coefficient=2.591595) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2.879601 -> 2.591595)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -265211,7 +265237,8 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spe
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1226730)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 336470.9 (coefficient=131.549) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 403764.8 (coefficient=157.8587) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (131.548996 -> 157.858704)
 #2 (id=1239524)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your attacks have a high chance to charge the Arcanocore. At $1240896u charges, deploy a sentinel to arcanoblast your target for ${$s1*$<rolemult>} Arcane damage split between nearby enemies. Recover $s2 charges if only one enemy is struck.
@@ -265298,7 +265325,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1227063)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 41213.41 (coefficient=16.11308) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 49456.09 (coefficient=19.3357) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (16.113081 -> 19.335697)
 #2 (id=1227067)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 894.1831 (coefficient=0.233531) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1237623)  : Dummy (3)
@@ -266219,13 +266247,14 @@ Effects          :
 Description      : $@spelldesc1234337
 
 Name             : Astral Antenna (id=1234714) [Passive] 
+Hotfixed         : Proc Flags 2 (0 -> 4)
 School           : Arcane
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2.5
-Proc Flags       : Heartbeat
+Proc Flags       : Heartbeat, Cast Successful
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1229154)  : Apply Aura (6) | Proc Trigger Spell (42): Astral Antenna | Scaling Class: -7
@@ -266380,7 +266409,8 @@ Effects          :
 #1 (id=1230149)  : Apply Aura (6) | Proc Trigger Spell (42): Infuriated | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 22651.55 (coefficient=8.856008) | PvP Coefficient: 0.5 | Trigger Spell: 1235879 | Target: Self (1)
 #2 (id=1230165)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 43145.33 (coefficient=16.8684) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 51774.3 (coefficient=20.24204) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (16.868397 -> 20.242041)
 #3 (id=1237121)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #4 (id=1237122)  : Dummy (3)
@@ -266402,7 +266432,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230266)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
-                   Base Value: 207506 | Scaled Value: 172162.7 (coefficient=67.30993) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 207506 | Scaled Value: 223811.5 (coefficient=87.50291) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (67.309929 -> 87.502907)
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
@@ -266422,8 +266453,9 @@ Real PPM         : 2.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1230594)  : Apply Aura (6) | Proc Trigger Spell (42): Cosmic Onslaught | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 105645.5 (coefficient=41.30388) | PvP Coefficient: 0.5 | Trigger Spell: 1239401 | Target: Self (1)
+#1 (id=1230594)  : Apply Aura (6) | Proc Trigger Spell (42): Cosmic Onslaught | Scaling Class: -9
+                   Base Value: 0 | Scaled Value: 58013.37 (coefficient=22.68131) | PvP Coefficient: 0.5 | Trigger Spell: 1239401 | Target: Self (1)
+Hotfixed         : Coefficient (41.303883 -> 22.681309), Scaling Class (-8 -> -9)
 #2 (id=1237134)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1237175)  : Dummy (3)
@@ -266446,7 +266478,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 41910.1 (coefficient=16.38546) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 52387.86 (coefficient=20.48192) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
+Hotfixed         : Coefficient (16.385464 -> 20.48192)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266495,7 +266528,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), No Aura Log (202), Absorb Cannot Be Ignore (214), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 179949.3 (coefficient=70.35423) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 215939.1 (coefficient=84.42504) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (70.354233 -> 84.425041)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
@@ -266529,7 +266563,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1891332 (coefficient=739.4485) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2458730 (coefficient=961.282) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (739.448486 -> 961.281982)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
@@ -267650,13 +267685,14 @@ Effects          :
 Description      : $@spelldesc1233553
 
 Name             : Latent Energy (id=1239675) 
+Hotfixed         : Max stacks (15 -> 18)
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Stacks           : 15 maximum
+Stacks           : 18 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
@@ -267944,7 +267980,8 @@ Effects          :
 #1 (id=1240990)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 8272.531 (coefficient=2.160511) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1241002)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 25598.02 (coefficient=10.00798) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 30717.62 (coefficient=12.00957) | Target: Self (1)
+Hotfixed         : Coefficient (10.007978 -> 12.009574)
 #3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 426.8918 (coefficient=0.11149) | Target: Self (1)
 #4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
@@ -268112,7 +268149,8 @@ Proc Flags       : White Melee, Yellow Melee
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1243051)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 91181.6 (coefficient=35.64899) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 109417.9 (coefficient=42.77879) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (35.648991 -> 42.778786)
 #2 (id=1243593)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your melee attacks have a chance to coalesce a warpstalker echo to strike with you, inflicting ${$<rolemult>*$s1} Arcane damage split between enemies in its path.
@@ -268163,7 +268201,8 @@ Triggered By     : Azhiccaran Mite (1243828), Mite-y Feast (1243843)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244264)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 15166.49 (coefficient=5.929595) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18199.78 (coefficient=7.115513) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (5.929595 -> 7.115513)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
 Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.

@@ -15200,6 +15200,7 @@ Description      : Calls down a tremendous lightning strike that deals $s1 Natur
 |cFFFFFFFFConsumes Maelstrom Weapon for increased cast speed.|r][]
 
 Name             : Whirling Fire (id=453405) [Spell Family (11)] 
+Hotfixed         : Internal Cooldown (0 -> 2000)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15208,6 +15209,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+Internal Cooldown: 2 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)

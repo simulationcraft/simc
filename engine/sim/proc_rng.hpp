@@ -183,7 +183,7 @@ public:
 // trigger after a successful proc will have a trigger count of initial_count + 1.
 using accumulated_rng_fn = std::function<double( double, unsigned, action_state_t* )>;
 
-struct accumulated_rng_t final : public proc_rng_t
+struct accumulated_rng_t : public proc_rng_t
 {
 private:
   accumulated_rng_fn accumulator_fn;
@@ -215,7 +215,7 @@ public:
 // by that call.
 using threshold_rng_fn = std::function<double( double, action_state_t* )>;
 
-struct threshold_rng_t final : public proc_rng_t
+struct threshold_rng_t : public proc_rng_t
 {
 private:
   threshold_rng_fn accumulator_fn;

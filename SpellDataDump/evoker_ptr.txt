@@ -7325,9 +7325,11 @@ Effects          :
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1
 #6 (id=1037193)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Base Value (43 -> 0)
 #7 (id=1037194)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Base Value (43 -> 0)
 #8 (id=1037195)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1037196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)

@@ -4791,12 +4791,15 @@ struct eruption_t : public essence_spell_t
   struct eruption_mass_eruption_t : public evoker_spell_t
   {
     double tww2_4pc_mult;
+    timespan_t upheaval_cdr;
 
     eruption_mass_eruption_t( evoker_t* p, std::string_view n )
       : evoker_spell_t( n, p, p->talent.scalecommander.mass_eruption_damage ),
         tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
                            ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
-                           : 0.0 )
+                           : 0.0 ),
+
+        upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() )
     {
       aoe              = -1;
       split_aoe_damage = true;
@@ -4817,6 +4820,15 @@ struct eruption_t : public essence_spell_t
         da *= 1.0 + tww2_4pc_mult;
 
       return da;
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+      if ( p()->talent.accretion.ok() )
+      {
+        p()->cooldown.upheaval->adjust( upheaval_cdr );
+      }
     }
   };
 
@@ -4841,7 +4853,7 @@ struct eruption_t : public essence_spell_t
       t31_4pc_eruption( nullptr ),
       mass_eruption( nullptr ),
       mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
-      mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
+      mass_eruption_max_targets( 1 + as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
       motes_chance( p->talent.motes_of_possibility->proc_chance() ),
       is_overlord( false ),
       tww2_4pc_mult( p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
@@ -4939,7 +4951,7 @@ struct eruption_t : public essence_spell_t
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
     }
 
-    if ( !is_overlord  )
+    if ( !is_overlord )
     {
       if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
            execute_state )
