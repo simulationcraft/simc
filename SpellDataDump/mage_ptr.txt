@@ -1,4 +1,4 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.62253 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62253 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
