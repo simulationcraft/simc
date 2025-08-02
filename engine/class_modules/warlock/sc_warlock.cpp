@@ -376,6 +376,13 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     if ( !guardian && talents.summoners_embrace.ok() )
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   
+    if ( hero.xalans_ferocity.ok() )
+      m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent() +
+           warlock_base.destruction_warlock->effectN( guardian ? 19 : 18 ).percent();
+
+    if ( hero.xalans_cruelty.ok() )
+      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 3 : 4 ).percent() +
+           warlock_base.destruction_warlock->effectN( guardian ? 22 : 20 ).percent();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -402,6 +409,12 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     // 2024-07-06 Summoner's Embrace only affects main pet
     if ( !guardian && talents.summoners_embrace.ok() )
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
+
+    if ( hero.xalans_ferocity.ok() )
+      m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent();
+
+    if ( hero.xalans_cruelty.ok() )
+      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 3 : 4 ).percent();
   }
 
   if ( hero.flames_of_xoroth.ok() )
@@ -409,12 +422,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
   if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
     m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
-
-  if ( hero.xalans_ferocity.ok() )
-    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent();
-
-  if ( hero.xalans_cruelty.ok() )
-    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent();
 
   return m;
 }

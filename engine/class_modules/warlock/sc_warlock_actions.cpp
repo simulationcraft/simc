@@ -536,14 +536,20 @@ using namespace helpers;
       if ( destruction() && affected_by.echo_of_the_azjaqir_dd && p()->buffs.echo_of_the_azjaqir->check() )
         m *= 1.0 + p()->tier.echo_of_the_azjaqir->effectN( 1 ).percent();
 
+      if ( hellcaller() && affected_by.xalans_ferocity_dd && p()->hero.xalans_ferocity.ok() )
+      {
+            m *= 1.0 + p()->hero.xalans_ferocity->effectN( 1 ).percent() + ( destruction()
+                        ? p()->warlock_base.destruction_warlock->effectN( 10 ).percent() : 0 );       
+      }
+
+       if ( hellcaller() && affected_by.xalans_cruelty_dd && p()->hero.xalans_cruelty.ok() )
+       {
+         m *= 1.0 + p()->hero.xalans_cruelty->effectN( 3 ).percent() + ( destruction()
+                        ? p()->warlock_base.destruction_warlock->effectN( 23 ).percent() : 0 );
+       }
+
       if ( diabolist() && affected_by.flames_of_xoroth_dd && p()->hero.flames_of_xoroth.ok() )
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 1 ).percent();
-
-      if ( hellcaller() && affected_by.xalans_ferocity_dd && p()->hero.xalans_ferocity.ok() )
-        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 1 ).percent();
-
-      if ( hellcaller() && affected_by.xalans_cruelty_dd && p()->hero.xalans_cruelty.ok() )
-        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 3 ).percent();
 
       return m;
     }
@@ -574,11 +580,16 @@ using namespace helpers;
         m *= 1.0 + p()->hero.flames_of_xoroth->effectN( 2 ).percent();
 
       if ( hellcaller() && affected_by.xalans_ferocity_td && p()->hero.xalans_ferocity.ok() )
-        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 2 ).percent();
+      {
+        m *= 1.0 + p()->hero.xalans_ferocity->effectN( 2 ).percent() + ( destruction()
+                          ? p()->warlock_base.destruction_warlock->effectN( 17 ).percent() : 0 );
+      }
 
       if ( hellcaller() && affected_by.xalans_cruelty_td && p()->hero.xalans_cruelty.ok() )
-        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 4 ).percent();
-
+      {
+        m *= 1.0 + p()->hero.xalans_cruelty->effectN( 4 ).percent() + ( destruction()
+                          ? p()->warlock_base.destruction_warlock->effectN( 21 ).percent() : 0 );
+      }
       return m;
     }
 
