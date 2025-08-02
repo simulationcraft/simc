@@ -545,7 +545,7 @@ using wprintf_args = basic_format_args<wprintf_context>;
 /// Constructs an `format_arg_store` object that contains references to
 /// arguments and can be implicitly converted to `printf_args`.
 template <typename Char = char, typename... T>
-inline auto make_printf_args(T&... args)
+inline auto make_printf_args(const T&... args)
     -> decltype(fmt::make_format_args<basic_printf_context<Char>>(args...)) {
   return fmt::make_format_args<basic_printf_context<Char>>(args...);
 }
