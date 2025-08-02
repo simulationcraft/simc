@@ -1821,8 +1821,8 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 
   type = MAIN;
 
-  owner_coeff.ap_from_sp = 1.65;
-  owner_coeff.sp_from_sp = 1.65;
+  owner_coeff.ap_from_sp = 2.2275;
+  owner_coeff.sp_from_sp = 2.2275;
 }
 
 struct immolation_tick_t : public warlock_pet_spell_t
@@ -1958,7 +1958,13 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
 {
   rift_shadow_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Shadow Bolt", p, p->o()->talents.rift_shadow_bolt )
-  { background = dual = true; }
+  {
+      background = dual = true;
+
+      // Double dips from whitelist+guardian aura
+      base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+  }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
@@ -2038,7 +2044,13 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
 {
   chaos_barrage_tick_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Barrage (tick)", p, p->o()->talents.chaos_barrage_tick )
-  { background = dual = true; }
+  {
+      background = dual = true; 
+  
+      // Double dips from whitelist+guardian aura
+      base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+  }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
@@ -2116,6 +2128,11 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
   rift_chaos_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.rift_chaos_bolt )
   {
+
+    // Double dips from whitelist+guardian aura
+    base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+    base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+
     if ( p->o()->talents.unstable_rifts.ok() )
     {
       debug_cast<chaos_tear_t*>( p )->cinder = new dimensional_cinder_t( p );

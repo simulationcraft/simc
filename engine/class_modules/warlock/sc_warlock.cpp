@@ -411,10 +411,10 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
     m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
 
   if ( hero.xalans_ferocity.ok() )
-    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 7 : 3 ).percent();
+    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent();
 
   if ( hero.xalans_cruelty.ok() )
-    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 6 : 5 ).percent();
+    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent();
 
   return m;
 }
