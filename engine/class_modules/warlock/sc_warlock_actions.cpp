@@ -1426,7 +1426,6 @@ using namespace helpers;
 
       triggers.decimation = false;
       
-      base_dd_multiplier *=1.0 + p->hero.seeds_of_their_demise->effectN( 3 ).percent();
     }
 
     double composite_target_multiplier( player_t* target ) const override
