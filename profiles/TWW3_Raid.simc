@@ -4,8 +4,8 @@ ptr=1
 optimal_raid=1
 default_actions=1
 
-# TWW3_Death_Knight_Blood.simc
-# TWW3_Death_Knight_Blood_Deathbringer.simc
+TWW3_Death_Knight_Blood.simc
+TWW3_Death_Knight_Blood_Deathbringer.simc
 # TWW3_Death_Knight_Frost.simc
 # TWW3_Death_Knight_Frost_Rider.simc
 # TWW3_Death_Knight_Frost_Deathbringer.simc
