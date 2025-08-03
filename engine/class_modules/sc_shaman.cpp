@@ -13048,7 +13048,7 @@ void shaman_t::summon_ancestor( double proc_chance, bool from_set )
   timespan_t ancestor_duration =
       from_set ? buff.call_of_the_ancestors_tww3_set->buff_duration() : buff.call_of_the_ancestors->buff_duration();
   pet.ancestor.spawn( ancestor_duration );
-  buff.call_of_the_ancestors->trigger();
+  buff.call_of_the_ancestors->trigger( ancestor_duration );
 }
 
 void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_duration )
