@@ -98,8 +98,7 @@ public:
     auto it = range::find_if( index, std::forward<Predicate>( pred ) );
     if ( it != index.end() )
     {
-      const T* v = *it;
-      return *v;
+      return *( *it );
     }
     return T::nil();
   }
