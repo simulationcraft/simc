@@ -381,7 +381,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
            warlock_base.destruction_warlock->effectN( guardian ? 19 : 18 ).percent();
 
     if ( hero.xalans_cruelty.ok() )
-      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 3 : 4 ).percent() +
+      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent() +
            warlock_base.destruction_warlock->effectN( guardian ? 22 : 20 ).percent();
   }
 
@@ -414,7 +414,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent();
 
     if ( hero.xalans_cruelty.ok() )
-      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 3 : 4 ).percent();
+      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent();
   }
 
   if ( hero.flames_of_xoroth.ok() )
