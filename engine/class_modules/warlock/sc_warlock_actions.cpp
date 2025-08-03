@@ -1686,6 +1686,16 @@ using namespace helpers;
 
         return m;
       }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = warlock_spell_t::composite_da_multiplier( s );
+
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 2 ).percent();
+
+        return m;
+      }
     };
 
     struct malefic_rapture_damage_t : public warlock_spell_t
