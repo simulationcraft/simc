@@ -258,7 +258,7 @@ using namespace helpers;
 
         if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
         {
-          helpers::trigger_blackened_soul( p(), false );
+          helpers::trigger_blackened_soul( p(), false , false);
         }
       }
     }
@@ -1354,6 +1354,8 @@ using namespace helpers;
         {
           d->increment( 1 );
           p()->procs.mark_of_perotharn->occur();
+          //For Seeds of Their Demise collapse trigger
+          helpers::trigger_blackened_soul( p(), false, true);
         }
       }
 
@@ -1361,7 +1363,8 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
 
-        m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+        // 2025-08-04 Seems to double dip 
+        m *= pow( 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent(), 2.0 );
 
         return m;
       }
@@ -1420,7 +1423,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
 
-      m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+      m *= pow( 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent(), 2.0 );
 
       return m;
     }
@@ -1455,7 +1458,7 @@ using namespace helpers;
             val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 2 ).percent();
         }
 
-        m *= 1.0 + td( target )->dots_wither->current_stack() * val;
+        m *= 1.0 + ( td( target )->dots_wither->current_stack() - 1 ) * val;
       }
 
       return m;
@@ -1518,7 +1521,7 @@ using namespace helpers;
 
       p()->buffs.malevolence->trigger();
 
-      helpers::trigger_blackened_soul( p(), true );
+      helpers::trigger_blackened_soul( p(), true , false);
 
       if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B4 ) )
       {
@@ -4938,7 +4941,7 @@ using namespace helpers;
     }
   }
 
-  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
+  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence, bool wither )
   {
     if ( !malevolence && p->cooldowns.blackened_soul->down() )
       return;
@@ -4962,10 +4965,11 @@ using namespace helpers;
         if( p->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
           stacks += as<int>( p->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 1 ).base_value() );
       }
-
-      tdata->dots_wither->increment( stacks );
-      stack_gained = true;
-
+      if ( !wither )
+      {
+        tdata->dots_wither->increment( stacks );
+        stack_gained = true;
+      
       if ( p->buffs.malevolence->check() && !malevolence )
         tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
@@ -4974,7 +4978,7 @@ using namespace helpers;
         tdata->dots_wither->increment( 1 );
         p->procs.bleakheart_tactics->occur();
       }
-
+      }
       bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
@@ -4983,7 +4987,7 @@ using namespace helpers;
       {
         tdata->debuffs_blackened_soul->trigger();
       }
-      else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
+      else if ( !wither && p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
       {
         tdata->debuffs_blackened_soul->trigger();
         p->procs.blackened_soul->occur();

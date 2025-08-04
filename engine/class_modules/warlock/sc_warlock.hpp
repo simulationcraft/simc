@@ -1000,7 +1000,7 @@ namespace helpers
   bool crescendo_check( warlock_t* p, player_t* tar );
   void nightfall_updater( warlock_t* p, dot_t* d );
 
-  void trigger_blackened_soul( warlock_t* p, bool malevolence );
+  void trigger_blackened_soul( warlock_t* p, bool malevolence, bool wither );
 
   void trigger_jackpot_ua( warlock_t* p );
 
