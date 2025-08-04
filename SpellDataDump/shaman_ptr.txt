@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62253 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62417 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -15200,7 +15200,7 @@ Description      : Calls down a tremendous lightning strike that deals $s1 Natur
 |cFFFFFFFFConsumes Maelstrom Weapon for increased cast speed.|r][]
 
 Name             : Whirling Fire (id=453405) [Spell Family (11)] 
-Hotfixed         : Internal Cooldown (0 -> 2000)
+Hotfixed         : Internal Cooldown (0 -> 2000), Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15212,7 +15212,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 2 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155235)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
@@ -15220,6 +15220,7 @@ Description      : Your next Lava Lash or Fire Nova grants you Hot Hand for ${$s
 Tooltip          : Your next Lava Lash or Fire Nova grants you Hot Hands for ${$s1/1000} sec.
 
 Name             : Whirling Earth (id=453406) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15230,7 +15231,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15244,6 +15245,7 @@ Description      : $?a137041[Direct damage of your next Flame Shock is increased
 Tooltip          : $?a137041[Direct damage of your next Flame Shock is increased by $w1% and it is applied to $w3 nearby enemies.][Your next Chain Heal applies Earthliving at $w2% effectiveness to all targets hit.]
 
 Name             : Whirling Water (id=453407) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15254,7 +15256,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155243)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -15262,6 +15264,7 @@ Description      : Your next Healing Wave or Healing Surge also heals an ally in
 Tooltip          : Your next Healing Wave or Healing Surge also heals an ally inside of your Healing Rain at $w1% effectiveness.
 
 Name             : Whirling Air (id=453409) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15272,7 +15275,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155246)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
@@ -19311,8 +19314,9 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
-#1 (id=1236671)  : Apply Aura (6) | Dummy (4)
+#1 (id=1236671)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.33 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1236411
 Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
 
