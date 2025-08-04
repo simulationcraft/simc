@@ -52,56 +52,56 @@
 
 # save=TWW3_Warrior_Fury.simc
 
-# warrior="TWW3_Warrior_Protection_Colossus"
-# level=80
-# race=mechagnome
-# spec=protection
-# role=tank
-# position=front
-# talents=CkEAAAAAAAAAAAAAAAAAAAAAAoxAAAAwMzMmZmBjZ2mZmZbzMGjmZWGzwAYYZmZMzMjhBAAAAAAmBAY2sBAsZGDbkBmhFaYWA
+warrior="TWW3_Warrior_Protection_Colossus"
+level=80
+race=mechagnome
+spec=protection
+role=tank
+position=front
+talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAAwMzYmZmZYmNzMLDGjRzMLjZYmFwwyMzwMMjZAAAAAAglBAYGLAgNzYYjMwMsQDWwMD
 
-# head=fullthrottle_facerig,id=228858,bonus_id=10356/1527/6935,gem_id=213743
-# neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,gem_id=213485/213485
-# shoulders=enforcers_backalley_shoulderplates,id=229233,bonus_id=1527/11996
-# back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964,enchant=chant_of_winged_grace_3
-# chest=enforcers_backalley_vestplate,id=229238,bonus_id=1527/11996,enchant=crystalline_radiance_3
-# wrists=revvedup_vambraces,id=228868,bonus_id=1527/11996/11964/1808,gem_id=213485
-# hands=enforcers_backalley_crushers,id=229236,bonus_id=1527/11996
-# waist=enforcers_backalley_girdle,id=229232,bonus_id=1527/11996/1808,gem_id=213485
-# legs=enforcers_backalley_chausses,id=229234,bonus_id=1527/11996,enchant=defenders_armor_kit_3
-# feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960,enchant=defenders_march_3,crafted_stats=36/32
-# finger1=the_jastor_diamond,id=231265,bonus_id=10356/1527/6935/1808,gem_id=213485/213485,enchant=radiant_haste_3
-# finger2=faded_championship_ring,id=228840,bonus_id=1527/11996/11964/8781,gem_id=213485/213485,enchant=radiant_haste_3
-# trinket1=eye_of_kezan,id=230198,bonus_id=1527/11996/11964
-# trinket2=house_of_cards,id=230027,bonus_id=10356/1527
-# main_hand=everforged_longsword,id=222440,bonus_id=10421/9633/8902/12043/12040/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
-# off_hand=titan_of_industry,id=228889,bonus_id=1527/11996/11964
+head=living_weapons_faceshield,id=237610,bonus_id=12361/10356/12231/40/12921/12676/1533/10255
+neck=duskblazes_desperation,id=237569,bonus_id=4800/4786/1533/12361/8781,gem_id=213458/213458
+shoulder=living_weapons_ramparts,id=237608,bonus_id=12361/10356/12233/40/12675/1533/10255
+back=reshii_wraps,id=235499,bonus_id=12401/9893/12259,enchant=chant_of_winged_grace_3,gem_id=238042
+chest=living_weapons_bulwark,id=237613,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant=crystalline_radiance_3
+wrist=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11304,gem_id=213458,crafted_stats=32/36
+hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
+waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11304,gem_id=213458,crafted_stats=32/36
+legs=living_weapons_legguards,id=237609,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant=defenders_armor_kit_3
+feet=interlopers_plated_sabatons,id=243307,bonus_id=40/10356/12361/1533/10255/13504,enchant=defenders_march_3
+finger1=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213458/213458
+finger2=high_nerubian_signet,id=221141,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213458/213458
+trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
+trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
+main_hand=factoryissue_plexhammer,id=237813,bonus_id=1533/12361/12239,enchant=councils_guile_3
+off_hand=ward_of_the_weavingbeast,id=237723,bonus_id=1533/12361/12239
 
-# save=TWW3_Warrior_Protection.simc
+save=TWW3_Warrior_Protection_Colossus.simc
 
-# warrior="TWW3_Warrior_Protection_Thane"
-# level=80
-# race=mechagnome
-# spec=protection
-# role=tank
-# position=front
-# talents=CkEAAAAAAAAAAAAAAAAAAAAAAoxAAAAwMzMmZmBjZ2mZmZbjxY0MzyYGGgZYbmZMzwMMAAAAAAwMAAzmNAGYDWWMaMDgZLMbA
+warrior="TWW3_Warrior_Protection_Thane"
+level=80
+race=mechagnome
+spec=protection
+role=tank
+position=front
+talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAAwMzYmZmZYmNzMLDGjRzMLjZYmFww2MzwMMjZAAAAAAglBAYGLAGYDWWMaMDgZJYDzMA
 
-# head=fullthrottle_facerig,id=228858,bonus_id=1527/11996/11964/1808,gem_id=213743
-# neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,gem_id=213485/213485
-# shoulders=enforcers_backalley_shoulderplates,id=229233,bonus_id=1527/11996
-# back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964,enchant=chant_of_winged_grace_3
-# chest=enforcers_backalley_vestplate,id=229238,bonus_id=1527/11996,enchant=crystalline_radiance_3
-# wrists=revvedup_vambraces,id=228868,bonus_id=1527/11996/11964/1808,gem_id=213485
-# hands=enforcers_backalley_crushers,id=229236,bonus_id=1527/11996
-# waist=enforcers_backalley_girdle,id=229232,bonus_id=1527/11996/1808,gem_id=213485
-# legs=enforcers_backalley_chausses,id=229234,bonus_id=1527/11996,enchant=defenders_armor_kit_3
-# feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960,enchant=defenders_march_3,crafted_stats=36/32
-# finger1=the_jastor_diamond,id=231265,bonus_id=1527/11996/11964/8781,gem_id=213485/213485,enchant=radiant_haste_3
-# finger2=faded_championship_ring,id=228840,bonus_id=1527/11996/11964/8781,gem_id=213485/213485,enchant=radiant_haste_3
-# trinket1=eye_of_kezan,id=230198,bonus_id=1527/11996/11964
-# trinket2=house_of_cards,id=230027,bonus_id=1527/11996/11964
-# main_hand=everforged_longsword,id=222440,bonus_id=10421/9633/8902/12043/12040/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
-# off_hand=titan_of_industry,id=228889,bonus_id=1527/11996/11964
+head=living_weapons_faceshield,id=237610,bonus_id=12361/10356/12231/40/12921/12676/1533/10255
+neck=duskblazes_desperation,id=237569,bonus_id=4800/4786/1533/12361/8781,gem_id=213470/213470
+shoulder=living_weapons_ramparts,id=237608,bonus_id=12361/10356/12233/40/12675/1533/10255
+back=reshii_wraps,id=235499,bonus_id=12401/9893/12259,enchant=chant_of_winged_grace_3,gem_id=238042
+chest=living_weapons_bulwark,id=237613,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant=crystalline_radiance_3
+wrist=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
+hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
+waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
+legs=living_weapons_legguards,id=237609,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant=defenders_armor_kit_3
+feet=interlopers_plated_sabatons,id=243307,bonus_id=40/10356/12361/1533/10255/13504,enchant=defenders_march_3
+finger1=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213470/213470
+finger2=high_nerubian_signet,id=221141,bonus_id=4786/3215/12361/8781,enchant=radiant_critical_strike_3,gem_id=213470/213470
+trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
+trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
+main_hand=factoryissue_plexhammer,id=237813,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
+off_hand=ward_of_the_weavingbeast,id=237723,bonus_id=1533/12361/12239
 
-# save=TWW3_Warrior_Protection_Thane.simc
+save=TWW3_Warrior_Protection.simc
