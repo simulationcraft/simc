@@ -2387,6 +2387,38 @@ using namespace helpers;
       add_child( impact_action );
     }
 
+     std::vector<player_t*>& target_list() const override
+    {
+      // Force regen this every time
+      target_cache.is_valid = false;
+      auto& tl              = warlock_spell_t::target_list();
+      auto original_size    = tl.size();
+
+      // if target_list is bigger than dot cap shuffle the list
+      if ( as<int>( tl.size() ) > aoe )
+      {
+        // randomize targets
+        rng().shuffle( tl.begin(), tl.end() );
+
+        // sort targets without Agony to the front
+        std::sort( tl.begin(), tl.end(), [ this ]( player_t* l, player_t* r ) {
+          warlock_td_t* tdl = p()->get_target_data( l );
+          warlock_td_t* tdr = p()->get_target_data( r );
+
+          return !tdl->dots_agony->is_ticking() && tdr->dots_agony->is_ticking();
+          
+        } );
+
+        // resize to dot target cap
+        tl.resize( aoe );
+      }
+
+      player->sim->print_debug( "{} vile taint dots {} targets of the available {}.", p()->name(), tl.size(),
+                                original_size );
+
+      return tl;
+    }
+    
     void impact( action_state_t* s ) override
     {
       bool fresh_agony = !td( s->target )->dots_agony->is_ticking();
