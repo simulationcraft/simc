@@ -1,0 +1,41 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/apply_poison
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+# Generic stealth check replacement expression for multiple buff checks (Overridden from 'buff.stealth.up&target.distance<=40')
+actions.assisted_combat=ambush,if=stealthed.basic&target.distance<=40
+actions.assisted_combat+=/roll_the_bones,if=buff.broadside.down&buff.ruthless_precision.down&buff.grand_melee.down&buff.true_bearing.down&buff.buried_treasure.down&buff.skull_and_crossbones.down
+actions.assisted_combat+=/blade_flurry,if=active_enemies>=2&buff.blade_flurry.down
+actions.assisted_combat+=/cold_blood,if=effective_combo_points>=5&cooldown.dispatch.ready
+actions.assisted_combat+=/killing_spree,if=effective_combo_points>=5&active_enemies>=1
+actions.assisted_combat+=/between_the_eyes,if=buff.subterfuge.up&effective_combo_points>=5&talent.crackshot
+# Generic stealth check replacement expression for multiple buff checks (Overridden from 'buff.stealth.up&combo_points>=5&talent.crackshot')
+actions.assisted_combat+=/between_the_eyes,if=stealthed.basic&effective_combo_points>=5&talent.crackshot
+actions.assisted_combat+=/between_the_eyes,if=buff.ruthless_precision.up&effective_combo_points>=5
+actions.assisted_combat+=/between_the_eyes,if=buff.between_the_eyes.down&effective_combo_points>=5
+actions.assisted_combat+=/ghostly_strike,if=buff.cold_blood.down
+actions.assisted_combat+=/blade_rush
+actions.assisted_combat+=/dispatch,if=effective_combo_points>=5
+actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5
+actions.assisted_combat+=/ambush,if=talent.hidden_opportunity
+actions.assisted_combat+=/pistol_shot,if=buff.opportunity.up
+actions.assisted_combat+=/sinister_strike
+actions.assisted_combat+=/pistol_shot,if=energy>=99&target.distance>15
+actions.assisted_combat+=/sinister_strike
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/adrenaline_rush,if=!buff.adrenaline_rush.up
+actions.cooldowns+=/vanish,if=!stealthed.all
+actions.cooldowns+=/keep_it_rolling,if=rtb_buffs>=4

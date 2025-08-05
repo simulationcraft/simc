@@ -1,0 +1,49 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/summon_pet
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/haunt
+actions.precombat+=/unstable_affliction
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=grimoire_of_sacrifice,if=pet.any.active&buff.grimoire_of_sacrifice.down
+actions.assisted_combat+=/vile_taint
+actions.assisted_combat+=/agony,if=dot.agony.remains<=4
+actions.assisted_combat+=/seed_of_corruption,if=active_enemies>3&!dot.corruption.ticking&!talent.wither
+actions.assisted_combat+=/seed_of_corruption,if=active_enemies>3&!dot.wither.ticking&talent.wither
+actions.assisted_combat+=/wither,if=!dot.corruption.ticking&!talent.wither
+actions.assisted_combat+=/corruption,if=!dot.corruption.ticking&!talent.wither
+actions.assisted_combat+=/wither,if=!dot.wither.ticking&talent.wither
+actions.assisted_combat+=/corruption,if=!dot.wither.ticking&talent.wither
+actions.assisted_combat+=/agony,if=!dot.agony.ticking
+# Condition discarded as it checks for PvP talent. (Overridden from 'buff.unknown_spell_335052.up&!dot.unstable_affliction.ticking')
+actions.assisted_combat+=/unstable_affliction,if=1&!dot.unstable_affliction.ticking
+# Condition discarded as it checks for PvP talent. (Overridden from 'buff.unknown_spell_335052.down&!dot.unstable_affliction.ticking')
+actions.assisted_combat+=/unstable_affliction,if=0&!dot.unstable_affliction.ticking
+actions.assisted_combat+=/malefic_rapture,if=soul_shard>=5
+actions.assisted_combat+=/phantom_singularity
+actions.assisted_combat+=/soul_rot
+actions.assisted_combat+=/haunt
+actions.assisted_combat+=/malevolence
+actions.assisted_combat+=/oblivion,if=active_enemies<=2
+actions.assisted_combat+=/malefic_rapture,if=buff.tormented_crescendo.up
+actions.assisted_combat+=/malefic_rapture,if=soul_shard>=2,cooldown_allow_casting_success=1
+actions.assisted_combat+=/malefic_rapture
+actions.assisted_combat+=/infernal_bolt,cooldown_allow_casting_success=1
+actions.assisted_combat+=/shadow_bolt,cooldown_allow_casting_success=1
+actions.assisted_combat+=/infernal_bolt
+actions.assisted_combat+=/shadow_bolt
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/use_items
+actions.cooldowns+=/summon_darkglare,if=dot.soul_rot.ticking|!talent.soul_rot

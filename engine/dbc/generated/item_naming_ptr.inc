@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.1.5.60428
-static const std::array<item_name_description_t, 963> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 11.2.0.62253
+static constexpr std::array<item_name_description_t, 974> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -918,12 +918,14 @@ static const std::array<item_name_description_t, 963> __ptr_item_name_descriptio
   { 14187, "The War Within Season 2"                     },
   { 14189, "Singing Sea Citrine"                         },
   { 14190, "Singing Wind Citrine"                        },
+  { 14191, "The War Within Season 3"                     },
   { 14192, "Fortune Crafted"                             },
   { 14195, "Dragonflight Season 1 Elite"                 },
   { 14196, "Dragonflight Season 2 Elite"                 },
   { 14197, "Dragonflight Season 3 Elite"                 },
   { 14198, "Dragonflight Season 4 Elite"                 },
   { 14199, "Dragonflight Season 3 & 4 Elite"             },
+  { 14200, "Starlight Crafted"                           },
   { 14203, "Timewalking Vendor - Blue"                   },
   { 14204, "Timewalking Vendor - Brown"                  },
   { 14205, "Timewalking Vendor - Purple"                 },
@@ -963,5 +965,14 @@ static const std::array<item_name_description_t, 963> __ptr_item_name_descriptio
   { 14259, "Flame's Radiance"                            },
   { 14260, "Season 3 Crafted"                            },
   { 14261, "Voidfire Deathcycle"                         },
+  { 14289, "Voidtouched"                                 },
+  { 14290, "Fiery"                                       },
+  { 14291, "Blood"                                       },
+  { 14293, "The War Within Season 2"                     },
+  { 14294, "A Greedy Emissary"                           },
+  { 14342, "Void"                                        },
+  { 14343, "Light"                                       },
+  { 14349, "Phase Diving"                                },
+  { 14350, "Treasures and World Quests"                  },
 } };
 

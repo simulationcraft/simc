@@ -5,7 +5,7 @@ level=80
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAgxMzMzMjY2MwsNzMDWGAAAAAAAAAAzAGzYYBGYZ0CNswMzMzsNmZxMzMzYMzMYMzMgZAAA
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAgxMzMzMjY2MwsNzMDWGAAAAAAAAAAzAGzYYBGYZ0CNswYmZmtxMLmZmZGjZmBjZmBjZAAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -24,7 +24,7 @@ temporary_enchant=main_hand:algari_mana_oil_3
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
 # Sets the expected Tyrant Setup on pull to take a total 12 seconds long
-actions.precombat+=/variable,name=first_tyrant_time,op=set,value=12
+actions.precombat+=/variable,name=first_tyrant_time,op=set,value=15
 # Accounts for the execution time of Grimoire Felguard in the setup of Tyrant on Pull
 actions.precombat+=/variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled
 # Accounts for the execution time of Vilefiend in the the setup of Tyrant on Pull
@@ -65,45 +65,29 @@ actions.precombat+=/shadow_bolt
 
 # Executed every time the actor is available.
 actions=call_action_list,name=variables
-actions+=/potion,if=buff.tyrant.remains>10
+actions+=/potion,if=pet.demonic_tyrant.active
 actions+=/call_action_list,name=racials,if=pet.demonic_tyrant.active|fight_remains<22,use_off_gcd=1
 actions+=/call_action_list,name=items,use_off_gcd=1
-actions+=/call_action_list,name=fight_end,if=fight_remains<30
 actions+=/call_action_list,name=opener,if=time<variable.first_tyrant_time
-actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14
-actions+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25
-actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30
-actions+=/demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.react&(!talent.doom|buff.demonic_core.react>1|debuff.doom.remains>10|debuff.doom.down)&(((!talent.fel_invocation|pet.felguard.cooldown.soul_strike.remains>gcd.max*2)&soul_shard<4))&!prev_gcd.1.demonbolt&!variable.pool_cores_for_tyrant
-actions+=/demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.stack>=3-(talent.doom&debuff.doom.down)*2&soul_shard<=3&!variable.pool_cores_for_tyrant
-actions+=/power_siphon,if=buff.demonic_core.stack<3&cooldown.summon_demonic_tyrant.remains>25
-actions+=/demonic_strength,,if=active_enemies>1
+actions+=/invoke_external_buff,name=power_infusion,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*6+cast_time
+actions+=/summon_demonic_tyrant,if=variable.imp_despawn&pet.vilefiend.active&pet.dreadstalker.active&(variable.imp_despawn<time+gcd.max*6+cast_time|buff.wild_imps.stack>=9-2*prev_gcd.1.hand_of_guldan)
+actions+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<=15&cooldown.call_dreadstalkers.remains<10
+actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>=25+cast_time|cooldown.summon_demonic_tyrant.remains<=13&cooldown.call_dreadstalkers.remains<10
+actions+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>=10|cooldown.summon_demonic_tyrant.remains<=10
+actions+=/demonbolt,target_if=min:debuff.doom.remains,if=buff.demonic_core.stack>=3-(talent.doom&debuff.doom.down)*2&soul_shard<=3&talent.doom
+actions+=/demonic_strength,if=pet.demonic_tyrant.active&active_enemies>1
 actions+=/bilescourge_bombers,if=active_enemies>1
-actions+=/guillotine,if=active_enemies>1&(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
+actions+=/hand_of_guldan,if=demonic_art&soul_shard>=3
+actions+=/implosion,if=active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl
 actions+=/ruination
-actions+=/infernal_bolt,if=soul_shard<3&cooldown.summon_demonic_tyrant.remains>20
-actions+=/implosion,if=two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&!raid_event.adds.exists|two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&raid_event.adds.exists&(active_enemies>3|active_enemies<=3&last_cast_imps>0)
-actions+=/demonbolt,if=variable.diabolic_ritual_remains>gcd.max&variable.diabolic_ritual_remains<gcd.max+gcd.max&buff.demonic_core.up&soul_shard<=3
-actions+=/shadow_bolt,if=variable.diabolic_ritual_remains>gcd.max&variable.diabolic_ritual_remains<soul_shard.deficit*cast_time+gcd.max&soul_shard<5
-actions+=/hand_of_guldan,if=((soul_shard>2&(cooldown.call_dreadstalkers.remains>gcd.max*4|buff.demonic_calling.remains-gcd.max>cooldown.call_dreadstalkers.remains)&cooldown.summon_demonic_tyrant.remains>17)|soul_shard=5|soul_shard=4&talent.fel_invocation)&(active_enemies=1)
-actions+=/hand_of_guldan,if=soul_shard>2&!(active_enemies=1)
-actions+=/demonbolt,target_if=(!debuff.doom.up)|active_enemies<4,if=buff.demonic_core.stack>1&((soul_shard<4&!talent.soul_strike|pet.felguard.cooldown.soul_strike.remains>gcd.max*2&talent.fel_invocation)|soul_shard<3)&!variable.pool_cores_for_tyrant
-actions+=/demonbolt,if=buff.demonic_core.react&buff.tyrant.up&soul_shard<3
-actions+=/demonbolt,if=buff.demonic_core.react>1&soul_shard<4
+actions+=/demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=3&talent.doom
+actions+=/demonbolt,if=soul_shard<4&buff.demonic_core.stack>=3&!talent.doom
+actions+=/power_siphon,if=!buff.demonic_core.up
+actions+=/infernal_bolt,if=soul_shard<3
+actions+=/hand_of_guldan,if=soul_shard>=3
+actions+=/demonbolt,if=soul_shard<4&buff.demonic_core.react
 actions+=/shadow_bolt
 actions+=/infernal_bolt
-
-actions.fight_end=grimoire_felguard,if=fight_remains<20
-actions.fight_end+=/Ruination
-actions.fight_end+=/implosion,if=fight_remains<2*gcd.max&!prev_gcd.1.implosion
-actions.fight_end+=/demonbolt,if=fight_remains<gcd.max*2*buff.demonic_core.stack+9&buff.demonic_core.react&(soul_shard<4|fight_remains<buff.demonic_core.stack*gcd.max)
-actions.fight_end+=/call_dreadstalkers,if=fight_remains<20
-actions.fight_end+=/summon_vilefiend,if=fight_remains<20
-actions.fight_end+=/summon_demonic_tyrant,if=fight_remains<20
-actions.fight_end+=/demonic_strength,if=fight_remains<10
-actions.fight_end+=/power_siphon,if=buff.demonic_core.stack<3&fight_remains<20
-actions.fight_end+=/demonbolt,if=fight_remains<gcd.max*2*buff.demonic_core.stack+9&buff.demonic_core.react&(soul_shard<4|fight_remains<buff.demonic_core.stack*gcd.max)
-actions.fight_end+=/hand_of_guldan,if=soul_shard>2&fight_remains<gcd.max*2*buff.demonic_core.stack+9
-actions.fight_end+=/infernal_bolt
 
 actions.items=use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=2&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.2.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1&!variable.trinket_2_manual)|variable.trinket_1_buff_duration>=fight_remains
 actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=1&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.1.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2&!variable.trinket_1_manual)|variable.trinket_2_buff_duration>=fight_remains
@@ -119,41 +103,24 @@ actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhanc
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(pet.demonic_tyrant.active|fight_remains<=15|trinket.2.cooldown.remains>cooldown.summon_demonic_tyrant.remains)&variable.trinket_2_buffs
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(pet.demonic_tyrant.active|fight_remains<=15|trinket.1.cooldown.remains>cooldown.summon_demonic_tyrant.remains)&variable.trinket_1_buffs
 
-actions.opener=grimoire_felguard,if=soul_shard>=5-talent.fel_invocation
+actions.opener=summon_demonic_tyrant,if=buff.wild_imps.stack>=9&buff.dreadstalkers.remains&(buff.vilefiend.up|!talent.summon_vilefiend)&(buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>30|!talent.grimoire_felguard)
+actions.opener+=/grimoire_felguard,if=soul_shard>=5-talent.fel_invocation
 actions.opener+=/summon_vilefiend,if=soul_shard=5
 actions.opener+=/shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up
 actions.opener+=/call_dreadstalkers,if=soul_shard=5
 actions.opener+=/Ruination
+actions.opener+=/hand_of_guldan,if=soul_shard>=3&buff.infernal_bolt.up
+actions.opener+=/infernal_bolt
+actions.opener+=/shadow_bolt,if=soul_shard<5&buff.dreadstalkers.remains&pet.wild_imp.active<3
+actions.opener+=/hand_of_guldan,if=soul_shard>=3&pet.wild_imp.active<10
+actions.opener+=/demonbolt,if=buff.demonic_core.react&buff.dreadstalkers.remains&soul_shard<4
+actions.opener+=/hand_of_guldan,if=variable.first_tyrant_time<gcd.max+action.summon_demonic_tyrant.cast_time
+actions.opener+=/shadow_bolt,if=buff.dreadstalkers.remains
 
 actions.racials=berserking,use_off_gcd=1
 actions.racials+=/blood_fury
 actions.racials+=/fireblood
 actions.racials+=/ancestral_call
-
-actions.tyrant=call_action_list,name=racials,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*2+action.summon_demonic_tyrant.cast_time&(prev_gcd.1.hand_of_guldan|prev_gcd.1.ruination)&(variable.imp_despawn&variable.imp_despawn<time+gcd.max+action.summon_demonic_tyrant.cast_time|soul_shard<2)
-actions.tyrant+=/potion,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*2+action.summon_demonic_tyrant.cast_time&(prev_gcd.1.hand_of_guldan|prev_gcd.1.ruination)&(variable.imp_despawn&variable.imp_despawn<time+gcd.max+action.summon_demonic_tyrant.cast_time|soul_shard<2)
-actions.tyrant+=/invoke_external_buff,name=power_infusion,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*2+action.summon_demonic_tyrant.cast_time&(prev_gcd.1.hand_of_guldan|prev_gcd.1.ruination)&(variable.imp_despawn&variable.imp_despawn<time+gcd.max+action.summon_demonic_tyrant.cast_time|soul_shard<2)
-actions.tyrant+=/summon_demonic_tyrant,if=buff.power_infusion.up
-actions.tyrant+=/power_siphon,if=cooldown.summon_demonic_tyrant.remains<15
-actions.tyrant+=/ruination,if=buff.dreadstalkers.remains>gcd.max+action.summon_demonic_tyrant.cast_time&(soul_shard=5|variable.imp_despawn)
-actions.tyrant+=/infernal_bolt,if=!buff.demonic_core.react&variable.imp_despawn>time+gcd.max*2+action.summon_demonic_tyrant.cast_time&soul_shard<3
-actions.tyrant+=/shadow_bolt,if=prev_gcd.1.call_dreadstalkers&soul_shard<4&buff.demonic_core.react<4
-actions.tyrant+=/shadow_bolt,if=prev_gcd.2.call_dreadstalkers&prev_gcd.1.shadow_bolt&buff.bloodlust.up&soul_shard<5
-actions.tyrant+=/shadow_bolt,if=prev_gcd.1.summon_vilefiend&(buff.demonic_calling.down|prev_gcd.2.grimoire_felguard)
-actions.tyrant+=/shadow_bolt,if=prev_gcd.1.grimoire_felguard&buff.demonic_core.react<3&buff.demonic_calling.remains>gcd.max*3
-actions.tyrant+=/hand_of_guldan,if=variable.imp_despawn>time+gcd.max*2+action.summon_demonic_tyrant.cast_time&!buff.demonic_core.react&buff.demonic_art_pit_lord.up&variable.imp_despawn<time+gcd.max*5+action.summon_demonic_tyrant.cast_time
-actions.tyrant+=/hand_of_guldan,if=variable.imp_despawn>time+gcd.max+action.summon_demonic_tyrant.cast_time&variable.imp_despawn<time+gcd.max*2+action.summon_demonic_tyrant.cast_time&buff.dreadstalkers.remains>gcd.max+action.summon_demonic_tyrant.cast_time&soul_shard>1
-actions.tyrant+=/shadow_bolt,if=!buff.demonic_core.react&variable.imp_despawn>time+gcd.max*2+action.summon_demonic_tyrant.cast_time&variable.imp_despawn<time+gcd.max*4+action.summon_demonic_tyrant.cast_time&soul_shard<3&buff.dreadstalkers.remains>gcd.max*2+action.summon_demonic_tyrant.cast_time
-actions.tyrant+=/grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<13+gcd.max&cooldown.summon_vilefiend.remains<gcd.max&cooldown.call_dreadstalkers.remains<gcd.max*3.33&(soul_shard=5-(pet.felguard.cooldown.soul_strike.remains<gcd.max)&talent.fel_invocation|soul_shard=5)
-actions.tyrant+=/summon_vilefiend,if=(buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>10|!talent.grimoire_felguard)&cooldown.summon_demonic_tyrant.remains<13&cooldown.call_dreadstalkers.remains<gcd.max*2.33&(soul_shard=5|soul_shard=4&(buff.demonic_core.react=4)|buff.grimoire_felguard.up)
-actions.tyrant+=/call_dreadstalkers,if=(!talent.summon_vilefiend|buff.vilefiend.up)&cooldown.summon_demonic_tyrant.remains<10&soul_shard>=(5-(buff.demonic_core.react>=3))|prev_gcd.3.grimoire_felguard
-actions.tyrant+=/summon_demonic_tyrant,if=variable.imp_despawn&variable.imp_despawn<time+gcd.max*2+cast_time|buff.dreadstalkers.up&buff.dreadstalkers.remains<gcd.max*2+cast_time
-actions.tyrant+=/hand_of_guldan,if=(variable.imp_despawn|buff.dreadstalkers.remains)&soul_shard>=3|soul_shard=5
-actions.tyrant+=/infernal_bolt,if=variable.imp_despawn&soul_shard<3
-actions.tyrant+=/demonbolt,target_if=min:debuff.doom.remains,if=variable.imp_despawn&buff.demonic_core.react&soul_shard<4|prev_gcd.1.call_dreadstalkers&soul_shard<4&buff.demonic_core.react=4|buff.demonic_core.react=4&soul_shard<4|buff.demonic_core.react>=2&cooldown.power_siphon.remains<5
-actions.tyrant+=/ruination,if=variable.imp_despawn|soul_shard=5&cooldown.summon_vilefiend.remains>gcd.max*3
-actions.tyrant+=/shadow_bolt
-actions.tyrant+=/infernal_bolt
 
 actions.variables=variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected
 actions.variables+=/variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active
@@ -172,38 +139,35 @@ actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<6,if=act
 actions.variables+=/variable,name=impl,op=set,value=buff.tyrant.remains<8,if=active_enemies>4+(talent.sacrificed_souls.enabled)
 # Restricts Demonic Core usage for the sake of having 2 or more Demonic Cores on Tyrant Setup
 actions.variables+=/variable,name=pool_cores_for_tyrant,op=set,value=cooldown.summon_demonic_tyrant.remains<20&variable.next_tyrant_cd<20&(buff.demonic_core.stack<=2|!buff.demonic_core.up)&cooldown.summon_vilefiend.remains<gcd.max*8&cooldown.call_dreadstalkers.remains<gcd.max*8
-actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_mother_of_chaos.remains,if=buff.diabolic_ritual_mother_of_chaos.up
-actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_overlord.remains,if=buff.diabolic_ritual_overlord.up
-actions.variables+=/variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_pit_lord.remains,if=buff.diabolic_ritual_pit_lord.up
 
-head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1527/11996/1808,gem_id=213743
-neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213467/213467
-shoulders=underbosss_tailored_mantle,id=228870,ilevel=678
-back=candlebearers_shroud,id=221109,bonus_id=3170/11996/11964,enchant_id=7409
-chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/8792/11109/8960,ilevel=675,gem_id=213467,enchant_id=7397,crafted_stats=36/32
-hands=spliced_fiendtraders_demonic_grasp,id=229326,ilevel=678
-waist=excavators_safety_belt,id=159226,bonus_id=1808,ilevel=678,gem_id=213491
-legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=cloudstrider_soles,id=221043,ilevel=678,enchant_id=7424
-finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213458,enchant_id=7334
-finger2=miniature_roulette_wheel,id=228843,bonus_id=1527/11996/11964/8781,gem_id=213458/213458,enchant_id=7340,crafted_stats=40/36
-trinket1=eye_of_kezan,id=230198,ilevel=678
-trinket2=house_of_cards,id=230027,ilevel=678
-main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/8795/11300/8960,crafted_stats=40/36
+head=spliced_fiendtraders_transcendence,id=229325,bonus_id=11996/1808/12376/1533,gem_id=213743,enchant_id=7933
+neck=semicharmed_amulet,id=228841,bonus_id=1533/12376/11964/8781,gem_id=213470/213470
+shoulders=underbosss_tailored_mantle,id=228870,bonus_id=1533/12376/11964
+back=candlebearers_shroud,id=221109,bonus_id=11996/11964/12376/3176,enchant_id=7409
+chest=spliced_fiendtraders_surgical_gown,id=229328,bonus_id=12178/1533/12376,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/10222/11144/11307/11109/8960/1530/12373/8795,ilevel=681,gem_id=213470,enchant_id=7397,crafted_stats=36/32
+hands=spliced_fiendtraders_demonic_grasp,id=229326,bonus_id=12179/1533/12376
+waist=excavators_safety_belt,id=159226,bonus_id=11365/12376/11964/1808,gem_id=213470
+legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=12178/1533/12376,enchant_id=7534
+feet=cloudstrider_soles,id=221043,bonus_id=3176/12376/11964,enchant_id=7424
+finger1=miniature_roulette_wheel,id=228843,bonus_id=11996/11964/8781/12376/1533,gem_id=213470/213491,enchant_id=7346,crafted_stats=40/36
+finger2=the_jastor_diamond,id=231265,bonus_id=1533/12376/11964/8781,gem_id=213485/213458,enchant_id=7346
+trinket1=house_of_cards,id=230027,bonus_id=1533/12376/11964
+trinket2=mugs_moxie_jug,id=230192,bonus_id=1533/12376/11964
+main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=11996/11964/12376/3176,enchant_id=7445
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/11300/8960/1491/12373/8793,ilevel=681,crafted_stats=40/36
 
 # Gear Summary
-# gear_ilvl=677.63
-# gear_stamina=392511
-# gear_intellect=69873
-# gear_crit_rating=11162
-# gear_haste_rating=14115
-# gear_mastery_rating=10560
-# gear_versatility_rating=11194
+# gear_ilvl=683.63
+# gear_stamina=422460
+# gear_intellect=79268
+# gear_crit_rating=10728
+# gear_haste_rating=14358
+# gear_mastery_rating=10205
+# gear_versatility_rating=11248
 # gear_leech_rating=1020
 # gear_speed_rating=1000
-# gear_armor=20744
+# gear_armor=21621
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1
 default_pet=felguard

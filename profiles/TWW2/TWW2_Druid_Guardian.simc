@@ -42,7 +42,6 @@ actions+=/run_action_list,name=bear
 
 actions.bear=maul,if=buff.ravage.up&active_enemies>1
 actions.bear+=/heart_of_the_Wild,if=(talent.heart_of_the_wild.enabled&!talent.rip.enabled)|talent.heart_of_the_wild.enabled&buff.feline_potential_counter.stack=6&active_enemies<3
-actions.bear+=/moonfire,cycle_targets=1,if=buff.bear_form.up&(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
 actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
 actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&cooldown.rage_of_the_sleeper.remains>8
 actions.bear+=/barkskin,if=buff.bear_form.up
@@ -106,9 +105,9 @@ main_hand=bestinslots,id=232526,bonus_id=1527/11996/11964,enchant_id=7460
 # gear_stamina=390980
 # gear_attack_power=469
 # gear_crit_rating=6128
-# gear_haste_rating=19767
+# gear_haste_rating=19745
 # gear_mastery_rating=10248
-# gear_versatility_rating=6331
+# gear_versatility_rating=6352
 # gear_leech_rating=3060
 # gear_speed_rating=250
 # gear_armor=33902

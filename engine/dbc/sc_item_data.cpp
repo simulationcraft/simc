@@ -1273,7 +1273,7 @@ static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_s
   {
     if ( entry.type == ITEM_BONUS_MOD )
     {
-      total += static_cast<double>( entry.value_2 );
+      total += std::abs( entry.value_2 );
     }
   }
 

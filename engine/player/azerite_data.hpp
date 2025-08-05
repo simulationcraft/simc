@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 
 #include "util/util.hpp"
 #include "rapidjson/document.h"

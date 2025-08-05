@@ -12,6 +12,7 @@
 #include "dbc/dbc.hpp"
 
 #include "lib/utf8-cpp/utf8.h"
+#include "fmt/chrono.h"
 
 #include <cctype>
 #include <limits>
@@ -2767,6 +2768,18 @@ const char* util::trait_definition_op_string( trait_definition_op op )
       return "unk";
   }
 }
+
+const char* util::error_level_string( error_level_e level )
+{
+  switch ( level )
+  {
+    case error_level_e::TRIVIAL:          return "Trivial";
+    case error_level_e::MODERATE:         return "Moderate";
+    case error_level_e::SEVERE:           return "Severe";
+    default:                              return "Unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
@@ -2821,7 +2834,7 @@ const char* util::specialization_string( specialization_e spec )
   return "Unknown";
 }
 
-// parse_position_type ======================================================
+// parse_specialization type ================================================
 
 specialization_e util::parse_specialization_type( util::string_view name )
 {
@@ -3455,6 +3468,24 @@ void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* o
   {
     print_chained_exception( e, out, level );
   }
+}
+
+// FMT 11.2 no longer calculates time zone offsets. As not all platforms return time zone information with
+// std::localtime(), calculate the time display string ourselves.
+// NOTE: std::localtime/std::gmtime are not thread-safe, so this should only be used during report processing.
+std::string util::sc_time_str()
+{
+  const auto cur_time = std::time( nullptr );
+  const auto utc_time = std::mktime( std::gmtime( &cur_time ) );
+  const auto local_tm = std::localtime( &cur_time );  // overwrite tm from std::gmtime()
+
+  const auto offset = cur_time - utc_time + ( local_tm->tm_isdst ? 3600 : 0 );
+
+  return fmt::format( "{:%Y-%m-%d %H:%M:%S}{:c}{:02d}{:02d}",
+                      *local_tm,
+                      offset < 0 ? '-' : '+',
+                      std::abs( offset ) / 3600,
+                      offset % 3600 );
 }
 
 namespace util {

@@ -33,4 +33,5 @@ void initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& stats, spe
                               const item_enchantment_data_t& enchant );
 item_socket_color initialize_gem( item_t& item, size_t gem_idx );
 item_socket_color initialize_relic( item_t& item, size_t relic_idx, const gem_property_data_t& gem_property );
+void remove_other_reshii_bonuses( item_t& item );
 }  // namespace enchant

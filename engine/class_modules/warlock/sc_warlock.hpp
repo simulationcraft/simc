@@ -165,7 +165,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
-
+    spawner::pet_spawner_t<pets::destruction::infernal_roc_t, warlock_t> rocs;
     spawner::pet_spawner_t<pets::destruction::overfiend_t, warlock_t> overfiends;
 
     spawner::pet_spawner_t<pets::diabolist::overlord_t, warlock_t> overlords;
@@ -175,6 +175,8 @@ public:
     spawner::pet_spawner_t<pets::diabolist::infernal_fragment_t, warlock_t> fragments;
 
     spawner::pet_spawner_t<pets::diabolist::diabolic_imp_t, warlock_t> diabolic_imps;
+
+    spawner::pet_spawner_t<pets::soul_harvester::rampaging_demonic_soul_t, warlock_t> demonic_souls;
 
     pets_t( warlock_t* w );
   } warlock_pet_list;
@@ -369,6 +371,8 @@ public:
     const spell_data_t* fiendish_wrath_dmg; // TODO: Multiplier fixes for this
     const spell_data_t* fel_explosion;
 
+    player_talent_t master_summoner;
+
     // Destruction
     player_talent_t conflagrate; // Base 2 charges
     const spell_data_t* conflagrate_2; // Energize data
@@ -460,7 +464,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
-    player_talent_t dimension_ripper; // TODO: After 11.1 goes live, removed outdated RNG option and outdated trigger flags
+    player_talent_t dimension_ripper; // TODO: implement the correct proc behavior based on the spell data
 
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
@@ -577,6 +581,7 @@ public:
     action_t* demonfire_infusion;
     action_t* jackpot_ua;
     action_t* jackpot_cdf;
+    action_t* eye_blast;  // Diabolist 2pc damage proc
   } proc_actions;
 
   struct tier_sets_t
@@ -607,6 +612,14 @@ public:
     const spell_data_t* spliced_destro_4pc;
     const spell_data_t* spliced_destro_jackpot;
     const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
+
+    // Soul Harvester
+    const spell_data_t* rampaging_demonic_soul;
+
+    // Diabolist
+    const spell_data_t* demonic_oculus;        // TWW3 Diabolist 2pc stacking buff
+    const spell_data_t* eye_blast;             // TWW3 Diablist 2pc damage proc
+    const spell_data_t* demonic_intelligence;  // TWW3 Diabolist 4pc stacking buff
 
   } tier;
 
@@ -681,9 +694,12 @@ public:
     propagate_const<buff_t*> infernal_bolt;
     propagate_const<buff_t*> abyssal_dominion;
     propagate_const<buff_t*> ruination;
+    propagate_const<buff_t*> demonic_oculus;        // TWW3 Diabolist 2pc buff
+    propagate_const<buff_t*> demonic_intelligence;  // TWW3 Diabolist 4pc buff
 
     // Hellcaller Buffs
     propagate_const<buff_t*> malevolence;
+    propagate_const<buff_t*> maintained_withering; // TWW3 Hellcaller 4pc buff
 
     // Soul Harvester Buffs
     propagate_const<buff_t*> succulent_soul;
@@ -720,6 +736,7 @@ public:
     // Soul Harvester
     gain_t* feast_of_souls;
     gain_t* shadow_of_death;
+    gain_t* rampaging_demonic_soul; // Only with TWW3 4pc
   } gains;
 
   // Procs
@@ -808,7 +825,7 @@ public:
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10, "decimation" };
-    rng_setting_t dimension_ripper = { 0.05, 0.05, "dimension_ripper" };
+    rng_setting_t dimension_ripper = { 0.0225, 0.0225, "dimension_ripper" };
 
     // Diabolist
 
@@ -844,6 +861,10 @@ public:
   void init_procs() override;
   void init_rng() override;
   void init_action_list() override;
+  std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
+  std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
+  parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                            const assisted_combat_step_data_t& step ) const override;
   void init_resources( bool force ) override;
   void init_special_effects() override;
   void reset() override;
@@ -878,7 +899,9 @@ public:
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_mastery() const override;
   double composite_rating_multiplier( rating_e ) const override;
+  void init_blizzard_action_list() override;
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;

@@ -1,0 +1,47 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/berserker_stance,toggle=on
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+actions+=/auto_attack
+actions+=/charge,if=time<=0.5|movement.distance>5
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=rampage,if=buff.enrage.down
+# (Overridden from 'buff.thunder_blast.up&target.distance<=5&buff.enrage.up')
+actions.assisted_combat+=/thunder_clap,if=buff.thunder_blast.up&target.distance<=6&buff.enrage.up
+# (Overridden from 'target.distance<=5&buff.enrage.up')
+actions.assisted_combat+=/thunderous_roar,if=target.distance<=6&buff.enrage.up
+actions.assisted_combat+=/ravager
+actions.assisted_combat+=/odyns_fury,if=target.distance<=12
+# (Overridden from 'target.distance<=5&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down
+actions.assisted_combat+=/whirlwind,if=target.distance<=10&!talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down&active_enemies>3
+actions.assisted_combat+=/champions_spear,if=target.distance<=25
+actions.assisted_combat+=/bladestorm,if=target.distance<=10&buff.enrage.up
+actions.assisted_combat+=/rampage
+actions.assisted_combat+=/onslaught
+actions.assisted_combat+=/execute
+# (Overridden from 'target.distance<=5&talent.crashing_thunder&active_enemies>3')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&active_enemies>3
+actions.assisted_combat+=/raging_blow
+actions.assisted_combat+=/bloodthirst
+# (Overridden from 'target.distance<=5&talent.crashing_thunder')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder
+actions.assisted_combat+=/slam
+actions.assisted_combat+=/heroic_throw,if=target.distance>15
+actions.assisted_combat+=/bloodthirst
+actions.assisted_combat+=/slam
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/recklessness
+actions.cooldowns+=/avatar

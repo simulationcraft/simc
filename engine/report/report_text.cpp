@@ -747,63 +747,60 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
 
 void sim_summary_performance( std::ostream& os, sim_t* sim )
 {
-  std::time_t cur_time = std::time( nullptr );
-
   std::string iterations_str;
   if ( sim -> threads > 1 )
     iterations_str = fmt::format( " ({})", fmt::join( sim -> work_per_thread, ", " ) );
 
-  fmt::print(
-      os,
-      "\n\nBaseline Performance:\n"
-      "  Networking    = {}\n"
-      "  RNG Engine    = {}{}\n"
-      "  Iterations    = {}{}\n"
-      "  TotalEvents   = {}\n"
-      "  MaxEventQueue = {}\n"
+  fmt::print( os,
+              "\n\nBaseline Performance:\n"
+              "  Networking    = {}\n"
+              "  RNG Engine    = {}{}\n"
+              "  Iterations    = {}{}\n"
+              "  TotalEvents   = {}\n"
+              "  MaxEventQueue = {}\n"
 #ifndef NDEBUG
-      "  MaxT0Event    = {}\n"
+              "  MaxT0Event    = {}\n"
 #endif
 #ifdef EVENT_QUEUE_DEBUG
-      "  AllocEvents   = {}\n"
-      "  EndInsert     = {} ({:.3f}%)\n"
-      "  MaxTravDepth  = {}\n"
-      "  AvgTravDepth  = {}\n"
+              "  AllocEvents   = {}\n"
+              "  EndInsert     = {} ({:.3f}%)\n"
+              "  MaxTravDepth  = {}\n"
+              "  AvgTravDepth  = {}\n"
 #endif
-      "  TargetHealth  = {:.0f}\n"
-      "  SimSeconds    = {:.3f}\n"
-      "  CpuSeconds    = {}\n"
-      "  WallSeconds   = {}\n"
-      "  InitSeconds   = {}\n"
-      "  MergeSeconds  = {}\n"
-      "  AnalyzeSeconds= {}\n"
-      "  SpeedUp       = {:.0f}\n"
-      "  EndTime       = {:%Y-%m-%d %H:%M:%S%z} ({})\n\n",
-      SC_NO_NETWORKING_ON ? "disabled" : "enabled",
-      sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
-      sim->iterations,
-      sim -> threads > 1 ? iterations_str : "",
-      sim->event_mgr.total_events_processed,
-      sim->event_mgr.max_events_remaining,
+              "  TargetHealth  = {:.0f}\n"
+              "  SimSeconds    = {:.3f}\n"
+              "  CpuSeconds    = {}\n"
+              "  WallSeconds   = {}\n"
+              "  InitSeconds   = {}\n"
+              "  MergeSeconds  = {}\n"
+              "  AnalyzeSeconds= {}\n"
+              "  SpeedUp       = {:.0f}\n"
+              "  EndTime       = {}\n\n",
+              SC_NO_NETWORKING_ON ? "disabled" : "enabled",
+              sim->rng().name(),
+              sim->deterministic ? " (deterministic)" : "",
+              sim->iterations, sim->threads > 1 ? iterations_str : "",
+              sim->event_mgr.total_events_processed,
+              sim->event_mgr.max_events_remaining,
 #ifndef NDEBUG
-      sim->event_mgr.max_events,
+              sim->event_mgr.max_events,
 #endif
 #ifdef EVENT_QUEUE_DEBUG
-      sim->event_mgr.n_allocated_events, sim->event_mgr.n_end_insert,
-      100.0 * static_cast<double>( sim->event_mgr.n_end_insert ) /
-          sim->event_mgr.events_added,
-      sim->event_mgr.max_queue_depth,
-      static_cast<double>( sim->event_mgr.events_traversed ) /
-          sim->event_mgr.events_added,
+              sim->event_mgr.n_allocated_events,
+              sim->event_mgr.n_end_insert,
+              100.0 * static_cast<double>( sim->event_mgr.n_end_insert ) / sim->event_mgr.events_added,
+              sim->event_mgr.max_queue_depth,
+              static_cast<double>( sim->event_mgr.events_traversed ) / sim->event_mgr.events_added,
 #endif
-      sim->target->resources.base[ RESOURCE_HEALTH ],
-      sim->simulation_length.sum(), chrono::to_fp_seconds(sim->elapsed_cpu),
-      chrono::to_fp_seconds(sim->elapsed_time),
-      chrono::to_fp_seconds(sim->init_time),
-      chrono::to_fp_seconds(sim->merge_time),
-      chrono::to_fp_seconds(sim->analyze_time),
-      sim->iterations * sim->simulation_length.mean() / chrono::to_fp_seconds(sim->elapsed_cpu),
-      fmt::localtime(cur_time), cur_time );
+              sim->target->resources.base[ RESOURCE_HEALTH ],
+              sim->simulation_length.sum(),
+              chrono::to_fp_seconds( sim->elapsed_cpu ),
+              chrono::to_fp_seconds( sim->elapsed_time ),
+              chrono::to_fp_seconds( sim->init_time ),
+              chrono::to_fp_seconds( sim->merge_time ),
+              chrono::to_fp_seconds( sim->analyze_time ),
+              sim->iterations * sim->simulation_length.mean() / chrono::to_fp_seconds( sim->elapsed_cpu ),
+              util::sc_time_str() );
 #ifdef EVENT_QUEUE_DEBUG
   double total_p = 0;
 

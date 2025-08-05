@@ -30,7 +30,7 @@ actions.precombat+=/variable,name=sf_combustion_flamestrike,if=talent.spellfire_
 actions.precombat+=/variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+talent.firefall+!talent.mark_of_the_firelord+!(talent.flame_patch|talent.quickflame)+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame))*2+(!talent.mark_of_the_firelord&!(talent.flame_patch|talent.quickflame)&talent.firefall)*99
 actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter
 actions.precombat+=/use_item,name=treacherous_transmitter
-actions.precombat+=/use_item,name=ingenious_mana_battery
+actions.precombat+=/use_item,name=ingenious_mana_battery,target=self
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 actions.precombat+=/frostfire_bolt,if=talent.frostfire_bolt

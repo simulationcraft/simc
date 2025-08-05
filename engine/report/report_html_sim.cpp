@@ -1007,16 +1007,13 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
         commit_link.c_str(), git_info::revision());
   }
 
-  std::time_t rawtime = std::time(nullptr);
-  const tm localtime  = fmt::localtime( rawtime );
-
   os << "<ul class=\"params\">\n";
   if constexpr ( SC_NO_NETWORKING_ON )
   {
     os.format( "<li><b>No Networking</b></li>\n" );
   }
-  os.format( "<li><b>Timestamp:</b> {:%Y-%m-%d %H:%M:%S%z}</li>\n", localtime);
-  os.printf( "<li><b>Iterations:</b> %d</li>\n", sim.iterations );
+  os.format( "<li><b>Timestamp:</b> {}</li>\n", util::sc_time_str() );
+  os.format( "<li><b>Iterations:</b> {}</li>\n", sim.iterations );
 
   if ( sim.vary_combat_length > 0.0 )
   {
@@ -1041,10 +1038,19 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
+    std::map<error_level_e, std::vector<std::string_view>> error_map;
+    for ( const auto& error : sim.error_list )
+      error_map[ error.first ].emplace_back( error.second );
+
     os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
-    for ( const auto& error : sim.error_list )
-      os << util::encode_html( error ) << "\n";
+    for ( const auto& error_list : error_map )
+    {
+      os.format( "{}:\n", util::error_level_string( error_list.first ) );
+
+      for ( const auto& error : error_list.second )
+        os.format( "  {}\n", util::encode_html( error ) );
+    }
 
     os << "</pre>\n\n";
   }

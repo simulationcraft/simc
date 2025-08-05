@@ -75,9 +75,9 @@ uint32_t get_school_mask( school_e s );
 school_e get_school_type( uint32_t school_id );
 bool is_school( school_e s, school_e s2 );
 bool has_common_school( school_e s1, school_e s2 );
-unsigned specialization_max_per_class();
-specialization_e spec_by_idx( const player_e c, unsigned idx );
-int spec_idx( specialization_e spec );
+int spec_idx( specialization_e spec, bool ptr = false );
+int hero_idx( hero_tree_e hero_talent, bool ptr = false );
+int composite_idx( specialization_e spec, hero_tree_e hero, bool ptr = false );
 
 // Data Access
 const char* wow_ptr_status( bool ptr );
@@ -377,7 +377,8 @@ public:
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
   unsigned real_ppm_scale( unsigned ) const;
-  double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
+  double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0, unsigned aura_id = 0 ) const;
+
 private:
   template <typename T>
   const T* find_by_id( unsigned id ) const
@@ -473,6 +474,7 @@ public:
 
   // Derived data access
   unsigned class_max_size() const;
+  unsigned hero_trees_max_per_class() const;
 
   unsigned specialization_max_per_class() const;
   unsigned specialization_max_class() const;

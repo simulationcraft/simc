@@ -838,35 +838,19 @@ bool parse_source( sim_t* sim, std::string_view, std::string_view value )
 
 bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 {
-  static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
-
   player_t* p = sim->active_player;
 
-  auto set_bonus_split = util::string_split<std::string_view>( value, "=" );
-
-  if ( set_bonus_split.size() != 2 )
+  if ( !p->set_bonus_str.empty() )
   {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
-  }
+    sim->error( error_level_e::MODERATE,
+                "Starting with 12.0, multiples lines of the 'set_bonus=' option must be either A) on a single line, delimited by '/', or B) have extra lines concatenated by using 'set_bonus+=', note the '+='." );
 
-  int opt_val = util::to_int( set_bonus_split[ 1 ] );
-  if ( opt_val != 0 && opt_val != 1 )
+    p->set_bonus_str += fmt::format( "/{}", value );
+  }
+  else
   {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
+    p->set_bonus_str = std::string{ value };
   }
-
-  set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus          = B_NONE;
-
-  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
-  {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
-  }
-
-  p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
@@ -1060,6 +1044,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     world_lag( s->world_lag ),
     brain_lag( 0_ms, timespan_t::min() ),
     cooldown_tolerance_( timespan_t::min() ),
+    enable_spell_queue( false ),
+    spell_queue_window( 400_ms ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
     // talent_points( new player_talent_points_t()),
@@ -1089,6 +1075,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     readying( nullptr ),
     off_gcd( nullptr ),
     cast_while_casting_poll_event(),
+    spell_queue_event(),
     off_gcd_ready( timespan_t::min() ),
     cast_while_casting_ready( timespan_t::min() ),
     in_combat( false ),
@@ -1096,6 +1083,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     action_queued( false ),
     first_cast( true ),
     last_foreground_action( nullptr ),
+    spell_queued_action( nullptr ),
     prev_gcd_actions( 0 ),
     off_gcdactions(),
     cast_delay_reaction( 0_ms ),
@@ -1104,6 +1092,9 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     use_apl( "" ),
     // Actions
     use_default_action_list( false ),
+    use_blizzard_action_list( false ),
+    use_cds_with_blizzard_action_list( true ),
+    one_button_mode( false ),
     precombat_action_list( 0 ),
     active_action_list(),
     default_action_list(),
@@ -1170,6 +1161,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     passive_values(),
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
+    single_button_assistant( spell_data_t::nil() ),
     _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
@@ -1379,7 +1371,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( error_level_e::SEVERE, "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
@@ -1395,12 +1387,15 @@ void player_t::init()
   pre_combat->used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
-  for ( auto& elem : alist_map )
+  if ( !use_blizzard_action_list )
   {
-    if ( elem.first == "default" )
-      sim->error( "Ignoring action list named default." );
-    else
-      get_action_priority_list( elem.first )->action_list_str = elem.second;
+    for ( auto& elem : alist_map )
+    {
+      if ( elem.first == "default" )
+        sim->error( "Ignoring action list named default." );
+      else
+        get_action_priority_list( elem.first )->action_list_str = elem.second;
+    }
   }
 
   // If the owner is regenerating using dynamic resource regen, we need to
@@ -1442,18 +1437,6 @@ void player_t::init()
     world_lag.stddev = world_lag.mean * 0.1;
   if ( brain_lag.stddev < 0_ms )
     brain_lag.stddev = brain_lag.mean * 0.1;
-}
-
-/**
- * Initialize race, specialization, talents, professions
- */
-void player_t::init_character_properties()
-{
-  init_race();
-  init_talents();
-  replace_spells();
-  init_position();
-  init_professions();
 }
 
 /**
@@ -2471,10 +2454,11 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       } );
 
       auto id_entry = trait_obj->id_trait_node_entry;
-      auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
 
       if ( it != player->player_traits.end() )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
           player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
@@ -2483,23 +2467,25 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
         *it = entry;
       }
-      else
+      else if ( ranks )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         player->player_traits.push_back( entry );
         player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
                                   trait_obj->name );
-      }
 
-      if ( tree == talent_tree::HERO )
-      {
-        player->player_sub_traits.push_back( id_entry );
-
-        if( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+        if ( tree == talent_tree::HERO )
         {
-          player->player_sub_trees.insert( trait_obj->id_sub_tree );
-          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
-                                    trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
-                                    trait_obj->id_sub_tree );
+          player->player_sub_traits.push_back( id_entry );
+
+          auto _ret = player->player_sub_trees.insert( trait_obj->id_sub_tree );
+          if ( _ret.second )
+          {
+            player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                      trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
+                                      trait_obj->id_sub_tree );
+          }
         }
       }
     }
@@ -2533,6 +2519,9 @@ static bool generate_tree_nodes( player_t* player,
     for ( const auto& trait : trait_data_t::data( class_idx, i, maybe_ptr( player->dbc->ptr ) ) )
       tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
   }
+
+  player->sim->print_debug( "{}: {} tree nodes generated for spec {}.", *player, tree_nodes.size(),
+                            util::specialization_string( spec ) );
 
   return true;
 }
@@ -2711,7 +2700,8 @@ static std::string generate_traits_hash( player_t* player )
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
-    player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
+    player->sim->error( error_level_e::SEVERE, "Player {} has invalid talent tree hash {}{}{}", player->name(),
+                        talents_str, msg.empty() ? "" : ": ", msg );
   };
 
   if ( talents_str.find_first_not_of( base64_char ) != std::string::npos )
@@ -2766,9 +2756,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   player->player_sub_trees.clear();
   player->player_sub_traits.clear();
 
-  // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
-  // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
-  // in later checks
+  // As per Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentImportExport.lua: treeHash is a
+  // 128bit hash, passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated
+  // strings can error in later checks
   get_bit( tree_bits );
 
   std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
@@ -2799,7 +2789,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
            !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
-        do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
+        do_error( fmt::format( "selected node {} entry {} is not available to player's spec.", id,
+                               trait->id_trait_node_entry ) );
         return;
       }
 
@@ -2863,7 +2854,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       }
       else
       {
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+        player->sim->print_debug( "{} adding {} talent {} ({})", *player, util::talent_tree_string( _tree ),
+                                  trait->name, trait->id_trait_node_entry );
       }
     }
   }
@@ -2938,6 +2930,35 @@ static void enable_default_talents( player_t* player )
   }
 }
 
+static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
+{
+  player->sim->print_debug( "Loading all {} hero tree talents for {}.",
+                            trait_data_t::get_hero_tree_name( hero_tree_id ), *player );
+
+  auto traits = trait_data_t::data( util::class_id( player->type ), talent_tree::SELECTION, player->is_ptr() );
+  for ( const auto& trait : traits )
+  {
+    if ( trait.id_sub_tree == hero_tree_id && range::contains( trait.id_spec, player->specialization() ) )
+    {
+      player->player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, trait.max_ranks );
+      player->player_sub_trees.insert( hero_tree_id );
+      player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                trait_data_t::get_hero_tree_name( hero_tree_id, player->is_ptr() ), hero_tree_id );
+    }
+  }
+
+  traits = trait_data_t::data( util::class_id( player->type ), talent_tree::HERO, player->is_ptr() );
+  for ( const auto& trait : traits )
+  {
+    // assume 'off-screen' nodes are invalid
+    if ( trait.row <= 0 || trait.col <= 0 || trait.max_ranks <= 0 )
+      continue;
+
+    player->player_traits.emplace_back( talent_tree::HERO, trait.id_trait_node_entry, trait.max_ranks );
+    player->sim->print_debug( "{} adding hero talent {}", *player, trait.name );
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -2965,7 +2986,36 @@ void player_t::init_talents()
 
   parse_traits( talent_tree::CLASS, class_talents_str, this );
   parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
-  parse_traits( talent_tree::HERO, hero_talents_str, this );
+
+  if ( !hero_talents_str.empty() )
+  {
+    // enable all hero tree, tokenized name
+    if ( auto hero_tree_id = trait_data_t::get_hero_tree_id( hero_talents_str, is_ptr() );
+         trait_data_t::is_hero_tree_valid( static_cast<hero_tree_e>( hero_tree_id ), specialization(), is_ptr() ) )
+    {
+      enable_hero_tree( this, hero_tree_id );
+    }
+    // enable all hero tree, index (1 or 2)
+    else if ( util::is_number( hero_talents_str ) )
+    {
+      auto _id = util::to_unsigned( hero_talents_str );
+      auto hero_trees = trait_data_t::get_valid_hero_tree_ids( specialization(), is_ptr() );
+
+      if ( _id > hero_trees.size() )
+      {
+        sim->error( "Invalid hero tree index {}. {} has {} hero trees.", _id, *this, hero_trees.size() );
+        sim->cancel();
+      }
+
+      auto hero_id = trait_data_t::get_valid_hero_tree_ids( specialization(), is_ptr() ).at( _id - 1 );
+      enable_hero_tree( this, hero_id );
+    }
+    // standard talent:rank/ format
+    else
+    {
+      parse_traits( talent_tree::HERO, hero_talents_str, this );
+    }
+  }
 
   // Add selection traits for any manually added hero traits from new trees
   if ( player_sub_trees.size() > parsed_sub_trees.size() )
@@ -3120,8 +3170,10 @@ void player_t::init_spells()
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s->ok() )
       _mastery = &( s->effectN( 1 ) );
-  }
 
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 1, 7 } )
+      single_button_assistant = find_specialization_spell( "Single-Button Assistant" );
+  }
 }
 
 void player_t::init_gains()
@@ -3368,6 +3420,477 @@ void player_t::init_scaling()
   }
 }
 
+void player_t::init_blizzard_action_list()
+{
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* default_  = get_action_priority_list( "default" );
+  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns",
+                                                                "Major cooldowns are not used by the Assisted Combat system. "
+                                                                "This simple default cooldown usage has been provided by simc." );
+  action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat",
+                                                                      "This is the default action priority list from the game's Assisted Combat system." );
+
+  precombat->add_action( "snapshot_stats" );
+
+  if ( use_cds_with_blizzard_action_list )
+    default_->add_action( "call_action_list,name=cooldowns" );
+
+  default_->add_action( "call_action_list,name=assisted_combat" );
+
+  cooldowns->add_action( "use_items" );
+  cooldowns->add_action( "potion" );
+  cooldowns->add_action( "blood_fury" );
+  cooldowns->add_action( "berserking" );
+  cooldowns->add_action( "fireblood" );
+  cooldowns->add_action( "ancestral_call" );
+
+  for ( const auto& step : assisted_combat_step_data_t::data( specialization(), is_ptr() ) )
+    parse_assisted_combat_step( step, assisted_combat );
+}
+
+std::vector<std::string> player_t::action_names_from_spell_id( unsigned int spell_id ) const
+{
+  std::vector<std::string> names;
+  const spell_data_t* spell = find_spell( spell_id );
+
+  if ( spell && !spell->flags( SX_PASSIVE ) )
+    names.push_back( util::tokenize_fn( spell->name_cstr() ) );
+
+  return names;
+}
+
+std::string player_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
+{
+  const spell_data_t* spell = find_spell( spell_id );
+  std::string aura_name = util::tokenize_fn( spell->name_cstr() );
+  if ( aura_name.empty() )
+    aura_name = fmt::format( "unknown_spell_{}", spell_id );
+
+  if ( on_self )
+  {
+    if ( spell->flags( SX_PASSIVE ) )
+    {
+      // check if this is a talent
+      for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
+      {
+        const auto& traits = trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), specialization(), is_ptr() );
+        if ( traits.size() > 0 )
+          return "talent." + aura_name;
+      }
+    }
+
+    // use an existing buff with the spell id if available
+    for ( const buff_t* buff : buff_list )
+    {
+      if ( buff->data().id() == spell_id )
+        return "buff." + buff->name_str;
+    }
+
+    return "buff." + aura_name;
+  }
+
+  for ( const auto& e : spell->effects() )
+  {
+    for ( auto a : { A_PERIODIC_DAMAGE, A_PERIODIC_LEECH } )
+    {
+      if ( a == e.subtype() )
+        return "dot." + aura_name;
+    }
+  }
+
+  return "debuff." + aura_name;
+}
+
+void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat )
+{
+  std::string expr = "";
+  std::string base_expr = "";
+  std::string comment = "";
+  bool show_diff = false;
+  bool cooldown_allow_casting_success = false;
+  bool allow_duplicates = true;
+
+  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
+  {
+    if ( rule.condition_type == COOLDOWN_ALLOW_CASTING_SUCCESS )
+      cooldown_allow_casting_success = true;
+
+    parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
+    parsed_assisted_combat_rule_t base_combat_rule = player_t::parse_assisted_combat_rule( rule, step );
+
+    if ( !derived_combat_rule.expr.empty() )
+      expr += expr.empty() ? derived_combat_rule.expr : "&" + derived_combat_rule.expr;
+    if ( !derived_combat_rule.comment.empty() )
+      comment += comment.empty() ? derived_combat_rule.comment : ", " + derived_combat_rule.comment;
+    if ( !derived_combat_rule.allow_duplicates )
+      allow_duplicates = false;
+
+    if ( !base_combat_rule.expr.empty() )
+      base_expr += base_expr.empty() ? base_combat_rule.expr : "&" + base_combat_rule.expr;
+
+    show_diff |= derived_combat_rule.show_diff;
+  }
+
+  if ( base_expr != expr && show_diff )
+    comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
+
+  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  {
+    if ( name.empty() )
+      continue;
+
+    std::string action_str = name;
+
+    if ( !expr.empty() )
+      action_str += ",if=" + expr;
+
+    if ( cooldown_allow_casting_success )
+      action_str += ",cooldown_allow_casting_success=1";
+
+    // Optional duplicate filtering for messy action lists or duplicated overriden criteria
+    if ( !allow_duplicates && range::contains( assisted_combat->action_list, action_str, []( const auto& entry ) { return entry.action_; } ) )
+      continue;
+
+    assisted_combat->add_action( action_str, comment );
+  }
+}
+
+parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
+                                                                    const assisted_combat_step_data_t& step ) const
+{
+  auto tokenize_spell = [ & ] ( unsigned int spell_id )
+  {
+    const spell_data_t* spell = find_spell( spell_id );
+    if ( !spell )
+      throw std::runtime_error( fmt::format( "Unable to find spell '{}' for assisted combat condition '{}'.", spell_id, rule.id ) );
+    std::string spell_name = util::tokenize_fn( spell->name_cstr() );
+    if ( spell_name.empty() )
+      return fmt::format( "unknown_spell_{}", spell_id );
+    return spell_name;
+  };
+
+  auto v1 = rule.condition_value_1;
+  auto v2 = rule.condition_value_2;
+  auto v3 = rule.condition_value_3;
+  std::string expr_str;
+  std::string expr_str_2;
+  std::string expr_str_3;
+  bool has_or = false;
+  bool is_duplicate_2;
+  bool is_duplicate_3;
+  bool is_modified;
+  // TODO: verify < vs <= and > vs >= on all condition types
+  switch ( rule.condition_type )
+  {
+    case SPELL_LEARNED:
+      assert( v2 == 0 && v3 == 0 );
+      if ( v1 )
+      {
+        for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
+        {
+          const auto& traits = trait_data_t::find_by_spell( tree, v1, util::class_id( type ), specialization(), is_ptr() );
+          if ( traits.size() > 0 )
+            return fmt::format( "talent.{}", tokenize_spell( v1 ) );
+        }
+        // TODO: Are there any other types of passives to check here?
+        // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
+      }
+      return ""; // no check necessary because simc actions are filtered out if the spell is not known
+    case SPELL_ON_COOLDOWN:
+      assert( v2 == 0 && v3 == 0 );
+      if ( v1 )
+        return fmt::format( "!cooldown.{}.ready", tokenize_spell( v1 ) );
+      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
+    case SPELL_OFF_COOLDOWN:
+      assert( v2 == 0 && v3 == 0 );
+      if ( v1 )
+        return fmt::format( "cooldown.{}.ready", tokenize_spell( v1 ) );
+      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
+    case TARGET_DISTANCE_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "target.distance<={}", v1 );
+    case TARGET_DISTANCE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "target.distance>{}", v1 );
+    case HOSTILE_TARGET:
+    case FRIENDLY_TARGET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
+      return "";
+    case HEALTH_PCT_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "target.health.pct>={}", v1 );
+    case HEALTH_PCT_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "target.health.pct<={}", v1 );
+    case AURA_ON_PLAYER:
+      // TODO: Are there any cases where a passive here would not be a talent?
+      expr_str   = v1 ? aura_expr_from_spell_id( v1, true ) : "";
+      expr_str_2 = v2 ? aura_expr_from_spell_id( v2, true ) : "";
+      expr_str_3 = v3 ? aura_expr_from_spell_id( v3, true ) : "";
+      if ( v1 && !( expr_str.find( "talent." ) == 0 ) )
+        expr_str += ".up";
+      if ( v2 && !( expr_str_2.find( "talent." ) == 0 ) )
+        expr_str_2 += ".up";
+      if ( v3 && !( expr_str_3.find( "talent." ) == 0 ) )
+        expr_str_3 += ".up";
+      is_duplicate_2 = v2 && expr_str_2 == expr_str;
+      is_duplicate_3 = v3 && ( expr_str_3 == expr_str || expr_str_3 == expr_str_2 );
+      if ( v2 && !is_duplicate_2 )
+      {
+        if ( !expr_str.empty() )
+        {
+          expr_str += "|";
+          has_or = true;
+        }
+        expr_str += expr_str_2;
+      }
+      if ( v3 && !is_duplicate_3 )
+      {
+        if ( !expr_str.empty() )
+        {
+          expr_str += "|";
+          has_or = true;
+        }
+        expr_str += expr_str_3;
+      }
+      is_modified = is_duplicate_2 || is_duplicate_3;
+      if ( has_or )
+        return { fmt::format( "({})", expr_str ), is_modified };
+      return { expr_str, is_modified };
+    case AURA_ON_TARGET:
+      assert( v2 == 0 && v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, false );
+      if ( expr_str.find( "dot." ) == 0 )
+        return fmt::format( "{}.ticking", expr_str );
+      return fmt::format( "{}.up", expr_str );
+    case TARGET_COUNT_NEAR_TARGET_GREATER:
+      assert( v3 == 0 );
+      // TODO: add distance targeting
+      return fmt::format( "active_enemies>{}", v1 );
+    case TARGET_COUNT_NEAR_PLAYER_GREATER:
+      assert( v3 == 0 );
+      // TODO: add distance targeting
+      return fmt::format( "active_enemies>{}", v1 );
+    case AURA_COUNT_NEAR_PLAYER_GREATER:
+      // TODO: add distance check?
+      // TODO: currently unused; verify condition value indices
+      expr_str = aura_expr_from_spell_id( v3, false );
+      if ( expr_str.find( "dot." ) == 0 )
+        return fmt::format( "active_{}>={}", expr_str, v1 ); // TODO: > or >=?
+      // TODO: support debuffs
+      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_GREATER." );
+    case AFFORD_COST:
+      assert( v2 == 0 && v3 == 0 );
+      if ( v1 )
+        return fmt::format( "action.{}.cost_affordable", tokenize_spell( v1 ) );
+      return ""; // no check necessary because simc actions are not ready unless their cost is affordable
+    case AURA_MISSING_TARGET:
+      assert( v2 == 0 && v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, false );
+      if ( expr_str.find( "dot." ) == 0 )
+        return fmt::format( "!{}.ticking", expr_str );
+      return fmt::format( "{}.down", expr_str );
+    case AURA_MISSING_PLAYER:
+      assert( v2 == 0 && v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, true );
+      // TODO: Are there any cases where a passive here would not be a talent?
+      if ( expr_str.find( "talent." ) == 0 )
+        return "!" + expr_str;
+      return fmt::format( "{}.down", expr_str );
+    case AURA_DURATION_PLAYER:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, true );
+      // TODO: Are there any cases where these would be talents we should worry about?
+      if ( expr_str.find( "talent." ) == 0 )
+        throw std::runtime_error( fmt::format( "Talents are unsupported for assisted combat condition AURA_DURATION_PLAYER.", rule.condition_type ) );
+      return fmt::format( "{}.up&{}.remains<={:g}", expr_str, expr_str, v2 / 1000.0 );
+    case AURA_DURATION_TARGET:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, false );
+      return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
+    case MANA_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "mana.pct>={:g}", v1 / 10.0 ); // TODO: Double check this
+    case MANA_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "mana.pct<={:g}", v1 / 10.0 ); // TODO: Double check this
+    case RAGE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "rage>={:g}", v1 / 10.0 );
+    case RAGE_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "rage<={:g}", v1 / 10.0 );
+    case FOCUS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "focus>={}", v1 );
+    case FOCUS_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "focus<={}", v1 );
+    case ENERGY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "energy>={}", v1 );
+    case ENERGY_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "energy<={}", v1 );
+    case COMBO_POINTS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "combo_points>={}", v1 );
+    case COMBO_POINTS_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "combo_points<={}", v1 );
+    case RUNES_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "rune>={}", v1 );
+    case RUNES_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "rune<={}", v1 );
+    case RUNIC_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "runic_power>={:g}", v1 / 10.0 );
+    case RUNIC_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "runic_power<={:g}", v1 / 10.0 );
+    case SOUL_SHARDS_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "soul_shard>={:g}", v1 / 10.0 );
+    case SOUL_SHARDS_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "soul_shard<={:g}", v1 / 10.0 );
+    case LUNAR_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "astral_power>={:g}", v1 / 10.0 );
+    case LUNAR_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "astral_power<={:g}", v1 / 10.0 );
+    case HOLY_POWER_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "holy_power>={}", v1 );
+    case HOLY_POWER_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "holy_power<={}", v1 );
+    case MAELSTROM_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "maelstrom>={}", v1 );
+    case MAELSTROM_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "maelstrom<={}", v1 );
+    case CHI_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "chi>={}", v1 );
+    case CHI_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "chi<={}", v1 );
+    case INSANITY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "insanity>={:g}", v1 / 100.0 );
+    case INSANITY_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "insanity<={:g}", v1 / 100.0 );
+    case ESSENCE_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "essence>={}", v1 );
+    case ESSENCE_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "essence<={}", v1 );
+    case ARCANE_CHARGES_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "buff.arcane_charge.stack>={}", v1 );
+    case ARCANE_CHARGES_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "buff.arcane_charge.stack<={}", v1 );
+    case TARGET_COUNT_NEAR_TARGET_LESS:
+      assert( v3 == 0 );
+      // TODO: add distance targeting
+      return fmt::format( "active_enemies<={}", v1 );
+    case TARGET_COUNT_NEAR_PLAYER_LESS:
+      assert( v3 == 0 );
+      // TODO: add distance targeting
+      return fmt::format( "active_enemies<={}", v1 );
+    case AURA_COUNT_NEAR_PLAYER_LESS:
+      // TODO: add distance check?
+      expr_str = aura_expr_from_spell_id( v3, false );
+      if ( expr_str.find( "dot." ) == 0 )
+        return fmt::format( "active_{}<={}", expr_str, v1 ); // TODO: < or <=?
+      // TODO: support debuffs
+      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_LESS." );
+    case TARGET_AURA_APPLICATION_GREATER:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, false );
+      return fmt::format( "{}.stack>={}", expr_str, v2 );
+    case TARGET_AURA_APPLICATION_LESS:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, false );
+      return fmt::format( "{}.stack<={}", expr_str, v2 );
+    case PLAYER_AURA_APPLICATION_GREATER:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, true );
+      return fmt::format( "{}.stack>={}", expr_str, v2 );
+    case PLAYER_AURA_APPLICATION_LESS:
+      assert( v3 == 0 );
+      expr_str = aura_expr_from_spell_id( v1, true );
+      return fmt::format( "{}.stack<={}", expr_str, v2 );
+    case SPELL_IN_RANGE:
+      assert( v2 == 0 && v3 == 0 );
+      if ( v1 )
+        return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
+      return ""; // no check necessary because simc actions are not ready unless they have a target
+    case HAS_PET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
+      return "pet.any.active";
+    case HAS_NO_PET:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
+      return "!pet.any.active";
+    case FURY_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "fury>={}", v1 );
+    case FURY_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "fury<={}", v1 );
+    case PAIN_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "pain>={}", v1 );
+    case PAIN_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "pain<={}", v1 );
+    case SPELL_CHARGES_GREATER:
+      assert( v3 == 0 );
+      if ( v2 != 0 )
+      {
+        assisted_combat_rule_data_t fixed_rule = rule;
+        fixed_rule.condition_value_2 = 0;
+        auto result = player_t::parse_assisted_combat_rule( fixed_rule, step );
+        if ( v1 )
+          result.comment = fmt::format( "This checks for charges>={} instead of the intended action.{}.charges>={}.",
+                                        v1, tokenize_spell( v1 ), v2 );
+        else
+          result.comment = fmt::format( "This checks for charges>={} instead of the intended charges>={}.", v1, v2 );
+        return result;
+      }
+      return fmt::format( "charges>={}", v1 );
+    case SPELL_CHARGES_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "charges<={}", v1 );
+    case COOLDOWN_REMAINING_GREATER:
+      assert( v3 == 0 );
+      return fmt::format( "cooldown.{}.remains>={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
+    case COOLDOWN_REMAINING_LESS:
+      assert( v3 == 0 );
+      return fmt::format( "cooldown.{}.remains<={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
+    case COOLDOWN_ALLOW_CASTING_SUCCESS:
+      assert( v1 == 0 && v2 == 0 && v3 == 0 );
+      // This is handled elsewhere, since it removes a default condition instead of adding a new one.
+      return "";
+    case PLAYER_HEALTH_PCT_GREATER:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "health.pct>={}", v1 );
+    case PLAYER_HEALTH_PCT_LESS:
+      assert( v2 == 0 && v3 == 0 );
+      return fmt::format( "health.pct<={}", v1 );
+    default:
+      throw std::runtime_error( fmt::format( "unknown assisted combat condition type '{}'", rule.condition_type ) );
+  }
+}
+
 void player_t::init_background_actions()
 {
   if ( !is_enemy() )
@@ -3381,13 +3904,28 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
+  // if actor is not valid, set `quiet` and skip the rest of action creation
+  if ( !validate_actor() )
+  {
+    quiet = true;
+    return;
+  }
+
   if( is_player() && !is_enemy() && !is_pet() )
     consumable::create_consumeable_actions( this );
 
   if ( action_list_str.empty() )
     no_action_list_provided = true;
 
-  init_action_list();  // virtual function which creates the action list string
+  if ( use_blizzard_action_list )
+  {
+    clear_action_priority_lists();
+    init_blizzard_action_list();
+  }
+  else
+  {
+    init_action_list();  // virtual function which creates the action list string
+  }
 
   std::string modify_action_options;
 
@@ -3414,7 +3952,7 @@ void player_t::create_actions()
   if ( !use_apl.empty() )
     copy_action_priority_list( "default", use_apl );
 
-  if ( !action_list_str.empty() )
+  if ( !action_list_str.empty() && !use_blizzard_action_list )
     get_action_priority_list( "default" )->action_list_str = action_list_str;
 
   if ( is_player() && sim->enable_all_item_effects )
@@ -3428,7 +3966,7 @@ void player_t::create_actions()
   auto apls = sorted_action_priority_lists( this );
   for ( auto apl : apls )
   {
-    assert( !( !apl->action_list_str.empty() && !apl->action_list.empty() ) );
+    assert( apl->action_list_str.empty() || apl->action_list.empty() );
 
     // Convert old style action list to new style, all lines are without comments
     if ( !apl->action_list_str.empty() )
@@ -3476,6 +4014,16 @@ void player_t::create_actions()
       {
         throw std::invalid_argument(
             fmt::format("{} unable to create action: {}", *this, action_str));
+      }
+
+      // When using the assisted combat system, certain action options need different default values.
+      // TODO: Should this check for something instead of the name of the action list?
+      if ( apl->name_str == "assisted_combat" )
+      {
+        if ( a->option.can_have_one_button_penalty_str.empty() )
+          a->can_have_one_button_penalty = true;
+        if ( a->option.cooldown_allow_casting_success_str.empty() )
+          a->cooldown_allow_casting_success = false;
       }
 
       bool skip = false;
@@ -3745,20 +4293,20 @@ void player_t::init_finished()
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
   for ( auto action : action_list )
   {
-    if ( !action->background && action->base_costs[ primary_resource() ] > 0 )
-    {
-      if ( std::find( resource_thresholds.begin(), resource_thresholds.end(),
-                      action->base_costs[ primary_resource() ] ) == resource_thresholds.end() )
-      {
-        resource_thresholds.push_back( action->base_costs[ primary_resource() ] );
-      }
-    }
+    auto _cost = action->base_costs[ primary_resource() ];
+
+    if ( !action->background && _cost > 0 && !range::contains( resource_thresholds, _cost ) )
+      resource_thresholds.push_back( action->base_costs[ primary_resource() ] );
   }
 
   range::sort( resource_thresholds );
 
   // Sort outbound assessors
   assessor_out_damage.sort();
+
+  // Trigger init finished callbacks
+  for ( const auto& cb : callbacks_on_init_finished )
+    cb( this );
 
   // Print items to debug log
   if ( sim->debug )
@@ -3965,7 +4513,7 @@ void player_t::min_threshold_trigger()
   timespan_t time_to_threshold = timespan_t::zero();
   if ( i < resource_thresholds.size() )
   {
-    double rps = resources.base_regen_per_second[ pres ];
+    double rps = resource_regen_per_second( pres );
 
     if ( rps > 0 )
     {
@@ -4027,10 +4575,11 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned = make_buff( this, "stunned" )
     ->set_max_stack( 1 )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 )
-        schedule_ready();
-    } );
+    ->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) 
+      {
+        if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
+          trigger_ready();
+      } );
 
   buffs.rooted = make_buff( this, "rooted" )->set_max_stack( 1 )->set_quiet( true );
 
@@ -6139,6 +6688,8 @@ void player_t::reset()
     buff->reset();
 
   last_foreground_action = nullptr;
+  spell_queued_action = nullptr;
+  spell_queue_event = nullptr;
   prev_gcd_actions.clear();
   off_gcdactions.clear();
 
@@ -6206,7 +6757,7 @@ void player_t::reset()
 
   range::for_each( proc_list, []( proc_t* proc ) { proc->reset(); } );
 
-  range::for_each( proc_rng_list, []( proc_rng_t* prng ) { prng->reset(); } );
+  range::for_each( proc_rng_list, []( proc_rng_t* prng ) { prng->reset( reset_type_e::ITERATION ); } );
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
@@ -6267,12 +6818,15 @@ void player_t::trigger_ready()
     return;
   if ( !active_during_iteration )
     return;
+  if ( sim->event_mgr.canceled )
+    return;
 
   if ( buffs.stunned->check() )
     return;
+  if ( is_moving() )
+    return;
 
-  sim->print_debug( "{} is triggering ready, interval={}", *this,
-                           ( sim->current_time() - started_waiting ) );
+  sim->print_debug( "{} is triggering ready, interval={}", *this, ( sim->current_time() - started_waiting ) );
 
   iteration_waiting_time += sim->current_time() - started_waiting;
   started_waiting = timespan_t::min();
@@ -6586,7 +7140,9 @@ void player_t::arise()
     acquire_target( retarget_source::SELF_ARISE );
   }
 
-  if ( has_foreground_actions( *this ) )
+  // ready_type READY_TRIGGER may already have scheduled a ready event, so we need to check if we are already
+  // readying.
+  if ( !readying && has_foreground_actions( *this ) )
     schedule_ready();
 
   active_during_iteration = true;
@@ -6862,14 +7418,22 @@ action_t* player_t::execute_action()
   if (resource_regeneration == regen_type::DYNAMIC)
     do_dynamic_regen();
 
-  if ( !strict_sequence )
+  if ( strict_sequence )
+  {
+    // Committed to a strict sequence of actions, just perform them instead of a priority list
+    action = strict_sequence;
+  }
+  else if ( enable_spell_queue && spell_queued_action )
+  {
+    if ( spell_queued_action->ready() )
+      action = spell_queued_action;
+    spell_queued_action = nullptr;
+  }
+  else
   {
     visited_apls_ = 0;  // Reset visited apl list
     action = select_action( *active_action_list, execute_type::FOREGROUND );
   }
-  // Committed to a strict sequence of actions, just perform them instead of a priority list
-  else
-    action = strict_sequence;
 
   last_foreground_action = action;
 
@@ -7038,6 +7602,15 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
     return 0.0;
 
   double actual_amount = std::min( amount, resources.max[ resource_type ] - resources.current[ resource_type ] );
+  double previous_amount;
+  double previous_pct_points;
+  bool check_callbacks = has_active_resource_callbacks;
+
+  if ( check_callbacks )
+  {
+    previous_amount     = resources.current[ resource_type ];
+    previous_pct_points = resources.current[ resource_type ] / resources.max[ resource_type ] * 100.0;
+  }
 
   if ( actual_amount > 0.0 )
   {
@@ -7057,6 +7630,11 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
   if ( source )
   {
     source->add( resource_type, actual_amount, amount - actual_amount );
+  }
+
+  if ( check_callbacks )
+  {
+    check_resource_change_for_callback( resource_type, previous_amount, previous_pct_points );
   }
 
   if ( sim->log )
@@ -7138,6 +7716,11 @@ role_e player_t::primary_role() const
 const char* player_t::primary_tree_name() const
 {
   return dbc::specialization_string( specialization() );
+}
+
+bool player_t::has_hero_tree( hero_tree_e hero ) const
+{
+  return player_sub_trees.count( static_cast<unsigned>( hero ) );
 }
 
 bool player_t::has_shield_equipped() const
@@ -8266,15 +8849,15 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_e
 }
 
 accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
-                                                  std::function<double( double, unsigned )> accumulator_fn,
+                                                  accumulated_rng_fn accumulator_fn,
                                                   unsigned initial_count )
 {
   return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
 
 threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
-                                              std::function<double( double )> accumulator_fn, bool random_initial_state,
-                                              bool roll_over )
+                                              threshold_rng_fn accumulator_fn,
+                                              bool random_initial_state, bool roll_over )
 {
   return get_rng<threshold_rng_t>( name, increment_max, accumulator_fn, random_initial_state, roll_over );
 }
@@ -9564,10 +10147,10 @@ struct use_item_t : public action_t
     {
       auto tail = name.substr( 14 );
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
 
@@ -9578,10 +10161,10 @@ struct use_item_t : public action_t
     {
       auto tail = name.substr( 13 );
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
 
@@ -9591,10 +10174,10 @@ struct use_item_t : public action_t
     if ( split.size() == 1 && split[ 0 ] == "this_trinket_slot" )
     {
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return std::make_unique<const_expr_t>( name, 1 );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return std::make_unique<const_expr_t>( name, 2 );
 
@@ -10612,7 +11195,7 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
   // added to the profile or sim_t::enable_all_talents is set
-  if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
+  if ( _tree == talent_tree::HERO && !player->player_sub_trees.count( trait->id_sub_tree ) &&
        !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) && !player->sim->enable_all_talents )
   {
     rank = 0U;
@@ -11538,7 +12121,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( auto id = trait_data_t::get_hero_tree_id( splits[ 1 ] ) )
       {
         // check hash-activated hero trees
-        if ( range::contains( player_sub_trees, id ) )
+        if ( player_sub_trees.count( id ) )
           return expr_t::create_constant( expression_str, 1 );
 
         // check manually added hero talents
@@ -11561,6 +12144,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
+      // Universal PvP rules aura check, primarily used in Blizzard rotations
+      if ( splits[ 1 ] == "pvp_rules_enabled_hardcoded" )
+      {
+        if ( splits[ 2 ] == "up" )
+          return expr_t::create_constant( "pvp_enabled", as<double>( sim->pvp_rules && sim->pvp_rules->ok() ) );
+        else if ( splits[ 2 ] == "down" )
+          return expr_t::create_constant( "pvp_disabled", as<double>( !sim->pvp_rules || !sim->pvp_rules->ok() ) );
+        throw std::invalid_argument( fmt::format( "Invalid PvP rule check '{}.{}'.", splits[ 1 ], splits[ 2 ] ) );
+      }
+
       // buff.buff_name.buff_property
       get_target_data( this );
       buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
@@ -11658,6 +12251,20 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // pet
   if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
   {
+    if ( splits[ 1 ] == "any" && splits[ 2 ] == "active" )
+    {
+      return make_fn_expr( expression_str, [ this ]
+      {
+        for ( auto p : active_pets )
+        {
+          if ( p->type == PLAYER_PET && !p->is_sleeping() )
+            return 1.0;
+        }
+
+        return 0.0;
+      } );
+    }
+
     pet_t* pet = find_pet( splits[ 1 ] );
     spawner::base_actor_spawner_t* pet_spawner = nullptr;
 
@@ -12222,10 +12829,10 @@ std::string player_t::create_profile( save_e stype )
 
   if ( stype & SAVE_ACTIONS )
   {
-    if ( !action_list_str.empty() || use_default_action_list )
+    if ( !action_list_str.empty() || use_default_action_list || use_blizzard_action_list )
     {
       // If we created a default action list, add comments
-      if ( no_action_list_provided )
+      if ( no_action_list_provided && !use_blizzard_action_list )
         profile_str += action_list_information;
 
       auto apls = sorted_action_priority_lists( this );
@@ -12380,31 +12987,37 @@ std::string player_t::create_profile( save_e stype )
 
 void player_t::copy_from( player_t* source )
 {
-  origin_str            = source->origin_str;
-  profile_source_       = source->profile_source_;
-  true_level            = source->true_level;
-  race_str              = source->race_str;
-  timeofday             = source->timeofday;
-  zandalari_loa         = source->zandalari_loa;
-  vulpera_tricks        = source->vulpera_tricks;
-  earthen_mineral       = source->earthen_mineral;
-  race                  = source->race;
-  role                  = source->role;
-  _spec                 = source->_spec;
-  base.distance         = source->base.distance;
-  position_str          = source->position_str;
-  professions_str       = source->professions_str;
-  talents_str           = source->talents_str;
-  class_talents_str     = source->class_talents_str;
-  spec_talents_str      = source->spec_talents_str;
-  hero_talents_str      = source->hero_talents_str;
-  player_traits         = source->player_traits;
-  player_sub_trees      = source->player_sub_trees;
-  player_sub_traits     = source->player_sub_traits;
-  shadowlands_opts      = source->shadowlands_opts;
-  dragonflight_opts     = source->dragonflight_opts;
-  thewarwithin_opts     = source->thewarwithin_opts;
-  resources.initial_opt = source->resources.initial_opt;
+  origin_str                        = source->origin_str;
+  profile_source_                   = source->profile_source_;
+  true_level                        = source->true_level;
+  race_str                          = source->race_str;
+  timeofday                         = source->timeofday;
+  zandalari_loa                     = source->zandalari_loa;
+  vulpera_tricks                    = source->vulpera_tricks;
+  earthen_mineral                   = source->earthen_mineral;
+  race                              = source->race;
+  role                              = source->role;
+  _spec                             = source->_spec;
+  base.distance                     = source->base.distance;
+  position_str                      = source->position_str;
+  professions_str                   = source->professions_str;
+  talents_str                       = source->talents_str;
+  class_talents_str                 = source->class_talents_str;
+  spec_talents_str                  = source->spec_talents_str;
+  hero_talents_str                  = source->hero_talents_str;
+  player_traits                     = source->player_traits;
+  player_sub_trees                  = source->player_sub_trees;
+  player_sub_traits                 = source->player_sub_traits;
+  shadowlands_opts                  = source->shadowlands_opts;
+  dragonflight_opts                 = source->dragonflight_opts;
+  thewarwithin_opts                 = source->thewarwithin_opts;
+  load_default_gear                 = source->load_default_gear;
+  load_default_talents              = source->load_default_talents;
+  use_blizzard_action_list          = source->use_blizzard_action_list;
+  one_button_mode                   = source->one_button_mode;
+  use_cds_with_blizzard_action_list = source->use_cds_with_blizzard_action_list;
+  enable_spell_queue                = source->enable_spell_queue;
+  spell_queue_window                = source->spell_queue_window;
 
   if ( azerite )
   {
@@ -12503,6 +13116,8 @@ void player_t::create_options()
   add_option( opt_func( "brain_lag", parse_brain_lag ) );
   add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
   add_option( opt_timespan( "cooldown_tolerance", cooldown_tolerance_ ) );
+  add_option( opt_bool( "enable_spell_queue", enable_spell_queue ) );
+  add_option( opt_timespan( "spell_queue_window", spell_queue_window ) );
   add_option( opt_bool( "scale_player", scale_player ) );
   add_option( opt_func( "spec", parse_specialization ) );
   add_option( opt_func( "specialization", parse_specialization ) );
@@ -12564,6 +13179,7 @@ void player_t::create_options()
 
   // Set Bonus
   add_option( opt_func( "set_bonus", parse_set_bonus ) );
+  add_option( opt_append( "set_bonus+", set_bonus_str ) );
 
   // Gear Stats
   add_option( opt_float( "gear_strength", gear.attribute[ ATTR_STRENGTH ] ) );
@@ -12646,6 +13262,9 @@ void player_t::create_options()
   add_option( opt_string( "skip_actions", action_list_skip ) );
   add_option( opt_string( "modify_action", modify_action ) );
   add_option( opt_string( "use_apl", use_apl ) );
+  add_option( opt_bool( "use_blizzard_action_list", use_blizzard_action_list ) );
+  add_option( opt_bool( "use_cds_with_blizzard_action_list", use_cds_with_blizzard_action_list ) );
+  add_option( opt_bool( "one_button_mode", one_button_mode ) );
   add_option( opt_timespan( "reaction_time_mean", reaction.mean ) );
   add_option( opt_timespan( "reaction_time_stddev", reaction.stddev ) );
   add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
@@ -12920,7 +13539,12 @@ void player_t::create_options()
   add_option( opt_string( "thewarwithin.windsingers_passive_stat", thewarwithin_opts.windsingers_passive_stat ) );
   add_option( opt_string( "thewarwithin.mister_locknstalk_mode", thewarwithin_opts.mister_locknstalk_mode ) );
   add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat", thewarwithin_opts.jastor_diamond_ally_stat ) );
-  add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance", thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
+  add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance",
+                         thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
+  add_option( opt_timespan( "thewarwithin.additional_gcd_time", thewarwithin_opts.additional_gcd_time, 0_s, 10_s ) );
+  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_stat", thewarwithin_opts.alchemical_initial_stat ) );
+  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_penalty_stats",
+                          thewarwithin_opts.alchemical_initial_penalty ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -14485,6 +15109,11 @@ void player_t::register_on_combat_state_callback( std::function<void( player_t*,
 void player_t::register_movement_callback( std::function<void( bool )> fn )
 {
   callbacks_on_movement.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_init_finished_callback( std::function<void( player_t* )> fn )
+{
+  callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

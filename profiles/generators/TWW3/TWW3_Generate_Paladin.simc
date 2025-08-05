@@ -1,0 +1,131 @@
+# paladin=TWW3_Paladin_Retribution_Herald
+# level=80
+# race=human
+# spec=retribution
+# role=attack
+# position=back
+# talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDjZZGGGMjZYZhNAwsMbzMzWDCAAYBYAwYMDzA
+
+# head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+# neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+# shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+# chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+# hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+# waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+# legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+# feet=cutthroat_competition_stompers,id=228887,ilevel=678
+# finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+# trinket1=eye_of_kezan,id=230198,ilevel=678
+# trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+# main_hand=bestinslots,id=232526,ilevel=678,enchant=authority_of_the_depths_3
+
+# save=TWW3_Paladin_Retribution_Herald.simc
+
+# paladin=TWW3_Paladin_Retribution
+# level=80
+# race=human
+# spec=retribution
+# role=attack
+# position=back
+# talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDzysNDDDmhhlF2AAAIzMtNLz2MAgNgBAjxMMD
+
+# head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+# neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+# shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+# chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+# hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+# waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+# legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+# feet=cutthroat_competition_stompers,id=228887,ilevel=678
+# finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+# trinket1=house_of_cards,id=230027,ilevel=678
+# trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+# main_hand=capital_punisher,id=228891,ilevel=678,enchant=authority_of_the_depths_3
+
+# save=TWW3_Paladin_Retribution.simc
+
+# paladin=TWW3_Paladin_Retribution_Templar_BIS
+# level=80
+# race=human
+# spec=retribution
+# role=attack
+# position=back
+# talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDzysNDDDmhhlF2AAAIzMtNLz2MAgNgBAjxMMD
+
+# head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+# neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+# shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+# chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+# hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+# waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+# legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+# feet=cutthroat_competition_stompers,id=228887,ilevel=678
+# finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+# trinket1=eye_of_kezan,id=230198,ilevel=678
+# trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+# main_hand=bestinslots,id=232526,ilevel=678,enchant=authority_of_the_depths_3
+
+# save=TWW3_Paladin_Retribution_Templar_BIS.simc
+
+paladin=TWW3_Paladin_Protection
+level=80
+race=human
+role=tank
+position=front
+spec=protection
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMMzyYZMzMzM2mZmxMYGDAAwAAAAAAAQbZmZxwMYMzMbtBAjBGAGsNAAAIAzMLbLtNzYxAAYGMMG
+
+head=,id=246283,gem_id=213743,ilevel=723
+neck=,id=185820,gem_id=213470/213491,ilevel=723
+shoulder=,id=237617,bonus_id=4800/4786/1527/11996,ilevel=723
+back=,id=235499,bonus_id=12401/9893/12259,enchant_id=7409,gem_id=238045
+chest=,id=237622,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3,ilevel=723
+wrist=,id=222435,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213494,ilevel=720,crafted_stats=36/32
+hands=,id=237620,bonus_id=4800/4786/1527/11996,ilevel=723
+waist=,id=222431,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213479,ilevel=720,crafted_stats=36/32
+legs=,id=237618,bonus_id=4800/4786/1527/11996,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
+feet=,id=243307,ilevel=723
+finger1=,id=237567,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
+finger2=,id=221136,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
+trinket1=,id=242402,bonus_id=4800/4786/1527/11996,ilevel=723
+trinket2=,id=219309,bonus_id=4800/4786/1527/11996,ilevel=723
+main_hand=,id=237734,bonus_id=4800/4786/1527/11996,enchant=authority_of_the_depths_3,ilevel=723
+off_hand=,id=237723,bonus_id=4800/4786/1527/11996,ilevel=723
+
+save=TWW3_Paladin_Protection.simc
+
+paladin=TWW3_Paladin_Protection_Templar
+level=80
+race=dwarf
+role=tank
+position=front
+spec=protection
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMMzyYZMzMzM2mZmxMYGDAAwAAAAAAAQbZmZxwMYMzMbtBAjBGAGsNAAAzMtNLz2MAB2MAAmBDjB
+
+head=,id=237619,gem_id=213743,ilevel=723
+neck=,id=237568,gem_id=213470/213491,ilevel=723
+shoulder=,id=237617,bonus_id=4800/4786/1527/11996,ilevel=723
+back=,id=235499,bonus_id=12401/9893/12259,enchant_id=7409,gem_id=238045
+chest=,id=237622,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3,ilevel=723
+wrist=,id=222435,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213494,ilevel=720,crafted_stats=36/32
+hands=,id=237620,bonus_id=4800/4786/1527/11996,ilevel=723
+waist=,id=222431,bonus_id=12043/1485/10222/10520/10878/8960,gem_id=213479,ilevel=720,crafted_stats=36/32
+legs=,id=178818,bonus_id=4800/4786/1527/11996,enchant_id=7601,enchant=stormbound_armor_kit_3,ilevel=723
+feet=,id=243307,bonus_id=4800/4786/1533/12361
+finger1=,id=237567,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
+finger2=,id=221141,enchant=radiant_haste_3,gem_id=213479/213479,ilevel=723
+trinket1=,id=242401,bonus_id=4800/4786/1527/11996,ilevel=723
+trinket2=,id=219309,bonus_id=4800/4786/1527/11996,ilevel=723
+main_hand=,id=237734,bonus_id=4800/4786/1527/11996,enchant=authority_of_the_depths_3,ilevel=723
+off_hand=,id=237723,bonus_id=4800/4786/1527/11996,ilevel=723
+
+save=TWW3_Paladin_Protection_Templar.simc

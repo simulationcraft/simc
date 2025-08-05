@@ -227,7 +227,7 @@ unsigned sc_thread_t::cpu_thread_count()
 
 #if defined(SC_WINDOWS)
 #include <windows.h>
-#include "lib/fmt/core.h"
+#include "lib/fmt/format.h"
 
 DWORD translate_priority( computer_process::priority_e p )
 {

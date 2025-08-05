@@ -9,13 +9,13 @@
 
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"
-#include "sc_enums.hpp"
-#include "util/timespan.hpp"
-#include "util/span.hpp"
-#include "util/string_view.hpp"
-
 #include "fmt/format.h"
 #include "fmt/ostream.h"
+#include "fmt/ranges.h"
+#include "sc_enums.hpp"
+#include "util/span.hpp"
+#include "util/string_view.hpp"
+#include "util/timespan.hpp"
 
 #include <exception>
 #include <iosfwd>
@@ -92,6 +92,7 @@ const char* action_energize_type_string( action_energize energize_type );
 const char* action_type_string( action_e type );
 const char* talent_tree_string( talent_tree type );
 const char* trait_definition_op_string( trait_definition_op op );
+const char* error_level_string( error_level_e level );
 
 std::string rppm_scaling_string       ( unsigned );
 std::string profile_source_string( profile_source );
@@ -155,7 +156,6 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 bool scale_metric_is_raid( scale_metric_e );
-
 
 template<typename StringType = std::string>
 inline std::vector<StringType> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true )
@@ -243,6 +243,8 @@ bool contains_non_ascii( util::string_view );
 void print_chained_exception( const std::exception& e, std::FILE* out, int level = 0 );
 void print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level = 0 );
 
+std::string sc_time_str();
+
 } // namespace util
 
 template <typename T>
@@ -259,12 +261,12 @@ std::string util::string_join( const T& container, util::string_view delim )
 
 // fmtlib formatters for enums
 namespace fmt {
-#define SC_ENUM_FORMATTER( EnumType, ToStringFn )                          \
-  template <> struct formatter<EnumType> : formatter<string_view> {        \
-    template <typename FormatContext>                                      \
-    auto format(EnumType val, FormatContext& ctx) -> decltype(ctx.out()) { \
-      return formatter<string_view>::format(ToStringFn(val), ctx);         \
-    }                                                                      \
+#define SC_ENUM_FORMATTER( EnumType, ToStringFn )                                \
+  template <> struct formatter<EnumType> : formatter<string_view> {              \
+    template <typename FormatContext>                                            \
+    auto format(EnumType val, FormatContext& ctx) const -> decltype(ctx.out()) { \
+      return formatter<string_view>::format(ToStringFn(val), ctx);               \
+    }                                                                            \
   }
 
 SC_ENUM_FORMATTER( attribute_e,             util::attribute_type_string );

@@ -63,11 +63,15 @@ struct set_bonus_t
   // Initialize set bonuses in earnest
   void initialize();
 
+  // Override equipped gear and enable/disable bonuses via set_bonus= option
+  void parse_set_bonus_string();
+
   // Override all set bonuses to be enabled
   void enable_all_sets();
 
   // Enable a specific set bonus, set quiet by default
   void enable_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true );
+  void enable_set_bonus( hero_tree_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus, bool quiet = true );
 
   std::unique_ptr<expr_t> create_expression( const player_t*, util::string_view type );
 
@@ -75,14 +79,24 @@ struct set_bonus_t
 
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
+  const spell_data_t* set( hero_tree_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
   // Fast accessor for checking whether a set bonus is enabled
   bool has_set_bonus( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
+  bool has_set_bonus( hero_tree_e hero_talent, set_bonus_type_e set_bonus, set_bonus_e bonus ) const;
 
-  bool parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus );
+  bool parse_set_bonus_option( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus, hero_tree_e& hero );
+  bool parse_set_bonus_option_verbose( util::string_view opt_str, set_bonus_type_e& set_bonus, set_bonus_e& bonus,
+                                       bool& enabled, specialization_e& spec, hero_tree_e& hero );
   std::string to_string() const;
   std::string to_profile_string( const std::string& = "\n" ) const;
   std::string generate_set_bonus_options() const;
 
   friend void sc_format_to( const set_bonus_t&, fmt::format_context::iterator );
+
+private:
+  int spec_idx( specialization_e ) const;
+  int hero_idx( hero_tree_e ) const;
+  int composite_idx( specialization_e, hero_tree_e ) const;
+  int composite_idx( const item_set_bonus_t& ) const;
 };

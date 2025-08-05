@@ -35,35 +35,45 @@ do
   fi
 done
 
+echo "Processing all spells"
 FILE=SpellDataDump/allspells.txt
 ${SIMC_CLI_PATH} display_build="0" spell_query="spell" > $FILE.unix
-convert_line_ending $FILE
-
-FILE=SpellDataDump/nonclass.txt
-${SIMC_CLI_PATH} display_build="0" spell_query="spell.class=none" > $FILE.unix
-convert_line_ending $FILE
-
-FILE=SpellDataDump/build_info.txt
-${SIMC_CLI_PATH} display_build="2" > $FILE.unix
-convert_line_ending $FILE
-
-FILE=SpellDataDump/bonus_ids.txt
-${SIMC_CLI_PATH} display_build="0" show_bonus_ids="1" > $FILE.unix
 convert_line_ending $FILE
 
 if [ "$HAS_PTR" -eq 1 ]; then
   FILE=SpellDataDump/allspells_ptr.txt
   ${SIMC_CLI_PATH} display_build="0" ptr="1" spell_query="spell" > $FILE.unix
   convert_line_ending $FILE
+fi
 
+echo "Processing non-class spells"
+FILE=SpellDataDump/nonclass.txt
+${SIMC_CLI_PATH} display_build="0" spell_query="spell.class=none" > $FILE.unix
+convert_line_ending $FILE
+
+if [ "$HAS_PTR" -eq 1 ]; then
   FILE=SpellDataDump/nonclass_ptr.txt
   ${SIMC_CLI_PATH} display_build="0" ptr="1" spell_query="spell.class=none" > $FILE.unix
   convert_line_ending $FILE
+fi
 
+echo "Writing build info"
+FILE=SpellDataDump/build_info.txt
+${SIMC_CLI_PATH} display_build="2" > $FILE.unix
+convert_line_ending $FILE
+
+if [ "$HAS_PTR" -eq 1 ]; then
   FILE=SpellDataDump/build_info_ptr.txt
   ${SIMC_CLI_PATH} display_build="2" ptr="1" > $FILE.unix
   convert_line_ending $FILE
+fi
 
+echo "Processing bonus IDs"
+FILE=SpellDataDump/bonus_ids.txt
+${SIMC_CLI_PATH} display_build="0" show_bonus_ids="1" > $FILE.unix
+convert_line_ending $FILE
+
+if [ "$HAS_PTR" -eq 1 ]; then
   FILE=SpellDataDump/bonus_ids_ptr.txt
   ${SIMC_CLI_PATH} display_build="0" ptr="1" show_bonus_ids="1" > $FILE.unix
   convert_line_ending $FILE

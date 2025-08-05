@@ -330,12 +330,10 @@ void pet_t::create_buffs()
 
     buffs.stunned  = make_buff( this, "stunned" )
       ->set_max_stack( 1 )
-      ->set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t d )
       {
-        if ( new_ == 0 )
-        {
-          schedule_ready();
-        }
+        if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
+          trigger_ready();
       } );
 
     buffs.movement = new movement_buff_t( this );

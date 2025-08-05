@@ -1181,3 +1181,12 @@
 6336219, DBFilesClient\DriveCapabilityTier.db2
 6367989, DBFilesClient\WaypointMapVolume.db2
 6374834, DBFilesClient\MapChallengeModeAffixCriteria.db2
+6405756, DBFilesClient\CooldownSet.db2
+6405757, DBFilesClient\CooldownSetSpell.db2
+6422327, DBFilesClient\CooldownSetLinkedSpell.db2
+6684235, DBFilesClient\MythicPlusSeasonKeyFloor.db2
+6698666, DBFilesClient\AssistedCombat.db2
+6698667, DBFilesClient\AssistedCombatRule.db2
+6698668, DBFilesClient\AssistedCombatStep.db2
+6841377, DBFilesClient\Cfg_GameRules.db2
+7001981, DBFilesClient\ContentTuningXDifficulty.db2

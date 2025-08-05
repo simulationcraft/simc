@@ -1,0 +1,35 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=throw_glaive,if=buff.reavers_glaive.up
+actions.assisted_combat+=/shear,if=buff.rending_strike.up
+actions.assisted_combat+=/soul_cleave,if=buff.glaive_flurry.up
+actions.assisted_combat+=/soul_carver
+actions.assisted_combat+=/sigil_of_spite,if=target.distance<=30
+actions.assisted_combat+=/sigil_of_flame,if=target.distance<=30&!dot.sigil_of_flame.ticking&buff.demonsurge_hardcast.down
+actions.assisted_combat+=/sigil_of_flame,if=target.distance<=30&buff.demonsurge_hardcast.up&!dot.sigil_of_doom.ticking
+actions.assisted_combat+=/sigil_of_flame,if=target.distance<=30&cooldown.metamorphosis.ready&talent.violent_transformation
+actions.assisted_combat+=/fel_devastation,if=active_enemies>1
+actions.assisted_combat+=/immolation_aura,if=active_enemies>1
+actions.assisted_combat+=/spirit_bomb,if=buff.soul_fragments.stack>=4&active_enemies>6
+actions.assisted_combat+=/shear,if=talent.fracture
+actions.assisted_combat+=/soul_cleave
+actions.assisted_combat+=/shear
+actions.assisted_combat+=/throw_glaive
+actions.assisted_combat+=/soul_cleave
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/metamorphosis

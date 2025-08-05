@@ -6,6 +6,7 @@
 
 #include "config.hpp"
 
+#include "dbc/dbc.hpp"
 #include "util/util.hpp"
 
 #include "trait_data.hpp"
@@ -57,28 +58,47 @@ const trait_data_t* trait_data_t::find(
     specialization_e  spec,
     bool              ptr )
 {
+  std::vector<const trait_data_t*> _traits;
+
   auto _data = data( class_id, tree, ptr );
-  auto _it = range::find_if( _data, [name, spec]( const trait_data_t& entry ) {
+
+  for ( const auto& entry : _data )
+  {
     if ( util::str_compare_ci( name, entry.name ) )
     {
-      if ( entry.id_spec[ 0 ] == 0 )
+      if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
       {
-        return true;
-      }
-
-      auto _spec_it = range::find( entry.id_spec, static_cast<unsigned>( spec ) );
-      if ( _spec_it != entry.id_spec.end() )
-      {
-        return true;
+        _traits.push_back( &entry );
       }
     }
+  }
 
-    return false;
-  } );
-
-  if ( _it != _data.end() )
+  if ( _traits.size() == 1 )
   {
-    return _it;
+    return _traits.front();
+  }
+  else if ( !_traits.empty() )
+  {
+    for ( auto trait : _traits )
+    {
+      // check for trait in the same x/y coordinates
+      auto _it = range::find_if( _data, [ trait ]( const trait_data_t& entry ) {
+        return entry.id_trait_node_entry != trait->id_trait_node_entry && entry.row == trait->row &&
+               entry.col == trait->col;
+      } );
+
+      // if none is found, that means this is a correct entry
+      if ( _it == _data.end() )
+      {
+        return trait;
+      }
+
+      // if the trait has higher node entry id, it is the correct entry
+      if ( ( _it )->id_trait_node_entry < trait->id_trait_node_entry )
+      {
+        return trait;
+      }
+    }
   }
 
   return &( nil() );
@@ -91,30 +111,50 @@ const trait_data_t* trait_data_t::find_tokenized(
     specialization_e  spec,
     bool              ptr )
 {
+  std::vector<const trait_data_t*> _traits;
+
   auto _data = data( class_id, tree, ptr );
-  auto _it = range::find_if( _data, [name, spec]( const trait_data_t& entry ) {
+
+  for ( const auto& entry : _data )
+  {
     std::string tokenized_name = entry.name;
     util::tokenize( tokenized_name );
+
     if ( util::str_compare_ci( name, tokenized_name ) )
     {
-      if ( entry.id_spec[ 0 ] == 0 )
+      if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, static_cast<unsigned>( spec ) ) )
       {
-        return true;
-      }
-
-      auto _spec_it = range::find( entry.id_spec, static_cast<unsigned>( spec ) );
-      if ( _spec_it != entry.id_spec.end() )
-      {
-        return true;
+        _traits.push_back( &entry );
       }
     }
+  }
 
-    return false;
-  } );
-
-  if ( _it != _data.end() )
+  if ( _traits.size() == 1 )
   {
-    return _it;
+    return _traits.front();
+  }
+  else if ( !_traits.empty() )
+  {
+    for ( auto trait : _traits )
+    {
+      // check for trait in the same x/y coordinates
+      auto _it = range::find_if( _data, [ trait ]( const trait_data_t& entry ) {
+        return entry.id_trait_node_entry != trait->id_trait_node_entry && entry.row == trait->row &&
+               entry.col == trait->col;
+      } );
+
+      // if none is found, that means this is a correct entry
+      if ( _it == _data.end() )
+      {
+        return trait;
+      }
+
+      // if the trait has higher node entry id, it is the correct entry
+      if ( ( _it )->id_trait_node_entry < trait->id_trait_node_entry )
+      {
+        return trait;
+      }
+    }
   }
 
   return &( nil() );
@@ -195,11 +235,13 @@ const trait_data_t* trait_data_t::find_by_trait_definition( unsigned trait_defin
 const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, bool ptr )
 {
   auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
-  auto _it = range::find( _data, id_sub_tree, &std::pair<unsigned, std::string>::first );
+  auto _it = range::find_if( _data, [ id_sub_tree ]( const std::tuple<unsigned, std::string, unsigned>& entry ){
+    return id_sub_tree == std::get<0>( entry );
+  });
 
   if ( _it != _data.end() )
   {
-    return _it->second;
+    return std::get<1>(*_it);
   }
 
   return {};
@@ -208,13 +250,13 @@ const std::string_view trait_data_t::get_hero_tree_name( unsigned id_sub_tree, b
 unsigned trait_data_t::get_hero_tree_id( std::string_view name, bool ptr )
 {
   auto _data = SC_DBC_GET_DATA( __trait_sub_tree_data, __ptr_trait_sub_tree_data, ptr );
-  auto _it = range::find_if( _data, [ name ]( const std::pair<unsigned, std::string>& entry ) {
-    return util::str_compare_ci( name, util::tokenize_fn( entry.second ) );
+  auto _it = range::find_if( _data, [ name ]( const std::tuple<unsigned, std::string, unsigned>& entry ) {
+    return util::str_compare_ci( name, util::tokenize_fn( std::get<1>( entry ) ) );
   } );
 
   if ( _it != _data.end() )
   {
-    return _it->first;
+    return std::get<0>(*_it);
   }
 
   return 0;
@@ -256,6 +298,35 @@ bool trait_data_t::is_granted( const trait_data_t* trait, player_e type, special
   }
 
   return false;
+}
+
+std::vector<unsigned> trait_data_t::get_valid_hero_tree_ids( specialization_e spec, bool ptr )
+{
+  auto class_id = util::class_id( dbc::get_class_from_spec( spec ) );
+  auto _data = data( class_id, talent_tree::SELECTION, ptr );
+
+  std::vector<unsigned> id_list;
+
+  for ( const auto& entry : _data )
+  {
+    for ( const auto& spec_entry : entry.id_spec )
+    {
+      if ( spec_entry == static_cast<unsigned>( spec ) )
+      {
+        id_list.push_back( entry.id_sub_tree );
+      }
+    }
+  }
+
+  auto it = range::unique( id_list );
+  id_list.erase( it, id_list.end() );
+
+  return id_list;
+}
+
+bool trait_data_t::is_hero_tree_valid( hero_tree_e hero, specialization_e spec, bool ptr )
+{
+  return range::contains( get_valid_hero_tree_ids( spec, ptr ), static_cast<unsigned>( hero ) );
 }
 
 util::span<const trait_definition_effect_entry_t> trait_definition_effect_entry_t::data( bool ptr )

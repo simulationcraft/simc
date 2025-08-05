@@ -2553,50 +2553,67 @@ void sim_t::init_actor( player_t* p )
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
     {
       const module_t* m = module_t::get( i );
-      if ( m ) m -> init( p );
+      if ( m )
+        m->init( p );
     }
 
-    if ( default_actions && !p -> is_pet() )
+    if ( default_actions && !p->is_pet() )
     {
-      p -> clear_action_priority_lists();
-      p -> action_list_str.clear();
+      p->clear_action_priority_lists();
+      p->action_list_str.clear();
     }
 
-    p -> init();
-    p -> initialized = true;
+    p->init();
+    p->initialized = true;
 
     // This next section handles all the ugly details of initialization. Ideally, each of these
     // init_* methods will eventually return a bool to indicate success or failure, from which
     // we can either continue or halt initialization.
-    // For now, we're only enforcing this condition for the particular init_* methods that can
-    // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
 
-    p -> init_target();
-    p -> init_character_properties();
+    p->init_target();
+
+    // Initialize player characteristics
+    p->init_race();
+    p->init_talents();
+
+    p->replace_spells();
+    p->init_position();
+    p->init_professions();
 
     // Initialize each actor's items, construct gear information & stats
-    p -> init_items();
+    p->init_items();
 
     // Must be done after init_items (processes item options, so we know selected azerite powers in
     // each item), and before init_spells (class modules "find_azerite_spell" in these).
-    p -> init_azerite();
-    p -> init_spells();
-    p -> init_base_stats();
-    p -> create_buffs();
-    p -> init_background_actions();
+    p->init_azerite();
+
+    // Main spell looksup. Populate class/spec/hero talents & spells.
+    p->init_spells();
+
+    // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
+    p->init_base_stats();
+
+    // Buffs are created before actions, as typically action constructors tends to be more customized than buff
+    // constructors. This allow actions to reference buff validity during instantiation, but the vice versa is not
+    // possible.
+    p->create_buffs();
+
+    // Currently this only holds leech_t.
+    p->init_background_actions();
 
     // First-phase creation of special effects from various sources. Needed to be able to create
     // actions (APLs, really) based on the presence of special effects on items.
-    p -> create_special_effects();
+    p->create_special_effects();
 
     // First, create all the action objects and set up action lists properly
-    p -> create_actions();
+    p->create_actions();
 
     // More initilization of class modules. Needed to create shared actions provided by a class.
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
     {
       const module_t* m = module_t::get( i );
-      if ( m ) m -> create_actions( p );
+      if ( m )
+        m->create_actions( p );
     }
 
     // Create persistent actors from dynamic spawners
@@ -2605,30 +2622,31 @@ void sim_t::init_actor( player_t* p )
     // Create all actor pets before special effects get initialized. This ensures that we can use
     // stuff like the presence of an action (created with create_actions()) to determine if a pet
     // needs to be created or not. Similarly, talent, spec, and item based qualifiers would work.
-    p -> create_pets();
+    p->create_pets();
 
     // Second-phase initialize all special effects and register them to actors
-    p -> init_special_effects();
+    p->init_special_effects();
 
     // Finally, initialize all action objects
-    p -> init_actions();
+    p->init_actions();
 
     // Once all transient properties are initialized (e.g., base stats, spells, special effects,
-    // items), initialize the initial stats of the actor.
-    p -> init_initial_stats();
-    // And once initial stats are initialized, derive the passive defensive properties of the actor.
-    p -> init_defense();
+    // items), initialize the initial stats of the actor. Do not modify base stats after this call.
+    p->init_initial_stats();
 
-    p -> init_scaling();
-    p -> init_gains();
-    p -> init_procs();
-    p -> init_uptimes();
-    p -> init_benefits();
-    p -> init_rng();
-    p -> init_stats();
-    p -> init_distance_targeting();
-    p -> init_absorb_priority();
-    p -> init_assessors();
+    // And once initial stats are initialized, derive the passive defensive properties of the actor.
+    p->init_defense();
+
+    p->init_scaling();
+    p->init_gains();
+    p->init_procs();
+    p->init_uptimes();
+    p->init_benefits();
+    p->init_rng();
+    p->init_stats();
+    p->init_distance_targeting();
+    p->init_absorb_priority();
+    p->init_assessors();
   }
   catch (const std::exception&)
   {
@@ -3141,13 +3159,13 @@ void sim_t::do_pause()
   }
 }
 
-void sim_t::set_error(std::string error)
+void sim_t::set_error( error_level_e level, std::string error )
 {
-    util::replace_all( error, "\n", "" );
-    fmt::print( stderr, "{}\n", error );
-    std::fflush( stderr );
+  util::replace_all( error, "\n", "" );
+  fmt::print( stderr, "{}\n", error );
+  std::fflush( stderr );
 
-    error_list.push_back( std::move( error ) );
+  error_list.emplace_back( level, std::move( error ) );
 }
 
 /// merge sims

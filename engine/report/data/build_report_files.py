@@ -6,11 +6,11 @@ def get_file_as_lines( input, out_line_length ):
     out = []
     with open( input ) as f:
         str = f.read()
-        str = re.sub( "\n", "", str )
-        str = re.sub( "\t", "", str )
-        str = re.sub( "\s+", " ", str )
+        str = re.sub( r"\n", "", str )
+        str = re.sub( r"\t", "", str )
+        str = re.sub( r"\s+", " ", str )
         str = json.dumps(str).strip('"') # Misuse to build a C string with escaped characters
-        str = re.sub( "\?", "\?", str )
+        str = re.sub( r"\?", r"\?", str )
         eaten_chars = 0
         out = []
         while eaten_chars < len(str):
@@ -34,7 +34,7 @@ def print_as_char_array( name, input ):
         
 def main():
     line_length = 116
-    with open( "report_data.inc", "w") as f:
+    with open( "report_data.inc", "w" ) as f:
         f.write( "// Automatically generated report data.\n\n")
         # base-64 encoded png image. Use eg. https://www.browserling.com/tools/image-to-base64 to create from
         # simc logo with transparent background.

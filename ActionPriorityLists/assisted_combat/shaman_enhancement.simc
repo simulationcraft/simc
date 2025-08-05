@@ -1,0 +1,52 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=windfury_weapon,if=buff.windfury_weapon.down
+actions.assisted_combat+=/flametongue_weapon,if=buff.flametongue_weapon.down
+actions.assisted_combat+=/surging_totem,if=buff.surging_totem.down
+actions.assisted_combat+=/feral_spirit,if=!talent.flowing_spirits
+actions.assisted_combat+=/stormstrike,if=buff.ascendance.up&talent.thorims_invocation
+actions.assisted_combat+=/lightning_bolt,if=buff.tempest.up&buff.maelstrom_weapon.stack>=5&!talent.overflowing_maelstrom
+actions.assisted_combat+=/lightning_bolt,if=buff.tempest.up&buff.maelstrom_weapon.stack>=10&talent.overflowing_maelstrom
+actions.assisted_combat+=/flame_shock,if=!dot.flame_shock.ticking
+actions.assisted_combat+=/lava_lash,if=active_enemies>3&active_dot.flame_shock<=2
+actions.assisted_combat+=/primordial_wave,if=buff.primordial_storm.up&buff.maelstrom_weapon.stack>=5&!talent.overflowing_maelstrom
+actions.assisted_combat+=/primordial_wave,if=buff.primordial_storm.up&buff.maelstrom_weapon.stack>=10&talent.overflowing_maelstrom
+actions.assisted_combat+=/primordial_wave,if=buff.primordial_storm.down
+actions.assisted_combat+=/doom_winds,if=target.distance<=8
+actions.assisted_combat+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&active_enemies>3&!talent.overflowing_maelstrom
+actions.assisted_combat+=/chain_lightning,if=buff.maelstrom_weapon.stack>=10&active_enemies>3&talent.overflowing_maelstrom
+actions.assisted_combat+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&!talent.overflowing_maelstrom
+actions.assisted_combat+=/elemental_blast,if=buff.maelstrom_weapon.stack>=10&talent.overflowing_maelstrom
+actions.assisted_combat+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&!talent.overflowing_maelstrom
+actions.assisted_combat+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=10&talent.overflowing_maelstrom
+actions.assisted_combat+=/sundering,if=target.distance<=5
+actions.assisted_combat+=/fire_nova,if=dot.flame_shock.ticking
+actions.assisted_combat+=/crash_lightning,if=active_enemies>3&target.distance<=8
+actions.assisted_combat+=/ice_strike
+actions.assisted_combat+=/frost_shock,if=action.ice_strike.ready
+actions.assisted_combat+=/ice_strike,if=action.ice_strike.ready
+actions.assisted_combat+=/frost_shock,if=buff.hailstorm.up
+actions.assisted_combat+=/ice_strike,if=buff.hailstorm.up
+actions.assisted_combat+=/lava_lash,if=talent.lively_totems
+actions.assisted_combat+=/flame_shock,if=buff.voltaic_blaze.up
+actions.assisted_combat+=/stormstrike
+actions.assisted_combat+=/lava_lash
+actions.assisted_combat+=/flame_shock
+actions.assisted_combat+=/frost_shock
+actions.assisted_combat+=/ice_strike
+actions.assisted_combat+=/stormstrike
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call

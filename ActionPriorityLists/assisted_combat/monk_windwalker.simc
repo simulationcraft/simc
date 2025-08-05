@@ -1,0 +1,49 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+# Overridden
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=touch_of_death
+actions.assisted_combat+=/storm_earth_and_fire,if=buff.storm_earth_and_fire.down
+actions.assisted_combat+=/strike_of_the_windlord,if=buff.heart_of_the_jade_serpent_cdr.down&buff.heart_of_the_jade_serpent_cdr_celestial.down
+# Counts valid targets for action, including player. (Overridden from 'buff.heart_of_the_jade_serpent_cdr.down&active_enemies>1&buff.heart_of_the_jade_serpent_cdr_celestial.down')
+actions.assisted_combat+=/celestial_conduit,if=buff.heart_of_the_jade_serpent_cdr.down&1&buff.heart_of_the_jade_serpent_cdr_celestial.down
+# Spell id 1245503 is a helper buff to avoid breaking combo for Spinning Crane Kick. (Overridden from 'buff.dance_of_chiji.stack>=2&buff.unknown_spell_1245503.down')
+actions.assisted_combat+=/spinning_crane_kick,if=buff.dance_of_chiji.stack>=2&combo_strike,cooldown_allow_casting_success=1
+# Spell id 1245506 is a helper buff to avoid breaking combo for Tiger Palm. (Overridden from 'chi<=4&energy>=101&buff.heart_of_the_jade_serpent_cdr.down&buff.unknown_spell_1245506.down')
+actions.assisted_combat+=/tiger_palm,if=chi<=4&energy>=101&buff.heart_of_the_jade_serpent_cdr.down&combo_strike
+actions.assisted_combat+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>=20
+# Extended range check to 10 yards (from 5). (Overridden from 'target.distance<=5&buff.heart_of_the_jade_serpent_cdr.down')
+actions.assisted_combat+=/whirling_dragon_punch,if=target.distance<=10&buff.heart_of_the_jade_serpent_cdr.down
+actions.assisted_combat+=/fists_of_fury,if=target.distance<=8
+# Spell id 1245502 is a helper buff to avoid breaking combo for Rising Sun Kick. (Overridden from 'buff.unknown_spell_1245502.down')
+actions.assisted_combat+=/rising_sun_kick,if=combo_strike
+# Spell id 1245504 is a helper buff to avoid breaking combo for Blackout Kick. (Overridden from 'buff.bok_proc.up&buff.unknown_spell_1245504.down')
+actions.assisted_combat+=/blackout_kick,if=buff.bok_proc.up&combo_strike
+actions.assisted_combat+=/chi_burst
+# Spell id 1245503 is a helper buff to avoid breaking combo for Spinning Crane Kick. (Overridden from 'active_enemies>3&buff.unknown_spell_1245503.down')
+actions.assisted_combat+=/spinning_crane_kick,if=active_enemies>3&combo_strike,cooldown_allow_casting_success=1
+actions.assisted_combat+=/jadefire_stomp,if=target.distance<=20
+# Spell id 1245504 is a helper buff to avoid breaking combo for Blackout Kick. (Overridden from 'active_enemies<=2&buff.unknown_spell_1245504.down')
+actions.assisted_combat+=/blackout_kick,if=active_enemies<=2&combo_strike
+# Spell id 1245506 is a helper buff to avoid breaking combo for Tiger Palm. (Overridden from 'buff.unknown_spell_1245506.down')
+actions.assisted_combat+=/tiger_palm,if=combo_strike
+actions.assisted_combat+=/tiger_palm,if=buff.bok_proc.down
+actions.assisted_combat+=/crackling_jade_lightning,if=energy>=75&target.distance>15,cooldown_allow_casting_success=1
+actions.assisted_combat+=/rising_sun_kick
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/invoke_xuen_the_white_tiger
+actions.cooldowns+=/touch_of_karma

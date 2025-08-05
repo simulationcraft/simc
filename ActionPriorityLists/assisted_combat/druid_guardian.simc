@@ -1,0 +1,33 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/bear_form,if=buff.bear_form.down
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=thrash,if=target.distance<=8&active_enemies>3
+actions.assisted_combat+=/lunar_beam,if=target.distance<=8
+actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5
+actions.assisted_combat+=/moonfire,if=!dot.moonfire.ticking
+actions.assisted_combat+=/maul,if=buff.tooth_and_claw.up
+actions.assisted_combat+=/mangle
+actions.assisted_combat+=/thrash,if=target.distance<=8
+actions.assisted_combat+=/moonfire,if=buff.galactic_guardian.up
+actions.assisted_combat+=/maul,if=rage>=8
+actions.assisted_combat+=/swipe,if=target.distance<=8
+actions.assisted_combat+=/moonfire,if=target.distance>10
+actions.assisted_combat+=/thrash
+
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/berserk
+actions.cooldowns+=/incarnation
+actions.cooldowns+=/rage_of_the_sleeper

@@ -1,0 +1,36 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=blade_dance,if=buff.metamorphosis.up&debuff.essence_break.up&target.distance<=5
+actions.assisted_combat+=/chaos_strike,if=buff.metamorphosis.up&debuff.essence_break.up
+actions.assisted_combat+=/throw_glaive,if=buff.reavers_glaive.up
+actions.assisted_combat+=/sigil_of_flame,if=buff.demonsurge_hardcast.up&target.distance<=30
+actions.assisted_combat+=/immolation_aura,if=active_enemies>3
+actions.assisted_combat+=/essence_break,if=target.distance<=8&buff.metamorphosis.up&cooldown.blade_dance.ready
+actions.assisted_combat+=/blade_dance,if=buff.metamorphosis.up&target.distance<=5
+actions.assisted_combat+=/sigil_of_spite,if=target.distance<=30
+actions.assisted_combat+=/eye_beam,if=target.distance<=8
+actions.assisted_combat+=/blade_dance,if=target.distance<=5
+actions.assisted_combat+=/chaos_strike,if=buff.metamorphosis.up
+actions.assisted_combat+=/sigil_of_flame,if=target.distance<=30
+actions.assisted_combat+=/chaos_strike
+actions.assisted_combat+=/immolation_aura,if=active_enemies>1
+actions.assisted_combat+=/throw_glaive
+actions.assisted_combat+=/demons_bite,if=!talent.demon_blades
+actions.assisted_combat+=/chaos_strike
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/metamorphosis

@@ -1,0 +1,35 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/summon_pet
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=call_pet_1,if=!pet.any.active
+actions.assisted_combat+=/spearhead
+actions.assisted_combat+=/wildfire_bomb
+actions.assisted_combat+=/explosive_shot,if=active_enemies>3
+actions.assisted_combat+=/fury_of_the_eagle,if=active_enemies>3&target.distance<=5
+actions.assisted_combat+=/butchery,if=target.distance<=5
+actions.assisted_combat+=/flanking_strike
+actions.assisted_combat+=/fury_of_the_eagle,if=target.distance<=5
+actions.assisted_combat+=/kill_command
+actions.assisted_combat+=/explosive_shot
+actions.assisted_combat+=/raptor_strike
+actions.assisted_combat+=/kill_shot
+actions.assisted_combat+=/arcane_shot
+actions.assisted_combat+=/raptor_strike
+actions.assisted_combat+=/steady_shot
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/coordinated_assault

@@ -1,0 +1,39 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=eye_of_tyr,if=target.distance<=8
+actions.assisted_combat+=/hammer_of_light,if=target.distance<=8
+actions.assisted_combat+=/bastion_of_light
+# (Overridden from 'active_enemies>1&buff.consecration.down')
+actions.assisted_combat+=/consecration,if=active_enemies>1&!consecration.up
+# Do not use SotR if Hammer of Light is ready, the One Button Rotation doesn't, either.
+actions.assisted_combat+=/shield_of_the_righteous,if=buff.shield_of_the_righteous.down&!buff.hammer_of_light_ready.up
+# Do not use SotR if Hammer of Light is ready, the One Button Rotation doesn't, either.
+actions.assisted_combat+=/shield_of_the_righteous,if=health.pct>=40&!buff.hammer_of_light_ready.up
+actions.assisted_combat+=/divine_toll,if=active_enemies>3&holy_power<=2
+actions.assisted_combat+=/divine_toll,if=active_enemies<=2&holy_power<=3
+actions.assisted_combat+=/avengers_shield
+actions.assisted_combat+=/hammer_of_wrath
+actions.assisted_combat+=/judgment
+actions.assisted_combat+=/crusader_strike,if=target.distance<=5
+actions.assisted_combat+=/hammer_of_the_righteous,if=target.distance<=5
+actions.assisted_combat+=/blessed_hammer,if=target.distance<=5
+actions.assisted_combat+=/templar_slash,if=target.distance<=5
+actions.assisted_combat+=/templar_strike,if=target.distance<=5
+# (Overridden from 'buff.consecration.down')
+actions.assisted_combat+=/consecration,if=!consecration.up
+actions.assisted_combat+=/judgment
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=use_items
+actions.cooldowns+=/potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call

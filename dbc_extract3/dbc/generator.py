@@ -363,7 +363,7 @@ class DataGenerator(object):
         if header_str:
             self._out.write('// {}, wow build {}\n'.format(header_str, self._options.build))
 
-        self._out.write('static const std::array<{}, {}> __{}_data {{ {{\n'.format(
+        self._out.write('static constexpr std::array<{}, {}> __{}_data {{ {{\n'.format(
             typename, l, self.format_str(arrayname)))
 
     def output_footer(self):
@@ -525,10 +525,15 @@ class SpecializationEnumGenerator(DataGenerator):
 
 class SpecializationListGenerator(SpecializationEnumGenerator):
     def generate(self, enum_ids = None):
-        self._out.write('#define MAX_SPECS_PER_CLASS (%u)\n' % (max(len(specs) for specs in enum_ids)))
-        self._out.write('#define MAX_SPEC_CLASS  (%u)\n\n' % len(enum_ids))
+        self._out.write('#define {}MAX_SPECS_PER_CLASS ({})\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            max(len(specs) for specs in enum_ids)))
+        self._out.write('#define {}MAX_SPEC_CLASS  ({})\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            len(enum_ids)))
 
-        self._out.write('static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =\n{\n')
+        self._out.write('static constexpr specialization_e __{}class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =\n{{\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix) or ''))
 
         for specs in enum_ids:
             self._out.write('  {\n')
@@ -1537,6 +1542,33 @@ class SpellDataGenerator(DataGenerator):
          # 11.1.5
          1225040, # Twilight Devastation Enchant
          1227303, # Twisted Appendage Enchant
+         # 11.1.7
+         1236109, 1236110, 1236140, # Charged Bolts
+         1236118, 1236122, 1236141, # Cauterizing Bolts
+         1236142, 1236272, # Critical Chain
+         1236144, 1236273, 1236936, # Spark Burst
+         1236146, 1236275, 1236938, # Static Charge
+         1236148, 1236276, 1236937, 1236961, # Electric Current
+         1236161, 1236277, # Charged Touch
+         1236165, 1236278, 1236993, # Energy Shield
+         1236169, 1236279, # Charged Crystal
+         1221347, # Surging Totem hidden buff on player for assisted combat APL
+         # 11.2
+         1224916, # Void-Touched Fragment stacking buff
+         1238693, # Voidglass Shards
+         1223417, 1223419, 1251545, 1251549, 1251553, # Reshii Wraps
+         1239674, # Unyielding Netherprism Damage
+         1242875, 1242895, 1242897, 1242881, 1242901, # Screams of a Forgotten Sky
+         1241847, 1241899, 1240916, # Eradicating Arcanocore
+         1239403, # Sigil of the Cosmic Hunt
+         1241809, 1241809, # Cursed Stone Idol
+         1239810, # Naazindhris Mystic Lash
+         1244448, 1244444, # Perfidious Projector
+         1243133, # Incorporeal Warpclap
+         1245643, # Mind-Fracturing Odium
+         1224916, 1224917, 1224918, # Void-Touched Fragment
+         1235633, # Soulbinder's Embrace
+         1246637, 1246649, 1246851, # Chaotic Nethergate
         ),
 
         # Warrior:
@@ -1637,6 +1669,12 @@ class SpellDataGenerator(DataGenerator):
             ( 431399 , 0),          # Dawnlight aoe damage
             ( 449198 , 0),          # Highlord's Judgment hidden spell
             ( 431568 , 0),          # Morning Star driver
+            ( 1238903, 0),          # Masterwork (TWW3 Lightsmith 4p)
+            ( 1239091, 0),          # Lesser Weapon (TWW3 Lightsmith 4p)
+            ( 1239002, 0),          # Lesser Bulwark (TWW3 Lightsmith 4p)
+            ( 1239282, 0),          # Lesser Weapon Damage (TWW3 Lightsmith 4p)
+            ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
+            ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
         ),
 
         # Hunter:
@@ -1690,6 +1728,10 @@ class SpellDataGenerator(DataGenerator):
           ( 474293, 2 ), # Moving Target buff
           ( 471947, 0 ), ( 472020, 0 ), # Boar Charge (Pack Leader)
           ( 1225858, 0 ), # Bear Summon (Pack Leader)
+          ( 1232922, 0 ), # Kill Command (for Dire Beasts via Wildspeaker)
+          ( 1249464, 0 ), # Boon of Elune (Sentinel 4pc buff)
+          ( 1236564, 0 ), ( 1236565, 0 ), ( 1236566, 0 ), # Grizzled Fur, Hasted Hooves, Sharpened Fangs (Pack Leader 2pc buffs)
+          ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
         ),
 
         # Rogue:
@@ -1823,6 +1865,7 @@ class SpellDataGenerator(DataGenerator):
             ( 148859, 0 ),          # Shadowy Apparitions Travel Spell
             ( 1215702, 0 ),         # Priest Shadow 11.1 Class Set 2pc
             ( 1215703, 0 ),         # Priest Shadow 11.1 Class Set 4pc
+            ( 1237615, 0 ),         # Priest Voidweaver 11.1 Class Set 4pc
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1929,12 +1972,17 @@ class SpellDataGenerator(DataGenerator):
           ( 326982, 0 ), # Unending Thirst
           ( 425721, 0 ), # T31 Blood 2pc buff
           ( 377445, 0 ), # Unholy Aura debuff
+          ( 1235391, 0 ), # Dark Transformation player buff
           # The War Within
           ( 290577, 0 ), # Abomiantion Disease Cloud
           ( 439539, 0 ), # Icy Death Torrent Damage
           ( 458264, 0 ), ( 458233, 0 ), # Decomposition
           ( 460501, 0 ), # Bloodied blade heart strike
           ( 463730, 0 ), # Coagulating Blood for Death Strike
+          ( 1232346, 0 ), # Desecrate Damage
+          ( 1239422, 0 ), # Blighted Arrow Coil Buff
+          ( 1233351, 0 ), # Frostreaper debuff
+          ( 1252004, 0 ), # Apocalypse script
           # Rider of the Apocalypse
           ( 444505, 0 ), # Mograines Might Buff
           ( 444826, 0 ), # Trollbanes Chains of Ice Main
@@ -1953,10 +2001,13 @@ class SpellDataGenerator(DataGenerator):
           ( 454389, 0 ), # Summon Whitemane 2
           ( 448229, 0 ), # Soul Reaper
           ( 445513, 0 ), # Whitemane Death Coil
+          ( 1237172, 0 ), # Whitemane Epidemic
           ( 445504, 0 ), # Mograine Heart Strike
+          ( 1251951, 0 ), # Mograine Death and Decay
           ( 445507, 0 ), # Trollbane Obliterate
           ( 445508, 0 ), # Nazgrim Scourge Strike Phys
           ( 445509, 0 ), # Nazgrim Scourge Strike Shadow
+          ( 1237388, 0 ), # Trollbane Frostscythe
           # San'layn
           ( 434144, 0 ), # Infliction in Sorrow Damage
           ( 434246, 0 ), # Blood Eruption
@@ -1967,8 +2018,10 @@ class SpellDataGenerator(DataGenerator):
           ( 443404, 0 ), # Wave of Souls debuff
           ( 442664, 0 ), # Wave of Souls area dummy
           ( 440005, 0 ), # Blood Fever damage
+          ( 443761, 0 ), # Grim Reaper (Reaper's Mark 35% trigger)
           # Tier TWW1
           ( 457506, 0 ), # Blood TWW1 set, Piledriver
+          ( 1238673, 0 ), # Rune Carved Weapons
         ),
 
         # Shaman:
@@ -2030,6 +2083,7 @@ class SpellDataGenerator(DataGenerator):
           ( 470058, 0 ),                                # Voltaic Blaze override buff
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
+          ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
         ),
 
         # Mage:
@@ -2100,6 +2154,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1216988, 0 ),                           # Recently damaged by Blizzard (Freezing Winds talent)
           ( 1223801, 0 ),                           # Arcane Rebound
           ( 1217750, 0 ),                           # Master of Flame hidden buff
+          ( 1236209, 0 ),                           # Frostfire 4pc Glacial Spike
         ),
 
         # Warlock:
@@ -2244,6 +2299,8 @@ class SpellDataGenerator(DataGenerator):
           ( 386959, 1 ), # Charred Passions Damage
           ( 395267, 1 ), # Call to Arms Invoke Niuzao
           ( 387179, 1 ), # Weapons of Order (Debuff)
+          ( 1242373, 1 ), # Walk With the Ox Stomp
+          ( 1242352, 1 ), # Walk With the Ox Driver
 
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
@@ -2431,6 +2488,10 @@ class SpellDataGenerator(DataGenerator):
           # The War Within
           # Class
           # Balance
+          ( 1236851, 1 ), # Balance S3 2pc Dryad's Favor Starsurge cleave
+          ( 1236640, 1 ), # Balance S3 2pc Dryad Starsurge
+          ( 1236607, 1 ), # Balance S3 2pc Dryad Starfall buff
+          ( 1236613, 1 ), # Balance S3 2pc Dryad Starfall spell
           # Feral
           # Guardian
           # Restoration
@@ -2438,6 +2499,8 @@ class SpellDataGenerator(DataGenerator):
           ( 425217, 0 ), ( 425219, 0 ), # boundless moonlight
           ( 441585, 0 ), ( 441602, 0 ), # ravage
           ( 439891, 0 ), ( 439893, 0 ), # strategic infusion
+          # Hero sets
+          ( 1236989, 0 ), # EC TWW3 4pc counter
         ),
         # Demon Hunter:
         (
@@ -2538,6 +2601,9 @@ class SpellDataGenerator(DataGenerator):
           ( 438653, 0 ), # Mass Eruption Child Damage
           ( 438588, 0 ), # Mass Eruption Buff
           ( 442204, 0 ), # Breath of Eons
+          ( 1236949, 0 ), # TWW3 Set Disintegrate
+          ( 1236970, 0 ), # TWW3 Set Pyre
+          ( 1236943, 0 ), # TWW3 Set Deep Breath on Pet
           # Chronowarden
           ( 431583, 0 ), # Chrono Flame
           ( 431620, 0 ), # Upheaval Dot
@@ -3182,8 +3248,20 @@ class SpellDataGenerator(DataGenerator):
 
             mask_class = 0
             spec_data = set_spell_data.ref('id_spec')
+            tst_data = set_spell_data.ref('id_trait_sub_tree')
+            class_id = 0
             if spec_data.id > 0:
-                mask_class = DataGenerator._class_masks[spec_data.class_id]
+                class_id = spec_data.class_id
+            elif tst_data and tst_data.id > 0:
+                ttid = tst_data.id_trait_tree
+                class_id = 0
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_id |= ttl.ref('id_spec').class_id
+
+
+            if class_id > 0:
+                mask_class = DataGenerator._class_masks[class_id]
 
             self.process_spell(set_spell_data.id_spell, ids, mask_class, 0)
 
@@ -3368,7 +3446,7 @@ class SpellDataGenerator(DataGenerator):
         # with spell ###### and should be included.
         for spell_id, spell_data in self.db('Spell').items():
             if spell_data.desc:
-                r = re.match(r"\$@spell(?:aura|desc)([0-9]{1,6})", spell_data.desc)
+                r = re.match(r"\$@spell(?:aura|desc|name|tooltip)(\d+)", spell_data.desc)
                 if r and (id := int(r.group(1))) in ids:
                     self.process_spell(spell_id, ids, ids[id]['mask_class'], ids[id]['mask_race'])
 
@@ -4088,6 +4166,16 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1867, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1876, 1877, 1878, 1879 ],
             'tier'   : 'TWW2'
         },
+        {
+            'name'   : 'thewarwithin_season_3',
+            'bonuses': [ 1919, 1920, 1921, 1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931 ],
+            'tier'   : 'TWW3'
+        },
+        {
+            'name'   : 'shards_of_the_void',
+            'bonuses': [ 1960 ],
+            'tier'   : 'TWW_SOTV'
+        },
     ]
 
     @staticmethod
@@ -4119,12 +4207,12 @@ class SetBonusListGenerator(DataGenerator):
                 'bonus'       : set_spell_data.n_req_items
             }
 
-            class_ = []
+            class_ = set()
 
             if set_spell_data.ref('id_spec').id > 0:
                 spec_ = set_spell_data.ref('id_spec').id
                 spec_data = set_spell_data.ref('id_spec')
-                class_.append(spec_data.class_id)
+                class_.add(spec_data.class_id)
             # No spec id, set spec to "-1" (all specs), and try to use set
             # items to figure out the class (or many classes)
             else:
@@ -4138,7 +4226,20 @@ class SetBonusListGenerator(DataGenerator):
                         continue
 
                     if item_data.class_mask & mask:
-                        class_.append(idx)
+                        class_.add(idx)
+
+            tst = set_spell_data.ref('id_trait_sub_tree')
+            if tst is not None and tst.id > 0:
+                trait_sub_tree_ = tst.id
+            else:
+                trait_sub_tree_ = -1
+
+            if trait_sub_tree_ > 0:
+                ttid = tst.id_trait_tree
+                for ttl in self.db('TraitTreeLoadout').values():
+                    if ttl.id_trait_tree == ttid:
+                        class_.add(ttl.ref('id_spec').class_id)
+
 
             if len(class_) == 0:
                 logging.warn('Could not determine class information for required item set "%s" (id=%d)',
@@ -4149,12 +4250,13 @@ class SetBonusListGenerator(DataGenerator):
                 new_entry = dict(base_entry)
                 new_entry['class'] = cls
                 new_entry['spec'] = spec_
+                new_entry['trait_sub_tree'] = trait_sub_tree_
                 data.append(new_entry)
 
         return data
 
     def generate(self, data = None):
-        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id']))
+        data.sort(key = lambda v: (v['index'], v['class'], v['bonus'], v['set_bonus_id'], v['trait_sub_tree']))
 
         self.output_header(
                 header = 'Set bonus data',
@@ -4163,15 +4265,15 @@ class SetBonusListGenerator(DataGenerator):
                 length = len(data))
 
         _hdr_specifiers = (
-            '{: <43}', '{: <27}', '{: <10}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <7}', '{}'
+            '{: <43}', '{: <30}', '{: <12}', '{: <6}', '{: <5}', '{: <3}', '{: <3}', '{: <4}', '{: <9}', '{: <7}', '{}'
         )
 
         _data_specifiers = (
-            '{: <44}', '{: <27}', '{: >10}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >7}', '{}'
+            '{: <44}', '{: <30}', '{: >12}', '{: >6}', '{: >5}', '{: >3}', '{: >3}', '{: >4}', '{: >9}', '{: >7}', '{}'
         )
 
         _hdr_format = ', '.join(_hdr_specifiers)
-        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'SpellID', 'ItemIDs')
+        _hdr = _hdr_format.format('SetBonusName', 'OptName', 'Tier', 'EnumID', 'SetID', 'Bns', 'Cls', 'Spec', 'TraitTree', 'SpellID', 'ItemIDs')
 
         _data_format = ', '.join(_data_specifiers)
 
@@ -4206,6 +4308,7 @@ class SetBonusListGenerator(DataGenerator):
                 entry['bonus'],
                 entry['class'],
                 entry['spec'],
+                entry['trait_sub_tree'],
                 item_set_spell.id_spell,
                 '{ %s }' % (', '.join(items)))))
 
@@ -5110,18 +5213,40 @@ class TraitGenerator(DataGenerator):
             array = 'trait_spell')
 
         # Hero trees
+        ht_per_class = {
+            class_.id: {
+                tst_id
+                for tst_id in sorted(subtrees)
+                if ( ttid := self.db('TraitSubTree')[tst_id].id_trait_tree )
+                for ttl in self.db('TraitTreeLoadout').values()
+                if ttl.id_trait_tree == ttid
+                if ttl.ref('id_spec').class_id == class_.id
+            }
+            for class_ in self.db('ChrClasses').values()
+        }
+        self._out.write('#define {}MAX_HERO_TREES_PER_CLASS ({})\n\n'.format(
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
+            max(len(v) for v in ht_per_class.values())))
+
         self.output_header(
             header='Hero trees',
-            type='std::pair<unsigned, std::string>',
+            type='std::tuple<unsigned, const char*, unsigned>',
             array='trait_sub_tree',
             length=len(subtrees)
         )
 
         for e in sorted(subtrees):
-            self.output_record([str(e), '"{}"'.format(self.db('TraitSubTree')[e].name)])
+            ttid = self.db('TraitSubTree')[e].id_trait_tree
+            class_ids = {
+                str(e.ref('id_spec').class_id)
+                for e in self.db('TraitTreeLoadout').values()
+                if e.id_trait_tree == ttid
+            }
+            assert(len(class_ids) == 1)
+            class_id = class_ids.pop()
+            self.output_record(['{}, "{}", {}'.format(e, self.db('TraitSubTree')[e].name, class_id)])
 
         self.output_footer()
-
         """
         print(
             f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '
@@ -5220,7 +5345,7 @@ class CharacterLoadoutGenerator(DataGenerator):
         _ilevels = [e.heroic_lfg_dungeon_min_gear for e in self.db('MythicPlusSeason').values()]
         _ilevels.sort(reverse=True)
         self._out.write('static constexpr int {}MYTHIC_TARGET_ITEM_LEVEL = {};\n\n'.format(
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.prefix and ('%s_' % self._options.prefix.upper()) or '',
             _ilevels[0] + 5 * 13))
 
         self.output_header(
@@ -5272,5 +5397,54 @@ class TraitLoadoutGenerator(DataGenerator):
             fields += entry.field('num_points', 'order_index')
 
             self.output_record(fields)
+
+        self.output_footer()
+
+class AssistedCombatStepGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatStep').values(),
+                          key = lambda e: (e.ref('id_assisted_combat').id_spec, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Step data',
+            type = 'assisted_combat_step_data_t',
+            array = 'assisted_combat_step',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.ref('id_assisted_combat').field('id_spec')
+            fields += entry.field('order_index', 'id_spell')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
+
+        self.output_footer()
+
+class AssistedCombatRuleGenerator(DataGenerator):
+    def generate(self, data = None):
+        if self._options.build.patch_level() >= dbc.WowVersion( 11, 1, 7, 0 ).patch_level():
+            data = sorted(self.db('AssistedCombatRule').values(), key = lambda e: (e.id_parent, e.order_index, e.id))
+        else:
+            data = []
+
+        self.output_header(
+            header = 'Assisted Combat Rule data',
+            type = 'assisted_combat_rule_data_t',
+            array = 'assisted_combat_rule',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            fields = entry.field('id')
+            fields += entry.field('id_parent', 'order_index', 'condition_type',
+                                  'condition_value_1', 'condition_value_2', 'condition_value_3')
+            self.output_record(fields)
+
+        if not data:
+            self.output_record('')
 
         self.output_footer()

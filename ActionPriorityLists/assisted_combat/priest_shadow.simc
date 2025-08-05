@@ -1,0 +1,49 @@
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/shadowform,if=!buff.shadowform.up
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cooldowns
+actions+=/call_action_list,name=assisted_combat
+
+# This is the default action priority list from the game's Assisted Combat system.
+actions.assisted_combat=shadowform,if=buff.shadowform.down&buff.voidform.down
+actions.assisted_combat+=/shadow_crash,if=active_enemies>3
+actions.assisted_combat+=/shadow_crash,if=active_enemies>3
+actions.assisted_combat+=/vampiric_touch,if=!dot.vampiric_touch.ticking&(!action.shadow_crash.in_flight)
+actions.assisted_combat+=/shadow_word_pain,if=!dot.shadow_word_pain.ticking&!talent.misery
+actions.assisted_combat+=/devouring_plague,if=!dot.devouring_plague.ticking
+actions.assisted_combat+=/devouring_plague,if=dot.devouring_plague.remains<=1.5
+actions.assisted_combat+=/mind_flay_insanity,if=buff.mind_flay_insanity.up&buff.mind_flay_insanity.remains<=4&buff.mind_flay_insanity.up
+actions.assisted_combat+=/mind_flay_insanity,if=buff.mind_flay_insanity.stack>=4
+actions.assisted_combat+=/devouring_plague,if=insanity>=90&!talent.voidtouched
+actions.assisted_combat+=/devouring_plague,if=insanity>=140&talent.voidtouched
+actions.assisted_combat+=/halo,if=talent.power_surge
+actions.assisted_combat+=/void_blast,if=buff.entropic_rift.up&charges>=2,cooldown_allow_casting_success=1
+actions.assisted_combat+=/void_blast,if=buff.entropic_rift.up
+actions.assisted_combat+=/shadowfiend
+actions.assisted_combat+=/void_bolt,if=buff.voidform.up
+actions.assisted_combat+=/mind_blast,if=!talent.void_blast
+actions.assisted_combat+=/mind_blast,if=talent.void_blast&charges>=2&cooldown.void_torrent.remains<=5&talent.void_torrent
+actions.assisted_combat+=/mind_blast,if=talent.void_blast&cooldown.void_torrent.remains>=5&talent.void_torrent
+actions.assisted_combat+=/void_torrent
+actions.assisted_combat+=/shadow_word_death,if=talent.deathspeaker&target.health.pct<=35
+actions.assisted_combat+=/shadow_word_death,if=target.health.pct<=20
+actions.assisted_combat+=/devouring_plague
+actions.assisted_combat+=/mind_flay_insanity,if=buff.mind_flay_insanity.up
+actions.assisted_combat+=/halo
+actions.assisted_combat+=/mind_flay_insanity,cooldown_allow_casting_success=1
+actions.assisted_combat+=/mind_flay,cooldown_allow_casting_success=1
+actions.assisted_combat+=/mind_blast
+
+# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+actions.cooldowns=potion
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/use_items,if=buff.voidform.up|buff.dark_ascension.up
+actions.cooldowns+=/void_eruption
+actions.cooldowns+=/dark_ascension,if=dot.vampiric_touch.ticking
+actions.cooldowns+=/power_infusion,if=buff.voidform.up|buff.dark_ascension.up
