@@ -31,7 +31,7 @@ level=80
 race=void_elf
 role=attack
 position=back
-talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBzYGzyMDGAAAAAAAAAAAYZZYEzMMmhhtxw2MzMMbMzglZCAglZmhZMzsNDAgllZZZWmZmgAgBA
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBzYGzyMDGAAAAAAAAAAAYZZYmYmBzMMsNzw2MGMbYGmlZCAAmZGzMzMbzAAYZZWWmlZmJIAYA
 
 head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
 neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213470
@@ -43,9 +43,9 @@ hands=grasp_of_fallen_storms,id=237674,ilevel=723
 waist=runebranded_waistband,id=219331,bonus_id=3524/10520/8960/11307,ilevel=720,gem_id=213461,crafted_stats=40/49
 legs=spittlestained_trousers,id=242473,bonus_id=4786/3215/12361,enchant=stormbound_armor_kit_3
 feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant=defenders_march_3
-finger1=seal_of_the_panoply,id=185840,bonus_id=4786/10035/12361/8781,gem_id=213494/213458,enchant=radiant_haste_3
-finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213461/213494,enchant=radiant_mastery_3
-trinket1=arazs_ritual_forge,id=242402,bonus_id=4800/4786/1533/12361
+finger1=signet_of_the_false_accuser,id=178824,bonus_id=4786/10032/12361/8781,gem_id=213455/213494,enchant=radiant_haste_3
+finger2=whispers_of_karesh,id=242491,bonus_id=4786/3215/12361/8781,gem_id=213494/213494,enchant=radiant_haste_3
+trinket1=unyielding_netherprism,id=242396,bonus_id=4800/4786/1533/12361
 trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
 main_hand=harvesters_interdiction,id=221159,bonus_id=4786/3215/12361,enchant=stonebound_artistry_3
 
@@ -57,7 +57,7 @@ level=80
 race=void_elf
 role=attack
 position=back
-talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmZMLzMmZGAAAAAAAAAAAssMMiZGGzww2YYbmZGmNmZwyMBAwyMzgZG2mBAwGA0sMLNzMzCgZA
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmZMLzMmZGAAAAAAAAAAAssMMTMzgZGGWmZYbGDmNMDzyMBAwyMzgZG2mBAwGA0sMLNzMzCgZA
 
 head=halfmask_of_fallen_storms,id=237673,bonus_id=11307,ilevel=723,gem_id=213743
 neck=sin_stained_pendant,id=178827,bonus_id=4786/10032/12361/8781,gem_id=213467/213497
