@@ -111,11 +111,12 @@ void affliction( player_t* p )
   aoe->add_action( "cycling_variable,name=min_ps,op=min,default=16,value=dot.phantom_singularity.remains+(99*!dot.phantom_singularity.remains)" );
   aoe->add_action( "variable,name=min_ps1,op=set,value=(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)" );
   aoe->add_action( "haunt,if=debuff.haunt.remains<3" );
-  aoe->add_action( "agony,if=refreshable&cooldown.vile_taint.remains>remains-2" );
-  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.vile_taint&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
-  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.phantom_singularity&(remains<3|cooldown.soul_rot.remains<5&remains<8)&fight_remains>dot.agony.remains+5" );
-  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,if=talent.demonic_soul&talent.vile_taint&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
-  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,if=talent.demonic_soul&talent.phantom_singularity&(remains<3|cooldown.soul_rot.remains<5&remains<8)&fight_remains>dot.agony.remains+5" );
+  aoe->add_action( "agony,if=refreshable&cooldown.vile_taint.remains>remains-2&active_enemies>10" );
+  aoe->add_action( "agony,target_if=(!(debuff.haunt.remains|dot.seed_of_corruption.remains)&refreshable),if=active_enemies>8&active_dot.agony<(active_enemies-8>?(talent.demonic_soul*1+!talent.demonic_soul*5))" );
+  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.vile_taint&active_dot.agony<6&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
+  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.phantom_singularity&active_dot.agony<6&(remains<3|cooldown.soul_rot.remains<5&remains<8)&fight_remains>dot.agony.remains+5" );
+  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,if=talent.demonic_soul&talent.vile_taint&active_dot.agony<4&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
+  aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,if=talent.demonic_soul&talent.phantom_singularity&active_dot.agony<4&(remains<3|cooldown.soul_rot.remains<5&remains<8)&fight_remains>dot.agony.remains+5" );
   aoe->add_action( "vile_taint,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)" );
   aoe->add_action( "unstable_affliction,if=(remains<3|talent.demonic_soul&remains<cooldown.soul_rot.remains+execute_time&cooldown.soul_rot.remains<5)&fight_remains>remains+5" );
   aoe->add_action( "phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)&dot.agony.remains" );
@@ -129,7 +130,7 @@ void affliction( player_t* p )
   aoe->add_action( "malefic_rapture,if=talent.demonic_soul&(!talent.vile_taint|cooldown.vile_taint.remains>10|soul_shard>1&cooldown.vile_taint.remains<10)" );
   aoe->add_action( "malefic_rapture,if=!talent.demonic_soul&buff.tormented_crescendo.react&(buff.tormented_crescendo.remains<=cooldown.soul_rot.remains+10+execute_time)" );
   aoe->add_action( "malefic_rapture,if=talent.vile_taint&(variable.cd_dots_up|variable.vt_ps_up)" );
-  aoe->add_action( "agony,target_if=min:(remains*(remains>0)),if=remains<duration*0.5" );
+  aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5&active_dot.agony<6" );
   aoe->add_action( "wither,target_if=min:(remains*(remains>0)),if=!talent.absolute_corruption&refreshable&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
   aoe->add_action( "corruption,target_if=min:(remains*(remains>0)),if=!talent.absolute_corruption&refreshable&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)" );
   aoe->add_action( "unstable_affliction,if=remains<duration*0.3&fight_remains>remains+5" );
