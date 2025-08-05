@@ -322,12 +322,10 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=ff_st,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=ss_st" );
 
-  cds->add_action( "icy_veins,if=talent.frostfire_bolt|active_enemies>=3", "Icy Veins and Opener" );
-  cds->add_action( "flurry,if=time=0&active_enemies<=2" );
-  cds->add_action( "frozen_orb,if=time=0&active_enemies>=3" );
-  cds->add_action( "icy_veins,if=talent.splinterstorm", "In the Opener Spellslinger uses Icy Veins one global cooldown later to guarantee being in combat for Augury Abounds." );
-  cds->add_action( "potion,if=buff.icy_veins.remains>15|fight_remains<35", "Potion and Trinkets" );
-  cds->add_action( "use_item,name=treacherous_transmitter,if=fight_remains<32+20*equipped.spymasters_web|prev_off_gcd.icy_veins|(cooldown.icy_veins.remains<12|cooldown.icy_veins.remains<22&cooldown.shifting_power.remains<10)" );
+  cds->add_action( "flurry,if=time=0&active_enemies<=2&talent.splinterstorm", "Spellslinger uses Icy Veins after the initial Flurry in the ST/Cleave opener to guarantee being in combat for Augury Abounds." );
+  cds->add_action( "icy_veins" );
+  cds->add_action( "potion,if=buff.icy_veins.remains>15|fight_remains<35", "Potion" );
+  cds->add_action( "use_item,name=treacherous_transmitter,if=fight_remains<32+20*equipped.spymasters_web|prev_off_gcd.icy_veins|(cooldown.icy_veins.remains<12|cooldown.icy_veins.remains<22&cooldown.shifting_power.remains<10)", "Trinkets" );
   cds->add_action( "do_treacherous_transmitter_task,if=fight_remains<18|(buff.cryptic_instructions.remains<?buff.realigning_nexus_convergence_divergence.remains<?buff.errant_manaforge_emission.remains)<(action.shifting_power.execute_time+1*talent.ray_of_frost)" );
   cds->add_action( "use_item,name=spymasters_web,if=fight_remains<20|buff.icy_veins.remains<19&(fight_remains<105|buff.spymasters_report.stack>=32)&(buff.icy_veins.remains>15|trinket.treacherous_transmitter.cooldown.remains>50)" );
   cds->add_action( "use_item,name=arazs_ritual_forge" );
@@ -345,6 +343,8 @@ void frost( player_t* p )
   cds->add_action( "use_item,name=ratfang_toxin,if=time>10" );
   cds->add_action( "use_item,name=neural_synapse_enhancer,if=active_enemies<=2|prev_gcd.1.comet_storm|fight_remains<20" );
   cds->add_action( "use_items" );
+  cds->add_action( "flurry,if=time=0&active_enemies<=2", "Opener for AoE and Frostfire ST/Cleave" );
+  cds->add_action( "frozen_orb,if=time=0&active_enemies>=3" );
   cds->add_action( "blood_fury", "Racials" );
   cds->add_action( "berserking,if=buff.icy_veins.remains>10|fight_remains<15" );
   cds->add_action( "fireblood" );
