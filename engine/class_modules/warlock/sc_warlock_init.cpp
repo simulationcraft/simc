@@ -861,79 +861,44 @@ namespace warlock
                                     ->set_default_value_from_effect( 1 );
   }
 
+  struct diabolic_ritual_buff_t : public buff_t
+  {
+    const int diabolic_ritual_next_index; // Index of the next Diabolic Ritual buff to cycle
+    buff_t *art_buff_trigger; // Demonic Art buff to trigger when the effect of this Diabolic Ritual buff is consumed
+
+    diabolic_ritual_buff_t( warlock_t* p, util::string_view name, const spell_data_t* spell_data, const int _diabolic_ritual_next_index = 0, buff_t* _art_buff_trigger = nullptr )
+      : buff_t( p, name, spell_data ),
+        diabolic_ritual_next_index(_diabolic_ritual_next_index),
+        art_buff_trigger(_art_buff_trigger)
+    {
+      set_can_cancel( false );
+      set_stack_change_callback( [ this, p ]( buff_t*, int, int cur )
+      {
+        if ( cur == 0 )
+        {
+          // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
+          const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
+          make_event( sim, buff_delay, [ this, p ] {
+            if ( p->buffs.art_mother->check() || p->buffs.art_pit_lord->check() || p->buffs.art_overlord->check() )
+            {
+              // Expire other Demonic Art buffs without triggering their effect
+              p->demonic_art_buff_replaced = true;
+              p->buffs.art_mother->expire();
+              p->buffs.art_pit_lord->expire();
+              p->buffs.art_overlord->expire();
+              p->demonic_art_buff_replaced = false;
+            }
+            if (art_buff_trigger)
+              art_buff_trigger->trigger();
+          } );
+          p->diabolic_ritual = diabolic_ritual_next_index;
+        }
+      } );
+    }
+  };
+
   void warlock_t::create_buffs_diabolist()
   {
-    buffs.ritual_overlord = make_buff( this, "diabolic_ritual_overlord", hero.ritual_overlord )
-                                ->set_can_cancel( false )
-                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                  {
-                                    if ( cur == 0 )
-                                    {
-                                      // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
-                                      const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
-                                      make_event( sim, buff_delay, [ this ] {
-                                        if ( buffs.art_mother->check() || buffs.art_pit_lord->check() )
-                                        {
-                                          // Expire other Demonic Art buffs without triggering their effect
-                                          demonic_art_buff_replaced = true;
-                                          buffs.art_mother->expire();
-                                          buffs.art_pit_lord->expire();
-                                          demonic_art_buff_replaced = false;
-                                        }
-                                        buffs.art_overlord->trigger();
-                                      } );
-                                      diabolic_ritual = 1;
-                                    }
-                                  } );
-
-    buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
-                              ->set_can_cancel( false )
-                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                {
-                                  if ( cur == 0 )
-                                  {
-                                    // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
-                                    const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
-                                    make_event( sim, buff_delay, [ this ] {
-                                      if ( buffs.art_overlord->check() || buffs.art_pit_lord->check() )
-                                      {
-                                        // Expire other Demonic Art buffs without triggering their effect
-                                        demonic_art_buff_replaced = true;
-                                        buffs.art_overlord->expire();
-                                        buffs.art_pit_lord->expire();
-                                        demonic_art_buff_replaced = false;
-                                      }
-                                      buffs.art_mother->trigger();
-                                    } );
-                                    diabolic_ritual = 2;
-                                  }
-                                } );
-
-    buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
-                                ->set_can_cancel( false )
-                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                  {
-                                    if ( cur == 0 )
-                                    {
-                                      // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
-                                      const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
-                                      make_event( sim, buff_delay, [ this ] {
-                                        if ( buffs.art_mother->check() || buffs.art_overlord->check() )
-                                        {
-                                          // Expire other Demonic Art buffs without triggering their effect
-                                          demonic_art_buff_replaced = true;
-                                          buffs.art_mother->expire();
-                                          buffs.art_overlord->expire();
-                                          demonic_art_buff_replaced = false;
-                                        }
-                                        buffs.art_pit_lord->trigger();
-                                      } );
-                                      diabolic_ritual = 0;
-                                    }
-                                  } );
 
     buffs.art_overlord = make_buff( this, "demonic_art_overlord", hero.art_overlord )
                              ->set_can_cancel( false )
@@ -970,6 +935,15 @@ namespace warlock
                                      buffs.ruination->trigger();
                                  }
                                } );
+
+    buffs.ritual_overlord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_overlord", hero.ritual_overlord, 1, buffs.art_overlord )
+                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+
+    buffs.ritual_mother = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother, 2, buffs.art_mother )
+                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+
+    buffs.ritual_pit_lord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord, 0, buffs.art_pit_lord )
+                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
