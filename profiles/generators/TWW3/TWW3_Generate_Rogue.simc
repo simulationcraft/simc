@@ -1,30 +1,61 @@
-# rogue="TWW3_Rogue_Assassination"
-# source=default
-# spec=assassination
-# level=80
-# race=orc
-# role=attack
-# position=back
-# talents=CMQAAAAAAAAAAAAAAAAAAAAAAMzMzMMmx2MAAAAAAMbwyMAAAAAA022MzgZGjZmZZ2mZmxAjZmZGzsZbMDwmZZgBsEsMMBGWA
+rogue="TWW3_Rogue_Assassination_Fatebound"
+source=default
+spec=assassination
+level=80
+race=maghar_orc
+role=attack
+position=back
+spec=assassination
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhxMAAAAAAAzGsNDAAAAAAttNzMzMzMGzMzysMzMjZwwMzMmZz2YGADsAzY0Y2AZbAbA
 
-# head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=678,gem_id=213743
-# neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=678,gem_id=213467/213491
-# shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=678
-# back=electricians_siphoning_filter,id=234507,ilevel=678,enchant_id=7403
-# chest=spectral_gamblers_vest,id=229292,ilevel=678,enchant_id=7364
-# wrists=disturbed_kelp_wraps,id=234499,bonus_id=1808,ilevel=678,gem_id=213479,enchant_id=7385
-# hands=spectral_gamblers_gloves,id=229290,ilevel=678
-# waist=gleamkeepers_buckle,id=221107,bonus_id=1808,ilevel=678,gem_id=213458
-# legs=spectral_gamblers_pantaloons,id=229288,ilevel=678,enchant_id=7601
-# feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960,enchant_id=7418,crafted_stats=32/49
-# finger1=cyrces_circlet,id=228411,ilevel=658,gem_id=228639/228638/228640,enchant_id=7346
-# finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213458/213458,enchant_id=7346
-# trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
-# trinket2=house_of_cards,id=230027,ilevel=678
-# main_hand=random_number_perforator,id=231266,ilevel=678,enchant_id=7460
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/12043/12040/1485/11300/8960,enchant_id=7460,crafted_stats=32/49
+head=hood_of_the_sudden_eclipse,id=237664,bonus_id=1808,gem_id=213743,ilevel=723
+neck=ornately_engraved_amplifier,id=185842,bonus_id=8781,gem_id=213473/213461,ilevel=723
+shoulder=smokemantle_of_the_sudden_eclipse,id=237662,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12399/12256/9893,enchant_id=7403,gem_id=238046
+chest=tactical_vest_of_the_sudden_eclipse,id=237667,enchant_id=7364,ilevel=723
+wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/8795/1808/11109/8960,enchant_id=7385,gem_id=213461,ilevel=720
+hands=deathgrips_of_the_sudden_eclipse,id=237665,ilevel=723
+waist=shadow_congregants_belt,id=221134,bonus_id=1808,gem_id=213461,ilevel=723
+legs=pants_of_the_sudden_eclipse,id=237663,enchant_id=7601,ilevel=723
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504,ilevel=723
+finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7346,gem_id=213461/213461,ilevel=723
+finger2=radiant_necromancers_band,id=221200,bonus_id=8781,enchant_id=7346,gem_id=213482/213494,ilevel=723
+trinket1=lily_of_the_eternal_weave,id=242494,ilevel=723
+trinket2=astral_antenna,id=242395,ilevel=723
+main_hand=vengeful_netherspike,id=237740,enchant_id=7463,ilevel=723
+off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/8791/11300/8960,enchant_id=7463,ilevel=720
 
-# save=TWW3_Rogue_Assassination.simc
+save=TWW3_Rogue_Assassination.simc
+
+
+rogue="TWW3_Rogue_Assassination_Deathstalker"
+source=default
+spec=assassination
+level=80
+race=maghar_orc
+role=attack
+position=back
+spec=assassination
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhxMAAAAAAAzGsMDAAAAAAttNzMzMzMGzMzysMzMjZwwMzMmZz2YGgtZWGLMmxs0Y2WGmsNMsA
+
+head=hood_of_the_sudden_eclipse,id=237664,bonus_id=1808,gem_id=213743,ilevel=723
+neck=duskblazes_desperation,id=237569,bonus_id=8781,gem_id=213473/213461,ilevel=723
+shoulder=mantle_of_wounded_fate,id=242486,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12399/12256/9893,enchant_id=7403,gem_id=238046
+chest=tactical_vest_of_the_sudden_eclipse,id=237667,enchant_id=7364,ilevel=723
+wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/1808/11109/8960/8794,enchant_id=7385,gem_id=213482,ilevel=720
+hands=deathgrips_of_the_sudden_eclipse,id=237665,ilevel=723
+waist=reapers_dreadbelt,id=237557,bonus_id=1808,gem_id=213482,ilevel=723
+legs=pants_of_the_sudden_eclipse,id=237663,enchant_id=7601,ilevel=723
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504,ilevel=723
+finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7346,gem_id=213494/213494,ilevel=723
+finger2=radiant_necromancers_band,id=221200,bonus_id=8781,enchant_id=7346,gem_id=213482/213482,ilevel=723
+trinket1=arazs_ritual_forge,id=242402,ilevel=723
+trinket2=astral_antenna,id=242395,ilevel=723
+main_hand=vengeful_netherspike,id=237740,enchant_id=7463,ilevel=723
+off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/8791/11300/8960,enchant_id=7463,ilevel=720
+
+save=TWW3_Rogue_Assassination_Deathstalker.simc
 
 rogue="TWW3_Rogue_Outlaw"
 level=80
