@@ -111,6 +111,7 @@ void affliction( player_t* p )
   aoe->add_action( "cycling_variable,name=min_ps,op=min,default=16,value=dot.phantom_singularity.remains+(99*!dot.phantom_singularity.remains)" );
   aoe->add_action( "variable,name=min_ps1,op=set,value=(variable.min_vt*talent.vile_taint<?variable.min_ps*talent.phantom_singularity)" );
   aoe->add_action( "haunt,if=debuff.haunt.remains<3" );
+  aoe->add_action( "agony,if=refreshable&cooldown.vile_taint.remains>remains-2" );
   aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.vile_taint&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
   aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=!talent.demonic_soul&talent.phantom_singularity&(remains<3|cooldown.soul_rot.remains<5&remains<8)&fight_remains>dot.agony.remains+5" );
   aoe->add_action( "agony,cycle_targets=1,max_cycle_targets=3,if=talent.demonic_soul&talent.vile_taint&cooldown.vile_taint.remains&remains>0&remains<10&remains<cooldown.vile_taint.remains+action.vile_taint.cast_time&fight_remains>dot.agony.remains+5" );
@@ -194,13 +195,13 @@ void affliction( player_t* p )
   ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|prev_gcd.1.soul_rot" );
   ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|prev_gcd.1.soul_rot" );
   ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot" );
-  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.sr_up|variable.cds_active" );
   ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|prev_gcd.1.soul_rot" );
   ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot" );
 
   variables->add_action( "variable,name=ps_up,op=set,value=!talent.phantom_singularity|dot.phantom_singularity.remains" );
-  variables->add_action( "variable,name=vt_up,op=set,value=!talent.vile_taint|dot.vile_taint_dot.remains" );
-  variables->add_action( "variable,name=vt_ps_up,op=set,value=(!talent.vile_taint&!talent.phantom_singularity)|dot.vile_taint_dot.remains|dot.phantom_singularity.remains" );
+  variables->add_action( "variable,name=vt_up,op=set,value=!talent.vile_taint|active_dot.vile_taint_dot" );
+  variables->add_action( "variable,name=vt_ps_up,op=set,value=(!talent.vile_taint&!talent.phantom_singularity)|active_dot.vile_taint_dot|dot.phantom_singularity.remains" );
   variables->add_action( "variable,name=sr_up,op=set,value=!talent.soul_rot|dot.soul_rot.remains" );
   variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
   variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
