@@ -12701,7 +12701,7 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:     return str + "algari_mana_oil_3";
-    case DRUID_FERAL:       return str + "ironclaw_whetstone_3";
+    case DRUID_FERAL:       return str + "algari_mana_oil_3";
     case DRUID_GUARDIAN:    return str + "ironclaw_whetstone_3";
     case DRUID_RESTORATION: return str + "algari_mana_oil_3";
     default:                return "disabled";
