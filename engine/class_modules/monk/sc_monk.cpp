@@ -8250,6 +8250,9 @@ void monk_t::create_buffs()
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
           ->set_expire_callback(
               [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
+  if ( specialization() == MONK_WINDWALKER )
+    tier.tww3.coc_2pc_heart_of_the_jade_serpent->modify_duration(
+        baseline.windwalker.aura_3->effectN( 5 ).time_value() );
 
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
