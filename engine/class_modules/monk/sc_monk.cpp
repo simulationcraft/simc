@@ -8676,7 +8676,7 @@ void monk_t::init_special_effects()
   {
     tier.tww3.moh_2pc_rng =
         get_accumulated_rng( "tww3_moh_2pc", 0.02, [ & ]( double, unsigned attempts, action_state_t * ) {
-          return 0.002 + 0.0015 * 25.0 - 0.0015 * 24.0 * std::powf( 0.96, attempts - 1 );
+          return 0.002 + 0.0015 * 25.0 - 0.0015 * 24.0 * std::pow( 0.96, attempts - 1 );
         } );
     create_proc_callback( { tier.tww3.moh_2pc_harmonic_surge_buff_data, PF_ALL_DAMAGE, PF2_ALL_HIT } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
