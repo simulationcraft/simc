@@ -34,10 +34,10 @@ role=spell
 position=back
 professions=alchemy=100/jewelcrafting=100
 spec=affliction
-talents=CkQAAAAAAAAAAAAAAAAAAAAAAAzMzMzMjYWMwsNzMDzyAAAAmZMziZmxyMzMbmxMDAYGLwAziRjZAZWALzAAAAAAAAAjZD
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAAzMzMzMjYWMwsNzMDzyAAAAmZmZWMzMWmZmZDmZAAzYBGYWMaMDIzGYZGAAAAAAAAMjZD
 default_pet=sayaad
 
-head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
+head=elysian_flame_crown,id=221131,bonus_id=3215/12361/12239/1808,gem_id=213743
 neck=salhadaars_folly,id=242406,bonus_id=1533/12361/12239/8781,gem_id=213470/213491
 shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
 back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
@@ -50,7 +50,7 @@ feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,encha
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7334,gem_id=213491/213491
 finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7346,gem_id=213479/213455
 trinket1=arazs_ritual_forge,id=242402,bonus_id=1533/12361/12239
-trinket2=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
+trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
 main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7445
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8795,crafted_stats=36/49
 
@@ -92,18 +92,18 @@ role=spell
 position=ranged_back
 talents=CoQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAAAAAAAAzAGzYYBGYb0CNswMmhtZmZZGzMzYMjhZmxYYmZAAA
 
-head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
-neck=chrysalis_of_sundered_souls,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213497/213479
+head=elysian_flame_crown,id=221131,bonus_id=3215/12361/12239/1808,gem_id=213743
+neck=chrysalis_of_sundered_souls,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213491/213461
 shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
-back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
+back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238044
 chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
-wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213467,crafted_stats=36/49
+wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213461,crafted_stats=36/49
 hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
-waist=durable_information_securing_container,id=242664,bonus_id=1489/12352/12239,gem_id=213455,titan_disc_id=1236275
+waist=durable_information_securing_container,id=242664,bonus_id=1489/12352/12239,gem_id=213461,titan_disc_id=1236275
 legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
 feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
-finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213455/213455
-finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213455/213455
+finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213461/213461
+finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213467/213479
 trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
 trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
 main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7445
@@ -118,22 +118,22 @@ race=Dwarf
 role=spell
 position=ranged_back
 default_pet=sayaad
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEziBmtZmZYWmFzwMzsYGjFzMAAAAwYmZZZmZZGwYGDLkB2GWoxCGAAAAAAAzYMDAA
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEziBmtZmZYWmFDzMzsMzYsYmBAAAAmZGLLzMLzAGzYYhMw2wCNWwAAAAAAAYYMDAA
 
-head=cowl_of_branching_fate,id=185795,bonus_id=10035/12361/12239/1808,gem_id=213743
+head=elysian_flame_crown,id=221131,bonus_id=3215/12361/12239/1808,gem_id=213743
 neck=salhadaars_folly,id=242406,bonus_id=1533/12361/12239/8781,gem_id=213461/213485
 shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
 back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238042
 chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
 wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213473,crafted_stats=36/49
 hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
-waist=cord_of_the_dark_word,id=178822,bonus_id=10032/12361/12239/1808,gem_id=213473
+waist=honorbound_retainers_sash,id=221121,bonus_id=3215/12361/12239/1808,gem_id=213467
 legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
 feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213473/213494
 finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213467/213482
 trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
-trinket2=diamantine_voidcore,id=242392,bonus_id=1533/12361/12239
+trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
 main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8795,crafted_stats=36/49
 
