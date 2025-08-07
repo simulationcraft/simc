@@ -87,7 +87,7 @@ save=TWW3_Warlock_Affliction.simc
 warlock="TWW3_Warlock_Demonology_Diabolist"
 spec=demonology
 level=80
-race=Orc
+race=Dwarf
 role=spell
 position=ranged_back
 talents=CoQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAAAAAAAAzAGzYYBGYb0CNswMmhtZmZZGzMzYMjhZmxYYmZAAA
@@ -105,7 +105,7 @@ feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,encha
 finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213455/213455
 finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213455/213455
 trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
-trinket2=arazs_ritual_forge,id=242402,bonus_id=1533/12361/12239
+trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
 main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7445
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8795,crafted_stats=36/49
 
