@@ -191,8 +191,9 @@ int accumulated_rng_t::trigger( action_state_t* state )
 
   trigger_count++;
 
-  auto chance = accumulator_fn ? accumulator_fn( proc_chance, trigger_count, state ) : proc_chance * trigger_count;
-  auto result = player->rng().roll( chance );
+  double chance = accumulator_fn ? accumulator_fn( proc_chance, trigger_count, state ) : proc_chance * trigger_count;
+  assert( !std::isnan( chance ) ); // nan check
+  bool result = player->rng().roll( chance );
 
   if ( player->sim->debug )
   {

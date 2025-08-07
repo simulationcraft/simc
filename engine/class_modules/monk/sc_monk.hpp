@@ -43,7 +43,7 @@ struct monk_pet_t : public pet_t
 };
 struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-namespace niuzao // niuzao
+namespace niuzao  // niuzao
 {
 struct niuzao_pet_t : public monk_pet_t
 {
@@ -53,7 +53,7 @@ struct niuzao_pet_t : public monk_pet_t
   action_t *create_action( std::string_view name, std::string_view options_str ) override;
   void init_spells() override;
 };
-}  // namespace
+}  // namespace niuzao
 struct call_to_arms_niuzao_pet_t;
 struct chiji_pet_t;
 struct yulon_pet_t;
@@ -1371,6 +1371,11 @@ public:
       const spell_data_t *coc_4pc_jade_serpents_blessing_data;
       propagate_const<buff_t *> coc_4pc_jade_serpents_blessing;
       const spell_data_t *moh_2pc;
+      const spell_data_t *moh_2pc_harmonic_surge_buff_data;
+      const spell_data_t *moh_2pc_harmonic_surge_damage;
+      const spell_data_t *moh_2pc_harmonic_surge_heal;
+      propagate_const<buff_t *> moh_2pc_harmonic_surge_buff;
+      accumulated_rng_t *moh_2pc_rng;
       const spell_data_t *moh_4pc;
       const spell_data_t *spm_2pc;
       const spell_data_t *spm_2pc_flurry_charge_data;
