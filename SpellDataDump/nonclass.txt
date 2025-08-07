@@ -171695,6 +171695,7 @@ Effects          :
 Description      : $@spelldesc351316
 
 Name             : First Technique (id=351316) 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
@@ -171703,13 +171704,14 @@ Labels           : 3959: Item Effects
 Triggered By     : First Technique (351308)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=881509)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 178450.7 (coefficient=69.76833) | Misc Value: 0x7f | Target: Self (1)
+#1 (id=881509)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 324968.4 (coefficient=127.0519) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Coefficient (69.768326 -> 127.051903), Scaling Class (-9 -> -8)
 #2 (id=881713)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.
-Tooltip          : Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.
+Description      : Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.
+Tooltip          : Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.
 
 Name             : Carver's Eye (id=351414) 
 School           : Shadow
