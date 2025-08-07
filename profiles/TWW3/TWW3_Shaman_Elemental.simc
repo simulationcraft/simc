@@ -1,3 +1,18 @@
+shaman="TWW3_Shaman_Elemental_Farseer"
+source=default
+spec=elemental
+level=80
+race=tauren
+role=spell
+position=ranged_back
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMjZGzysMGMYmBAAAAwiZWgBMgZjJkZBAMbTzMw2CzMNMzMz2wyMmZYMMLjZGzMmZ2AA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3,if=!talent.improved_flametongue_weapon
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -129,3 +144,33 @@ actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
+
+head=nathrian_usurpers_mask,id=178816,bonus_id=10032/12361/12239/1808,gem_id=213743
+neck=mommas_mega_medallion,id=251880,bonus_id=1572/12361/12239/8781,gem_id=213473/213494
+shoulders=fangs_of_channeled_fury,id=237635,bonus_id=12361/10356/12233/6652/12675/1533/10255
+back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238046,enchant_id=7403
+chest=furs_of_channeled_fury,id=237640,bonus_id=12361/10356/12229/6652/12676/1533/10255,enchant_id=7364
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8794,gem_id=213482,enchant_id=7385,crafted_stats=49/36
+hands=claws_of_channeled_fury,id=237638,bonus_id=12361/10356/12230/6652/12675/1533/10255
+waist=clasp_of_furious_freedom,id=237554,bonus_id=1533/12361/12239/1808,gem_id=213458
+legs=tassets_of_channeled_fury,id=237636,bonus_id=12361/10356/12232/6652/12676/1533/10255,enchant_id=7534
+feet=interlopers_chain_boots,id=243308,bonus_id=1533/12361/12239/13504,enchant_id=7424
+finger1=signet_of_collapsing_stars,id=185813,bonus_id=10035/12361/12239/8781,gem_id=213458/213458,enchant_id=7352
+finger2=seal_of_the_panoply,id=185840,bonus_id=10035/12361/12239/8781,gem_id=213458/213458,enchant_id=7352
+trinket1=arazs_ritual_forge,id=242402,bonus_id=6652/10356/12361/1533/10255
+trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
+main_hand=voidglass_kris,id=237728,bonus_id=6652/10356/12361/1533/10255,enchant_id=7448
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8794,crafted_stats=49/36
+
+# Gear Summary
+# gear_ilvl=723.06
+# gear_stamina=664934
+# gear_intellect=105617
+# gear_crit_rating=6019
+# gear_haste_rating=11833
+# gear_mastery_rating=22705
+# gear_versatility_rating=16109
+# gear_avoidance_rating=1635
+# gear_armor=64678
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=farseer,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=farseer,enable=1

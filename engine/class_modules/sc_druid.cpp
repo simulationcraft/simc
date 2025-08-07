@@ -4759,7 +4759,8 @@ struct bursting_growth_t final : public cat_attack_t
     aoe = -1;
     reduced_aoe_targets = 5;  // TODO: not in data, from tooltip
 
-    if ( const auto& eff = p->sets->set( HERO_WILDSTALKER, TWW3, B4 )->effectN( 5 ); eff.percent() )
+    if ( const auto& eff = p->sets->set( HERO_WILDSTALKER, TWW3, B4 )->effectN( 5 );
+         eff.percent() && p->specialization() == DRUID_FERAL )
     {
       add_parse_entry( target_multiplier_effects )
         .set_func( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ) )
