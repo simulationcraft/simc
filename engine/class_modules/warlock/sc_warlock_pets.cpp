@@ -1648,8 +1648,16 @@ void vilefiend_t::arise()
   }
 }
 
-action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
+void vilefiend_t::demise()
 {
+  if ( !current.sleeping )  
+    o()->buffs.vilefiend->decrement();
+  
+  warlock_simple_pet_t::demise();
+}
+
+action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
+  {
   if ( name == "bile_spit" )
     return new bile_spit_t( this );
   if ( name == "headbutt" )

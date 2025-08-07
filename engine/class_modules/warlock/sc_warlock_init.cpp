@@ -749,7 +749,7 @@ namespace warlock
     buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
                           ->set_duration( talents.call_dreadstalkers_2->duration() );
 
-    buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+    buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 2 )
                       ->set_duration( talents.summon_vilefiend->duration() );
 
     buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )

@@ -1683,7 +1683,8 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+        //In-game a stack gets consumed before MT hits, doing it like this is easier
+        if ( soul_harvester() && p()->buffs.succulent_soul->check() > 1 )
           m *= 1.0 + p()->hero.succulent_soul->effectN( 2 ).percent();
 
         return m;
@@ -2264,8 +2265,11 @@ using namespace helpers;
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
+      //11.1 onward, nightfall has not buffed hc ds dmg
+      double mul = p()->bugs && hellcaller() ? 0 : p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent();
+
       debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0 );
-      debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent() : 0 );
+      debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? mul : 0 );
       warlock_spell_t::snapshot_state( s, rt );
     }
 
@@ -2382,8 +2386,6 @@ using namespace helpers;
 
      std::vector<player_t*>& target_list() const override
     {
-      // Force regen this every time
-      target_cache.is_valid = false;
       auto& tl              = warlock_spell_t::target_list();
       auto original_size    = tl.size();
 
@@ -2411,7 +2413,12 @@ using namespace helpers;
 
       return tl;
     }
-    
+    void execute() override
+    {
+      target_cache.is_valid = false;
+      warlock_spell_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       bool fresh_agony = !td( s->target )->dots_agony->is_ticking();

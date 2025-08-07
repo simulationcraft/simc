@@ -646,7 +646,7 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
       continue;
 
     // 2025-03-28: The Expendables talent does not apply to Greater Dreadstalkers (maybe a bug?)
-    if ( lock_pet->pet_type != PET_FELHUNTER || !lock_pet->bugs )
+    if ( ( lock_pet->pet_type != PET_FELHUNTER || !lock_pet->bugs ) && lock_pet->pet_type != PET_WARLOCK_RANDOM )
       lock_pet->buffs.the_expendables->trigger();
   }
 }
