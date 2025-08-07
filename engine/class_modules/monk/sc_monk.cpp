@@ -5324,8 +5324,9 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     }
   };
 
-  celestial_brew_t( monk_t *player, util::string_view options_str, const spell_data_t *spell_data )
-    : brew_t<monk_absorb_t>( player, spell_data->name_cstr(), spell_data )
+  celestial_brew_t( monk_t *player, util::string_view options_str, std::string_view name,
+                    const spell_data_t *spell_data )
+    : brew_t<monk_absorb_t>( player, name, spell_data )
   {
     parse_options( options_str );
     harmful = may_crit = false;
@@ -6606,11 +6607,11 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( this, options_str );
   if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str, talent.brewmaster.celestial_brew );
+    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
   if ( name == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
-    return new celestial_brew_t( this, options_str, talent.brewmaster.celestial_infusion );
+    return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
   if ( name == "celestial_infusion" )
-    return new celestial_brew_t( this, options_str, talent.brewmaster.celestial_infusion );
+    return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
   if ( name == "exploding_keg" )
     return new exploding_keg_t( this, options_str );
   if ( name == "fortifying_brew" )
