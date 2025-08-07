@@ -16200,7 +16200,7 @@ static constexpr std::array<spelltext_data_t, 28029> __spelltext_data { {
   {  351239, "Switch between your Dracthyr and Visage forms.\r\n\r\nYour Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.", 0, "Racial" },
   {  351243, "Become enraged after being disarmed, increasing your size by $s1% and auto attack damage by $s2%.", "Auto attack damage increased by $w2%.\r\nSize increased by $w1%.", 0 },
   {  351308, "$@spelldesc351316", 0, 0 },
-  {  351316, "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.", "Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.", 0 },
+  {  351316, "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.", "Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.", 0 },
   {  351338, "Interrupt an enemy's spellcasting and prevent any spell from that school of magic from being cast for $d.", 0, 0 },
   {  351414, "$@spelldesc350899", "Mastery increased by $w1.", 0 },
   {  351433, "$@spelldesc350935", "Maximum health is increased by $s1%.", 0 },
@@ -28032,7 +28032,9 @@ static constexpr std::array<spelltext_data_t, 28029> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62438
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  351316,  0, "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.", "Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed." },
+  {  351316,  1, "Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.", "Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed." },
   {  351531,  0, "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $s1 Arcane damage.", "Your damaging critical strikes grant you a stack of Preternatural Charge. When you reach $u stacks of Preternatural Charge, your next critical strike will consume all stacks to tear open a rift near your target, inflicting $351527s1 Arcane damage." },
 } };
 
