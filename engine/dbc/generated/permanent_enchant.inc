@@ -1,4 +1,4 @@
-// Permanent item enchants, wow build 11.2.0.62417
+// Permanent item enchants, wow build 11.2.0.62438
 static constexpr std::array<permanent_enchant_entry_t, 957> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
