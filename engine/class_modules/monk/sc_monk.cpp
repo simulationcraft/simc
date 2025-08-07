@@ -6605,7 +6605,7 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   // Brewmaster
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( this, options_str );
-  if ( name == "celestial_brew" && talent.brewmaster.celestial_brew->ok() )
+  if ( name == "celestial_brew" )
     return new celestial_brew_t( this, options_str, talent.brewmaster.celestial_brew );
   if ( name == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
     return new celestial_brew_t( this, options_str, talent.brewmaster.celestial_infusion );
