@@ -8834,7 +8834,7 @@ void perfidious_projector( special_effect_t& effect )
 // 1243133 Damage
 void incorporeal_warpclaw( special_effect_t& effect )
 {
-  auto damage         = create_proc_action<generic_aoe_proc_t>( "incorporeal_warpstrike", effect, 1243133 );
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "incorporeal_warpstrike", effect, 1243133, true );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
