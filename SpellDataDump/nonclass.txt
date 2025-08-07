@@ -261526,11 +261526,12 @@ Effects          :
 Tooltip          : Increases Mastery Rating by $w1.
 
 Name             : Adding (id=1224959) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213925)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261539,11 +261540,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229185|r
 $?pc132221[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224961) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213927)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261552,11 +261554,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229186|r
 $?pc132222[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224962) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213928)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261565,11 +261568,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229187|r
 $?pc132223[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224963) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213929)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261578,11 +261582,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229188|r
 $?pc132224[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224964) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213930)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261591,11 +261596,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229189|r
 $?pc132225[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224965) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213931)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261604,11 +261610,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229190|r
 $?pc132226[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224967) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213933)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261617,11 +261624,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229191|r
 $?pc132227[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224968) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213934)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261630,11 +261638,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229192|r
 $?pc132228[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224970) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213936)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261643,11 +261652,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229193|r
 $?pc132229[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224972) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213943)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261656,11 +261666,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229194|r
 $?pc132230[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224973) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213944)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261669,11 +261680,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229195|r
 $?pc132231[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224974) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213945)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261682,11 +261694,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229196|r
 $?pc132232[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224978) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213950)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261695,11 +261708,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229197|r
 $?pc132233[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224979) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213952)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261708,11 +261722,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229198|r
 $?pc132234[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224981) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213954)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261721,11 +261736,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229199|r
 $?pc132235[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224982) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213956)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261734,11 +261750,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229200|r
 $?pc132236[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224983) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213957)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261747,11 +261764,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229201|r
 $?pc132237[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224985) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213960)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261760,11 +261778,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229202|r
 $?pc132238[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224988) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213963)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261773,11 +261792,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229203|r
 $?pc132239[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224989) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213964)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261786,11 +261806,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229204|r
 $?pc132240[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224990) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213965)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261799,11 +261820,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213554|r
 $?pc132241[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224991) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213966)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261812,11 +261834,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216169|r
 $?pc132242[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224993) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213968)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261825,11 +261848,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216176|r
 $?pc132243[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224994) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213969)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261838,11 +261862,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216177|r
 $?pc132244[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224996) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213972)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261851,11 +261876,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213555|r
 $?pc132245[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224998) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213974)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261864,11 +261890,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215366|r
 $?pc132246[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225000) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213976)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261877,11 +261904,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215367|r
 $?pc132247[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225001) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213977)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261981,11 +262009,12 @@ Effects          :
 Description      : $@spelldesc1225074
 
 Name             : Adding (id=1225061) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214052)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261994,11 +262023,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229205|r
 $?pc132215[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225062) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214053)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262007,11 +262037,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229206|r
 $?pc132218[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225063) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214054)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262020,11 +262051,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229207|r
 $?pc132217[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225064) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214055)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262033,11 +262065,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229208|r
 $?pc132216[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225065) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214056)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262046,11 +262079,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229209|r
 $?pc132249[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225066) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214057)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262059,11 +262093,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229210|r
 $?pc132250[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225067) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214058)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262072,11 +262107,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229211|r
 $?pc132251[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225068) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214059)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262085,11 +262121,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229212|r
 $?pc132252[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225069) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214060)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262098,11 +262135,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229213|r
 $?pc132253[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225070) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214061)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262111,11 +262149,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229214|r
 $?pc132254[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225072) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214063)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262124,11 +262163,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229215|r
 $?pc132255[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225073) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214064)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262156,11 +262196,12 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Adding (id=1225076) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214067)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262169,11 +262210,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229217|r
 $?pc132257[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225077) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214068)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262182,11 +262224,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229218|r
 $?pc132258[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225079) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214070)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262195,11 +262238,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229219|r
 $?pc132259[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225080) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214071)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262208,11 +262252,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229220|r
 $?pc132260[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225081) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214072)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262221,11 +262266,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229221|r
 $?pc132261[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225082) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214073)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262234,11 +262280,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229222|r
 $?pc132262[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225083) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214074)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262247,11 +262294,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229223|r
 $?pc132263[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225084) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214075)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262260,11 +262308,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229224|r
 $?pc132264[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225085) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214076)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262273,11 +262322,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc467784|r
 $?pc132265[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225087) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214078)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262286,11 +262336,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215807|r
 $?pc132266[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225088) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214079)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262299,11 +262350,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215819|r
 $?pc132267[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225089) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214080)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262312,11 +262364,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215820|r
 $?pc132268[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225090) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214081)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262325,11 +262378,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213551|r
 $?pc132269[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225091) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214082)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262338,11 +262392,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215964|r
 $?pc132270[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225092) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214083)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262351,11 +262406,12 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215963|r
 $?pc132271[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225093) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214084)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
