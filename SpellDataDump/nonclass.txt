@@ -267823,7 +267823,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1239226)  : Apply Aura (6) | Proc Trigger Spell (42): Ether-Plate | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 759337.2 (coefficient=296.8758) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 38347.99 (coefficient=14.9928) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
+Hotfixed         : Coefficient (296.875763 -> 14.992796)
 #2 (id=1240404)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your spells have a chance to grant you a stack of Ether-Plate up to $1240725u.
@@ -267832,6 +267833,7 @@ The next time you would take direct targeted damage, consume an Ether-Plate and 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Ether-Plate (id=1240725) 
+Hotfixed         : Proc Flags 1 (139944 -> 664232)
 School           : Physical
 Spell Type       : None
 Duration         : 120 seconds
@@ -267840,7 +267842,7 @@ Labels           : 292
 Internal Cooldown: 0.1 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered By     : Mana-Seamster's Arcane-Needle (1240700)
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Ignore Damage Absorb (400)
 Effects          :
