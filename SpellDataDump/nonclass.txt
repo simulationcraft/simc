@@ -264984,9 +264984,9 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1225685)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): All
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (30 -> 31)
 #2 (id=1225746)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
 Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
