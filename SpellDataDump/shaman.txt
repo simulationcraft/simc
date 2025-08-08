@@ -15857,6 +15857,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Tremor (id=455622) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
@@ -15870,7 +15871,7 @@ Labels           : 16: Class Spells
                  : 4014: Fire and Ice (382886 effect#5), Fire and Ice (382886 effect#6)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Molten Weapon (224125 effects: #1, #2, #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 39, 56, 58, 103
-Attributes       : AI Doesn't Face Target (179), Always AOE Line of Sight (186)
+Attributes       : AI Doesn't Face Target (179), Always AOE Line of Sight (186), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256)
 Effects          :
 #1 (id=1159222)  : School Damage (2): flamestrike
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.582769 | Radius: 8 yards | Target: At Enemy in Area (16)
