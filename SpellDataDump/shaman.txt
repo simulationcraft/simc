@@ -19300,6 +19300,7 @@ Mana cost of healing spells reduced by $s2%
 Recharge time of Lava Burst$?s137039[ and Riptide][] reduced by $s6%
 
 Name             : Elemental Overflow (id=1239170) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19313,7 +19314,7 @@ Internal Cooldown: 0.75 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
+Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1236671)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.33 | Target: Self (1)
