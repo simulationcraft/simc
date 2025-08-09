@@ -258,7 +258,7 @@ using namespace helpers;
 
         if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
         {
-          helpers::trigger_blackened_soul( p(), false , false);
+          helpers::trigger_blackened_soul( p(), false, false);
         }
       }
     }
@@ -1449,7 +1449,8 @@ using namespace helpers;
       if ( p()->hero.mark_of_xavius.ok() )
       {
         double val = p()->hero.mark_of_xavius->effectN( 3 ).percent();
-
+        int stack  = td( target )->dots_wither->current_stack();
+        
         if ( p()->sets->has_set_bonus( HERO_HELLCALLER, TWW3, B2 ) )
         {
           if ( p()->specialization() == WARLOCK_AFFLICTION )
@@ -1458,7 +1459,7 @@ using namespace helpers;
             val += p()->sets->set( HERO_HELLCALLER, TWW3, B2 )->effectN( 2 ).percent();
         }
 
-        m *= 1.0 + ( td( target )->dots_wither->current_stack() - 1 ) * val;
+        m *= 1.0 + ( p()->buffs.maintained_withering->check() ? stack : stack - 1 ) * val;
       }
 
       return m;
