@@ -1376,6 +1376,7 @@ public:
       const spell_data_t *moh_2pc_harmonic_surge_heal;
       propagate_const<buff_t *> moh_2pc_harmonic_surge_buff;
       accumulated_rng_t *moh_2pc_rng;
+      std::map<unsigned, cooldown_t *> moh_2pc_icd;
       const spell_data_t *moh_4pc;
       const spell_data_t *spm_2pc;
       const spell_data_t *spm_2pc_flurry_charge_data;

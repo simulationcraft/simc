@@ -6606,10 +6606,10 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   // Brewmaster
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( this, options_str );
-  if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
   if ( name == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
     return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
+  if ( name == "celestial_brew" )
+    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
   if ( name == "celestial_infusion" )
     return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
   if ( name == "exploding_keg" )
@@ -8685,8 +8685,21 @@ void monk_t::init_special_effects()
     create_proc_callback( { tier.tww3.moh_2pc_harmonic_surge_buff_data, PF_ALL_DAMAGE, PF2_ALL_HIT } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                if ( action->allow_class_ability_procs )
-                                                  return static_cast<bool>( tier.tww3.moh_2pc_rng->trigger() );
+                                                auto icd = tier.tww3.moh_2pc_icd.find( action->id );
+                                                if ( icd == tier.tww3.moh_2pc_icd.end() )
+                                                {
+                                                  cooldown_t *_icd =
+                                                      get_cooldown( fmt::format( "tww3_moh_2pc_{}", action->id ) );
+                                                  _icd->adjust( 5_ms );
+                                                  tier.tww3.moh_2pc_icd.emplace( action->id, _icd );
+                                                  icd = tier.tww3.moh_2pc_icd.find( action->id );
+                                                }
+                                                if ( bool trigger = tier.tww3.moh_2pc_rng->trigger();
+                                                     action->allow_class_ability_procs && icd->second->up() && trigger )
+                                                {
+                                                  icd->second->start();
+                                                  return true;
+                                                }
                                                 return false;
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
