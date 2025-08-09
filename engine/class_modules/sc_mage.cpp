@@ -7021,7 +7021,6 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     triggers.clearcasting = true;
-    triggers.intuition = true;
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
