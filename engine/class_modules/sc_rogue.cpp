@@ -3736,7 +3736,6 @@ struct adrenaline_rush_t : public rogue_spell_t
       p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
     }
 
-    execute_state->target = player->target;
     trigger_fatebound_edge_case( execute_state );
   }
 };
@@ -9195,10 +9194,11 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
   }
   if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
   {
+    // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
     if ( !ab::is_precombat )
     {
-      // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
-      p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( state->target );
+      auto coin_target = state->target->is_enemy() ? state->target : p()->target;
+      p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
     }
     p()->buffs.fatebound_coin_tails->increment();
     if ( result != fatebound_t::coinflip_e::EDGE )
