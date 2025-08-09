@@ -261181,11 +261181,12 @@ Effects          :
 Description      : Synthesize a soulbound Manaforge Omega set shoulder item appropriate for your class.
 
 Name             : Ethereal Exhaustion (id=1223611) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 360 seconds
 Triggered By     : Ethereal Barricade (1223614)
-Attributes       : Aura Is Debuff (26), No Aura Cancel (31)
+Attributes       : Aura Is Debuff (26), No Immunities (29), No Aura Cancel (31)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1211727)  : Apply Aura (6) | Dummy (4)
@@ -261194,6 +261195,7 @@ Description      : You've recently consumed a large amount of ethereal energy.
 Tooltip          : You've recently consumed a large amount of ethereal energy.
 
 Name             : Ethereal Barrier (id=1223612) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
@@ -261201,7 +261203,7 @@ Duration         : 20 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Ethereal Barricade (1223614)
-Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Defend Against Friendly Cast (336), Ignore Damage Absorb (400)
+Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Ignore Damage Absorb (400)
 Effects          :
 #1 (id=1211729)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -261213,12 +261215,13 @@ Description      : $@spelldesc1217096
 Tooltip          : Absorbing $w2% of damage taken, up to $w1 total damage.
 
 Name             : Ethereal Barricade (id=1223614) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Triggered By     : Ethereal Protection (1217096), Ethereal Protection (1251553)
-Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Defend Against Friendly Cast (336), Scales with Casting Item's Level (354), Ignore Damage Absorb (400)
+Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Scales with Casting Item's Level (354), Ignore Damage Absorb (400)
 Effects          :
 #1 (id=1211734)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)

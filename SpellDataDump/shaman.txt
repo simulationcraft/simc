@@ -18964,7 +18964,8 @@ Proc Flags       : Magic Heal
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1211575)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2.5 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.67 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15), PvP Coefficient (2.5 -> 1.67)
 Description      : $@spelldesc1217598
 
 Name             : Single-Button Assistant (id=1229376) 
