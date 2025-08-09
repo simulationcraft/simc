@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62417 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -489,7 +489,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.695174 | PvP Coefficient: 1.669 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.868968 -> 0.695174)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -2049,7 +2048,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.37658 -> 1.30775)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -3094,12 +3092,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
-Hotfixed         : Base Value (4 -> 1)
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
-Hotfixed         : Base Value (4 -> 1)
 #3 (id=844541)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1032340)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -3149,15 +3145,12 @@ Hotfixed         : Base Value (4 -> 1)
 #18 (id=1261603) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 5600 (Label) | Target: Self (1)
                    Affected Spells (Label): Swift and Painful (443560)
-Hotfixed         : NEW EFFECT
 #19 (id=1261604) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 5601 (Label) | Target: Self (1)
                    Affected Spells (Label): Swift and Painful (469169)
-Hotfixed         : NEW EFFECT
 #20 (id=1261609) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 3 | Misc Value 2: 5602 (Label) | Target: Self (1)
                    Affected Spells (Label): Wave of Souls (443404)
-Hotfixed         : NEW EFFECT
 
 Name             : Unholy Death Knight (id=137007) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
@@ -3236,7 +3229,6 @@ Effects          :
 #21 (id=1255690) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
                    Affected Spells (Label): Frenzied Bloodthirst (434075)
-Hotfixed         : Base Value (3 -> -1)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -4196,7 +4188,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268) | Attributes: Suppress Points Stacking (6)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 115)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
@@ -6036,7 +6027,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.37658 -> 1.30775)
 Description      : $@spelldesc49020
 
 
@@ -8600,7 +8590,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93595 | PvP Coefficient: 1.26775 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.03784 -> 1.93595)
 Description      : $@spelldesc49020
 
 
@@ -14929,7 +14918,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.49069 | PvP Coefficient: 0.7 | Target: Enemy (6)
 #2 (id=1174046)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.70886 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (4.36336 -> 3.70886)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -15609,7 +15597,6 @@ Description      : $@spelldesc444047
 Tooltip          : Your damage is increased by $w1%$?c2[ and your critical strike chance is increased by $s4%][].
 
 Name             : Undeath (id=444633) [Spell Family (15)] 
-Hotfixed         : Proc Flags 1 (139296 -> 0), Internal Cooldown (1000 -> 0), Attributes
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Melee
@@ -15759,6 +15746,7 @@ Description      : While Nazgrim is active, gain Apocalyptic Conquest, increasin
 Tooltip          : Your Strength is increased by $w1%.
 
 Name             : Chains of Ice (id=444826) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
@@ -15769,11 +15757,9 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 5091: Death Knight Rider of the Apocalypse 11.2 Class Set 2pc (1236355 effect#8)
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2)
 Family Flags     : 43, 120
-Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Can Proc From Procs (122), Show Mechanic as Combat Text (213), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141445)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
@@ -18761,7 +18747,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.33 | Target: Self (1)
 #2 (id=1232987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Base Value (4000 -> 3000)
 #3 (id=1233030)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.33 | Target: Self (1)
 #4 (id=1233031)  : Apply Aura (6) | Dummy (4)
@@ -18784,14 +18769,12 @@ Effects          :
 #1 (id=1232090)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 3 | Misc Value 2: 4138 (Label) | Target: Self (1)
                    Affected Spells (Label): Infliction of Sorrow (434143)
-Hotfixed         : Base Value (35 -> 30)
 #2 (id=1258281)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 3 | Misc Value 2: 4138 (Label) | Target: Self (1)
                    Affected Spells (Label): Infliction of Sorrow (434143)
 #3 (id=1258282)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 4138 (Label) | Target: Self (1)
                    Affected Spells (Label): Infliction of Sorrow (434143)
-Hotfixed         : Base Value (35 -> 30)
 #4 (id=1258283)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Misc Value: 12 | Misc Value 2: 4138 (Label) | Target: Self (1)
                    Affected Spells (Label): Infliction of Sorrow (434143)

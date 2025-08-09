@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62417 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -167630,7 +167630,6 @@ Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845135)   : School Damage (2): shadow | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1089150 (coefficient=425.8215) | PvP Coefficient: 0.6 | Target: Enemy (6)
-Hotfixed         : Coefficient (354.852295 -> 425.821472)
 #2 (id=845136)   : Trigger Spell (64): Anima Font
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344414 | Target: At Self (18)
 Description      : Tear the anima from your target dealing $s1 Shadow damage and forming a font of power at your feet, increasing your Intellect by $343397s1 for $343394d while you stand within it. 
@@ -171703,13 +171702,13 @@ Labels           : 3959: Item Effects
 Triggered By     : First Technique (351308)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=881509)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 178450.7 (coefficient=69.76833) | Misc Value: 0x7f | Target: Self (1)
+#1 (id=881509)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 324968.4 (coefficient=127.0519) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=881713)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.
-Tooltip          : Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed per blow.
+Description      : Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.
+Tooltip          : Reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.
 
 Name             : Carver's Eye (id=351414) 
 School           : Shadow
@@ -171807,7 +171806,6 @@ Effects          :
 Description      : $@spelldesc351531
 
 Name             : Preternatural Charge (id=351531) 
-Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
@@ -172722,7 +172720,6 @@ Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Sca
 Effects          :
 #1 (id=883338)   : Apply Aura (6) | Proc Trigger Spell (42): Miniscule Mailemental in an Envelope | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 496695.7 (coefficient=194.1916) | Trigger Spell: 352436 | Target: Self (1)
-Hotfixed         : Coefficient (161.826355 -> 194.19162)
 Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.
 
 Name             : Miniscule Mailemental in an Envelope (id=352436) 
@@ -182861,7 +182858,6 @@ Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Sca
 Effects          :
 #1 (id=911943)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 745044.4 (coefficient=291.2878) | Target: Self (1)
-Hotfixed         : Coefficient (242.739822 -> 291.28775)
 Description      : $@spelldesc367902
 Tooltip          : $@auradesc367902
 
@@ -231728,13 +231724,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1144329)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3231.409 (coefficient=0.843937) | Target: Self (1)
-Hotfixed         : Coefficient (0.937708 -> 0.843937)
 #3 (id=1144413)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 168624.3 (coefficient=65.92652) | Target: Self (1)
-Hotfixed         : Coefficient (73.251686 -> 65.926521)
 #4 (id=1144414)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4556.6 (coefficient=1.190033) | Target: Self (1)
-Hotfixed         : Coefficient (1.082 -> 1.190033)
 #5 (id=1144420)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 379033.1 (coefficient=148.1894) | Target: Self (1)
 Description      : $?a443534[Advance to the $s1 Verses of Inner Radiance, reading as you are attacked.
@@ -231797,7 +231790,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1139516)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 100675.8 (coefficient=39.36092) | Target: Self (1)
-Hotfixed         : Coefficient (32.800762 -> 39.360916)
 #2 (id=1146254)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1195.293 (coefficient=0.312171) | Target: Self (1)
 Description      : Your attacks have a chance to call to the pact, exploding for ${$<rolemult>*$s1} Shadow damage split between nearby enemies and increasing your Haste by $s2 for $450962d.
@@ -231853,7 +231845,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 743.5859 (coefficient=0.1942) | Trigger Spell: 452146 | Target: Self (1)
 #2 (id=1146261)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 8941.423 (coefficient=3.495801) | Target: Self (1)
-Hotfixed         : Coefficient (2.913167 -> 3.495801)
 Description      : Your abilities have a chance to stir the sac, releasing an egg which grants you $s1 $pri. Each egg hatches after $452146d, and the new brood attacks your next target, inflicting ${$<rolemult>*$s2*$452229d/$452229t1} Nature damage over $452229d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -231884,10 +231875,8 @@ Attributes       : Passive (6), Can Proc From Procs (122), Scales with Casting I
 Effects          :
 #1 (id=1139531)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 7761.641 (coefficient=3.034545) | Target: Self (1)
-Hotfixed         : Coefficient (2.528788 -> 3.034545)
 #2 (id=1146262)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: -10765.81 (coefficient=-4.209075) | Target: Self (1)
-Hotfixed         : Coefficient (-3.8264 -> -4.209075)
 Description      : The gland releases pheromones that attract a Ceaseless Swarm of insects to surround you. Taking damage has a high chance to retaliate against attackers, inflicting ${$s1*$450969d/$450969t1} Nature damage over $450969d and reducing damage dealt to you by $s2.
 
 Name             : Harvester's Edict (id=443549) 
@@ -237777,7 +237766,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2084.491 (coefficient=0.5444) | Target: Self (1)
 #2 (id=1150679)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 153573.5 (coefficient=60.04218) | Target: Self (1)
-Hotfixed         : Coefficient (50.035145 -> 60.042175)
 #3 (id=1150680)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
@@ -238098,7 +238086,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1151381)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 159201.1 (coefficient=62.24238) | Target: Self (1)
-Hotfixed         : Coefficient (51.868649 -> 62.242378)
 #2 (id=1151382)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5237.648 (coefficient=1.3679) | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to send an orb of volatile black blood drifting to your target, exploding for ${$<rolemult>*$s1} Shadow damage split between all nearby enemies on impact. Intercepting the orb allows you to siphon its power, instead increasing your Mastery by $s2 for $451303d.
@@ -252093,7 +252080,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1179410)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 9430.775 (coefficient=2.463006) | Target: Self (1)
-Hotfixed         : Coefficient (2.736594 -> 2.463006)
 #2 (id=1203336)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=1204644)  : Dummy (3)
@@ -252342,7 +252328,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1180273)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 20186.68 (coefficient=7.892323) | Target: Self (1)
-Hotfixed         : Coefficient (9.285087 -> 7.892323)
 #2 (id=1194407)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1194408)  : Dummy (3)
@@ -252935,7 +252920,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1184546)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 149.5634 (coefficient=0.039061) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.043401 -> 0.039061)
 #2 (id=1200098)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 23624.88 (coefficient=9.236547) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200099)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -253884,7 +253868,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1189149)  : Apply Aura (6) | Proc Trigger Spell (42): Mug's Moxie Jug | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 953.6432 (coefficient=0.24906) | Trigger Spell: 474376 | Target: Self (1)
-Hotfixed         : Coefficient (0.276886 -> 0.24906)
 #2 (id=1206354)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Your spells have a chance to send you into a frenzy, granting you $s1 Critical Strike for $474285d. While frenzied, each spell cast grants an additional $s1 Critical Strike but does not refresh the duration. This effect may only occur every $s2 sec.
@@ -259972,13 +259955,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1200878)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 149802 (coefficient=58.56765) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (45.010525 -> 58.56765)
 #2 (id=1211753)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 192602.5 (coefficient=75.3012) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (67.521568 -> 75.301201)
 #3 (id=1211754)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 299593.9 (coefficient=117.1313) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (126.029251 -> 117.131302)
 #4 (id=1211779)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Target: Self (1)
 #5 (id=1211780)  : Apply Aura (6) | Dummy (4)
@@ -260354,7 +260334,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1203775)  : Apply Aura (6) | Proc Trigger Spell (42): Explosive Adrenaline | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3523.678 (coefficient=0.920268) | Trigger Spell: 1218713 | Target: Self (1)
-Hotfixed         : Coefficient (1.02252 -> 0.920268)
 #2 (id=1204550)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60
 Description      : Repurpose a Seaforium charge to give your heart a kick, causing your first ability every $s2 sec to trigger Explosive Adrenaline, granting $s1 Critical Strike for $1218713d.
@@ -260464,7 +260443,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1204552)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 6 seconds | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 10450.15 (coefficient=4.085664) | Target: Self (1)
-Hotfixed         : Coefficient (3.40472 -> 4.085664)
 #2 (id=1204553)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1204554)  : Apply Aura (6) | Dummy (4)
@@ -260768,10 +260746,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1206646)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 54269.11 (coefficient=21.21743) | Target: Self (1)
-Hotfixed         : Coefficient (18.449938 -> 21.217428)
 #2 (id=1206647)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1846.226 (coefficient=0.482173) | Target: Self (1)
-Hotfixed         : Coefficient (0.419281 -> 0.482173)
 
 Name             : Xal'atath's Gift (id=1221063) 
 School           : Shadow
@@ -261179,11 +261155,12 @@ Effects          :
 Description      : Synthesize a soulbound Manaforge Omega set shoulder item appropriate for your class.
 
 Name             : Ethereal Exhaustion (id=1223611) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 360 seconds
 Triggered By     : Ethereal Barricade (1223614)
-Attributes       : Aura Is Debuff (26), No Aura Cancel (31)
+Attributes       : Aura Is Debuff (26), No Immunities (29), No Aura Cancel (31)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1211727)  : Apply Aura (6) | Dummy (4)
@@ -261192,6 +261169,7 @@ Description      : You've recently consumed a large amount of ethereal energy.
 Tooltip          : You've recently consumed a large amount of ethereal energy.
 
 Name             : Ethereal Barrier (id=1223612) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
@@ -261199,7 +261177,7 @@ Duration         : 20 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Ethereal Barricade (1223614)
-Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Defend Against Friendly Cast (336), Ignore Damage Absorb (400)
+Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Ignore Damage Absorb (400)
 Effects          :
 #1 (id=1211729)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -261211,12 +261189,13 @@ Description      : $@spelldesc1217096
 Tooltip          : Absorbing $w2% of damage taken, up to $w1 total damage.
 
 Name             : Ethereal Barricade (id=1223614) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Triggered By     : Ethereal Protection (1217096), Ethereal Protection (1251553)
-Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Defend Against Friendly Cast (336), Scales with Casting Item's Level (354), Ignore Damage Absorb (400)
+Attributes       : No Aura Cancel (31), Can't Crit (93), Not a Proc (105), Aura Points On Client (268), Scales with Casting Item's Level (354), Ignore Damage Absorb (400)
 Effects          :
 #1 (id=1211734)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -261447,7 +261426,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1213766)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 14755.17 (coefficient=3.853561) | Target: Self (1)
-Hotfixed         : Coefficient (1.436623 -> 3.853561), Scaling Class (-9 -> -7)
 #2 (id=1213837)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1213838)  : Apply Aura (6) | Dummy (4)
@@ -261470,7 +261448,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 54710.25 (coefficient=21.3899) | Trigger Spell: 1225149 | Target: Self (1)
 #2 (id=1214154)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2437.851 (coefficient=0.636686) | Target: Self (1)
-Hotfixed         : Coefficient (0.237352 -> 0.636686), Scaling Class (-9 -> -7)
 Description      : Your harmful spells and abilities have a chance to fracture the enemy's soul, dealing ${$s1*$<rolemult>} Shadow damage over $1225149d. If a fractured enemy dies, you absorb their lingering energy, increasing your Versatility by $s2 for $1225151d.
 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -261528,7 +261505,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213925)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261541,7 +261518,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213927)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261554,7 +261531,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213928)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261567,7 +261544,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213929)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261580,7 +261557,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213930)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261593,7 +261570,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213931)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261606,7 +261583,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213933)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261619,7 +261596,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213934)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261632,7 +261609,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213936)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261645,7 +261622,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213943)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261658,7 +261635,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213944)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261671,7 +261648,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213945)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261684,7 +261661,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213950)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261697,7 +261674,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213952)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261710,7 +261687,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213954)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261723,7 +261700,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213956)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261736,7 +261713,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213957)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261749,7 +261726,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213960)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261762,7 +261739,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213963)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261775,7 +261752,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213964)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261788,7 +261765,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213965)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261801,7 +261778,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213966)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261814,7 +261791,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213968)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261827,7 +261804,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213969)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261840,7 +261817,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213972)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261853,7 +261830,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213974)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -261866,7 +261843,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213976)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -261879,7 +261856,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1213977)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -261983,7 +261960,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214052)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -261996,7 +261973,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214053)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262009,7 +261986,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214054)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262022,7 +261999,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214055)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262035,7 +262012,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214056)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262048,7 +262025,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214057)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262061,7 +262038,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214058)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262074,7 +262051,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214059)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262087,7 +262064,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214060)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262100,7 +262077,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214061)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262113,7 +262090,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214063)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262126,7 +262103,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214064)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262158,7 +262135,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214067)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262171,7 +262148,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214068)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262184,7 +262161,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214070)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262197,7 +262174,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214071)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262210,7 +262187,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214072)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262223,7 +262200,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214073)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262236,7 +262213,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214074)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262249,7 +262226,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214075)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262262,7 +262239,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214076)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262275,7 +262252,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214078)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262288,7 +262265,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214079)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262301,7 +262278,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214080)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -262314,7 +262291,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214081)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -262327,7 +262304,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214082)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -262340,7 +262317,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214083)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -262353,7 +262330,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Attributes       : Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
+Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Threat (42), Ignore Caster Modifiers (125), Ignore Default Rated Battleground Restrictions (302), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1214084)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -264248,13 +264225,14 @@ Effects          :
 Description      : $@spelldesc1229205
 
 Name             : Sands of K'aresh (id=1230710) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 2 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Aura Unique (43), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1222402)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Snare | Target: Enemy (6)
@@ -264925,15 +264903,13 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1225685)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): All
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (30 -> 31)
 #2 (id=1225746)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 #3 (id=1232718)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 Description      : Weave an arcane cocoon around yourself and four nearby allies for $d, reducing their damage taken by $s2% until $1232719s1 damage has been prevented.
 
 If a cocoon expires, it bursts to heal an injured ally for $s3% of its remaining power.
@@ -264966,7 +264942,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 9923.139 (coefficient=2.591595) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (2.879601 -> 2.591595)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -265023,7 +264998,7 @@ Name             : Hatarang (id=1233111)
 School           : Arcane
 Spell Type       : Ranged
 Range            : 50000 yards
-Triggered By     : Hatarang (1233109), Hatarang (1233659), Hatarang (1233660), Hatarang (1233661)
+Triggered By     : Hatarang (1233109), Hatarang (1233659), Hatarang (1233660)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1226343)  : School Damage (2): arcane
@@ -265238,7 +265213,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1226730)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 403764.8 (coefficient=157.8587) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (131.548996 -> 157.858704)
 #2 (id=1239524)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your attacks have a high chance to charge the Arcanocore. At $1240896u charges, deploy a sentinel to arcanoblast your target for ${$s1*$<rolemult>} Arcane damage split between nearby enemies. Recover $s2 charges if only one enemy is struck.
@@ -265326,7 +265300,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1227063)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 49456.09 (coefficient=19.3357) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (16.113081 -> 19.335697)
 #2 (id=1227067)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 894.1831 (coefficient=0.233531) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1237623)  : Dummy (3)
@@ -265518,8 +265491,9 @@ Real PPM         : 2 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1227249)  : Apply Aura (6) | Proc Trigger Spell (42): Hatarang
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 1233111 | Target: Self (1)
+#1 (id=1227249)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Hotfixed         : Trigger Spell (1233111 -> 0)
 #2 (id=1227250)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=1227251)  : Apply Aura (6) | Dummy (4)
@@ -266247,7 +266221,6 @@ Effects          :
 Description      : $@spelldesc1234337
 
 Name             : Astral Antenna (id=1234714) [Passive] 
-Hotfixed         : Proc Flags 2 (0 -> 4)
 School           : Arcane
 Spell Type       : None
 Labels           : 292
@@ -266410,7 +266383,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 22651.55 (coefficient=8.856008) | PvP Coefficient: 0.5 | Trigger Spell: 1235879 | Target: Self (1)
 #2 (id=1230165)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 51774.3 (coefficient=20.24204) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (16.868397 -> 20.242041)
 #3 (id=1237121)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #4 (id=1237122)  : Dummy (3)
@@ -266433,7 +266405,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230266)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
                    Base Value: 207506 | Scaled Value: 223811.5 (coefficient=87.50291) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (67.309929 -> 87.502907)
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
@@ -266455,7 +266426,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230594)  : Apply Aura (6) | Proc Trigger Spell (42): Cosmic Onslaught | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 58013.37 (coefficient=22.68131) | PvP Coefficient: 0.5 | Trigger Spell: 1239401 | Target: Self (1)
-Hotfixed         : Coefficient (41.303883 -> 22.681309), Scaling Class (-8 -> -9)
 #2 (id=1237134)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1237175)  : Dummy (3)
@@ -266479,7 +266449,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 52387.86 (coefficient=20.48192) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
-Hotfixed         : Coefficient (16.385464 -> 20.48192)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266529,7 +266498,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 215939.1 (coefficient=84.42504) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (70.354233 -> 84.425041)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
@@ -266564,7 +266532,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 2458730 (coefficient=961.282) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (739.448486 -> 961.281982)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
@@ -267183,7 +267150,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Static Charge (1236275)
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Only Proc From Class Abilities (415), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Only Proc From Class Abilities (415), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1233347)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
@@ -267685,7 +267652,6 @@ Effects          :
 Description      : $@spelldesc1233553
 
 Name             : Latent Energy (id=1239675) 
-Hotfixed         : Max stacks (15 -> 18)
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
@@ -267821,7 +267787,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1239226)  : Apply Aura (6) | Proc Trigger Spell (42): Ether-Plate | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 759337.2 (coefficient=296.8758) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 38347.99 (coefficient=14.9928) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
 #2 (id=1240404)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your spells have a chance to grant you a stack of Ether-Plate up to $1240725u.
@@ -267838,7 +267804,7 @@ Labels           : 292
 Internal Cooldown: 0.1 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered By     : Mana-Seamster's Arcane-Needle (1240700)
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Ignore Damage Absorb (400)
 Effects          :
@@ -267981,7 +267947,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 8272.531 (coefficient=2.160511) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1241002)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 30717.62 (coefficient=12.00957) | Target: Self (1)
-Hotfixed         : Coefficient (10.007978 -> 12.009574)
 #3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 426.8918 (coefficient=0.11149) | Target: Self (1)
 #4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
@@ -268150,7 +268115,6 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1243051)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 109417.9 (coefficient=42.77879) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (35.648991 -> 42.778786)
 #2 (id=1243593)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your melee attacks have a chance to coalesce a warpstalker echo to strike with you, inflicting ${$<rolemult>*$s1} Arcane damage split between enemies in its path.
@@ -268202,7 +268166,6 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244264)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 18199.78 (coefficient=7.115513) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (5.929595 -> 7.115513)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
 Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.
@@ -268265,10 +268228,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1244533)  : Apply Aura (6) | Proc Trigger Spell (42): Shadowguard's Twisted Harvester | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5139.457 (coefficient=1.342256) | Trigger Spell: 1246543 | Target: Self (1)
-Hotfixed         : Coefficient (0.796355 -> 1.342256)
 #2 (id=1248832)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15420.5 (coefficient=4.027324) | Trigger Spell: 1246543 | Target: Self (1)
-Hotfixed         : Coefficient (3.981774 -> 4.027324)
 #3 (id=1248833)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 1246543 | Target: Self (1)
 Description      : Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.
@@ -268330,7 +268291,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245131)  : Apply Aura (6) | Proc Trigger Spell (42): Arcane Hunter | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 460.4336 (coefficient=0.12025) | Trigger Spell: 1245376 | Target: Self (1)
-Hotfixed         : Coefficient (0.04481 -> 0.12025), Scaling Class (-9 -> -7)
 Description      : Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.
 
 Name             : Manaforged Aethercell (id=1244405) [Passive] 
@@ -268346,7 +268306,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245140)  : Apply Aura (6) | Proc Trigger Spell (42): Manaforged Aethercell | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 8004.201 (coefficient=2.090432) | PvP Coefficient: 0.5 | Trigger Spell: 1245397 | Target: Self (1)
-Hotfixed         : Coefficient (0.779299 -> 2.090432), Scaling Class (-9 -> -7)
 Description      : Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.
 
 
@@ -268713,10 +268672,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1248619)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 49225.61 (coefficient=19.24559) | Target: Self (1)
-Hotfixed         : Coefficient (16.839684 -> 19.245588)
 #2 (id=1248636)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 7178.735 (coefficient=2.806648) | Target: Self (1)
-Hotfixed         : Coefficient (7.016621 -> 2.806648)
 #3 (id=1248795)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=1248796)  : Apply Aura (6) | Dummy (4)
@@ -269094,7 +269051,6 @@ Tooltip          : Your spells and abilities have a high chance to coalesce the 
 Upon falling below $1217091w6% health, gain this effect at  ${$1217091w7*100}% effectiveness. This effect may only occur once every $1223611d.
 
 Name             : Reshii Grace (id=1254904) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269102,11 +269058,9 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261519)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 Name             : Reshii Grace (id=1254905) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269114,11 +269068,9 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261520)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 Name             : Reshii Grace (id=1254906) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269126,7 +269078,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261521)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 
