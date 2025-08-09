@@ -3736,6 +3736,7 @@ struct adrenaline_rush_t : public rogue_spell_t
       p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
     }
 
+    execute_state->target = player->target;
     trigger_fatebound_edge_case( execute_state );
   }
 };
