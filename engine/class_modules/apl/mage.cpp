@@ -363,11 +363,11 @@ void frost( player_t* p )
   ff_aoe->add_action( "comet_storm,if=cooldown.cone_of_cold.remains>12|cooldown.cone_of_cold.ready", "Hold Comet Storm for up to 12 seconds for Cone of Cold." );
   ff_aoe->add_action( "ray_of_frost,if=talent.splintering_ray&remaining_winters_chill=2" );
   ff_aoe->add_action( "glacial_spike,if=buff.icicles.react=5" );
-  ff_aoe->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&buff.excess_frost.up", "Cast Flurry to spend Excess Frost. Optimally target swap to enemies without Winter's Chill." );
+  ff_aoe->add_action( "flurry,if=cooldown_react&buff.excess_frost.up", "Cast Flurry to spend Excess Frost." );
   ff_aoe->add_action( "shifting_power,if=(!equipped.arazs_ritual_forge|buff.icy_veins.down)&cooldown.icy_veins.remains>8&(cooldown.comet_storm.remains>8|!talent.comet_storm)&cooldown.blizzard.remains>6*gcd.max", "With Araz's Ritual Forge equipped only cast Shifting Power outside of Icy Veins to create more overlap with subsequent Icy Veins." );
   ff_aoe->add_action( "frostfire_bolt,if=buff.frostfire_empowerment.react&!buff.excess_fire.up" );
   ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ff_aoe->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill" );
+  ff_aoe->add_action( "ice_lance,if=remaining_winters_chill" );
   ff_aoe->add_action( "frostfire_bolt" );
   ff_aoe->add_action( "call_action_list,name=movement" );
 
@@ -417,7 +417,7 @@ void frost( player_t* p )
   ss_aoe->add_action( "freeze,if=freezable&(prev_gcd.1.glacial_spike|!talent.glacial_spike&time-action.cone_of_cold.last_used>8)", "Cast Pet Freeze whenever you cast Glacial Spike against freezable targets to shatter the second Glacial Spike." );
   ss_aoe->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&prev_gcd.1.glacial_spike" );
   ss_aoe->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&prev_gcd.1.frostbolt" );
-  ss_aoe->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&buff.cold_front_ready.react", "Cast Flurry regardless of Winter's Chill to spend the Cold Front buff. Optimally target swap to enemies without Winter's Chill." );
+  ss_aoe->add_action( "flurry,if=cooldown_react&buff.cold_front_ready.react", "Cast Flurry regardless of Winter's Chill to spend the Cold Front buff." );
   ss_aoe->add_action( "frozen_orb,if=cooldown_react" );
   ss_aoe->add_action( "blizzard,if=talent.ice_caller|talent.freezing_rain" );
   ss_aoe->add_action( "comet_storm,if=talent.glacial_assault|buff.icy_veins.down" );
@@ -427,7 +427,7 @@ void frost( player_t* p )
   ss_aoe->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill)", "Cast Glacial Spike if you can shatter it into Winter's Chill or with a followup Flurry." );
   ss_aoe->add_action( "frostbolt,if=talent.deaths_chill&buff.icy_veins.up&(buff.deaths_chill.stack<6|buff.deaths_chill.stack=6&!action.frostbolt.in_flight)", "During Icy Veins stack Deaths Chill to 9 before using regular Ice Lances." );
   ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ss_aoe->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill" );
+  ss_aoe->add_action( "ice_lance,if=remaining_winters_chill" );
   ss_aoe->add_action( "shifting_power,if=buff.icy_veins.down&cooldown.icy_veins.remains>8" );
   ss_aoe->add_action( "frostbolt" );
   ss_aoe->add_action( "call_action_list,name=movement" );
