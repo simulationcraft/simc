@@ -726,6 +726,8 @@ public:
     propagate_const<buff_t*> lichborne;  // NYI
     propagate_const<buff_t*> death_and_decay;
     propagate_const<buff_t*> spellwarding;
+    propagate_const<buff_t*> unholy_strength;
+    propagate_const<buff_t*> stoneskin_gargoyle;
 
     // Blood
     absorb_buff_t* blood_shield;
@@ -12046,13 +12048,9 @@ void runeforge::fallen_crusader( special_effect_t& effect )
     return;
   }
 
-  double buff_val = effect.player->find_spell( 53365 )->effectN( 1 ).percent();
-  buff_t* buff = buff_t::find( effect.player, "unholy_strength", effect.player );
-  if ( !buff )
-    buff = make_buff( effect.player, "unholy_strength", effect.player->find_spell( 53365 ) )
-                             ->set_default_value( buff_val )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
-
+  death_knight_t* dk = debug_cast< death_knight_t* >( effect.player );
+  buff_t* buff                    = dk->buffs.unholy_strength;
+  dk->runeforge.rune_of_the_fallen_crusader = true;
   effect.custom_buff = buff;
   effect.execute_action =
       get_action<fallen_crusader_heal_t>( "unholy_strength", effect.player, effect.driver()->effectN( 1 ).trigger() );
@@ -12134,17 +12132,12 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     return;
   }
 
-  buff_t* buff = buff_t::find( effect.player, "stoneskin_gargoyle" );
-
-  if ( !buff )
-    buff = make_buff( effect.player, "stoneskin_gargoyle", effect.driver() )
-               ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-               ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
-               ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-               ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
-  else
+  death_knight_t* dk = debug_cast<death_knight_t*>( effect.player );
+  buff_t* buff       = dk->buffs.stoneskin_gargoyle;
+  if ( dk->runeforge.rune_of_the_stoneskin_gargoyle )
     buff->set_max_stack( buff->max_stack() + 1 );
+  else
+    dk->runeforge.rune_of_the_stoneskin_gargoyle = true;
 
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
 }
@@ -15113,6 +15106,17 @@ void death_knight_t::create_buffs()
       make_fallback<runic_corruption_buff_t>( talent.soul_reaper.ok() || specialization() == DEATH_KNIGHT_UNHOLY, this,
                                               "runic_corruption", spell.runic_corruption );
 
+  buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
+                              ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+
+  buffs.stoneskin_gargoyle = make_buff( this, "stoneskin_gargoyle", find_spell( 53365 ) )
+                                 ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_STAMINA )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+
   // Rider of the Apocalypse
   buffs.antimagic_shell_horsemen =
       make_buff<antimagic_shell_buff_horseman_t>( this, "antimagic_shell_horsemen", pet_spell.rider_ams );
@@ -15774,7 +15778,6 @@ void death_knight_t::init_finished()
     }
   }
 
-  runeforge.rune_of_the_fallen_crusader = buff_t::find( this, "unholy_strength" );
   action_t* ri_mh                       = find_action( "razorice_mh" );
   action_t* ri_oh                       = find_action( "razorice_oh" );
   runeforge.rune_of_razorice_mh         = ri_mh != nullptr;
@@ -15783,7 +15786,6 @@ void death_knight_t::init_finished()
     background_actions.runeforge_razorice = ri_mh;
   else if ( runeforge.rune_of_razorice_oh )
     background_actions.runeforge_razorice = ri_oh;
-  runeforge.rune_of_the_stoneskin_gargoyle = buff_t::find( this, "stoneskin_gargoyle" );
   action_t* apoc                           = find_action( "pestilence" );
   runeforge.rune_of_apocalypse             = apoc != nullptr;
   if ( runeforge.rune_of_apocalypse )

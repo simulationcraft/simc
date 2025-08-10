@@ -367,7 +367,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
       this->background = this->may_crit = true;
-      this->callbacks                   = false;
 
       // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
       this->cooldown->duration = timespan_t::zero();
@@ -779,7 +778,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_melee_attack_t( "fists_of_fury", player, player->o()->talent.windwalker.fists_of_fury )
     {
       channeled = tick_zero = interrupt_auto_attack = true;
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
       // Hard code a 10% reduced cast time to not cause any clipping issues.
       // Obtained from logs as of 2022-04-05
       dot_duration = data().duration() / 1.1;
@@ -823,7 +822,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         chi_explosion( nullptr )
     {
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
 
       weapon_power_mod = 0;
 
@@ -906,7 +905,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       channeled = false;
 
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      may_crit = may_miss = may_block = may_dodge = may_parry = false;
 
       weapon_power_mod = 0;
 
@@ -1361,7 +1360,7 @@ action_t *niuzao_pet_t::create_action( std::string_view name, std::string_view o
   return monk_pet_t::create_action( name, options_str );
 }
 
-}  // namespace
+}  // namespace niuzao
 
 struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
 {

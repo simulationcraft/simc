@@ -6188,12 +6188,21 @@ bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance,
 {
   pool = aspect_of_harmony->accumulator->check_value();
   aspect_of_harmony->accumulator->expire();
+
   sim->print_debug( "Aspect of Harmony +P: {}", pool );
   return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
 void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 {
+  const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
+                           p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
+
+  auto in_hg_whitelist = [ whitelist, id = state->action->id, this ]() {
+    return p().talent.master_of_harmony.harmonic_gambit->ok() &&
+           std::find( whitelist.begin(), whitelist.end(), id ) != whitelist.end();
+  };
+
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
   double amount     = std::min( state->result_amount * multiplier, current_value );
   if ( amount >= current_value )
@@ -6203,15 +6212,6 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     expire();
     return;
   }
-  current_value -= amount;
-
-  const auto whitelist = { p().baseline.monk.expel_harm->id(), p().baseline.monk.vivify->id(),
-                           p().baseline.monk.blackout_kick->id(), p().baseline.monk.tiger_palm->id() };
-
-  auto in_hg_whitelist = [ whitelist, id = state->action->id, this ]() {
-    return p().talent.master_of_harmony.harmonic_gambit->ok() &&
-           std::find( whitelist.begin(), whitelist.end(), id ) != whitelist.end();
-  };
 
   switch ( state->result_type )
   {
@@ -6219,6 +6219,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     case result_amount_type::DMG_OVER_TIME:
       if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
       {
+        current_value -= amount;
         sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
         residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
       }
@@ -6227,6 +6228,7 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
     case result_amount_type::HEAL_OVER_TIME:
       if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
       {
+        current_value -= amount;
         sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
         residual_action::trigger( aspect_of_harmony->heal, state->target, amount );
       }
@@ -6606,10 +6608,10 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   // Brewmaster
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( this, options_str );
-  if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
   if ( name == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
     return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
+  if ( name == "celestial_brew" )
+    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
   if ( name == "celestial_infusion" )
     return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
   if ( name == "exploding_keg" )
@@ -8593,7 +8595,8 @@ void monk_t::init_special_effects()
         } );
 
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
-    create_proc_callback( { talent.master_of_harmony.aspect_of_harmony_driver } )
+    create_proc_callback(
+        { talent.master_of_harmony.aspect_of_harmony_driver, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           buff.aspect_of_harmony.trigger( state );
         } );
@@ -8685,9 +8688,21 @@ void monk_t::init_special_effects()
     create_proc_callback( { tier.tww3.moh_2pc_harmonic_surge_buff_data, PF_ALL_DAMAGE, PF2_ALL_HIT } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                if ( action->allow_class_ability_procs )
-                                                  return static_cast<bool>( tier.tww3.moh_2pc_rng->trigger() );
-                                                return false;
+                                                if ( action->id <= 0 )
+                                                  return false;
+                                                auto icd = tier.tww3.moh_2pc_icd.find( action->id );
+                                                if ( icd == tier.tww3.moh_2pc_icd.end() )
+                                                {
+                                                  cooldown_t *_icd =
+                                                      get_cooldown( fmt::format( "tww3_moh_2pc_{}", action->id ) );
+                                                  tier.tww3.moh_2pc_icd.emplace( action->id, _icd );
+                                                  icd = tier.tww3.moh_2pc_icd.find( action->id );
+                                                }
+                                                bool trigger = false;
+                                                if ( action->allow_class_ability_procs && icd->second->up() )
+                                                  trigger = tier.tww3.moh_2pc_rng->trigger();
+                                                icd->second->start( 5_ms );
+                                                return trigger;
                                               } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
           tier.tww3.moh_2pc_harmonic_surge_buff->trigger();

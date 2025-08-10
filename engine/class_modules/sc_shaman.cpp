@@ -1417,7 +1417,6 @@ public:
     cooldown_t* tempest_strikes;
     cooldown_t* ancestral_swiftness;
     cooldown_t* flowing_spirit;
-    cooldown_t* stormblast; // Stormblast ICD custom implementation
     cooldown_t* arc_discharge;
 
     cooldown_t* tww3_enh_4pc_icd; // Elemental Overflow ICD for presumably consuming the buff
@@ -1897,7 +1896,6 @@ public:
     cooldown.tempest_strikes    = get_cooldown( "tempest_strikes" );
     cooldown.ancestral_swiftness= get_cooldown( "ancestral_swiftness" );
     cooldown.flowing_spirit     = get_cooldown( "flowing_spirit" );
-    cooldown.stormblast         = get_cooldown( "stormblast_icd" );
     cooldown.arc_discharge      = get_cooldown( "arc_discharge" );
     cooldown.tww3_enh_4pc_icd   = get_cooldown( "elemental_overflow" );
 
@@ -5979,6 +5977,11 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->buff.stormbringer->decrement();
     }
 
+    if ( strike_type == strike_variant::NORMAL )
+    {
+      p()->buff.stormblast->decrement();
+    }
+
     if ( result_is_hit( execute_state->result ) )
     {
       mh->stormblast_trigger = ss->stormblast;
@@ -6008,12 +6011,6 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->trigger_awakening_storms( execute_state );
-
-    if ( p()->cooldown.stormblast->up() && strike_type == strike_variant::NORMAL )
-    {
-      p()->buff.stormblast->decrement();
-      p()->cooldown.stormblast->start( p()->buff.stormblast->data().internal_cooldown() );
-    }
   }
 };
 

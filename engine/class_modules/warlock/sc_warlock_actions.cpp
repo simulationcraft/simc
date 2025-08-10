@@ -1700,7 +1700,10 @@ using namespace helpers;
         target_count( 0 )
       {
         background = dual = true;
-        callbacks = false; // Individual hits have been observed to not proc trinkets like Psyche Shredder
+        // 2025/08/10 Confirmed Malefic Rapture damage will feed Temporal Wound callback from Evoker. If this does not
+        // work with specific trinkets it will likely need specific handling, or the simc proc system as a whole needs
+        // an overriding.
+        // callbacks = false;
 
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.improved_malefic_rapture->effectN( 1 ).percent();

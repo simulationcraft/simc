@@ -607,9 +607,9 @@ void enchant::remove_other_reshii_bonuses( item_t& item )
           break;  // Do not remove these stats
         default:
           // Remove all other stats
-          item.base_stats.add_stat( s, -item.parsed.stat_val[ s ] );
-          item.stats.add_stat( s, -item.parsed.stat_val[ s ] );
-          item.parsed.stat_val[ s ]         = 0;
+          item.base_stats.add_stat( s, -item.parsed.stat_val[ i ] );
+          item.stats.add_stat( s, -item.parsed.stat_val[ i ] );
+          item.parsed.stat_val[ i ]         = 0;
           item.parsed.data.stat_type_e[ i ] = -1;
           item.parsed.data.stat_alloc[ i ]  = 0;
           break;
