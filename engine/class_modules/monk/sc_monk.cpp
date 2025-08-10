@@ -6160,6 +6160,7 @@ void aspect_of_harmony_t::accumulator_t::trigger_with_state( action_state_t *sta
   double amount = std::min( check_value() + state->result_amount * multiplier, p().max_health() );
   sim->print_debug( "Aspect of Harmony +A: {}, P: {}, T: {}", state->result_amount * multiplier, check_value(),
                     check_value() + state->result_amount * multiplier );
+  sim->print_debug( "AoH does_gen: {} {}", state->action->name(), state->action->id );
   monk_buff_t::trigger( -1, amount );
 }
 
@@ -6180,7 +6181,8 @@ aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *
 void aspect_of_harmony_t::spender_t::reset()
 {
   monk_buff_t::reset();
-  pool = 0.0;
+  pool          = 0.0;
+  current_value = 0.0;
   sim->print_debug( "Aspect of Harmony =P: 0" );
 }
 
@@ -6189,7 +6191,7 @@ bool aspect_of_harmony_t::spender_t::trigger( int stacks, double, double chance,
   pool = aspect_of_harmony->accumulator->check_value();
   aspect_of_harmony->accumulator->expire();
 
-  sim->print_debug( "Aspect of Harmony +P: {}", pool );
+  sim->print_debug( "Aspect of Harmony +P: {}", current_value );
   return monk_buff_t::trigger( stacks, pool, chance, duration );
 }
 
@@ -6205,36 +6207,45 @@ void aspect_of_harmony_t::spender_t::trigger_with_state( action_state_t *state )
 
   double multiplier = p().talent.master_of_harmony.aspect_of_harmony->effectN( 6 ).percent();
   double amount     = std::min( state->result_amount * multiplier, current_value );
-  if ( amount >= current_value )
-  {
-    sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value, current_value - amount );
-    pool = current_value;
-    expire();
-    return;
-  }
 
+  action_t *spend_target = nullptr;
   switch ( state->result_type )
   {
     case result_amount_type::DMG_DIRECT:
     case result_amount_type::DMG_OVER_TIME:
       if ( p().specialization() == MONK_BREWMASTER || in_hg_whitelist() )
-      {
-        current_value -= amount;
-        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
-        residual_action::trigger( aspect_of_harmony->damage, state->target, amount );
-      }
+        spend_target = aspect_of_harmony->damage;
       break;
     case result_amount_type::HEAL_DIRECT:
     case result_amount_type::HEAL_OVER_TIME:
       if ( p().specialization() == MONK_MISTWEAVER || in_hg_whitelist() )
-      {
-        current_value -= amount;
-        sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}", amount, current_value + amount, current_value );
-        residual_action::trigger( aspect_of_harmony->heal, state->target, amount );
-      }
+        spend_target = aspect_of_harmony->heal;
       break;
     default:
       break;
+  }
+
+  double bonus = 0.0;
+  if ( spend_target )
+  {
+    current_value -= amount;
+
+    // approximation of coalescence intensification mechanic
+    dot_t *dot = spend_target->get_dot( state->target );
+    if ( dot && dot->state && dot->is_ticking() )
+      bonus = std::min( spend_target->base_ta( dot->state ) * dot->ticks_left() * 0.5, current_value );
+    current_value -= bonus;
+
+    sim->print_debug( "AoH does_spend: {} {}", state->action->name(), state->action->id );
+    sim->print_debug( "Aspect of Harmony -P: {}, P: {}, T: {}, A: {}, B: {}", amount + bonus,
+                      current_value + amount + bonus, current_value, amount, bonus );
+
+    residual_action::trigger( spend_target, state->target, amount + bonus );
+  }
+
+  if ( current_value == 0.0 )
+  {
+    expire();
   }
 }
 
@@ -6258,10 +6269,11 @@ void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::init()
 template <class base_action_t>
 void aspect_of_harmony_t::spender_t::purified_spirit_t<base_action_t>::execute()
 {
-  base_action_t::base_td = aspect_of_harmony->spender->pool / 4.0 / as<double>( base_action_t::num_targets() );
+  base_action_t::base_td = aspect_of_harmony->spender->current_value / 4.0 / as<double>( base_action_t::num_targets() );
   base_action_t::sim->print_debug( "Purified Spirit consuming rest of pool. Pool: {} TA: {}",
-                                   aspect_of_harmony->spender->pool, aspect_of_harmony->spender->pool / 4.0 );
-  aspect_of_harmony->spender->pool = 0.0;
+                                   aspect_of_harmony->spender->current_value,
+                                   aspect_of_harmony->spender->current_value / 4.0 );
+  aspect_of_harmony->spender->current_value = 0.0;
   if ( base_action_t::base_td > 0.0 )
     base_action_t::execute();
 }
@@ -8595,8 +8607,25 @@ void monk_t::init_special_effects()
         } );
 
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
-    create_proc_callback(
-        { talent.master_of_harmony.aspect_of_harmony_driver, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } )
+    create_proc_callback( { talent.master_of_harmony.aspect_of_harmony_driver,
+                            static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC ), PF2_ALL_HIT } )
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+                                              [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
+                                                constexpr std::array<unsigned, 7> blacklist = {
+                                                    132467,  // chi wave
+                                                    132463,  // chi wave
+                                                    216521,  // celestial fortune
+                                                    178173,  // goto expire
+                                                    124507,  // goto trigger
+                                                    387621,  // dragonfire brew
+                                                    115129,  // expel harm damage
+                                                };
+                                                if ( range::contains( blacklist, action->id ) )
+                                                  return false;
+                                                if ( action->allow_class_ability_procs )
+                                                  return true;
+                                                return false;
+                                              } )
         ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
           buff.aspect_of_harmony.trigger( state );
         } );
