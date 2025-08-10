@@ -4682,8 +4682,9 @@ struct ancestor_t : public shaman_pet_t
     : shaman_pet_t( owner, "ancestor", true, false ),
     lava_burst( nullptr ), chain_lightning( nullptr ), elemental_blast( nullptr )
   {
-    owner_coeff.sp_from_sp = variant_ == ancestor_variant::SET ? 1.1 : 1.0;
     owner_coeff.sp_from_sp = 1.0;
+    if ( variant_ == ancestor_variant::SET )
+      owner_coeff.sp_from_sp += owner->spell.tww3_farseer_2pc->effectN( 1 ).percent();
     npc_id = 221177;
   }
 
@@ -9745,7 +9746,7 @@ struct ascendance_t : public shaman_spell_t
         }
         else
         {
-          duration = p()->spell.tww3_stormbringer_2pc->effectN( 4 )
+          duration = p()->spell.tww3_stormbringer_2pc->effectN( 5 )
                          .time_value();
         }
       }
@@ -10974,6 +10975,15 @@ struct primordial_wave_t : public shaman_spell_t
       background                = true;
     }
 
+     size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      shaman_spell_t::available_targets( tl );
+
+      p()->regenerate_flame_shock_dependent_target_list( this );
+
+      return tl.size();
+    }
+
     void init() override
     {
       shaman_spell_t::init();
@@ -11033,6 +11043,7 @@ struct primordial_wave_t : public shaman_spell_t
   {
     // Primordial Wave that summons an Ancestor will trigger a Lava Burst
     p()->summon_ancestor();
+    target_cache.is_valid = false;
 
     shaman_spell_t::execute();
 
@@ -13045,10 +13056,17 @@ void shaman_t::summon_ancestor( double proc_chance, bool from_set )
     cooldown.fire_elemental->adjust( talent.offering_from_beyond->effectN( 1 ).time_value() );
     cooldown.storm_elemental->adjust( talent.offering_from_beyond->effectN( 1 ).time_value() );
   }
-  timespan_t ancestor_duration =
-      from_set ? buff.call_of_the_ancestors_tww3_set->buff_duration() : buff.call_of_the_ancestors->buff_duration();
-  pet.ancestor.spawn( ancestor_duration );
-  buff.call_of_the_ancestors->trigger( ancestor_duration );
+
+  if ( !from_set )
+  {
+    pet.ancestor.spawn( buff.call_of_the_ancestors->buff_duration() );
+    buff.call_of_the_ancestors->trigger( buff.call_of_the_ancestors->buff_duration() );
+  }
+  else
+  {
+    pet.set_ancestor.spawn( buff.call_of_the_ancestors_tww3_set->buff_duration() );
+    buff.call_of_the_ancestors->trigger( buff.call_of_the_ancestors_tww3_set->buff_duration() );
+  }
 }
 
 void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_duration )
@@ -13634,6 +13652,7 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
   {
     return;
   }
+  secondary->target_cache.is_valid = false;
   auto count_duplicates = secondary->target_list().size();
   if ( count_duplicates == 0 )
   {
@@ -14108,8 +14127,19 @@ void shaman_t::trigger_ancestor( ancestor_cast cast, const action_state_t* state
   {
     if ( sim->debug )
     {
-      sim->out_debug.print( "{} ancestor triggers {} from {} at {}",
-        name(), ancestor_cast_str( cast ), state->action->name(), state->target->name() );
+      sim->out_debug.print( "{} ancestor triggers {} from {} at {}", name(), ancestor_cast_str( cast ),
+                            state->action->name(), state->target->name() );
+    }
+
+    debug_cast<pet::ancestor_t*>( ancestor )->trigger_cast( cast, state->target );
+  }
+
+    for ( auto ancestor : pet.set_ancestor )
+  {
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} ancestor (SET) triggers {} from {} at {}", name(), ancestor_cast_str( cast ),
+                            state->action->name(), state->target->name() );
     }
 
     debug_cast<pet::ancestor_t*>( ancestor )->trigger_cast( cast, state->target );
