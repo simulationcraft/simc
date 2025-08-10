@@ -24,7 +24,7 @@ legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
 feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7424
 finger1=radiant_necromancers_band,id=221200,ilevel=723,gem_id=213479/213479,enchant_id=7334,bonus_id=8781
 finger2=signet_of_collapsing_stars,id=185813,ilevel=723,enchant_id=7352,gem_id=213479/213479,bonus_id=8781
-trinket1=arazs_ritual_forge,id=242402,ilevel=723
+trinket1=astral_antenna,id=242395,ilevel=723
 trinket2=azhiccaran_parapodia,id=242497,ilevel=723
 main_hand=voidglass_sovereigns_blade,id=237735,ilevel=723,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960,ilevel=720,crafted_stats=36/40
@@ -57,7 +57,7 @@ legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
 feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7424
 finger1=radiant_necromancers_band,id=221200,ilevel=723,gem_id=213479/213479,enchant_id=7334,bonus_id=8781
 finger2=signet_of_collapsing_stars,id=185813,ilevel=723,enchant_id=7352,gem_id=213479/213479,bonus_id=8781
-trinket1=arazs_ritual_forge,id=242402,ilevel=723
+trinket1=astral_antenna,id=242395,ilevel=723
 trinket2=azhiccaran_parapodia,id=242497,ilevel=723
 main_hand=voidglass_sovereigns_blade,id=237735,ilevel=723,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960,ilevel=720,crafted_stats=36/40
