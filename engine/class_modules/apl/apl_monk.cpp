@@ -87,7 +87,7 @@ void default_apl( monk_t* player )
   default_->add_action( "rising_sun_kick,if=!talent.fluidity_of_motion.enabled" );
   default_->add_action(
       "keg_smash,if=buff.weapons_of_order.up&(debuff.weapons_of_order_debuff.remains<1.8|debuff.weapons_of_order_"
-      "debuff.stack<2+buff.blackout_combo.up|(buff.weapons_of_order.remains<3-buff.blackout_combo.up&buff.weapons_of_"
+      "debuff.stack<3-buff.blackout_combo.up|(buff.weapons_of_order.remains<3-buff.blackout_combo.up&buff.weapons_of_"
       "order.remains<1+cooldown.rising_sun_kick.remains))" );
   default_->add_action( "tiger_palm,if=buff.blackout_combo.up" );
   default_->add_action( "keg_smash,if=talent.scalding_brew.enabled" );
