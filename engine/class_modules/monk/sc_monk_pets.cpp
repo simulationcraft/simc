@@ -1283,6 +1283,13 @@ struct melee_t : public pet_melee_t
   melee_t( niuzao_pet_t *pet, weapon_t *weapon ) : pet_melee_t( "melee_main_hand", pet, weapon )
   {
   }
+
+  void impact( action_state_t *state ) override
+  {
+    pet_melee_t::impact( state );
+
+    o()->buff.aspect_of_harmony.trigger( state );
+  }
 };
 
 struct stomp_t : public pet_melee_attack_t
@@ -1308,6 +1315,13 @@ struct stomp_t : public pet_melee_attack_t
   {
     pet_melee_attack_t::execute();
     o()->buff.recent_purifies->cancel();
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    pet_melee_attack_t::impact( state );
+
+    o()->buff.aspect_of_harmony.trigger( state );
   }
 };
 

@@ -8611,14 +8611,13 @@ void monk_t::init_special_effects()
                             static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC ), PF2_ALL_HIT } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                constexpr std::array<unsigned, 7> blacklist = {
-                                                    132467,  // chi wave
-                                                    132463,  // chi wave
+                                                constexpr std::array<unsigned, 6> blacklist = {
                                                     216521,  // celestial fortune
                                                     178173,  // goto expire
                                                     124507,  // goto trigger
                                                     387621,  // dragonfire brew
                                                     115129,  // expel harm damage
+                                                    124255,  // stagger
                                                 };
                                                 if ( range::contains( blacklist, action->id ) )
                                                   return false;
