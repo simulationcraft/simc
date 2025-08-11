@@ -2213,6 +2213,7 @@ Effects          :
                    Family Flags: 40, 57, 58, 93, 119
 #6 (id=1254948)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 3 | Misc Value 2: 5503 (Label) | Target: Self (1)
+                   Affected Spells (Label): Mastery: Dreadblade (1250728)
 #7 (id=1256727)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 15 | Misc Value 2: 5089 (Label) | Target: Self (1)
                    Affected Spells (Label): Undeath (444633)
@@ -19214,6 +19215,22 @@ Description      : Call upon Sindragosa's aid in battle for $d, continuously dea
 |cFFFFFFFFGrants a charge of Empower Rune Weapon at the start and 2 Runes at the end.|r
 Tooltip          : Continuously dealing Frost damage every $t1 sec to enemies in a cone in front of you.
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
+
+Name             : Mastery: Dreadblade (id=1250728) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 5503: Mastery: Dreadblade (77515 effect#6)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Not In Spellbook (143)
+Effects          :
+#1 (id=1254947)  : Apply Aura (6) | Modify Crit Damage Done% (163)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 
 Name             : Death and Decay (id=1251951) [Spell Family (15)] 
 Class            : Death Knight
