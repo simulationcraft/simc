@@ -17325,7 +17325,7 @@ static constexpr std::array<spelltext_data_t, 28029> __ptr_spelltext_data { {
   {  367896, "Grants you $s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
   {  367898, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   {  367901, "$@spelldesc367902", "$@auradesc367902", 0 },
-  {  367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
+  {  367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates, inflicting ${$<rolemult>*$367901s1} Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
   {  367903, "$@spelldesc367902", "$@auradesc367902", 0 },
   {  367907, "$@spelldesc364423", "Generating ${$o1/10} Astral Power over $d.", 0 },
   {  367911, "When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.", 0, 0 },
@@ -27967,7 +27967,7 @@ static constexpr std::array<spelltext_data_t, 28029> __ptr_spelltext_data { {
   { 1243133, "$@spelldesc1243118", 0, 0 },
   { 1243411, "Strike with the speed of a warpstalker, inflicting ${$<rolemult>*$s1} Spellstrike damage split between enemies within $a1 yds in front of you.", 0, 0 },
   { 1243749, 0, "You now flip on every jump! Yay!", 0 },
-  { 1243818, "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.", 0, 0 },
+  { 1243818, "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.", 0, 0 },
   { 1243828, "$@spelldesc1243818", "Suffering $w1 Shadow damage every $t1 sec.", 0 },
   { 1243843, "$@spelldesc1243818", "Intellect increased by $w1.", 0 },
   { 1244007, "Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.", 0, 0 },
@@ -28032,11 +28032,13 @@ static constexpr std::array<spelltext_data_t, 28029> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62493
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  367902,  0, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates, inflicting ${$<rolemult>*$367901s1} Fire damage." },
+  { 1243818,  0, "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.", "Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d." },
 } };
 
 // Spell description variables, wow build 11.2.0.62493
-static constexpr std::array<spelldesc_vars_data_t, 672> __ptr_spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 673> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28418,6 +28420,7 @@ static constexpr std::array<spelldesc_vars_data_t, 672> __ptr_spelldesc_vars_dat
   {  366155, "$cap=${6}" },
   {  367226, "$range=${30}" },
   {  367231, "$dmg=${$359077s2}" },
+  {  367902, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  368847, "$damage=${$369374s1*(1+$369372d/2)}" },
   {  369908, "$max=${6}" },
