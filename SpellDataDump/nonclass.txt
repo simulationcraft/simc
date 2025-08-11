@@ -182868,6 +182868,7 @@ Description      : $@spelldesc367902
 Tooltip          : $@auradesc367902
 
 Name             : Volatile Satchel (id=367902) 
+Hotfixed         : Description
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
@@ -182879,8 +182880,9 @@ Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Do Not Display 
 Effects          :
 #1 (id=911944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.
+Description      : Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates, inflicting ${$<rolemult>*$367901s1} Fire damage.
 Tooltip          : Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Volatile Detonation (id=367903) 
 School           : Fire
@@ -268257,6 +268259,7 @@ Effects          :
 Tooltip          : You now flip on every jump! Yay!
 
 Name             : Azhiccaran Parapodia (id=1243818) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 3959: Item Effects
@@ -268271,7 +268274,7 @@ Effects          :
 Hotfixed         : Coefficient (5.929595 -> 7.115513)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
-Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, increasing your Intellect by $s2 for $1243843d.
+Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.
 
 Name             : Azhiccaran Mite (id=1243828) 
 School           : Physical
