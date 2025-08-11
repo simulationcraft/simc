@@ -1,30 +1,31 @@
-# druid="TWW3_Druid_Balance"
-# source=default
-# spec=balance
-# level=80
-# race=night_elf
-# timeofday=night
-# role=spell
-# position=back
-# talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALjys1wYmBGzCLzMjZgZbsMz2MWYmZGzyMmZMjxG2YAGgttxCmmZWGBAAAYjZMDYzAD
+druid="TWW3_Druid_Balance"
+source=default
+spec=balance
+level=80
+race=night_elf
+timeofday=night
+role=spell
+position=back
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUmtMGzMwDYWYZmZAzMGLzsNjlxMjZmFjZGzMjNswAMAbbjNMNzsMCAAAwmZmZMwmBG
 
-# head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213746
-# neck=strapped_rescuekeg,id=221060,bonus_id=4795/8781,ilevel=678,gem_id=213473/213473
-# shoulder=jaws_of_reclaiming_blight,id=229305,bonus_id=1527/11996
-# back=test_pilots_gopack,id=228844,bonus_id=6652/10356/11996/1527/10255,enchant_id=7403
-# chest=robes_of_reclaiming_blight,id=229310,bonus_id=1527/11996,enchant_id=7364
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/8793/10222/11307/12043/12040/10520/8960,ilevel=675,gem_id=213473,enchant_id=7385,crafted_stats=36/32
-# hands=shimmering_glimclaws,id=221102,bonus_id=4795,ilevel=678
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/9627/8793/10222/11307/12040/12043/10520/8960,ilevel=675,gem_id=213473,crafted_stats=36/32
-# legs=moccasins_of_reclaiming_blight,id=229306,bonus_id=1527/11996,enchant_id=7534
-# feet=stalwart_guardians_boots,id=221120,bonus_id=4795,ilevel=678,enchant_id=7424
-# finger1=cyrces_circlet,id=228411,bonus_id=12025/1502,ilevel=658,gem_id=228639/228638/228646,enchant_id=7346
-# finger2=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/8781,gem_id=213473/213473,enchant_id=7346
-# trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-# trinket2=house_of_cards,id=230027,bonus_id=4795,ilevel=678
-# main_hand=bestinslots,id=232805,bonus_id=6652/10356/11996/9418/1527/10255,enchant_id=7460
+head=,id=237682,bonus_id=4795/1808,gem_id=213743,ilevel=723
+neck=,id=242406,bonus_id=4795/8781,gem_id=213497/213467,ilevel=723
+shoulder=,id=237552,bonus_id=4795,ilevel=723
+back=,id=235499,bonus_id=9886/12361/12239,enchant_id=7403,gem_id=238044,ilevel=730
+chest=,id=237685,bonus_id=4795,enchant_id=7364,ilevel=723
+wrist=,id=219334,bonus_id=10421/1599/1808/11109/8960/8791,enchant_id=7385,gem_id=213458,crafted_stats=36/49
+hands=,id=237683,bonus_id=4795,ilevel=723
+waist=,id=237557,bonus_id=4795/1808,gem_id=213482,ilevel=723
+legs=,id=237681,bonus_id=4795,enchant_id=7534,ilevel=723
+feet=,id=243306,bonus_id=4795/13504,enchant_id=7424,ilevel=723
+finger1=,id=221200,bonus_id=4795/8781,enchant_id=7334,gem_id=213482/213482,ilevel=723
+finger2=,id=221141,bonus_id=4795/8781,enchant_id=7346,gem_id=213458/213458,ilevel=723
+trinket1=,id=242402,bonus_id=4795,ilevel=723
+trinket2=,id=242395,bonus_id=1533/12361/12239,ilevel=723
+main_hand=,id=237728,bonus_id=4795,enchant_id=7448,ilevel=723
+off_hand=,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960,ilevel=720,crafted_stats=49/40
 
-# save=TWW3_Druid_Balance.simc
+save=TWW3_Druid_Balance.simc
 
 druid="TWW3_Druid_Feral_DOTC"
 level=80
