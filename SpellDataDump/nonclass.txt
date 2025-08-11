@@ -264005,11 +264005,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4180.911 (coefficient=1.634598) | Target: Self (1)
 
 Name             : Observer's Soul Fetters (id=1230285) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1221769)  : Apply Aura (6) | Attribute (29)
