@@ -82,7 +82,7 @@ actions.cds+=/cold_blood,use_off_gcd=1,if=(buff.fatebound_coin_tails.stack>0&buf
 # Core damage over time abilities used everywhere Maintain Garrote
 actions.core_dot=garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12
 # Maintain Rupture unless darkest night is up
-actions.core_dot+=/rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
+actions.core_dot+=/rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&!buff.cold_blood.up&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
 # Maintain Crimson Tempest unless it would remove a stronger cast
 actions.core_dot+=/crimson_tempest,if=combo_points>=variable.effective_spend_cp&refreshable&pmultiplier<=persistent_multiplier&!buff.darkest_night.up&!talent.amplifying_poison&spell_targets.fan_of_knives=1
 
@@ -111,8 +111,9 @@ actions.direct+=/mutilate,if=variable.use_filler
 
 # Special Case Trinkets
 actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2&!cooldown.deathmark.ready|dot.deathmark.ticking|fight_remains<=22
+actions.items+=/use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmkark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)
 actions.items+=/use_item,name=treacherous_transmitter,use_off_gcd=1,if=variable.base_trinket_condition
-actions.items+=/use_item,name=unyielding_netherprism,use_off_gcd=1,if=dot.deathmark.ticking|fight_remains<=15
+actions.items+=/use_item,name=unyielding_netherprism,use_off_gcd=1,if=dot.deathmark.ticking&(buff.latent_energy.stack>=16|fight_remains<=90|time<=15)|fight_remains<=20
 actions.items+=/use_item,name=mad_queens_mandate,if=cooldown.deathmark.remains>=30&!dot.deathmark.ticking|fight_remains<=3
 actions.items+=/use_item,name=junkmaestros_mega_magnet,if=cooldown.deathmark.remains>=30&!dot.deathmark.ticking&!debuff.shiv.up&(!talent.deathstalkers_mark|buff.lingering_darkness.up&buff.junkmaestros_mega_magnet.stack>5)|fight_remains<=10
 actions.items+=/do_treacherous_transmitter_task,use_off_gcd=1,if=dot.deathmark.ticking&variable.single_target|buff.realigning_nexus_convergence_divergence.up&buff.realigning_nexus_convergence_divergence.remains<=2|buff.cryptic_instructions.up&buff.cryptic_instructions.remains<=2|buff.errant_manaforge_emission.up&buff.errant_manaforge_emission.remains<=2|fight_remains<=15
@@ -134,15 +135,15 @@ actions.misc_cds+=/ancestral_call,if=debuff.deathmark.up
 actions.shiv=variable,name=shiv_condition,value=!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&spell_targets.fan_of_knives<=5
 actions.shiv+=/variable,name=shiv_kingsbane_condition,value=talent.kingsbane&buff.envenom.up&variable.shiv_condition
 # Shiv for Fatebound Edge Case Coins Before Deathmark + Kingsbane with new Tier Set
-actions.shiv+=/shiv,if=talent.lightweight_shiv&variable.shiv_kingsbane_condition&cooldown.deathmark.ready&cooldown.kingsbane.ready&set_bonus.tww3_fatebound_2pc
+actions.shiv+=/shiv,if=talent.lightweight_shiv&variable.shiv_kingsbane_condition&(cooldown.deathmark.ready|cooldown.deathmark.remains<=1)&(cooldown.kingsbane.ready|cooldown.kingsbane.remains<=2)&set_bonus.tww3_fatebound_2pc
 # Shiv for aoe with Arterial Precision
 actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&spell_targets.fan_of_knives>=4&dot.crimson_tempest.ticking&(target.health.pct<=35&talent.zoldyck_recipe|cooldown.shiv.charges_fractional>=1.9)
 # Single-charge Shiv case for Kingsbane
-actions.shiv+=/shiv,if=!talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<(8+2*set_bonus.tww3_deathstalker_4pc)|!dot.kingsbane.ticking&cooldown.kingsbane.remains>=20)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
+actions.shiv+=/shiv,if=!talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<(8+3*set_bonus.tww3_deathstalker_4pc)|!dot.kingsbane.ticking&cooldown.kingsbane.remains>=20)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 # Shiv for big Darkest Night Envenom during Lingering Darkness
 actions.shiv+=/shiv,if=debuff.deathstalkers_mark.stack<=2&combo_points>=variable.effective_spend_cp&buff.lingering_darkness.up
 # Double-charge Shiv case for Kingsbane
-actions.shiv+=/shiv,if=talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<(8+2*set_bonus.tww3_deathstalker_4pc)&dot.kingsbane.remains>4|cooldown.kingsbane.remains<=1&cooldown.shiv.charges_fractional>=1.7)
+actions.shiv+=/shiv,if=talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<(8+3*set_bonus.tww3_deathstalker_4pc)&dot.kingsbane.remains>4|cooldown.kingsbane.remains<=1&cooldown.shiv.charges_fractional>=1.7)
 # Fallback shiv for arterial during deathmark - WIP needs checking when Fatebound Kingsbane stacks are fixed, as it currently is munching shiv before the last 8 seconds of KB.
 actions.shiv+=/shiv,if=debuff.deathmark.up&talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking
 # Fallback if no special cases apply
