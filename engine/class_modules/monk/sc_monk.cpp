@@ -1242,7 +1242,7 @@ struct harmonic_surge_t : public monk_spell_t
       assert( offset != 0 );
 
       if ( const spelleffect_data_t &effect = player->tier.tww3.moh_2pc->effectN( offset ); effect.ok() )
-        add_parse_entry( da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+        add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
     }
   };
 
