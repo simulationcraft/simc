@@ -378,12 +378,12 @@ void frost( player_t* p )
   ff_cleave->add_action( "blizzard,if=buff.icy_veins.down&buff.freezing_rain.up" );
   ff_cleave->add_action( "shifting_power,if=(!equipped.arazs_ritual_forge|buff.icy_veins.down)&cooldown.icy_veins.remains>8&(cooldown.comet_storm.remains>8|!talent.comet_storm)", "With Araz's Ritual Forge equipped only cast Shifting Power outside of Icy Veins to create more overlap with subsequent Icy Veins." );
   ff_cleave->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ff_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill=2&!(talent.slick_ice&talent.cold_front&talent.deaths_chill)", "Cast Ice Lance into 2 Winter's Chill stacks, unless you have all of Death's Chill, Cold Front and Slick Ice talented." );
+  ff_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=!talent.deaths_chill&remaining_winters_chill=2", "Without Death's Chill talented, also cast Ice Lance into any target with 2 stacks of Winter's Chill." );
   ff_cleave->add_action( "frostfire_bolt,target_if=min:debuff.winters_chill.stack", "Always cast Frostfire Bolt at the target with the lowest number of Winter's Chill stacks." );
   ff_cleave->add_action( "call_action_list,name=movement" );
 
   ff_st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&prev_gcd.1.glacial_spike" );
-  ff_st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&prev_gcd.1.frostfire_bolt&(buff.icicles.react>=3|!talent.glacial_spike)", "Cast Flurry only with 3+ Icicles to guarantee shattering the Glacial Spike + Pyroblast into Winter's Chill. This also means queueing Flurry when casting Frostfire Bolt with 2+ Icicles and overcapping freely." );
+  ff_st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(buff.icicles.react>=3|!talent.glacial_spike)", "Cast Flurry with 3+ Icicles to guarantee shattering the Glacial Spike + Pyroblast into Winter's Chill. This also means queueing Flurry when casting Frostfire Bolt with 2+ Icicles and overcapping freely." );
   ff_st->add_action( "comet_storm,if=remaining_winters_chill" );
   ff_st->add_action( "ray_of_frost,if=remaining_winters_chill=2" );
   ff_st->add_action( "glacial_spike,if=buff.icicles.react=5" );
