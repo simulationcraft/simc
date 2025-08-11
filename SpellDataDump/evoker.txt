@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62438 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1880,7 +1880,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Dream Breath (355941), Fire Breath (357209), Dream Breath (376788), Full Belly (377087), Fire Breath (444249)
                    Family Flags: 21, 35
-Hotfixed         : Affects Spells
 Description      : $@spelldesc362874
 Tooltip          : Empower spells reach maximum level in $s1% less time.$?e1[ Healing and damage of next empower spell increased by $s2%.][]
 
@@ -2453,7 +2452,6 @@ Attributes       : Allow While Stunned (163), Allow While Fleeing (177), Allow W
 Effects          :
 #1 (id=910754)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.78 | Target: Friendly (21)
-Hotfixed         : Delta (0 -> 0.05)
 #2 (id=1017326)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : $@spelldesc367226
@@ -7326,10 +7324,8 @@ Effects          :
                    Family Flags: 1
 #6 (id=1037193)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Base Value (43 -> 0)
 #7 (id=1037194)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Base Value (43 -> 0)
 #8 (id=1037195)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1037196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -7373,11 +7369,9 @@ Hotfixed         : Base Value (43 -> 0)
 #20 (id=1240511) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 5607 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Scalecommander 11.2 Class Set 2pc (1236366)
-Hotfixed         : Misc Value (1 -> 3), Misc Value 2 (5099 -> 5607)
 #21 (id=1262082) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Misc Value 2: 5608 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Scalecommander 11.2 Class Set 4pc (1236367)
-Hotfixed         : NEW EFFECT
 
 Name             : Essence Burst (id=396187) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
@@ -13160,7 +13154,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1233035)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.71 | PvP Coefficient: 0.33 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (5.3 -> 3.71)
 Description      : $@spelldesc1236365
 
 Name             : Essence Bomb (id=1236803) [Spell Family (224)] 
@@ -13240,7 +13233,6 @@ Channel Interrupt: Moving (3)
 Effects          :
 #1 (id=1233383)  : Apply Aura (6) | Periodic Damage (3): spellfrost every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.041 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.25 -> 1.041)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 

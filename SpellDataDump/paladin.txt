@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62438 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -930,7 +930,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=157591)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2805 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.16409 -> 1.2805)
 #2 (id=821259)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
 #3 (id=1050419)  : Trigger Spell (64): Lightforged Blessing
@@ -5112,7 +5111,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Suppress Target Pr
 Effects          :
 #1 (id=335563)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2805 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.16409 -> 1.2805)
 Description      : $@spelldesc53385
 
 Name             : Templar's Verdict (id=224266) [Spell Family (10)] 
@@ -5754,7 +5752,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Always AOE Line of
 Effects          :
 #1 (id=478180)   : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.2186 | PvP Coefficient: 0.727272 | Radius: 14 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (2.926 -> 3.2186)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
 #3 (id=478182)   : Trigger Spell (64): Truth's Wake
@@ -12692,7 +12689,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Radius: 14 yards | Mechanic: Snare | Target: Cone to Enemy (104)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.6528 | Radius: 14 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (0.544 -> 0.6528)
 #3 (id=1144192)  : Apply Aura (6) | Ignore Armor% (345)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.544 | Radius: 14 yards | Target: Cone to Enemy (104)
 #4 (id=1144330)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13170,7 +13166,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
 Effects          :
 #1 (id=1053556)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
-Hotfixed         : AP Coefficient (1.89312 -> 2.27174)
 Description      : $@spelldesc255937
 
 Name             : Wake of Ashes (id=405350) [Spell Family (10)] 
@@ -13188,7 +13183,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
 Effects          :
 #1 (id=1053566)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: At Self (18) -> Cone to Enemy (104)
-Hotfixed         : AP Coefficient (1.89312 -> 2.27174)
 Description      : $@spelldesc255937
 
 
@@ -15562,37 +15556,29 @@ Effects          :
 #22 (id=1262551) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Misc Value 2: 3780 (Label) | Target: Self (1)
                    Affected Spells (Label): Sun's Avatar (431939), Sun's Avatar (463074)
-Hotfixed         : NEW EFFECT
 #23 (id=1262556) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 3 | Misc Value 2: 5613 (Label) | Target: Self (1)
                    Affected Spells (Label): Dawnlight (431581)
-Hotfixed         : NEW EFFECT
 #24 (id=1262558) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
-Hotfixed         : NEW EFFECT
 #25 (id=1262559) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
-Hotfixed         : NEW EFFECT
 #26 (id=1262582) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 85 | Scaled Value: 85 | Misc Value: 3 | Misc Value 2: 4716 (Label) | Target: Self (1)
                    Affected Spells (Label): Second Sunrise (431474)
-Hotfixed         : NEW EFFECT
 #27 (id=1262583) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 12 | Misc Value 2: 4716 (Label) | Target: Self (1)
                    Affected Spells (Label): Second Sunrise (431474)
-Hotfixed         : NEW EFFECT
 #28 (id=1262614) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Misc Value 2: 5615 (Label) | Target: Self (1)
                    Affected Spells (Label): Paladin Herald of the Sun 11.2 Class Set 4pc (1236384)
-Hotfixed         : NEW EFFECT
 #29 (id=1262615) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 5614 (Label) | Target: Self (1)
                    Affected Spells (Label): Paladin Herald of the Sun 11.2 Class Set 2pc (1236383)
-Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
@@ -15847,7 +15833,6 @@ Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173
 Effects          :
 #1 (id=1119175)  : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.06 -> 0.12)
 Description      : $@spelldesc431413
 Tooltip          : Dealing $w1 Radiant damage every $t1 sec.
 
@@ -16459,7 +16444,6 @@ Effects          :
 Description      : $@spelldesc432472
 
 Name             : Holy Bulwark (id=432496) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -16493,7 +16477,6 @@ Tooltip          : Wielding a Holy Bulwark.$?$w3<0[
 Duration of Fear effects reduced by $s3%.][]
 
 Name             : Sacred Weapon (id=432502) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None

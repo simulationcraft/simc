@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62438 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3901,7 +3901,6 @@ Description      : $@spelldesc187874
 Tooltip          : Stormstrike, Ice Strike, and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
 Name             : Maelstrom Weapon (id=187880) [Spell Family (11), Passive] 
-Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Talent Entry     : Enhancement [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Shaman
 School           : Physical
@@ -15200,7 +15199,6 @@ Description      : Calls down a tremendous lightning strike that deals $s1 Natur
 |cFFFFFFFFConsumes Maelstrom Weapon for increased cast speed.|r][]
 
 Name             : Whirling Fire (id=453405) [Spell Family (11)] 
-Hotfixed         : Internal Cooldown (0 -> 2000), Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15220,7 +15218,6 @@ Description      : Your next Lava Lash or Fire Nova grants you Hot Hand for ${$s
 Tooltip          : Your next Lava Lash or Fire Nova grants you Hot Hands for ${$s1/1000} sec.
 
 Name             : Whirling Earth (id=453406) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15245,7 +15242,6 @@ Description      : $?a137041[Direct damage of your next Flame Shock is increased
 Tooltip          : $?a137041[Direct damage of your next Flame Shock is increased by $w1% and it is applied to $w3 nearby enemies.][Your next Chain Heal applies Earthliving at $w2% effectiveness to all targets hit.]
 
 Name             : Whirling Water (id=453407) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15264,7 +15260,6 @@ Description      : Your next Healing Wave or Healing Surge also heals an ally in
 Tooltip          : Your next Healing Wave or Healing Surge also heals an ally inside of your Healing Rain at $w1% effectiveness.
 
 Name             : Whirling Air (id=453409) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -19319,7 +19314,6 @@ Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Au
 Effects          :
 #1 (id=1236671)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1236411
 Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
 

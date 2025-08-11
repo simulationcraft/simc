@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62438 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4293,12 +4293,10 @@ Effects          :
                    Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
-Hotfixed         : Base Value (22 -> 23)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
-Hotfixed         : Base Value (22 -> 23)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
@@ -4313,10 +4311,8 @@ Hotfixed         : Base Value (22 -> 23)
                    Base Value: 10 | Scaled Value: 10 | Resource: energy | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
-Hotfixed         : Base Value (22 -> 23)
 #8 (id=260769)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 23 | Scaled Value: 23 | PvP Coefficient: 0.79 | Target: Self (1)
-Hotfixed         : Base Value (22 -> 23)
 #9 (id=260770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Swiftmend (18562), Swiftmend (422094)
@@ -6305,7 +6301,6 @@ Effects          :
                    Family Flags: 108
 #2 (id=753677)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 5), PvP Coefficient (0.67 -> 0.6)
 Description      : Ferocious Bite deals $s1% increased damage.
 
 For each Combo Point spent, Ferocious Bite's primary target takes $s2% increased damage from your Cat Form bleed and other periodic abilities for $391722d.
@@ -18411,7 +18406,6 @@ Effects          :
 #1 (id=1133806)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 12 | Misc Value 2: 3245 (Label) | Target: Self (1)
                    Affected Spells (Label): Bloodseeker Vines (439531)
-Hotfixed         : Base Value (5 -> 6)
 #2 (id=1133807)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 3246 (Label) | Target: Self (1)
                    Affected Spells (Label): Symbiotic Blooms (439530)
@@ -21328,10 +21322,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.33 | Trigger Spell: 1236556 | Target: Self (1)
 #2 (id=1232572)  : Apply Aura (6) | Dummy (4)
                    Base Value: 360 | Scaled Value: 360 | PvP Coefficient: 0.34 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 360)
 #3 (id=1232573)  : Apply Aura (6) | Dummy (4)
                    Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 800)
 #4 (id=1232670)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | Target: Self (1)
 #5 (id=1232731)  : Apply Aura (6) | Dummy (4)
@@ -21359,7 +21351,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.4 | Target: Self (1)
 #4 (id=1232833)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 2), PvP Coefficient (0.34 -> 0.5)
 #5 (id=1256967)  : Apply Aura (6) | Unknown(285)
                    Base Value: 1252024 | Scaled Value: 1252024 | Trigger Spell: 1252024 | Target: Self (1)
 Description      : When your Dryad fades, your next $?c4[$s1 Swiftmends heal][$s2 Starsurges damage] for an additional amount equal to $?c4[$s3][$s4]% of your $?c4[healing][damage] done while it was active and splash $?c4[$1236807s3][$1236807s2]% of their $?c4[healing][damage] onto nearby $?c4[allies][enemies], reduced beyond $1236807s4 targets.
@@ -21532,7 +21523,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1232703)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.792 | PvP Coefficient: 0.274989 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.224 -> 1.792)
 Description      : $@spelldesc1236607
 
 Name             : Starsurge (id=1236640) [Spell Family (7)] 
@@ -21550,7 +21540,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1232743)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.656 | PvP Coefficient: 0.3069 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.888 -> 10.656)
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage.
 
 Name             : Ravage Rampage (id=1236671) [Spell Family (7)] 

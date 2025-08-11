@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62438 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -167630,7 +167630,6 @@ Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845135)   : School Damage (2): shadow | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1089150 (coefficient=425.8215) | PvP Coefficient: 0.6 | Target: Enemy (6)
-Hotfixed         : Coefficient (354.852295 -> 425.821472)
 #2 (id=845136)   : Trigger Spell (64): Anima Font
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344414 | Target: At Self (18)
 Description      : Tear the anima from your target dealing $s1 Shadow damage and forming a font of power at your feet, increasing your Intellect by $343397s1 for $343394d while you stand within it. 
@@ -171695,7 +171694,6 @@ Effects          :
 Description      : $@spelldesc351316
 
 Name             : First Technique (id=351316) 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : Melee
 Range            : 50000 yards
@@ -171707,7 +171705,6 @@ Effects          :
 #1 (id=881509)   : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 324968.4 (coefficient=127.0519) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Coefficient (69.768326 -> 127.051903), Scaling Class (-9 -> -8)
 #2 (id=881713)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Taking damage grants you a chance to unleash the First Technique for $d, reflecting $s2% of incoming damage, up to a maximum of ${$s1*(1+$@versadmg)} damage absorbed.
@@ -171809,7 +171806,6 @@ Effects          :
 Description      : $@spelldesc351531
 
 Name             : Preternatural Charge (id=351531) 
-Hotfixed         : Description
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
@@ -172724,7 +172720,6 @@ Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Sca
 Effects          :
 #1 (id=883338)   : Apply Aura (6) | Proc Trigger Spell (42): Miniscule Mailemental in an Envelope | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 496695.7 (coefficient=194.1916) | Trigger Spell: 352436 | Target: Self (1)
-Hotfixed         : Coefficient (161.826355 -> 194.19162)
 Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.
 
 Name             : Miniscule Mailemental in an Envelope (id=352436) 
@@ -182863,7 +182858,6 @@ Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Sca
 Effects          :
 #1 (id=911943)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 745044.4 (coefficient=291.2878) | Target: Self (1)
-Hotfixed         : Coefficient (242.739822 -> 291.28775)
 Description      : $@spelldesc367902
 Tooltip          : $@auradesc367902
 
@@ -231732,13 +231726,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1144329)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3231.409 (coefficient=0.843937) | Target: Self (1)
-Hotfixed         : Coefficient (0.937708 -> 0.843937)
 #3 (id=1144413)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 168624.3 (coefficient=65.92652) | Target: Self (1)
-Hotfixed         : Coefficient (73.251686 -> 65.926521)
 #4 (id=1144414)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4556.6 (coefficient=1.190033) | Target: Self (1)
-Hotfixed         : Coefficient (1.082 -> 1.190033)
 #5 (id=1144420)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 379033.1 (coefficient=148.1894) | Target: Self (1)
 Description      : $?a443534[Advance to the $s1 Verses of Inner Radiance, reading as you are attacked.
@@ -231801,7 +231792,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1139516)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 100675.8 (coefficient=39.36092) | Target: Self (1)
-Hotfixed         : Coefficient (32.800762 -> 39.360916)
 #2 (id=1146254)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1195.293 (coefficient=0.312171) | Target: Self (1)
 Description      : Your attacks have a chance to call to the pact, exploding for ${$<rolemult>*$s1} Shadow damage split between nearby enemies and increasing your Haste by $s2 for $450962d.
@@ -231857,7 +231847,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 743.5859 (coefficient=0.1942) | Trigger Spell: 452146 | Target: Self (1)
 #2 (id=1146261)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 8941.423 (coefficient=3.495801) | Target: Self (1)
-Hotfixed         : Coefficient (2.913167 -> 3.495801)
 Description      : Your abilities have a chance to stir the sac, releasing an egg which grants you $s1 $pri. Each egg hatches after $452146d, and the new brood attacks your next target, inflicting ${$<rolemult>*$s2*$452229d/$452229t1} Nature damage over $452229d.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -231888,10 +231877,8 @@ Attributes       : Passive (6), Can Proc From Procs (122), Scales with Casting I
 Effects          :
 #1 (id=1139531)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 7761.641 (coefficient=3.034545) | Target: Self (1)
-Hotfixed         : Coefficient (2.528788 -> 3.034545)
 #2 (id=1146262)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: -10765.81 (coefficient=-4.209075) | Target: Self (1)
-Hotfixed         : Coefficient (-3.8264 -> -4.209075)
 Description      : The gland releases pheromones that attract a Ceaseless Swarm of insects to surround you. Taking damage has a high chance to retaliate against attackers, inflicting ${$s1*$450969d/$450969t1} Nature damage over $450969d and reducing damage dealt to you by $s2.
 
 Name             : Harvester's Edict (id=443549) 
@@ -237781,7 +237768,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2084.491 (coefficient=0.5444) | Target: Self (1)
 #2 (id=1150679)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 153573.5 (coefficient=60.04218) | Target: Self (1)
-Hotfixed         : Coefficient (50.035145 -> 60.042175)
 #3 (id=1150680)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 
@@ -238102,7 +238088,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1151381)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 159201.1 (coefficient=62.24238) | Target: Self (1)
-Hotfixed         : Coefficient (51.868649 -> 62.242378)
 #2 (id=1151382)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5237.648 (coefficient=1.3679) | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to send an orb of volatile black blood drifting to your target, exploding for ${$<rolemult>*$s1} Shadow damage split between all nearby enemies on impact. Intercepting the orb allows you to siphon its power, instead increasing your Mastery by $s2 for $451303d.
@@ -252097,7 +252082,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1179410)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 9430.775 (coefficient=2.463006) | Target: Self (1)
-Hotfixed         : Coefficient (2.736594 -> 2.463006)
 #2 (id=1203336)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=1204644)  : Dummy (3)
@@ -252346,7 +252330,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1180273)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 20186.68 (coefficient=7.892323) | Target: Self (1)
-Hotfixed         : Coefficient (9.285087 -> 7.892323)
 #2 (id=1194407)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1194408)  : Dummy (3)
@@ -252939,7 +252922,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1184546)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 149.5634 (coefficient=0.039061) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.043401 -> 0.039061)
 #2 (id=1200098)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 23624.88 (coefficient=9.236547) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200099)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -253888,7 +253870,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1189149)  : Apply Aura (6) | Proc Trigger Spell (42): Mug's Moxie Jug | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 953.6432 (coefficient=0.24906) | Trigger Spell: 474376 | Target: Self (1)
-Hotfixed         : Coefficient (0.276886 -> 0.24906)
 #2 (id=1206354)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Your spells have a chance to send you into a frenzy, granting you $s1 Critical Strike for $474285d. While frenzied, each spell cast grants an additional $s1 Critical Strike but does not refresh the duration. This effect may only occur every $s2 sec.
@@ -259976,13 +259957,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1200878)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 149802 (coefficient=58.56765) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (45.010525 -> 58.56765)
 #2 (id=1211753)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 192602.5 (coefficient=75.3012) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (67.521568 -> 75.301201)
 #3 (id=1211754)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 299593.9 (coefficient=117.1313) | PvP Coefficient: 0.33 | Target: Self (1)
-Hotfixed         : Coefficient (126.029251 -> 117.131302)
 #4 (id=1211779)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Target: Self (1)
 #5 (id=1211780)  : Apply Aura (6) | Dummy (4)
@@ -260358,7 +260336,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1203775)  : Apply Aura (6) | Proc Trigger Spell (42): Explosive Adrenaline | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3523.678 (coefficient=0.920268) | Trigger Spell: 1218713 | Target: Self (1)
-Hotfixed         : Coefficient (1.02252 -> 0.920268)
 #2 (id=1204550)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60
 Description      : Repurpose a Seaforium charge to give your heart a kick, causing your first ability every $s2 sec to trigger Explosive Adrenaline, granting $s1 Critical Strike for $1218713d.
@@ -260468,7 +260445,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1204552)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 6 seconds | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 10450.15 (coefficient=4.085664) | Target: Self (1)
-Hotfixed         : Coefficient (3.40472 -> 4.085664)
 #2 (id=1204553)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1204554)  : Apply Aura (6) | Dummy (4)
@@ -260772,10 +260748,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1206646)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 54269.11 (coefficient=21.21743) | Target: Self (1)
-Hotfixed         : Coefficient (18.449938 -> 21.217428)
 #2 (id=1206647)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1846.226 (coefficient=0.482173) | Target: Self (1)
-Hotfixed         : Coefficient (0.419281 -> 0.482173)
 
 Name             : Xal'atath's Gift (id=1221063) 
 School           : Shadow
@@ -261454,7 +261428,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1213766)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 14755.17 (coefficient=3.853561) | Target: Self (1)
-Hotfixed         : Coefficient (1.436623 -> 3.853561), Scaling Class (-9 -> -7)
 #2 (id=1213837)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1213838)  : Apply Aura (6) | Dummy (4)
@@ -261477,7 +261450,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 54710.25 (coefficient=21.3899) | Trigger Spell: 1225149 | Target: Self (1)
 #2 (id=1214154)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2437.851 (coefficient=0.636686) | Target: Self (1)
-Hotfixed         : Coefficient (0.237352 -> 0.636686), Scaling Class (-9 -> -7)
 Description      : Your harmful spells and abilities have a chance to fracture the enemy's soul, dealing ${$s1*$<rolemult>} Shadow damage over $1225149d. If a fractured enemy dies, you absorb their lingering energy, increasing your Versatility by $s2 for $1225151d.
 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -261531,7 +261503,6 @@ Effects          :
 Tooltip          : Increases Mastery Rating by $w1.
 
 Name             : Adding (id=1224959) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261545,7 +261516,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229185|r
 $?pc132221[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224961) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261559,7 +261529,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229186|r
 $?pc132222[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224962) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261573,7 +261542,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229187|r
 $?pc132223[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224963) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261587,7 +261555,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229188|r
 $?pc132224[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224964) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261601,7 +261568,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229189|r
 $?pc132225[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224965) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261615,7 +261581,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229190|r
 $?pc132226[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224967) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261629,7 +261594,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229191|r
 $?pc132227[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224968) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261643,7 +261607,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229192|r
 $?pc132228[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224970) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261657,7 +261620,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229193|r
 $?pc132229[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224972) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261671,7 +261633,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229194|r
 $?pc132230[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224973) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261685,7 +261646,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229195|r
 $?pc132231[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224974) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261699,7 +261659,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229196|r
 $?pc132232[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224978) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261713,7 +261672,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229197|r
 $?pc132233[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224979) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261727,7 +261685,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229198|r
 $?pc132234[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224981) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261741,7 +261698,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229199|r
 $?pc132235[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224982) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261755,7 +261711,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229200|r
 $?pc132236[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224983) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261769,7 +261724,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229201|r
 $?pc132237[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224985) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261783,7 +261737,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229202|r
 $?pc132238[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224988) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261797,7 +261750,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229203|r
 $?pc132239[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224989) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261811,7 +261763,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229204|r
 $?pc132240[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224990) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261825,7 +261776,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213554|r
 $?pc132241[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224991) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261839,7 +261789,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216169|r
 $?pc132242[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224993) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261853,7 +261802,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216176|r
 $?pc132243[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224994) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261867,7 +261815,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1216177|r
 $?pc132244[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224996) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261881,7 +261828,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213555|r
 $?pc132245[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1224998) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261895,7 +261841,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215366|r
 $?pc132246[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225000) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -261909,7 +261854,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215367|r
 $?pc132247[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225001) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262014,7 +261958,6 @@ Effects          :
 Description      : $@spelldesc1225074
 
 Name             : Adding (id=1225061) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262028,7 +261971,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229205|r
 $?pc132215[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225062) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262042,7 +261984,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229206|r
 $?pc132218[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225063) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262056,7 +261997,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229207|r
 $?pc132217[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225064) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262070,7 +262010,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229208|r
 $?pc132216[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225065) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262084,7 +262023,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229209|r
 $?pc132249[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225066) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262098,7 +262036,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229210|r
 $?pc132250[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225067) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262112,7 +262049,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229211|r
 $?pc132251[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225068) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262126,7 +262062,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229212|r
 $?pc132252[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225069) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262140,7 +262075,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229213|r
 $?pc132253[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225070) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262154,7 +262088,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229214|r
 $?pc132254[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225072) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262168,7 +262101,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229215|r
 $?pc132255[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225073) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262201,7 +262133,6 @@ Cannot be applied to items lower than level $ecim. This effect is fleeting and w
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Adding (id=1225076) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262215,7 +262146,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229217|r
 $?pc132257[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225077) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262229,7 +262159,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229218|r
 $?pc132258[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225079) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262243,7 +262172,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229219|r
 $?pc132259[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225080) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262257,7 +262185,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229220|r
 $?pc132260[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225081) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262271,7 +262198,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229221|r
 $?pc132261[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225082) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262285,7 +262211,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229222|r
 $?pc132262[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225083) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262299,7 +262224,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229223|r
 $?pc132263[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225084) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262313,7 +262237,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1229224|r
 $?pc132264[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225085) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262327,7 +262250,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc467784|r
 $?pc132265[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225087) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262341,7 +262263,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215807|r
 $?pc132266[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225088) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262355,7 +262276,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215819|r
 $?pc132267[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225089) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262369,7 +262289,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215820|r
 $?pc132268[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225090) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262383,7 +262302,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1213551|r
 $?pc132269[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225091) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262397,7 +262315,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215964|r
 $?pc132270[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225092) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -262411,7 +262328,6 @@ Description      : |cnDARKYELLOW_FONT_COLOR:$@spelldesc1215963|r
 $?pc132271[$@spelldesc456525][$@spelldesc455680]
 
 Name             : Adding (id=1225093) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
@@ -264994,10 +264910,8 @@ Effects          :
 Hotfixed         : Target 1 (22 -> 18), Target 2 (30 -> 31)
 #2 (id=1225746)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 #3 (id=1232718)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
-Hotfixed         : Target 1 (20 -> 22), Target 2 (0 -> 30)
 Description      : Weave an arcane cocoon around yourself and four nearby allies for $d, reducing their damage taken by $s2% until $1232719s1 damage has been prevented.
 
 If a cocoon expires, it bursts to heal an injured ally for $s3% of its remaining power.
@@ -265030,7 +264944,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 9923.139 (coefficient=2.591595) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (2.879601 -> 2.591595)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -265302,7 +265215,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1226730)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 403764.8 (coefficient=157.8587) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (131.548996 -> 157.858704)
 #2 (id=1239524)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your attacks have a high chance to charge the Arcanocore. At $1240896u charges, deploy a sentinel to arcanoblast your target for ${$s1*$<rolemult>} Arcane damage split between nearby enemies. Recover $s2 charges if only one enemy is struck.
@@ -265390,7 +265302,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1227063)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 49456.09 (coefficient=19.3357) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (16.113081 -> 19.335697)
 #2 (id=1227067)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 894.1831 (coefficient=0.233531) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1237623)  : Dummy (3)
@@ -266312,7 +266223,6 @@ Effects          :
 Description      : $@spelldesc1234337
 
 Name             : Astral Antenna (id=1234714) [Passive] 
-Hotfixed         : Proc Flags 2 (0 -> 4)
 School           : Arcane
 Spell Type       : None
 Labels           : 292
@@ -266475,7 +266385,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 22651.55 (coefficient=8.856008) | PvP Coefficient: 0.5 | Trigger Spell: 1235879 | Target: Self (1)
 #2 (id=1230165)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 51774.3 (coefficient=20.24204) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (16.868397 -> 20.242041)
 #3 (id=1237121)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #4 (id=1237122)  : Dummy (3)
@@ -266498,7 +266407,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230266)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
                    Base Value: 207506 | Scaled Value: 223811.5 (coefficient=87.50291) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (67.309929 -> 87.502907)
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
@@ -266520,7 +266428,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230594)  : Apply Aura (6) | Proc Trigger Spell (42): Cosmic Onslaught | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 58013.37 (coefficient=22.68131) | PvP Coefficient: 0.5 | Trigger Spell: 1239401 | Target: Self (1)
-Hotfixed         : Coefficient (41.303883 -> 22.681309), Scaling Class (-8 -> -9)
 #2 (id=1237134)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1237175)  : Dummy (3)
@@ -266544,7 +266451,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 52387.86 (coefficient=20.48192) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
-Hotfixed         : Coefficient (16.385464 -> 20.48192)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266594,7 +266500,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 215939.1 (coefficient=84.42504) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (70.354233 -> 84.425041)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
@@ -266629,7 +266534,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 2458730 (coefficient=961.282) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (739.448486 -> 961.281982)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
@@ -267239,7 +267143,6 @@ Description      : $@spelldesc1236129
 Tooltip          : Mastery increased by $w1.
 
 Name             : Static Charge (id=1236938) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -267751,7 +267654,6 @@ Effects          :
 Description      : $@spelldesc1233553
 
 Name             : Latent Energy (id=1239675) 
-Hotfixed         : Max stacks (15 -> 18)
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
@@ -267888,7 +267790,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1239226)  : Apply Aura (6) | Proc Trigger Spell (42): Ether-Plate | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 38347.99 (coefficient=14.9928) | PvP Coefficient: 0.5 | Trigger Spell: 1240725 | Target: Self (1)
-Hotfixed         : Coefficient (296.875763 -> 14.992796)
 #2 (id=1240404)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your spells have a chance to grant you a stack of Ether-Plate up to $1240725u.
@@ -267897,7 +267798,6 @@ The next time you would take direct targeted damage, consume an Ether-Plate and 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Ether-Plate (id=1240725) 
-Hotfixed         : Proc Flags 1 (139944 -> 664232)
 School           : Physical
 Spell Type       : None
 Duration         : 120 seconds
@@ -268049,7 +267949,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 8272.531 (coefficient=2.160511) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1241002)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 30717.62 (coefficient=12.00957) | Target: Self (1)
-Hotfixed         : Coefficient (10.007978 -> 12.009574)
 #3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 426.8918 (coefficient=0.11149) | Target: Self (1)
 #4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
@@ -268218,7 +268117,6 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1243051)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 109417.9 (coefficient=42.77879) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (35.648991 -> 42.778786)
 #2 (id=1243593)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your melee attacks have a chance to coalesce a warpstalker echo to strike with you, inflicting ${$<rolemult>*$s1} Arcane damage split between enemies in its path.
@@ -268271,7 +268169,6 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244264)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 18199.78 (coefficient=7.115513) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (5.929595 -> 7.115513)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2277.873 (coefficient=0.594905) | Target: Self (1)
 Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.
@@ -268334,10 +268231,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1244533)  : Apply Aura (6) | Proc Trigger Spell (42): Shadowguard's Twisted Harvester | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5139.457 (coefficient=1.342256) | Trigger Spell: 1246543 | Target: Self (1)
-Hotfixed         : Coefficient (0.796355 -> 1.342256)
 #2 (id=1248832)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 15420.5 (coefficient=4.027324) | Trigger Spell: 1246543 | Target: Self (1)
-Hotfixed         : Coefficient (3.981774 -> 4.027324)
 #3 (id=1248833)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 1246543 | Target: Self (1)
 Description      : Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.
@@ -268399,7 +268294,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245131)  : Apply Aura (6) | Proc Trigger Spell (42): Arcane Hunter | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 460.4336 (coefficient=0.12025) | Trigger Spell: 1245376 | Target: Self (1)
-Hotfixed         : Coefficient (0.04481 -> 0.12025), Scaling Class (-9 -> -7)
 Description      : Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.
 
 Name             : Manaforged Aethercell (id=1244405) [Passive] 
@@ -268415,7 +268309,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245140)  : Apply Aura (6) | Proc Trigger Spell (42): Manaforged Aethercell | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 8004.201 (coefficient=2.090432) | PvP Coefficient: 0.5 | Trigger Spell: 1245397 | Target: Self (1)
-Hotfixed         : Coefficient (0.779299 -> 2.090432), Scaling Class (-9 -> -7)
 Description      : Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.
 
 
@@ -268782,10 +268675,8 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1248619)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 49225.61 (coefficient=19.24559) | Target: Self (1)
-Hotfixed         : Coefficient (16.839684 -> 19.245588)
 #2 (id=1248636)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 7178.735 (coefficient=2.806648) | Target: Self (1)
-Hotfixed         : Coefficient (7.016621 -> 2.806648)
 #3 (id=1248795)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=1248796)  : Apply Aura (6) | Dummy (4)
@@ -269163,7 +269054,6 @@ Tooltip          : Your spells and abilities have a high chance to coalesce the 
 Upon falling below $1217091w6% health, gain this effect at  ${$1217091w7*100}% effectiveness. This effect may only occur once every $1223611d.
 
 Name             : Reshii Grace (id=1254904) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269171,11 +269061,9 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261519)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 Name             : Reshii Grace (id=1254905) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269183,11 +269071,9 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261520)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 Name             : Reshii Grace (id=1254906) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -269195,7 +269081,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1261521)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 
