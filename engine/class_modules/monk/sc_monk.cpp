@@ -6335,6 +6335,21 @@ aspect_of_harmony_t::spender_t::tick_t<base_action_t>::tick_t( monk_t *player, s
   : residual_action::residual_periodic_action_t<base_action_t>( player, name, spell_data )
 {
 }
+
+fractional_absorb_t::fractional_absorb_t( monk_t* player, std::string_view name, const spell_data_t* spell_data )
+  : monk_buff_t<absorb_buff_t>( player, name, spell_data ), absorb_fraction( 1.0 )
+{}
+
+double fractional_absorb_t::consume( double amount, action_state_t* state )
+{
+  return base_t::consume( amount * absorb_fraction, state );
+}
+
+absorb_buff_t* fractional_absorb_t::set_absorb_fraction( double fraction )
+{
+  absorb_fraction = fraction;
+  return this;
+}
 }  // namespace buffs
 
 namespace items

@@ -358,6 +358,16 @@ public:
 
   bool heal_ticking();
 };
+
+struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
+{
+  double absorb_fraction;
+
+  fractional_absorb_t( monk_t* player, std::string_view name, const spell_data_t* spell_data );
+
+  double consume( double amount, action_state_t* state = nullptr ) override;
+  absorb_buff_t* set_absorb_fraction( double fraction );
+};
 }  // namespace buffs
 
 struct monk_td_t : public actor_target_data_t
