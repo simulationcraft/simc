@@ -199,9 +199,8 @@ void outlaw( player_t* p )
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "stealth,precombat_seconds=2" );
-  precombat->add_action( "adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush&talent.keep_it_rolling&talent.loaded_dice", "Builds with Keep it Rolling+Loaded Dice prepull Adrenaline Rush before Roll the Bones to consume Loaded Dice immediately instead of on the next pandemic roll." );
-  precombat->add_action( "roll_the_bones,precombat_seconds=1" );
-  precombat->add_action( "adrenaline_rush,precombat_seconds=0,if=talent.improved_adrenaline_rush" );
+  precombat->add_action( "adrenaline_rush,precombat_seconds=1,if=!talent.edge_case&talent.keep_it_rolling&talent.loaded_dice", "Prepull Adrenaline Rush if using Trickster+KIR+Loaded Dice. Fatebound would rather AR on pull for Coin damage." );
+  precombat->add_action( "roll_the_bones,precombat_seconds=1,if=!talent.edge_case|!talent.loaded_dice", "Prepull Roll the Bones if using Trickster or not using Loaded Dice." );
 
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)." );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that." );
@@ -231,7 +230,7 @@ void outlaw( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2", "Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active." );
-  cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1", "High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs." );
+  cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend", "High priority Ghostly Strike as it is off-gcd." );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Use Sprint to further benefit from the Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2|rtb_buffs.normal>=5&rtb_buffs=6", "Use Keep it Rolling immediately with any 4 RTB buffs. If a natural 5 buff is rolled, then wait until the final 6th buff is obtained from Count the Odds." );

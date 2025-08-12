@@ -4,10 +4,10 @@ actions.precombat=apply_poison,nonlethal=none,lethal=instant
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
-# Builds with Keep it Rolling+Loaded Dice prepull Adrenaline Rush before Roll the Bones to consume Loaded Dice immediately instead of on the next pandemic roll.
-actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush&talent.keep_it_rolling&talent.loaded_dice
-actions.precombat+=/roll_the_bones,precombat_seconds=1
-actions.precombat+=/adrenaline_rush,precombat_seconds=0,if=talent.improved_adrenaline_rush
+# Prepull Adrenaline Rush if using Trickster+KIR+Loaded Dice. Fatebound would rather AR on pull for Coin damage.
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=!talent.edge_case&talent.keep_it_rolling&talent.loaded_dice
+# Prepull Roll the Bones if using Trickster or not using Loaded Dice.
+actions.precombat+=/roll_the_bones,precombat_seconds=1,if=!talent.edge_case|!talent.loaded_dice
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat).
@@ -54,8 +54,8 @@ actions.build+=/sinister_strike
 
 # Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2
-# High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs.
-actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1
+# High priority Ghostly Strike as it is off-gcd.
+actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
 # Use Sprint to further benefit from the Scroll of Momentum trinket.
 actions.cds+=/sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up
 # Maintain Blade Flurry at 2+ targets.

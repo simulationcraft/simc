@@ -3736,6 +3736,11 @@ struct adrenaline_rush_t : public rogue_spell_t
       p()->cooldowns.adrenaline_rush->adjust( -precombat_seconds, false );
       p()->buffs.adrenaline_rush->extend_duration( p(), -precombat_seconds );
       p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
+      // 2025-08-12 -- Precombat Adrenaline Rush does not trigger Double Jeopardy.
+      if ( p()->bugs )
+      {
+        p()->buffs.double_jeopardy->cancel();
+      }
     }
 
     trigger_fatebound_edge_case( execute_state );
@@ -9235,7 +9240,8 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
   
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
   {
-    p()->buffs.double_jeopardy->expire();
+    // 2025-08-12 -- Double Jeopardy does not expire instantly, so multiple edge cases at the same moment can benefit from it
+    p()->buffs.double_jeopardy->expire( p()->bugs ? 1_ms : 0_ms );
     execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
   }
 
