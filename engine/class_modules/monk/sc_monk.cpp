@@ -1227,6 +1227,9 @@ struct harmonic_surge_t : public monk_spell_t
     impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
       : TBase( player, name, spell_data )
     {
+      TBase::aoe              = -1;
+      TBase::split_aoe_damage = true;
+
       unsigned offset = 0;
 
       if ( spell_data->effectN( 1 ).type() == E_SCHOOL_DAMAGE )
