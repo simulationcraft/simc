@@ -3367,6 +3367,13 @@ struct slicing_winds_t : public monk_melee_attack_t
       may_combo_strike    = true;
       aoe                 = -1;
       reduced_aoe_targets = player->talent.windwalker.slicing_winds->effectN( 3 ).base_value();
+
+      if ( const spelleffect_data_t &effect = player->talent.windwalker.storm_earth_and_fire->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_buff( player->buff.storm_earth_and_fire )
+            .set_value( ( 1.0 + effect.percent() ) * 3.0 - 1.0 )
+            .set_eff( &effect );
     }
   };
 
@@ -3484,6 +3491,13 @@ struct chi_burst_t : monk_spell_t
       for ( const auto &effect : spell_data->effects() )
         if ( effect.type() == E_SCHOOL_DAMAGE )
           TBase::ww_mastery = true;
+
+      if ( const spelleffect_data_t &effect = player->talent.windwalker.storm_earth_and_fire->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( TBase::da_multiplier_effects )
+            .set_buff( player->buff.storm_earth_and_fire )
+            .set_value( ( 1.0 + effect.percent() ) * 3.0 - 1.0 )
+            .set_eff( &effect );
     }
   };
 
