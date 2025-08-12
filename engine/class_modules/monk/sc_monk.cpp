@@ -5350,70 +5350,72 @@ struct celestial_fortune_t : public monk_heal_t
 
 namespace absorbs
 {
-// ==========================================================================
-// Celestial Brew
-// ==========================================================================
-struct celestial_brew_t : public brew_t<monk_absorb_t>
+struct absorb_brew_t : public brew_t<monk_absorb_t>
 {
-  struct celestial_brew_t_state_t : public action_state_t
-  {
-    celestial_brew_t_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
-    {
-    }
-
-    proc_types2 cast_proc_type2() const override
-    {
-      // Celestial Brew seems to trigger Bron's Call to Action (and possibly other
-      // effects that care about casts).
-      return PROC2_CAST_HEAL;
-    }
-  };
-
-  celestial_brew_t( monk_t *player, util::string_view options_str, std::string_view name,
-                    const spell_data_t *spell_data )
+  absorb_brew_t( monk_t *player, std::string_view options_str, std::string_view name, const spell_data_t *spell_data )
     : brew_t<monk_absorb_t>( player, name, spell_data )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
-    callbacks          = true;
-    cast_during_sck    = true;
+    cast_during_sck = true;
 
     apply_affecting_aura( player->talent.brewmaster.light_brewing );
     apply_affecting_aura( player->talent.master_of_harmony.endless_draught );
-  }
 
-  action_state_t *new_state() override
-  {
-    return new celestial_brew_t_state_t( this, player );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    am *= 1 + p()->buff.purified_chi->check_stack_value();
-
-    return am;
+    if ( const spelleffect_data_t &effect = player->talent.brewmaster.purified_chi->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_buff( player->buff.purified_chi )
+          .set_use_stacks( true )
+          .set_type( parse_flag_e::EXPIRE_BUFF )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 
   void execute() override
   {
     if ( p()->buff.blackout_combo->up() )
     {
-      p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
+      p()->buff.purified_chi->trigger( as<int>( p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() ) );
       p()->proc.blackout_combo_celestial_brew->occur();
     }
-
     p()->buff.aspect_of_harmony.trigger_spend();
+
     brew_t<monk_absorb_t>::execute();
 
     p()->buff.blackout_combo->expire();
-    p()->buff.purified_chi->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
+
     if ( p()->sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B4 ) )
       p()->tier.tww3.moh_2pc_harmonic_surge_buff->trigger(
           p()->sets->set( HERO_MASTER_OF_HARMONY, TWW3, B4 )->effectN( 1 ).base_value() );
+  }
+};
+
+struct celestial_brew_t : public absorb_brew_t
+{
+  celestial_brew_t( monk_t *player, std::string_view options_str )
+    : absorb_brew_t( player, options_str, "celestial_brew", player->talent.brewmaster.celestial_brew )
+  {
+  }
+};
+
+struct celestial_infusion_t : public absorb_brew_t
+{
+  celestial_infusion_t( monk_t *player, std::string_view options_str )
+    : absorb_brew_t( player, options_str, "celestial_infusion", player->talent.brewmaster.celestial_infusion )
+  {
+  }
+
+  absorb_buff_t *create_buff( const action_state_t *state ) override
+  {
+    buff_t *b = buff_t::find( state->target, name_str, player );
+    if ( b )
+      return debug_cast<buffs::fractional_absorb_t *>( b );
+
+    auto buff = make_buff<buffs::fractional_absorb_t>( p(), name_str, &data() );
+    buff->set_absorb_source( stats );
+
+    return buff;
   }
 };
 }  // namespace absorbs
@@ -6687,11 +6689,11 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "breath_of_fire" )
     return new breath_of_fire_t( this, options_str );
   if ( name == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
-    return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
+    return new celestial_infusion_t( this, options_str );
   if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str, "celestial_brew", talent.brewmaster.celestial_brew );
+    return new celestial_brew_t( this, options_str );
   if ( name == "celestial_infusion" )
-    return new celestial_brew_t( this, options_str, "celestial_infusion", talent.brewmaster.celestial_infusion );
+    return new celestial_infusion_t( this, options_str );
   if ( name == "exploding_keg" )
     return new exploding_keg_t( this, options_str );
   if ( name == "fortifying_brew" )
