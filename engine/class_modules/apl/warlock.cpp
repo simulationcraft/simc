@@ -87,7 +87,7 @@ void affliction( player_t* p )
   default_->add_action( "vile_taint,if=(!talent.soul_rot|cooldown.soul_rot.remains>20|cooldown.soul_rot.remains<=execute_time+gcd.max|fight_remains<cooldown.soul_rot.remains)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&dot.unstable_affliction.remains" );
   default_->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<=execute_time+gcd.max|fight_remains<cooldown.soul_rot.remains+8)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&dot.unstable_affliction.remains" );
   default_->add_action( "soul_rot,if=variable.vt_ps_up" );
-  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(!talent.shadow_embrace|debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack)" );
+  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(!talent.shadow_embrace|debuff.shadow_embrace.at_max_stacks)" );
   default_->add_action( "malevolence,if=variable.vt_ps_up" );
   default_->add_action( "malefic_rapture,if=(soul_shard>4|buff.tormented_crescendo.react=buff.tormented_crescendo.max_stack)&cooldown.soul_rot.remains>5" );
   default_->add_action( "drain_soul,if=talent.demonic_soul&buff.nightfall.react&buff.tormented_crescendo.react<buff.tormented_crescendo.max_stack&target.health.pct<20" );
@@ -149,7 +149,7 @@ void affliction( player_t* p )
   cleave->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|cooldown.soul_rot.remains>=20" );
   cleave->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<4|fight_remains<cooldown.soul_rot.remains)&active_dot.agony=2" );
   cleave->add_action( "soul_rot,if=(variable.vt_ps_up)&active_dot.agony=2" );
-  cleave->add_action( "summon_darkglare,if=variable.cd_dots_up&(!talent.shadow_embrace|debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack)" );
+  cleave->add_action( "summon_darkglare,if=variable.cd_dots_up&(!talent.shadow_embrace|debuff.shadow_embrace.at_max_stacks)" );
   cleave->add_action( "malevolence,if=variable.vt_ps_up" );
   cleave->add_action( "call_action_list,name=opener_cleave_se,if=talent.demonic_soul" );
   cleave->add_action( "call_action_list,name=cleave_se_maintenance,if=talent.demonic_soul" );
@@ -173,12 +173,12 @@ void affliction( player_t* p )
   end_of_fight->add_action( "oblivion,if=soul_shard>1&fight_remains<(soul_shard+buff.tormented_crescendo.react)*gcd.max+execute_time" );
   end_of_fight->add_action( "malefic_rapture,if=fight_remains<4&(!talent.demonic_soul|talent.demonic_soul&buff.nightfall.react<1)" );
 
-  se_maintenance->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&talent.drain_soul&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<gcd.max*2)&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack" );
+  se_maintenance->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&talent.drain_soul&(!debuff.shadow_embrace.at_max_stacks|debuff.shadow_embrace.remains<gcd.max*2)&fight_remains>15,interrupt_if=debuff.shadow_embrace.at_max_stacks" );
   se_maintenance->add_action( "shadow_bolt,if=talent.shadow_embrace&!talent.drain_soul&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|(debuff.shadow_embrace.remains<1+gcd.max*2+travel_time)&!action.shadow_bolt.in_flight_to_target)&fight_remains>15" );
 
-  opener_cleave_se->add_action( "drain_soul,if=talent.shadow_embrace&talent.drain_soul&buff.nightfall.react&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&(fight_remains>15|time<20),interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack" );
+  opener_cleave_se->add_action( "drain_soul,if=talent.shadow_embrace&talent.drain_soul&buff.nightfall.react&(!debuff.shadow_embrace.at_max_stacks|debuff.shadow_embrace.remains<3)&(fight_remains>15|time<20),interrupt_if=debuff.shadow_embrace.at_max_stacks" );
 
-  cleave_se_maintenance->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace&talent.drain_soul&(talent.wither|talent.demonic_soul&buff.nightfall.react)&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack>3" );
+  cleave_se_maintenance->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace&talent.drain_soul&(talent.wither|talent.demonic_soul&buff.nightfall.react)&(!debuff.shadow_embrace.at_max_stacks|debuff.shadow_embrace.remains<3)&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack>3" );
   cleave_se_maintenance->add_action( "shadow_bolt,cycle_targets=1,max_cycle_targets=2,if=talent.shadow_embrace&!talent.drain_soul&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<1+gcd.max*2+travel_time)&!action.shadow_bolt.in_flight_to_target&fight_remains>15" );
 
   items->add_action( "use_item,name=aberrant_spellforge,use_off_gcd=1,if=gcd.remains>gcd.max*0.8" );
