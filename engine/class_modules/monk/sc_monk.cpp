@@ -5457,14 +5457,15 @@ namespace buffs
 // ==========================================================================
 
 template <typename Base>
-monk_buff_t<Base>::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
+monk_buff_t<Base>::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data,
+                                const item_t *item )
   : base_t( player, name, spell_data, item )
 {
 }
 
 template <typename Base>
 monk_buff_t<Base>::monk_buff_t( monk_td_t *target_data, std::string_view name, const spell_data_t *spell_data,
-                          const item_t *item )
+                                const item_t *item )
   : base_t( *target_data, name, spell_data, item )
 {
 }
@@ -6338,16 +6339,17 @@ aspect_of_harmony_t::spender_t::tick_t<base_action_t>::tick_t( monk_t *player, s
 {
 }
 
-fractional_absorb_t::fractional_absorb_t( monk_t* player, std::string_view name, const spell_data_t* spell_data )
+fractional_absorb_t::fractional_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_buff_t<absorb_buff_t>( player, name, spell_data ), absorb_fraction( 1.0 )
-{}
+{
+}
 
-double fractional_absorb_t::consume( double amount, action_state_t* state )
+double fractional_absorb_t::consume( double amount, action_state_t *state )
 {
   return base_t::consume( amount * absorb_fraction, state );
 }
 
-absorb_buff_t* fractional_absorb_t::set_absorb_fraction( double fraction )
+absorb_buff_t *fractional_absorb_t::set_absorb_fraction( double fraction )
 {
   absorb_fraction = fraction;
   return this;
@@ -9417,17 +9419,17 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
-  if ( splits.size() >= 3 && splits[1] == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
+  if ( splits.size() >= 3 && splits[ 1 ] == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
   {
-    if ( splits[0] == "cooldown" )
-      return get_cooldown( "celestial_infusion" )->create_expression( splits[2] );
-    if ( splits[0] == "action" )
-      return find_action( "celestial_infusion" )->create_expression( splits[2] );
-    if ( splits[0] == "buff" )
+    if ( splits[ 0 ] == "cooldown" )
+      return get_cooldown( "celestial_infusion" )->create_expression( splits[ 2 ] );
+    if ( splits[ 0 ] == "action" )
+      return find_action( "celestial_infusion" )->create_expression( splits[ 2 ] );
+    if ( splits[ 0 ] == "buff" )
     {
-      buff_t* buff = buff_t::find( this, "celestial_infusion" );
+      buff_t *buff = buff_t::find( this, "celestial_infusion" );
       assert( buff );
-      return buff_t::create_expression( splits[1], splits[2], *buff );
+      return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
   }
 
