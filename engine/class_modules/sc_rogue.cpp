@@ -3736,7 +3736,7 @@ struct adrenaline_rush_t : public rogue_spell_t
       p()->cooldowns.adrenaline_rush->adjust( -precombat_seconds, false );
       p()->buffs.adrenaline_rush->extend_duration( p(), -precombat_seconds );
       p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
-      // 2025-08-12 -- Precombat Adrenaline Rush does not trigger Double Jeopardy.
+      // 2025-08-12 -- Precombat Adrenaline Rush does not trigger Double Jeopardy
       if ( p()->bugs )
       {
         p()->buffs.double_jeopardy->cancel();
