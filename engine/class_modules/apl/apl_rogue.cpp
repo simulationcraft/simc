@@ -230,7 +230,7 @@ void outlaw( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2", "Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active." );
-  cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend", "High priority Ghostly Strike as it is off-gcd." );
+  cds->add_action( "ghostly_strike", "High priority Ghostly Strike as it is off-gcd." );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Use Sprint to further benefit from the Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2|rtb_buffs.normal>=5&rtb_buffs=6", "Use Keep it Rolling immediately with any 4 RTB buffs. If a natural 5 buff is rolled, then wait until the final 6th buff is obtained from Count the Odds." );

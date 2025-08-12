@@ -55,7 +55,7 @@ actions.build+=/sinister_strike
 # Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2
 # High priority Ghostly Strike as it is off-gcd.
-actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
+actions.cds+=/ghostly_strike
 # Use Sprint to further benefit from the Scroll of Momentum trinket.
 actions.cds+=/sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up
 # Maintain Blade Flurry at 2+ targets.
