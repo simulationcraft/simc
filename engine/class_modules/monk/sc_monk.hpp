@@ -227,8 +227,11 @@ struct conduit_of_the_celestials_container_t
 
 namespace buffs
 {
-struct monk_buff_t : public buff_t
+template <typename Base = buff_t>
+struct monk_buff_t : public Base
 {
+  using base_t = Base;
+
   monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
   monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
@@ -239,7 +242,7 @@ struct monk_buff_t : public buff_t
   const monk_t &p() const;
 };
 
-struct shuffle_t : monk_buff_t
+struct shuffle_t : monk_buff_t<>
 {
   timespan_t accumulator;
   const timespan_t max_duration;
@@ -249,7 +252,7 @@ struct shuffle_t : monk_buff_t
   void trigger( timespan_t duration );
 };
 
-struct gift_of_the_ox_t : monk_buff_t
+struct gift_of_the_ox_t : monk_buff_t<>
 {
   /*
    * TODO:
@@ -308,14 +311,14 @@ private:
 
   bool fallback;
 
-  struct accumulator_t : monk_buff_t
+  struct accumulator_t : monk_buff_t<>
   {
     aspect_of_harmony_t *aspect_of_harmony;
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
   };
 
-  struct spender_t : monk_buff_t
+  struct spender_t : monk_buff_t<>
   {
     template <class base_action_t>
     struct purified_spirit_t : base_action_t

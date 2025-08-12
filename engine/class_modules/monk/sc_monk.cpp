@@ -5454,42 +5454,48 @@ namespace buffs
 // Monk Buffs
 // ==========================================================================
 
-monk_buff_t::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
-  : buff_t( player, name, spell_data, item )
+template <typename Base>
+monk_buff_t<Base>::monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, const item_t *item )
+  : base_t( player, name, spell_data, item )
 {
 }
 
-monk_buff_t::monk_buff_t( monk_td_t *target_data, std::string_view name, const spell_data_t *spell_data,
+template <typename Base>
+monk_buff_t<Base>::monk_buff_t( monk_td_t *target_data, std::string_view name, const spell_data_t *spell_data,
                           const item_t *item )
-  : buff_t( *target_data, name, spell_data, item )
+  : base_t( *target_data, name, spell_data, item )
 {
 }
 
-monk_td_t &monk_buff_t::get_td( player_t *t )
+template <typename Base>
+monk_td_t &monk_buff_t<Base>::get_td( player_t *t )
 {
-  return *( p().get_target_data( t ) );
+  return *( base_t::p().get_target_data( t ) );
 }
 
-const monk_td_t *monk_buff_t::find_td( player_t *t ) const
+template <typename Base>
+const monk_td_t *monk_buff_t<Base>::find_td( player_t *t ) const
 {
-  return p().find_target_data( t );
+  return base_t::p().find_target_data( t );
 }
 
-monk_t &monk_buff_t::p()
+template <typename Base>
+monk_t &monk_buff_t<Base>::p()
 {
-  return *debug_cast<monk_t *>( buff_t::source );
+  return *debug_cast<monk_t *>( base_t::source );
 }
 
-const monk_t &monk_buff_t::p() const
+template <typename Base>
+const monk_t &monk_buff_t<Base>::p() const
 {
-  return *debug_cast<monk_t *>( buff_t::source );
+  return *debug_cast<monk_t *>( base_t::source );
 }
 
 // ==========================================================================
 // Gift of the Ox
 // ==========================================================================
 gift_of_the_ox_t::gift_of_the_ox_t( monk_t *player )
-  : monk_buff_t( player, "gift_of_the_ox", player->talent.brewmaster.gift_of_the_ox_buff ),
+  : monk_buff_t<>( player, "gift_of_the_ox", player->talent.brewmaster.gift_of_the_ox_buff ),
     player( player ),
     heal_trigger(
         new orb_t( player, "gift_of_the_ox_trigger", player->talent.brewmaster.gift_of_the_ox_heal_trigger ) ),
@@ -5638,7 +5644,7 @@ const char *gift_of_the_ox_t::orb_event_t::name() const
 // Shuffle
 // ==========================================================================
 shuffle_t::shuffle_t( monk_t *player )
-  : monk_buff_t( player, "shuffle", player->talent.brewmaster.shuffle_buff ),
+  : monk_buff_t<>( player, "shuffle", player->talent.brewmaster.shuffle_buff ),
     accumulator( 0_s ),
     max_duration( 3.0 * base_buff_duration )
 {
@@ -5671,7 +5677,7 @@ void shuffle_t::trigger( timespan_t duration )
 // ===============================================================================
 // Fortifying Brew Buff
 // ===============================================================================
-struct fortifying_brew_t : public monk_buff_t
+struct fortifying_brew_t : public monk_buff_t<>
 {
   int health_gain;
   fortifying_brew_t( monk_t *player )
@@ -5710,7 +5716,7 @@ struct fortifying_brew_t : public monk_buff_t
 // ===============================================================================
 // Touch of Karma Buff
 // ===============================================================================
-struct touch_of_karma_buff_t : public monk_buff_t
+struct touch_of_karma_buff_t : public monk_buff_t<>
 {
   touch_of_karma_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -5738,7 +5744,7 @@ struct touch_of_karma_buff_t : public monk_buff_t
 // ===============================================================================
 // Whirling Dragon Punch Buff
 // ===============================================================================
-struct whirling_dragon_punch_buff_t : monk_buff_t
+struct whirling_dragon_punch_buff_t : monk_buff_t<>
 {
   whirling_dragon_punch_buff_t( monk_t *player )
     : monk_buff_t( player, "whirling_dragon_punch", player->talent.windwalker.whirling_dragon_punch_buff )
@@ -5764,7 +5770,7 @@ struct whirling_dragon_punch_buff_t : monk_buff_t
 // ===============================================================================
 // Rushing Jade Wind Buff
 // ===============================================================================
-struct rushing_jade_wind_buff_t : public monk_buff_t
+struct rushing_jade_wind_buff_t : public monk_buff_t<>
 {
   struct tick_action_t : actions::monk_melee_attack_t
   {
@@ -5831,8 +5837,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 // ===============================================================================
 // Invoke Xuen the White Tiger
 // ===============================================================================
-
-struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
+struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
 {
   static void invoke_xuen_callback( buff_t *b, int, timespan_t )
   {
@@ -5895,7 +5900,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t
 // ===============================================================================
 // Fury of Xuen Stacking Buff
 // ===============================================================================
-struct fury_of_xuen_stacking_buff_t : public monk_buff_t
+struct fury_of_xuen_stacking_buff_t : public monk_buff_t<>
 {
   fury_of_xuen_stacking_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -5910,7 +5915,7 @@ struct fury_of_xuen_stacking_buff_t : public monk_buff_t
 // ===============================================================================
 // Fury of Xuen Haste Buff
 // ===============================================================================
-struct fury_of_xuen_t : public monk_buff_t
+struct fury_of_xuen_t : public monk_buff_t<>
 {
   static void fury_of_xuen_callback( buff_t *b, int, timespan_t )
   {
@@ -5984,7 +5989,7 @@ struct fury_of_xuen_t : public monk_buff_t
 // ===============================================================================
 // Niuzao Rank 2 Purifying Buff
 // ===============================================================================
-struct purifying_buff_t : public monk_buff_t
+struct purifying_buff_t : public monk_buff_t<>
 {
   purifying_buff_t( monk_t *player ) : monk_buff_t( player, "purifying_brew", spell_data_t::nil() )
   {
@@ -6010,8 +6015,7 @@ struct purifying_buff_t : public monk_buff_t
 // three chi orbs that the player can pick up whenever they do not have max
 // Chi. Given we want to provide the chi but apply it slowly if the player is at
 // max chi, then we need to set up so that it triggers on it's own.
-
-struct touch_of_death_ww_buff_t : public monk_buff_t
+struct touch_of_death_ww_buff_t : public monk_buff_t<>
 {
   touch_of_death_ww_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
@@ -6043,7 +6047,7 @@ struct touch_of_death_ww_buff_t : public monk_buff_t
 // ===============================================================================
 // Windwalking Buff
 // ===============================================================================
-struct windwalking_driver_t : public monk_buff_t
+struct windwalking_driver_t : public monk_buff_t<>
 {
   double movement_increase;
   windwalking_driver_t( monk_t *p, util::string_view n, const spell_data_t *s )
@@ -7720,10 +7724,10 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
   }
 };
 
-struct training_of_niuzao_buff : buffs::monk_buff_t
+struct training_of_niuzao_buff : buffs::monk_buff_t<>
 {
   training_of_niuzao_buff( monk_t *player )
-    : buffs::monk_buff_t( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
+    : buffs::monk_buff_t<>( player, "training_of_niuzao", player->talent.brewmaster.training_of_niuzao )
   {
     set_default_value( 0.0 );
     set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
@@ -7733,7 +7737,7 @@ struct training_of_niuzao_buff : buffs::monk_buff_t
                 timespan_t duration = timespan_t::min() ) override
   {
     double v = p().find_stagger( "Stagger" )->level_index() * data().effectN( 1 ).base_value();
-    return buffs::monk_buff_t::trigger( 1, v, chance, duration );
+    return base_t::trigger( 1, v, chance, duration );
   }
 };
 
