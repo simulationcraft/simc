@@ -63082,7 +63082,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Untempered Dedication (339990 effect#1), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46, 124
 Attributes       : Not Shapeshifted (16), Exclude Caster (51), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -117792,7 +117792,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered By     : Radiant Incandescence (278142)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -119612,7 +119612,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered By     : Grace of the Justicar (278784)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -164816,7 +164816,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 931
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Limit N (165), Not On Player Controlled NPC (168), Extra Initial Period (169), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -228059,7 +228059,7 @@ Description      : A fiery blast hurls you backwards, inflicting Fire damage to 
 Name             : Blazing Nova (id=436899) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13, #18, #19), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Don't close loot window (379), Allow Class Ability Procs (416)
@@ -228071,7 +228071,7 @@ Description      : $@spelldesc436897
 Name             : Blazing Nova (id=436964) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13, #18, #19), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Tactical Retreat (389688 effect#1), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Evasive Action (444929 effect#1), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2), Demon Soul (1238676 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Not Available While Charmed (174), Allow While Fleeing (177), Always AOE Line of Sight (186), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
@@ -256824,8 +256824,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=1234830)  : Apply Aura (6) | Unknown(495)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232207 | Target: Self (1)
-#10 (id=1253962) : Apply Aura (6) | Unknown(331)
+#10 (id=1253962) : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1787 | Target: Self (1)
+Hotfixed         : Type (6 -> 212), Sub Type (331 -> 0), Misc Value (520 -> 1787)
+#11 (id=1265483) : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1786 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#12 (id=1265484) : Apply Aura (6) | Unknown(331)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 520 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Enter an ethereal state of energy.
 Tooltip          : Existing in an ethereal state of energy known as "Untethered Space."
 
@@ -264949,8 +264956,7 @@ Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1225786)  : Apply Aura (6) | Periodic Dummy (226): every 30 seconds | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 4754.539 (coefficient=1.241728) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (1.079763 -> 1.241728)
+                   Base Value: 0 | Scaled Value: 4134.38 (coefficient=1.079763) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1238079)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Become Oath-Bound to a nearby ally every $t1 sec.
@@ -264965,8 +264971,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 9426.785 (coefficient=2.461964) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (2.591595 -> 2.461964)
+                   Base Value: 0 | Scaled Value: 9923.139 (coefficient=2.591595) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -266257,8 +266262,7 @@ Proc Flags       : Heartbeat, Cast Successful
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1229154)  : Apply Aura (6) | Proc Trigger Spell (42): Astral Antenna | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5788.303 (coefficient=1.511713) | PvP Coefficient: 0.5 | Trigger Spell: 1239640 | Target: Self (1)
-Hotfixed         : Coefficient (1.558467 -> 1.511713)
+                   Base Value: 0 | Scaled Value: 5967.323 (coefficient=1.558467) | PvP Coefficient: 0.5 | Trigger Spell: 1239640 | Target: Self (1)
 Description      : The antenna has a chance to detect and draw ambient arcane energy towards you, granting $s1 Critical Strike for $1239641d. Multiple applications may overlap.
 
 Name             : Nether Overlay Matrix (desc=Rank 4/4) (id=1234847) 
@@ -266369,14 +266373,13 @@ Effects          :
 Description      : While $@spellname1234996 is empowered, your voidglass shards are $s1% more effective.
 
 Name             : Shards of the Void (id=1235136) [Passive] 
-Hotfixed         : Proc Flags 1 (87312 -> 2446608)
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2.5 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1229972)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -266432,13 +266435,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230266)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
-                   Base Value: 207506 | Scaled Value: 482790.1 (coefficient=188.755) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (87.502907 -> 188.754974)
+                   Base Value: 207506 | Scaled Value: 223811.5 (coefficient=87.50291) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 172921 | Scaled Value: 335270.9 (coefficient=131.0798) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (56.091648 -> 131.079834)
+                   Base Value: 172921 | Scaled Value: 143469 (coefficient=56.09165) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your harmful spells and abilities have a chance to strike your target with an abyssal comet, dealing ${$s1*$<rolemult>} Cosmic damage and amplifying their gravity to increase the damage of future comets by $s2%.
 
 Upon death, enemies implode to deal $s3 Cosmic damage per gravity stack split between nearby enemies. $@spelldesc1240903
@@ -266478,8 +266479,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 62865.38 (coefficient=24.57829) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
-Hotfixed         : Coefficient (20.48192 -> 24.578285)
+                   Base Value: 0 | Scaled Value: 52387.86 (coefficient=20.48192) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266528,15 +266528,13 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), No Aura Log (202), Absorb Cannot Be Ignore (214), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 237533.1 (coefficient=92.86761) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (84.425041 -> 92.867607)
+                   Base Value: 0 | Scaled Value: 215939.1 (coefficient=84.42504) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
                    Base Value: 0 | Scaled Value: 8.544377e+08 (coefficient=245.1528) | Misc Value: 127 | Target: Self (1)
 #4 (id=1232865)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 50)
+                   Base Value: 65 | Scaled Value: 65 | Target: Self (1)
 #5 (id=1233296)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Taking damage has a high chance to cause you to devour the essence of nearby enemies, dealing $s1 Shadow damage split between them and healing you for $s2% of the damage dealt.
@@ -266564,8 +266562,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2827544 (coefficient=1105.476) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (961.281982 -> 1105.47644)
+                   Base Value: 0 | Scaled Value: 2458730 (coefficient=961.282) | PvP Coefficient: 0.25 | Target: Self (1)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
@@ -267747,16 +267744,15 @@ Name             : Boon of the Oathsworn (id=1240000)
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
-Duration         : 12 seconds
+Duration         : 10 seconds
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
 Triggered By     : Boon of the Oathsworn (1240578)
 Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1238073)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
-Hotfixed         : Coefficient (1.079763 -> 0), Scaling Class (-1 -> 0)
+#1 (id=1238073)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
+                   Base Value: 0 | Scaled Value: 4134.38 (coefficient=1.079763) | Stat: Int | Target: Self (1)
 Description      : $@spelldesc1232776
 Tooltip          : Intellect increased by $w1.
 
