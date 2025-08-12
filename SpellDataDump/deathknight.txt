@@ -2047,7 +2047,7 @@ Family Flags     : 43, 49, 111
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24236 | PvP Coefficient: 1.26775 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -6027,7 +6027,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24236 | PvP Coefficient: 1.26775 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -8590,7 +8590,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93595 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.83915 | PvP Coefficient: 1.26775 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -14918,7 +14918,7 @@ Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.49069 | PvP Coefficient: 0.7 | Target: Enemy (6)
 #2 (id=1174046)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.70886 | PvP Coefficient: 0.7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.07974 | PvP Coefficient: 0.7 | Target: Enemy (6)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -15398,7 +15398,7 @@ Effects          :
                    Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311), Vampiric Strike (433895)
                    Family Flags: 59, 71
 #4 (id=1168098)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
                    Family Flags: 7
 #5 (id=1252968)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
@@ -18805,7 +18805,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value: 22 | Misc Value 2: 5089 (Label) | Target: Self (1)
                    Affected Spells (Label): Undeath (444633)
 #5 (id=1233621)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Misc Value 2: 5088 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value 2: 5088 (Label) | Target: Self (1)
                    Affected Spells (Label): Obliterate (445507)
 #6 (id=1233622)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Misc Value 2: 5087 (Label) | Target: Self (1)
