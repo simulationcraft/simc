@@ -3602,6 +3602,8 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
         cooldown->reset( true, 2 );
       if ( key == p()->talent.brewmaster.celestial_brew->id() )
         cooldown->reset( true, 1 );
+      if ( key == p()->talent.brewmaster.celestial_infusion->id() )
+        cooldown->reset( true, 1 );
     }
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
