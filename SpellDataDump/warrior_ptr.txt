@@ -15914,6 +15914,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1235050)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+#3 (id=1264383)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 5148 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ionizing Strike (1238042)
+Hotfixed         : NEW EFFECT
 Description      : Thunder Blast has a $s2% chance to call down $s1 Ionizing Strikes on affected targets. Each strike deals $1238042s1 Nature damage.
 
 Name             : Warrior Mountain Thane 11.2 Class Set 4pc (id=1236422) [Spell Family (4), Passive, Hidden] 
@@ -15988,7 +15992,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
                  : 3022
-                 : 5148: Warrior Mountain Thane 11.2 Class Set 4pc (1236422 effect#1)
+                 : 5148: Warrior Mountain Thane 11.2 Class Set 2pc (1236421 effect#3), Warrior Mountain Thane 11.2 Class Set 4pc (1236422 effect#1)
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 9
 Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range (126), Always Show Ground Texture (190), Aura Points On Client (268), Allow Class Ability Procs (416)
