@@ -9417,6 +9417,20 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
+  if ( splits.size() >= 3 && splits[1] == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
+  {
+    if ( splits[0] == "cooldown" )
+      return get_cooldown( "celestial_infusion" )->create_expression( splits[2] );
+    if ( splits[0] == "action" )
+      return find_action( "celestial_infusion" )->create_expression( splits[2] );
+    if ( splits[0] == "buff" )
+    {
+      buff_t* buff = buff_t::find( this, "celestial_infusion" );
+      assert( buff );
+      return buff_t::create_expression( splits[1], splits[2], *buff );
+    }
+  }
+
   if ( name_str == "monk.shadopan.energy_accumulator" )
     return make_ref_expr( "monk.shadopan.energy_accumulator", flurry_strikes_energy );
 
