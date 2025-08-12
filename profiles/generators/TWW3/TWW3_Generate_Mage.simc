@@ -161,7 +161,7 @@ trinket2=azhiccaran_parapodia,id=242497,ilevel=723
 main_hand=voidglass_kris,id=237728,bonus_id=4800/4786/1533/12361,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8794,ilevel=720
 
-save=TWW3_Mage_Frost.simc
+save=TWW3_Mage_Frost_Spellslinger.simc
 
 mage="TWW3_Mage_Frost_Frostfire"
 spec=frost
@@ -194,4 +194,4 @@ trinket2=azhiccaran_parapodia,id=242497,bonus_id=4786/3215/12361
 main_hand=voidglass_sovereigns_blade,id=237735,bonus_id=4800/4786/1533/12361,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8795,ilevel=720
 
-save=TWW3_Mage_Frost_Frostfire.simc
+save=TWW3_Mage_Frost.simc
