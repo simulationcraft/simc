@@ -2028,7 +2028,8 @@ Family Flags     : 34, 43, 110, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.3234 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (2.3234 -> 2)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2047,7 +2048,8 @@ Family Flags     : 43, 49, 111
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24236 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.30775 -> 1.24236)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -3952,7 +3954,8 @@ Family Flags     : 43, 78, 119
 Attributes       : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.298063 | PvP Coefficient: 3.74 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.298063 | PvP Coefficient: 3 | Target: Any Target (25)
+Hotfixed         : PvP Coefficient (3.74 -> 3)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc194310
@@ -6027,7 +6030,8 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30775 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24236 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.30775 -> 1.24236)
 Description      : $@spelldesc49020
 
 
@@ -6047,7 +6051,8 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2.3234 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.897313 | PvP Coefficient: 2 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (2.3234 -> 2)
 Description      : $@spelldesc49143
 
 Name             : Wraith Walk (id=223804) [Spell Family (15), Hidden] 
@@ -8590,7 +8595,8 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93595 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.83915 | PvP Coefficient: 1.26775 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.93595 -> 1.83915)
 Description      : $@spelldesc49020
 
 
@@ -8610,7 +8616,8 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.27593 | PvP Coefficient: 2.3234 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.27593 | PvP Coefficient: 2 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (2.3234 -> 2)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -14918,7 +14925,8 @@ Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.49069 | PvP Coefficient: 0.7 | Target: Enemy (6)
 #2 (id=1174046)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.70886 | PvP Coefficient: 0.7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.07975 | PvP Coefficient: 0.7 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (3.70886 -> 4.07975)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -15398,9 +15406,10 @@ Effects          :
                    Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311), Vampiric Strike (433895)
                    Family Flags: 59, 71
 #4 (id=1168098)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
                    Family Flags: 7
+Hotfixed         : Base Value (10 -> 5)
 #5 (id=1252968)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196770), Remorseless Winter (1233152)
@@ -18805,8 +18814,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value: 22 | Misc Value 2: 5089 (Label) | Target: Self (1)
                    Affected Spells (Label): Undeath (444633)
 #5 (id=1233621)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Misc Value 2: 5088 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33 | Misc Value 2: 5088 (Label) | Target: Self (1)
                    Affected Spells (Label): Obliterate (445507)
+Hotfixed         : Base Value (35 -> 15)
 #6 (id=1233622)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.33 | Misc Value 2: 5087 (Label) | Target: Self (1)
                    Affected Spells (Label): Death Coil (445513)

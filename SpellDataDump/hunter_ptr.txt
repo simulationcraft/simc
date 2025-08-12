@@ -4694,6 +4694,7 @@ Targets incapacitated by Scatter Shot deal $321469s1% less damage to you for $32
 Tooltip          : Incapacitated.
 
 Name             : Barbed Shot (id=217200) [Spell Family (9)] 
+Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=2, col=3, max_rank=1, req_points=0, replace="Steady Shot" (id=56641)]
 Class            : Hunter
 School           : Physical
@@ -4713,7 +4714,7 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Feeding Frenzy (278529 effect#2), Trueshot (288613 effect#5), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Call of the Wild (362754 effects: #1, #2), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 1, 78, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.7125 | PvP Coefficient: 1.2 | Target: Enemy (6)
@@ -17524,6 +17525,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that increases your auto shot damage by $1218033s1% and reduces the time between auto shots by ${$1218033s2/-1000}.1 sec for $1218033d. Casting Trueshot always hits a |cFFFFFFFFJackpot!|r
 
 Name             : Hunter Beast Mastery 11.1 Class Set 2pc (id=1215634) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : RPPM (1.4 -> 0.4)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17533,7 +17535,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 0.85
+Real PPM         : 0.4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :

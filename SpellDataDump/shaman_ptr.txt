@@ -245,7 +245,8 @@ Family Flags     : 30, 39, 56, 103
 Attributes       : AI Doesn't Face Target (179), AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1252)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.483 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.65205 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.483 -> 0.65205)
 Description      : Deals $s1 Fire damage to the target.
 
 Name             : Healing Stream Totem (id=5394) [Spell Family (11)] 
@@ -676,7 +677,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.01825 -> 2.22007)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -697,7 +699,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.01825 -> 2.22007)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -1449,7 +1452,8 @@ Family Flags     : 39, 56, 66, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.40672 | PvP Coefficient: 0.96 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.76773 | PvP Coefficient: 0.96 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.40672 -> 2.76773)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -2589,7 +2593,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.4219 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.01825 -> 2.4219)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2611,7 +2616,8 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.4219 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (2.01825 -> 2.4219)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3237,9 +3243,10 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #23 (id=1123762) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 54 | Scaled Value: 54 | Target: Self (1)
+                   Base Value: 67 | Scaled Value: 67 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
+Hotfixed         : Base Value (54 -> 67)
 #24 (id=1166446) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
@@ -16218,7 +16225,7 @@ Labels           : 16: Class Spells
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 1679: Nature's Fury (381655 effect#2)
                  : 3022
-                 : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2)
+                 : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2), Enhancement Shaman (1214207 effect#18), Enhancement Shaman (1214207 effect#19)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 39, 56, 126
 Effects          :
@@ -18290,9 +18297,10 @@ Effects          :
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #4 (id=1196253)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (0 -> 8)
 #5 (id=1196254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
@@ -18310,9 +18318,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #10 (id=1213848) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (0 -> -3)
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
@@ -18324,8 +18333,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4701 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (462131)
 #14 (id=1235101) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4065 (Label) | Target: Self (1)
+                   Base Value: 76 | Scaled Value: 76 | Misc Value 2: 4065 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455130)
+Hotfixed         : Base Value (30 -> 76)
 #15 (id=1235102) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 4065 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455130)
@@ -18335,6 +18345,14 @@ Effects          :
 #17 (id=1235104) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Misc Value 2: 5149 (Label) | Target: Self (1)
                    Affected Spells (Label): Stormcaller (454021)
+#18 (id=1264386) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3791 (Label) | Target: Self (1)
+                   Affected Spells (Label): Surging Bolt (458267)
+Hotfixed         : NEW EFFECT
+#19 (id=1264387) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 3791 (Label) | Target: Self (1)
+                   Affected Spells (Label): Surging Bolt (458267)
+Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
