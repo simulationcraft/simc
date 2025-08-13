@@ -17202,9 +17202,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1232340)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1259837)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -45 | Scaled Value: -45 | Misc Value 2: 5180 (Label) | Target: Self (1)
-                   Affected Spells (Label): Eye Blast (1239510)
 Description      : $?a137044[Hand of Gul'dan cast at full power][Casting Chaos Bolt, Rain of Fire, or Shadowburn] summons a Demonic Oculus, up to $1238810u. Consuming Demonic Art flings your Demonic Oculi at your current target, exploding for $1239510s1 Fire damage and $1239510s2 Fire damage to enemies within $1239510a2 yds.
 
 Name             : Warlock Diabolist 11.2 Class Set 4pc (id=1236418) [Spell Family (5), Passive, Hidden] 
@@ -17253,7 +17250,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-                 : 5180: Mastery: Master Demonologist (77219 effect#6), Warlock Diabolist 11.2 Class Set 2pc (1236417 effect#2)
+                 : 5180: Mastery: Master Demonologist (77219 effect#6)
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1237335)  : School Damage (2): fire

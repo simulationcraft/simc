@@ -16787,6 +16787,7 @@ Effects          :
 Description      : $@spelldesc455993
 
 Name             : Arctic Assault (id=456230) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Internal Cooldown (500 -> 300)
 Talent Entry     : Frost [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
@@ -16794,7 +16795,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Internal Cooldown: 0.5 seconds
+Internal Cooldown: 0.3 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
@@ -17876,12 +17877,13 @@ Description      : $@spelldesc194310
 Tooltip          : All targets nearby have Festering Wound applied.
 
 Name             : Frostbane (id=1228433) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
 Resource         : 35 Runic Power (6) (id=310855)
 Spell Level      : 1
-Range            : 5 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 0.75 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
@@ -17893,16 +17895,23 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x01000000
 Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2)
 Family Flags     : 43, 89, 120, 127
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1219438)  : Cancel Aura (164)
+#1 (id=1219438)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Hotfixed         : Type (164 -> 3), Trigger Spell (1229310 -> 0), Target 1 (1 -> 6)
+#2 (id=1219454)  : Cancel Aura (164)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1229310 | Target: Self (1)
-#2 (id=1219454)  : Create Area Trigger (179)
+Hotfixed         : Type (179 -> 164), Misc Value (37201 -> 0), Trigger Spell (0 -> 1229310), Target 1 (18 -> 1)
+#3 (id=1220481)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37201 | Target: At Self (18)
-#3 (id=1220481)  : Trigger Spell (64): Frostbane
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 1229279 | Target: Self (1)
+Hotfixed         : Type (64 -> 179), Misc Value (200 -> 37201), Trigger Spell (1229279 -> 0), Target 1 (1 -> 18)
 #4 (id=1220537)  : Trigger Spell (64): Frostbane
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 1229279 | Target: Self (1)
+Hotfixed         : Misc Value (600 -> 200), Trigger Spell (1228436 -> 1229279)
+#5 (id=1265564)  : Trigger Spell (64): Frostbane
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 600 | Trigger Spell: 1228436 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Start a frozen onslaught that strikes twice, unleashing the chilling essence of winter, dealing $1228443s1 Frost damage to all enemies caught in its wake with each strike.
 
 Each enemy struck reduces the damage dealt to the next foe by $455993s4%, down to $455993s5%.
