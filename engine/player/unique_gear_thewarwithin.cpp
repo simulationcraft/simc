@@ -9438,8 +9438,7 @@ void automatic_footbomb_dispenser( special_effect_t& effect )
     automatic_footbomb_dispenser_proxy_buff_t( const special_effect_t& e )
       : buff_t( e.player, "automatic_footbomb_dispenser", e.player->find_spell( 1234025 ) )
     {
-      auto damage = create_proc_action<generic_aoe_proc_t>( "footbomb_to_the_face", e, 1234219 );
-      damage->split_aoe_damage = false;
+      auto damage = create_proc_action<generic_aoe_proc_t>( "footbomb_to_the_face", e, 1234219, true );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
       damage->base_multiplier *= role_mult( e );
 
