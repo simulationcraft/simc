@@ -269123,4 +269123,38 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
+Name             : Conqueror's Astral Varnish (id=1257668) 
+Hotfixed         : NEW SPELL
+School           : Arcane
+Spell Type       : None
+Effects          :
+#1 (id=1265659)  : Unknown(314)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5531 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1265660)  : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2
+Hotfixed         : NEW EFFECT
+#3 (id=1265661)  : Dummy (3)
+                   Base Value: 723 | Scaled Value: 723
+Hotfixed         : NEW EFFECT
+Description      : Increase the minimum item level of Manaforge Omega set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
+
+Helms will not become eligible for additional sockets from Astral Jeweler's Settings.
+
+Name             : Conqueror's Astral Lacquer (id=1257669) 
+Hotfixed         : NEW SPELL
+School           : Arcane
+Spell Type       : None
+Effects          :
+#1 (id=1265662)  : Unknown(314)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5532 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1265663)  : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2
+Hotfixed         : NEW EFFECT
+#3 (id=1265664)  : Dummy (3)
+                   Base Value: 723 | Scaled Value: 723
+Hotfixed         : NEW EFFECT
+Description      : Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
+
 
