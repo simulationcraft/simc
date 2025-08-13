@@ -7,21 +7,21 @@ role=tank
 position=front
 talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgxCmxMmlZegtxMzAAAAAAAw2CGxMDMDDMYbmZGzsMMjtZZmY2mtZMMbAAwysNtMbzsMAAgAYGWA
 
-head=,id=237673,bonus_id=11307,gem_id=213746,ilevel=723
-neck=,id=252009,bonus_id=4786/1572/12361/8781,gem_id=213461/213461
-shoulder=,id=237671,ilevel=723
-back=,id=235499,bonus_id=9893,enchant_id=7415,gem_id=238044
-chest=,id=238031,bonus_id=4800/4786/1533/12361,enchant_id=7364,crafted_stats=32/40
-wrist=,id=219334,bonus_id=10421/523/1599/11109/8960,enchant_id=7397,gem_id=213461,crafted_stats=32/40
-hands=,id=237674,ilevel=723
-waist=,id=219502,bonus_id=10421/523/1599,gem_id=213461
-legs=,id=237672,bonus_id=4786/1533/12361,enchant_id=7601
-feet=,id=243306,bonus_id=13504/4800/4786/1533/12361,enchant_id=7418,enchant=defenders_march_3
-finger1=,id=221141,bonus_id=4786/3199/12356/8781,enchant_id=7352,gem_id=213461/213461
-finger2=,id=237567,bonus_id=4800/4786/1533/12361/8781,enchant_id=7470,gem_id=213461/213461
-trinket1=,id=242401,bonus_id=4800/4786/1533/12361
-trinket2=,id=190652,bonus_id=4786/10035/12361
-main_hand=,id=221159,bonus_id=4786/3215/12361,enchant_id=7457,enchant=stonebound_artistry_3
+head=halfmask_of_fallen_storms,id=237673,bonus_id=7981/12052/5877/12361/12053/1808,gem_id=213743
+neck=bloodstained_memento,id=252009,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213467/213497
+shoulders=glyphs_of_fallen_storms,id=237671,bonus_id=7981/12052/5877/12361/12053
+back=reshii_wraps,id=235499,bonus_id=9893/12401,enchant=chant_of_leeching_fangs_3,gem_id=238042
+chest=gi_of_fallen_storms,id=237676,bonus_id=7981/12052/5877/12361/12053,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=12050/12053/9627/11307/8795/11109,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=grasp_of_fallen_storms,id=237674,bonus_id=7981/12052/5877/12361/12053
+waist=adrenal_surge_clasp,id=219502,bonus_id=12050/9627/12053/11307,gem_id=213461
+legs=anomalous_starlit_breeches,id=185801,bonus_id=657/12052/5877/10390/12361/12053,enchant=stormbound_armor_kit_3
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=7981/12052/5877/12361/12053/13504,enchant=defenders_march_3
+finger1=logic_gate_alpha,id=237567,bonus_id=7981/12052/5877/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=high_nerubian_signet,id=221141,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12052/5877/10390/12361/12053
+trinket2=brand_of_ceaseless_ire,id=242401,bonus_id=7981/12052/5877/12361/12053
+main_hand=harvesters_interdiction,id=221159,bonus_id=657/12052/5877/10390/12361/12053,enchant=stonebound_artistry_3
 
 save=TWW3_Monk_Brewmaster.simc
 
