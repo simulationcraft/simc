@@ -13818,6 +13818,7 @@ Effects          :
 Description      : Your Arcane Phoenix will Spellsteal when it is summoned and when it expires.
 
 Name             : Gravity Lapse (id=449700) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : Magic
@@ -13830,14 +13831,12 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Affecting Spells : Mastery: Savant (190740 effect#5), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Unerring Proficiency (444981 effect#1)
 Family Flags     : 121
-Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Always AOE Line of Sight (186), Nameplate Enemy Debuffs (426)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Always AOE Line of Sight (186), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1149131)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1163829)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#3 (id=1189992)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : The snap of your fingers warps the gravity around your target and $s2 other nearby enemies, suspending them in the air for $473291d.
 Upon landing, nearby enemies take $449715s1 Arcane damage.
 Tooltip          : Suspended in the air.
@@ -15671,6 +15670,7 @@ Effects          :
 Description      : Gaining Clearcasting increases your Intellect by $461531s1% for $461531d. Multiple instances may overlap.
 
 Name             : Nether Flux (id=461264) [Spell Family (3)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -15679,6 +15679,7 @@ Cooldown         : 15 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1169584)  : Trigger Spell (64): Nether Flux
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1233452 | Target: Enemy (6)
