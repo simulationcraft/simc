@@ -10711,10 +10711,12 @@ Description      : Increases Stamina of nearby party members by $s1 for $d.
 Tooltip          : Stamina increased by $s1.
 
 Name             : Living Ruby Pendant (id=31024) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
+Aura Interrupt   : Enter Instance (43)
 Effects          :
 #1 (id=20652)    : Apply Party Aura (35) | Periodic Heal (8): every 1 seconds | Scaling Class: -1
                    Base Value: 6 | Scaled Value: 19144.85 (coefficient=5) | Radius: 40 yards | Target: Self (1)
@@ -10733,10 +10735,12 @@ Description      : Increases the critical strike of nearby party members by $s1 
 Tooltip          : Increases critical strike by $s1.
 
 Name             : Embrace of the Dawn (id=31026) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
+Aura Interrupt   : Enter Instance (43)
 Effects          :
 #1 (id=20654)    : Apply Party Aura (35) | Attribute (29) | Scaling Class: -1
                    Base Value: 10 | Scaled Value: 870.2214 (coefficient=0.227273) | Misc Value: -1 | Radius: 40 yards | Target: Self (1)
