@@ -16161,7 +16161,8 @@ Affecting Spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects
 Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
