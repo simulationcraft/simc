@@ -8196,13 +8196,16 @@ Description      : Gives $M1 additional strength to nearby party members for $d.
 Tooltip          : Strength increased by $s1.
 
 Name             : Pendant of the Agate Shield (id=25606) 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Aura Interrupt   : Enter World (22)
 Effects          :
-#1 (id=15517)    : Apply Party Aura (35) | Attribute (29) | Scaling Class: -1
+#1 (id=15517)    : Apply Party Aura (35) | Attribute (29) | Scaling Class: -7
                    Base Value: 10 | Scaled Value: 2552.648 (coefficient=0.666667) | Misc Value: 2 | Radius: 40 yards | Target: Self (1)
+Hotfixed         : Scaling Class (-1 -> -7)
 Description      : Gives $M1 additional stamina to nearby party members for $d.
 Tooltip          : Stamina increased by $s1.
 
