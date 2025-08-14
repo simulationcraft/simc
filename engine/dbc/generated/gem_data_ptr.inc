@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.2.5.62554
-static constexpr std::array<gem_property_data_t, 2329> __ptr_gem_property_data { {
+// Gem properties, wow build 11.2.0.62493
+static constexpr std::array<gem_property_data_t, 2291> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
   {    4,  2688, 0x00000004, 0 }, // +$k1 Stamina
@@ -2283,15 +2283,6 @@ static constexpr std::array<gem_property_data_t, 2329> __ptr_gem_property_data {
   { 4264,  7583, 0x20000000, 14190 }, // |C00f58cbaLegendary Skipper's Citrine
   { 4265,  7584, 0x10000000, 14189 }, // |C003fc7ebSeabed Leviathan's Citrine
   { 4266,  7585, 0x08000000, 14185 }, // |C00fff569Roaring War-Queen's Citrine
-  { 4271,  7886, 0x00000001, 14158 }, // Flame-scarred Scales of the Earth-Warder
-  { 4272,  7887, 0x00000001, 14158 }, // Val'kyrian Rebirth
-  { 4273,  7888, 0x00000001, 14158 }, // Warbreaker's Revenge
-  { 4274,  7890, 0x00000001, 14158 }, // Self-Conjuring Mana Gem
-  { 4275,  7891, 0x00000001, 14158 }, // Treatise of the Council's Wisdom
-  { 4276,  7892, 0x00000001, 14158 }, // Blessed Prayer Beads
-  { 4277,  7893, 0x00000001, 14158 }, // Xenedar Gem Fragment
-  { 4278,  7894, 0x00000001, 14158 }, // Rusting Chain of Ancient Hunger
-  { 4279,  7895, 0x00000001, 14158 }, // Skrog Tooth
   { 4280,  7897, 0x40000000, 0 }, // Energizing Fiber
   { 4281,  7898, 0x40000000, 0 }, // Pure Energizing Fiber
   { 4282,  7899, 0x40000000, 0 }, // Pure Precise Fiber
@@ -2300,34 +2291,5 @@ static constexpr std::array<gem_property_data_t, 2329> __ptr_gem_property_data {
   { 4285,  7901, 0x40000000, 0 }, // Chronomantic Fiber
   { 4286,  7903, 0x40000000, 0 }, // Pure Dexterous Fiber
   { 4287,  7904, 0x40000000, 0 }, // Dexterous Fiber
-  { 4288,  7911, 0x00000001, 0 }, // zzOldFelfuel Cell
-  { 4300,  8064, 0x0000000e, 0 }, // Pristine Xakal's Determination
-  { 4301,  8066, 0x0000000e, 0 }, // Pristine Gleaming Iron Spike
-  { 4302,  8068, 0x0000000e, 0 }, // Pristine Gelmogg's Fractured Skull
-  { 4303,  8067, 0x0000000e, 0 }, // Pristine Ettin Bone Fragment
-  { 4304,  8069, 0x0000000e, 0 }, // Pristine Everchill Pearl
-  { 4305,  8070, 0x0000000e, 0 }, // Pristine Rage of the Tides
-  { 4306,  8071, 0x0000000e, 0 }, // Pristine Sundered Comet
-  { 4307,  8072, 0x0000000e, 0 }, // Intricate Xakal's Determination
-  { 4308,  8073, 0x0000000e, 0 }, // Intricate Gleaming Iron Spike
-  { 4309,  8074, 0x0000000e, 0 }, // Intricate Ettin Bone Fragment
-  { 4310,  8075, 0x0000000e, 0 }, // Intricate Gelmogg's Fractured Skull
-  { 4311,  8076, 0x0000000e, 0 }, // Intricate Everchill Pearl
-  { 4312,  8077, 0x0000000e, 0 }, // Intricate Rage of the Tides
-  { 4313,  8078, 0x0000000e, 0 }, // Intricate Sundered Comet
-  { 4316,  8079, 0x0000000e, 0 }, // Flawed Xakal's Determination
-  { 4317,  8080, 0x0000000e, 0 }, // Flawed Gleaming Iron Spike
-  { 4318,  8081, 0x0000000e, 0 }, // Flawed Ettin Bone Fragment
-  { 4319,  8082, 0x0000000e, 0 }, // Flawed Gelmogg's Fractured Skull
-  { 4320,  8083, 0x0000000e, 0 }, // Flawed Everchill Pearl
-  { 4321,  8084, 0x0000000e, 0 }, // Flawed Rage of the Tides
-  { 4322,  8085, 0x0000000e, 0 }, // Flawed Sundered Comet
-  { 4330,  8090, 0x0000000e, 0 }, // Perfected Everchill Pearl
-  { 4331,  8091, 0x0000000e, 0 }, // Perfected Rage of the Tides
-  { 4332,  8092, 0x0000000e, 0 }, // Perfected Sundered Comet
-  { 4333,  8089, 0x0000000e, 0 }, // Perfected Gelmogg's Fractured Skull
-  { 4334,  8088, 0x0000000e, 0 }, // Perfected Ettin Bone Fragment
-  { 4335,  8087, 0x0000000e, 0 }, // Perfected Gleaming Iron Spike
-  { 4336,  8086, 0x0000000e, 0 }, // Perfected Xakal's Determination
 } };
 
