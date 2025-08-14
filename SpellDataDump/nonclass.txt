@@ -21739,7 +21739,8 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=58993)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 7660.956 (coefficient=2.000788) | SP Coefficient: 1 | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7276.191 (coefficient=1.9003) | SP Coefficient: 1 | Stat: Int | Target: Self (1)
+Hotfixed         : Coefficient (2.000788 -> 1.9003)
 Description      : Increases Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
@@ -21916,11 +21917,14 @@ Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=59096)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 7660.711 (coefficient=2.000724) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7276.191 (coefficient=1.9003) | Stat: Agi | Target: Self (1)
+Hotfixed         : Coefficient (2.000724 -> 1.9003)
 #2 (id=59097)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 7660.696 (coefficient=2.00072) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7276.191 (coefficient=1.9003) | Stat: Str | Target: Self (1)
+Hotfixed         : Coefficient (2.00072 -> 1.9003)
 #3 (id=623482)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 7660.696 (coefficient=2.00072) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7276.191 (coefficient=1.9003) | Target: Self (1)
+Hotfixed         : Coefficient (2.00072 -> 1.9003)
 Description      : Increases Agility or Strength by $s3 for $d.
 Tooltip          : Primary stat increased by $w3.
 
@@ -22007,7 +22011,8 @@ Triggered By     : Alacrity of the Elements (65005)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=59359)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 7655.986 (coefficient=1.99949) | Value Multiplier: 1 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7273.128 (coefficient=1.8995) | Value Multiplier: 1 | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (1.99949 -> 1.8995)
 Description      : $@spelldesc65005
 Tooltip          : Haste increased by $s1.
 
@@ -22033,7 +22038,8 @@ Triggered By     : Eye of the Broodmother (65007)
 Attributes       : Is Ability (4), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=59362)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 402.1567 (coefficient=0.10503) | Stat: Int | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 382.0546 (coefficient=0.09978) | Stat: Int | Target: Self (1)
+Hotfixed         : Coefficient (0.10503 -> 0.09978)
 Description      : $@spelldesc65007
 Tooltip          : Intellect increased by $w1.
 
@@ -22122,11 +22128,14 @@ Triggered By     : Pyrite Infusion (65013)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=59371)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 5979.353 (coefficient=1.561609) | Stat: Agi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5674.916 (coefficient=1.4821) | Stat: Agi | Target: Self (1)
+Hotfixed         : Coefficient (1.561609 -> 1.4821)
 #2 (id=59372)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 5979.353 (coefficient=1.561609) | Stat: Str | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5674.916 (coefficient=1.4821) | Stat: Str | Target: Self (1)
+Hotfixed         : Coefficient (1.561609 -> 1.4821)
 #3 (id=483728)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 5979.35 (coefficient=1.561608)
+                   Base Value: 0 | Scaled Value: 5674.916 (coefficient=1.4821)
+Hotfixed         : Coefficient (1.561608 -> 1.4821)
 Description      : $@spelldesc65013
 Tooltip          : Primary stat increased by $s3.
 
@@ -22138,7 +22147,8 @@ Triggered By     : Mjolnir Runestone (65020)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=59375)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5974.242 (coefficient=1.560274) | Value Multiplier: 1 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5675.682 (coefficient=1.4823) | Value Multiplier: 1 | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (1.560274 -> 1.4823)
 Description      : $@spelldesc65020
 Tooltip          : Haste increased by $w1.
 
