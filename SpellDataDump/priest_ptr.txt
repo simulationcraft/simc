@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62554 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4784,9 +4784,7 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1028684)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391286 | Radius: 8 yards | Target: Unknown(87)
-Description      : Aims a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
-
-Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
+Description      : Aim a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds and applying Vampiric Touch to up to $391286s1 of them.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -11272,6 +11270,7 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Shadow Crash (id=391286) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -14961,9 +14960,7 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1161703)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 465521 | Target: Enemy (6)
-Description      : Hurls a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
-
-Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
+Description      : Hurl a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $a1 yds and applying Vampiric Touch to up to $465521s1 of them.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -15201,6 +15198,7 @@ Effects          :
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Shadow Crash (id=465521) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -16163,7 +16161,7 @@ Affecting Spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects
 Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | Target: Enemy (6)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
@@ -16242,7 +16240,7 @@ Effects          :
 #1 (id=1242980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc373280
-Tooltip          : Witnessing nightmares from $@auracaster.
+Tooltip          : Witnissing nightmares from $@auracaster.
 
 Name             : Horrific Vision (id=1243105) [Spell Family (6)] 
 Class            : Priest

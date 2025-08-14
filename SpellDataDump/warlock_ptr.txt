@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62554 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2337,7 +2337,7 @@ Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.130966 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.163707 | Target: Enemy (6)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -2823,7 +2823,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ca
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -3288,7 +3288,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Al
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -3422,15 +3422,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.44 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715)
                    Family Flags: 49
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.44 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715)
                    Family Flags: 49
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 0.44 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
@@ -4625,7 +4625,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Demonic Calling (205145)
-Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -5855,7 +5855,7 @@ Proc Flags       : Cast Successful
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Triggered By     : Demonic Core (270171)
 Family Flags     : 82
-Attributes       : No Aura Cancel (31), Do Not Consume if Gained During Cast (79), Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Do Not Consume if Gained During Cast (79), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=707410)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
@@ -5938,7 +5938,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Ravenous Afflictions (459440)
-Attributes       : Do Not Consume if Gained During Cast (79), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Do Not Consume if Gained During Cast (79), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=708162)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -9890,7 +9890,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1818: Lifeblood (386646 effect#2)
 Triggered By     : Lifeblood (386646)
-Attributes       : Aura Points On Client (268), Do Not Log on Learn (355), Do Not Display Cast Time (441)
+Attributes       : Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1020869)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10200,7 +10200,7 @@ Labels           : 16: Class Spells
                  : 1835
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1021526)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -10249,7 +10249,6 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1021630)  : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11225,7 +11224,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Soulburn (385899)
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31)
 Aura Interrupt   : Leave World (19), Change Specialization (38)
 Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
@@ -11618,7 +11617,6 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Triggered By     : Abyss Walker (389609)
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1025957)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 2 | Misc Value: 0x7f | Target: Self (1)
@@ -12208,7 +12206,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), AI Primary Ranged Attack (206), Attack on Charge to Unit (242), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1054100)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.82136 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.60195 | Target: Enemy (6)
 Description      : $@spelldesc405670
 
 Name             : Immutable Hatred (id=405685) [Spell Family (5), Hidden] 
@@ -13473,7 +13471,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1120165)  : Apply Aura (6) | Dummy (4)
@@ -13656,7 +13654,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121772)  : Apply Aura (6) | Dummy (4)
@@ -13678,7 +13676,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4015
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121774)  : Apply Aura (6) | Dummy (4)
@@ -14738,7 +14736,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Feast of Souls (450752)
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
 #1 (id=1149315)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15273,7 +15271,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting Spells : Reap and Sow (236114 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 31
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1154875)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -16315,7 +16313,6 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Malign Omen (458041)
-Attributes       : Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1163744)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -16734,7 +16731,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 0.7 (Haste multiplier)
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
@@ -17198,9 +17195,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1232340)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1259837)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -45 | Scaled Value: -45 | Misc Value 2: 5180 (Label) | Target: Self (1)
-                   Affected Spells (Label): Eye Blast (1239510)
 Description      : $?a137044[Hand of Gul'dan cast at full power][Casting Chaos Bolt, Rain of Fire, or Shadowburn] summons a Demonic Oculus, up to $1238810u. Consuming Demonic Art flings your Demonic Oculi at your current target, exploding for $1239510s1 Fire damage and $1239510s2 Fire damage to enemies within $1239510a2 yds.
 
 Name             : Warlock Diabolist 11.2 Class Set 4pc (id=1236418) [Spell Family (5), Passive, Hidden] 
@@ -17249,13 +17243,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-                 : 5180: Mastery: Master Demonologist (77219 effect#6), Warlock Diabolist 11.2 Class Set 2pc (1236417 effect#2)
+                 : 5180: Mastery: Master Demonologist (77219 effect#6)
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1237335)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.02813 | PvP Coefficient: 0.3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.14206 | PvP Coefficient: 0.165 | Target: Enemy (6)
 #2 (id=1237336)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.35172 | PvP Coefficient: 0.3 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.09404 | PvP Coefficient: 0.165 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc1236417
 
 Name             : Demonic Intelligence (id=1239569) [Spell Family (5)] 

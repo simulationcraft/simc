@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62554 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -277,7 +277,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #1, #3, #6), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Small Game Hunter (459802 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #1, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Small Game Hunter (459802 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2), Precise Shots (1257703 effect#1)
 Family Flags     : 1, 12, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
@@ -1150,7 +1150,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 4289
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8), Marksmanship Hunter (137016 effects: #1, #2, #9), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5, #7), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8), Marksmanship Hunter (137016 effects: #1, #2, #9), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Precise Shots (1257703 effect#2)
 Family Flags     : 1, 11, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -3196,7 +3196,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #11), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3, #6), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Eagletalon's True Focus (336851 effect#2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2, #11), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Eagletalon's True Focus (336851 effect#2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2), Precise Shots (1257703 effect#1)
 Family Flags     : 1, 55, 105, 106, 121
 Attributes       : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
@@ -4713,7 +4713,7 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Feeding Frenzy (278529 effect#2), Trueshot (288613 effect#5), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Call of the Wild (362754 effects: #1, #2), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 1, 78, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.7125 | PvP Coefficient: 1.2 | Target: Enemy (6)
@@ -5334,7 +5334,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #1, #3, #6), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Small Game Hunter (459802 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Multi-Shot Damage Increase (28539 effect#1), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #1, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Fury Strikes (425830 effects: #1, #2), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Small Game Hunter (459802 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Shrapnel Shot (474310 effect#1), The Bell Tolls (1232992 effects: #1, #2), Precise Shots (1257703 effect#1)
 Family Flags     : 1, 12, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
@@ -5821,6 +5821,7 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (256 -> 0), Proc Flags 2 (0 -> 4)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5830,7 +5831,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Ranged
+Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485306)   : Apply Aura (6) | Unknown(643)
@@ -5906,14 +5907,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
                    Family Flags: 11
-#6 (id=1226064)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
-                   Family Flags: 12, 105
-#7 (id=1226065)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
-                   Family Flags: 11
+#6 (id=1226064)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Target: Self (1)
+Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
+#7 (id=1226065)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Target: Self (1)
+Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
@@ -6943,7 +6942,7 @@ Effects          :
 #2 (id=1019070)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 (Category) | Target: Self (1)
                    Affected Spells (Category): Harpoon (190925)
-Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy that yields experience or honor resets the cooldown of Harpoon.
+Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy resets the cooldown of Harpoon.
 
 Name             : Terms of Engagement (id=265896) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -8400,7 +8399,7 @@ Category         : 1873 (Type 0x1): Deadeye (321460 effect#1), Deadeye (321460 e
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8), Marksmanship Hunter (137016 effects: #1, #2, #9), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5, #7), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8), Marksmanship Hunter (137016 effects: #1, #2, #9), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Precise Shots (1257703 effect#2)
 Family Flags     : 1, 11, 55, 106, 121
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -9731,7 +9730,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Hunter (137014 effects: #2, #3), Marksmanship Hunter (137016 effect#11), Mastery: Sniper Training (193468 effects: #1, #2), Precise Shots (260242 effects: #2, #3, #6), Tip of the Spear (260286 effect#1), Eagletalon's True Focus (336851 effect#2), Ranger (385695 effects: #1, #2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Shrapnel Shot (474310 effect#1)
+Affecting Spells : Hunter (137014 effects: #2, #3), Marksmanship Hunter (137016 effect#11), Mastery: Sniper Training (193468 effects: #1, #2), Precise Shots (260242 effects: #2, #3), Tip of the Spear (260286 effect#1), Eagletalon's True Focus (336851 effect#2), Ranger (385695 effects: #1, #2), Focusing Aim (394384 effect#1), Hunter Marksmanship 10.1 Class Set 2pc (405526 effect#1), Hunter Marksmanship 11.0 Class Set 2pc (453648 effect#1), Shrapnel Shot (474310 effect#1), Precise Shots (1257703 effect#1)
 Family Flags     : 1, 2, 39, 105, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
@@ -15460,7 +15459,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 4289
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #9, #13, #14), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5, #7), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #8, #10, #11), Marksmanship Hunter (137016 effects: #1, #2, #9, #13, #14), Survival Hunter (137017 effects: #1, #2, #9, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #4, #5), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effect#1), Soul Drinker (469638 effects: #1, #2), Wyvern's Cry (471881 effects: #1, #2), Born to Kill (1217434 effect#2), The Bell Tolls (1232992 effects: #1, #2), Umbral Reach (1235397 effect#1), Hunter Dark Ranger 11.2 Class Set 2pc (1236370 effects: #1, #5), Precise Shots (1257703 effect#2)
 Family Flags     : 1, 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -17216,7 +17215,7 @@ Effects          :
                    Family Flags: 16
 #6 (id=1193961)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced by ${-$s3}%.
+Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.
 
 Casting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.
 
@@ -17533,7 +17532,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 0.4
+Real PPM         : 0.85
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
@@ -18611,5 +18610,33 @@ Effects          :
 #2 (id=1253997)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
+
+Name             : Precise Shots (id=1257703) [Spell Family (9), Hidden] 
+Hotfixed         : NEW SPELL
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 52
+                 : 292
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Unknown (467)
+Effects          :
+#1 (id=1265727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
+                   Family Flags: 12, 105
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 108), Base Value (0 -> -50), Misc Value (0 -> 21), Affects Spells, Target 1 (0 -> 1), Attribute (0 -> 64)
+#2 (id=1265728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
+                   Family Flags: 11
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc260240
+Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
 

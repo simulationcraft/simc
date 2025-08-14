@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62554 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -245,7 +245,7 @@ Family Flags     : 30, 39, 56, 103
 Attributes       : AI Doesn't Face Target (179), AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1252)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.65205 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.483 | Target: Enemy (6)
 Description      : Deals $s1 Fire damage to the target.
 
 Name             : Healing Stream Totem (id=5394) [Spell Family (11)] 
@@ -676,7 +676,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -697,7 +697,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22007 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -1449,7 +1449,7 @@ Family Flags     : 39, 56, 66, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.76773 | PvP Coefficient: 0.96 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.40672 | PvP Coefficient: 0.96 | Target: Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -2508,12 +2508,12 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7)
 Family Flags     : 41
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128434)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 36 | Misc Value: 0x7f | Target: Unknown(27)
                    Affected School(s): All
-Description      : Absorbing up to $s1 damage.
+Description      : $@spelldesc108270
 Tooltip          : Absorbing up to $w1 damage.
 
 Name             : Ancestral Guidance (id=114911) [Spell Family (11)] 
@@ -2589,7 +2589,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.4219 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2611,7 +2611,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.4219 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.01825 | PvP Coefficient: 1.15 | Target: Enemy (6)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -2760,11 +2760,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
+Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Critical Strike increased by $s1%.
+Description      : $@spelldesc117014
 Tooltip          : Critical Strike increased by $s1%.
 
 Name             : Static Charge (id=118905) [Spell Family (11)] 
@@ -3237,7 +3237,7 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #23 (id=1123762) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 67 | Scaled Value: 67 | Target: Self (1)
+                   Base Value: 54 | Scaled Value: 54 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #24 (id=1166446) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3791,11 +3791,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
+Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Haste increased by $s1%.
+Description      : $@spelldesc117014
 Tooltip          : Haste increased by $s1%.
 
 Name             : Elemental Blast: Mastery (id=173184) [Spell Family (11)] 
@@ -3808,11 +3808,11 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 2389: Elemental Shaman (137040 effect#15), Earthshatter (468626 effect#2)
-Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
+Attributes       : Use Target's Level for Spell Scaling (264), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Mastery increased by ${$s1*$168534bc1}%.
+Description      : $@spelldesc117014
 Tooltip          : Mastery increased by ${$s1*$168534bc1}%.
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -4485,11 +4485,11 @@ Labels           : 16: Class Spells
                  : 292
                  : 3930: Ascending Air (462791 effect#2), Jet Stream (462817 effect#1)
 Family Flags     : 53
-Attributes       : Do Not Log Immune Misses (3), Do Not Display Range (126), No Cast Log (128), AI Doesn't Face Target (179), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Do Not Log Immune Misses (3), No Cast Log (128), AI Doesn't Face Target (179), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281771)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | Target: Friendly (21)
-Description      : Movement speed increased by $s1%.
+Description      : $@spelldesc192077
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Graceful Spirit (id=192088) [Spell Family (11), Passive, Hidden] 
@@ -6891,11 +6891,11 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered By     : Storm Elemental (157299), Primal Storm Elemental (157319), Lesser Storm Elemental (462990), Lesser Storm Elemental (462993)
-Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=706799)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.5 | Target: Self (1)
-Description      : Haste increased by $s1%.
+Description      : $@spelldesc192249
 Tooltip          : Haste increased by $w1%.
 
 Name             : Fire Elemental (id=263819) [Spell Family (11)] 
@@ -15228,7 +15228,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15252,7 +15252,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155243)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -15270,7 +15270,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155246)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
@@ -15412,12 +15412,12 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Shaman Stormbringer 11.2 Class Set 2pc (1236408)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 452201 | Scaled Value: 452201 | Misc Value: 188196 | Target: Self (1)
-Description      : Lightning Bolt replaced by Tempest.
+Description      : $@spelldesc454009
 Tooltip          : Lightning Bolt replaced by Tempest.
 
 Name             : Stormcaller (id=454021) [Spell Family (11), Passive, Hidden] 
@@ -15852,6 +15852,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Tremor (id=455622) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Flamestrike
 Spell Type       : Melee
@@ -16217,7 +16218,7 @@ Labels           : 16: Class Spells
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
                  : 1679: Nature's Fury (381655 effect#2)
                  : 3022
-                 : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2), Enhancement Shaman (1214207 effect#18), Enhancement Shaman (1214207 effect#19)
+                 : 3791: Pulse Capacitor (445032 effect#3), Totemic Rebound (458269 effect#2)
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 39, 56, 126
 Effects          :
@@ -17117,12 +17118,12 @@ Labels           : 16: Class Spells
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7)
 Triggered By     : Stone Bulwark Totem Passive (114889)
 Family Flags     : 41
-Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Suppress Target Procs (113), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1173042)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.6 | Misc Value: 0x7f | Target: Unknown(27)
                    Affected School(s): All
-Description      : Absorbing up to $s1 damage.
+Description      : $@spelldesc108270
 Tooltip          : Absorbing up to $w1 damage.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
@@ -18289,7 +18290,7 @@ Effects          :
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #4 (id=1196253)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #5 (id=1196254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -18309,7 +18310,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #10 (id=1213848) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -3 | Scaled Value: -3 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -18323,7 +18324,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4701 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (462131)
 #14 (id=1235101) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 76 | Scaled Value: 76 | Misc Value 2: 4065 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4065 (Label) | Target: Self (1)
                    Affected Spells (Label): Awakening Storms (455130)
 #15 (id=1235102) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 4065 (Label) | Target: Self (1)
@@ -18334,12 +18335,6 @@ Effects          :
 #17 (id=1235104) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Misc Value 2: 5149 (Label) | Target: Self (1)
                    Affected Spells (Label): Stormcaller (454021)
-#18 (id=1264386) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3791 (Label) | Target: Self (1)
-                   Affected Spells (Label): Surging Bolt (458267)
-#19 (id=1264387) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value 2: 3791 (Label) | Target: Self (1)
-                   Affected Spells (Label): Surging Bolt (458267)
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -18965,6 +18960,7 @@ Attributes       : Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1211575)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.67 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15), PvP Coefficient (2.5 -> 1.67)
 Description      : $@spelldesc1217598
 
 Name             : Single-Button Assistant (id=1229376) 
@@ -19300,6 +19296,7 @@ Mana cost of healing spells reduced by $s2%
 Recharge time of Lava Burst$?s137039[ and Riptide][] reduced by $s6%
 
 Name             : Elemental Overflow (id=1239170) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : None

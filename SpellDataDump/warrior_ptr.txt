@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62554 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3069,7 +3069,7 @@ Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Pile On (364553 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Strom'kar's Might (1223131 effect#2)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Pile On (364553 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 8, 9, 52, 62
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), No Attack Parry (248), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434), Unknown (465)
 Effects          :
@@ -4103,7 +4103,7 @@ Labels           : 16: Class Spells
                  : 1378: Pile On (364553 effect#2), Pile On (364553 effect#3)
                  : 2443: Spiteful Serenity (400314 effect#6), Spiteful Serenity (400314 effect#7), Spiteful Serenity (400314 effect#8)
 Proc Chance      : 101%
-Affecting Spells : Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Pile On (364553 effect#1), Blunt Instruments (383442 effects: #1, #2), Strom'kar's Might (1223131 effect#2)
+Affecting Spells : Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Pile On (364553 effect#1), Blunt Instruments (383442 effects: #1, #2)
 Family Flags     : 62
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
@@ -5186,7 +5186,7 @@ Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Strom'kar's Might (1223131 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Blunt Instruments (383442 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 8, 9, 23
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -15672,60 +15672,6 @@ Effects          :
 Description      : $@spelldesc1219201
 Tooltip          : The duration of the next crowd control effect on you is reduced by $w1%.
 
-Name             : Strom'kar's Might (id=1223131) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Stacks           : 99 maximum
-Proc Chance      : 101%
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), Not an Action (92), Not a Proc (105), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Not Available While Charmed (174), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Allow during spell override (404), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=1210872)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-                   Affected Spells: Warbreaker (262161)
-                   Family Flags: 23
-#2 (id=1210873)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-                   Family Flags: 62
-Description      : $@spellname262161 inflicts ${$s1}.2% increased damage.
-
-Increases $@spellname167105 duration by ${$S2/1000}.2 sec.
-Tooltip          : $@spellname262161 inflicts ${$s1}.2% increased damage.
-
-Increases $@spellname167105 duration by ${$S2/1000}.2 sec.
-
-Name             : Godly Rage (id=1223161) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : Cast Successful
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Allow While Invisible (78), Not an Action (92), Not a Proc (105), Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Not Available While Charmed (174), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Allow during spell override (404), Allow Class Ability Procs (416), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=1210913)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 4608 (Label) | Target: Self (1)
-                   Affected Spells (Label): Godly Rage (1223163)
-#2 (id=1210916)  : Apply Aura (6) | Proc Trigger Spell (42): Godly Rage
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1223163 | Target: Self (1)
-Description      : $@spellname385059 inflicts an additional $1223163s1 Fire damage to all enemies within $1223163A1 yards, reduced beyond $1223163s2 targets.
-
-Name             : Godly Rage (id=1223163) [Spell Family (4)] 
-Class            : Warrior
-School           : Fire
-Spell Type       : Magic
-Max Scaling Level: 80
-Min Scaling Level: 1
-Labels           : 4608: Godly Rage (1223161 effect#1)
-Triggered By     : Godly Rage (1223161)
-Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Hide Passive From Tooltip (451)
-Effects          :
-#1 (id=1210915)  : School Damage (2): fire | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 255776.1 (coefficient=100) | Radius: 0 - 20 yards | Target: At Self (18) -> At Enemy in Area (16)
-#2 (id=1210928)  : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8
-Description      : Inflicts $s1 Fire damage to all enemies within $A1 yards, reduced beyond $1223163s2 targets.
-
 Name             : Berserker Roar (desc=PvP Talent) (id=1227751) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -15968,9 +15914,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1235050)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-#3 (id=1264383)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 5148 (Label) | Target: Self (1)
-                   Affected Spells (Label): Ionizing Strike (1238042)
 Description      : Thunder Blast has a $s2% chance to call down $s1 Ionizing Strikes on affected targets. Each strike deals $1238042s1 Nature damage.
 
 Name             : Warrior Mountain Thane 11.2 Class Set 4pc (id=1236422) [Spell Family (4), Passive, Hidden] 
@@ -16045,7 +15988,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
                  : 3022
-                 : 5148: Warrior Mountain Thane 11.2 Class Set 2pc (1236421 effect#3), Warrior Mountain Thane 11.2 Class Set 4pc (1236422 effect#1)
+                 : 5148: Warrior Mountain Thane 11.2 Class Set 4pc (1236422 effect#1)
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 9
 Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range (126), Always Show Ground Texture (190), Aura Points On Client (268), Allow Class Ability Procs (416)
