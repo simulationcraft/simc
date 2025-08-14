@@ -16099,7 +16099,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 1
-Range            : 9 yards
+Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
