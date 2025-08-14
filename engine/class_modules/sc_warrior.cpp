@@ -11072,6 +11072,10 @@ void warrior_t::apply_affecting_auras( action_t& action )
   }
   if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
   {
+    // Thane 2pc effect 3 applies only to protection
+    if ( sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B2 ) && specialization() == WARRIOR_PROTECTION )
+      action.apply_affecting_aura( sets->set( HERO_MOUNTAIN_THANE, TWW3, B2 ) );
+
     if ( sets->has_set_bonus( HERO_MOUNTAIN_THANE, TWW3, B4 ) )
       action.apply_affecting_aura( sets->set( HERO_MOUNTAIN_THANE, TWW3, B4 ) );
   }
