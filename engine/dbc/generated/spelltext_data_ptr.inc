@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.62493
-static constexpr std::array<spelltext_data_t, 28031> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28032> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28031,6 +28031,7 @@ static constexpr std::array<spelltext_data_t, 28031> __ptr_spelltext_data { {
   { 1254906, "The powers of your Reshii Wraps are triggered $s1% more frequently.", 0, 0 },
   { 1257668, "Increase the minimum item level of Manaforge Omega set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. \r\n\r\nHelms will not become eligible for additional sockets from Astral Jeweler's Settings.", 0, 0 },
   { 1257669, "Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. ", 0, 0 },
+  { 1257703, "$@spelldesc260240", "Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62493
