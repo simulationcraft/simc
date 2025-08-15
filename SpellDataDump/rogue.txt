@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -99,7 +99,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.391 | PvP Coefficient: 0.85 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -8336,7 +8335,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=898195)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.391 | PvP Coefficient: 0.85 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=898196)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 Description      : $@spelldesc360194
@@ -10950,7 +10948,6 @@ Description      : $@spelldesc381799
 Tooltip          : Your Ruptures are increasing your Agility by $W1%.
 
 Name             : Kingsbane (id=394095) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Nature
 Spell Type       : None

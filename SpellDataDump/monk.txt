@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3428,7 +3428,6 @@ Effects          :
 #8 (id=260839)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 5669 (Label) | Target: Self (1)
                    Affected Spells (Label): Flurry Strike (451250)
-Hotfixed         : Sub Type (108 -> 218), Base Value (-10 -> -20), Misc Value (22 -> 0), Misc Value 2 (0 -> 5669), Affects Spells
 #9 (id=260840)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725)
@@ -3466,7 +3465,6 @@ Hotfixed         : Sub Type (108 -> 218), Base Value (-10 -> -20), Misc Value (2
 #21 (id=745150)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 5583 (Label) | Target: Self (1)
                    Affected Spells (Label): Monk Shado-Pan 11.2 Class Set 4pc (1236380)
-Hotfixed         : Sub Type (218 -> 219), Base Value (-45 -> -20), Misc Value (0 -> 3), Misc Value 2 (2384 -> 5583)
 #22 (id=1032358) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 11 | Scaled Value: 11 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
@@ -3490,7 +3488,6 @@ Hotfixed         : Sub Type (218 -> 219), Base Value (-45 -> -20), Misc Value (0
 #27 (id=1080997) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 5668 (Label) | Target: Self (1)
                    Affected Spells (Label): Monk Shado-Pan 11.2 Class Set 2pc (1236379)
-Hotfixed         : Sub Type (108 -> 219), Base Value (0 -> -10), Misc Value (0 -> 3), Misc Value 2 (0 -> 5668), Affects Spells
 #28 (id=1090002) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
@@ -18986,7 +18983,6 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | PvP Coefficient: 2.4 | Radius: 25 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (3.595 -> 1.7975), PvP Coefficient (1.2 -> 2.4)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 

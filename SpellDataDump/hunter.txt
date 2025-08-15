@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4694,7 +4694,6 @@ Targets incapacitated by Scatter Shot deal $321469s1% less damage to you for $32
 Tooltip          : Incapacitated.
 
 Name             : Barbed Shot (id=217200) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=2, col=3, max_rank=1, req_points=0, replace="Steady Shot" (id=56641)]
 Class            : Hunter
 School           : Physical
@@ -5822,7 +5821,6 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (256 -> 0), Proc Flags 2 (0 -> 4)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5910,10 +5908,8 @@ Effects          :
                    Family Flags: 11
 #6 (id=1226064)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
 #7 (id=1226065)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
@@ -17524,7 +17520,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that increases your auto shot damage by $1218033s1% and reduces the time between auto shots by ${$1218033s2/-1000}.1 sec for $1218033d. Casting Trueshot always hits a |cFFFFFFFFJackpot!|r
 
 Name             : Hunter Beast Mastery 11.1 Class Set 2pc (id=1215634) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : RPPM (1.4 -> 0.4)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18614,7 +18609,6 @@ Effects          :
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
 
 Name             : Precise Shots (id=1257703) [Spell Family (9), Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18632,12 +18626,10 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
                    Family Flags: 12, 105
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 108), Base Value (0 -> -50), Misc Value (0 -> 21), Affects Spells, Target 1 (0 -> 1), Attribute (0 -> 64)
 #2 (id=1265728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
