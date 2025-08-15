@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -15917,6 +15917,7 @@ Effects          :
 #3 (id=1264383)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 5148 (Label) | Target: Self (1)
                    Affected Spells (Label): Ionizing Strike (1238042)
+Hotfixed         : NEW EFFECT
 Description      : Thunder Blast has a $s2% chance to call down $s1 Ionizing Strikes on affected targets. Each strike deals $1238042s1 Nature damage.
 
 Name             : Warrior Mountain Thane 11.2 Class Set 4pc (id=1236422) [Spell Family (4), Passive, Hidden] 

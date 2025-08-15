@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -13050,6 +13050,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1232284)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.33 -> 1)
 #2 (id=1233901)  : None (0)
                    Base Value: 2 | Scaled Value: 2
 Description      : While flying during $?s403631[Breath of Eons][Deep Breath] and for $s1 seconds after, you command a squadron of $s2 Dracthyr who will attack your targets with Disintegrate and Pyre.
@@ -13070,6 +13071,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1233896)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Misc Value 2: 5099 (Label) | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.33 -> 1)
 Description      : While your squadron is active, your $?c1[Mass Disintegrate][Mass Eruption] strikes up to $s1 additional $Ltarget;targets. In addition, your squadron assists you for ${$s2/1000} additional sec.
 
 Name             : Evoker Chronowarden 11.2 Class Set 2pc (id=1236368) [Spell Family (224), Passive, Hidden] 
@@ -13233,6 +13235,7 @@ Channel Interrupt: Moving (3)
 Effects          :
 #1 (id=1233383)  : Apply Aura (6) | Periodic Damage (3): spellfrost every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.041 | PvP Coefficient: 0.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.33)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
@@ -13253,6 +13256,7 @@ Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), A
 Effects          :
 #1 (id=1233435)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.65 | PvP Coefficient: 0.33 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.33)
 Description      : $@spelldesc357211
 
 Name             : Evoker Scalecommander 11.2 Class Set 2pc (id=1237201) [Spell Family (224), Hidden] 

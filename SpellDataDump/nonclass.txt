@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -8196,6 +8196,7 @@ Description      : Gives $M1 additional strength to nearby party members for $d.
 Tooltip          : Strength increased by $s1.
 
 Name             : Pendant of the Agate Shield (id=25606) 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
@@ -8204,6 +8205,7 @@ Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=15517)    : Apply Party Aura (35) | Attribute (29) | Scaling Class: -7
                    Base Value: 10 | Scaled Value: 2552.648 (coefficient=0.666667) | Misc Value: 2 | Radius: 40 yards | Target: Self (1)
+Hotfixed         : Scaling Class (-1 -> -7)
 Description      : Gives $M1 additional stamina to nearby party members for $d.
 Tooltip          : Stamina increased by $s1.
 
@@ -10712,6 +10714,7 @@ Description      : Increases Stamina of nearby party members by $s1 for $d.
 Tooltip          : Stamina increased by $s1.
 
 Name             : Living Ruby Pendant (id=31024) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
@@ -10735,6 +10738,7 @@ Description      : Increases the critical strike of nearby party members by $s1 
 Tooltip          : Increases critical strike by $s1.
 
 Name             : Embrace of the Dawn (id=31026) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Arcane
 Spell Type       : Magic
 Duration         : 1800 seconds
@@ -167643,6 +167647,7 @@ Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845135)   : School Damage (2): shadow | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 1261224 (coefficient=493.097) | PvP Coefficient: 0.6 | Target: Enemy (6)
+Hotfixed         : Coefficient (425.821472 -> 493.097046)
 #2 (id=845136)   : Trigger Spell (64): Anima Font
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344414 | Target: At Self (18)
 Description      : Tear the anima from your target dealing $s1 Shadow damage and forming a font of power at your feet, increasing your Intellect by $343397s1 for $343394d while you stand within it. 
@@ -167694,6 +167699,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=845140)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 4402.775 (coefficient=1.149859) | Target: Self (1)
+Hotfixed         : Coefficient (0.999862 -> 1.149859)
 
 Name             : Heart of a Gargoyle (id=343399) 
 School           : Physical
@@ -172733,6 +172739,7 @@ Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Sca
 Effects          :
 #1 (id=883338)   : Apply Aura (6) | Proc Trigger Spell (42): Miniscule Mailemental in an Envelope | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 575167 (coefficient=224.8713) | Trigger Spell: 352436 | Target: Self (1)
+Hotfixed         : Coefficient (194.19162 -> 224.871277)
 Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.
 
 Name             : Miniscule Mailemental in an Envelope (id=352436) 
@@ -182875,6 +182882,7 @@ Description      : $@spelldesc367902
 Tooltip          : $@auradesc367902
 
 Name             : Volatile Satchel (id=367902) 
+Hotfixed         : Description
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
@@ -242882,6 +242890,7 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1159537)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 20266.92 (coefficient=7.923697) | Target: Self (1)
+Hotfixed         : Coefficient (5.4646 -> 7.923697)
 #2 (id=1159548)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Your melee attacks have a chance to inject volatile black blood into your target, inflicting ${$<rolemult>*$s1*$455821d} Shadow damage over $455821d.
@@ -253854,6 +253863,7 @@ Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting
 Effects          :
 #1 (id=1188868)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 345762.9 (coefficient=135.1819) | Target: Self (1)
+Hotfixed         : Coefficient (74.232742 -> 135.181854), Scaling Class (-9 -> -8)
 #2 (id=1188869)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233767 | Misc Value 2: 0x17e7 | Target: Unknown(87)
 Description      : $@spelldesc470675
@@ -256808,6 +256818,7 @@ Description      : $@spelldesc458943
 Tooltip          : $@spelldesc458943
 
 Name             : Phase Diving (id=1214374) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -256832,10 +256843,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232207 | Target: Self (1)
 #10 (id=1253962) : Unknown(212)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1787 | Target: Self (1)
+Hotfixed         : Type (6 -> 212), Sub Type (331 -> 0), Misc Value (520 -> 1787)
 #11 (id=1265483) : Unknown(212)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1786 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 #12 (id=1265484) : Apply Aura (6) | Unknown(331)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 520 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Enter an ethereal state of energy.
 Tooltip          : Existing in an ethereal state of energy known as "Untethered Space."
 
@@ -256946,8 +256960,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1196937)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 9191.87 (coefficient=2.400612) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.894932 -> 2.400612), Scaling Class (-9 -> -7)
 #2 (id=1196938)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 9191.87 (coefficient=2.400612) | PvP Coefficient: 0.5
+Hotfixed         : Coefficient (0.894932 -> 2.400612), Scaling Class (-9 -> -7)
 
 Name             : Automatic Footbomb Dispenser (id=1214604) 
 School           : Fire
@@ -257106,8 +257122,10 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1197231)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3864.885 (coefficient=1.00938) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.37629 -> 1.00938), Scaling Class (-9 -> -7)
 #2 (id=1197232)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4875.699 (coefficient=1.273371) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.474704 -> 1.273371), Scaling Class (-9 -> -7)
 Description      : Your harmful abilities have a chance to power the amplifier, randomly increasing either your highest secondary stat by $s1 or your lowest secondary stat by $s2 for $1214806d.
 
 Name             : Pinged Augment Chip (id=1214796) [Hidden] 
@@ -259698,8 +259716,10 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1200176)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Target: Self (1)
+Hotfixed         : Coefficient (0.419337 -> 1.124851), Scaling Class (-9 -> -7)
 #2 (id=1200182)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 632.7143 (coefficient=0.165244) | Target: Self (1)
+Hotfixed         : Coefficient (0.061602 -> 0.165244), Scaling Class (-9 -> -7)
 #3 (id=1200183)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 Description      : When you use harmful spells or abilities, there is a chance you also take a sip of the energy drink, increasing your Mastery by $s1 for $1216650d. Gain an additional $s2 Mastery if you are below $s3% health.
@@ -259899,10 +259919,13 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1200397)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 7667.259 (coefficient=2.002434) | Target: Self (1)
+Hotfixed         : Coefficient (0.746494 -> 2.002434), Scaling Class (-9 -> -7)
 #2 (id=1200398)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2286.913 (coefficient=0.597266)
+Hotfixed         : Coefficient (0.222657 -> 0.597266), Scaling Class (-9 -> -7)
 #3 (id=1200401)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2286.913 (coefficient=0.597266) | Target: Self (1)
+Hotfixed         : Coefficient (0.222657 -> 0.597266), Scaling Class (-9 -> -7)
 
 Name             : Abyssal Volt (id=1216774) 
 School           : Physical
@@ -261173,6 +261196,7 @@ Effects          :
 Description      : Synthesize a soulbound Manaforge Omega set shoulder item appropriate for your class.
 
 Name             : Ethereal Exhaustion (id=1223611) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 360 seconds
@@ -261186,6 +261210,7 @@ Description      : You've recently consumed a large amount of ethereal energy.
 Tooltip          : You've recently consumed a large amount of ethereal energy.
 
 Name             : Ethereal Barrier (id=1223612) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
@@ -261205,6 +261230,7 @@ Description      : $@spelldesc1217096
 Tooltip          : Absorbing $w2% of damage taken, up to $w1 total damage.
 
 Name             : Ethereal Barricade (id=1223614) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -261461,6 +261487,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1213783)  : Apply Aura (6) | Proc Trigger Spell (42): Soulbreaker's Sigil | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 79329.86 (coefficient=31.01535) | Trigger Spell: 1225149 | Target: Self (1)
+Hotfixed         : Coefficient (21.389898 -> 31.015354)
 #2 (id=1214154)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 2437.851 (coefficient=0.636686) | Target: Self (1)
 Description      : Your harmful spells and abilities have a chance to fracture the enemy's soul, dealing ${$s1*$<rolemult>} Shadow damage over $1225149d. If a fractured enemy dies, you absorb their lingering energy, increasing your Versatility by $s2 for $1225151d.
@@ -264016,8 +264043,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1221763)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 7656.879 (coefficient=1.999723) | Target: Self (1)
+Hotfixed         : Coefficient (1.634598 -> 1.999723), Scaling Class (-9 -> -1)
 
 Name             : Observer's Soul Fetters (id=1230285) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -264242,6 +264271,7 @@ Effects          :
 Description      : $@spelldesc1229205
 
 Name             : Sands of K'aresh (id=1230710) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -264350,6 +264380,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1222936)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 29303.21 (coefficient=11.45659) | Target: Self (1)
+Hotfixed         : Coefficient (5.340647 -> 11.456585)
 
 Name             : Depleted K'areshi Battery (id=1231104) 
 School           : Arcane
@@ -264921,6 +264952,7 @@ Effects          :
 #1 (id=1225685)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 45 yards | Target: At Self (18) -> At Friendly in Area (31)
                    Affected School(s): All
+Hotfixed         : Target 1 (22 -> 18), Target 2 (30 -> 31)
 #2 (id=1225746)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Radius: 0 - 45 yards | Target: At Self (22) -> Friendly in Area (30)
 #3 (id=1232718)  : Apply Aura (6) | Dummy (4)
@@ -264942,6 +264974,7 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1225786)  : Apply Aura (6) | Periodic Dummy (226): every 30 seconds | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 4754.539 (coefficient=1.241728) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (1.079763 -> 1.241728)
 #2 (id=1238079)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Become Oath-Bound to a nearby ally every $t1 sec.
@@ -264957,6 +264990,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1225816)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 9426.785 (coefficient=2.461964) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2.591595 -> 2.461964)
 
 Name             : Araz's Ritual Forge (id=1232802) 
 School           : Arcane
@@ -265508,6 +265542,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1227249)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Hotfixed         : Trigger Spell (1233111 -> 0)
 #2 (id=1227250)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=1227251)  : Apply Aura (6) | Dummy (4)
@@ -266157,6 +266192,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1228196)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 88144.63 (coefficient=34.46164) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (23.766687 -> 34.461636)
 #2 (id=1228197)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Your harmful attacks, spells, and abilities have a chance to engage the dispenser dropping $s2 footbombs on the field for $1234025d.
@@ -266246,6 +266282,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1229154)  : Apply Aura (6) | Proc Trigger Spell (42): Astral Antenna | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 5788.303 (coefficient=1.511713) | PvP Coefficient: 0.5 | Trigger Spell: 1239640 | Target: Self (1)
+Hotfixed         : Coefficient (1.558467 -> 1.511713)
 Description      : The antenna has a chance to detect and draw ambient arcane energy towards you, granting $s1 Critical Strike for $1239641d. Multiple applications may overlap.
 
 Name             : Nether Overlay Matrix (desc=Rank 4/4) (id=1234847) 
@@ -266356,6 +266393,7 @@ Effects          :
 Description      : While $@spellname1234996 is empowered, your voidglass shards are $s1% more effective.
 
 Name             : Shards of the Void (id=1235136) [Passive] 
+Hotfixed         : Proc Flags 1 (87312 -> 2446608)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -266419,10 +266457,12 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230266)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
                    Base Value: 207506 | Scaled Value: 482790.1 (coefficient=188.755) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (87.502907 -> 188.754974)
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 172921 | Scaled Value: 335270.9 (coefficient=131.0798) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (56.091648 -> 131.079834)
 Description      : Your harmful spells and abilities have a chance to strike your target with an abyssal comet, dealing ${$s1*$<rolemult>} Cosmic damage and amplifying their gravity to increase the damage of future comets by $s2%.
 
 Upon death, enemies implode to deal $s3 Cosmic damage per gravity stack split between nearby enemies. $@spelldesc1240903
@@ -266463,6 +266503,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 62865.38 (coefficient=24.57829) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
+Hotfixed         : Coefficient (20.48192 -> 24.578285)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266512,12 +266553,14 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1230909)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 237533.1 (coefficient=92.86761) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (84.425041 -> 92.867607)
 #2 (id=1230910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1230911)  : Apply Aura (6) | Unknown(316) | Scaling Class: -6
                    Base Value: 0 | Scaled Value: 8.544377e+08 (coefficient=245.1528) | Misc Value: 127 | Target: Self (1)
 #4 (id=1232865)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Hotfixed         : Base Value (65 -> 50)
 #5 (id=1233296)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Taking damage has a high chance to cause you to devour the essence of nearby enemies, dealing $s1 Shadow damage split between them and healing you for $s2% of the damage dealt.
@@ -266546,6 +266589,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 2827544 (coefficient=1105.476) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (961.281982 -> 1105.47644)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
@@ -267736,6 +267780,7 @@ Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duratio
 Effects          :
 #1 (id=1238073)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
+Hotfixed         : Coefficient (1.079763 -> 0), Scaling Class (-1 -> 0)
 Description      : $@spelldesc1232776
 Tooltip          : Intellect increased by $w1.
 
@@ -267961,10 +268006,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 8272.531 (coefficient=2.160511) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1241002)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 168714.1 (coefficient=65.96165) | Target: Self (1)
+Hotfixed         : Coefficient (12.009574 -> 65.961647)
 #3 (id=1241590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 413.1688 (coefficient=0.107906) | Target: Self (1)
+Hotfixed         : Coefficient (0.11149 -> 0.107906)
 #4 (id=1241591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 10338.37 (coefficient=2.700041) | Target: Self (1)
+Hotfixed         : Coefficient (2.520463 -> 2.700041)
 #5 (id=1241595)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 
@@ -268169,6 +268217,7 @@ Effects          :
 Tooltip          : You now flip on every jump! Yay!
 
 Name             : Azhiccaran Parapodia (id=1243818) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 3959: Item Effects
@@ -268180,8 +268229,10 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1244264)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 17775.82 (coefficient=6.949757) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (7.115513 -> 6.949757)
 #2 (id=1244405)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2209.733 (coefficient=0.577109) | Target: Self (1)
+Hotfixed         : Coefficient (0.594905 -> 0.577109)
 Description      : Your damaging spells have a chance to attract mites to feast on your target, inflicting up to ${$s1*$1243828d/$1243828t1} Shadow damage over $1243828d. Well-fed mites share their meal with you, each increasing your Intellect by $s2 for $1243843d.
 
 Name             : Azhiccaran Mite (id=1243828) 
@@ -268335,8 +268386,10 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1245143)  : Apply Aura (6) | Proc Trigger Spell (42): Symbiotic Ethergauze | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 160542.4 (coefficient=62.76678) | PvP Coefficient: 0.5 | Trigger Spell: 1245429 | Target: Self (1)
+Hotfixed         : Coefficient (23.770546 -> 62.766777), Scaling Class (-9 -> -8)
 #2 (id=1246464)  : Apply Aura (6) | Proc Trigger Spell (42): Symbiotic Ethergauze | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 929960.1 (coefficient=363.5837) | PvP Coefficient: 0.5 | Trigger Spell: 1245431 | Target: Self (1)
+Hotfixed         : Coefficient (137.693497 -> 363.583679), Scaling Class (-9 -> -8)
 Description      : Blocking, parrying, or dodging has a chance to awaken the Gauze causing it to lash out dealing $s1 Arcane damage split between nearby enemies while shielding you for $s2 damage for $1245431d.
 
 
@@ -268355,6 +268408,7 @@ Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scal
 Effects          :
 #1 (id=1245150)  : School Damage (2): arcane | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 68723.06 (coefficient=26.86844) | PvP Coefficient: 0.5 | Target: Any Target (25)
+Hotfixed         : Coefficient (18.529945 -> 26.868444)
 #2 (id=1249202)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247207 | Target: Any Target (25)
 Description      : Rip magical essence out of your target and consume it dealing ${$s1*$<rolemult>} Arcane damage while granting you $1247205s1 of your lowest secondary stat for $1247207d.
@@ -268375,6 +268429,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1245160)  : Apply Aura (6) | Proc Trigger Spell (42): Twisted Mana Sprite | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 57812.55 (coefficient=22.6028) | Trigger Spell: 1247500 | Target: Self (1)
+Hotfixed         : Coefficient (8.559967 -> 22.602795), Scaling Class (-9 -> -8)
 #2 (id=1249018)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your healing spell and abilities have a very high chance to summon a Twisted Mana Sprite to assist you in combat for $1247081d1. Twisted Mana Sprite periodically heal a random nearby ally for ${$s1*$<healingrolemult>}. Overhealing is converted into an absorb shield for $1247511d.
@@ -268686,8 +268741,10 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1248619)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 129981.3 (coefficient=50.81838) | Target: Self (1)
+Hotfixed         : Coefficient (19.245588 -> 50.818378), Scaling Class (-9 -> -8)
 #2 (id=1248636)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 18956.03 (coefficient=7.411182) | Target: Self (1)
+Hotfixed         : Coefficient (2.806648 -> 7.411182), Scaling Class (-9 -> -8)
 #3 (id=1248795)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=1248796)  : Apply Aura (6) | Dummy (4)
@@ -269095,29 +269152,37 @@ Effects          :
 Description      : The powers of your Reshii Wraps are triggered $s1% more frequently.
 
 Name             : Conqueror's Astral Varnish (id=1257668) 
+Hotfixed         : NEW SPELL
 School           : Arcane
 Spell Type       : None
 Effects          :
 #1 (id=1265659)  : Unknown(314)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5531 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 #2 (id=1265660)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
+Hotfixed         : NEW EFFECT
 #3 (id=1265661)  : Dummy (3)
                    Base Value: 723 | Scaled Value: 723
+Hotfixed         : NEW EFFECT
 Description      : Increase the minimum item level of Manaforge Omega set helm, chestpiece, or leg armor to $s3 in Arenas and Battlegrounds. 
 
 Helms will not become eligible for additional sockets from Astral Jeweler's Settings.
 
 Name             : Conqueror's Astral Lacquer (id=1257669) 
+Hotfixed         : NEW SPELL
 School           : Arcane
 Spell Type       : None
 Effects          :
 #1 (id=1265662)  : Unknown(314)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5532 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 #2 (id=1265663)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
+Hotfixed         : NEW EFFECT
 #3 (id=1265664)  : Dummy (3)
                    Base Value: 723 | Scaled Value: 723
+Hotfixed         : NEW EFFECT
 Description      : Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
 
 

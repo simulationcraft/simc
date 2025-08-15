@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62610 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -11270,6 +11270,7 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Shadow Crash (id=391286) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15197,6 +15198,7 @@ Effects          :
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Shadow Crash (id=465521) [Spell Family (6), Hidden] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -16160,6 +16162,7 @@ Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
