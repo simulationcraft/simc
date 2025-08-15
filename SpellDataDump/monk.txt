@@ -16097,6 +16097,7 @@ Description      : Every $<value> damage you deal generates a Flurry Charge. For
 Variables        : $value=${($AP*($450615s5/100)*(1+$@versadmg))}
 
 Name             : Flurry Strike (id=450617) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -16106,7 +16107,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3560: Pride of Pandaria (450979 effect#1), Vigilant Watch (451233 effect#1), Flow of Battle (457257 effect#3), Monk Shado-Pan 11.2 Class Set 2pc (1236379 effect#1)
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Always Line of Sight (185), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1150633)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.6 | Target: Enemy (6)
@@ -17000,17 +17001,20 @@ Tooltip          : Dodge chance increased by $w1%.
 Chance to critically strike increased by $w2%.
 
 Name             : Flurry Strike (id=451250) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Shadow
 Spell Type       : Magic
-Range            : 9 yards
+Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5669: Brewmaster Monk (137023 effect#8)
+Attributes       : Always Line of Sight (185)
 Effects          :
-#1 (id=1151723)  : School Damage (2): shadow
+#1 (id=1151723)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6 | PvP Coefficient: 0.65 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 131072)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
