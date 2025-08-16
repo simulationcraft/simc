@@ -4605,6 +4605,11 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
 
 bool call_action_list_t::action_ready()
 {
+  // TODO: require a valid target for now. possibly change to `target = player` to allow call_action_list evaluation
+  // during dungeon sim downtime
+  if ( target && target->is_sleeping() )
+    return false;
+
   if ( line_cooldown->down() )
     return false;
 

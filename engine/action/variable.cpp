@@ -382,6 +382,9 @@ void variable_t::execute()
 
 bool variable_t::action_ready()
 {
+  if ( !select_target() )
+    return false;
+
   if ( line_cooldown->down() )
     return false;
 
