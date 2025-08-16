@@ -122,7 +122,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                  {
                                    // TOCHECK: 2025-08-16 Currently Hellcaller TWW3 B4 (Maintained Withering) tier bonus
                                    // of doing Blackened Soul damage faster is bugged for destruction and does not work
-                                   if ( p.bugs || p.specialization() != WARLOCK_DESTRUCTION )
+                                   if ( !p.bugs || p.specialization() != WARLOCK_DESTRUCTION )
                                    {
                                      period *= 1.0 + p.buffs.maintained_withering->data()
                                                          .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
