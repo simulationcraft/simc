@@ -321,8 +321,8 @@ public:
     player_talent_t the_expendables; // Per-pet stacking buff to damage when a Wild Imp expires
     const spell_data_t* the_expendables_buff;
     player_talent_t blood_invocation;
-    player_talent_t umbral_blaze; // TOCHECK: What is the duration behavior on refresh?
-    const spell_data_t* umbral_blaze_dot;
+    player_talent_t umbral_blaze;
+    const spell_data_t* umbral_blaze_dot; // Rolling Periodic DoT with DOT_ROLLING default refresh behavior
     player_talent_t reign_of_tyranny;
     const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
@@ -535,11 +535,11 @@ public:
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;
 
-    player_talent_t mark_of_xavius; // TODO: This is almost certainly bugged and applying to Wither for Affliction
-    player_talent_t seeds_of_their_demise; // TODO: This still has data buffing Blackened Soul
+    player_talent_t mark_of_xavius;
+    player_talent_t seeds_of_their_demise;
     player_talent_t mark_of_perotharn;
 
-    player_talent_t malevolence; // TODO: While buff is active this guarantees Blackened Soul, but this could be leftover from earlier versions
+    player_talent_t malevolence;
     const spell_data_t* malevolence_buff;
     const spell_data_t* malevolence_dmg;
 
@@ -762,7 +762,7 @@ public:
     proc_t* demonic_core_dogs;
     proc_t* demonic_core_imps;
     proc_t* carnivorous_stalkers;
-    proc_t* shadow_invocation; // Bilescourge Bomber proc on most spells
+    proc_t* shadow_invocation; // Bilescourge Bomber proc on Shadowbolt, Demonbolt and HoG Impacts
     proc_t* imp_gang_boss;
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;

@@ -511,13 +511,10 @@ namespace warlock
     tier.demonfire_flurry = find_spell( 1217731 );
 
     // Manaforge omega
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-    {
-      tier.rampaging_demonic_soul = find_spell( 1239689 );
-      tier.demonic_oculus         = find_spell( 1238810 );
-      tier.eye_blast              = find_spell( 1239510 );
-      tier.demonic_intelligence   = find_spell( 1239569 );
-    }
+    tier.rampaging_demonic_soul = find_spell( 1239689 );
+    tier.demonic_oculus         = find_spell( 1238810 );
+    tier.eye_blast              = find_spell( 1239510 );
+    tier.demonic_intelligence   = find_spell( 1239569 );
 
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
@@ -951,14 +948,11 @@ namespace warlock
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
-    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-    {
-      buffs.demonic_oculus = make_buff( this, "demonic_oculus", tier.demonic_oculus );
+    buffs.demonic_oculus = make_buff( this, "demonic_oculus", tier.demonic_oculus );
 
-      buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence )
-                                       ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                                       ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
-    }
+    buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
   }
 
   void warlock_t::create_buffs_hellcaller()

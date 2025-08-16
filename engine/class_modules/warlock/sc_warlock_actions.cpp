@@ -132,8 +132,7 @@ using namespace helpers;
       affected_by.xalans_cruelty_td = data().affected_by( p->hero.xalans_cruelty->effectN( 4 ) );
       affected_by.xalans_cruelty_crit = data().affected_by( p->hero.xalans_cruelty->effectN( 1 ) );
 
-      if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } )
-        affected_by.master_summoner = data().affected_by( p->talents.master_summoner->effectN( 2 ) );
+      affected_by.master_summoner = data().affected_by( p->talents.master_summoner->effectN( 2 ) );
 
       triggers.decimation = p->talents.decimation.ok();
     }
@@ -209,7 +208,8 @@ using namespace helpers;
           if ( destruction() )
             adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 2 ).base_value() );
 
-          if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
+          // TOCHECK: 2025-08-16 Currently Infernal Machine talent is bugged for Demonology and does not work
+          if ( demonology() && !p()->bugs && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
           if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
@@ -698,7 +698,8 @@ using namespace helpers;
 
       if ( destruction() && affected_by.havoc )
       {
-        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + p()->hero.gloom_of_nathreza->effectN( 2 ).percent();
+        // TOCHECK: 2025-08-16 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + ( !p()->bugs ? p()->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 );
         p()->havoc_spells.push_back( this );
       }
 
@@ -1342,8 +1343,23 @@ using namespace helpers;
           }
         }
 
+        // Seeds of their Demise collapse conditions must be checked periodically for every Wither tick
+        if ( !td( d->target )->debuffs_blackened_soul->check() )
+        {
+          bool collapse = false;
+          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() > 1 && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() >= as<int>( p()->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
+          if ( collapse )
+          {
+            td( d->target )->debuffs_blackened_soul->trigger();
+            p()->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (wither tick check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
+                                   p()->name(), d->target->name(), d->current_stack(), d->target->health_percentage() );
+          }
+        }
+
         if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
         {
+          // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
           d->increment( 1 );
           p()->procs.mark_of_perotharn->occur();
         }
@@ -1354,8 +1370,26 @@ using namespace helpers;
         double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
 
         m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+        // Mark of Perotharn is being applied twice in what appears to be a bug
+        m *= 1.0 + ( p()->bugs ? p()->hero.mark_of_perotharn->effectN( 1 ).percent() : 0.0 );
 
         return m;
+      }
+
+      void trigger_dot( action_state_t* s ) override
+      {
+        warlock_spell_t::trigger_dot( s );
+
+        timespan_t duration = composite_dot_duration( s );
+        if ( duration <= timespan_t::zero() )
+          return;
+
+        auto& dot = td( s->target )->dots_wither;
+        // In simc dots increase their stack count when refreshed.
+        // Ingame, however, Wither does not increase stacks on dot refresh.
+        // Therefore, its stack count should be decreased by 1 after refreshing to match ingame behavior.
+        if ( dot->is_ticking() && dot->current_stack() > 1 )
+          dot->decrement( 1 );
       }
     };
 
@@ -1403,6 +1437,7 @@ using namespace helpers;
 
       if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
       {
+        // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
         td( s->target )->dots_wither->increment( 1 );
         p()->procs.mark_of_perotharn->occur();
       }
@@ -1413,6 +1448,8 @@ using namespace helpers;
       double m = warlock_spell_t::composite_crit_damage_bonus_multiplier();
 
       m *= 1.0 + p()->hero.mark_of_perotharn->effectN( 1 ).percent();
+      // TOCHECK: 2025-08-16 Mark of Perotharn is being applied twice in what appears to be a bug
+      m *= 1.0 + ( p()->bugs ? p()->hero.mark_of_perotharn->effectN( 1 ).percent() : 0.0 );
 
       return m;
     }
@@ -1453,17 +1490,32 @@ using namespace helpers;
       return m;
     }
 
+    void execute() override
+    {
+      // Wither stack decrement is done before damage. Relevant for Mark of Xavius talent.
+      // (e.g.) Blackened Soul where 10 to 9 stacks: Mark of Xavius talent bonus damage is calculated on 9 stacks.
+      if ( td( target )->dots_wither->current_stack() > 1 && !p()->buffs.maintained_withering->check() )
+        td( target )->dots_wither->decrement( 1 );
+
+      warlock_spell_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
       player_t* tar = s->target;
 
-      if ( td( tar )->dots_wither->current_stack() > 1 && !p()->buffs.maintained_withering->check() )
-        td( tar )->dots_wither->decrement( 1 );
-
       if ( td( tar )->dots_wither->current_stack() <= 1 )
-        make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
+      {
+        make_event( *sim, 0_ms, [ this, tar ] {
+          if ( td( tar )->debuffs_blackened_soul->check() )
+          {
+            td( tar )->debuffs_blackened_soul->expire();
+            p()->sim->print_debug( "{} wither stack collapse in {} ended. wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots_wither->current_stack() );
+          }
+        } );
+      }
 
       bool seeds_triggered = false;
 
@@ -2718,31 +2770,88 @@ using namespace helpers;
 
     struct hog_impact_t : public warlock_spell_t
     {
-      int shards_used;
+      struct hogi_state_t {
+        int shards_used;
+        bool rancora_empowered;
+        int first_hit_random_target;
+        bool allow_umbral_blaze;
+        bool allow_succulent_soul;
+
+        hogi_state_t()
+          : shards_used( 0 ),
+          rancora_empowered( false ),
+          first_hit_random_target( 0 ),
+          allow_umbral_blaze( true ),
+          allow_succulent_soul( true )
+        { }
+      };
+
+      struct hog_impact_state_t : public action_state_t
+      {
+        hogi_state_t state;
+
+        hog_impact_state_t( action_t* action, player_t* target )
+          : action_state_t( action, target ),
+          state()
+        { }
+
+        void initialize() override
+        {
+          action_state_t::initialize();
+          state.shards_used = 0;
+          state.rancora_empowered = false;
+          state.first_hit_random_target = 0;
+          state.allow_umbral_blaze = true;
+          state.allow_succulent_soul = true;
+        }
+
+        std::ostringstream& debug_str( std::ostringstream& s ) override
+        {
+          action_state_t::debug_str( s );
+          s << " shards_used=" << state.shards_used;
+          s << " rancora_empowered=" << state.rancora_empowered;
+          s << " first_hit_random_target=" << state.first_hit_random_target;
+          s << " allow_umbral_blaze=" << state.allow_umbral_blaze;
+          s << " allow_succulent_soul=" << state.allow_succulent_soul;
+          return s;
+        }
+
+        void copy_state( const action_state_t* s ) override
+        {
+          action_state_t::copy_state( s );
+          state = debug_cast<const hog_impact_state_t*>( s )->state;
+        }
+      };
+
       timespan_t meteor_time;
-      bool rancora_empowered;
-      int rancora_random_target;
+      hogi_state_t state;
       umbral_blaze_dot_t* blaze;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
-        shards_used( 0 ),
-        meteor_time( 400_ms ),
-        rancora_empowered( false ),
-        rancora_random_target( 0 )
+        meteor_time( 400_ms )
       {
         aoe = -1;
         dual = true;
 
         affected_by.touch_of_rancora = affected_by.touch_of_rancora_casted = p->hero.touch_of_rancora.ok();
 
-        triggers.shadow_invocation = true;
+        triggers.shadow_invocation = true;  // all HoG impacts can proc SI, including the ones from Ruination and Pact of the Imp Mother
 
         if ( p->talents.umbral_blaze.ok() )
         {
           blaze = new umbral_blaze_dot_t( p );
           add_child( blaze );
         }
+      }
+
+      action_state_t* new_state() override
+      { return new hog_impact_state_t( this, target ); }
+
+      void snapshot_state( action_state_t* s, result_amount_type rt ) override
+      {
+        debug_cast<hog_impact_state_t*>( s )->state = state;
+        warlock_spell_t::snapshot_state( s, rt );
       }
 
       timespan_t travel_time() const override
@@ -2752,8 +2861,16 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
+        int first_hit_random_target = debug_cast<const hog_impact_state_t*>( s )->state.first_hit_random_target;
+
+        // TOCHECK: 2025-08-16 Due to a bug, Succulent Soul only affects one of the targets hit in AoE
+        bool allow_succulent_soul = debug_cast<const hog_impact_state_t*>( s )->state.allow_succulent_soul;
+        if ( soul_harvester() && allow_succulent_soul && p()->buffs.succulent_soul->check() && ( !p()->bugs || s->chain_target == first_hit_random_target ) )
+          m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+
         // Touch of Rancora only affects one of HoG's hits in AoE (bug?), randomly selected
-        if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered && ( !p()->bugs || s->chain_target == rancora_random_target ) )
+        bool rancora_empowered = debug_cast<const hog_impact_state_t*>( s )->state.rancora_empowered;
+        if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered && ( !p()->bugs || s->chain_target == first_hit_random_target ) )
         {
           // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER (bug?), we currently believe this must be done at the end of action_multiplier() calculation
           if ( p()->bugs )
@@ -2774,12 +2891,9 @@ using namespace helpers;
 
       void execute() override
       {
-        if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered )
-        {
-          // NOTE: Touch of Rancora only affects one of HoG's hits in AoE (bug?), randomly selected
-          const std::vector<player_t*>& tl = target_list();
-          rancora_random_target = rng().range( as<int>( tl.size() ) );
-        }
+        // NOTE: Some effects only affects one of HoG's hits in AoE (bug?), randomly selected
+        const std::vector<player_t*>& tl = target_list();
+        state.first_hit_random_target = rng().range( as<int>( tl.size() ) );
 
         warlock_spell_t::execute();
       }
@@ -2791,12 +2905,9 @@ using namespace helpers;
         double gloom = 0.0;
 
         if ( p()->hero.gloom_of_nathreza.ok() )
-           gloom = shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
+           gloom = state.shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
 
-        m *= shards_used * ( 1.0 + gloom );
-
-        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
-          m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+        m *= state.shards_used * ( 1.0 + gloom );
 
         return m;
       }
@@ -2813,13 +2924,13 @@ using namespace helpers;
           // Current behavior: HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
           // However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
           // Imps then spawn roughly every 0.18 seconds seconds after the damage event.
-          for ( int i = 1; i <= shards_used; i++ )
+          for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
           {
             auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
             p()->wild_imp_spawns.push_back( ev );
           }
 
-          if ( p()->talents.umbral_blaze.ok() && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
+          if ( p()->talents.umbral_blaze.ok() && debug_cast<hog_impact_state_t*>( s )->state.allow_umbral_blaze && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
           {
             blaze->execute_on_target( s->target );
             p()->procs.umbral_blaze->occur();
@@ -2827,7 +2938,9 @@ using namespace helpers;
         }
 
         // We need Demonic Soul to proc on every target, but buff is decremented on impact. Fudge this by 1ms to ensure all targets are hit.
-        if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+        // TOCHECK: 2025-08-16 Due to a bug, Succulent Soul only affects one of the targets hit in AoE
+        // We keep the original buff decrement behavior and handle this bug from 'composite_da_multiplier()'
+        if ( soul_harvester() && debug_cast<hog_impact_state_t*>( s )->state.allow_succulent_soul && p()->buffs.succulent_soul->check() )
         {
           bool primary = ( s->chain_target == 0 );
 
@@ -2892,20 +3005,22 @@ using namespace helpers;
     void execute() override
     {
       int shards_used = as<int>( cost() );
-      impact_spell->shards_used = shards_used;
+      impact_spell->state.shards_used = shards_used;
       if ( pre_execute_state )
       {
         snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
         // An incoming rancora empowered casted spell will remain empowered even if the Demonic Art buff falls off during cast
-        impact_spell->rancora_empowered = debug_cast<hand_of_guldan_state_t*>( pre_execute_state )->rancora_empowered;
+        impact_spell->state.rancora_empowered = debug_cast<hand_of_guldan_state_t*>( pre_execute_state )->rancora_empowered;
         // Casted spells do not consume any Demonic Art buff if none were active at the start of the cast
         triggers.demonic_art_buff = debug_cast<hand_of_guldan_state_t*>( pre_execute_state )->demonic_art_buffed;
       }
       else
       {
-        impact_spell->rancora_empowered = false;
+        impact_spell->state.rancora_empowered = false;
         triggers.demonic_art_buff = false;
       }
+      impact_spell->state.allow_umbral_blaze = true;
+      impact_spell->state.allow_succulent_soul = true;
 
       warlock_spell_t::execute();
 
@@ -2967,10 +3082,14 @@ using namespace helpers;
 
       if ( p()->talents.pact_of_the_imp_mother.ok() && rng().roll( p()->talents.pact_of_the_imp_mother->effectN( 1 ).percent() ) )
       {
-        make_event( *sim, 0_ms, [ this, t = target ] {
-          impact_spell->rancora_empowered = false;  // Pact of the Imp Mother extra HoG is never rancora empowered
-          impact_spell->execute_on_target( t );
-        } );
+        make_event( *sim, rng().gauss( impact_spell->travel_time(), timespan_t::from_seconds( sim->travel_variance ) ),
+          [ this, t = target, su = impact_spell->state.shards_used ] {
+            impact_spell->state.shards_used = su;
+            impact_spell->state.rancora_empowered = false;    // Pact of the Imp Mother extra HoG is never rancora empowered
+            impact_spell->state.allow_umbral_blaze = false;   // Pact of the Imp Mother extra HoG can't proc umbral blaze
+            impact_spell->state.allow_succulent_soul = false; // Pact of the Imp Mother extra HoG can't benefit from succulent soul
+            impact_spell->execute_on_target( t );
+          } );
         p()->procs.pact_of_the_imp_mother->occur();
       }
     }
@@ -4918,6 +5037,8 @@ using namespace helpers;
   {
     struct ruination_impact_t : public warlock_spell_t
     {
+      hand_of_guldan_t::hog_impact_t* hog_impact_spell;
+
       ruination_impact_t( warlock_t* p )
         : warlock_spell_t( "Ruination (Impact)", p, p->hero.ruination_impact )
       {
@@ -4927,6 +5048,11 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
         affected_by.backdraft = true;
+
+        if ( demonology() )
+        {
+          hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
+        }
       }
 
       void impact( action_state_t* s ) override
@@ -4937,11 +5063,13 @@ using namespace helpers;
         {
           if ( demonology() )
           {
-            for ( int i = 1; i <= as<int>( p()->hero.ruination_buff->effectN( 2 ).base_value() ); i++ )
-            {
-              auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
-              p()->wild_imp_spawns.push_back( ev );
-            }
+            make_event( *sim, 0_ms, [ this, t = target ] {
+              hog_impact_spell->state.shards_used = as<int>( p()->hero.ruination_buff->effectN( 2 ).base_value() );
+              hog_impact_spell->state.rancora_empowered = false;      // Ruination HoG impact is never rancora empowered
+              hog_impact_spell->state.allow_umbral_blaze = false;     // Ruination HoG impact can't proc umbral blaze
+              hog_impact_spell->state.allow_succulent_soul = false;   // Ruination HoG impact can't benefit from succulent soul
+              hog_impact_spell->execute_on_target( t );
+            } );
           }
 
           if ( destruction() )
@@ -5178,18 +5306,24 @@ using namespace helpers;
         p->procs.bleakheart_tactics->occur();
       }
 
-      bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
-      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
-      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
+      if ( !tdata->debuffs_blackened_soul->check() )
+      {
+        bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
+        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
+        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
-      if ( collapse )
-      {
-        tdata->debuffs_blackened_soul->trigger();
-      }
-      else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
-      {
-        tdata->debuffs_blackened_soul->trigger();
-        p->procs.blackened_soul->occur();
+        if ( collapse )
+        {
+          tdata->debuffs_blackened_soul->trigger();
+          p->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (stack gain check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
+                      p->name(), target->name(), tdata->dots_wither->current_stack(), target->health_percentage() );
+        }
+        else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
+        {
+          tdata->debuffs_blackened_soul->trigger();
+          p->procs.blackened_soul->occur();
+          p->sim->print_debug( "{} wither stack collapse in {} started (blackened soul proc)", p->name(), target->name() );
+        }
       }
 
       if ( malevolence )

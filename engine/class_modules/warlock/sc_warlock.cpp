@@ -119,9 +119,16 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                  timespan_t period = b->buff_period;
 
                                  if ( p.buffs.maintained_withering->check() )
-                                   period *= 1.0 + p.buffs.maintained_withering->data()
-                                                       .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
-                                                       .percent();
+                                 {
+                                   // TOCHECK: 2025-08-16 Currently Hellcaller TWW3 B4 (Maintained Withering) tier bonus
+                                   // of doing Blackened Soul damage faster is bugged for destruction and does not work
+                                   if ( p.bugs || p.specialization() != WARLOCK_DESTRUCTION )
+                                   {
+                                     period *= 1.0 + p.buffs.maintained_withering->data()
+                                                         .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
+                                                         .percent();
+                                   }
+                                 }
                                  return period;
                                } );
 
@@ -500,7 +507,7 @@ double warlock_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 0 } && talents.master_summoner.ok() )
+  if ( talents.master_summoner.ok() )
     m += talents.master_summoner->effectN( 3 ).base_value();
 
   return m;
