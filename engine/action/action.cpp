@@ -4603,6 +4603,17 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
   }
 }
 
+bool call_action_list_t::action_ready()
+{
+  if ( line_cooldown->down() )
+    return false;
+
+  if ( if_expr && !if_expr->success() )
+    return false;
+
+  return true;
+}
+
 swap_action_list_t::swap_action_list_t( player_t* player, util::string_view options_str,
                                         util::string_view name ) :
     action_t( ACTION_OTHER, name, player ),

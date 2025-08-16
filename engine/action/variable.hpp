@@ -45,6 +45,8 @@ struct variable_t : public action_t
 
   // Note note note, doesn't do anything that a real action does
   void execute() override;
+
+  bool action_ready() override;
 };
 
 struct cycling_variable_t : public variable_t

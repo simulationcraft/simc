@@ -1232,6 +1232,7 @@ struct call_action_list_t : public action_t
   action_priority_list_t* alist;
 
   call_action_list_t( player_t*, util::string_view );
+  bool action_ready() override;
   void execute() override
   { assert( 0 ); }
 };
