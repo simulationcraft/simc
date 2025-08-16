@@ -11270,7 +11270,6 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Shadow Crash (id=391286) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -11282,10 +11281,11 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Triggered By     : Shadow Crash (205385)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1028683)  : Dummy (3)
+#1 (id=1028683)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc205385
 
 Name             : Empowered Renew (id=391339) [Spell Family (6), Passive, Hidden] 
@@ -15198,7 +15198,6 @@ Effects          :
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Shadow Crash (id=465521) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15210,10 +15209,11 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Triggered By     : Shadow Crash (457042)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1177515)  : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#1 (id=1177515)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc205385
 
 Name             : Shadow Crash (id=465522) [Spell Family (6)] 
