@@ -265361,6 +265361,7 @@ Description      : Your harmful abilities draw focused void through the prism to
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Unyielding Netherprism (id=1233556) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Cosmic
 Spell Type       : None
 Duration         : 20 seconds
@@ -265370,6 +265371,7 @@ Labels           : 292
                  : 3959: Item Effects
 Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1227066)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Agi | Target: Self (1)
