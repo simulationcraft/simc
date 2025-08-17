@@ -3001,6 +3001,7 @@ struct stomp_t : monk_melee_attack_t
   stomp_t( monk_t *player ) : monk_melee_attack_t( player, "stomp", player->talent.brewmaster.walk_with_the_ox_stomp )
   {
     background = true;
+    aoe        = -1;
   }
 };
 
