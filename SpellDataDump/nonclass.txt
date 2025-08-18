@@ -253917,7 +253917,7 @@ Description      : Your spells and abilities have a high chance to Hype you up, 
 Name             : Broker Disguise (id=471610) 
 School           : Physical
 Spell Type       : None
-Duration         : 600 seconds
+Duration         : 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Arena or Rated Battleground (144), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320)
 Aura Interrupt   : Mount (17)
 Effects          :
