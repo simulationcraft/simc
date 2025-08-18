@@ -261,7 +261,7 @@ void demonology( player_t* p )
   default_->add_action( "demonic_strength,if=pet.demonic_tyrant.active&active_enemies>1" );
   default_->add_action( "bilescourge_bombers,if=active_enemies>1" );
   default_->add_action( "hand_of_guldan,if=demonic_art&soul_shard>=3" );
-  default_->add_action( "implosion,if=active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl" );
+  default_->add_action( "actions+=/implosion,if=cooldown.summon_demonic_tyrant.remains_expected>10&(active_enemies>3&set_bonus.tww2_4pc&buff.wild_imps.stack>7&!buff.demonic_core.react&!prev_gcd.1.implosion|!set_bonus.tww2_4pc&active_enemies>2&two_cast_imps>2&!prev_gcd.1.implosion&variable.impl)" );
   default_->add_action( "ruination" );
   default_->add_action( "demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=3&talent.doom" );
   default_->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.stack>=3&!talent.doom" );
