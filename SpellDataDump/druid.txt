@@ -18465,7 +18465,7 @@ Name             : Bursting Growth (id=440122) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Range            : 40 yards
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
