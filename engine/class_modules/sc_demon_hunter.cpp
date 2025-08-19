@@ -15,21 +15,6 @@ namespace
 class demon_hunter_t;
 struct soul_fragment_t;
 
-namespace buffs
-{
-}
-namespace actions
-{
-struct demon_hunter_attack_t;
-namespace attacks
-{
-struct auto_attack_damage_t;
-}
-}  // namespace actions
-namespace items
-{
-}
-
 // Target Data
 class demon_hunter_td_t : public actor_target_data_t
 {
@@ -243,8 +228,8 @@ public:
   auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
   // Autoattacks
-  actions::attacks::auto_attack_damage_t* melee_main_hand;
-  actions::attacks::auto_attack_damage_t* melee_off_hand;
+  attack_t* melee_main_hand;
+  attack_t* melee_off_hand;
 
   double metamorphosis_health;  // Vengeance temp health from meta;
   double expected_max_health;
@@ -600,7 +585,6 @@ public:
     // Cross-Expansion Override Spells
     const spell_data_t* sigil_of_spite;
     const spell_data_t* sigil_of_spite_damage;
-    const spell_data_t* the_hunt;
 
   } spell;
 
@@ -1047,6 +1031,7 @@ public:
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
+  const spell_data_t* talent_spell_lookup( player_talent_t t, int id );
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -2282,7 +2267,8 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
-      int second_ability_increase = as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
+      int second_ability_increase =
+          as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
 
       int first_ability_amount = 1;
       int second_ability_amount =
@@ -4663,15 +4649,16 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
       the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->spell.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
+        : demon_hunter_spell_t( name, p,
+                                p->talent.demon_hunter.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
       {
         dual = true;
-        aoe  = as<int>( p->spell.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+        aoe  = as<int>( p->talent.demon_hunter.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
       }
     };
 
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.the_hunt->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.the_hunt->effectN( 1 ).trigger() )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
@@ -4679,7 +4666,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
   };
 
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "the_hunt", p, p->spell.the_hunt, options_str )
+    : base_t( "the_hunt", p, p->talent.demon_hunter.the_hunt, options_str )
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
@@ -6276,7 +6263,7 @@ struct shear_t : public felblade_trigger_t<
     {
       fracture = new fracture_t( p );
       cooldown = fracture->cooldown;
-      stats = fracture->stats;
+      stats    = fracture->stats;
     }
   }
 
@@ -6285,7 +6272,7 @@ struct shear_t : public felblade_trigger_t<
     if ( p()->talent.vengeance.fracture->ok() )
     {
       fracture->execute_on_target( target );
-//      stats->add_execute( 0_ms, target );
+      //      stats->add_execute( 0_ms, target );
       return;
     }
 
@@ -8874,120 +8861,92 @@ void demon_hunter_t::init_spells()
   talent.felscarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
   // Class Background Spells
-  spell.felblade_damage          = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 213243 );
-  spell.felblade_reset_havoc     = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 236167 );
-  spell.felblade_reset_vengeance = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 203557 );
-  spell.infernal_armor_damage    = conditional_spell_lookup( talent.demon_hunter.infernal_armor->ok(), 320334 );
+  spell.felblade_damage          = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
+  spell.felblade_reset_havoc     = talent_spell_lookup( talent.demon_hunter.felblade, 236167 );
+  spell.felblade_reset_vengeance = talent_spell_lookup( talent.demon_hunter.felblade, 203557 );
+  spell.infernal_armor_damage    = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
   spell.immolation_aura_damage   = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
   spell.sigil_of_flame_damage    = find_spell( 204598 );
   spell.sigil_of_flame_fury      = find_spell( 389787 );
-  spell.the_hunt                 = talent.demon_hunter.the_hunt;
-  spec.sigil_of_misery_debuff    = conditional_spell_lookup( talent.demon_hunter.sigil_of_misery->ok(), 207685 );
+  spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
-  spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
-  spec.chaos_theory_buff    = talent.havoc.chaos_theory->ok() ? find_spell( 390195 ) : spell_data_t::not_found();
-  spec.demon_blades_damage  = talent.havoc.demon_blades->effectN( 1 ).trigger();
-  spec.essence_break_debuff = talent.havoc.essence_break->ok() ? find_spell( 320338 ) : spell_data_t::not_found();
-  spec.eye_beam_damage      = talent.havoc.eye_beam->ok() ? find_spell( 198030 ) : spell_data_t::not_found();
-  spec.furious_gaze_buff    = talent.havoc.furious_gaze->ok() ? find_spell( 343312 ) : spell_data_t::not_found();
-  spec.first_blood_blade_dance_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 391374 ) : spell_data_t::not_found();
-  spec.first_blood_blade_dance_2_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 391378 ) : spell_data_t::not_found();
-  spec.first_blood_death_sweep_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 393055 ) : spell_data_t::not_found();
-  spec.first_blood_death_sweep_2_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 393054 ) : spell_data_t::not_found();
-  spec.glaive_tempest_damage = talent.havoc.glaive_tempest->ok() ? find_spell( 342857 ) : spell_data_t::not_found();
-  spec.initiative_buff       = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
-  spec.inner_demon_buff      = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
-  spec.inner_demon_damage    = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
-  spec.exergy_buff           = talent.havoc.exergy->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
-  spec.inertia_buff          = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
-  spec.ragefire_damage       = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
-  spec.restless_hunter_buff  = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
-  spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
-  spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
-  spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
-  spec.furious_throws_damage = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
+  spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
+  spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
+  spec.demon_blades_damage              = talent.havoc.demon_blades->effectN( 1 ).trigger();
+  spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
+  spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
+  spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
+  spec.first_blood_blade_dance_damage   = talent_spell_lookup( talent.havoc.first_blood, 391374 );
+  spec.first_blood_blade_dance_2_damage = talent_spell_lookup( talent.havoc.first_blood, 391378 );
+  spec.first_blood_death_sweep_damage   = talent_spell_lookup( talent.havoc.first_blood, 393055 );
+  spec.first_blood_death_sweep_2_damage = talent_spell_lookup( talent.havoc.first_blood, 393054 );
+  spec.glaive_tempest_damage            = talent_spell_lookup(talent.havoc.glaive_tempest   , 342857 );
+  spec.initiative_buff                  = talent_spell_lookup(talent.havoc.initiative       , 391215 );
+  spec.inner_demon_buff                 = talent_spell_lookup(talent.havoc.inner_demon      , 390145 );
+  spec.inner_demon_damage               = talent_spell_lookup(talent.havoc.inner_demon      , 390137 );
+  spec.exergy_buff                      = talent_spell_lookup(talent.havoc.exergy           , 208628 );
+  spec.inertia_buff                     = talent_spell_lookup(talent.havoc.inertia          , 427641 );
+  spec.ragefire_damage                  = talent_spell_lookup(talent.havoc.ragefire         , 390197 );
+  spec.restless_hunter_buff             = talent_spell_lookup(talent.havoc.restless_hunter  , 390212 );
+  spec.soulscar_debuff                  = talent_spell_lookup(talent.havoc.soulscar         , 390181 );
+  spec.tactical_retreat_buff            = talent_spell_lookup(talent.havoc.tactical_retreat , 389890 );
+  spec.unbound_chaos_buff               = talent_spell_lookup(talent.havoc.unbound_chaos    , 347462 );
+  spec.cycle_of_hatred_buff             = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.furious_throws_damage            = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
 
-  spec.demon_spikes_buff  = find_spell( 203819 );
-  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
-  spec.frailty_debuff     = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
-  spec.painbringer_buff   = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
-  spec.calcified_spikes_buff =
-      talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
-  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
-  spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
-  spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
-  spec.sigil_of_silence_debuff =
-      talent.vengeance.sigil_of_silence->ok() ? find_spell( 204490 ) : spell_data_t::not_found();
-  spec.sigil_of_chains_debuff =
-      talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
-  spec.burning_alive_controller =
-      talent.vengeance.burning_alive->ok() ? find_spell( 207760 ) : spell_data_t::not_found();
-  spec.infernal_strike_impact = find_spell( 189112 );
-  spec.spirit_bomb_damage     = talent.vengeance.spirit_bomb->ok() ? find_spell( 247455 ) : spell_data_t::not_found();
-  spec.frailty_heal           = talent.vengeance.frailty->ok() ? find_spell( 227255 ) : spell_data_t::not_found();
-  spec.feast_of_souls_heal  = talent.vengeance.feast_of_souls->ok() ? find_spell( 207693 ) : spell_data_t::not_found();
-  spec.fel_devastation_2    = find_rank_spell( "Fel Devastation", "Rank 2" );
-  spec.fel_devastation_heal = talent.vengeance.fel_devastation->ok() ? find_spell( 212106 ) : spell_data_t::not_found();
+  spec.demon_spikes_buff        = find_spell( 203819 );
+  spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
+  spec.frailty_debuff           = talent_spell_lookup( talent.vengeance.frailty, 247456 );
+  spec.painbringer_buff         = talent_spell_lookup( talent.vengeance.painbringer, 212988 );
+  spec.calcified_spikes_buff    = talent_spell_lookup( talent.vengeance.calcified_spikes, 391171 );
+  spec.soul_furnace_damage_amp  = talent_spell_lookup( talent.vengeance.soul_furnace, 391172 );
+  spec.soul_furnace_stack       = talent_spell_lookup( talent.vengeance.soul_furnace, 391166 );
+  spec.retaliation_damage       = talent_spell_lookup( talent.vengeance.retaliation, 391159 );
+  spec.sigil_of_silence_debuff  = talent_spell_lookup( talent.vengeance.sigil_of_silence, 204490 );
+  spec.sigil_of_chains_debuff   = talent_spell_lookup( talent.vengeance.sigil_of_chains, 204843 );
+  spec.burning_alive_controller = talent_spell_lookup( talent.vengeance.burning_alive, 207760 );
+  spec.infernal_strike_impact   = find_spell( 189112 );
+  spec.spirit_bomb_damage       = talent_spell_lookup( talent.vengeance.spirit_bomb, 247455 );
+  spec.frailty_heal             = talent_spell_lookup( talent.vengeance.frailty, 227255 );
+  spec.feast_of_souls_heal      = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
+  spec.fel_devastation_2        = find_rank_spell( "Fel Devastation", "Rank 2" );
+  spec.fel_devastation_heal     = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
 
   // Hero spec background spells
-  hero_spec.reavers_glaive =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442294 ) : spell_data_t::not_found();
-  hero_spec.reavers_mark = talent.aldrachi_reaver.reavers_mark->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
-  hero_spec.glaive_flurry =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
-  hero_spec.rending_strike =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_buff =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_damage =
-      talent.aldrachi_reaver.fury_of_the_aldrachi->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
-  hero_spec.warblades_hunger_buff =
-      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442503 ) : spell_data_t::not_found();
-  hero_spec.warblades_hunger_damage =
-      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442507 ) : spell_data_t::not_found();
-  hero_spec.wounded_quarry_damage =
-      talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
+  hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
+  hero_spec.reavers_mark             = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
+  hero_spec.glaive_flurry            = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
+  hero_spec.rending_strike           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
+  hero_spec.art_of_the_glaive_buff   = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
+  hero_spec.art_of_the_glaive_damage = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
+  hero_spec.warblades_hunger_buff    = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
+  hero_spec.warblades_hunger_damage  = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
+  hero_spec.wounded_quarry_damage    = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
   hero_spec.thrill_of_the_fight_attack_speed_buff =
-      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
   hero_spec.thrill_of_the_fight_damage_buff_havoc =
-      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 442688 );
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
   hero_spec.thrill_of_the_fight_damage_buff_vengeance =
-      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 1227062 );
-  hero_spec.burning_blades_debuff =
-      talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
-  hero_spec.student_of_suffering_buff =
-      talent.felscarred.student_of_suffering->ok() ? find_spell( 453239 ) : spell_data_t::not_found();
-  hero_spec.monster_rising_buff =
-      talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
-  hero_spec.enduring_torment_buff =
-      talent.felscarred.enduring_torment->ok() ? find_spell( 453314 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_demonic_buff =
-      talent.felscarred.demonsurge->ok() ? find_spell( 452435 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_hardcast_buff =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452489 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_damage = talent.felscarred.demonsurge->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_stacking_buff =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
-  hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
-  hero_spec.spirit_burst       = talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok()
-                                     ? find_spell( 452437 )
-                                     : spell_data_t::not_found();
-  hero_spec.sigil_of_doom =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452490 ) : spell_data_t::not_found();
-  hero_spec.sigil_of_doom_damage =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 462030 ) : spell_data_t::not_found();
-  hero_spec.abyssal_gaze = talent.felscarred.demonic_intensity->ok() ? find_spell( 452497 ) : spell_data_t::not_found();
-  hero_spec.fel_desolation =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452486 ) : spell_data_t::not_found();
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 1227062 );
+  hero_spec.burning_blades_debuff     = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
+  hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
+  hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
+  hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
+  hero_spec.demonsurge_demonic_buff   = talent_spell_lookup( talent.felscarred.demonsurge, 452435 );
+  hero_spec.demonsurge_hardcast_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
+  hero_spec.demonsurge_damage         = talent_spell_lookup( talent.felscarred.demonsurge, 452416 );
+  hero_spec.demonsurge_stacking_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452416 );
+  hero_spec.demonsurge_trigger        = talent_spell_lookup( talent.felscarred.demonsurge, 453323 );
+  hero_spec.soul_sunder               = talent_spell_lookup( talent.felscarred.demonsurge, 452436 );
+  hero_spec.spirit_burst =
+      conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok(), 452437 );
+  hero_spec.sigil_of_doom        = talent_spell_lookup( talent.felscarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.felscarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze         = talent_spell_lookup( talent.felscarred.demonic_intensity, 452497 );
+  hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
@@ -9005,12 +8964,11 @@ void demon_hunter_t::init_spells()
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
   spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
-  spell.sigil_of_spite = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
-  spell.sigil_of_spite_damage =
-      talent.demon_hunter.sigil_of_spite->ok() ? find_spell( 389860 ) : spell_data_t::not_found();
-  spec.sigil_of_misery  = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
-  spec.sigil_of_silence = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
-  spec.sigil_of_chains  = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
+  spell.sigil_of_spite        = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
+  spell.sigil_of_spite_damage = talent_spell_lookup( talent.demon_hunter.sigil_of_spite, 389860 );
+  spec.sigil_of_misery        = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
+  spec.sigil_of_silence       = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
+  spec.sigil_of_chains        = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
 
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
@@ -9042,19 +9000,16 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Auxilliary ===================================================
 
-  set_bonuses.tww1_havoc_4pc_buff = set_bonuses.tww1_havoc_4pc->ok() ? find_spell( 454628 ) : spell_data_t::not_found();
-  set_bonuses.tww1_vengeance_4pc_buff =
-      set_bonuses.tww1_vengeance_4pc->ok() ? find_spell( 454774 ) : spell_data_t::not_found();
-  set_bonuses.winning_streak_residual_buff =
-      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1220706 ) : spell_data_t::not_found();
-  set_bonuses.necessary_sacrifice_buff =
-      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1217055 ) : spell_data_t::not_found();
-  set_bonuses.demon_soul_havoc_buff     = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
-  set_bonuses.demon_soul_vengeance_buff = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
-  set_bonuses.demon_soul_buff           = specialization() == DEMON_HUNTER_HAVOC ? set_bonuses.demon_soul_havoc_buff
-                                                                                 : set_bonuses.demon_soul_vengeance_buff;
-  set_bonuses.scarred_strikes           = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
-  set_bonuses.demonsurge_meta_trigger   = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238696 );
+  set_bonuses.tww1_havoc_4pc_buff          = conditional_spell_lookup( set_bonuses.tww1_havoc_4pc->ok(), 454628 );
+  set_bonuses.tww1_vengeance_4pc_buff      = conditional_spell_lookup( set_bonuses.tww1_vengeance_4pc->ok(), 454774 );
+  set_bonuses.winning_streak_residual_buff = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1220706 );
+  set_bonuses.necessary_sacrifice_buff     = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1217055 );
+  set_bonuses.demon_soul_havoc_buff        = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
+  set_bonuses.demon_soul_vengeance_buff    = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
+  set_bonuses.demon_soul_buff              = specialization() == DEMON_HUNTER_HAVOC ? set_bonuses.demon_soul_havoc_buff
+                                                                                    : set_bonuses.demon_soul_vengeance_buff;
+  set_bonuses.scarred_strikes              = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
+  set_bonuses.demonsurge_meta_trigger      = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238696 );
 
   // Spell Initialization ===================================================
 
@@ -10250,6 +10205,11 @@ const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
     return spell_data_t::not_found();
   }
   return find_spell( id );
+}
+
+const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id )
+{
+  return conditional_spell_lookup( t->ok(), id );
 }
 
 /* Report Extension Class
