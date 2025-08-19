@@ -1565,7 +1565,7 @@ void aberrant_spellforge( special_effect_t& effect )
         if ( empowerment->check() )
         {
           damage->execute_on_target( s->target );
-          empowerment->expire( a );
+          empowerment->consume( a );
         }
       } );
 
@@ -9616,7 +9616,7 @@ void befoulers_syringe( special_effect_t& effect )
   effect.player->callbacks.register_callback_execute_function( on_next->spell_id,
       [ bloodlust, strike ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
         strike->execute_on_target( s->target );
-        bloodlust->expire( a );
+        bloodlust->consume( a );
       } );
 
   auto cb = new dbc_proc_callback_t( effect.player, *on_next );

@@ -1396,20 +1396,13 @@ void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_flag_e type )
 {
-  assert( pack.data.buff && "EXPIRE_BUFF/DECREMENT_BUFF requires a buff" );
+  assert( pack.data.buff && "CONSUME_BUFF requires a buff" );
 
-  if ( type == EXPIRE_BUFF )
+  if ( type == CONSUME_BUFF )
   {
     parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( parse_callback_e cb_type ) {
       if ( cb_type == PARSE_CALLBACK_POST_EXECUTE )
-        b->expire( a );
-    } );
-  }
-  else if ( type == DECREMENT_BUFF )
-  {
-    parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( parse_callback_e cb_type ) {
-      if ( cb_type == PARSE_CALLBACK_POST_EXECUTE && b->can_expire( a ) )
-        b->decrement();
+        b->consume( a );
     } );
   }
 }

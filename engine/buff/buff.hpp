@@ -69,6 +69,7 @@ public:
   event_t* delay;
   event_t* expiration_delay;
   cooldown_t* cooldown;
+  std::unique_ptr<cooldown_t> internal_cooldown;
   sc_timeline_t uptime_array;
   real_ppm_t* rppm;
 
@@ -93,7 +94,7 @@ public:
   bool reactable;
   bool reverse, constant, quiet, overridden, can_cancel, is_fallback;
   bool requires_invalidation;
-  bool expire_at_max_stack;
+  bool expire_at_max_stack, consume_all_stacks;
   bool ignore_time_modifier;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
@@ -154,7 +155,7 @@ public:
   simple_sample_data_with_min_max_t start_intervals, trigger_intervals, duration_lengths;
   std::vector<uptime_simple_t> stack_uptime;
 
-  virtual ~buff_t() = default;
+  virtual ~buff_t();
 
   buff_t( actor_pair_t q, util::string_view name );
   buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
@@ -270,12 +271,12 @@ public:
   // check if the action matches the trigger spell's proc flags
   virtual bool can_trigger( action_t* action ) const;
   // check if the action matches the buff's proc flags
-  virtual bool can_expire( action_t* action ) const;
+  virtual bool can_consume( action_t* action ) const;
   // trigger the buff only if the action matches the trigger_spell's proc flags
   bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() );
-  // expire if the action match the buff's proc flags
-  void expire( action_t* action, timespan_t d = timespan_t::zero() );
+  // remove stacks if the action match the buff's proc flags
+  void consume( action_t*, int stacks = -1 );
   // Completely remove the buff, including any delayed applications and expirations.
   void cancel();
 
@@ -370,7 +371,9 @@ public:
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
   buff_t* set_expire_at_max_stack( bool );
+  buff_t* set_consume_all_stacks( bool );
   buff_t* set_cooldown( timespan_t duration );
+  buff_t* set_internal_cooldown( timespan_t );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   buff_t* modify_period( timespan_t );

@@ -18,9 +18,8 @@ enum parse_flag_e : uint16_t
   USE_CURRENT       = 0x0002,
   IGNORE_STACKS     = 0x0004,
   ALLOW_ZERO        = 0x0008,
-  EXPIRE_BUFF       = 0x0010,
-  DECREMENT_BUFF    = 0x0020,
-  ROUND_VALUE       = 0x0040,  // uses std::round (round to nearest integer, round half away from zero)
+  CONSUME_BUFF      = 0x0010,
+  ROUND_VALUE       = 0x0020,  // uses std::round (round to nearest integer, round half away from zero)
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
@@ -416,7 +415,7 @@ struct parse_base_t
 
       if constexpr ( std::is_same_v<U, player_effect_t> )
       {
-        if ( mod == EXPIRE_BUFF || mod == DECREMENT_BUFF )
+        if ( mod == CONSUME_BUFF )
         {
           parse_callback_function( pack, mod );
           return;

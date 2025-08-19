@@ -401,6 +401,12 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->cooldown->remains();
       } );
   }
+  else if ( type == "internal_cooldown_remains" )
+  {
+    return make_buff_expr( "buff_internal_cooldown_remains", []( buff_t* buff ) {
+      return buff->internal_cooldown ? buff->internal_cooldown->remains() : 0_ms;
+    } );
+  }
   else if ( type == "up" )
   {
     return make_const_buff_expr( "buff_up",
@@ -613,6 +619,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     delay(),
     expiration_delay(),
     cooldown(),
+    internal_cooldown(),
     rppm( nullptr ),
     _max_stack( -1 ),
     _initial_stack( -1 ),
@@ -632,6 +639,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
+    consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
     current_value(),
@@ -704,6 +712,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   // Set Buff Cooldown
   set_cooldown( timespan_t::min() );
+  set_internal_cooldown( timespan_t::min() );
 
   set_trigger_spell( spell_data_t::nil() );
 
@@ -743,6 +752,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   update_trigger_calculations();
 }
 
+buff_t::~buff_t() = default;
+
 const spell_data_t& buff_t::data_reporting() const
 {
   if (s_data_reporting == spell_data_t::nil())
@@ -771,6 +782,10 @@ void buff_t::update_trigger_calculations()
         {
           default_chance = trigger_data->proc_chance();
         }
+
+        // the driver's internal cooldown becomes the triggering cooldown of the buff
+        if ( trigger_data->id() != data().id() )
+          set_cooldown( trigger_data->internal_cooldown() );
       }
       // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
       // easily enable/disable spells based on conditional things (such as talents,
@@ -1028,21 +1043,23 @@ buff_t* buff_t::set_expire_at_max_stack( bool expire )
   return this;
 }
 
+buff_t* buff_t::set_consume_all_stacks( bool consume_all )
+{
+  if ( is_fallback )
+    return this;
+
+  consume_all_stacks = consume_all;
+
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
-  // Set Buff duration
-  if ( duration == timespan_t::min() )
+  if ( duration == timespan_t::min() )  // min() called in buff_t constructor
   {
-    if ( data().ok() )
+    if ( data().ok() && data().cooldown() != 0_ms )
     {
-      if ( data().cooldown() != timespan_t::zero() )
-      {
-        cooldown->duration = data().cooldown();
-      }
-      else
-      {
-        cooldown->duration = data().internal_cooldown();
-      }
+      cooldown->duration = data().cooldown();
     }
   }
   else
@@ -1050,10 +1067,45 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
     cooldown->duration = duration;
   }
 
-  if ( cooldown->duration < timespan_t::zero() )
+  if ( cooldown->duration < 0_ms )
   {
-    cooldown->duration = timespan_t::zero();
+    cooldown->duration = 0_ms;
   }
+
+  return this;
+}
+
+buff_t* buff_t::set_internal_cooldown( timespan_t duration )
+{
+  timespan_t _dur = timespan_t::min();
+
+  if ( duration == timespan_t::min() )  // min() called in buff_t constructor
+  {
+    if ( data().ok() && data().internal_cooldown() != 0_ms )
+    {
+      _dur = data().internal_cooldown();
+    }
+  }
+  else
+  {
+    _dur = duration;
+  }
+
+  if ( _dur == timespan_t::min() )  // no icd in data, don't create obj
+    return this;
+
+  if ( !internal_cooldown )
+  {
+    if ( source )
+      internal_cooldown = std::make_unique<cooldown_t>( "buff_icd", *source );
+    else
+      internal_cooldown = std::make_unique<cooldown_t>( "buff_icd", *sim );
+  }
+
+  internal_cooldown->duration = _dur;
+
+  if ( internal_cooldown->duration < 0_ms )
+    internal_cooldown->duration = 0_ms;
 
   return this;
 }
@@ -1376,7 +1428,6 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
     trigger_data = s;
   }
 
-  // TODO: update cooldown with internal cooldown of the trigger spell
   // TODO: if trigger spell has an A_PROC_TRIGGER effect, set the percent chance to the effect value
   update_trigger_calculations();
   return this;
@@ -1497,6 +1548,15 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           modify_cooldown( effect.time_value() );
           sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
+        }
+        break;
+
+      case P_PROC_COOLDOWN:
+        if ( internal_cooldown && internal_cooldown->duration > 0_ms )
+        {
+          set_internal_cooldown( internal_cooldown->duration + effect.time_value() );
+          sim->print_debug( "{} internal cooldown duration modified by {} to {}", *this, effect.time_value(),
+                            internal_cooldown->duration );
         }
         break;
 
@@ -2647,7 +2707,7 @@ bool buff_t::trigger( action_t* action, int stacks, double value, double chance,
   return false;
 }
 
-bool buff_t::can_expire( action_t* action ) const
+bool buff_t::can_consume( action_t* action ) const
 {
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
@@ -2662,10 +2722,32 @@ bool buff_t::can_expire( action_t* action ) const
   return true;
 }
 
-void buff_t::expire( action_t* action, timespan_t d )
+void buff_t::consume( action_t* action, int stacks )
 {
-  if ( can_expire( action ) )
-    expire( d );
+  if ( !check() )
+    return;
+
+  if ( internal_cooldown && internal_cooldown->down() )
+    return;
+
+  if ( !can_consume( action ) )
+    return;
+
+  // default behavior
+  if ( stacks == -1 )
+  {
+    if ( consume_all_stacks )
+      expire();
+    else
+      decrement();
+  }
+  else
+  {
+    decrement( stacks );
+  }
+
+  if ( internal_cooldown )
+    internal_cooldown->start();
 }
 
 void buff_t::expire( timespan_t d )
@@ -2845,6 +2927,8 @@ void buff_t::reset()
   last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
   dynamic_time_duration_multiplier = 1.0;
+  if ( internal_cooldown )
+    internal_cooldown->reset_init();
 }
 
 void buff_t::merge( const buff_t& other )
@@ -3000,6 +3084,8 @@ std::string buff_t::to_str() const
   s << " max_stack=" << _max_stack;
   s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown->duration.total_seconds();
+  if ( internal_cooldown )
+    s << " internal_cooldown=" << internal_cooldown->duration.total_seconds();
   s << " duration=" << buff_duration().total_seconds();
   s << " default_chance=" << default_chance;
 

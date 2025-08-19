@@ -1772,9 +1772,9 @@ public:
     return true;
   }
 
-  bool can_expire( action_t* a ) const override
+  bool can_consume( action_t* a ) const override
   {
-    assert( dynamic_cast<druid_action_data_t*>( a ) && "Non Druid action passed to Druid buff can_expire." );
+    assert( dynamic_cast<druid_action_data_t*>( a ) && "Non Druid action passed to Druid buff can_consume." );
 
     if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
@@ -1952,7 +1952,7 @@ public:
       if ( dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
       {
         // schedule expiration to wait for complete action resolution
-        if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_expire( this ) )
+        if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_consume( this ) )
           make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire(); } );
       }
       else
@@ -2437,7 +2437,7 @@ struct trigger_moonlight_suffusion_t : public BASE
   {
     BASE::execute();
 
-    BASE::p()->buff.gathering_moonlight->expire( this );
+    BASE::p()->buff.gathering_moonlight->consume( this );
   }
 };
 
@@ -2957,7 +2957,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     base_t::execute();
 
     if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
-      p()->buff.soul_of_the_forest_tree->expire( this );
+      p()->buff.soul_of_the_forest_tree->consume( this );
   }
 };
 
@@ -2986,12 +2986,12 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( data().ok() && !has_flag( flag_e::TWW3SET ) )
     {
       // effect data missing stack suppress flag for effect #2, manually override
-      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS, DECREMENT_BUFF );
+      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS, CONSUME_BUFF );
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
       // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, DECREMENT_BUFF,
+      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, CONSUME_BUFF,
                                                          p->talent.moment_of_clarity );
     }
   }
@@ -3502,23 +3502,6 @@ struct incarnation_bear_buff_t final : public berserk_bear_buff_base_t
     berserk_bear_buff_base_t::expire_override( s, d );
 
     p()->adjust_health_pct( inc_mul, false );
-  }
-};
-
-// Bloodtalons ==============================================================
-struct bloodtalons_buff_t final : public druid_buff_t
-{
-  bloodtalons_buff_t( druid_t* p ) : base_t( p, "bloodtalons", p->find_spell( 145152 ) )
-  {}
-
-  void decrement( int s, double v )
-  {
-    if ( cooldown->down() )
-      return;
-
-    base_t::decrement( s, v );
-
-    cooldown->start();
   }
 };
 
@@ -4218,7 +4201,7 @@ public:
     base_t::execute();
 
     if ( !has_flag( flag_e::CONVOKE ) )
-      p()->buff.overflowing_power->expire( this );
+      p()->buff.overflowing_power->consume( this );
 
     if ( !dual && p()->buff.winning_streak->check() && !p()->buff.big_winner->check() && rng().roll( loser_pct ) )
     {
@@ -4265,8 +4248,7 @@ public:
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
     }
 
-    if ( p()->buff.tigers_tenacity->check() && p()->buff.tigers_tenacity->can_expire( this ) )
-      p()->buff.tigers_tenacity->decrement();
+    p()->buff.tigers_tenacity->consume( this );
   }
 };
 
@@ -5086,8 +5068,8 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
       // TODO: consumes bloodtalons & coiled to spring regardless of snapshot
       if ( p()->bugs )
       {
-        p()->buff.bloodtalons->decrement();
-        p()->buff.coiled_to_spring->expire();
+        p()->buff.bloodtalons->consume( this );
+        p()->buff.coiled_to_spring->consume( this );
       }
     }
   };
@@ -5130,7 +5112,7 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
   void execute() override
   {
     if ( !has_flag( flag_e::APEX ) && p()->buff.apex_predators_craving->check() &&
-         p()->buff.apex_predators_craving->can_expire( this ) )
+         p()->buff.apex_predators_craving->can_consume( this ) )
     {
       p()->last_foreground_action = p()->active.ferocious_bite_apex;
       p()->active.ferocious_bite_apex->execute_on_target( target );
@@ -5153,7 +5135,7 @@ struct ferocious_bite_t final : public ferocious_bite_base_t
       auto _c2s = p()->buff.coiled_to_spring->check();
 
       ravage->execute_on_target( target );
-      p()->buff.ravage_fb->expire( this );
+      p()->buff.ravage_fb->consume( this );
 
       if ( ravage_echo )
       {
@@ -5332,7 +5314,7 @@ struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elde
     base_t::execute();
 
     if ( !stealthed() )
-    	p()->buff.sudden_ambush->expire( this );
+      p()->buff.sudden_ambush->consume( this );
   }
 
   void impact( action_state_t* s ) override
@@ -5381,7 +5363,7 @@ struct rip_t final : public trigger_thriving_growth_t<use_dot_list_t<trigger_wan
         .set_idx( 1U << callback_list.size() );
       callback_list.push_back( [ this, b = p->buff.feline_potential ]( parse_callback_e cb_type ) {
         if ( cb_type == PARSE_CALLBACK_POST_EXECUTE )
-          b->expire( this );
+          b->consume( this );
       } );
     }
   }
@@ -5535,7 +5517,7 @@ struct shred_t final : public use_fluid_form_t<CAT_FORM,
     base_t::execute();
 
     if ( !stealthed() )
-      p()->buff.sudden_ambush->expire( this );
+      p()->buff.sudden_ambush->consume( this );
   }
 
   double composite_crit_chance_multiplier() const override
@@ -5928,7 +5910,7 @@ struct ironfur_t final : public rage_spender_t<>
     if ( p()->buff.guardian_of_elune->check() )
     {
       dur += goe_ext;
-      p()->buff.guardian_of_elune->expire( this );
+      p()->buff.guardian_of_elune->consume( this );
     }
 
     p()->buff.ironfur->trigger( dur );
@@ -6051,11 +6033,11 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
     p()->buff.guardian_of_elune->trigger( this );
     p()->buff.vicious_cycle_maul->trigger( this, num_targets_hit );
 
-    p()->buff.gore->expire( this );
+    p()->buff.gore->consume( this );
 
     if ( p()->specialization() == DRUID_GUARDIAN && p()->buff.killing_strikes_combat->check() )
     {
-      p()->buff.killing_strikes_combat->expire( this );
+      p()->buff.killing_strikes_combat->consume( this );
       p()->buff.ravage_maul->trigger();
     }
 
@@ -6128,7 +6110,7 @@ struct maul_t final : public maul_base_t
   void execute() override
   {
     if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
-         p()->buff.tooth_and_claw->can_expire( this ) )
+         p()->buff.tooth_and_claw->can_consume( this ) )
     {
       p()->last_foreground_action = p()->active.maul_tooth_and_claw;
       p()->active.maul_tooth_and_claw->execute_on_target( target );
@@ -6139,7 +6121,7 @@ struct maul_t final : public maul_base_t
     if ( ravage && p()->buff.ravage_maul->check() )
     {
       ravage->execute_on_target( target );
-      p()->buff.ravage_maul->expire( this );
+      p()->buff.ravage_maul->consume( this );
 
       if ( ravage_echo )
       {
@@ -6257,7 +6239,7 @@ struct raze_t final : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
   void execute() override
   {
     if ( !has_flag( flag_e::TOOTHANDCLAW ) && p()->buff.tooth_and_claw->check() &&
-         p()->buff.tooth_and_claw->can_expire( this ) )
+         p()->buff.tooth_and_claw->can_consume( this ) )
     {
       p()->last_foreground_action = p()->active.raze_tooth_and_claw;
       p()->active.raze_tooth_and_claw->execute_on_target( target );
@@ -7202,7 +7184,7 @@ struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<
   {
     base_t::execute();
 
-    p()->buff.guardian_of_elune->expire( this );
+    p()->buff.guardian_of_elune->consume( this );
 
     if ( regrowth )
       regrowth->execute();
@@ -7274,7 +7256,7 @@ void druid_action_t<Base>::init()
   if ( has_flag( flag_e::FREE_PROCS ) )
     ab::proc = true;
 
-  if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_expire( this ) )
+  if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_consume( this ) )
   {
     // allow ground_aoe for snapshots
     if ( !ab::background || ab::ground_aoe )
@@ -7333,12 +7315,12 @@ public:
 
     p()->eclipse_handler.trigger_harmony();
 
-    if ( weaver_buff->check() && weaver_buff->can_expire( this ) )
+    if ( weaver_buff->check() && weaver_buff->can_consume( this ) )
       weaver_buff->expire();
-    else if ( p()->buff.touch_the_cosmos->check() && p()->buff.touch_the_cosmos->can_expire( this ) )
+    else if ( p()->buff.touch_the_cosmos->check() && p()->buff.touch_the_cosmos->can_consume( this ) )
       p()->buff.touch_the_cosmos->expire();
-    else if ( p()->buff.astral_communion->check() )
-      p()->buff.astral_communion->expire( this );
+    else
+      p()->buff.astral_communion->consume( this );
   }
 };
 
@@ -7381,8 +7363,8 @@ public:
 
     druid_spell_t::execute();
 
-    if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
-      p()->buff.dreamstate->decrement();
+    if ( dreamstate || !has_flag( flag_e::FOREGROUND ) )
+      p()->buff.dreamstate->consume( this );
 
     dreamstate = false;
 
@@ -7400,7 +7382,7 @@ public:
       residual_action::trigger( p()->active.astral_smolder, s->target, s->result_amount * smolder_mul );
     }
 
-    if ( p()->buff.dream_burst->check() && p()->buff.dream_burst->can_expire( this ) && s->chain_target == 0 )
+    if ( s->chain_target == 0 && p()->buff.dream_burst->check() && p()->buff.dream_burst->can_consume( this ) )
     {
       p()->active.dream_burst->execute_on_target( s->target );
       p()->buff.dream_burst->decrement();
@@ -7533,11 +7515,7 @@ public:
         umbral->dreamstate = BASE::dreamstate;
         umbral->execute_on_target( BASE::target );
 
-        if ( BASE::p()->buff.umbral_embrace->can_expire( this ) )
-        {
-          BASE::p()->buff.umbral_embrace->expire( this );
-          BASE::p()->buff.umbral_inspiration->trigger();
-        }
+        BASE::p()->buff.umbral_embrace->consume( this );
 
         umbral->umbral_embrace_trigger( this );
         return;
@@ -8386,7 +8364,7 @@ struct moonfire_t final : public druid_spell_t
         twin->execute_on_target( twin_target );
     }
 
-    p()->buff.galactic_guardian->expire( this );
+    p()->buff.galactic_guardian->consume( this );
   }
 };
 
@@ -9316,7 +9294,7 @@ struct starsurge_t final : public starsurge_base_t
 
   void execute() override
   {
-    if ( p()->buff.dryads_favor->check() && p()->buff.dryads_favor->can_expire( this ) )
+    if ( p()->buff.dryads_favor->check() && p()->buff.dryads_favor->can_consume( this ) )
     {
       p()->last_foreground_action = starsurge_dryad;
       starsurge_dryad->execute_on_target( target );
@@ -11701,7 +11679,8 @@ void druid_t::create_buffs()
       ->set_rppm( rppm_scale_e::RPPM_DISABLE );
 
   buff.dreamstate = make_fallback( talent.natures_grace.ok(), this, "dreamstate", find_spell( 450346 ) )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+    ->set_consume_all_stacks( false );
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
   buff.eclipse_lunar =
@@ -11797,6 +11776,13 @@ void druid_t::create_buffs()
   buff.umbral_inspiration =
     make_fallback( talent.umbral_inspiration.ok(), this, "umbral_inspiration", find_spell( 450419 ) );
 
+  if ( talent.umbral_inspiration.ok() )
+  {
+    buff.umbral_embrace->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+      buff.umbral_inspiration->trigger();
+    } );
+  }
+
   buff.warrior_of_elune =
     make_fallback( talent.warrior_of_elune.ok(), this, "warrior_of_elune", talent.warrior_of_elune )
       ->set_reverse( true );
@@ -11855,7 +11841,8 @@ void druid_t::create_buffs()
         resource_gain( RESOURCE_COMBO_POINT, cp, gain );
       } );
 
-  buff.bloodtalons     = make_fallback<bloodtalons_buff_t>( talent.bloodtalons.ok(), this, "bloodtalons" );
+  buff.bloodtalons = make_fallback( talent.bloodtalons.ok(), this, "bloodtalons", find_spell( 145152 ) )
+    ->set_consume_all_stacks( false );
   buff.bt_rake         = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_rake" );
   buff.bt_shred        = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_shred" );
   buff.bt_swipe        = make_fallback<bt_dummy_buff_t>( talent.bloodtalons.ok(), this, "bt_swipe" );
@@ -11865,7 +11852,8 @@ void druid_t::create_buffs()
 
   buff.clearcasting_cat = make_fallback( talent.omen_of_clarity_cat.ok(),
     this, "clearcasting_cat", find_trigger( talent.omen_of_clarity_cat ).trigger() )
-      ->set_name_reporting( "clearcasting" );
+      ->set_name_reporting( "clearcasting" )
+      ->set_consume_all_stacks( false );
 
   buff.coiled_to_spring = make_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
 
@@ -11917,7 +11905,8 @@ void druid_t::create_buffs()
 
   buff.tigers_tenacity = make_fallback( talent.tigers_tenacity.ok(),
     this, "tigers_tenacity", find_trigger( talent.tigers_tenacity ).trigger() )
-      ->set_reverse( true );
+      ->set_reverse( true )
+      ->set_consume_all_stacks( false );
   buff.tigers_tenacity->set_stack_change_callback(
     [ this,
       g = get_gain( "Tiger's Tenacity" ),
@@ -12029,7 +12018,8 @@ void druid_t::create_buffs()
 
   buff.tooth_and_claw =
     make_fallback( talent.tooth_and_claw.ok(), this, "tooth_and_claw", find_trigger( talent.tooth_and_claw ).trigger() )
-      ->set_chance( find_trigger( talent.tooth_and_claw ).percent() );
+      ->set_chance( find_trigger( talent.tooth_and_claw ).percent() )
+      ->set_consume_all_stacks( false );
 
   // TODO: figure out more elegant fallback method
   buff.ursocs_fury =
@@ -12172,7 +12162,8 @@ void druid_t::create_buffs()
       ->set_default_value_from_effect_type( A_HASTE_ALL )
       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.dream_burst = make_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) );
+  buff.dream_burst = make_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) )
+    ->set_consume_all_stacks( false );
 
   buff.harmony_of_the_grove = make_fallback( talent.harmony_of_the_grove.ok(),
     this, "harmony_of_the_grove", find_spell( specialization() == DRUID_RESTORATION ? 428737 : 428735 ) )
@@ -12319,7 +12310,8 @@ void druid_t::create_buffs()
 
   buff.dryads_favor = make_fallback( sets->has_set_bonus( HERO_KEEPER_OF_THE_GROVE, TWW3, B4 ),
     this, "dryads_favor", find_spell( 1236807 ) )
-      ->set_reverse( true );
+      ->set_reverse( true )
+      ->set_consume_all_stacks( false );
 
   for ( auto b : buff_list )
     if ( b->data().ok() )
@@ -13514,7 +13506,7 @@ void druid_t::init_special_effects()
       void execute( action_t* a, action_state_t* s ) override
       {
         p()->active.bloodseeker_vines_implant->execute_on_target( target( s, p()->active.bloodseeker_vines_implant ) );
-        p()->buff.implant->expire( a );
+        p()->buff.implant->consume( a );
       }
     };
 
@@ -15499,13 +15491,13 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( mastery.razor_claws );
   _a->parse_effects( buff.apex_predators_craving );
   _a->parse_effects( buff.berserk_cat );
-  _a->parse_effects( buff.coiled_to_spring, EXPIRE_BUFF );
+  _a->parse_effects( buff.coiled_to_spring, CONSUME_BUFF );
   _a->parse_effects( buff.incarnation_cat );
   _a->parse_effects( buff.predator, USE_CURRENT );
-  _a->parse_effects( buff.predatory_swiftness, EXPIRE_BUFF );
+  _a->parse_effects( buff.predatory_swiftness, CONSUME_BUFF );
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
-  _a->parse_effects( buff.fell_prey, EXPIRE_BUFF, effect_mask_t( true ).disable( 2 ) );
+  _a->parse_effects( buff.fell_prey, CONSUME_BUFF, effect_mask_t( true ).disable( 2 ) );
   // applies 15% to rampant ferocity (label 2740) via hidden script
   _a->parse_effects( buff.fell_prey, effect_mask_t( false ).enable( 2 ),
                      buff.fell_prey->data().effectN( 1 ).percent() );
@@ -15530,7 +15522,7 @@ void druid_t::parse_action_effects( action_t* action )
                      talent.berserk_unchecked_aggression );
   _a->parse_effects( buff.incarnation_bear, bear_mask, talent.berserk_ravage,
                      talent.berserk_unchecked_aggression );
-  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), EXPIRE_BUFF );
+  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
   _a->parse_effects( spec.elunes_favored, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ) );
@@ -15546,10 +15538,10 @@ void druid_t::parse_action_effects( action_t* action )
                      talent.fury_of_nature->effectN( 1 ).percent() );
 
   _a->parse_effects( spec.fury_of_nature, effect_mask_t( true ).disable( 1 ), talent.lunar_calling );
-  _a->parse_effects( buff.gory_fur, EXPIRE_BUFF );
+  _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
   _a->parse_effects( buff.rage_of_the_sleeper );
-  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, EXPIRE_BUFF );
-  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, EXPIRE_BUFF );
+  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
+  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
 
   // bear ravage echo is not buffed by tnc
   if ( auto tmp = dynamic_cast<druid_action_data_t*>( action ); tmp && !tmp->has_flag( flag_e::TWW3SET ) )
@@ -15565,16 +15557,16 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.abundance );
   _a->parse_effects( buff.clearcasting_tree, talent.flash_of_clarity );
   _a->parse_effects( buff.incarnation_tree );
-  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, EXPIRE_BUFF );
+  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, CONSUME_BUFF );
 
   // Hero talents
-  _a->parse_effects( buff.blooming_infusion_damage, EXPIRE_BUFF );
-  _a->parse_effects( buff.blooming_infusion_heal, EXPIRE_BUFF );
-  _a->parse_effects( buff.feline_potential, EXPIRE_BUFF );
+  _a->parse_effects( buff.blooming_infusion_damage, CONSUME_BUFF );
+  _a->parse_effects( buff.blooming_infusion_heal, CONSUME_BUFF );
+  _a->parse_effects( buff.feline_potential, CONSUME_BUFF );
   _a->parse_effects( buff.harmony_of_the_grove );
   _a->parse_effects( buff.root_network );
   _a->parse_effects( buff.strategic_infusion );
-  _a->parse_effects( buff.ursine_potential, EXPIRE_BUFF );
+  _a->parse_effects( buff.ursine_potential, CONSUME_BUFF );
 
   // Hero sets
   switch ( specialization() )
