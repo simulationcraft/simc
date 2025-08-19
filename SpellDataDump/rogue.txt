@@ -13474,7 +13474,8 @@ Family Flags     : 25, 54, 97
 Attributes       : Is Ability (4), Not an Action (92), Active Threat (94), Can Proc From Procs (122), Allow Cast While Casting (135), Always Line of Sight (185), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1153780)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.1 | PvP Coefficient: 0.67 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452542) [Spell Family (8)] 
@@ -15049,7 +15050,8 @@ Family Flags     : 54, 97
 Attributes       : Is Ability (4), Not an Action (92), Not a Proc (105), Allow Cast While Casting (135), Always Line of Sight (185), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1170537)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.2 | PvP Coefficient: 0.67 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : $@spelldesc452536
 
 Name             : Fatal Intent (id=461980) [Spell Family (8), Passive] 
