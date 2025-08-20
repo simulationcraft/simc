@@ -9097,11 +9097,11 @@ void demon_hunter_t::init_spells()
     {
       case DEMON_HUNTER_HAVOC:
         spell.collective_anguish = find_spell( 393831 );
-        spell.collective_anguish = spell.collective_anguish->effectN( 1 ).trigger();
+        spell.collective_anguish_damage = spell.collective_anguish->effectN( 1 ).trigger();
         break;
       case DEMON_HUNTER_VENGEANCE:
         spell.collective_anguish = find_spell( 391057 );
-        spell.collective_anguish = find_spell( 391058 );
+        spell.collective_anguish_damage = find_spell( 391058 );
         break;
       default:
         break;
