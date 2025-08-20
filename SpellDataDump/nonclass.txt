@@ -231521,6 +231521,7 @@ Effects          :
 Description      : Channel arcane power for $443389d. Every ${$443389t1}.2 sec, infuse yourself and $443413i allies within $443413A1 yards with $s1 Haste, $s2 Critical Strike, and $s3 Mastery for $443410d.
 
 Name             : Barrel of Fireworks (id=443465) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 8 yards
@@ -231528,7 +231529,7 @@ GCD              : 1.5 seconds
 Duration         : 300 seconds
 Cooldown         : 3600 seconds
 Labels           : 2856
-Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Battleground (284), Visible only to caster (conversations only) (343), Not in Mythic+ Mode (Challenge Mode) (368)
+Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Battleground (284), Visible only to caster (conversations only) (343), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1139391)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 221183 | Misc Value 2: 0xb5e | Target: Unknown(87)
