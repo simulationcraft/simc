@@ -18,4 +18,5 @@ void havoc( player_t* );
 //void havoc_ptr( player_t* );
 void vengeance( player_t* );
 //void vengeance_ptr( player_t* );
+// TODO: MIDNIGHT - ADD DEVOURER
 }  // namespace demon_hunter_apl

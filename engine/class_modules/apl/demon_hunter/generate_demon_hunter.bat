@@ -1,5 +1,7 @@
 @echo off
 
+@REM TODO: MIDNIGHT - ADD DEVOURER
+
 echo Generating Havoc
 py "..\ConvertAPL.py" -i havoc.simc -o "..\apl_demon_hunter.cpp" -s havoc
 @REM py "..\ConvertAPL.py" -i havoc_ptr.simc -o "..\apl_demon_hunter.cpp" -s havoc_ptr

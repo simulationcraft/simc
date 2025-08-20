@@ -3,6 +3,8 @@ import sys
 sys.path.append(os.path.join(os.path.curdir, '..'))
 from ConvertAPL import main
 
+# TODO: MIDNIGHT - ADD DEVOURER
+
 if __name__ == '__main__':
     print('Converting Havoc')
     main(['-i', 'havoc.simc', '-o', os.path.join(os.path.curdir, '..', 'apl_demon_hunter.cpp'), '-s', 'havoc'])
