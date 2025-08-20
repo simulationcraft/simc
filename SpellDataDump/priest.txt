@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62706 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -11285,7 +11285,6 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore
 Effects          :
 #1 (id=1028683)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc205385
 
 Name             : Empowered Renew (id=391339) [Spell Family (6), Passive, Hidden] 
@@ -15213,7 +15212,6 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1177515)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 6 | Scaled Value: 6 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : Attribute (0 -> 2080)
 Description      : $@spelldesc205385
 
 Name             : Shadow Crash (id=465522) [Spell Family (6)] 
@@ -16162,7 +16160,6 @@ Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
