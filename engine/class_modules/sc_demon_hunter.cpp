@@ -9084,8 +9084,10 @@ void demon_hunter_t::init_spells()
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
-  spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
-  spell.sigil_of_spite        = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
+
+  spell.sigil_of_flame = find_spell_override( find_spell( 204596 ), sigil_overrides );
+  spell.sigil_of_spite = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
+
   spell.sigil_of_spite_damage = talent_spell_lookup( talent.demon_hunter.sigil_of_spite, 389860 );
   spec.sigil_of_misery        = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
   spec.sigil_of_silence       = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
@@ -9096,11 +9098,11 @@ void demon_hunter_t::init_spells()
     switch ( specialization() )
     {
       case DEMON_HUNTER_HAVOC:
-        spell.collective_anguish = find_spell( 393831 );
+        spell.collective_anguish        = find_spell( 393831 );
         spell.collective_anguish_damage = spell.collective_anguish->effectN( 1 ).trigger();
         break;
       case DEMON_HUNTER_VENGEANCE:
-        spell.collective_anguish = find_spell( 391057 );
+        spell.collective_anguish        = find_spell( 391057 );
         spell.collective_anguish_damage = find_spell( 391058 );
         break;
       default:
