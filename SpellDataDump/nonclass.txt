@@ -172712,18 +172712,20 @@ Effects          :
 Description      : $@spelldesc352108
 
 Name             : Miniscule Mailemental in an Envelope (id=352429) [Passive] 
+Hotfixed         : Proc Flags 1 (332096 -> 328000), Description
 School           : Arcane
 Spell Type       : None
 Labels           : 3959: Item Effects
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Real PPM         : 2.25 (Haste multiplier)
-Proc Flags       : White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : White Ranged, Yellow Ranged, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Log (8), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=883338)   : Apply Aura (6) | Proc Trigger Spell (42): Miniscule Mailemental in an Envelope | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 575167 (coefficient=224.8713) | Trigger Spell: 352436 | Target: Self (1)
-Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.
+Description      : Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing ${$s1*$<rolemult>} Arcane damage.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Miniscule Mailemental in an Envelope (id=352436) 
 School           : Arcane
