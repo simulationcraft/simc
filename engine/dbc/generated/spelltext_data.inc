@@ -16261,7 +16261,7 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   {  352415, "While below $s1% health, Door of Shadows cools down $353210s1% faster.", 0, 0 },
   {  352417, "Each nearby enemy trembles at your presence, increasing your damage and healing done by $352858s1%, and reducing damage taken by $352858s4%, up to a maximum of $352858u enemies.", 0, 0 },
   {  352427, "$@spelldesc352108", 0, 0 },
-  {  352429, "Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.", 0, 0 },
+  {  352429, "Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing ${$s1*$<rolemult>} Arcane damage.", 0, 0 },
   {  352448, "$@spelldesc352108", "Movement speed is slowed by $M1%.", 0 },
   {  352451, "$@spelldesc352108", "Movement speed is slowed by $M1%.", 0 },
   {  352498, "$@spelldesc351146", "Friends with $@auracaster, granting $w1 Mastery.", 0 },
@@ -28035,11 +28035,12 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62706
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  352429,  0, "Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing $s1 Arcane damage.", "Your ranged attacks and abilities have a chance to summon a Mailemental that throws Unstable Goods at your target, dealing ${$s1*$<rolemult>} Arcane damage." },
 } };
 
 // Spell description variables, wow build 11.2.0.62706
-static constexpr std::array<spelldesc_vars_data_t, 673> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28394,6 +28395,7 @@ static constexpr std::array<spelldesc_vars_data_t, 673> __spelldesc_vars_data { 
   {  351985, "$images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]" },
   {  352110, "$shield=${$max($SP,$AP)*.1*(1+$@versadmg)}\r\n$mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${2}]?a353167[${2}][${1.0}]" },
   {  352188, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${0.4}]?a137047[${1}]?a353167[${2}][${1}]\r\n$points=${$353248s2/100*$max($AP,$SP)*(1+$@versadmg)}\r\n$final=${$<mod>*$<points>*($353248d/$353248t1+1)}\r\n$cd=$?a137005[${4}]?a212611[${4}]?a137009[${4}]?a137014[${4}]?a137018[${2}]?a137022[${8}]?a137026[${4}]?a137030[${12}]?a137034[${3}]?a137038[${4}]?a137042[${3}]?a137047[${4}]?a353167[${8}][${4}]" },
+  {  352429, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  352536, "$shield=${$max($SP,$AP)*.1*(1+$@versadmg)}\r\n$mod=$?a137005[${2}]?a212611[${2}]?a137009[${.4}.1]?a137014[${.75}.1]?a137018[${3}]?a137022[${1}]?a137026[${.5}]?a137030[${1.0}]?a137034[${.5}]?a137038[${.75}.1]?a137042[${.75}.1]?a137047[${2}]?a353167[${2}][${1.0}]" },
   {  354541, "$stacks=${2}" },
   {  355936, "$sOneHeal=${2*$355941s1}\r\n$sTwoHeal=${2.25*$355941s1}\r\n$sThreeHeal=${2.5*$355941s1}\r\n$sFourHeal=${2.75*$355941s1}\r\n$sOneDur=${16}\r\n$sTwoDur=${12}\r\n$sThreeDur=${8}\r\n$sFourDur=${4}\r\n$ysera=$?a373835[${1+$373835s1/100}][${1}]\r\n" },
