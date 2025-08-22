@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62706 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62748 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2609,7 +2609,7 @@ Resource         : 4% Base Mana (0) (id=265769) w/ Shadow Priest (id=137033)
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 2.5 seconds
+Duration         : 1 seconds
 Cooldown         : 60 seconds
 Category         : 1366 (Type 0x0)
 Labels           : 16: Class Spells

@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62706 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62748 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -172712,7 +172712,6 @@ Effects          :
 Description      : $@spelldesc352108
 
 Name             : Miniscule Mailemental in an Envelope (id=352429) [Passive] 
-Hotfixed         : Proc Flags 1 (332096 -> 328000), Description
 School           : Arcane
 Spell Type       : None
 Labels           : 3959: Item Effects
@@ -231523,7 +231522,6 @@ Effects          :
 Description      : Channel arcane power for $443389d. Every ${$443389t1}.2 sec, infuse yourself and $443413i allies within $443413A1 yards with $s1 Haste, $s2 Critical Strike, and $s3 Mastery for $443410d.
 
 Name             : Barrel of Fireworks (id=443465) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 8 yards
