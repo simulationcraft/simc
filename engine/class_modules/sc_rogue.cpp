@@ -9228,6 +9228,11 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
       p()->buffs.fatebound_coin_heads->expire();
     }
   }
+  // If the result is not an edge case, cancel Double Jeopardy if it has been artificially extended from the bug below.
+  if ( p()->bugs && p()->buffs.double_jeopardy->expiration_delay && result != fatebound_t::coinflip_e::EDGE )
+  {
+    p()->buffs.double_jeopardy->cancel();
+  }
 }
 
 template <typename Base>
@@ -9240,7 +9245,10 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
   
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
   {
-    // 2025-08-12 -- Double Jeopardy does not expire instantly, so multiple edge cases at the same moment can benefit from it
+    // 2025-08-12 -- Double Jeopardy does not expire instantly, so multiple edge cases at the same moment can benefit from it.
+    //               It seems multiple edge cases at the same time will always successfully benefit from Double Jeopardy, but mixing
+    //               an edge case with a normal coinflip produces unreliable or unusual results. This mixing of edge cases and 
+    //               normal coinflips is currently not modeled.
     p()->buffs.double_jeopardy->expire( p()->bugs ? 1_ms : 0_ms );
     execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
   }
