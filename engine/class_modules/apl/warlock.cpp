@@ -304,7 +304,8 @@ void demonology( player_t* p )
   variables->add_action( "variable,name=last_ds,value=0,if=buff.tyrant.up" );
   variables->add_action( "variable,name=last_hog,default=0,value=time,if=prev_gcd.1.hand_of_guldan" );
   variables->add_action( "variable,name=last_hog,value=0,if=buff.tyrant.up" );
-  variables->add_action( "variable,name=hog_after_ds,value=variable.last_ds>0&variable.last_hog>0&variable.last_hog>variable.last_ds" );}
+  variables->add_action( "variable,name=hog_after_ds,value=variable.last_ds>0&variable.last_hog>0&variable.last_hog>variable.last_ds" );
+}
 //demonology_apl_end
 
 //destruction_apl_start
