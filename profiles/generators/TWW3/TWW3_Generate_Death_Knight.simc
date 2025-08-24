@@ -19,7 +19,7 @@ feet=hollow_sentinels_greatboots,id=237630,ilevel=723
 finger1=signet_of_collapsing_stars,id=185813,bonus_id=8781,enchant_id=7340,enchant=radiant_mastery_3,gem_id=213491/213491,ilevel=723
 finger2=ring_of_the_panoply,id=246281,bonus_id=8781,enchant_id=7340,enchant=radiant_mastery_3,gem_id=213491/213479,ilevel=723
 trinket1=tome_of_lights_devotion,id=219309,ilevel=723
-trinket2=ticking_sack_of_terror,id=190652,ilevel=723
+trinket2=unyielding_netherprism,id=242396,ilevel=723
 main_hand=maw_of_the_void,id=243365,enchant=rune_of_sanguination,ilevel=723
 
 save=TWW3_Death_Knight_Blood.simc
@@ -44,7 +44,7 @@ legs=halkiass_towering_pillars,id=178818,enchant=stormbound_armor_kit_3,ilevel=7
 feet=devoted_plate_walkers,id=221123,ilevel=723
 finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7352,enchant=cursed_critical_strike_3,gem_id=213497/213467,ilevel=723
 finger2=high_nerubian_signet,id=221141,bonus_id=8781,enchant_id=7346,enchant=radiant_versatility_3,gem_id=213485/213461,ilevel=723
-trinket1=ticking_sack_of_terror,id=190652,ilevel=723
+trinket1=tome_of_lights_devotion,id=219309,ilevel=723
 trinket2=brand_of_ceaseless_ire,id=242401,ilevel=723
 main_hand=skyreaver_greataxe_of_the_keepers,id=185810,enchant=rune_of_the_fallen_crusader,ilevel=723
 

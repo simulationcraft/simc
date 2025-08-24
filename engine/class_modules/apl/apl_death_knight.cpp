@@ -161,7 +161,7 @@ void blood( player_t* p )
   deathbringer->add_action( "arcane_torrent,if=runic_power.deficit>20" );
 
   san_drw->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains" );
-  san_drw->add_action( "bonestorm,if=buff.bone_shield.stack>=5&buff.death_and_decay.remains" );
+  san_drw->add_action( "bonestorm,if=buff.bone_shield.stack>=5" );
   san_drw->add_action( "death_strike,if=runic_power.deficit<36" );
   san_drw->add_action( "blood_boil,if=!drw.bp_ticking" );
   san_drw->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
@@ -174,7 +174,7 @@ void blood( player_t* p )
   sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1" );
   sanlayn->add_action( "blood_boil,if=dot.blood_plague.remains<3" );
   sanlayn->add_action( "heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)" );
-  sanlayn->add_action( "bonestorm,if=buff.bone_shield.stack>=5&buff.death_and_decay.remains" );
+  sanlayn->add_action( "bonestorm,if=buff.bone_shield.stack>=5&(buff.death_and_decay.remains|active_enemies<=3)" );
   sanlayn->add_action( "death_strike,if=runic_power.deficit<20" );
   sanlayn->add_action( "consumption,if=buff.infliction_of_sorrow.up&buff.death_and_decay.up" );
   sanlayn->add_action( "heart_strike,if=(buff.infliction_of_sorrow.up|buff.vampiric_strike.up)&buff.death_and_decay.up" );
@@ -182,7 +182,7 @@ void blood( player_t* p )
   sanlayn->add_action( "blood_boil,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking&active_enemies>=2" );
   sanlayn->add_action( "deaths_caress,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
   sanlayn->add_action( "marrowrend,if=buff.bone_shield.stack<6&!dot.bonestorm.ticking" );
-  sanlayn->add_action( "tombstone,if=buff.bone_shield.stack>=6&buff.death_and_decay.remains&cooldown.dancing_rune_weapon.remains>=25" );
+  sanlayn->add_action( "tombstone,if=buff.bone_shield.stack>=6&(buff.death_and_decay.remains|active_enemies<=3)&cooldown.dancing_rune_weapon.remains>=25" );
   sanlayn->add_action( "any_dnd,if=(active_enemies<=3&buff.crimson_scourge.remains)|(active_enemies>3&!buff.death_and_decay.remains)" );
   sanlayn->add_action( "blooddrinker,if=active_enemies<=2&buff.coagulopathy.remains>3" );
   sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
