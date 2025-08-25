@@ -1411,7 +1411,7 @@ public:
   {
     ab::execute();
 
-    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 )
+    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 && !ab::background )
     {
       p() -> buff.collateral_damage -> trigger();
     }
