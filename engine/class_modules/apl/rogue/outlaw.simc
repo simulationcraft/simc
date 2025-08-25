@@ -5,9 +5,9 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
 # Prepull Adrenaline Rush if using Trickster+KIR+Loaded Dice. Fatebound would rather AR on pull for Coin damage.
-actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=!talent.edge_case&talent.keep_it_rolling&talent.loaded_dice
+actions.precombat+=/adrenaline_rush,precombat_seconds=1,if=!hero_tree.fatebound&talent.keep_it_rolling&talent.loaded_dice
 # Prepull Roll the Bones if using Trickster or not using Loaded Dice.
-actions.precombat+=/roll_the_bones,precombat_seconds=1,if=!talent.edge_case|!talent.loaded_dice
+actions.precombat+=/roll_the_bones,precombat_seconds=1,if=!hero_tree.fatebound|!talent.loaded_dice
 
 # Executed every time the actor is available.
 # Restealth if possible (no vulnerable enemies in combat).
@@ -16,7 +16,7 @@ actions=stealth
 actions+=/kick
 actions+=/variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up)&energy>=50
 # Use finishers if at -1 from max combo points, or -2 in Stealth with Crackshot. With the hero trees, Hidden Opportunity builds also finish at -2 if Audacity or Opportunity is active.
-actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot|(talent.hand_of_fate|talent.flawless_form)&talent.hidden_opportunity&(buff.audacity.up|buff.opportunity.up))
+actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(stealthed.all&talent.crackshot|(hero_tree.fatebound|hero_tree.trickster)&talent.hidden_opportunity&(buff.audacity.up|buff.opportunity.up))
 actions+=/variable,name=buffs_above_pandemic,value=(buff.broadside.remains>39)+(buff.ruthless_precision.remains>39)+(buff.true_bearing.remains>39)+(buff.grand_melee.remains>39)+(buff.buried_treasure.remains>39)+(buff.skull_and_crossbones.remains>39)
 actions+=/call_action_list,name=cds
 # High priority stealth list, will fall through if no conditions are met.
@@ -36,9 +36,9 @@ actions.build+=/sinister_strike,if=buff.disorienting_strikes.up&!stealthed.all&!
 # With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available.
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
 # Without Hidden Opportunity, prioritize building CPs with Blade Flurry at 4+ targets. Trickster shoulds prefer to use this at low CPs unless AR isn't active.
-actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=4&(combo_points<=2|!buff.adrenaline_rush.up|!talent.unseen_blade)
+actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=4&(combo_points<=2|!buff.adrenaline_rush.up|!hero_tree.trickster)
 # At sustain 3 targets (2 target for Fatebound 1FTH), Blade Flurry can be used to build CPs if we are missing CPs equal to the amount it will give.
-actions.build+=/blade_flurry,if=talent.deft_maneuvers&combo_points.deficit=spell_targets+buff.broadside.up&spell_targets>=3-talent.hand_of_fate&talent.fan_the_hammer.rank=1
+actions.build+=/blade_flurry,if=talent.deft_maneuvers&combo_points.deficit=spell_targets+buff.broadside.up&spell_targets>=3-hero_tree.fatebound&talent.fan_the_hammer.rank=1
 # With 2 ranks in Fan the Hammer, consume Opportunity as if at max stacks or if it will expire.
 actions.build+=/pistol_shot,if=talent.fan_the_hammer.rank=2&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
 # With Fan the Hammer, consume Opportunity if it will not overcap CPs, or with 1 CP at minimum.
@@ -92,7 +92,7 @@ actions.finish+=/pool_resource,for_next=1
 actions.finish+=/killing_spree,interrupt_if=talent.keep_it_rolling&talent.fan_the_hammer.rank=2&combo_points>=cp_max_spend,interrupt_global=1
 actions.finish+=/coup_de_grace
 # Outside of stealth, use Between the Eyes to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown.
-actions.finish+=/between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)
+actions.finish+=/between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!hero_tree.fatebound)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)
 actions.finish+=/dispatch
 
 # Trinkets
