@@ -6800,6 +6800,7 @@ Effects          :
 Description      : When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.
 
 Name             : Earthwarden (id=203975) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6809,7 +6810,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Normal Melee Attack (345), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=300992)   : Apply Aura (6) | Absorb Damage (69)
