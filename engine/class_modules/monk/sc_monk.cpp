@@ -6916,13 +6916,9 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
     {
       case FIGHT_STYLE_PATCHWERK:
       case FIGHT_STYLE_CASTING_PATCHWERK:
-        return true;
       case FIGHT_STYLE_DUNGEON_ROUTE:
       case FIGHT_STYLE_DUNGEON_SLICE:
-      {
-        sim->error( "Action Priority Lists (APL) for Dungeon Route and Dungeon Slice are not final." );
         return true;
-      }
       default:
         return false;
     }

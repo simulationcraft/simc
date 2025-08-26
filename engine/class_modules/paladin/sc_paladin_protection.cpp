@@ -362,9 +362,7 @@ void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil
         {
           p->cast_lesser_armament( 1, p->next_lesser_armament );
           p->next_lesser_armament = p->next_lesser_armament == LESSER_WEAPON ? LESSER_BULWARK : LESSER_WEAPON;
-          // 15.08.25 Fluttershy - Masterwork doesn't refresh again
-          if (!p->bugs)
-            p->buffs.lightsmith.masterwork->trigger();
+          p->buffs.lightsmith.masterwork->trigger();
         }
         else
         {

@@ -10,7 +10,8 @@ actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=drtrickshots,if=active_enemies>2&talent.trick_shots&hero_tree.dark_ranger
 actions+=/call_action_list,name=senttrickshots,if=active_enemies>2&talent.trick_shots&hero_tree.sentinel
-actions+=/call_action_list,name=cleave,if=active_enemies>1
+actions+=/call_action_list,name=drcleave,if=active_enemies>1&hero_tree.dark_ranger
+actions+=/call_action_list,name=sentcleave,if=active_enemies>1&hero_tree.sentinel
 actions+=/call_action_list,name=drst,if=active_enemies=1&hero_tree.dark_ranger
 actions+=/call_action_list,name=sentst,if=active_enemies=1&hero_tree.sentinel
 
@@ -56,27 +57,38 @@ actions.sentst+=/steady_shot
 
 # 2 targets (2+ without Trick Shots)
 
-actions.cleave=/explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)
-actions.cleave+=/black_arrow,if=buff.precise_shots.up&buff.moving_target.down&variable.trueshot_ready
-actions.cleave+=/volley,if=(talent.double_tap&buff.double_tap.down|!talent.aspect_of_the_hydra)&(buff.precise_shots.down|buff.moving_target.up)
-actions.cleave+=/rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&(!talent.double_tap|buff.double_tap.up|!talent.aspect_of_the_hydra&buff.trick_shots.remains>execute_time)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)
-actions.cleave+=/volley,if=!talent.double_tap&(buff.precise_shots.down|buff.moving_target.up)
-actions.cleave+=/trueshot,if=variable.trueshot_ready&(buff.double_tap.down|!talent.volley)&(buff.lunar_storm_ready.down|!talent.double_tap|!talent.volley)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)
-# Queue Steady Shot after Aimed Shot if a Deathblow hasn't already been up long enough to be reacted to. Sentinel only seems to like this due to the Precise Shots gcd bug.
-actions.cleave+=/steady_shot,if=(talent.black_arrow|bugs)&focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains
-actions.cleave+=/rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down&(buff.precise_shots.down|buff.moving_target.up|cooldown.volley.remains&cooldown.trueshot.remains|!talent.volley)
-actions.cleave+=/kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up
-actions.cleave+=/black_arrow,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up
-actions.cleave+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)
-actions.cleave+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)
-# Prioritize Aimed Shot a little higher when close to capping charges.
-actions.cleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver
-actions.cleave+=/rapid_fire,if=!talent.bulletstorm|buff.bulletstorm.stack<=10|talent.aspect_of_the_hydra
-actions.cleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up
-actions.cleave+=/rapid_fire
-actions.cleave+=/explosive_shot,if=talent.precision_detonation|buff.trueshot.down
-actions.cleave+=/black_arrow,if=!talent.headshot
-actions.cleave+=/steady_shot
+actions.drcleave=explosive_shot,if=buff.trueshot.down&talent.precision_detonation&(!talent.shrapnel_shot|buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1)
+actions.drcleave+=/black_arrow,if=buff.precise_shots.up&buff.moving_target.down&variable.trueshot_ready
+actions.drcleave+=/volley,if=(talent.double_tap&buff.double_tap.down|!talent.aspect_of_the_hydra)&(buff.precise_shots.down|buff.moving_target.up)&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)
+actions.drcleave+=/rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&(!talent.double_tap|buff.double_tap.up|!talent.aspect_of_the_hydra&buff.trick_shots.remains>execute_time)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)
+actions.drcleave+=/volley,if=!talent.double_tap&(buff.precise_shots.down|buff.moving_target.up)&(!talent.shrapnel_shot|buff.lock_and_load.down)
+actions.drcleave+=/trueshot,if=variable.trueshot_ready&(buff.double_tap.down|!talent.volley)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)&(!talent.volley|!action.volley.ready)
+actions.drcleave+=/steady_shot,if=focus+cast_regen<focus.max&action.aimed_shot.in_flight&!buff.deathblow.react&buff.trueshot.down&cooldown.trueshot.remains
+actions.drcleave+=/black_arrow,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up
+actions.drcleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up,if=buff.trueshot.up&buff.precise_shots.down|buff.lock_and_load.up&buff.moving_target.up
+actions.drcleave+=/rapid_fire,if=!talent.bulletstorm|buff.bulletstorm.stack<=10|talent.aspect_of_the_hydra&buff.trick_shots.remains<action.aimed_shot.cast_time
+actions.drcleave+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)
+actions.drcleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up
+actions.drcleave+=/rapid_fire
+actions.drcleave+=/explosive_shot,if=talent.precision_detonation|buff.trueshot.down
+actions.drcleave+=/black_arrow,if=!talent.headshot
+actions.drcleave+=/steady_shot
+
+actions.sentcleave=/explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight&(buff.trueshot.down|!talent.windrunner_quiver)
+actions.sentcleave+=/volley,if=(talent.double_tap&buff.double_tap.down|!talent.aspect_of_the_hydra)&(buff.precise_shots.down|buff.moving_target.up)
+actions.sentcleave+=/rapid_fire,if=talent.bulletstorm&buff.bulletstorm.down&(!talent.double_tap|buff.double_tap.up|!talent.aspect_of_the_hydra&buff.trick_shots.remains>execute_time)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)
+actions.sentcleave+=/volley,if=!talent.double_tap&(buff.precise_shots.down|buff.moving_target.up)
+actions.sentcleave+=/trueshot,if=variable.trueshot_ready&(buff.double_tap.down|!talent.volley)&(buff.lunar_storm_ready.down|!talent.double_tap|!talent.volley)&(buff.precise_shots.down|buff.moving_target.up|!talent.volley)
+actions.sentcleave+=/rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down&(buff.precise_shots.down|buff.moving_target.up|cooldown.volley.remains&cooldown.trueshot.remains|!talent.volley)
+actions.sentcleave+=/kill_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up
+actions.sentcleave+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)&!talent.aspect_of_the_hydra
+actions.sentcleave+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)
+actions.sentcleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&(!talent.bulletstorm|buff.bulletstorm.up)&talent.windrunner_quiver
+actions.sentcleave+=/rapid_fire,if=!talent.bulletstorm|buff.bulletstorm.stack<=10|talent.aspect_of_the_hydra
+actions.sentcleave+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up
+actions.sentcleave+=/rapid_fire
+actions.sentcleave+=/explosive_shot,if=talent.precision_detonation|buff.trueshot.down
+actions.sentcleave+=/steady_shot
 
 # 3+ targets (with Trick Shots)
 

@@ -8322,7 +8322,7 @@ void unyielding_netherprism( special_effect_t& effect )
         stacking( stacking_buff )
     {
       base_dd_min = base_dd_max = equip->effectN( 1 ).average( e );
-      base_multiplier *= role_mult( e );
+      base_multiplier *= role_mult( e.player, equip );
 
       name_str_reporting = "unyielding_netherprism";
     }

@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62706 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62748 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -5821,6 +5821,7 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (0 -> 256), Proc Flags 2 (4 -> 0)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5830,7 +5831,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Yellow Ranged
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485306)   : Apply Aura (6) | Unknown(643)
@@ -5869,6 +5870,7 @@ Description      : When Aimed Shot strikes an enemy affected with your Serpent S
 Serpent Sting's damage over time is increased by $s2%.
 
 Name             : Precise Shots (id=260242) [Spell Family (9)] 
+Hotfixed         : Proc Flags 1 (0 -> 256), Internal Cooldown (500 -> 0), Proc Flags 2 (4 -> 0)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5878,10 +5880,9 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 52
                  : 292
-Internal Cooldown: 0.5 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Cast Successful
+Proc Flags       : Yellow Ranged
 Affecting Spells : Powerful Precision (340033 effects: #1, #2), Headshot (471363 effects: #1, #2), Windrunner Quiver (473523 effects: #1, #3, #4, #5), Unmatched Precision (1232955 effects: #1, #2, #3)
 Family Flags     : 16
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
