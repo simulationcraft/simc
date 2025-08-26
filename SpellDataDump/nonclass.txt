@@ -172540,7 +172540,8 @@ Triggered By     : First Class Healing (352270)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=883062)   : Direct Heal (10) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 56803.36 (coefficient=22.20824) | Radius: 0 - 8 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 68164.19 (coefficient=26.64994) | Radius: 0 - 8 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+Hotfixed         : Coefficient (22.208237 -> 26.649944)
 Description      : A burst of healing energies heals you and nearby allies for $s1.
 
 Name             : First Class Delivery (id=352274) 
@@ -183737,7 +183738,7 @@ Name             : So'leah's Secret Technique (id=368510)
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 3959: Item Effects
 Attributes       : Allow Dead Target (64), Allow Aura While Dead (116), Do Not Display Range (126), Limit N (165), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -183759,7 +183760,7 @@ Name             : So'leah's Secret Technique (id=368512)
 School           : Arcane
 Spell Type       : None
 Range            : 100 yards
-Duration         : 1800 seconds
+Duration         : 3600 seconds
 Labels           : 3959: Item Effects
 Attributes       : Allow Dead Target (64), Allow Aura While Dead (116), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -260441,17 +260442,19 @@ Periodic damage you take coalesces into pungent mud to feed the ritual, reducing
 Tooltip          : Absorbing ${$w1} damage and dealing ${$w3} Nature damage to nearby enemies every $1221146t1 sec.
 
 Name             : Gigazap's Zap-Cap (id=1219103) [Passive] 
+Hotfixed         : Internal Cooldown (750 -> 500)
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
-Internal Cooldown: 0.75 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1204552)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 6 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 10450.15 (coefficient=4.085664) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12017.65 (coefficient=4.698504) | Target: Self (1)
+Hotfixed         : Coefficient (4.085664 -> 4.698504)
 #2 (id=1204553)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1204554)  : Apply Aura (6) | Dummy (4)
@@ -266237,7 +266240,8 @@ Proc Flags       : Heartbeat, Cast Successful
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1229154)  : Apply Aura (6) | Proc Trigger Spell (42): Astral Antenna | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5788.303 (coefficient=1.511713) | PvP Coefficient: 0.5 | Trigger Spell: 1239640 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5615.138 (coefficient=1.466488) | PvP Coefficient: 0.5 | Trigger Spell: 1239640 | Target: Self (1)
+Hotfixed         : Coefficient (1.511713 -> 1.466488)
 Description      : The antenna has a chance to detect and draw ambient arcane energy towards you, granting $s1 Critical Strike for $1239641d. Multiple applications may overlap.
 
 Name             : Nether Overlay Matrix (desc=Rank 4/4) (id=1234847) 
@@ -266414,7 +266418,8 @@ Effects          :
 #2 (id=1230275)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1230276)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 172921 | Scaled Value: 335270.9 (coefficient=131.0798) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 172921 | Scaled Value: 385561.7 (coefficient=150.7419) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (131.079834 -> 150.741898)
 Description      : Your harmful spells and abilities have a chance to strike your target with an abyssal comet, dealing ${$s1*$<rolemult>} Cosmic damage and amplifying their gravity to increase the damage of future comets by $s2%.
 
 Upon death, enemies implode to deal $s3 Cosmic damage per gravity stack split between nearby enemies. $@spelldesc1240903
@@ -266454,7 +266459,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1230671)  : Apply Aura (6) | Proc Trigger Spell (42): Naazindhri's Mystic Lash | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 62865.38 (coefficient=24.57829) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 72295.36 (coefficient=28.2651) | PvP Coefficient: 0.5 | Trigger Spell: 1239809 | Target: Self (1)
+Hotfixed         : Coefficient (24.578285 -> 28.265097)
 #2 (id=1237817)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1237818)  : Dummy (3)
@@ -266537,7 +266543,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1231013)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2827544 (coefficient=1105.476) | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3110299 (coefficient=1216.024) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (1105.47644 -> 1216.024048)
 
 Name             : Perfidious Projector (id=1235566) [Hidden] 
 School           : Cosmic
