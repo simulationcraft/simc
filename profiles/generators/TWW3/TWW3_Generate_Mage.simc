@@ -188,9 +188,9 @@ waist=forgeweavers_journal_holster,id=237538,ilevel=723,gem_id=213485
 legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
 feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7418
 finger1=signet_of_collapsing_stars,id=185813,ilevel=723,gem_id=213512/213470,enchant_id=7352
-finger2=logic_gate_alpha,id=237567,ilevel=723,gem_id=213485/213485,enchant_id=7352
+finger2=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,gem_id=213485/213485,enchant_id=7352
 trinket1=diamantine_voidcore,id=242392,ilevel=723
-trinket2=azhiccaran_parapodia,id=242497,bonus_id=4786/3215/12361
+trinket2=screams_of_a_forgotten_sky,id=242399,bonus_id=4800/4786/1533/12361
 main_hand=voidglass_sovereigns_blade,id=237735,bonus_id=4800/4786/1533/12361,enchant_id=7448
 off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960/8795,ilevel=720
 
