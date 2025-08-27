@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62748 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62801 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -264220,7 +264220,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37331 | Target: Friendly (21)
 #2 (id=1222405)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Trigger Spell (1230713 -> 0)
 Description      : $@spelldesc1229205
 
 Name             : Sands of K'aresh (id=1230709) [Hidden] 
@@ -268340,7 +268339,6 @@ Description      : Blocking, parrying, or dodging has a chance to awaken the Gau
 
 
 Name             : Incorporeal Essence-Gorger (id=1244410) 
-Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : Magic
 Range            : 50 yards
