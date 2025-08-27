@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62785 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4713,7 +4713,7 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Feeding Frenzy (278529 effect#2), Trueshot (288613 effect#5), Qa'pla, Eredun War Order (336830 effects: #2, #3), Bloodletting (341440 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Call of the Wild (362754 effects: #1, #2), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery Class Set 4pc (393647 effects: #1, #2), War Orders (393933 effects: #1, #2), Savagery (424557 effect#2), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2)
 Family Flags     : 1, 78, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.7125 | PvP Coefficient: 1.2 | Target: Enemy (6)
@@ -5821,7 +5821,6 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (256 -> 0), Proc Flags 2 (0 -> 4)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5909,10 +5908,8 @@ Effects          :
                    Family Flags: 11
 #6 (id=1226064)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
 #7 (id=1226065)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (21 -> 0), Affects Spells
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
@@ -6942,7 +6939,7 @@ Effects          :
 #2 (id=1019070)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 (Category) | Target: Self (1)
                    Affected Spells (Category): Harpoon (190925)
-Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy resets the cooldown of Harpoon.
+Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy that yields experience or honor resets the cooldown of Harpoon.
 
 Name             : Terms of Engagement (id=265896) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -17215,7 +17212,7 @@ Effects          :
                    Family Flags: 16
 #6 (id=1193961)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced to $s2%.
+Description      : Precise Shots can now stack up to ${1+$s1} times, but its damage bonus is reduced by ${-$s3}%.
 
 Casting Aimed Shot has a $s6% chance to grant an additional stack of Precise Shots.
 
@@ -17532,7 +17529,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 0.85
+Real PPM         : 0.4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
@@ -18612,7 +18609,6 @@ Effects          :
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
 
 Name             : Precise Shots (id=1257703) [Spell Family (9), Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -18630,12 +18626,10 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
                    Family Flags: 12, 105
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 108), Base Value (0 -> -50), Misc Value (0 -> 21), Affects Spells, Target 1 (0 -> 1), Attribute (0 -> 64)
 #2 (id=1265728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
