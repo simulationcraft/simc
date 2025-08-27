@@ -268291,6 +268291,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Self (1)
 
 Name             : Essence-Hunter's Eyeglass (id=1244402) [Passive] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -268303,7 +268304,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245131)  : Apply Aura (6) | Proc Trigger Spell (42): Arcane Hunter | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 460.4336 (coefficient=0.12025) | Trigger Spell: 1245376 | Target: Self (1)
-Description      : Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.
+Description      : Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.
 
 Name             : Manaforged Aethercell (id=1244405) [Passive] 
 School           : Physical
