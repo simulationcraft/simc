@@ -27973,7 +27973,7 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   { 1244007, "Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.", 0, 0 },
   { 1244008, "Release the Nethergate, flooding your location with corrupted mana dealing $1246837s1 damage every $1246837s3 sec to enemies inside for $d and Heal for $1246837s2 per target hit up to $1246837s4 targets.\r\n", 0, 0 },
   { 1244029, "Borrow from the fates of those around you, increasing your Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
-  { 1244402, "Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
+  { 1244402, "Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
   { 1244405, "Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.\r\n", 0, 0 },
   { 1244406, "Blocking, parrying, or dodging has a chance to awaken the Gauze causing it to lash out dealing $s1 Arcane damage split between nearby enemies while shielding you for $s2 damage for $1245431d.\r\n", 0, 0 },
   { 1244410, "Rip magical essence out of your target and consume it dealing ${$s1*$<rolemult>} Arcane damage while granting you $1247205s1 of your lowest secondary stat for $1247207d.\r\n\r\nIf the target was an Ethereal, your highest secondary stat is increased instead.", 0, 0 },
@@ -28035,7 +28035,8 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.62801
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1244402,  0, "Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", "Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1." },
 } };
 
 // Spell description variables, wow build 11.2.0.62801
