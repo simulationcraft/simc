@@ -263,9 +263,6 @@ namespace warlock
     talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
     talents.umbral_blaze_dot = find_spell( 405802 );
 
-    talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 427684
-    talents.reign_of_tyranny_buff = find_spell( 427687 );
-
     talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
     talents.demonic_calling_buff = find_spell( 205146 );
 
@@ -620,8 +617,7 @@ namespace warlock
     hero.demoniacs_fervor = find_talent_spell( talent_tree::HERO, "Demoniac's Fervor" ); // Should be ID 449629
 
     hero.shared_fate = find_talent_spell( talent_tree::HERO, "Shared Fate" ); // Should be ID 449704
-    hero.shared_fate_debuff = find_spell( 450591 );
-    hero.shared_fate_dmg = find_spell( 450593 );
+    hero.shared_fate_dot = find_spell( 450591 );
 
     hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
 
@@ -674,9 +670,6 @@ namespace warlock
 
     // Affliction buffs
     create_buffs_affliction();
-
-    buffs.soul_rot = make_buff( this, "soul_rot", talents.soul_rot)
-                         ->set_cooldown( 0_ms );
 
     buffs.malign_omen = make_buff( this, "malign_omen", talents.malign_omen_buff )
                             ->set_default_value( talents.malign_omen_buff->effectN( 1 ).percent() );
@@ -1362,7 +1355,8 @@ namespace warlock
     add_rng_option( rng_settings.mark_of_perotharn );
     add_rng_option( rng_settings.succulent_soul_aff );
     add_rng_option( rng_settings.succulent_soul_demo );
-    add_rng_option( rng_settings.feast_of_souls );
+    add_rng_option( rng_settings.feast_of_souls_aff );
+    add_rng_option( rng_settings.feast_of_souls_demo );
     add_rng_option( rng_settings.umbral_lattice );
     add_rng_option( rng_settings.empowered_legion_strike );
   }

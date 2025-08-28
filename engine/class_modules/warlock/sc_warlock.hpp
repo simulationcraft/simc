@@ -45,7 +45,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_phantom_singularity;
   propagate_const<dot_t*> dots_unstable_affliction;
   propagate_const<dot_t*> dots_vile_taint;
-  propagate_const<dot_t*> dots_drain_life_aoe; // Soul Rot effect
   propagate_const<dot_t*> dots_soul_rot;
   propagate_const<dot_t*> dots_jackpot_ua; // TWW 11.1 4pc version of Unstable Affliction
 
@@ -77,8 +76,7 @@ struct warlock_td_t : public actor_target_data_t
 
   // Soul Harvester
   propagate_const<dot_t*> dots_soul_anathema;
-
-  propagate_const<buff_t*> debuffs_shared_fate;
+  propagate_const<dot_t*> dots_shared_fate;
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -269,7 +267,7 @@ public:
     player_talent_t improved_malefic_rapture;
 
     player_talent_t oblivion;
-    player_talent_t deaths_embrace; // TOCHECK: Volatile Agony/Perpetual Unstability affected?
+    player_talent_t deaths_embrace; // Volatile Agony and Perpetual Unstability are unaffected by this
     player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot
     const spell_data_t* dark_harvest_buff;
     player_talent_t ravenous_afflictions;
@@ -323,8 +321,6 @@ public:
     player_talent_t blood_invocation;
     player_talent_t umbral_blaze;
     const spell_data_t* umbral_blaze_dot; // Rolling Periodic DoT with DOT_ROLLING default refresh behavior
-    player_talent_t reign_of_tyranny;
-    const spell_data_t* reign_of_tyranny_buff;
     player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation;
@@ -554,8 +550,7 @@ public:
     player_talent_t demoniacs_fervor;
 
     player_talent_t shared_fate;
-    const spell_data_t* shared_fate_debuff;
-    const spell_data_t* shared_fate_dmg;
+    const spell_data_t* shared_fate_dot;
     player_talent_t feast_of_souls;
 
     player_talent_t wicked_reaping;
@@ -645,7 +640,6 @@ public:
 
     // Affliction Buffs
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe. TODO: After 11.1 goes live, remove old AoE Drain Life code
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
@@ -660,7 +654,7 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> wild_imps; // Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
     propagate_const<buff_t*> dreadstalkers; // Buff for tracking number of Dreadstalkers currently out
-    propagate_const<buff_t*> vilefiend; // Buff for tracking if Vilefiend is currently out
+    propagate_const<buff_t*> vilefiend; // Buff for tracking number of Vilefiends currently out
     propagate_const<buff_t*> tyrant; // Buff for tracking if Demonic Tyrant is currently out
     propagate_const<buff_t*> grimoire_felguard; // Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> dread_calling;
@@ -836,9 +830,10 @@ public:
     rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
 
     // Soul Harvester
-    rng_setting_t succulent_soul_aff = { 0.20, 0.20, "succulent_soul_aff" };
+    rng_setting_t succulent_soul_aff = { 0.22, 0.22, "succulent_soul_aff" };
     rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
-    rng_setting_t feast_of_souls = { 0.125, 0.125, "feast_of_souls" };
+    rng_setting_t feast_of_souls_aff = { 0.15, 0.15, "feast_of_souls" };
+    rng_setting_t feast_of_souls_demo = { 0.0975, 0.0975, "feast_of_souls" };
   } rng_settings;
 
   int initial_soul_shards;
@@ -1004,7 +999,5 @@ namespace helpers
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
   void trigger_jackpot_ua( warlock_t* p );
-
-  void set_shared_fate_tick_factor( warlock_t* p, double f );
 }
 }  // namespace warlock

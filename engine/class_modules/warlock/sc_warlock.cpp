@@ -16,7 +16,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   // Shared
   dots_drain_life = target->get_dot( "drain_life", &p );
-  dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
 
   // Affliction
   dots_corruption = target->get_dot( "corruption", &p );
@@ -135,18 +134,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Soul Harvester
   dots_soul_anathema = target->get_dot( "soul_anathema", &p );
 
-  debuffs_shared_fate = make_buff( *this, "shared_fate", p.hero.shared_fate_debuff )
-                            ->set_tick_zero( false )
-                            ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                            ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                            ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                            ->set_partial_tick( true )
-                            ->set_period( p.hero.shared_fate_debuff->effectN( 1 ).period() )
-                            ->set_tick_callback( [ this, target ]( buff_t* b, int, timespan_t actual_tick_time )
-                              {
-                                helpers::set_shared_fate_tick_factor( &warlock, actual_tick_time.total_seconds() / b->tick_time().total_seconds() );
-                                warlock.proc_actions.shared_fate->execute_on_target( target );
-                              } );
+  dots_shared_fate = target->get_dot( "shared_fate", &p );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -197,34 +185,31 @@ void warlock_td_t::target_demise()
 
   if ( warlock.hero.demonic_soul.ok() && warlock.hero.shared_fate.ok() )
   {
-    for ( player_t* t : warlock.sim->target_non_sleeping_list )
-    {
-      auto tdata = warlock.get_target_data( t );
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on all targets in range.", target->name(), warlock.name() );
 
-      if ( !tdata )
-        continue;
-
-      if ( tdata == this )
-        continue;
-
-      warlock.sim->print_log( "Player {} demised. Warlock {} triggers Shared Fate on {}.", target->name(), warlock.name(), t->name() );
-
-      tdata->debuffs_shared_fate->trigger();
-
-      break;
-    }
+    warlock.proc_actions.shared_fate->execute();
   }
 
-  if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() && warlock.rng().roll( warlock.rng_settings.feast_of_souls.setting_value ) )
+  if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() )
   {
-    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
+    double chance = 0.0;
+    if ( warlock.specialization() == WARLOCK_AFFLICTION )
+      chance = warlock.rng_settings.feast_of_souls_aff.setting_value;
+    if ( warlock.specialization() == WARLOCK_DEMONOLOGY )
+      chance = warlock.rng_settings.feast_of_souls_demo.setting_value;
 
-    warlock.feast_of_souls_gain();
+    if ( warlock.rng().roll( chance ) )
+    {
+      warlock.sim->print_log( "Player {} demised. Warlock {} triggers Feast of Souls.", target->name(), warlock.name() );
+
+      warlock.feast_of_souls_gain();
+    }
   }
 }
 
 int warlock_td_t::count_affliction_dots() const
 {
+  // NOTE: Shared Fate and Soul Anathema DoTs do not count (they do not affect effects influenced by this count)
   int count = 0;
 
   if ( dots_agony->is_ticking() )
@@ -718,7 +703,8 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.mark_of_perotharn );
     profile_str += append_rng_option( rng_settings.succulent_soul_aff );
     profile_str += append_rng_option( rng_settings.succulent_soul_demo );
-    profile_str += append_rng_option( rng_settings.feast_of_souls );
+    profile_str += append_rng_option( rng_settings.feast_of_souls_aff );
+    profile_str += append_rng_option( rng_settings.feast_of_souls_demo );
     profile_str += append_rng_option( rng_settings.umbral_lattice );
     profile_str += append_rng_option( rng_settings.empowered_legion_strike );
   }
@@ -752,7 +738,8 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
   rng_settings.succulent_soul_aff = p->rng_settings.succulent_soul_aff;
   rng_settings.succulent_soul_demo = p->rng_settings.succulent_soul_demo;
-  rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
+  rng_settings.feast_of_souls_aff = p->rng_settings.feast_of_souls_aff;
+  rng_settings.feast_of_souls_demo = p->rng_settings.feast_of_souls_demo;
   rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
   rng_settings.empowered_legion_strike = p->rng_settings.empowered_legion_strike;
 }
@@ -1021,6 +1008,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   double actual_amount = player_t::resource_gain( resource_type, amount, source, action );
 
+  // Succulent Soul proc from Demonic Soul talent can only occur from a effective soul shard gain (not overflow)
   if ( resource_type == RESOURCE_SOUL_SHARD && actual_amount > 0.0 && hero.demonic_soul.ok() )
   {
     for ( int i = 0; i < as<int>( actual_amount ); i++ )
@@ -1046,7 +1034,11 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 void warlock_t::feast_of_souls_gain()
 {
-  player_t::resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
+  // TOCHECK: 2025-08-27 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
+  if ( bugs )
+    resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
+  else
+    player_t::resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
 
   buffs.succulent_soul->trigger();
   procs.succulent_soul->occur();

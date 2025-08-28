@@ -53,9 +53,6 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
                               ->set_default_value_from_effect( 1 );
 
-  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
-                               ->set_default_value_from_effect( 1 );
-
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", o()->talents.fiendish_wrath_buff )
                              ->set_default_value_from_effect( 1 );
 
@@ -1301,7 +1298,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     if ( p->o()->talents.dreadlash.ok() )
     {
       aoe = -1;
-      reduced_aoe_targets = 5; // TOCHECK: Is this removed in TWW?
+      reduced_aoe_targets = 5; // TOCHECK regularly: 2025-08-27 This still applies in TWW
       radius = 8.0;
 
       base_dd_multiplier *= 1.0 + p->o()->talents.dreadlash->effectN( 1 ).percent();
@@ -1448,7 +1445,8 @@ double dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+  // TOCHECK: 2025-08-27 The Houndmasters Gambit talent cannot be applied by the second Vilefiend (bug?)
+  if ( o()->talents.the_houndmasters_gambit.ok() && ( bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check() ) )
     m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
 
   return m;
@@ -1650,9 +1648,9 @@ void vilefiend_t::arise()
 
 void vilefiend_t::demise()
 {
-  if ( !current.sleeping )  
-    o()->buffs.vilefiend->decrement();
-  
+  if ( !current.sleeping )
+    o()->buffs.vilefiend->decrement( 1, 0.0 ); // Set value to 0.0 to prevent Houndmasters Gambit talent from being applied by the 2nd Vilefiend
+
   warlock_simple_pet_t::demise();
 }
 
@@ -1695,8 +1693,6 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
 double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
-
-  m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
   m *= 1.0 + o()->hero.abyssal_dominion->effectN( 1 ).percent();
 
@@ -1780,7 +1776,7 @@ void greater_dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
-  vilefiend_present_on_summon = o()->buffs.vilefiend->check();
+  vilefiend_present_on_summon = bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check();
 
   dreadbite_executes = 1;
 
@@ -1803,9 +1799,10 @@ double greater_dreadstalker_t::composite_player_multiplier( school_e school ) co
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  // 2025-03-28: Houndmasters Gambit talent is only applied to Greater Dreadstalkers if Vilefiend is present on summon
+  // 2025-08-27: Houndmasters Gambit talent is only applied to Greater Dreadstalkers if Vilefiend is present on summon
   // Unlike normal Dreadstalkers, summoning Vilefiend when Greater Dreadstalkers are present does not apply the Houndmasters Gambit talent (maybe a bug?)
-  if ( ( vilefiend_present_on_summon || !bugs ) && o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+  // TOCHECK: 2025-08-27 The Houndmasters Gambit talent cannot be applied by the second Vilefiend (bug?)
+  if ( ( vilefiend_present_on_summon || !bugs ) && o()->talents.the_houndmasters_gambit.ok() && ( bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check() ) )
     m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
 
   m *= buffs.demonic_hunger->check_value();
