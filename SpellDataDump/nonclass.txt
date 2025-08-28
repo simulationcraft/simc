@@ -264952,6 +264952,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 9426.785 (coefficient=2.461964) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Araz's Ritual Forge (id=1232802) 
+Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : None
 Duration         : 30 seconds
@@ -264959,7 +264960,7 @@ Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
 Category Cooldown: 20 seconds
-Attributes       : Aura Points On Client (268)
+Attributes       : Can't Crit (93), Aura Points On Client (268)
 Effects          :
 #1 (id=1225827)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
