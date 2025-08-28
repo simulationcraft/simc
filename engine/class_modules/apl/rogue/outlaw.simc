@@ -53,9 +53,9 @@ actions.build+=/ambush,if=talent.hidden_opportunity
 actions.build+=/sinister_strike
 
 # Cooldowns
-# Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active. With TWW3 Fatebound, attempt to send AR alongside Vanish if there is a Vanish charge available.
+# Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active. TWW3 Fatebound attempts to send AR alongside Vanish if there is a charge available.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(cooldown.vanish.charges=0|buff.double_jeopardy.up|!set_bonus.tww3_fatebound_2pc)|fight_remains<2
-# High priority Ghostly Strike as it is off-gcd. Trickster builds with 1 point in Fan the Hammer prefer not to use it at max CPs.
+# High priority Ghostly Strike as it is off-gcd. Trickster 1FTH builds don't use at max CPs. TWW3 Fatebound attempts to send alongside Vanish if there is a charge available.
 actions.cds+=/ghostly_strike,if=hero_tree.fatebound&(buff.double_jeopardy.up|fight_remains<2|cooldown.vanish.charges=0|!set_bonus.tww3_fatebound_2pc)|hero_tree.trickster&(combo_points<cp_max_spend|talent.fan_the_hammer.rank>1)
 # Use Sprint to further benefit from the Scroll of Momentum trinket.
 actions.cds+=/sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up
@@ -132,7 +132,7 @@ actions.stealth+=/ambush,if=talent.hidden_opportunity
 # Vanish usage for standard builds
 # TWW3 Fatebound always attempts to align Vanish with Ghostly Strike.
 actions.vanish=vanish,if=set_bonus.tww3_fatebound_2pc&cooldown.ghostly_strike.ready&talent.ghostly_strike
-# Fatebound without TWW3, or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active.
+# Fatebound without TWW3, or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active, or Supercharger becomes active.
 actions.vanish+=/vanish,if=(hero_tree.fatebound|!talent.killing_spree)&(!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4|buff.supercharge_1.up)&(!set_bonus.tww3_fatebound_2pc|!talent.ghostly_strike)
 # Trickster builds with Killing Spree should Vanish if Killing Spree is not up soon. With TWW3 Trickster, attempt to align Vanish with a recently used Coup de Grace.
 actions.vanish+=/vanish,if=hero_tree.trickster&talent.killing_spree&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)
