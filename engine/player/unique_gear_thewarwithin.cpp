@@ -8216,6 +8216,12 @@ void gigazaps_zapcap( special_effect_t& effect )
   effect.custom_buff = ramp_buff;
   new dbc_proc_callback_t( effect.player, effect );
 
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ max_stack_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !max_stack_buff->check();
+      } );
+
   auto zap = create_proc_action<zap_t>( "zap", effect, max_stack_buff );
 
   effect.player->register_combat_begin( [ effect, zap, max_stack_buff ]( player_t* player ) {
