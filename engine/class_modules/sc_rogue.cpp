@@ -5150,6 +5150,21 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
+  void snapshot_state( action_state_t* state, result_amount_type rt ) override
+  {
+    rogue_attack_t::snapshot_state( state, rt );
+
+    // 08-29-2025 -- If Killing Spree consumes Supercharger, its effective CPs are reduced by one
+    //               So with Forced Induction, it is treated as +2 CPs as opposed to +3
+    auto rs        = cast_state( state );
+    int trigger_cp = rs->get_combo_points();
+
+    if ( p()->bugs && range::any_of( p()->buffs.supercharger, []( const buff_t* buff ) { return buff->check(); } ) )
+      trigger_cp -= 1;
+
+    rs->set_combo_points( rs->get_combo_points( true ), trigger_cp );
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
