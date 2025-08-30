@@ -2037,6 +2037,7 @@ public:
   void init_uptimes() override;
   void init_assessors() override;
   void init_rng() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   void init_items() override;
   void init_special_effects() override;
   void init_finished() override;
@@ -13130,6 +13131,24 @@ void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_dura
     elemental_buff->trigger( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->spawn( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
   }
+}
+
+// shaman_t::validate_fight_style ==========================================
+bool shaman_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  return true;
 }
 
 // ==========================================================================
