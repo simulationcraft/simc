@@ -5128,7 +5128,15 @@ struct killing_spree_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return tick_time( s ) * cast_state( s )->get_combo_points();
+    auto rs = cast_state( s );
+    auto trigger_cp = rs->get_combo_points();
+
+    // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
+    //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
+    if ( p()->bugs && trigger_cp > rs->get_combo_points( true ) )
+      trigger_cp -= 1;
+
+    return tick_time( s ) * trigger_cp;
   }
 
   void execute() override
@@ -5147,19 +5155,6 @@ struct killing_spree_t : public rogue_attack_t
     if ( p()->talent.trickster.disorienting_strikes->ok() )
     {
       p()->buffs.disorienting_strikes->trigger();
-    }
-  }
-
-  void snapshot_state( action_state_t* state, result_amount_type rt ) override
-  {
-    rogue_attack_t::snapshot_state( state, rt );
-
-    // 08-29-2025 -- If Killing Spree consumes Supercharger, its effective CPs are reduced by one
-    //               So with Forced Induction, it is treated as +2 CPs as opposed to +3
-    if ( p()->bugs && range::any_of( p()->buffs.supercharger, []( const buff_t* buff ) { return buff->check(); } ) )
-    {
-      auto rs = cast_state( state );
-      rs->set_combo_points( rs->get_combo_points( true ), rs->get_combo_points() - 1 );
     }
   }
 
