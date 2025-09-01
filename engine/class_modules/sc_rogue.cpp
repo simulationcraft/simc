@@ -5129,7 +5129,7 @@ struct killing_spree_t : public rogue_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     auto rs = cast_state( s );
-    auto trigger_cp = rs->get_combo_points();
+    int trigger_cp = rs->get_combo_points();
 
     // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
     //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
