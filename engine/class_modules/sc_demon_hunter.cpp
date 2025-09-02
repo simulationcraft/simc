@@ -7820,7 +7820,7 @@ void demon_hunter_td_t::target_demise()
 
   if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) || !dh().sim->single_actor_batch )
   {
-    dh().spawn_soul_fragment( soul_fragment::LESSER );
+    dh().spawn_soul_fragment( soul_fragment::GREATER );
     dh().proc.soul_fragment_from_shattered_souls->occur();
   }
 }
