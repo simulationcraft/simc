@@ -5225,7 +5225,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   }
 
 
-  virtual double runic_power_generation_multiplier( const action_state_t* state ) const
+  virtual double runic_power_generation_multiplier( const action_state_t* /*state*/ ) const
   {
     double m = 1.0;
 
@@ -12713,7 +12713,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
   make_event<fs_burst_t>( *sim, this, target, n, proc, ss_crit );
 }
 
-void death_knight_t::sudden_doom_execute_effects( action_t* action, bool coil )
+void death_knight_t::sudden_doom_execute_effects( action_t* /*action*/, bool coil )
 {
   if ( talent.unholy.doomed_bidding.ok() )
   {
@@ -12736,7 +12736,7 @@ void death_knight_t::sudden_doom_execute_effects( action_t* action, bool coil )
   }
 }
 
-void death_knight_t::sudden_doom_impact_effects( action_t* action, action_state_t* state, bool coil )
+void death_knight_t::sudden_doom_impact_effects( action_t* /*action*/, action_state_t* state, bool coil )
 {
   if ( coil )
   {
