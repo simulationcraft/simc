@@ -7817,7 +7817,9 @@ void demon_hunter_td_t::target_demise()
 {
   if ( !( target->is_enemy() ) )
     return;
-
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source->sim->event_mgr.canceled )
+    return;
   if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) || !dh().sim->single_actor_batch )
   {
     dh().spawn_soul_fragment( soul_fragment::GREATER );
