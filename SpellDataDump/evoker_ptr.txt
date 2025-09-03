@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62785 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -381,7 +381,7 @@ Name             : Quell (id=351338) [Spell Family (224)]
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
-Spell Type       : None
+Spell Type       : Ranged
 Range            : 25 yards
 Duration         : 4 seconds
 Cooldown         : 40 seconds

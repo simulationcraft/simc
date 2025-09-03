@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62785 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -17483,7 +17483,7 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter 
 Effects          :
 #1 (id=1174593)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : ${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.
+Description      : ${$s1~} damage taken in the last 5 sec, ${$floor($s1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.
 Tooltip          : ${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.
 
 Name             : Death and Decay (id=466066) [Spell Family (15), Hidden] 
