@@ -6249,6 +6249,7 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
+    // Dreadnaught fires off per target hit by overpower.  SS will cause casts
     if ( dreadnaught && result_is_hit( s->result ) )
     {
       dreadnaught->execute_on_target( s->target );
