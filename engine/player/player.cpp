@@ -4420,9 +4420,10 @@ void player_t::init_finished()
     }
   }
 
-  buff_t* custom_buff;
   for ( const auto& [ buff_name, c ] : custom_stat_buffs )
   {
+    buff_t* custom_buff = nullptr;
+
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
@@ -4444,14 +4445,30 @@ void player_t::init_finished()
 
       custom_buff = make_buff( this, buff_name )
                       ->set_default_value( c.amount * 0.01 )
-                      ->set_pct_buff_type( stat_pct );
-      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+                      ->set_pct_buff_type( stat_pct )
+                      ->set_duration( c.duration );
     }
     else
     {
       custom_buff = make_buff<stat_buff_t>( this, buff_name )
-                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount );
-      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount )
+                      ->set_duration( c.duration );
+    }
+
+    if ( !custom_buff )
+      continue;
+
+    if ( c.start == timespan_t::min() )
+    {
+      register_precombat_begin( [ custom_buff ]( player_t* ) {
+        custom_buff->execute();
+      } );
+    }
+    else
+    {
+      register_precombat_begin( [ this, custom_buff, dur = c.start ]( player_t* ) {
+        make_event( *sim, dur, [ custom_buff ]() { custom_buff->execute(); } );
+      } );
     }
   }
 }
@@ -13313,6 +13330,8 @@ void player_t::create_options()
       std::string name{};
       bool has_data = false;
       std::string stat_value{};
+      timespan_t start = timespan_t::min();
+      timespan_t duration = 0_ms;
       for ( auto s : splits )
       {
         auto sub_splits = util::string_split<std::string>( s, "=" );
@@ -13334,6 +13353,14 @@ void player_t::create_options()
         {
           stat_value = sub_splits[ 1 ];
           has_data = true;
+        }
+        else if ( sub_splits[ 0 ] == "start" )
+        {
+          start = timespan_t::from_seconds( util::to_double( sub_splits[ 1 ] ) );
+        }
+        else if ( sub_splits[ 0 ] == "duration" )
+        {
+          duration = timespan_t::from_seconds( util::to_double( sub_splits[ 1 ] ) );
         }
         else
         {
@@ -13368,7 +13395,7 @@ void player_t::create_options()
           splits[ 0 ].pop_back();
         }
         double amount = util::to_double( splits[ 0 ] );
-        custom_stat_buffs[ name ] = { stat, amount, is_percentage };
+        custom_stat_buffs[ name ] = { stat, amount, start, duration, is_percentage };
       }
 
       return true;
@@ -13573,6 +13600,8 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.astral_antenna_miss_chance", thewarwithin_opts.astral_antenna_miss_chance, 0.0, 1.0 ) );
   add_option( opt_int( "thewarwithin.screams_of_a_forgotten_sky_initial_stacks",
                        thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
+  add_option( opt_bool( "thewarwithin.brand_of_ceaseless_ire_force_full_uptime",
+                        thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

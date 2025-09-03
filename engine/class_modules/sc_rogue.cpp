@@ -1087,7 +1087,7 @@ public:
       player_talent_t fate_intertwined;
 
       player_talent_t delivered_doom;
-      player_talent_t inevitabile_end;
+      player_talent_t inevitable_end;
       player_talent_t destiny_defined;  // TODO: Outlaw also gets the poison proc rate the text says is for assa? Verify in-game.
       player_talent_t double_jeopardy;  // TODO: Double jeopardy + edge case stealth break overlap bug
 
@@ -2088,7 +2088,7 @@ public:
                                                     ab::data().id() != p()->spell.coup_de_grace->id() &&
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
-                           cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitabile_end->ok() );
+                           cold_blood_consumed_proc, 0_s, false, p()->talent.fatebound.inevitable_end->ok() );
     register_consume_buff( p()->buffs.deathstalkers_mark, p()->buffs.deathstalkers_mark->is_affecting( &ab::data() ),
                            nullptr, 1_ms, true ); // Works with WM
     register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
@@ -5128,7 +5128,15 @@ struct killing_spree_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return tick_time( s ) * cast_state( s )->get_combo_points();
+    auto rs = cast_state( s );
+    int trigger_cp = rs->get_combo_points();
+
+    // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
+    //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
+    if ( p()->bugs && trigger_cp > rs->get_combo_points( true ) )
+      trigger_cp -= 1;
+
+    return tick_time( s ) * trigger_cp;
   }
 
   void execute() override
@@ -9160,7 +9168,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   {
     result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
   }
-  else if ( p()->buffs.fatebound_coin_heads->check() && p()->buffs.fatebound_coin_tails->check() && trigger_inevitable && p()->talent.fatebound.inevitabile_end->ok() )
+  else if ( p()->buffs.fatebound_coin_heads->check() && p()->buffs.fatebound_coin_tails->check() && trigger_inevitable && p()->talent.fatebound.inevitable_end->ok() )
   {
     // Inevitable flip matching a previous edge case
     result = fatebound_t::coinflip_e::EDGE;
@@ -9169,7 +9177,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   else
   {
     double matching_odds = 0.5;
-    if ( trigger_inevitable && p()->talent.fatebound.inevitabile_end->ok() )
+    if ( trigger_inevitable && p()->talent.fatebound.inevitable_end->ok() )
     {
       matching_odds = 1.0;
     }
@@ -10553,6 +10561,12 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
         return buffs.envenom->expiration[ buff_idx - 1 ]->occurs() - sim->current_time();
     } );
   }
+  
+  // Temp backwards compatibility fix for PTR typo
+  if ( util::str_compare_ci( name_str, "talent.inevitabile_end" ) || util::str_compare_ci( name_str, "talent.inevitable_end" ) )
+  {
+    return expr_t::create_constant( name_str, talent.fatebound.inevitable_end.enabled() );
+  }
 
   return player_t::create_action_expression( action, name_str );
 }
@@ -11423,7 +11437,7 @@ void rogue_t::init_spells()
   talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
 
   talent.fatebound.delivered_doom = find_talent_spell( talent_tree::HERO, "Delivered Doom" );
-  talent.fatebound.inevitabile_end = find_talent_spell( talent_tree::HERO, "Inevitabile End" );
+  talent.fatebound.inevitable_end = find_talent_spell( talent_tree::HERO, is_ptr() ? "Inevitable End" : "Inevitabile End" );
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
   talent.fatebound.double_jeopardy = find_talent_spell( talent_tree::HERO, "Double Jeopardy" );
 
@@ -11462,7 +11476,7 @@ void rogue_t::init_spells()
   spell.thistle_tea = talent.rogue.thistle_tea->ok() ? talent.rogue.thistle_tea->effectN( 1 ).trigger() : spell_data_t::not_found();
   spell.thistle_tea_buff = talent.rogue.thistle_tea->ok() ? find_spell( 381623 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
-  spell.cold_blood = talent.rogue.cold_blood->ok() ? talent.fatebound.inevitabile_end->ok() ? find_spell( 456330 ) : find_spell( 382245 ) : spell_data_t::not_found();
+  spell.cold_blood = talent.rogue.cold_blood->ok() ? talent.fatebound.inevitable_end->ok() ? find_spell( 456330 ) : find_spell( 382245 ) : spell_data_t::not_found();
 
   // Hero Talent Background Spells
   // Deathstalker

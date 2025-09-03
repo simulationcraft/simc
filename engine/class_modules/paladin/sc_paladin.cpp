@@ -5451,6 +5451,7 @@ void paladin_t::create_options()
   add_option( opt_int( "min_dg_heal_targets", options.min_dg_heal_targets, 0, 5 ) );
   add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
+  add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
 
   player_t::create_options();
 }

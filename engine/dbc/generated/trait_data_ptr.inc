@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 11.2.0.62493
+// Player trait definitions, wow build 11.2.5.62785
 static constexpr std::array<trait_data_t, 3194> __ptr_trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  1,  -1,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },  0, 0 },
   { 1,  1, 112179,  90322, 2, 20, 117184,  382896,      0,      0,  8,  1,  -1,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -2688,7 +2688,7 @@ static constexpr std::array<trait_data_t, 3194> __ptr_trait_data_data { {
   { 3,  4, 117706,  95109, 1,  1, 122718,  457056,      0,      0,  3,  3, 100,                     "Lingering Darkness", {    0,  259,  261,    0 }, {    0,    0,    0,    0 }, 53, 2 },
   { 3,  4, 117707,  95110, 1,  1, 122719,  457053,      0,      0,  2,  1,  -1,                    "Clear the Witnesses", {    0,  259,  261,    0 }, {    0,    0,    0,    0 }, 53, 0 },
   { 3,  4, 117708,  95111, 1,  1, 122720,  441321,      0,      0,  2,  3,  -1,                          "Flawless Form", {    0,  260,  261,    0 }, {    0,    0,    0,    0 }, 51, 0 },
-  { 3,  4, 117711,  95114, 1,  1, 122723,  454434,      0,      0,  4,  2, 100,                        "Inevitabile End", {    0,  259,  260,    0 }, {    0,    0,    0,    0 }, 52, 2 },
+  { 3,  4, 117711,  95114, 1,  1, 122723,  454434,      0,      0,  4,  2, 100,                         "Inevitable End", {    0,  259,  260,    0 }, {    0,    0,    0,    0 }, 52, 2 },
   { 3,  4, 117712,  95115, 1,  1, 122724,  441423,      0,      0,  5,  1,  -1,                          "Coup de Grace", {    0,  260,  261,    0 }, {    0,    0,    0,    0 }, 51, 0 },
   { 3,  4, 117713,  95116, 1,  1, 122725,  441429,      0,      0,  4,  2, 100,                            "Cloud Cover", {    0,  260,  261,    0 }, {    0,    0,    0,    0 }, 51, 2 },
   { 3,  4, 117714,  95117, 1,  1, 122726,  457055,      0,      0,  2,  3,  -1,                         "Singular Focus", {    0,  259,  261,    0 }, {    0,    0,    0,    0 }, 53, 0 },
@@ -3196,7 +3196,7 @@ static constexpr std::array<trait_data_t, 3194> __ptr_trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,       0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 }, 37, 3 },
 } };
 
-// Player trait definition effect entries, wow build 11.2.0.62493
+// Player trait definition effect entries, wow build 11.2.5.62785
 static constexpr std::array<trait_definition_effect_entry_t, 377> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
@@ -3982,7 +3982,7 @@ static const std::array<uint16_t, 3194> __ptr_trait_spell_id_index { {
 
 #define PTR_MAX_HERO_TREES_PER_CLASS (4)
 
-// Hero trees, wow build 11.2.0.62493
+// Hero trees, wow build 11.2.5.62785
 static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 39> __ptr_trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },

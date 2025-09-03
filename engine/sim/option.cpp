@@ -191,10 +191,6 @@ protected:
       return opts::parse_status::CONTINUE;
 
     bool do_warn = _warn && !_ref.empty();
-    if (do_warn)
-    {
-      auto a = false;
-    }
     _ref = std::string( v );
     return do_warn ? opts::parse_status::WARNING : opts::parse_status::OK;
   }

@@ -1,4 +1,4 @@
-// Spell text, wow build 11.2.0.62748
+// Spell text, wow build 11.2.0.62801
 static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -27973,7 +27973,7 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   { 1244007, "Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.", 0, 0 },
   { 1244008, "Release the Nethergate, flooding your location with corrupted mana dealing $1246837s1 damage every $1246837s3 sec to enemies inside for $d and Heal for $1246837s2 per target hit up to $1246837s4 targets.\r\n", 0, 0 },
   { 1244029, "Borrow from the fates of those around you, increasing your Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
-  { 1244402, "Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
+  { 1244402, "Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
   { 1244405, "Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.\r\n", 0, 0 },
   { 1244406, "Blocking, parrying, or dodging has a chance to awaken the Gauze causing it to lash out dealing $s1 Arcane damage split between nearby enemies while shielding you for $s2 damage for $1245431d.\r\n", 0, 0 },
   { 1244410, "Rip magical essence out of your target and consume it dealing ${$s1*$<rolemult>} Arcane damage while granting you $1247205s1 of your lowest secondary stat for $1247207d.\r\n\r\nIf the target was an Ethereal, your highest secondary stat is increased instead.", 0, 0 },
@@ -28034,11 +28034,12 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   { 1257703, "$@spelldesc260240", "Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.0.62748
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.2.0.62801
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1244402,  0, "Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", "Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1." },
 } };
 
-// Spell description variables, wow build 11.2.0.62748
+// Spell description variables, wow build 11.2.0.62801
 static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28716,7 +28717,7 @@ static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { 
   { 1249658, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.0.62748
+// spelldesc_vars hotfix entries, wow build 11.2.0.62801
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

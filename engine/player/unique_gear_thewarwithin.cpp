@@ -83,7 +83,7 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e )
 
 template <typename T = stat_buff_t>
 void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
-                            std::function<void( stat_e, buff_t* )> add_fn )
+                            std::function<void( stat_e, buff_t* )> add_fn, bool add_to_list = true )
 {
   static_assert( std::is_base_of_v<stat_buff_t, T> );
   auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
@@ -104,6 +104,9 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
       ->set_name_reporting( util::string_join( stat_strs ) );
 
     add_fn( stats.front(), buff );
+
+    if ( add_to_list && !range::contains( effect.buff_list, buff ) )
+      effect.buff_list.push_back( buff );
   }
 }
 
@@ -3687,7 +3690,7 @@ void signet_of_the_priory( special_effect_t& effect )
         [ this ]( stat_e s, buff_t* b ) { buffs[ s ] = b; } );
 
       create_all_stat_buffs( e, e.player->find_spell( 450882 ), data->effectN( 1 ).average( e ),
-        [ this ]( stat_e s, buff_t* b ) { party_buffs[ s ] = b; } );
+        [ this ]( stat_e s, buff_t* b ) { party_buffs[ s ] = b; }, false );
     }
 
     void execute() override
@@ -4638,7 +4641,7 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
   auto buff_spell = effect.driver()->effectN( 2 ).trigger();
 
   create_all_stat_buffs( effect, buff_spell, effect.driver()->effectN( 2 ).average( effect ),
-    [ &negative_buffs ]( stat_e, buff_t* b ) { negative_buffs.push_back( b ); } );
+    [ &negative_buffs ]( stat_e, buff_t* b ) { negative_buffs.push_back( b ); }, false );
 
   if ( negative_buffs.size() > 0 )
   {
@@ -8216,6 +8219,12 @@ void gigazaps_zapcap( special_effect_t& effect )
   effect.custom_buff = ramp_buff;
   new dbc_proc_callback_t( effect.player, effect );
 
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ max_stack_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !max_stack_buff->check();
+      } );
+
   auto zap = create_proc_action<zap_t>( "zap", effect, max_stack_buff );
 
   effect.player->register_combat_begin( [ effect, zap, max_stack_buff ]( player_t* player ) {
@@ -9122,6 +9131,7 @@ void soulbinders_embrace( special_effect_t& effect )
 
   auto damage = create_proc_action<generic_aoe_proc_t>( "soulbinders_embrace", effect, 1235633 );
   damage->base_dd_min = damage->base_dd_max = equip_data->effectN( 2 ).average( effect );
+  damage->split_aoe_damage = false;
 
   effect.execute_action = damage;
 }
@@ -9172,7 +9182,8 @@ void brand_of_ceaseless_ire( special_effect_t& effect )
 
   // assume full uptime in dungeons since we're always getting hit
   if ( effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
-       effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+       effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ||
+       effect.player->thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime )
   {
     effect.proc_flags_ = PF_MELEE_ABILITY;
     effect.proc_flags2_ = PF2_LANDED;
@@ -9518,9 +9529,12 @@ void nexuskings_command( special_effect_t& effect )
     bound->set_max_stack( 20 );
   }
 
-  // always get a debuff every 30s regardless of combat
+  // start precombat with a stack of the debuff
+  effect.player->register_precombat_begin( bound );
+
+  // debuff is wiped on pull, gain a debuff every 30s during combat
   effect.player->register_combat_begin( [ bound, dur = effect.driver()->effectN( 1 ).period() ]( player_t* ) {
-    bound->trigger();
+    bound->expire();
     make_event( *bound->sim, bound->rng().range( 0_ms, dur ), [ bound, dur ] {
       bound->trigger();
       make_repeating_event( *bound->sim, dur, [ bound ] { bound->trigger(); } );
@@ -10124,6 +10138,14 @@ void voidglass_shards( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new voidglass_shards_cb_t( effect );
+}
+
+// warplance strike
+// 1243411 driver
+void warplance_strike( special_effect_t& effect )
+{
+  effect.aoe = -1;
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect ) * role_mult( effect );
 }
 
 // Armor
@@ -12632,6 +12654,7 @@ void register_special_effects()
   register_special_effect( 1224457, items::shadow_quake );
   set_min_version( wowv_t( 11, 2, 0 ) );
   register_special_effect( 1235136, items::voidglass_shards );
+  register_special_effect( 1243411, items::warplance_strike );
   reset_version_check();
 
   // Armor

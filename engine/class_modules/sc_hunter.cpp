@@ -3723,7 +3723,6 @@ void hunter_t::trigger_spotters_mark( player_t* target, bool force )
 
 double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
 {
-  tip_bonus += talents.better_together->effectN( 3 ).percent();
 
   if ( talents.flankers_advantage.ok() )
   {
@@ -3731,6 +3730,9 @@ double hunter_t::calculate_tip_of_the_spear_value( double tip_bonus ) const
     double ratio = std::min( cache.attack_crit_chance(), talents.flankers_advantage->effectN( 5 ).percent() ) / talents.flankers_advantage->effectN( 5 ).percent();
     tip_bonus += tip_bonus * ratio;
   }
+
+  //Better Together is seemingly unaffected by Flanker's Advantage bonus
+  tip_bonus += talents.better_together->effectN( 3 ).percent();
 
   if ( buffs.relentless_primal_ferocity->check() )
     tip_bonus *= 1 + talents.relentless_primal_ferocity_buff->effectN( 2 ).percent();
@@ -4680,6 +4682,21 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     // Force the cooldown reset reaction because apparently that was just implemented for apl checks :/
     return hunter_ranged_attack_t::ready() && cooldown->reset_react <= sim->current_time();
   }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override
+  {
+    if ( expression_str == "ready" )
+    {
+      return make_fn_expr( expression_str, [ this ] {
+        // Must meet both ready() and target_ready() conditions to be considered ready:
+        // ready(): Must either be off cooldown normally (does not need to be reacted to) or reset by a Deathblow (must be reacted to).
+        // target_ready(): Must either be within the proper health thresholds or have had an active Deathblow longer than the reaction period.
+        return ready() && target_ready( target );
+      } );
+    }
+
+    return hunter_ranged_attack_t::create_expression( expression_str );
+  }
 };
 
 struct kill_shot_t : public kill_shot_base_t
@@ -5451,8 +5468,10 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p()->consume_precise_shots();
 
+    // Delay this since secondary Aimed Shots can cleave with a Trick Shots from Volley, but will not be affected by a Trick Shots 
+    // from a queued Multi-Shot that might be executed before they are since they are delayed 10 ms.
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
-      p() -> buffs.trick_shots -> trigger();
+      make_event( p()->sim, 10_ms, [ this ]() { p()->buffs.trick_shots->trigger(); } );
 
     p()->trigger_symphonic_arsenal();
   }
@@ -5713,6 +5732,18 @@ struct aimed_shot_t : public aimed_shot_base_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.aspect_of_the_hydra->effectN( 1 ).percent() + p->talents.light_ammo->effectN( 3 ).percent();
     }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // Consumes Lock and Load without a benefit
+      if ( p()->buffs.lock_and_load->check() )
+      {
+        p()->buffs.lock_and_load->decrement();
+        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
+      }
+    }
   };
 
   struct aimed_shot_double_tap_t : aimed_shot_base_t
@@ -5722,6 +5753,18 @@ struct aimed_shot_t : public aimed_shot_base_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.double_tap->effectN( 3 ).percent();
+    }
+
+    void execute() override
+    {
+      aimed_shot_base_t::execute();
+
+      // Consumes Lock and Load without a benefit
+      if ( p()->buffs.lock_and_load->check() )
+      {
+        p()->buffs.lock_and_load->decrement();
+        p()->cooldowns.explosive_shot->adjust( -p()->talents.magnetic_gunpowder->effectN( 2 ).time_value() );
+      }
     }
   };
 
@@ -5859,15 +5902,16 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->trigger_deathblow();
 
     auto tl = target_list();
+
+    // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
     if ( aspect_of_the_hydra && tl.size() > 1 )
-      aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
+      make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
 
     if ( double_tap && p()->buffs.double_tap->up() )
     {
-      double_tap->execute_on_target( target );
-      
+      make_event( p()->sim, 10_ms, [ this ]() { double_tap->execute_on_target( target ); } );
       if ( aspect_of_the_hydra && tl.size() > 1 )
-        aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
+        make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
 
       p()->buffs.double_tap->expire();
     }
@@ -6032,8 +6076,13 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::last_tick( d );
 
     p()->consume_trick_shots();
-    p()->buffs.in_the_rhythm->trigger();
     p()->buffs.double_tap->expire();
+
+    //If a Rapid Fire is cancelled it does not trigger In The Rhythm
+    if ( d->ticks_left() == 0 )
+    {
+      p()->buffs.in_the_rhythm->trigger();
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

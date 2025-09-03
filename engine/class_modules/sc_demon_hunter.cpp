@@ -950,6 +950,7 @@ public:
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat = 0.6;
+    bool enable_dungeon_slice                     = false;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -8389,6 +8390,7 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
+  add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -9274,18 +9276,27 @@ void demon_hunter_t::init_finished()
 
 bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 {
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+#ifdef NDEBUG
+  if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice )
   {
-    switch ( style )
-    {
-      case FIGHT_STYLE_DUNGEON_ROUTE:
-      case FIGHT_STYLE_DUNGEON_SLICE:
-        return false;
-      default:
-        return true;
-    }
+    sim->error( SEVERE,
+                "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
+    sim->cancel();
   }
-  return true;
+#endif
+
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
+             style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+    case DEMON_HUNTER_VENGEANCE:
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK ||
+             style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+    default:
+      return false;
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================

@@ -248,7 +248,7 @@ void demonology( player_t* p )
   default_->add_action( "hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains_expected<10&pet.dreadstalker.active" );
   default_->add_action( "summon_demonic_tyrant,if=(variable.imp_despawn&pet.vilefiend.active&pet.dreadstalker.active&(variable.imp_despawn<time+gcd.max+cast_time|buff.wild_imps.stack>=9-2*prev_gcd.1.hand_of_guldan))|(buff.grimoire_felguard.remains>cast_time&buff.grimoire_felguard.remains<action.hand_of_guldan.cast_time+cast_time+gcd.max)|(buff.dreadstalkers.remains>cast_time&((buff.dreadstalkers.remains<action.hand_of_guldan.cast_time+cast_time+gcd.max)|(variable.hog_after_ds&(time>10|buff.wild_imps.stack>=9-2*prev_gcd.1.hand_of_guldan))))" );
   default_->add_action( "grimoire_felguard,if=cooldown.summon_demonic_tyrant.remains<=15&cooldown.call_dreadstalkers.remains<10" );
-  default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>=25+cast_time|cooldown.summon_demonic_tyrant.remains<=13&cooldown.call_dreadstalkers.remains<10" );
+  default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>=25+cast_time&(!pet.vilefiend.active&talent.the_houndmasters_gambit|!talent.the_houndmasters_gambit)|cooldown.summon_demonic_tyrant.remains<=13&cooldown.call_dreadstalkers.remains<10" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>=10|cooldown.summon_demonic_tyrant.remains<=10" );
   default_->add_action( "call_dreadstalkers,if=buff.grimoire_felguard.up&buff.grimoire_felguard.remains<12+gcd.max+cast_time" );
   default_->add_action( "call_dreadstalkers,if=buff.vilefiend.up&buff.vilefiend.remains<12+gcd.max+cast_time" );

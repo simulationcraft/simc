@@ -276,7 +276,7 @@ public:
   bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() );
   // remove stacks if the action match the buff's proc flags
-  void consume( action_t*, int stacks = -1 );
+  int consume( action_t*, int stacks = -1 );
   // Completely remove the buff, including any delayed applications and expirations.
   void cancel();
 

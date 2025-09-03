@@ -1411,7 +1411,8 @@ public:
   {
     ab::execute();
 
-    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 && !ab::background )
+    // 388539 is the rend dot for arms.  Collateral damage is not procced from it, but is procced from other background actions like demolish
+    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes -> up() && ab::num_targets_hit >= 2 && !(ab::data().id() == 388539) )
     {
       p() -> buff.collateral_damage -> trigger();
     }

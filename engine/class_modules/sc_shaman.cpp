@@ -2037,6 +2037,7 @@ public:
   void init_uptimes() override;
   void init_assessors() override;
   void init_rng() override;
+  bool validate_fight_style( fight_style_e style ) const override;
   void init_items() override;
   void init_special_effects() override;
   void init_finished() override;
@@ -4372,7 +4373,12 @@ struct fire_elemental_t : public primal_elemental_t
     if ( type == elemental::PRIMAL_FIRE )
     {
       def->add_action( "meteor" );
-      def->add_action( "immolate,target_if=!ticking" );
+      // 2025-08-27
+      // I noticed the Lesser Primal Fire Elemental does not cast Immolate.
+      // I suspect this is a bug. But time will tell.
+      if ( variant != elemental_variant::LESSER) {
+        def->add_action( "immolate,target_if=!ticking" );
+      }
     }
 
     def->add_action( "fire_blast" );
@@ -4461,11 +4467,15 @@ struct storm_elemental_t : public primal_elemental_t
 
     bool ready() override
     {
-      if ( p()->o()->talent.primal_elementalist->ok() )
-      {
+      // 2025-08-27
+      // Once uppon a time this spell was exclusive to Primal Elementalist Storm Elemental.
+      // Right now it is suddenly available to all variants. I suspect this is
+      // a bug. But time will tell.
+      // if ( p()->o()->talent.primal_elementalist->ok() )
+      // {
         return pet_spell_t<storm_elemental_t>::ready();
-      }
-      return false;
+      // }
+      // return false;
     }
   };
 
@@ -4517,10 +4527,14 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( type == elemental::PRIMAL_STORM )
-    {
+    // 2025-08-27
+    // Once uppon a time this spell was exclusive to Primal Elementalist Storm Elemental.
+    // Right now it is suddenly available to all variants. I suspect this is
+    // a bug. But time will tell.
+    // if ( type == elemental::PRIMAL_STORM )
+    // {
       def->add_action( "stormfury,if=buff.call_lightning.remains>=10" );
-    }
+    // }
     def->add_action( "call_lightning" );
     def->add_action( "wind_gust" );
   }
@@ -13117,6 +13131,24 @@ void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_dura
     elemental_buff->trigger( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->spawn( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
   }
+}
+
+// shaman_t::validate_fight_style ==========================================
+bool shaman_t::validate_fight_style( fight_style_e style ) const
+{
+  if ( specialization() == SHAMAN_ELEMENTAL )
+  {
+    switch ( style )
+    {
+      case FIGHT_STYLE_DUNGEON_ROUTE:
+      case FIGHT_STYLE_DUNGEON_SLICE:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  return true;
 }
 
 // ==========================================================================

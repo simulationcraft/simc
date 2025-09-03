@@ -1729,15 +1729,16 @@ public:
   // Death Knight Options
   struct options_t
   {
-    bool disable_aotd                  = false;
-    bool split_ghoul_regen             = false;
-    bool split_obliterate_schools      = true;
-    double ams_absorb_percent          = 0;
-    bool individual_pet_reporting      = false;
-    bool amz_specified                 = false;
-    double average_cs_travel_time      = 0.4;
-    timespan_t first_ams_cast          = 20_s;
-    double horsemen_ams_absorb_percent = 0.6;
+    bool disable_aotd                     = false;
+    bool split_ghoul_regen                = false;
+    bool split_obliterate_schools         = true;
+    double ams_absorb_percent             = 0;
+    bool individual_pet_reporting         = false;
+    bool amz_specified                    = false;
+    double average_cs_travel_time         = 0.4;
+    timespan_t first_ams_cast             = 20_s;
+    double horsemen_ams_absorb_percent    = 0.6;
+    double average_mograines_might_uptime = 0.65;
   } options;
 
   // Runes
@@ -1922,6 +1923,10 @@ public:
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void trigger_bursting_sores( player_t* target, unsigned n = 1 );
+  void sudden_doom_execute_effects( action_t* action, bool coil = false );
+  void sudden_doom_impact_effects( action_t* action, action_state_t* state, bool coil = false );
+  void unholy_rp_execute_effects( action_t* action, bool sd, bool coil = false );
+  void unholy_rp_impact_effects( action_t* action, action_state_t* state, bool sd, bool coil = false );
   // Start the repeated stacking of buffs, called at combat start
   void start_inexorable_assault();
   // On-target-death triggers
@@ -4414,8 +4419,9 @@ struct mograine_pet_t final : public horseman_pet_t
       buff_t::start( stacks, value, duration );
       if ( dk->talent.rider.mograines_might.ok() )
       {
-        dk->buffs.mograines_might->trigger();
-        dk->buffs.death_and_decay->trigger();
+        timespan_t dur = mograine()->dnd_duration();
+        dk->buffs.mograines_might->trigger( dur );
+        dk->buffs.death_and_decay->trigger( dur + 4_s );
       }
     }
 
@@ -4427,11 +4433,6 @@ struct mograine_pet_t final : public horseman_pet_t
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
-      if ( dk->talent.rider.mograines_might.ok() )
-      {
-        dk->buffs.mograines_might->expire();
-        dk->buffs.death_and_decay->expire( 4_s );
-      }
       if ( mograine()->extended_by_apoc_now )
       {
         mograine()->extended_by_apoc_now = false;
@@ -4469,9 +4470,17 @@ struct mograine_pet_t final : public horseman_pet_t
     off_hand_weapon.swing_time  = 2_s;
   }
 
+  timespan_t dnd_duration() const
+  {
+    timespan_t avg_dur = dk()->pet_spell.mograines_death_and_decay_aura->duration() * dk()->options.average_mograines_might_uptime;
+    timespan_t dur = rng().gauss_b( avg_dur, 2_s, dk()->pet_spell.mograines_death_and_decay_aura->duration() );
+    return dur;
+  }
+
   void arise() override
   {
     horseman_pet_t::arise();
+
     dnd_aura->trigger();
   }
 
@@ -8554,8 +8563,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
       coil_of_devastation( nullptr ),
       sudden_doom( false ),
       cod_mod( 0.0 ),
-      sd_wounds( 0 ),
-      ea_duration( 0_ms ),
       reaping_hp( 0.0 ),
       reaping_mod( 0.0 )
   {
@@ -8565,16 +8572,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
     {
       coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", p );
       cod_mod             = p->talent.unholy.coil_of_devastation->effectN( 1 ).percent();
-    }
-
-    if ( p->talent.unholy.sudden_doom.ok() )
-    {
-      sd_wounds = as<unsigned>( p->talent.unholy.sudden_doom->effectN( 3 ).base_value() );
-    }
-
-    if ( p->talent.unholy.eternal_agony.ok() )
-    {
-      ea_duration = timespan_t::from_seconds( p->talent.unholy.eternal_agony->effectN( 1 ).base_value() );
     }
 
     if ( p->talent.unholy.reaping.ok() )
@@ -8602,9 +8599,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
     if ( p()->talent.unholy.reaping.ok() && target->health_percentage() < reaping_hp )
-    {
       m *= 1.0 + reaping_mod;
-    }
 
     return m;
   }
@@ -8615,36 +8610,7 @@ struct death_coil_damage_t final : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    if ( sudden_doom )
-    {
-      if ( p()->talent.unholy.doomed_bidding.ok() )
-      {
-        p()->pets.doomed_bidding_magus_coil.spawn();
-      }
-
-      if ( p()->talent.sanlayn.visceral_strength )
-      {
-        p()->buffs.visceral_strength->trigger();
-      }
-
-      if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() != nullptr )
-      {
-        pets::risen_skulker_pet_t* skulker = p()->pets.risen_skulker.active_pet();
-        skulker->blighted_arrow_st_buff->trigger();
-      }
-    }
-
-    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
-    {
-      p()->buffs.dark_transformation->extend_duration( p(), ea_duration );
-    }
-
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      p()->trigger_vampiric_strike_proc( execute_state->target );
-    }
-
-    p()->buffs.sudden_doom->consume( this, 1 );
+    p()->unholy_rp_execute_effects( this, sudden_doom, true );
   }
 
   void impact( action_state_t* state ) override
@@ -8652,32 +8618,15 @@ struct death_coil_damage_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
 
     if ( p()->talent.unholy.coil_of_devastation.ok() )
-    {
       residual_action::trigger( coil_of_devastation, state->target, state->result_amount * cod_mod );
-    }
 
-    if ( p()->talent.unholy.death_rot.ok() )
-    {
-      get_td( state->target )->debuff.death_rot->trigger( 1 + sudden_doom );
-    }
-
-    if ( sudden_doom )
-    {
-      if ( p()->talent.unholy.rotten_touch.ok() )
-      {
-        get_td( state->target )->debuff.rotten_touch->trigger();
-      }
-
-      p()->burst_festering_wound( state->target, sd_wounds, p()->procs.fw_sudden_doom );
-    }
+    p()->unholy_rp_impact_effects( this, state, sudden_doom, true );
   }
 
 private:
   propagate_const<action_t*> coil_of_devastation;
   bool sudden_doom;
   double cod_mod;
-  unsigned sd_wounds;
-  timespan_t ea_duration;
   double reaping_hp;
   double reaping_mod;
 };
@@ -8707,15 +8656,6 @@ struct death_coil_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p()->last_cast_rp_spender = execute_action;
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) && !p()->buffs.dark_transformation->check() &&
-         rng().roll( p()->spell.winning_streak_unholy->proc_chance() ) )
-    {
-      p()->buffs.winning_streak_unholy->expire();
-    }
-
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) && p()->pets.whitemane.active_pet() != nullptr )
-      p()->pets.whitemane.active_pet()->death_coil->execute_on_target( target );
   }
 };
 
@@ -9024,18 +8964,6 @@ struct epidemic_damage_base_t : public death_knight_spell_t
     return cam;
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    if ( p()->talent.unholy.harbinger_of_doom.ok() && p()->buffs.sudden_doom->check() )
-    {
-      m *= 1.0 + p()->talent.unholy.harbinger_of_doom->effectN( 4 ).percent() * p()->buffs.sudden_doom->check();
-    }
-
-    return m;
-  }
-
 public:
   double soft_cap_multiplier;
 };
@@ -9114,79 +9042,29 @@ struct epidemic_t final : public death_knight_spell_t
     // Reset target cache because of smart targetting
     target_cache.is_valid = false;
 
-    death_knight_spell_t::execute();
-
-    p()->last_cast_rp_spender = impact_action;
-
-    if ( p()->buffs.dark_transformation->up() && p()->talent.unholy.eternal_agony.ok() )
-    {
-      p()->buffs.dark_transformation->extend_duration(
-          p(), timespan_t::from_seconds( p()->talent.unholy.eternal_agony->effectN( 1 ).base_value() ) );
-    }
-
-    if ( p()->talent.unholy.doomed_bidding.ok() && p()->buffs.sudden_doom->check() )
-    {
-      p()->pets.doomed_bidding_magus_epi.spawn();
-    }
-
-    if ( p()->talent.sanlayn.visceral_strength && p()->buffs.sudden_doom->check() )
-    {
-      p()->buffs.visceral_strength->trigger();
-    }
-
-    if ( p()->buffs.sudden_doom->check() )
-    {
-      sd = true;
-      p()->buffs.sudden_doom->consume( this, 1 );
-      if ( p()->talent.unholy.all_will_serve.ok() && p()->pets.risen_skulker.active_pet() != nullptr )
-      {
-        pets::risen_skulker_pet_t* skulker = p()->pets.risen_skulker.active_pet();
-        skulker->blighted_arrow_aoe_buff->trigger();
-      }
-    }
-    else
-    {
-      sd = false;
-    }
-
-    if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
-    {
-      p()->trigger_vampiric_strike_proc( target );
-    }
-
-    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) && !p()->buffs.dark_transformation->check() &&
-         rng().roll( p()->spell.winning_streak_unholy->proc_chance() ) )
-    {
-      p()->buffs.winning_streak_unholy->expire();
-    }
-
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) && p()->pets.whitemane.active_pet() != nullptr )
-      p()->pets.whitemane.active_pet()->epidemic->execute();
-  }
-
-  void impact( action_state_t* state ) override
-  {
     // Set the multiplier for reduced aoe soft cap
-    if ( state->n_targets > 0.0 && state->n_targets > custom_reduced_aoe_targets )
-      soft_cap_multiplier =
-          sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, state->n_targets ) );
+    int targets = n_targets();
+    if ( targets > 0 && targets > custom_reduced_aoe_targets )
+      soft_cap_multiplier = sqrt( custom_reduced_aoe_targets / std::min<int>( sim->max_aoe_enemies, targets ) );
     else
       soft_cap_multiplier = 1.0;
 
     debug_cast<epidemic_damage_main_t*>( impact_action )->soft_cap_multiplier               = soft_cap_multiplier;
     debug_cast<epidemic_damage_aoe_t*>( impact_action->impact_action )->soft_cap_multiplier = soft_cap_multiplier;
 
+    sd = p()->buffs.sudden_doom->check();
+
+    death_knight_spell_t::execute();
+
+    p()->last_cast_rp_spender = impact_action;
+    p()->unholy_rp_execute_effects( this, sd );
+  }
+
+  void impact( action_state_t* state ) override
+  {
     death_knight_spell_t::impact( state );
 
-    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state->result ) )
-    {
-      get_td( state->target )->debuff.death_rot->trigger();
-
-      if ( sd )
-      {
-        get_td( state->target )->debuff.death_rot->trigger();
-      }
-    }
+    p()->unholy_rp_impact_effects( this, state, sd );
   }
 
 private:
@@ -10539,7 +10417,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
     }
-    if ( p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
+    if ( !p()->bugs && p()->sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) &&
          td->debuff.chains_of_ice_trollbane_slow->check() )
     {
       m *= 1.0 + p()->sets->set( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 )->effectN( 4 ).percent();
@@ -12384,6 +12262,7 @@ void death_knight_t::create_options()
   add_option(
       opt_timespan( "deathknight.first_ams_cast", options.first_ams_cast, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_float( "deathknight.horsemen_ams_absorb_percent", options.horsemen_ams_absorb_percent, 0.0, 1.0 ) );
+  add_option( opt_float( "deathknight.average_mograines_might_uptime", options.average_mograines_might_uptime, 0.0, 1.0 ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -12834,6 +12713,78 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
   make_event<fs_burst_t>( *sim, this, target, n, proc, ss_crit );
 }
 
+void death_knight_t::sudden_doom_execute_effects( action_t* action, bool coil )
+{
+  if ( talent.unholy.doomed_bidding.ok() )
+  {
+    if ( coil )
+      pets.doomed_bidding_magus_coil.spawn();
+    else
+      pets.doomed_bidding_magus_epi.spawn();
+  }
+
+  if ( talent.sanlayn.visceral_strength.ok() )
+    buffs.visceral_strength->trigger();
+
+  if ( talent.unholy.all_will_serve.ok() && pets.risen_skulker.active_pet() != nullptr )
+  {
+    pets::risen_skulker_pet_t* skulker = pets.risen_skulker.active_pet();
+    if ( coil )
+      skulker->blighted_arrow_st_buff->trigger();
+    else
+      skulker->blighted_arrow_aoe_buff->trigger();
+  }
+}
+
+void death_knight_t::sudden_doom_impact_effects( action_t* action, action_state_t* state, bool coil )
+{
+  if ( coil )
+  {
+    burst_festering_wound( state->target, as<unsigned>( talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
+                           procs.fw_sudden_doom );
+
+    if ( talent.unholy.rotten_touch.ok() )
+      get_target_data( state->target )->debuff.rotten_touch->trigger();
+  }
+}
+
+void death_knight_t::unholy_rp_execute_effects( action_t* action, bool sd, bool coil )
+{
+  if ( buffs.dark_transformation->up() && talent.unholy.eternal_agony.ok() )
+    buffs.dark_transformation->extend_duration(
+        this, timespan_t::from_seconds( talent.unholy.eternal_agony->effectN( 1 ).base_value() ) );
+
+  if ( talent.sanlayn.vampiric_strike.ok() && !buffs.gift_of_the_sanlayn->check() )
+    trigger_vampiric_strike_proc( target );
+
+  if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) && !buffs.dark_transformation->check() &&
+       rng().roll( spell.winning_streak_unholy->proc_chance() ) )
+    buffs.winning_streak_unholy->expire();
+
+  if ( sets->has_set_bonus( HERO_RIDER_OF_THE_APOCALYPSE, TWW3, B4 ) && pets.whitemane.active_pet() != nullptr )
+  {
+    if ( coil )
+      pets.whitemane.active_pet()->death_coil->execute_on_target( target );
+    else
+      pets.whitemane.active_pet()->epidemic->execute();
+  }
+
+  if ( sd )
+    sudden_doom_execute_effects( action, coil );
+}
+
+void death_knight_t::unholy_rp_impact_effects( action_t* action, action_state_t* state, bool sd, bool coil )
+{
+  if ( !state->action->result_is_hit( state->result ) )
+    return;
+
+  if ( talent.unholy.death_rot.ok() )
+    get_target_data( state->target )->debuff.death_rot->trigger( 1 + sd );
+
+  if ( sd )
+    sudden_doom_impact_effects( action, state, coil );
+}
+
 // Launches the repeating event for the Inexorable Assault talent
 void death_knight_t::start_inexorable_assault()
 {
@@ -12866,16 +12817,16 @@ int death_knight_t::get_random_rider()
   std::vector<rider_of_the_apocalypse> available_riders;
   available_riders.reserve( rider_of_the_apocalypse::ALL_RIDERS );
 
-  if ( pets.mograine.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::MOGRAINE )
+  if ( last_summoned_rider != rider_of_the_apocalypse::MOGRAINE )
     available_riders.push_back( rider_of_the_apocalypse::MOGRAINE );
 
-  if ( pets.nazgrim.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::NAZGRIM )
+  if ( last_summoned_rider != rider_of_the_apocalypse::NAZGRIM )
     available_riders.push_back( rider_of_the_apocalypse::NAZGRIM );
 
-  if ( pets.trollbane.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::TROLLBANE )
+  if ( last_summoned_rider != rider_of_the_apocalypse::TROLLBANE )
     available_riders.push_back( rider_of_the_apocalypse::TROLLBANE );
 
-  if ( pets.whitemane.active_pet() == nullptr && last_summoned_rider != rider_of_the_apocalypse::WHITEMANE )
+  if ( last_summoned_rider != rider_of_the_apocalypse::WHITEMANE )
     available_riders.push_back( rider_of_the_apocalypse::WHITEMANE );
 
 
@@ -16405,7 +16356,7 @@ void death_knight_action_t<Base>::apply_action_effects()
 
   // Unholy
   parse_effects( p()->buffs.unholy_assault );
-  parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
+  parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom, CONSUME_BUFF );
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
   parse_effects( p()->buffs.commander_of_the_dead, p()->talent.unholy.commander_of_the_dead );
   // Dont parse effect 6 due to the way this effect works.

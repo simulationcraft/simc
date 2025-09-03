@@ -2722,16 +2722,18 @@ bool buff_t::can_consume( action_t* action ) const
   return true;
 }
 
-void buff_t::consume( action_t* action, int stacks )
+int buff_t::consume( action_t* action, int stacks )
 {
   if ( !check() )
-    return;
+    return 0;
 
   if ( internal_cooldown && internal_cooldown->down() )
-    return;
+    return 0;
 
   if ( !can_consume( action ) )
-    return;
+    return 0;
+
+  int old_stacks = check();
 
   // default behavior
   if ( stacks == -1 )
@@ -2748,6 +2750,8 @@ void buff_t::consume( action_t* action, int stacks )
 
   if ( internal_cooldown )
     internal_cooldown->start();
+
+  return old_stacks - check();
 }
 
 void buff_t::expire( timespan_t d )

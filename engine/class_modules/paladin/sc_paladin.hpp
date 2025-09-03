@@ -809,6 +809,7 @@ public:
     int min_dg_heal_targets               = 1;
     int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
+    double blessed_hammer_strikes          = 2.0;
   } options;
   player_t* beacon_target;
 

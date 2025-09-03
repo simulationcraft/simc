@@ -11,6 +11,23 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
+// forward declarations
+struct parse_effects_t;
+
+// local aliases
+namespace
+{
+using parse_cb_t = std::function<void( action_state_t* )>;
+template <typename T> using detect_simple = decltype( T::simple );
+template <typename T> using detect_buff = decltype( T::buff );
+template <typename T> using detect_func = decltype( T::func );
+template <typename T> using detect_value_func = decltype( T::value_func );
+template <typename T> using detect_use_stacks = decltype( T::use_stacks );
+template <typename T> using detect_type = decltype( T::type );
+template <typename T> using detect_value = decltype( T::value );
+template <typename T> using detect_idx = decltype( T::idx );
+}
+
 enum parse_flag_e : uint16_t
 {
   USE_DATA          = 0x0000,
@@ -20,6 +37,7 @@ enum parse_flag_e : uint16_t
   ALLOW_ZERO        = 0x0008,
   CONSUME_BUFF      = 0x0010,
   ROUND_VALUE       = 0x0020,  // uses std::round (round to nearest integer, round half away from zero)
+  IGNORE_WHITELIST  = 0x0040,
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
@@ -29,9 +47,10 @@ enum parse_flag_e : uint16_t
 
 enum parse_callback_e
 {
-  PARSE_CALLBACK_PRE_IMPACT,
-  PARSE_CALLBACK_POST_IMPACT,
   PARSE_CALLBACK_POST_EXECUTE,
+  PARSE_CALLBACK_POST_IMPACT,
+  PARSE_CALLBACK_POST_SNAPSHOT,
+  PARSE_CALLBACK_MAX
 };
 
 // effects dependent on player state
@@ -80,6 +99,8 @@ struct player_effect_t
 
   player_effect_t& set_idx( uint32_t i )
   { idx = i; simple = false; return *this; }
+
+  player_effect_t& add_parse_callback( parse_effects_t*, parse_callback_e, parse_cb_t );
 
   player_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
@@ -271,20 +292,6 @@ struct affect_list_t
   { remove_spell( s ); return remove_spell( ss... ); }
 };
 
-// local aliases
-namespace
-{
-using parse_cb_t = std::function<void( parse_callback_e )>;
-template <typename T> using detect_simple = decltype( T::simple );
-template <typename T> using detect_buff = decltype( T::buff );
-template <typename T> using detect_func = decltype( T::func );
-template <typename T> using detect_value_func = decltype( T::value_func );
-template <typename T> using detect_use_stacks = decltype( T::use_stacks );
-template <typename T> using detect_type = decltype( T::type );
-template <typename T> using detect_value = decltype( T::value );
-template <typename T> using detect_idx = decltype( T::idx );
-}
-
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
 struct pack_t
@@ -295,7 +302,9 @@ struct pack_t
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
   std::vector<affect_list_t> affect_lists;
-  parse_cb_t callback = nullptr;
+  std::array<parse_cb_t, PARSE_CALLBACK_MAX> callback;;
+  parse_callback_e callback_type = PARSE_CALLBACK_POST_EXECUTE;
+  bool ignore_whitelist = false;
 
   pack_t( const spell_data_t* s_data ) : spell( s_data ) {}
 
@@ -314,6 +323,11 @@ struct pack_t
     {
       spell = nullptr;
     }
+  }
+
+  size_t num_callbacks() const
+  {
+    return callback.size() - std::count( callback.begin(), callback.end(), nullptr );
   }
 };
 
@@ -386,6 +400,10 @@ struct parse_base_t
     {
       parse_callback_function( pack, std::move( mod ) );
     }
+    else if constexpr ( std::is_same_v<T, parse_callback_e> )
+    {
+      pack.callback_type = mod;
+    }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
     {
       if constexpr ( is_detected_v<detect_use_stacks, U> )
@@ -420,6 +438,12 @@ struct parse_base_t
           parse_callback_function( pack, mod );
           return;
         }
+      }
+
+      if ( mod == IGNORE_WHITELIST )
+      {
+        pack.ignore_whitelist = true;
+        return;
       }
     }
     else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
@@ -579,7 +603,7 @@ struct parse_effects_t : public parse_base_t
 {
 protected:
   player_t* _player;
-  std::vector<parse_cb_t> callback_list;
+  std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
   mutable uint32_t callback_idx = 0;
 
 public:
@@ -616,12 +640,12 @@ public:
   // Example 4: Parse buff3, only apply if my_player_t::check2() and my_player_t::check3() returns true:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   template <typename T, typename... Ts>
-  void parse_effects( T data, Ts... mods )
+  bool parse_effects( T data, Ts... mods )
   {
     pack_t<player_effect_t> pack( data );
 
     if ( !pack.spell || !pack.spell->ok() )
-      return;
+      return false;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
@@ -636,23 +660,29 @@ public:
       has_entry = parse_effect( pack, i, false ) || has_entry;
     }
 
-    if ( has_entry && pack.callback )
+    if ( has_entry && pack.num_callbacks() )
       register_callback_function( pack );
+
+    return has_entry;
   }
 
   template <typename T, typename... Ts>
-  void force_effect( T data, unsigned idx, Ts... mods )
+  bool force_effect( T data, unsigned idx, Ts... mods )
   {
     pack_t<player_effect_t> pack( data );
 
     if ( !pack.spell || !pack.spell->ok() || !can_force( pack.spell->effectN( idx ) ) )
-      return;
+      return false;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    if ( parse_effect( pack, idx, true ) && pack.callback )
+    bool has_entry = parse_effect( pack, idx, true );
+
+    if ( has_entry && pack.num_callbacks() )
       register_callback_function( pack );
+
+    return has_entry;
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -720,6 +750,8 @@ public:
   double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 
   virtual bool can_force( const spelleffect_data_t& ) const { return true; }
+
+  friend player_effect_t& player_effect_t::add_parse_callback( parse_effects_t*, parse_callback_e, parse_cb_t );
 };
 
 struct parse_player_effects_t : public player_t, public parse_effects_t
@@ -863,7 +895,7 @@ public:
   void parse_callback_function( pack_t<player_effect_t>& pack, parse_flag_e type ) override;
   void register_callback_function( pack_t<player_effect_t>& pack ) override;
 
-  void trigger_callbacks( parse_callback_e );
+  void trigger_callbacks( parse_callback_e, action_state_t* );
 
   bool is_valid_aura( const spelleffect_data_t& ) const override;
   bool is_valid_target_aura( const spelleffect_data_t& ) const override;
@@ -1006,18 +1038,24 @@ public:
     initialize_cooldown_buffs();
   }
 
+  void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
+  {
+    BASE::snapshot_internal( s, fl, rt );
+    if ( rt != result_amount_type::NONE )
+      trigger_callbacks( PARSE_CALLBACK_POST_SNAPSHOT, s );
+  }
+
   void impact( action_state_t* s ) override
   {
-    trigger_callbacks( PARSE_CALLBACK_PRE_IMPACT );
     BASE::impact( s );
-    trigger_callbacks( PARSE_CALLBACK_POST_IMPACT );
+    trigger_callbacks( PARSE_CALLBACK_POST_IMPACT, s );
   }
 
 
   void execute() override
   {
     BASE::execute();
-    trigger_callbacks( PARSE_CALLBACK_POST_EXECUTE );
+    trigger_callbacks( PARSE_CALLBACK_POST_EXECUTE, BASE::execute_state );
     callback_idx = 0;
   }
 

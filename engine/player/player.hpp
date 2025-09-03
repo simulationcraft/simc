@@ -388,6 +388,8 @@ struct player_t : public actor_t
   {
     stat_e stat;
     double amount;
+    timespan_t start;
+    timespan_t duration;
     bool is_percentage;
   };
   std::unordered_map<std::string, custom_stat_buff_t> custom_stat_buffs;
@@ -934,9 +936,15 @@ struct player_t : public actor_t
     // Alchemical Chaos Flask
     player_option_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
     player_option_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
-    bool incorporeal_essence_gorger_ethereal = false; // Whether or not to use lowest or highest (ethereal) secondary stat
-    double astral_antenna_miss_chance = 0.0; // Chance to miss the astral antenna orbs due to movement
-    int screams_of_a_forgotten_sky_initial_stacks = 0;  // Initial debuff stacks for Scream of a Forgotten Sky
+    // Whether or not to use lowest or highest (ethereal) secondary stat
+    bool incorporeal_essence_gorger_ethereal = false;
+    // Chance to miss the astral antenna orbs due to movement
+    double astral_antenna_miss_chance = 0.0;
+    // Initial debuff stacks for Scream of a Forgotten Sky
+    int screams_of_a_forgotten_sky_initial_stacks = 0;
+    // Proc Brand of Ceaseless Ire based on outgoing damage to emulate full uptime.
+    // NOTE: This behavior is default for Dungeon Slice & Dungeon Route
+    bool brand_of_ceaseless_ire_force_full_uptime = false;
   } thewarwithin_opts;
 
 private:

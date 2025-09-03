@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62493 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62785 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2609,7 +2609,7 @@ Resource         : 4% Base Mana (0) (id=265769) w/ Shadow Priest (id=137033)
 Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 2.5 seconds
+Duration         : 1 seconds
 Cooldown         : 60 seconds
 Category         : 1366 (Type 0x0)
 Labels           : 16: Class Spells
@@ -4784,7 +4784,9 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1028684)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391286 | Radius: 8 yards | Target: Unknown(87)
-Description      : Aim a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds and applying Vampiric Touch to up to $391286s1 of them.
+Description      : Aims a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
+
+Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -11270,7 +11272,6 @@ Description      : Your Shadow Word: Pain damage has a chance to create Shadowy 
 Critical strikes increase the chance by $s1%.
 
 Name             : Shadow Crash (id=391286) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -11282,9 +11283,9 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Triggered By     : Shadow Crash (205385)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1028683)  : Dummy (3)
+#1 (id=1028683)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc205385
 
@@ -14960,7 +14961,9 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1161703)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 465521 | Target: Enemy (6)
-Description      : Hurl a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $a1 yds and applying Vampiric Touch to up to $465521s1 of them.
+Description      : Hurls a bolt of slow-moving Shadow energy at your target, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
+
+Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.
 
@@ -15198,7 +15201,6 @@ Effects          :
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Shadow Crash (id=465521) [Spell Family (6), Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15210,10 +15212,10 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Triggered By     : Shadow Crash (457042)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1177515)  : Dummy (3)
-                   Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#1 (id=1177515)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc205385
 
 Name             : Shadow Crash (id=465522) [Spell Family (6)] 
@@ -16161,7 +16163,7 @@ Affecting Spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects
 Family Flags     : 41, 72
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.06049 | PvP Coefficient: 0.7 | Target: Enemy (6)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
@@ -16240,7 +16242,7 @@ Effects          :
 #1 (id=1242980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc373280
-Tooltip          : Witnissing nightmares from $@auracaster.
+Tooltip          : Witnessing nightmares from $@auracaster.
 
 Name             : Horrific Vision (id=1243105) [Spell Family (6)] 
 Class            : Priest

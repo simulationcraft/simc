@@ -14,7 +14,6 @@ def->add_action( "use_item,name=bestinslots,if=buff.incarnation_guardian_of_urso
 def->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
 def->add_action( "use_items" );
 def->add_action( "potion,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)" );
-def->add_action( "prowl" );
 def->add_action( "run_action_list,name=bear" );
 
 bear->add_action( "maul,if=buff.ravage.up&active_enemies>1" );

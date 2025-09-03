@@ -440,8 +440,9 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t( "blessed_hammer", p, p->talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
-    add_option( opt_float( "strikes", num_strikes) );
     parse_options( options_str );
+    if ( p->options.blessed_hammer_strikes )
+      num_strikes = p->options.blessed_hammer_strikes;
 
     // Sanity check for num_strikes
     if ( num_strikes <= 0 || num_strikes > 10)

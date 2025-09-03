@@ -25,7 +25,6 @@ actions+=/use_item,name=bestinslots,if=buff.incarnation_guardian_of_ursoc.up|buf
 actions+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
 actions+=/use_items
 actions+=/potion,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
-actions+=/prowl
 actions+=/run_action_list,name=bear
 
 actions.bear=maul,if=buff.ravage.up&active_enemies>1

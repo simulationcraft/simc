@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62748 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62801 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -5821,7 +5821,6 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (0 -> 256), Proc Flags 2 (4 -> 0)
 Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -5870,7 +5869,6 @@ Description      : When Aimed Shot strikes an enemy affected with your Serpent S
 Serpent Sting's damage over time is increased by $s2%.
 
 Name             : Precise Shots (id=260242) [Spell Family (9)] 
-Hotfixed         : Proc Flags 1 (0 -> 256), Internal Cooldown (500 -> 0), Proc Flags 2 (4 -> 0)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
