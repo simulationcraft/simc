@@ -954,7 +954,7 @@ public:
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
-    double soul_fragment_from_shattered_souls_chance = 0.0;
+    double soul_fragment_from_shattered_souls_chance = 0.4;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -7810,8 +7810,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
-// Spawn soul fragments from shattered souls proc using chance from sim options, or always for non-single actor batch
-// sims
+// Spawn soul fragments from shattered souls proc using chance from sim options,
+// TODO: only spawn for actors killing blows for non-single actor batch
 
 void demon_hunter_td_t::target_demise()
 {
@@ -7820,7 +7820,7 @@ void demon_hunter_td_t::target_demise()
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source->sim->event_mgr.canceled )
     return;
-  if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) || !dh().sim->single_actor_batch )
+  if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
   {
     dh().spawn_soul_fragment( soul_fragment::GREATER );
     dh().proc.soul_fragment_from_shattered_souls->occur();
