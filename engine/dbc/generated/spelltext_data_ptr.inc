@@ -1,5 +1,5 @@
-// Spell text, wow build 11.2.5.62785
-static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
+// Spell text, wow build 11.2.5.62940
+static constexpr std::array<spelltext_data_t, 28165> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26072,7 +26072,7 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   {  463678, "$@spelldesc445337", "Shoulders imbued with a shadowy illusion.", 0 },
   {  463679, "$@spelldesc445327", "Shoulders imbued with a crystalline illusion.", 0 },
   {  463680, "$@spelldesc445401", "Shoulders imbued with a radiant illusion.", 0 },
-  {  463730, "${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", "${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", 0 },
+  {  463730, "${$s1~} damage taken in the last 5 sec, ${$floor($s1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", "${$w1~} damage taken in the last 5 sec, ${$floor($w1~/$mhp*100)}% of your maximum health, will empower your next Death Strike.", 0 },
   {  463781, "$@spelldesc51690", 0, 0 },
   {  463815, "$@spelldesc163201", 0, 0 },
   {  463816, "$@spelldesc5308", 0, 0 },
@@ -27576,7 +27576,7 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   { 1233556, "Consume all Latent Power to gain $1233553s2 $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] per stack for $d.", "$?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] increased by $w1.", 0 },
   { 1233577, "$@spelldesc1233588", 0, 0 },
   { 1233588, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1233577[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nSummon a stampede of forest denizens that charge forward. Each member of the stampede shields allies for |CFFffffff$<shieldValue>|R and grants $1257531s1% attack and casting speed for $1257531d up to $1257531u times. The stampede inflicts |CFFffffff$<damageValue>|R Physical damage to enemies struck, immobilizing them for $1252891d.", 0, 0 },
-  { 1233592, "Your abilities periodically draw the attention of a behemoth from the deep, inflicting |CFFffffff$<damageValue>|R Nature damage split evenly between all enemies near the target. \r\n\r\nWhen $@spellname1233592 strikes a $@spellname1231982 enemy it causes $@spellname1234771, damaging all nearby enemies for |CFFffffff$<damageValue>|R nature damage.", 0, 0 },
+  { 1233592, "Your abilities periodically draw the attention of a behemoth from the deep that seeks your enemy, inflicting |CFFffffff$<damageValue>|R Nature damage split evenly between all enemies nearby. \r\n\r\nWhen $@spellname1233592 strikes a $@spellname1231982 enemy it causes $@spellname1234771, damaging all nearby enemies for |CFFffffff$<damageValue>|R nature damage.", 0, 0 },
   { 1233594, "$@spelldesc1233592", 0, 0 },
   { 1233595, "$@spelldesc1233592", 0, 0 },
   { 1233596, "$@spelldesc242524", 0, 0 },
@@ -27678,7 +27678,7 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   { 1234769, "Armor increased by $s1%.", 0, 0 },
   { 1234771, "|cnLEGION_REMIX_FACTION_NAGA:Naga|R Stunning a Fel Branded enemy bursts it, inflicting $1234783s1 damage to nearby enemies. If Deepsurge Crash damages a Fel Branded enemy, they also burst.", 0, 0 },
   { 1234772, "$@spelldesc202560", "Your next Thunder Clap deals $w1% increased damage.", 0 },
-  { 1234774, "Your critical strikes have a high chance to burst enemies, inflicting |CFFffffff|CFFffffff$<damageValue>|R|R Arcane damage to enemies within $1234775a1 yards of your target. $@spellname1234283 now always critically strikes $@spellname1231982 enemies.", 0, 0 },
+  { 1234774, "Your critical strikes have a chance to create a bust of magic, inflicting |CFFffffff|CFFffffff$<damageValue>|R|R Arcane damage to enemies within $1234775a1 yards of your target.\r\n\r\n$@spellname1234283 now always critically strikes $@spellname1231982 enemies.", 0, 0 },
   { 1234775, "$@spelldesc1234774", 0, 0 },
   { 1234783, "$@spelldesc1234771", 0, 0 },
   { 1234787, "$@spelldesc1234771", 0, 0 },
@@ -27698,7 +27698,7 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   { 1235113, "Your attacks have a chance to target a nearby enemy with Ravager for ${$s1/1000} sec.", 0, 0 },
   { 1235130, "While $@spellname1234996 is empowered, your voidglass shards are $s1% more effective.", 0, 0 },
   { 1235136, "Your spells have a chance to conjure voidglass shards, slicing enemies for ${$s1*$<rolemult>} Cosmic damage or orbiting allies to absorb $s2 damage for up to $1238697d.", 0, 0 },
-  { 1235159, "Your harmful abilities have a chance to summon a flock of spirit |4eagle:eagles; that dive bomb nearby enemies, exploding on impact to heal allies and inflict |CFFffffff$?$w1>0[$<damageValuePlus>][$<damageValue>]|R Nature damage to enemies within $1241938A yards.", 0, 0 },
+  { 1235159, "Your spells and abilities have a chance to summon a flock of spirit |4eagle:eagles; that dive bomb nearby enemies, exploding on impact to heal allies and inflict |CFFffffff$?$w1>0[$<damageValuePlus>][$<damageValue>]|R Nature damage to enemies within $1241938A yards.", 0, 0 },
   { 1235164, "$@spelldesc1235159", 0, 0 },
   { 1235165, "$@spelldesc455397", "Your next Festering Strike has become Festering Scythe.", 0 },
   { 1235209, "$@spelldesc1235159", 0, 0 },
@@ -28066,7 +28066,7 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   { 1244007, "Taking damage has a chance to siphon chaos energies from the Twisting Nether granting you $s1  Leech for $1246543d1. Dropping below $s3% health will unleash the Harvester immediately granting you $s2 Leech for $1246545d. Can only occur every 120 sec.", 0, 0 },
   { 1244008, "Release the Nethergate, flooding your location with corrupted mana dealing $1246837s1 damage every $1246837s3 sec to enemies inside for $d and Heal for $1246837s2 per target hit up to $1246837s4 targets.\r\n", 0, 0 },
   { 1244029, "Borrow from the fates of those around you, increasing your Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
-  { 1244402, "Your spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
+  { 1244402, "Your harmful spells and ranged abilities critical strikes have a high chance to grant you Arcane Hunter up to 5 times, increasing your Critical Strike rating by $s1 per stack for $1245376d1.", 0, 0 },
   { 1244405, "Your healing abilities have a chance to power the Aethercell increasing your Mastery by $s1, decreasing by ${$s1/$1245397d1} each sec. Lasts $1245397d1.\r\n", 0, 0 },
   { 1244406, "Blocking, parrying, or dodging has a chance to awaken the Gauze causing it to lash out dealing $s1 Arcane damage split between nearby enemies while shielding you for $s2 damage for $1245431d.\r\n", 0, 0 },
   { 1244410, "Rip magical essence out of your target and consume it dealing ${$s1*$<rolemult>} Arcane damage while granting you $1247205s1 of your lowest secondary stat for $1247207d.\r\n\r\nIf the target was an Ethereal, your highest secondary stat is increased instead.", 0, 0 },
@@ -28164,13 +28164,14 @@ static constexpr std::array<spelltext_data_t, 28164> __ptr_spelltext_data { {
   { 1258769, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
   { 1258770, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
   { 1258771, "Grants $s1 additional |4rank:ranks; of $@spellname1258587.\r\n\r\n$@spellicon1258587 $@spellname1258587\r\n$@spelldesc1258587", 0, 0 },
+  { 1261118, "$@spelldesc1233592", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.2.5.62785
+// spelltext hotfix entries, wow build 11.2.5.62940
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.2.5.62785
+// Spell description variables, wow build 11.2.5.62940
 static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -28839,7 +28840,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_dat
   { 1234683, "$absorbValue=${$1234683s1}" },
   { 1234774, "$damageValue=${$1234774s1*($max($AP,$SP)*($1250003w4/100))}" },
   { 1235136, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
-  { 1235159, "$damageValue=${$1235159s1*($max($AP,$SP)*(($1250003w1/100)*7))}\r\n$damageValuePlus=${($1235159s1+$1235159w1)*($max($AP,$SP)*(($1250003w1/100)*7))" },
+  { 1235159, "$damageValue=${$1235159s1*($max($AP,$SP)*(($1250003w1/100)*4))}\r\n$damageValuePlus=${($1235159s1+$1235159w1)*($max($AP,$SP)*(($1250003w1/100)*4))" },
   { 1235272, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1235360, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1235387, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
@@ -28865,7 +28866,7 @@ static constexpr std::array<spelldesc_vars_data_t, 691> __ptr_spelldesc_vars_dat
   { 1258587, "$damageValue=${$1258587s1*($max($AP,$SP)*($1250003w25/100))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.2.5.62785
+// spelldesc_vars hotfix entries, wow build 11.2.5.62940
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
