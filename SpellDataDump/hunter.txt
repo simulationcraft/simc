@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62801 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.62958 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -18220,9 +18220,7 @@ Effects          :
 #1 (id=1230672)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-#2 (id=1230673)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 20 | Scaled Value: 20 | Target: Friendly (21)
-#3 (id=1230674)  : Apply Aura (6) | Temporary Thread Reduction (103)
+#2 (id=1230673)  : Apply Aura (6) | Temporary Thread Reduction (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 Description      : $@spelldesc1232739
 Tooltip          : Damage dealt increased by $w1%.
