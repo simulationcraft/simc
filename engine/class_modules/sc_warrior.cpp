@@ -6237,14 +6237,11 @@ struct overpower_t : public warrior_attack_t
       add_child( dreadnaught );
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
     {
-      if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
-      {
-        reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
-        reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-        add_child( reap_the_storm );
-      }
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_overpower", p );
+      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
+      add_child( reap_the_storm );
     }
   }
 
@@ -6257,15 +6254,13 @@ struct overpower_t : public warrior_attack_t
       dreadnaught->execute_on_target( s->target );
     }
 
-    if ( sim->dbc->wowv() >= wowv_t { 11, 2, 0 } )
+    if ( reap_the_storm && p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) && p()->cooldown.reap_the_storm_icd->is_ready() )
     {
-      if ( p()->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
+      auto target_data = td( s->target );
+      if ( rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
       {
-        auto target_data = td( s->target );
-        if ( reap_the_storm && rng().roll( p()->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 2 ).percent() * target_data->debuffs_overwhelmed->check() ) )
-        {
-          reap_the_storm->execute_on_target( s->target );
-        }
+        reap_the_storm->execute_on_target( s->target );
+        p()->cooldown.reap_the_storm_icd->start();
       }
     }
   }
