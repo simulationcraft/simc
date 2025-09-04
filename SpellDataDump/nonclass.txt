@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62958 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.63003 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -264949,7 +264949,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 9426.785 (coefficient=2.461964) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Araz's Ritual Forge (id=1232802) 
-Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : None
 Duration         : 30 seconds
