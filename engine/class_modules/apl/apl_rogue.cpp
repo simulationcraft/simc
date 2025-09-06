@@ -111,7 +111,7 @@ void assassination( player_t* p )
   cds->add_action( "variable,name=deathmark_condition,value=dot.rupture.ticking&(variable.deathmark_kingsbane_condition|spell_targets.fan_of_knives>1&buff.slice_and_dice.remains>5|!talent.kingsbane&dot.crimson_tempest.ticking)&!debuff.deathmark.up", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
   cds->add_action( "call_action_list,name=items", "Usages for various special-case Trinkets and other Cantrips if applicable" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking", "Invoke Externals to Deathmark" );
-  cds->add_action( "call_action_list,name=shiv,if=!buff.darkest_night.up&(variable.single_target&!buff.deathstalkers_mark_buff.up|!variable.single_target)", "Check for Applicable Shiv usage" );
+  cds->add_action( "call_action_list,name=shiv,if=!buff.darkest_night.up&(!buff.deathstalkers_mark_buff.up|!variable.single_target)", "Check for Applicable Shiv usage" );
   cds->add_action( "deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)|fight_remains<=20", "Cast Deathmark if the target will survive long enough" );
   cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&(buff.envenom.up|spell_targets.fan_of_knives>1)&(cooldown.deathmark.remains>=50-15*(set_bonus.tww3_fatebound_4pc)|dot.deathmark.ticking)|fight_remains<=15" );
   cds->add_action( "thistle_tea,if=hero_tree.deathstalker&(!buff.thistle_tea.up&debuff.shiv.remains>=6|!buff.thistle_tea.up&dot.kingsbane.ticking&dot.kingsbane.remains<=6|!buff.thistle_tea.up&fight_remains<=cooldown.thistle_tea.charges*6)", "Use with shiv or in niche cases at the end of Kingsbane if not already up" );
