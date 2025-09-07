@@ -10673,23 +10673,27 @@ struct pool_resource_t : public action_t
 {
   resource_e resource;
   std::string resource_str;
-  timespan_t wait;
-  int for_next;
+  timespan_t wait, wait_override;
+  bool for_next;
   action_t* next_action;
+  bool force_wait;
   std::string amount_str;
   std::unique_ptr<expr_t> amount_expr;
 
   pool_resource_t( player_t* p, util::string_view options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p->primary_resource() ),
-    wait( timespan_t::from_seconds( 0.251 ) ),
-    for_next( 0 ),
+    wait( 0_ms ),
+    wait_override( 0_ms ),
+    for_next( false ),
     next_action( nullptr ),
+    force_wait( false ),
     amount_expr()
   {
     quiet = true;
-    add_option( opt_timespan( "wait", wait ) );
+    add_option( opt_timespan( "wait", wait_override ) );
     add_option( opt_bool( "for_next", for_next ) );
+    add_option( opt_bool( "force_wait", force_wait ) );
     add_option( opt_string( "resource", resource_str ) );
     add_option( opt_string( "extra_amount", amount_str ) );
     parse_options( options_str );
@@ -10700,6 +10704,27 @@ struct pool_resource_t : public action_t
       if ( res != RESOURCE_NONE )
         resource = res;
     }
+
+    if ( force_wait )
+    {
+      if ( !for_next )
+      {
+        force_wait = false;
+        sim->error( "'for_next=1' is required to pool with force_wait, ignoring." );
+      }
+
+      if ( resource != RESOURCE_MANA && resource != RESOURCE_ENERGY && resource != RESOURCE_FOCUS )
+      {
+        force_wait = false;
+        sim->error( "Only Mana, Energy, and Focus can pool with force_wait, ignoring." );
+      }
+
+      if ( wait_override != 0_ms )
+      {
+        force_wait = false;
+        sim->error( "Cannot force_wait with set wait time, ignoring." );
+      }
+    }
   }
 
   void init_finished() override
@@ -10709,11 +10734,10 @@ struct pool_resource_t : public action_t
     if ( !amount_str.empty() )
     {
       amount_expr = expr_t::parse( this, amount_str, false );
-      if (amount_expr == nullptr)
+      if ( amount_expr == nullptr )
       {
-        throw std::invalid_argument(fmt::format("Could not parse amount if expression from '{}'", amount_str));
+        throw std::invalid_argument( fmt::format( "Could not parse amount if expression from '{}'", amount_str ) );
       }
-
     }
   }
 
@@ -10740,7 +10764,7 @@ struct pool_resource_t : public action_t
 
       if ( !next_action )
       {
-        sim->errorf( "%s: can't find next action.\n", __FUNCTION__ );
+        sim->error( "{} can't find next action.", *this );
         background = true;
       }
     }
@@ -10749,7 +10773,7 @@ struct pool_resource_t : public action_t
   void execute() override
   {
     if ( sim->log )
-      sim->out_log.printf( "%s performs %s", player->name(), name() );
+      sim->print_log( "{} performs {}", *player, *this );
 
     player->iteration_pooling_time += wait;
     total_executions++;
@@ -10762,30 +10786,47 @@ struct pool_resource_t : public action_t
 
   bool ready() override
   {
-    bool rd = action_t::ready();
-    if ( !rd )
-      return rd;
+    if ( !action_t::ready() )
+      return false;
 
+    // If the next action in the list would be "ready" if it was not constrained by energy, then this command will pool
+    // energy until we have enough.
     if ( next_action )
     {
-      if ( next_action->action_ready() )
+      // cache current resource amount while we do evaluations
+      auto current = player->resources.current[ resource ];
+      auto next_cost = next_action->cost();
+      auto remaining = amount_expr ? amount_expr->eval() : 0.0;
+
+      // if next action is ready and we'll have enough resource remaining after cost, we don't need to pool
+      if ( next_action->action_ready() && current - next_cost >= remaining )
         return false;
 
-      // If the next action in the list would be "ready" if it was not constrained by energy,
-      // then this command will pool energy until we have enough.
+      // check against maximum resource to see if we're resource limited
+      player->resources.current[ resource ] = player->resources.max[ resource ];
 
-      double theoretical_cost = next_action->cost() + ( amount_expr ? amount_expr->eval() : 0 );
-      player->resources.current[ resource ] += theoretical_cost;
-
-      bool resource_limited = next_action->action_ready();
-
-      player->resources.current[ resource ] -= theoretical_cost;
-
-      if ( !resource_limited )
+      // if next action still can't be cast with max resources, we're not resource limited and don't need to pool
+      if ( !next_action->action_ready() )
+      {
+        player->resources.current[ resource ] = current;
         return false;
+      }
+
+      // restore cached values
+      player->resources.current[ resource ] = current;
+
+      // force_wait suspends APL re-evaluation until the next ability can be cast
+      if ( force_wait )
+      {
+        double diff = next_cost + remaining - current;
+        auto regen = player->resource_regen_per_second( resource );
+        wait = timespan_t::from_seconds( std::max( 0.0, diff ) / regen ) + player->available();
+        return true;
+      }
     }
 
-    return rd;
+    wait = wait_override + player->available();
+    return true;
   }
 };
 
