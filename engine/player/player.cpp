@@ -10794,33 +10794,40 @@ struct pool_resource_t : public action_t
     if ( next_action )
     {
       // cache current resource amount while we do evaluations
-      auto current = player->resources.current[ resource ];
-      auto next_cost = next_action->cost();
-      auto remaining = amount_expr ? amount_expr->eval() : 0.0;
+      double current   = player->resources.current[ resource ];
+      double remaining = amount_expr ? amount_expr->eval() : 0.0;
+
+      if ( current < remaining )
+        return true;
+
+      double deducted = std::min( current, remaining );
+
+      player->resources.current[ resource ] -= deducted;
+      bool next_is_ready                    = next_action->action_ready();
+      player->resources.current[ resource ] = current;
 
       // if next action is ready and we'll have enough resource remaining after cost, we don't need to pool
-      if ( next_action->action_ready() && current - next_cost >= remaining )
+      if ( next_is_ready )
         return false;
 
       // check against maximum resource to see if we're resource limited
       player->resources.current[ resource ] = player->resources.max[ resource ];
+      bool next_is_resource_limited         = next_action->action_ready();
+      player->resources.current[ resource ] = current;
 
       // if next action still can't be cast with max resources, we're not resource limited and don't need to pool
-      if ( !next_action->action_ready() )
-      {
-        player->resources.current[ resource ] = current;
+      if ( !next_is_resource_limited )
         return false;
-      }
-
-      // restore cached values
-      player->resources.current[ resource ] = current;
 
       // force_wait suspends APL re-evaluation until the next ability can be cast
       if ( force_wait )
       {
-        double diff = next_cost + remaining - current;
-        auto regen = player->resource_regen_per_second( resource );
-        wait = timespan_t::from_seconds( std::max( 0.0, diff ) / regen ) + player->available();
+        // we don't know what the cost of the action is, so the issue where cost
+        // may return a value not related to the resource we intend is not fixable
+        double next_cost = next_action->cost();
+        double diff      = next_cost + remaining - current;
+        double regen     = player->resource_regen_per_second( resource );
+        wait             = timespan_t::from_seconds( std::max( 0.0, diff ) / regen ) + player->available();
         return true;
       }
     }
