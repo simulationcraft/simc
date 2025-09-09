@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.5.62940
-static constexpr std::array<spelltext_data_t, 28165> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28166> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28039,6 +28039,7 @@ static constexpr std::array<spelltext_data_t, 28165> __ptr_spelltext_data { {
   { 1242247, "$?(s1237711|s1251045|s1233775|s1233577|s1233181)&!s1237711[|CFFff0000$@spelldesc1247808|R\r\n\r\n][]|CFFe6cc80Artifact Ability|R\r\n\r\nCall forth a subjugated infernal dreadlord for $1237711d that periodically strikes enemies with $@spellname1237721. \r\n\r\n$@spellname1237721\r\n$@spelldesc1237721", 0, 0 },
   { 1242270, "$@spelldesc322740", 0, 0 },
   { 1242326, "Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.", 0, 0 },
+  { 1242344, "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", 0 },
   { 1242347, "Increases $pri by $s1 for $d. Augment Rune. Persists through death.", "$pri increased by $w1. Persists through death.", 0 },
   { 1242352, "Stomps the ground, dealing $s1 Physical damage to all nearby enemies.", 0, 0 },
   { 1242373, "Stomps the ground, dealing $s1 Physical damage to your target. Deals reduced damage to secondary targets.", 0, 0 },
