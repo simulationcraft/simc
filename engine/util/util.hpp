@@ -286,8 +286,8 @@ int numDigits( T number );
 
 bool contains_non_ascii( util::string_view );
 
-template <typename E, typename O>
-void print_chained_exception( const E& e, O out, int8_t& exit_code, int level = 0 );
+template <typename E>
+void print_chained_exception( const E& e, std::FILE* out, int8_t& exit_code, int level = 0 );
 
 std::string sc_time_str();
 

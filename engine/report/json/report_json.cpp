@@ -1119,8 +1119,8 @@ void profileset_json( const ::report::json::report_configuration_t& report_confi
 #endif
 }
 
-void dps_plot_json( const ::report::json::report_configuration_t& /* report_configuration */, const plot_t& dps_plot,
-                    const sim_t& sim, js::JsonOutput& root )
+void dps_plot_json( const ::report::json::report_configuration_t&, const plot_t&, const sim_t& sim,
+                    js::JsonOutput& root )
 {
   for ( auto player : sim.player_list )
   {
