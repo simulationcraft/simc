@@ -6821,7 +6821,8 @@ struct summon_pet_t: public hunter_spell_t
 
     if ( !pet && ( p() -> specialization() != HUNTER_MARKSMANSHIP || p()->talents.unbreakable_bond.ok() ) )
     {
-      throw std::invalid_argument(fmt::format("Unable to find pet '{}' for summons.", p() -> options.summon_pet_str));
+      throw sc_invalid_apl_argument(
+        fmt::format( "Unable to find pet '{}' for summons.", p()->options.summon_pet_str ) );
     }
 
     hunter_spell_t::init_finished();
@@ -8166,7 +8167,7 @@ pet_t* hunter_t::create_pet( util::string_view pet_name, util::string_view pet_t
 
   if ( !pet_type.empty() )
   {
-    throw std::invalid_argument(fmt::format("Pet '{}' has unknown type '{}'.", pet_name, pet_type ));
+    throw sc_invalid_player_argument( fmt::format( "Pet '{}' has unknown type '{}'.", pet_name, pet_type ) );
   }
 
   return nullptr;

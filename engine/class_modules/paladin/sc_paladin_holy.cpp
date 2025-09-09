@@ -13,15 +13,19 @@ struct beacon_of_light_t : public paladin_heal_t
     parse_options( options_str );
     ignore_false_positive = true;
 
+    // Remove the 'dot'
+    dot_duration = 0_ms;
+  }
+
+  void init_finished() override
+  {
+    paladin_heal_t::init_finished();
+
     // Target is required for Beacon
     if ( option.target_str.empty() )
     {
-      sim->errorf( "Warning %s's \"%s\" needs a target", p->name(), name() );
-      sim->cancel();
+      throw sc_invalid_apl_argument( "Beacon of Light needs a target." );
     }
-
-    // Remove the 'dot'
-    dot_duration = 0_ms;
   }
 
   void execute() override

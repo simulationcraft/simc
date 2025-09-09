@@ -4588,7 +4588,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( splits.size() <= ptype_idx )
   {
     throw std::invalid_argument(
-      fmt::format( "Cannot create unique gear expression: too few parts '{}' < '{}'.", splits.size(), ptype_idx + 1 ) );
+      fmt::format( "'{}' parts required, only '{}' provided.", ptype_idx + 1, splits.size() ) );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
@@ -4639,8 +4639,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     if ( splits.size() <= stat_idx )
     {
       throw std::invalid_argument(
-        fmt::format( "Cannot create unique gear expression: too few parts to parse stat: '{}' < '{}'.", splits.size(),
-                     stat_idx + 1 ) );
+        fmt::format( "'{}' parts required, only '{}' provided.", stat_idx + 1, splits.size() ) );
     }
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
@@ -4652,7 +4651,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
       stat = util::parse_stat_type( splits[ stat_idx ] );
       if ( stat == STAT_NONE )
       {
-        throw std::invalid_argument( fmt::format( "Cannot parse stat '{}'.", splits[ stat_idx ] ) );
+        throw std::invalid_argument( fmt::format( "Invalid stat '{}'.", splits[ stat_idx ] ) );
       }
     }
   }
@@ -4662,8 +4661,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     if ( splits.size() <= expr_idx )
     {
       throw std::invalid_argument(
-        fmt::format( "Cannot create unique gear expression: too few parts to parse buff expression: '{}' < '{}'.",
-                     splits.size(), expr_idx + 1 ) );
+        fmt::format( "'{}' parts required, only '{}' provided.", expr_idx + 1, splits.size() ) );
     }
     return std::make_unique<item_buff_expr_t>( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
@@ -4690,7 +4688,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_compare_ci (splits[ ptype_idx ], "cooldown_category" ) )
     return std::make_unique<item_cooldown_category_expr_t>( player, slots, name_str );
 
-  throw std::invalid_argument( fmt::format( "Unsupported unique gear expression '{}'.", splits.back() ) );
+  throw std::invalid_argument( fmt::format( "Invalid unique gear expression '{}'.", splits.back() ) );
 }
 
 namespace unique_gear

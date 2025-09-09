@@ -11579,8 +11579,7 @@ void druid_t::init_finished()
            util::str_in_str_ci( a->signature_str, "name=cat_form" ) ||
            util::str_in_str_ci( a->signature_str, "name=moonkin_form" ) ) )
     {
-      throw std::invalid_argument(
-        fmt::format( "Using {} on shapeshift form, use cancelform instead", a->signature_str ) );
+      throw sc_invalid_apl_argument( fmt::format( "Use 'cancelform' instead of 'cancel_buff,{}'.", a->signature_str ) );
     }
   }
 
@@ -13005,10 +13004,9 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 #ifdef NDEBUG
       if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice_for_balance )
       {
-        sim->error( error_level_e::SEVERE,
-                    "DungeonSlice is disabled for Balance Druids. To force enable, use "
-                    "druid.enable_dungeon_slice_for_balance=1 option." );
-        sim->cancel();
+        throw sc_invalid_fight_style(
+          "DungeonSlice is disabled for Balance Druids. To force enable, use "
+          "'druid.enable_dungeon_slice_for_balance=1'" );
       }
 #endif
       if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
@@ -14135,7 +14133,7 @@ std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::str
         dot_action = find_action( splits[ 1 ] );
 
       if ( !dot_action )
-        throw std::invalid_argument( "invalid action specified in ticks_gained_on_refresh" );
+        throw sc_invalid_apl_argument( fmt::format( "Invalid action in 'ticks_gained_on_refresh.{}'.", splits[ 1 ] ) );
     }
     else
       dot_action = &a;
@@ -14420,10 +14418,10 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
     }
     catch ( const std::invalid_argument& msg )
     {
-      throw std::invalid_argument(
-          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup. {}"
-                       "\n\tFormat is <min stacks>:<max stacks>:<min duration>:<max duration>:<chance>/...",
-                       entry, msg.what() ) );
+      throw sc_invalid_apl_argument(
+        fmt::format( "Invalid entry '{}' for druid.adaptive_swarm_prepull_setup. {} Format is <min stacks>:<max "
+                     "stacks>:<min duration>:<max duration>:<chance>/...",
+                     entry, msg.what() ) );
     }
   }
 

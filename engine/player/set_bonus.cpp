@@ -293,9 +293,8 @@ void set_bonus_t::initialize()
 void set_bonus_t::parse_set_bonus_string()
 {
   auto do_error = [ this ]( std::string_view value ) {
-    actor->sim->error( error_level_e::MODERATE, "{} invalid 'set_bonus' option {}, available options: {}", *actor,
-                       value, generate_set_bonus_options() );
-    actor->sim->cancel();
+    throw sc_invalid_player_argument(
+      fmt::format( "Invalid 'set_bonus' option '{}', available options: {}", value, generate_set_bonus_options() ) );
   };
 
   auto split = util::string_split<std::string_view>( actor->set_bonus_str, "/" );

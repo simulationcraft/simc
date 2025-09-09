@@ -9452,7 +9452,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
       { return action.get_expression_target()->time_to_percent( actual_pct ).total_seconds(); } );
     }
 
-    throw std::invalid_argument( fmt::format( "Unknown {} operation '{}'", splits[ 0 ], splits[ 1 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Unknown {} operation '{}'.", splits[ 0 ], splits[ 1 ] ) );
   };
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
@@ -9623,7 +9623,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     }
 
     if ( type == AOE_MAX )
-      throw std::invalid_argument( fmt::format( "Unknown ground_aoe type '{}'", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unknown ground_aoe type '{}'.", splits[ 1 ] ) );
 
     if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
@@ -9631,7 +9631,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
       { return std::max( ground_aoe_expiration[ type ] - sim->current_time(), 0_ms ).total_seconds(); } );
     }
 
-    throw std::invalid_argument( fmt::format( "Unknown ground_aoe operation '{}'", splits[ 2 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Unknown ground_aoe operation '{}'.", splits[ 2 ] ) );
   }
 
   // Time remaining until the specified Incanter's Flow stack.
@@ -9641,7 +9641,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     int expr_stack = util::to_int( splits[ 1 ] );
     if ( expr_stack < 1 || expr_stack > buffs.incanters_flow->max_stack() )
-      throw std::invalid_argument( fmt::format( "Invalid incanters_flow_time_to stack number '{}'", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Invalid incanters_flow_time_to stack number '{}'.", splits[ 1 ] ) );
 
     // Number of ticks in one full cycle.
     int tick_cycle = buffs.incanters_flow->max_stack() * 2;
@@ -9663,7 +9663,7 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     }
     else
     {
-      throw std::invalid_argument( fmt::format( "Unknown incanters_flow_time_to stack type '{}'", splits[ 2 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unknown incanters_flow_time_to stack type '{}'.", splits[ 2 ] ) );
     }
 
     return make_fn_expr( name, [ this, tick_cycle, expr_pos_lo, expr_pos_hi ]

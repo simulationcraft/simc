@@ -572,11 +572,13 @@ protected:
 
 opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::string_view value ) const
 {
-  try {
+  try
+  {
     return do_parse( sim, name, value );
   }
-  catch ( const std::exception& ) {
-    std::throw_with_nested( std::runtime_error( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
   }
 }
 

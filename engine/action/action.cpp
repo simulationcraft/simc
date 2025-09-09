@@ -278,8 +278,8 @@ struct action_execute_event_t : public player_event_t
     {
       if ( p()->readying )
       {
-        throw std::runtime_error( fmt::format( "Non-channeling action {} for {} is trying to overwrite "
-          "player-ready-event upon execute.", action->name(), *p() ) );
+        throw sc_runtime_error( fmt::format(
+          "{} non-channeling {} is trying to overwrite player-ready-event upon execute.", *p(), *action ) );
       }
 
       p()->schedule_ready( timespan_t::zero() );
@@ -503,22 +503,20 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
 
   if ( sim->initialized && player->nth_iteration() > 0 )
   {
-    sim->errorf( "Player %s action %s created after simulator initialization.", player->name(), name() );
+    sim->error( "{} {} created after simulator initialization.", *player, *this );
   }
   if ( player->nth_iteration() > 0 )
   {
-    sim->errorf( "Player %s creating action %s ouside of the first iteration", player->name(), name() );
+    sim->error( "{} creating {} ouside of the first iteration", *player, *this );
     assert( false );
   }
 
   if ( sim->debug )
-    sim->out_debug.print( "{} creates {} ({})", *player, *this,
-                           ( data().ok() ? data().id() : -1 ) );
+    sim->print_debug( "{} creates {} ({})", *player, *this, ( data().ok() ? data().id() : -1 ) );
 
   if ( !player->initialized )
   {
-    sim->errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player->name(), name() );
-    sim->cancel();
+    throw sc_initialization_error( fmt::format( "{} being created before player_t::init().", *this ) );
   }
 
   player->action_list.push_back( this );
@@ -998,13 +996,13 @@ void action_t::parse_options( util::string_view options_str )
         // .. otherwise, just warn that there's an unknown option
         if ( status == opts::parse_status::NOT_FOUND )
         {
-          sim->error( "{} {} unknown option '{}' with value '{}', ignoring.", *player, *this, name, value );
+          sim->error( "Warning: {} {} unknown option '{}' with value '{}', ignoring.", *player, *this, name, value );
         }
 
         // warn on if= overwriting a previous if=
         if ( status == opts::parse_status::WARNING )
         {
-          sim->error( "{} {} option '{}' with value '{}' overwriting previous value.", *player, *this, name, value );
+          sim->error( "Warning: option '{}' with value '{}' overwriting previous value.", name, value );
         }
 
         return status;
@@ -1012,15 +1010,14 @@ void action_t::parse_options( util::string_view options_str )
 
     parse_target_str();
 
-    auto parse_bool = [ this ]( bool& b, std::string_view n, std::string_view v )
+    auto parse_bool = []( bool& b, std::string_view n, std::string_view v )
     {
       if ( v.empty() )
         return;
 
       if ( v != "0" && v != "1" )
       {
-        throw std::invalid_argument( fmt::format( "Acceptable '{}' option '{}' values are '1' or '0' for {}",
-                                                  this->name(), n, player->name() ) );
+        throw std::invalid_argument( fmt::format( "Acceptable values for '{}' are '1' or '0'.", n ) );
       }
 
       if ( v == "0" )
@@ -1032,10 +1029,9 @@ void action_t::parse_options( util::string_view options_str )
     parse_bool( can_have_one_button_penalty,    "can_have_one_button_penalty",    option.can_have_one_button_penalty_str );
     parse_bool( cooldown_allow_casting_success, "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str );
   }
-  catch ( const std::exception& e )
+  catch ( const std::exception& )
   {
-    sim->error( "{} {}: Unable to parse options str '{}': {}", player->name(), name(), options_str, e.what() );
-    sim->cancel();
+    std::throw_with_nested( sc_invalid_apl_argument( fmt::format( "{}", *this ) ) );
   }
 }
 
@@ -1789,15 +1785,13 @@ void action_t::execute()
 #ifndef NDEBUG
   if ( !initialized )
   {
-    throw std::runtime_error(
-        fmt::format( "{} {} action_t::execute: is not initialized.\n", *player, *this ) );
+    throw sc_runtime_error( fmt::format( "{} {} action_t::execute: is not initialized.", *player, *this ) );
   }
 #endif
 
   if ( &data() == spell_data_t::not_found() )
   {
-    sim->errorf( "Player %s could not find spell data for action %s\n", player->name(), name() );
-    sim->cancel();
+    throw sc_runtime_error( fmt::format( "{} could not find spell data for {}.", *player, *this ) );
   }
 
   int num_targets = n_targets();
@@ -2665,18 +2659,16 @@ void action_t::init()
 
     if ( !sync_action )
     {
-      throw std::runtime_error(fmt::format("Unable to find sync action '{}' for primary action.",
-          option.sync_str ));
+      throw sc_invalid_apl_argument(
+        fmt::format( "Unable to find sync action '{}' for primary action.", option.sync_str ) );
     }
   }
 
   if ( option.cycle_targets && option.target_number )
   {
     option.target_number = 0;
-    sim->errorf(
-        "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to "
-        "cycle_targets\n",
-        player->name(), name() );
+    sim->error( "{} trying to use both cycle_targets and a numerical target for {} - defaulting to cycle_targets.",
+                *player, *this );
   }
 
   if ( tick_action )
@@ -2818,7 +2810,7 @@ void action_t::init()
     }
     else
     {
-      throw std::runtime_error( "Can only add harmful action with travel or cast-time to precombat action list." );
+      throw sc_invalid_apl_argument( "Can only add harmful action with travel or cast-time to precombat action list." );
     }
   }
   else if ( action_list && action_list->name_str != "precombat" )
@@ -2900,41 +2892,44 @@ void action_t::init_finished()
 {
   if ( !option.target_if_str.empty() )
   {
-    std::string::size_type offset = option.target_if_str.find( ':' );
-    if ( offset != std::string::npos )
+    try
     {
-      std::string target_if_type_str = option.target_if_str.substr( 0, offset );
-      option.target_if_str.erase( 0, offset + 1 );
-      if ( util::str_compare_ci( target_if_type_str, "max" ) )
+      std::string::size_type offset = option.target_if_str.find( ':' );
+      if ( offset != std::string::npos )
       {
-        target_if_mode = TARGET_IF_MAX;
+        std::string target_if_type_str = option.target_if_str.substr( 0, offset );
+        option.target_if_str.erase( 0, offset + 1 );
+        if ( util::str_compare_ci( target_if_type_str, "max" ) )
+        {
+          target_if_mode = TARGET_IF_MAX;
+        }
+        else if ( util::str_compare_ci( target_if_type_str, "min" ) )
+        {
+          target_if_mode = TARGET_IF_MIN;
+        }
+        else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+        {
+          target_if_mode = TARGET_IF_FIRST;
+        }
+        else
+        {
+          throw std::invalid_argument( fmt::format(
+            "Unknown choose_target mode '{}'. Valid values are 'min', 'max', 'first'.", target_if_type_str ) );
+        }
       }
-      else if ( util::str_compare_ci( target_if_type_str, "min" ) )
-      {
-        target_if_mode = TARGET_IF_MIN;
-      }
-      else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+      else if ( !option.target_if_str.empty() )
       {
         target_if_mode = TARGET_IF_FIRST;
       }
-      else
+
+      if ( !option.target_if_str.empty() )
       {
-        throw std::invalid_argument(fmt::format("Unknown target_if mode '{}' for choose_target. Valid values are 'min', 'max', 'first'.",
-                     target_if_type_str ));
+        target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
       }
     }
-    else if ( !option.target_if_str.empty() )
+    catch ( const std::exception& )
     {
-      target_if_mode = TARGET_IF_FIRST;
-    }
-
-    if ( !option.target_if_str.empty() )
-    {
-       target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
-       if ( !target_if_expr )
-       {
-         throw std::invalid_argument(fmt::format("Could not parse target if expression from '{}'", option.target_if_str));
-       }
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'target_if' expression" ) );
     }
   }
 
@@ -2947,38 +2942,50 @@ void action_t::init_finished()
 
   if ( !option.if_expr_str.empty() )
   {
-    if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
-    if ( if_expr == nullptr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse if expression from '{}'", option.if_expr_str));
+      if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'if' expression" ) );
     }
   }
 
   if ( !option.interrupt_if_expr_str.empty() )
   {
-    interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
-    if ( !interrupt_if_expr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse interrupt if expression from '{}'", option.interrupt_if_expr_str));
+      interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'interrupt_if' expression" ) );
     }
   }
 
   if ( !option.early_chain_if_expr_str.empty() )
   {
-    early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
-    if ( !early_chain_if_expr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse chain if expression from '{}'", option.early_chain_if_expr_str));
+      early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'chain_if' expression" ) );
     }
   }
 
   if ( !option.cancel_if_expr_str.empty() )
   {
-    cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
-    if ( !cancel_if_expr )
+    try
     {
-      throw std::invalid_argument( fmt::format( "Could not parse cancel if expression from '{}'",
-            option.cancel_if_expr_str ) );
+      cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'cancel_if' expression" ) );
     }
   }
 
@@ -3746,7 +3753,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
         };
         return std::make_unique<gcd_remains_expr_t>( *this );
       }
-      throw std::invalid_argument( fmt::format( "Unsupported gcd expression '{}'.", splits[ 1 ] ) );
+      throw std::invalid_argument( fmt::format( "Invalid gcd expression '{}'.", splits[ 1 ] ) );
     }
   }
 
@@ -3888,7 +3895,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
     }
     else
     {
-      throw std::invalid_argument( fmt::format( "Cannot create a valid dot expression from '{}'", splits[ 2 ] ) );
+      throw std::invalid_argument( fmt::format( "Invalid dot expression '{}'.", splits[ 2 ] ) );
     }
   }
 
@@ -3958,7 +3965,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
 
       if ( splits.size() == 2 )
       {
-        throw std::invalid_argument("Insufficient parameters for expression 'target.<number>.<expression>'");
+        throw std::invalid_argument( "Insufficient parameters for expression 'target.<number>.<expression>'" );
       }
 
       tail = name.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -4021,9 +4028,8 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
           expr = target->create_action_expression( action, suffix_expr_str );
           if ( !expr )
           {
-            throw std::invalid_argument(
-                fmt::format( "Cannot create dynamic target expression for target '{}' from '{}'.",
-                             target->name(), suffix_expr_str ) );
+            throw std::invalid_argument( fmt::format(
+              "Cannot create dynamic target expression for target '{}' from '{}'.", target->name(), suffix_expr_str ) );
           }
         }
 
@@ -4587,21 +4593,19 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
   use_while_casting = true;
   usable_while_casting = true;
 
-  if ( alist_name.empty() )
-  {
-    sim->errorf( "Player %s uses call_action_list without specifying the name of the action list\n", player->name() );
-    sim->cancel();
-  }
-
   alist = player->find_action_priority_list( alist_name );
 
-  if ( randomtoggle == 1 )
+  if ( alist && randomtoggle == 1 )
     alist->random = randomtoggle;
+}
+
+void call_action_list_t::init_finished()
+{
+  action_t::init_finished();
 
   if ( !alist )
   {
-    sim->error( "{} uses call_action_list with unknown action list {}\n", *player, alist_name );
-    sim->cancel();
+    throw sc_invalid_apl_argument( "'call_action_list' used with unknown action list." );
   }
 }
 
@@ -4632,26 +4636,26 @@ swap_action_list_t::swap_action_list_t( player_t* player, util::string_view opti
   add_option( opt_int( "random", randomtoggle ) );
   parse_options( options_str );
   ignore_false_positive = true;
-  if ( alist_name.empty() )
-  {
-    sim->error( "Player {} uses {} without specifying the name of the action list\n", player->name(), name );
-    sim->cancel();
-  }
 
   alist = player->find_action_priority_list( alist_name );
 
-  if ( !alist )
-  {
-    sim->error( "Player {} uses {} with unknown action list {}\n", player->name(), name, alist_name );
-    sim->cancel();
-  }
-  else if ( randomtoggle == 1 )
+  if ( alist && randomtoggle == 1 )
     alist->random = randomtoggle;
 
   trigger_gcd = timespan_t::zero();
   use_off_gcd = true;
   use_while_casting = true;
   usable_while_casting = true;
+}
+
+void swap_action_list_t::init_finished()
+{
+  action_t::init_finished();
+
+  if ( !alist )
+  {
+    throw sc_invalid_apl_argument( "'swap_action_list' used with unknown action list." );
+  }
 }
 
 void swap_action_list_t::execute()
@@ -5137,11 +5141,11 @@ void sc_format_to( const action_t& action, fmt::format_context::iterator out )
 {
   if ( action.sim->log_spell_id )
   {
-    fmt::format_to( out, "Action {} ({})", action.name(), action.data().id() );
+    fmt::format_to( out, "Action '{}' ({})", action.name(), action.data().id() );
   }
   else
   {
-    fmt::format_to( out, "Action {}", action.name() );
+    fmt::format_to( out, "Action '{}'", action.name() );
   }
 }
 

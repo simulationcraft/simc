@@ -27,7 +27,7 @@ void merge( sim_t& parent_sim, sim_t& other_sim )
     player_t* other_p = other_sim.find_player( player->index );
     if ( !other_p )
     {
-      throw std::runtime_error( fmt::format( "Could not find player {} ({})", player->name(), player->index ) );
+      throw sc_runtime_error( fmt::format( "{} ({}) not found.", *player, player->index ) );
     }
 
     // Grab all spawner objs for later merging. This is done to guarantee that actor_list does not

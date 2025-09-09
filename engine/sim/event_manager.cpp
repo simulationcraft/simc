@@ -451,7 +451,7 @@ void event_manager_t::cancel_stuck( std::vector<std::string>& debug_list )
     player_str = sim->player_no_pet_list[ sim->current_index ]->name();
   }
 
-  fmt::print( stderr, "Simulator likely stuck on thread={}, iteration={}, seed={}, player={}, canceling ...\n",
+  fmt::print( stderr, "Simulator likely stuck on thread={}, iteration={}, seed={}, player={}\n",
               sim->thread_index, sim->current_iteration, sim->seed, player_str );
 #ifndef NDEBUG
   std::unordered_map<std::string, unsigned> event_list;
@@ -472,10 +472,6 @@ void event_manager_t::cancel_stuck( std::vector<std::string>& debug_list )
   // Parent (thread 0) processing
   else
   {
-    sim->cancel();
-    range::for_each( sim->relatives, []( sim_t* relative ) {
-      relative->cancel_iteration();
-    } );
-    sim->cancel_iteration();
+    throw sc_simulation_stuck( "Simulation stuck" );
   }
 }

@@ -5158,7 +5158,7 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
 
       const auto& gem = item.player->dbc->item( gem_id );
       if ( gem.id == 0 )
-        throw std::invalid_argument( fmt::format( "No gem data for id {}.", gem_id ) );
+        throw sc_invalid_apl_argument( fmt::format( "No gem data for id '{}'.", gem_id ) );
 
       const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
       if ( !gem_prop.id )
@@ -5332,7 +5332,7 @@ std::unique_ptr<expr_t> create_expression( const player_t& player, util::string_
   }
   else
   {
-    throw std::invalid_argument( fmt::format( "Invalid Rune Word type {}", splits[ 1 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Invalid Rune Word type '{}'.", splits[ 1 ] ) );
   }
 
   if ( splits.size() == 2 || splits[ 2 ] == "enabled" )

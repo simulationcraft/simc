@@ -1363,20 +1363,13 @@ void print_text( sim_t* sim, bool detail )
     }
   }
 
-  try
+  report_timer_t t( "text report", stdout );
+  if ( !sim->profileset_enabled )
   {
-    report_timer_t t( "text report", stdout );
-    if ( ! sim -> profileset_enabled )
-    {
-      t.start();
-    }
+    t.start();
+  }
 
-    print_text_report( *out, sim, detail );
-  }
-  catch ( const std::exception& e )
-  {
-    sim->error( "Error generating text report: {}", e.what() );
-  }
+  print_text_report( *out, sim, detail );
 }
 
 }  // END report NAMESPACE

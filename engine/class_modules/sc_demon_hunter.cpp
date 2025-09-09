@@ -8383,7 +8383,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       }
       else if ( !util::str_compare_ci( splits[ 1 ], "active" ) )
       {
-        throw std::invalid_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", splits[ 1 ] ) );
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", splits[ 1 ] ) );
       }
     }
 

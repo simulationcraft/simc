@@ -2447,7 +2447,7 @@ void whispering_incarnate_icon( special_effect_t& effect )
     else if ( util::str_compare_ci( s, "dps" ) )
       has_dps = true;
     else
-      throw std::invalid_argument( "Invalid string for dragonflight.whispering_incarnate_icon_roles." );
+      throw sc_invalid_apl_argument( "Invalid value for 'dragonflight.whispering_incarnate_icon_roles'." );
   }
 
   unsigned buff_id = 0, proc_buff_id = 0;
@@ -3544,7 +3544,8 @@ void primal_ritual_shell( special_effect_t& effect )
     }
     else
     {
-      throw std::invalid_argument( "Invalid string for dragonflight.primal_ritual_shell_blessing. Valid strings: wind,flame,sea,stone" );
+      throw sc_invalid_apl_argument(
+        "Invalid value for 'dragonflight.primal_ritual_shell_blessing', valid values: wind, flame, sea, stone" );
     }
   }
   new dbc_proc_callback_t( effect.player, effect );
@@ -3800,19 +3801,19 @@ void ruby_whelp_shell( special_effect_t& effect )
   {
     auto pair = util::string_split<std::string_view>( s, ":" );
     if ( pair.size() != 2 )
-      throw std::invalid_argument( "Invalid string for dragonflight.ruby_whelp_shell_training." );
+      throw sc_invalid_apl_argument( "Invalid string for dragonflight.ruby_whelp_shell_training." );
 
     ruby_whelp_type_e whelp_type = string_to_whelp_type( pair[ 0 ] );
     if ( whelp_type == RUBY_WHELP_TYPE_NONE )
-      throw std::invalid_argument( "Invalid training type for dragonflight.ruby_whelp_shell_training." );
+      throw sc_invalid_apl_argument( "Invalid training type for dragonflight.ruby_whelp_shell_training." );
 
     int level = util::to_int( pair[ 1 ] );
     if ( level < 0 || level > 6 )
-      throw std::invalid_argument( "Invalid training level for dragonflight.ruby_whelp_shell_training." );
+      throw sc_invalid_apl_argument( "Invalid training level for dragonflight.ruby_whelp_shell_training." );
 
     total_levels += level;
     if ( total_levels > 6 )
-      throw std::invalid_argument( "More than 6 training levels cannot be applied with dragonflight.ruby_whelp_shell_training." );
+      throw sc_invalid_apl_argument( "Maximum 6 training levels for dragonflight.ruby_whelp_shell_training." );
 
     training_levels[ static_cast<size_t>( whelp_type ) ] = level;
   }
@@ -3823,10 +3824,10 @@ void ruby_whelp_shell( special_effect_t& effect )
   {
     ruby_whelp_type_e whelp_type = string_to_whelp_type( s );
     if ( whelp_type == RUBY_WHELP_TYPE_NONE )
-      throw std::invalid_argument( "Invalid proc type for dragonflight.ruby_whelp_shell_context." );
+      throw sc_invalid_apl_argument( "Invalid proc type for dragonflight.ruby_whelp_shell_context." );
 
     if ( range::find( context_aware_procs, whelp_type ) != context_aware_procs.end() )
-      throw std::invalid_argument( "Duplicate proc type found for dragonflight.ruby_whelp_shell_context." );
+      throw sc_invalid_apl_argument( "Duplicate proc type found for dragonflight.ruby_whelp_shell_context." );
 
     context_aware_procs.push_back( whelp_type );
   }
@@ -10676,8 +10677,8 @@ void cloak_of_infinite_potential( special_effect_t& effect )
   {
     auto pair = util::string_split<std::string_view>( s, ":" );
     if ( pair.size() != 2 )
-      throw std::invalid_argument(
-          fmt::format( "Invalid stat string for dragonflight.timerunners_advantage: {}.", s ) );
+      throw sc_invalid_apl_argument( fmt::format( "Invalid stat '{}' for 'dragonflight.timerunners_advantage'.", s ) );
+
     stat_e stat_type = util::parse_stat_type( pair[ 0 ] );
     switch ( stat_type )
     {
@@ -10698,8 +10699,8 @@ void cloak_of_infinite_potential( special_effect_t& effect )
         stat_amounts[ effect.player->convert_hybrid_stat( stat_type ) ] = util::to_double( pair[ 1 ] );
         break;
       default:
-        throw std::invalid_argument(
-            fmt::format( "Invalid stat type in dragonflight.timerunners_advantage: {}.", pair[ 0 ] ) );
+        throw sc_invalid_apl_argument(
+          fmt::format( "Invalid stat type '{}' for 'dragonflight.timerunners_advantage'.", pair[ 0 ] ) );
     }
   }
 

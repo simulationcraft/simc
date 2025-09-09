@@ -13677,7 +13677,8 @@ std::unique_ptr<expr_t> death_knight_t::create_runeforge_expression( std::string
   // Only throw an error with death_knight.runeforge expressions
   // runeforge.x already spits out a warning for relevant runeforges and has to send a runeforge legendary if needed
   if ( !warning )
-    throw std::invalid_argument( fmt::format( "Unknown Death Knight runeforge name '{}'", runeforge_name ) );
+    throw sc_invalid_apl_argument( fmt::format( "Unknown Death Knight runeforge name '{}'.", runeforge_name ) );
+
   return nullptr;
 }
 
@@ -13693,8 +13694,9 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
       auto n_char = splits[ 1 ][ splits[ 1 ].size() - 1 ];
       auto n      = n_char - '0';
       if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
-        throw std::invalid_argument(
-            fmt::format( "Error in rune.time_to expression, please enter a valid amount of runes" ) );
+      {
+        throw sc_invalid_apl_argument( fmt::format( "Invalid rune amount in 'rune.time_to_{}.'", n_char ) );
+      }
 
       return make_fn_expr( "rune_time_to_x", [ this, n ]() { return _runes.time_to_regen( as<unsigned>( n ) ); } );
     }
@@ -13748,7 +13750,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
         return runeforge_expr;
     }
 
-    throw std::invalid_argument( fmt::format( "Unknown death_knight expression '{}'", splits[ 1 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Unknown death_knight expression '{}'.", splits[ 1 ] ) );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "drw" ) && splits.size() > 1 )
@@ -13791,7 +13793,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
       } );
     }
 
-    throw std::invalid_argument( fmt::format( "Unknown dnd expression '{}'", splits[ 1 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Unknown dnd expression '{}'.", splits[ 1 ] ) );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "runeforge" ) && splits.size() == 2 )

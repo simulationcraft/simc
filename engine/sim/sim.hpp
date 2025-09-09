@@ -628,8 +628,9 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-
   std::shared_ptr<work_queue_t> work_queue;
+  std::vector<std::exception_ptr> exception_queue;
+  mutex_t exception_mutex;
 
   // Related Simulations
   mutex_t relatives_mutex;
@@ -679,7 +680,6 @@ struct sim_t : private sc_thread_t
   int profileset_work_threads, profileset_init_threads;
   std::unique_ptr<profileset::profilesets_t> profilesets;
 
-
   sim_t();
   sim_t( sim_t* parent, int thread_index = 0 );
   sim_t( sim_t* parent, int thread_index, sim_control_t* control );
@@ -727,11 +727,12 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( util::string_view name );
+
   /**
    * Create error with printf formatting.
    */
   template <typename... Args>
-  void errorf( error_level_e level, util::string_view format, Args&&... args )
+  void errorf( error_level_e level, std::string_view format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
@@ -740,14 +741,13 @@ struct sim_t : private sc_thread_t
   }
 
   template <typename... Args>
-  void errorf( util::string_view format, Args&&... args )
+  void errorf( std::string_view format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
     set_error( error_level_e::TRIVIAL, fmt::sprintf( format, std::forward<Args>(args)... ) );
   }
-
 
   /**
    * Create error using fmt libraries python-like formatting syntax.

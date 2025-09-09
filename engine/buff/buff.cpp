@@ -53,13 +53,8 @@ struct buff_expr_t : public expr_t
 
     if ( !buff )
     {
-      action->sim->error(
-          "Unable to build buff action expression for {}: "
-          "Reference to unknown buff/debuff '{}' by {}.",
-          *action, buff_name, *action->player );
-      action->sim->cancel();
-      // Prevent segfault
-      buff = make_buff( action->player, "dummy" );
+      throw sc_invalid_apl_argument( fmt::format(
+        "Unable to build buff action expression for {}, reference to unknown buff/debuff '{}'.", *action, buff_name ) );
     }
 
     return buff;
@@ -232,15 +227,14 @@ struct expiration_t : public buff_event_t
   unsigned stack;
 
   expiration_t( buff_t* b, unsigned s, timespan_t d ) : buff_event_t( b, d ), stack( s )
-  { }
+  {}
 
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
-      b->sim->error( "{} {} creates asynchronous expiration with no stack count.",
-          *buff->player, *buff );
-      b->sim->cancel();
+      throw sc_runtime_error(
+        fmt::format( "{} {} creates asynchronous expiration with no stack count.", *buff->player, *buff ) );
     }
   }
 
@@ -580,9 +574,8 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       } );
   }
 
-  throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
+  throw sc_invalid_apl_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
 }
-
 }  // namespace
 
 
@@ -2236,7 +2229,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
+    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   if ( expiration.empty() )
@@ -3257,11 +3250,11 @@ void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {
-    fmt::format_to( out, "Buff {} ({})", buff.name(), buff.data().id() );
+    fmt::format_to( out, "Buff '{}' ({})", buff.name(), buff.data().id() );
   }
   else
   {
-    fmt::format_to( out, "Buff {}", buff.name() );
+    fmt::format_to( out, "Buff '{}'", buff.name() );
   }
 }
 

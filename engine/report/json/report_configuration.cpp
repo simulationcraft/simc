@@ -85,8 +85,7 @@ report_configuration_t create_report_entry( sim_t& sim, std::string version, std
 
   if ( !semver::valid( version ) )
   {
-    throw std::invalid_argument(
-        fmt::format( "Specified JSON report version {} is not a valid semver version.", version ) );
+    throw sc_invalid_sim_argument( fmt::format( "JSON report version '{}' is not a valid semver version.", version ) );
   }
   auto parsed_version = semver::parse_simple( version );
 
@@ -95,14 +94,14 @@ report_configuration_t create_report_entry( sim_t& sim, std::string version, std
   } );
   if ( it == valid_report_versions.end() )
   {
-    throw std::invalid_argument(
-        fmt::format( "Cannot generate JSON report with version {}. Available non-deprecated versions: {}.", version,
-                     available_non_deprecated_version_string ) );
+    throw sc_invalid_sim_argument(
+      fmt::format( "Cannot generate JSON report version '{}', available non-deprecated versions: {}", version,
+                   available_non_deprecated_version_string ) );
   }
   auto selected_entry = *it;
   if ( selected_entry.is_deprecated )
   {
-    sim.error( "JSON Report with version {} ({} requested) is deprecated. Available non-deprecated versions: {}.",
+    sim.error( "JSON Report version {} ({} requested) is deprecated, available non-deprecated versions: {}.",
                selected_entry.version, version, available_non_deprecated_version_string );
   }
 

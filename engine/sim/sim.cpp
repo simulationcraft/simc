@@ -116,9 +116,9 @@ bool parse_debug_seed( sim_t* sim, util::string_view, util::string_view value )
 
   range::sort( sim -> debug_seed );
 
-  if (sim->debug_seed.empty())
+  if ( sim->debug_seed.empty() )
   {
-    throw std::invalid_argument("Could not parse any debug seeds.");
+    throw sc_invalid_sim_argument( "Could not parse any debug seeds." );
   }
 
   return true;
@@ -141,9 +141,9 @@ bool parse_json_reports( sim_t* sim, util::string_view /* option_name */, util::
 {
   auto splits = util::string_split<util::string_view>( value, ",", false );
 
-  if (splits.empty() || splits[0].empty())
+  if ( splits.empty() || splits[ 0 ].empty() )
   {
-    throw std::runtime_error("Cannot generate JSON report with no destination. Please specify a value after json=");
+    throw sc_invalid_sim_argument( "Missing JSON report output file name." );
   }
 
   auto destination = splits[0];
@@ -256,7 +256,7 @@ bool parse_active( sim_t*             sim,
     }
     else
     {
-      throw std::invalid_argument("Active Player is not a pet, cannot refer to 'owner'" );
+      throw std::invalid_argument( "Active Player is not a pet, cannot refer to 'owner'." );
     }
   }
   else if ( value == "none" || value == "0" )
@@ -273,9 +273,9 @@ bool parse_active( sim_t*             sim,
     {
       sim -> active_player = sim -> find_player( value );
     }
-    if ( ! sim -> active_player )
+    if ( !sim->active_player )
     {
-      throw std::invalid_argument(fmt::format("Unable to find player '{}' to make active.", value ));
+      throw std::invalid_argument( fmt::format( "Player '{}' not found, cannot make active.", value ) );
     }
   }
 
@@ -301,12 +301,6 @@ bool parse_player( sim_t*             sim,
                           util::string_view name,
                           util::string_view value )
 {
-
-  if ( name[ 0 ] >= '0' && name[ 0 ] <= '9' )
-  {
-    throw std::invalid_argument(fmt::format("Invalid actor name '{}' - name cannot start with a digit.", name ));
-  }
-
   if ( name == "pet" || name == "guardian" )
   {
     std::string::size_type cut_pt = value.find( ',' );
@@ -318,9 +312,9 @@ bool parse_player( sim_t*             sim,
     else
       pet_name = std::string( value );
 
-    if ( ! sim -> active_player )
+    if ( !sim->active_player )
     {
-      throw std::invalid_argument(fmt::format("Pet profile ({}) needs a player preceding it.", name ));
+      throw std::invalid_argument( fmt::format( "Pet '{}' needs a player preceding it.", value ) );
     }
 
     sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
@@ -333,20 +327,20 @@ bool parse_player( sim_t*             sim,
     player_t* source;
     if ( cut_pt == value.npos )
     {
-      source = sim -> active_player;
-      if (!source)
+      source = sim->active_player;
+      if ( !source )
       {
-        throw std::invalid_argument("No active player as source for profile copy available - format is copy=target[,source]" );
+        throw std::invalid_argument( "No active player as source for profile copy, format is 'copy=target[,source]'." );
       }
     }
     else
     {
       auto source_name = value.substr( cut_pt + 1 );
-      source = sim -> find_player( source_name );
-      if (!source)
+      source = sim->find_player( source_name );
+      if ( !source )
       {
-        throw std::invalid_argument(fmt::format(
-            "Invalid source for profile copy - format is copy=target[,source]: Cannot find player '{}'.", source_name ));
+        throw std::invalid_argument( fmt::format(
+          "Player '{}' not found as source for profile copy, format is 'copy=target[,source]'.", source_name ) );
       }
     }
 
@@ -362,24 +356,23 @@ bool parse_player( sim_t*             sim,
     sim -> active_player = nullptr;
 
     auto player_type = util::parse_player_type( name );
-    if (player_type == PLAYER_NONE)
+    if ( player_type == PLAYER_NONE )
     {
-      throw std::runtime_error(fmt::format("No class module could be found for '{}'.", name ));
+      throw std::invalid_argument( fmt::format( "Class module '{}' not found.", name ) );
     }
     const module_t* module = module_t::get( player_type );
 
-    if ( ! module || ! module -> valid() )
+    if ( !module || !module->valid() )
     {
-      throw std::invalid_argument(fmt::format("Module for class '{}' is currently not available.", name ));
+      throw std::invalid_argument( fmt::format( "Class module '{}' is currently not available.", name ) );
     }
     else
     {
-      sim -> active_player = module -> create_player( sim, value );
+      sim->active_player = module->create_player( sim, value );
 
-      if ( ! sim -> active_player )
+      if ( !sim->active_player )
       {
-        throw std::invalid_argument(fmt::format("Unable to create player '{}' with class '{}'.",
-                       value, name ));
+        throw std::invalid_argument( fmt::format( "Unable to create player '{}' with class '{}'.", value, name ) );
       }
     }
   }
@@ -393,25 +386,24 @@ bool parse_player( sim_t*             sim,
 
 // parse_proxy ==============================================================
 
-bool parse_proxy( sim_t* , util::string_view /* name */, util::string_view value )
+bool parse_proxy( sim_t*, std::string_view, std::string_view value )
 {
-
-  auto splits = util::string_split<util::string_view>( value, "," );
+  auto splits = util::string_split<std::string_view>( value, "," );
 
   if ( splits.size() != 3 )
   {
-    throw std::invalid_argument("Expected format is: proxy=type,host,port\n" );
+    throw std::invalid_argument( "Proxy format is 'proxy=type,host,port'." );
   }
 
-  if (splits[ 0 ] != "http")
+  if ( splits[ 0 ] != "http" )
   {
-    throw std::invalid_argument(fmt::format("Proxy invalid type '{}'", splits[ 0 ] ));
+    throw std::invalid_argument( fmt::format( "Invalid proxy type '{}'.", splits[ 0 ] ) );
   }
 
   unsigned port = util::to_unsigned( splits[ 2 ] );
   if ( port <= 0 || port >= 65536 )
   {
-    throw std::invalid_argument(fmt::format("Invalid proxy port, outside range", port ));
+    throw std::invalid_argument( fmt::format( "Invalid proxy port '{}', outside range", port ) );
   }
 
   http::set_proxy( splits[ 0 ], splits[ 1 ], port );
@@ -460,19 +452,6 @@ private:
   }
 
 public:
-  using error = std::runtime_error;
-  struct option_error : public error {
-    explicit option_error(const std::string& _Message)
-      : runtime_error(_Message)
-    {
-    }
-
-    explicit option_error(const char* _Message)
-      : runtime_error(_Message)
-    {
-    }
-  };
-
   std::vector<std::string> names;
   std::string region;
   std::string server;
@@ -524,10 +503,10 @@ public:
         region = sim -> default_region_str;
       }
     }
-    if (!is_valid_region( region ))
+    if ( !is_valid_region( region ) )
     {
       throw std::invalid_argument(
-          fmt::format( "Invalid region '{}', available regions are: us, eu, kr, tw, cn.", region ) );
+        fmt::format( "Invalid region '{}', available regions: us, eu, kr, tw, cn", region ) );
     }
 
     if ( server.empty() )
@@ -559,112 +538,104 @@ bool clear_http_cache(sim_t* sim,
   return true;
 }
 
-bool parse_armory( sim_t*             sim,
-                   util::string_view name,
-                   util::string_view value )
+bool parse_armory( sim_t* sim, std::string_view name, std::string_view value )
 {
-    std::string spec = "active";
+  std::string spec = "active";
 
-    std::vector<std::unique_ptr<option_t>> options;
-    options.push_back( opt_string( "spec", spec ) );
+  std::vector<std::unique_ptr<option_t>> options;
+  options.push_back( opt_string( "spec", spec ) );
 
-    names_and_options_t stuff( sim, name, std::move(options), value );
+  names_and_options_t stuff( sim, name, std::move( options ), value );
 
-    for ( size_t i = 0; i < stuff.names.size(); ++i )
+  for ( size_t i = 0; i < stuff.names.size(); ++i )
+  {
+    // Format: name[|spec]
+    std::string& player_name = stuff.names[ i ];
+    std::string description = spec;
+
+    std::string::size_type pos = player_name.find( '|' );
+    if ( pos != player_name.npos )
     {
-      // Format: name[|spec]
-      std::string& player_name = stuff.names[ i ];
-      std::string description = spec;
-
-      if ( player_name[ 0 ] == '!' )
-      {
-        player_name.erase( 0, 1 );
-        description = "inactive";
-        sim -> errorf( "Warning: use of \"!%s\" to indicate a player's inactive talent spec is deprecated. Use \"%s,spec=inactive\" instead.\n",
-                       player_name.c_str(), player_name.c_str() );
-      }
-
-      std::string::size_type pos = player_name.find( '|' );
-      if ( pos != player_name.npos )
-      {
-        description.assign( player_name, pos + 1, player_name.npos );
-        player_name.erase( pos );
-      }
-
-      player_t* p;
-      try
-      {
-        if ( name == "local_json" )
-          p = bcp_api::from_local_json( sim, player_name, std::string( value ), description );
-        else
-          p = bcp_api::download_player( sim, stuff.region, stuff.server,
-              player_name, description, stuff.cache );
-
-        sim -> active_player = p;
-        if ( ! p )
-          throw std::runtime_error("Could not download player.");
-      }
-      catch (const std::exception& )
-      {
-        std::throw_with_nested(std::runtime_error("BCP API"));
-      }
+      description.assign( player_name, pos + 1, player_name.npos );
+      player_name.erase( pos );
     }
+
+    player_t* p;
+
+    try
+    {
+      if ( name == "local_json" )
+        p = bcp_api::from_local_json( sim, player_name, std::string( value ), description );
+      else
+        p = bcp_api::download_player( sim, stuff.region, stuff.server, player_name, description, stuff.cache );
+
+      if ( !p )
+        throw std::runtime_error( "Could not download player." );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_network_error( fmt::format( "Armory lookup for player '{}'", player_name ) ) );
+    }
+
+    sim->active_player = p;
+  }
 
   // Create options for player
-  if ( sim -> active_player )
-    sim -> active_player -> create_options();
+  if ( sim->active_player )
+    sim->active_player->create_options();
 
-  return sim -> active_player != nullptr;
+  return sim->active_player != nullptr;
 }
 
-bool parse_guild( sim_t*             sim,
-                  util::string_view name,
-                  util::string_view value )
+bool parse_guild( sim_t* sim, std::string_view name, std::string_view value )
 {
   // Save Raid Summary file when guilds are downloaded
-  sim -> save_raid_summary = 1;
+  sim->save_raid_summary = 1;
 
-  try
+  std::string type_str;
+  std::string ranks_str;
+  int max_rank = 0;
+
+  std::vector<std::unique_ptr<option_t>> options;
+  options.push_back( opt_string( "class", type_str ) );
+  options.push_back( opt_int( "max_rank", max_rank ) );
+  options.push_back( opt_string( "ranks", ranks_str ) );
+
+  names_and_options_t stuff( sim, name, std::move( options ), value );
+
+  std::vector<int> ranks_list;
+  if ( !ranks_str.empty() )
   {
-    std::string type_str;
-    std::string ranks_str;
-    int max_rank = 0;
+    auto ranks = util::string_split<util::string_view>( ranks_str, "/" );
 
-    std::vector<std::unique_ptr<option_t>> options;
-    options.push_back( opt_string( "class", type_str ) );
-    options.push_back( opt_int( "max_rank", max_rank ) );
-    options.push_back( opt_string( "ranks", ranks_str ) );
+    for ( const auto& rank : ranks )
+      ranks_list.push_back( util::to_int( rank ) );
+  }
 
-    names_and_options_t stuff( sim, name, std::move(options), value );
+  player_e pt = PLAYER_NONE;
+  if ( !type_str.empty() )
+    pt = util::parse_player_type( type_str );
 
-    std::vector<int> ranks_list;
-    if ( ! ranks_str.empty() )
+  for ( size_t i = 0; i < stuff.names.size(); ++i )
+  {
+    std::string& guild_name = stuff.names[ i ];
+
+    try
     {
-      auto ranks = util::string_split<util::string_view>( ranks_str, "/" );
-
-      for ( const auto& rank : ranks )
-        ranks_list.push_back( util::to_int( rank ) );
-    }
-
-    player_e pt = PLAYER_NONE;
-    if ( ! type_str.empty() )
-      pt = util::parse_player_type( type_str );
-
-    for ( size_t i = 0; i < stuff.names.size(); ++i )
-    {
-      std::string& guild_name = stuff.names[ i ];
-      if ( ! bcp_api::download_guild( sim, stuff.region, stuff.server, guild_name,
-                                      ranks_list, pt, max_rank, stuff.cache ) )
+      if ( !bcp_api::download_guild( sim, stuff.region, stuff.server, guild_name, ranks_list, pt, max_rank,
+                                     stuff.cache ) )
+      {
         return false;
+      }
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_network_error( fmt::format( "Armory lookup for guild '{}'", guild_name ) ) );
     }
   }
 
-  catch ( names_and_options_t::error& )
-  { return false; }
-
   return true;
 }
-
 
 // parse_fight_style ========================================================
 
@@ -676,7 +647,7 @@ bool parse_fight_style( sim_t*             sim,
 
   if ( sim->fight_style == FIGHT_STYLE_NONE )
   {
-    throw std::invalid_argument( fmt::format( "Invalid fight style {}", value ) );
+    throw std::invalid_argument( fmt::format( "Invalid fight style '{}'.", value ) );
   }
 
   // Disable optimal raid setting for Dungeon-style sim types
@@ -741,21 +712,22 @@ bool parse_spell_query( sim_t*             sim,
 
     if ( sq_lvl > MAX_ILEVEL )
     {
-      throw std::invalid_argument(fmt::format("Maximum item level supported in Simulationcraft is {}.", MAX_ILEVEL ));
+      throw std::invalid_argument(
+        fmt::format( "Maximum item level supported in Simulationcraft is {}.", MAX_ILEVEL ) );
     }
 
-    sim -> spell_query_level = as< unsigned >( sq_lvl );
+    sim->spell_query_level = as<unsigned>( sq_lvl );
 
     sq_str = sq_str.substr( 0, lvl_offset );
   }
 
-  sim -> spell_query = spell_data_expr_t::parse( sim, sq_str );
+  sim->spell_query = spell_data_expr_t::parse( sim, sq_str );
 
-  if (sim -> spell_query == nullptr)
+  if ( sim->spell_query == nullptr )
   {
-    throw std::invalid_argument("Could not build spell query");
+    throw std::invalid_argument( "Could not build spell query" );
   }
-  return sim -> spell_query != nullptr;
+  return sim->spell_query != nullptr;
 }
 
 // parse_item_sources =======================================================
@@ -790,10 +762,10 @@ bool parse_item_sources( sim_t*             sim,
     }
   }
 
-  if ( sim -> item_db_sources.empty() )
+  if ( sim->item_db_sources.empty() )
   {
-    throw std::invalid_argument(fmt::format("Your global data source string '{}' contained no valid data sources. "
-        "Valid identifiers are: {}", value, fmt::join(default_item_db_sources, " ")));
+    throw std::invalid_argument(
+      fmt::format( "Invalid global data source, valid sources are: {}.", fmt::join( default_item_db_sources, ", " ) ) );
   }
 
   return true;
@@ -841,9 +813,9 @@ bool parse_target_error_role( sim_t * sim,
 {
   sim -> target_error_role = util::parse_role_type( value );
 
-  if (sim -> target_error_role == ROLE_NONE)
+  if ( sim->target_error_role == ROLE_NONE )
   {
-    throw std::invalid_argument("Invalid target error role");
+    throw std::invalid_argument( "Invalid target error role." );
   }
 
   return true;
@@ -855,7 +827,7 @@ bool parse_maximize_reporting( sim_t*             sim,
 {
   if ( v != "0" && v != "1" )
   {
-    throw std::invalid_argument("Acceptable values are '1' or '0'.");
+    throw std::invalid_argument( "Acceptable values are '1' or '0'." );
   }
   bool r = util::to_int( v ) != 0;
   if ( r )
@@ -1744,30 +1716,23 @@ void sim_t::remove_relative( sim_t* cousin )
 /// Cancel simulation.
 void sim_t::cancel()
 {
-  if ( canceled ) return;
+  if ( canceled )
+    return;
 
   if ( current_iteration >= 0 )
-  {
-    errorf( "\nSimulation has been canceled after %d iterations! (thread=%d) %20s\n", current_iteration + 1, thread_index, "" );
-  }
+    error( "\nSimulation has been canceled after {} iterations! (thread={})\n", current_iteration + 1, thread_index );
   else
-  {
-    errorf( "\nSimulation has been canceled during player setup! (thread=%d) %20s\n", thread_index, "" );
-  }
+    error( "\nSimulation has been canceled during player setup! (thread={})\n", thread_index );
 
-  work_queue -> flush();
+  work_queue->flush();
 
   canceled = true;
 
-  for (auto & relative : relatives)
-  {
-    relative -> cancel();
-  }
+  for ( auto& relative : relatives )
+    relative->cancel();
 
-  if ( ! parent )
-  {
+  if ( !parent )
     profilesets->cancel();
-  }
 }
 
 // sim_t::interrupt =========================================================
@@ -1879,7 +1844,7 @@ void sim_t::combat_begin()
     }
     else
     {
-      throw std::runtime_error(fmt::format("Unable to open output file '{}'.", output_file_str ));
+      throw sc_report_output_error( fmt::format( "Unable to open output file '{}'.", output_file_str ) );
     }
   }
 
@@ -1940,7 +1905,6 @@ void sim_t::combat_begin()
   }
   else
   {
-
     // Initialize all actors before (pre)combat.
     // Needs to be a index-based loop, as the player list may be extended during iteration.
     for ( size_t i = 0; i < player_list.size(); ++i ) // NOLINT(modernize-loop-convert)
@@ -2298,9 +2262,9 @@ void sim_t::check_actors()
     }
   }
 
-  if ( too_quiet && ! debug )
+  if ( too_quiet && !debug )
   {
-    throw std::runtime_error("No active players in sim!");
+    throw sc_initialization_error( "No active players in sim!" );
   }
 
   // Set Fixed_Time when there are no DD's present
@@ -2465,7 +2429,7 @@ void sim_t::init_fight_style()
 void sim_t::init_parties()
 {
   if ( debug )
-    out_debug.printf( "Building Parties." );
+    print_debug( "Building Parties." );
 
   int party_index = 0;
   for ( const auto& party_str : party_encoding )
@@ -2494,9 +2458,9 @@ void sim_t::init_parties()
       for ( const auto& player_name : player_names )
       {
         player_t* p = find_player( player_name );
-        if ( ! p )
+        if ( !p )
         {
-          throw std::invalid_argument( fmt::format("Unable to find player '{}' for party creation.", player_name) );
+          throw sc_invalid_sim_argument( fmt::format( "Player '{}' not found for party creation.", player_name ) );
         }
         p -> party = party_index;
         for ( auto& pet : p -> pet_list )
@@ -2669,9 +2633,9 @@ void sim_t::init_actor( player_t* p )
     p->init_absorb_priority();
     p->init_assessors();
   }
-  catch (const std::exception&)
+  catch ( const std::exception& )
   {
-    std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", p->name())));
+    std::throw_with_nested( std::runtime_error( fmt::format( "{}", *p ) ) );
   }
 }
 
@@ -2762,12 +2726,12 @@ void sim_t::init()
     pvp_rules = dbc::find_spell( this, 134735 );
 
   // set scaling metric
-  if ( ! scaling -> scale_over.empty() )
+  if ( !scaling->scale_over.empty() )
   {
-    scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
-    if ( scaling -> scaling_metric == SCALE_METRIC_NONE )
+    scaling->scaling_metric = util::parse_scale_metric( scaling->scale_over );
+    if ( scaling->scaling_metric == SCALE_METRIC_NONE )
     {
-      throw std::invalid_argument(fmt::format("Unknown scaling metric '{}'", scaling -> scale_over));
+      throw sc_invalid_sim_argument( fmt::format( "Unknown scaling metric '{}'", scaling->scale_over ) );
     }
   }
 
@@ -2862,28 +2826,30 @@ void sim_t::init()
 
   // create additional non-tank enemies here
   int count_additional_enemy = 1;
-  while ( as<int>(target_list.size()) < desired_targets )
+  while ( as<int>( target_list.size() ) < desired_targets )
   {
     active_player = nullptr;
-    active_player = module_t::enemy() -> create_player( this, "Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    active_player =
+      module_t::enemy()->create_player( this, "Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
     count_additional_enemy++;
-    if ( ! active_player )
+    if ( !active_player )
     {
-      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
+      throw sc_initialization_error( fmt::format( "Unable to create dps enemy {}.", target_list.size() ) );
     }
   }
 
   // create additional tank enemies here
   int desired_target_count = as<int>( target_list.size() ) + desired_tank_targets - 1;
   count_additional_enemy = 1;
-  while ( as<int>(target_list.size()) < desired_target_count )
+  while ( as<int>( target_list.size() ) < desired_target_count )
   {
     active_player = nullptr;
-    active_player = module_t::tank_dummy_enemy() -> create_player( this, "Tank_Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
+    active_player = module_t::tank_dummy_enemy()->create_player(
+      this, "Tank_Dummy_Enemy_" + util::to_string( count_additional_enemy ) );
     count_additional_enemy++;
-    if ( ! active_player )
+    if ( !active_player )
     {
-      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
+      throw sc_initialization_error( fmt::format( "Unable to create tank enemy {}.", target_list.size() ) );
     }
   }
 
@@ -2939,7 +2905,7 @@ void sim_t::init()
 
   // We are committed to simulating something. Tell actors that the sim init is now complete if they
   // need to do something.
-  if ( ! canceled )
+  if ( !canceled )
   {
     bool verify_use_items_state = true;
 
@@ -2947,27 +2913,26 @@ void sim_t::init()
     {
       try
       {
-        actor -> init_finished();
+        actor->init_finished();
       }
-      catch (const std::exception&)
+      catch ( const std::exception& )
       {
-        std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", actor->name())));
+        std::throw_with_nested( std::runtime_error( fmt::format( "Actor '{}'", actor->name() ) ) );
       }
       // Some verification stuff to avoid user mistakes
 
       // .. nag if the user has not added an use_item line for each on-use item
-      if ( ! actor -> verify_use_items() )
+      if ( !actor->verify_use_items() )
       {
         verify_use_items_state = false;
       }
-
     }
 
-    if ( ! verify_use_items_state )
+    if ( !verify_use_items_state )
     {
-      errorf( "Disable this warning by adding 'use_item' actions into the action priority list "
-              "for the actor(s), or add \"use_item_verification=0\" to your list of options "
-              "passed to Simulationcraft." );
+      error(
+        "Disable this warning by adding 'use_item' actions into the action priority list for the actor(s), or set "
+        "'use_item_verification=0' in your SimulationCraft input." );
     }
   }
 
@@ -2983,13 +2948,11 @@ void sim_t::init()
 
   init_time = chrono::elapsed(start_time);
 
-  if (canceled)
+  if ( canceled )
   {
-
-    throw std::runtime_error("Canceled");
+    throw std::runtime_error( fmt::format( "Canceled ({})", thread_index ) );
   }
 }
-
 
 // sim_t::analyze ===========================================================
 
@@ -3082,56 +3045,61 @@ bool sim_t::iterate()
   {
     init();
   }
-  catch( const std::exception& e ){
-    if (parent == nullptr)
-    {
-      std::throw_with_nested( std::runtime_error("Initializing"));
-      fmt::print("Error initializing: {}\n", e.what());
-    }
+  catch ( const std::exception& )
+  {
+    if ( !parent )
+      std::throw_with_nested( sc_initialization_error( "Initialization error" ) );
+
     return false;
   }
 
   progress_bar.init();
 
-  activate_actors();
-
-  bool more_work = true;
-  do
+  try
   {
-    ++current_iteration;
-    ++work_done;
+    activate_actors();
 
-    combat();
-
-    if ( progress_bar.update( false, as<int>(current_index) ) )
+    bool more_work = true;
+    do
     {
-      progress_bar.output( false );
-    }
+      ++current_iteration;
+      ++work_done;
 
-    do_pause();
-    auto old_active = current_index;
-    if ( ! canceled )
-    {
-      current_index = work_queue -> pop();
-      more_work = work_queue -> more_work();
+      combat();
 
-      if ( more_work && current_index != old_active )
+      if ( progress_bar.update( false, as<int>( current_index ) ) )
       {
-        if ( ! parent ||
-             scaling -> scale_stat != STAT_NONE ||
-             ( parent && parent -> reforge_plot -> current_stat_combo > -1 ) )
-        {
-          progress_bar.update( true, static_cast<int>( old_active ) );
-          progress_bar.output( true );
-          progress_bar.restart();
-        }
-
-        activate_actors();
+        progress_bar.output( false );
       }
-    }
-  } while ( more_work && ! canceled );
 
-  if ( ! canceled && progress_bar.update( true, as<int>(current_index) ) )
+      do_pause();
+      auto old_active = current_index;
+      if ( !canceled )
+      {
+        current_index = work_queue->pop();
+        more_work = work_queue->more_work();
+
+        if ( more_work && current_index != old_active )
+        {
+          if ( !parent || scaling->scale_stat != STAT_NONE ||
+               ( parent && parent->reforge_plot->current_stat_combo > -1 ) )
+          {
+            progress_bar.update( true, static_cast<int>( old_active ) );
+            progress_bar.output( true );
+            progress_bar.restart();
+          }
+
+          activate_actors();
+        }
+      }
+    } while ( more_work && !canceled );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_runtime_error( "Iteration error" ) );
+  }
+
+  if ( !canceled && progress_bar.update( true, as<int>( current_index ) ) )
   {
     progress_bar.output( true );
   }
@@ -3139,7 +3107,7 @@ bool sim_t::iterate()
   // Deactivate the final actor after simulation is done in single_actor_batch
   if ( single_actor_batch )
   {
-    player_no_pet_list[ player_no_pet_list.size() - 1 ] -> deactivate();
+    player_no_pet_list[ player_no_pet_list.size() - 1 ]->deactivate();
   }
   else
   {
@@ -3272,22 +3240,33 @@ void sim_t::merge()
   children.clear();
 }
 
-// sim_t::run ===============================================================
+// sim_t::run (for threads) ===================================================
 
 void sim_t::run()
 {
   try
   {
-    if( iterate() )
-    {
-      parent -> merge( *this );
-    }
+    if ( iterate() )
+      parent->merge( *this );
   }
-  catch (const std::exception& e )
+  catch ( const std::exception& )
   {
-    if (parent)
-      parent -> error("Error in child simulation ({}): {}", thread_index, e.what());
-    cancel();
+    try
+    {
+      std::throw_with_nested( std::runtime_error( fmt::format( "Thread ({})", thread_index ) ) );
+    }
+    catch ( const std::exception& )
+    {
+      parent->exception_mutex.lock();
+      parent->exception_queue.push_back( std::current_exception() );
+      parent->exception_mutex.unlock();
+
+      if ( parent )
+        parent->cancel();
+
+      if ( parent->parent )
+        parent->parent->cancel();
+    }
   }
 }
 
@@ -3380,9 +3359,18 @@ bool sim_t::execute()
 
   bool success = false;
   {
-    auto merge_final_action = gsl::finally([&](){ merge(); }); // Always merge, even in cases of unsuccessful simulation!
+    // Always merge, even in cases of unsuccessful simulation!
+    auto merge_final_action = gsl::finally( [ & ]() { merge(); } );
+    // Split out to threads
     partition();
     success = iterate();
+  }
+
+  while ( !exception_queue.empty() )
+  {
+    auto e = exception_queue.back();
+    exception_queue.pop_back();
+    std::rethrow_exception( e );
   }
 
   if( success )
@@ -4153,41 +4141,46 @@ void sim_t::create_options()
 
 // sim_t::parse_option ======================================================
 
-bool sim_t::parse_option( const std::string& name,
-                          const std::string& value )
+bool sim_t::parse_option( const std::string& name, const std::string& value )
 {
   if ( active_player )
   {
-    auto ret = opts::parse( this, active_player->options, name, value );
-
-    // Bail out early on player-specific option error states
-    switch ( ret )
+    try
     {
-      case opts::parse_status::DEPRECATED:
-      case opts::parse_status::FAILURE:
-        return false;
-      case opts::parse_status::OK:
-        return true;
-      default:
-        break;
+      auto ret = opts::parse( this, active_player->options, name, value );
+
+      // Bail out early on player-specific option error states
+      switch ( ret )
+      {
+        case opts::parse_status::DEPRECATED:
+        case opts::parse_status::FAILURE:    return false;
+        case opts::parse_status::OK:         return true;
+        default:                             break;
+      }
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( std::invalid_argument( fmt::format( "{}", *active_player ) ) );
     }
   }
 
-  auto ret = opts::parse( this, options, name, value );
-  // With strict_parsing enabled, anything else than "ok" parse status will result in hard failure
-  if ( strict_parsing && ret != opts::parse_status::OK )
+  try
   {
-    return false;
-  }
+    auto ret = opts::parse( this, options, name, value );
+    // With strict_parsing enabled, anything else than "ok" parse status will result in hard failure
+    if ( strict_parsing && ret != opts::parse_status::OK )
+      return false;
 
-  // Can't find a player- or sim scope option with name, warn the user
-  if ( ret == opts::parse_status::NOT_FOUND )
+    // Can't find a player- or sim scope option with name, warn the user
+    if ( ret == opts::parse_status::NOT_FOUND )
+      error( "Warning: Unknown option '{}' with value '{}', ignoring", name, value );
+
+    return ret != opts::parse_status::FAILURE;
+  }
+  catch ( const std::exception& )
   {
-    error( "Warning: Unknown option '{}' with value '{}', ignoring",
-      name, value );
+    std::throw_with_nested( sc_invalid_apl_argument( "Sim option" ) );
   }
-
-  return ret != opts::parse_status::FAILURE;
 }
 
 // sim_t::setup =============================================================
@@ -4198,16 +4191,19 @@ void sim_t::setup( sim_control_t* c )
 
   control = c;
 
-  if ( ! parent ) cache::advance_era();
+  if ( !parent )
+    cache::advance_era();
 
   // Global Options
-  for ( const auto& option : control -> options )
+  for ( const auto& option : control->options )
   {
-    if ( option.scope != "global" ) continue;
-    if ( ! parse_option( option.name, option.value ) )
+    if ( option.scope != "global" )
+      continue;
+
+    if ( !parse_option( option.name, option.value ) )
     {
-      throw std::invalid_argument(
-          fmt::format("Unknown option '{}' with value '{}'.", option.name, option.value ));
+      throw sc_invalid_sim_argument(
+        fmt::format( "Unknown sim option '{}' with value '{}'.", option.name, option.value ) );
     }
   }
 
@@ -4217,36 +4213,33 @@ void sim_t::setup( sim_control_t* c )
   // xyz = control -> combat.xyz;
 
   // Players
-  for ( size_t i = 0; i < control -> players.size(); i++ )
-  {
-    player_t::create( this, control -> players[ i ] );
-  }
+  for ( size_t i = 0; i < control->players.size(); i++ )
+    player_t::create( this, control->players[ i ] );
 
   // Player Options
-  for ( size_t i = 0; i < control -> options.size(); i++ )
+  for ( size_t i = 0; i < control->options.size(); i++ )
   {
-    option_tuple_t& o = control -> options[ i ];
-    if ( o.scope == "global" ) continue;
+    option_tuple_t& o = control->options[ i ];
+    if ( o.scope == "global" )
+      continue;
+
     player_t* p = find_player( o.scope );
     if ( !p )
     {
-      throw std::invalid_argument(
-                fmt::format("Unable to locate player '{}' for option '{}' with value '{}'.",
-                    o.scope, o.name, o.value));
+      throw sc_invalid_sim_argument(
+        fmt::format( "Player '{}' not found for sim option '{}' with value '{}'.", o.scope, o.name, o.value ) );
     }
 
     auto ret = opts::parse( this, p->options, o.name, o.value );
     if ( ret == opts::parse_status::FAILURE )
     {
-      throw std::invalid_argument(fmt::format("Unable to parse option '{}' with value '{}' for player '{}'.",
-          o.name, o.value, p->name()));
+      throw sc_invalid_sim_argument(
+        fmt::format( "Invalid sim option '{}' with value '{}' for player '{}'.", o.name, o.value, p->name() ) );
     }
   }
 
   if ( player_list.empty() && spell_query == nullptr && !display_bonus_ids && display_build <= 1 )
-  {
-    throw std::runtime_error( "Nothing to sim!" );
-  }
+    throw sc_runtime_error( "Nothing to sim!" );
 
   range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
@@ -4255,20 +4248,21 @@ void sim_t::setup( sim_control_t* c )
     debug = false;
     log = 0;
   }
-  else if ( ! output_file_str.empty() )
+  else if ( !output_file_str.empty() )
   {
-    std::shared_ptr<io::ofstream> o(new io::ofstream());
-    o -> open( output_file_str );
-    if ( o -> is_open() )
+    std::shared_ptr<io::ofstream> o( new io::ofstream() );
+    o->open( output_file_str );
+    if ( o->is_open() )
     {
       out_debug = o;
       out_log = o;
     }
     else
     {
-      throw std::runtime_error(fmt::format("Unable to open output file '{}'.", output_file_str));
+      throw sc_runtime_error( fmt::format( "Unable to open output file '{}'.", output_file_str ) );
     }
   }
+
   if ( debug_each )
     debug = true;
 
@@ -4329,9 +4323,9 @@ void sim_t::setup( sim_control_t* c )
     work_per_thread.resize( threads );
   }
 
-  if( deterministic && ( target_error != 0 ) )
+  if ( deterministic && ( target_error != 0 ) )
   {
-    throw std::invalid_argument("deterministic=1 cannot be used with non-zero target_error values!");
+    throw sc_invalid_sim_argument( "'deterministic=1' cannot be used with non-zero target_error values!" );
   }
 }
 

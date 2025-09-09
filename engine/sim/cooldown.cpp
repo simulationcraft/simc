@@ -621,7 +621,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( std::string_view name )
     } );
    }
 
-  throw std::invalid_argument( fmt::format( "Unsupported cooldown expression '{}'.", name ) );
+  throw std::invalid_argument( fmt::format( "Invalid cooldown expression '{}'.", name ) );
 }
 
 void cooldown_t::update_ready_thresholds()

@@ -868,16 +868,19 @@ struct summon_add_t : public spell_t
     parse_options( options_str );
 
     school = SCHOOL_PHYSICAL;
-    pet    = p->find_pet( add_name );
+    pet = p->find_pet( add_name );
+    harmful = false;
+    trigger_gcd = 1.5_s;
+  }
+
+  void init_finished() override
+  {
+    spell_t::init_finished();
+
     if ( !pet )
     {
-      sim->error( "Player {} unable to find pet {} for summons.", p->name(), add_name );
-      sim->cancel();
+      throw sc_invalid_apl_argument( fmt::format( "{} unable to find pet {} for summons.", *player, add_name ) );
     }
-
-    harmful = false;
-
-    trigger_gcd = timespan_t::from_seconds( 1.5 );
   }
 
   void execute() override
@@ -1247,8 +1250,7 @@ void enemy_t::init_race()
     race = util::parse_race_type( sim->target_race );
     if ( race == RACE_UNKNOWN )
     {
-      throw std::invalid_argument(
-          fmt::format( "{} could not parse race from sim target race '{}'.", name(), sim->target_race ) );
+      throw sc_invalid_sim_argument( fmt::format( "Invalid sim enemy target race '{}'.", sim->target_race ) );
     }
   }
 }
@@ -1507,11 +1509,13 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
 
   if ( raid_event->cooldown.mean <= 0_ms )
   {
-    throw std::invalid_argument( "Cooldown not set or negative." );
+    throw std::invalid_argument(
+      fmt::format( "Tank heal raid event '{}', cooldown not set or negative.", heal_options ) );
   }
   if ( raid_event->cooldown.mean <= raid_event->cooldown.stddev )
   {
-    throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
+    throw std::invalid_argument(
+      fmt::format( "Tank heal raid event '{}', cooldown mean lower than cooldown standard deviation.", heal_options ) );
   }
 
   if ( raid_event->cooldown.min == 0_ms )
@@ -1685,18 +1689,14 @@ void enemy_t::create_options()
     custom_health_timeline.clear();
 
     auto splits = util::string_split<std::string_view>( val, "/," );
-    range::transform(
-      splits,
-      std::back_inserter( custom_health_timeline ),
-      [] ( std::string_view s ) -> std::pair<double, double>
-      {
+    range::transform( splits, std::back_inserter( custom_health_timeline ),
+      []( std::string_view s ) -> std::pair<double, double> {
         auto pair = util::string_split<std::string_view>( s, ":" );
         if ( pair.size() == 2 )
           return { util::to_double( pair[ 0 ] ), util::to_double( pair[ 1 ] ) };
         else
-          throw std::invalid_argument( fmt::format( "Invalid custom health timeline pair: {}", s ) );
-      }
-    );
+          throw std::invalid_argument( fmt::format( "Invalid custom health timeline pair '{}'.", s ) );
+      } );
 
     return true;
   } ) );

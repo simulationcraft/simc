@@ -508,7 +508,7 @@ struct potion_t : public dbc_consumable_base_t
 
     if ( cooldown->duration == 0_ms )
     {
-      throw std::invalid_argument( fmt::format( "No cooldown found for potion '{}'.", item_data->name ) );
+      throw std::invalid_argument( "No cooldown found." );
     }
 
     // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
@@ -884,8 +884,8 @@ void dbc_consumable_base_t::init()
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::invalid_argument(
-        fmt::format( "Unable to initialize consumable '{}' from '{}'", signature_str, consumable_name ) ) );
+      std::throw_with_nested( sc_invalid_apl_argument(
+        fmt::format( "Invalid consumable '{}' with expression '{}'.", consumable_name, signature_str ) ) );
     }
   }
 
