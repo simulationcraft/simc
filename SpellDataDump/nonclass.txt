@@ -235633,6 +235633,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235653,6 +235654,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235673,6 +235675,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235728,6 +235731,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235746,6 +235750,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235764,6 +235769,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -236517,6 +236523,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236535,6 +236542,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236553,6 +236561,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236616,6 +236625,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236633,6 +236643,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236650,6 +236661,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -238556,6 +238568,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
+Labels           : 3425
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152654)  : Unknown(54)

@@ -10279,7 +10279,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
 Family Flags     : 102
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -10296,7 +10296,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
 Family Flags     : 102
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -11635,7 +11635,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5375
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
 Family Flags     : 102
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -11653,7 +11653,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 5375
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Combo Breaker: Chi Explosion (159407 effect#3), Dome of Mist (205655 effect#2), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Tear of Morning (387995 effect#2), Mending Proliferation (388510 effect#2), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Renewing Mist (1238851 effect#2)
 Family Flags     : 102
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -16252,8 +16252,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=1153141)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
-                   Family Flags: 48
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
+                   Family Flags: 48, 102
+Hotfixed         : Affects Spells
 Description      : $@spelldesc450508
 Tooltip          : Healing $w1 per second.
 
@@ -18984,7 +18985,8 @@ Family Flags     : 39, 103
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | PvP Coefficient: 2.4 | Radius: 25 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | PvP Coefficient: 1.2 | Radius: 25 yards | Target: Cone to Enemy (104)
+Hotfixed         : PvP Coefficient (2.4 -> 1.2)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 
