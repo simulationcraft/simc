@@ -235938,6 +235938,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235956,6 +235957,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235973,7 +235975,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
@@ -236000,7 +236001,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
@@ -236027,7 +236027,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -236099,7 +236098,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236126,7 +236124,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Council's Guile (449088)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236200,7 +236197,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236227,7 +236223,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236246,7 +236241,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236264,7 +236258,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236347,7 +236340,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236365,7 +236357,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -268044,23 +268035,23 @@ Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Onl
 Effects          :
 #1 (id=1241805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8) | Scaling Class: -8
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Misc Value: 8 | Misc Value 2: 3409 (Label) | Target: Self (1)
-                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449022), Authority of Storms (449023), Authority of Storms (449024), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Council's Guile (449088), Keen Prowess (449091), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stormrider's Fury (449099), Storm's Fury (449100), Artisanal Flourish (449108), Stonebound Artistry (449111), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Forged Tenacity (449115), Oathsworn's Tenacity (449116), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
+                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449019), Authority of Storms (449020), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
 Hotfixed         : Base Value (0 -> 50), Misc Value 2 (0 -> 3409)
 #2 (id=1273011)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
                    Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Base Value (20 -> 10)
 #3 (id=1273027)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
                    Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Spellwarding (326867), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984), Pestilence (327093), War (327096), Rune of Hysteria (333113)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Base Value (20 -> 10)
 #4 (id=1273028)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
                    Affected Spells (Label): Rune of Unending Thirst (326984), War (327096)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Base Value (20 -> 10)
 #5 (id=1273029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : NEW EFFECT
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 Description      : Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.
 Tooltip          : Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.
 
