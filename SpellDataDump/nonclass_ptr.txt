@@ -270526,64 +270526,70 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Infinite Power (id=1250717) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254924)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Critical Strike
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Critical Strike
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Critical Strike
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Critical Strike
 
 Name             : Infinite Power (id=1250750) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254982)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Mastery
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Mastery
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Mastery
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Mastery
 
 Name             : Infinite Power (id=1250751) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254983)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Haste
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Haste
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Haste
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Haste
 
 Name             : Infinite Power (id=1250753) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254985)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Critical Strike
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Critical Strike
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Critical Strike
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Critical Strike
 
 Name             : Infinite Power (id=1250757) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254989)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Mastery
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Mastery
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Mastery
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Mastery
 
 Name             : Infinite Power (id=1250760) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254992)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Haste
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Haste
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Haste
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Haste
 
 Name             : Add Keystone Affix: Dusk of the Infinite (id=1250864) 
 School           : Physical
