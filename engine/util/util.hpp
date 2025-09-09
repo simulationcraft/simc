@@ -31,7 +31,6 @@ class dbc_t;
 // 1: other exceptions
 // 10: invalid sim-scope argument
 // 11: invalid fight style
-// 12: report output error
 // 20: invalid player-scope argument
 // 21: invalid talent string
 // 22: invalid item string
@@ -40,6 +39,7 @@ class dbc_t;
 // 50: simulation iteration runtime error
 // 51: simulation stuck
 // 60: network error
+// 51: report output error
 
 struct sc_exception : public std::exception
 {
@@ -60,7 +60,6 @@ struct sc_exception : public std::exception
 
 SC_EXCEPTION( sc_invalid_sim_argument, 10, "Invalid sim argument" );
 SC_EXCEPTION( sc_invalid_fight_style, 11, "Invalid fight style" );
-SC_EXCEPTION( sc_report_output_error, 12, "Report output error" );
 SC_EXCEPTION( sc_invalid_player_argument, 20, "Invalid player argument" );
 SC_EXCEPTION( sc_invalid_talent_string, 21, "Invalid talent string" );
 SC_EXCEPTION( sc_invalid_item_string, 22, "Invalid item string" );
@@ -69,6 +68,7 @@ SC_EXCEPTION( sc_initialization_error, 40, "Simulation initialization error" );
 SC_EXCEPTION( sc_runtime_error, 50, "Simulation runtime error" );
 SC_EXCEPTION( sc_simulation_stuck, 51, "Simulation stuck" );
 SC_EXCEPTION( sc_network_error, 60, "Network error" );
+SC_EXCEPTION( sc_report_output_error, 61, "Report output error" );
 
 #undef SC_EXCEPTION
 
