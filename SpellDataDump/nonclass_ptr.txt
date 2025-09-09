@@ -269332,6 +269332,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.
 
+Name             : Attuned to the Aether (id=1242344) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268)
+Effects          :
+#1 (id=1241805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8) | Scaling Class: -8
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Misc Value: 8 | Target: Self (1)
+Description      : Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.
+Tooltip          : Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.
+
 Name             : Soulgorged Augmentation (id=1242347) 
 School           : Physical
 Spell Type       : None
