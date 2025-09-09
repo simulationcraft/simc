@@ -13695,6 +13695,8 @@ void player_t::create_options()
                        thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
   add_option( opt_bool( "thewarwithin.brand_of_ceaseless_ire_force_full_uptime",
                         thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
+  add_option( opt_bool( "thewarwithin.attuned_to_the_aether",
+                        thewarwithin_opts.attuned_to_the_aether ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

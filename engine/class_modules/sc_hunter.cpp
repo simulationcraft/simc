@@ -4594,11 +4594,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if ( p()->buffs.deathblow->up() && rng().roll( blighted_quiver_chance ) )
+      p()->buffs.blighted_quiver->trigger();
+
     p()->buffs.deathblow->expire();
     p()->buffs.razor_fragments->expire();
-    
-    if ( rng().roll( blighted_quiver_chance ) )
-      p()->buffs.blighted_quiver->trigger();
 
     if ( p()->talents.headshot.ok() )
       p()->consume_precise_shots();

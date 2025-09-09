@@ -556,13 +556,17 @@ void authority_of_radiant_power( special_effect_t& effect )
   damage->base_dd_min += damage_val;
   damage->base_dd_max += damage_val;
 
+  auto stat_val = effect.driver()->effectN( 2 ).average( effect );
+  stat_val *= attuned_mul( effect.player, effect.driver() );
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 448730 ) )
-    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_STAT, stat_val );
 
   if ( found )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445339 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -587,6 +591,7 @@ void authority_of_the_depths( special_effect_t& effect )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445341 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -611,6 +616,7 @@ void authority_of_storms( special_effect_t& effect )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445336 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -626,8 +632,11 @@ void secondary_weapon_enchant( special_effect_t& effect )
 
   auto found = buff_t::find( effect.player, buff_name );
 
+  auto stat_val = effect.driver()->effectN( 1 ).average( effect );
+  stat_val *= attuned_mul( effect.player, effect.driver() );
+
   auto buff = create_buff<stat_buff_t>( effect.player, buff_name, buff_data )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_RATING, stat_val );
 
   if ( found )
     return;
@@ -12747,5 +12756,17 @@ double writhing_mul( player_t* p )
     return 2.0;  // hardcoded
   else
     return 1.0;
+}
+
+// attuned to the aether renown perk
+double attuned_mul( player_t* p, const spell_data_t* spell )
+{
+  if ( !p->thewarwithin_opts.attuned_to_the_aether )
+    return 1.0;
+
+  auto attuned = p->find_spell( 1242344 );
+  const auto& eff = spell_data_t::find_spelleffect( *attuned, *spell, E_APPLY_AURA );
+
+  return 1.0 + eff.percent();
 }
 }  // namespace unique_gear::thewarwithin

@@ -945,6 +945,8 @@ struct player_t : public actor_t
     // Proc Brand of Ceaseless Ire based on outgoing damage to emulate full uptime.
     // NOTE: This behavior is default for Dungeon Slice & Dungeon Route
     bool brand_of_ceaseless_ire_force_full_uptime = false;
+    // Activate Attuned to the Aether renown perk (50% weapon enchants, 10% dk runeforge)
+    bool attuned_to_the_aether = false;
   } thewarwithin_opts;
 
 private:
