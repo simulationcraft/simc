@@ -28541,7 +28541,7 @@ static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { 
   {  431443, "$cap=${($SP*2.5)*(1+$@versadmg)}" },
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
   {  433106, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
-  {  434300, "$dmg=${$INT*3.8*(1+$@versadmg)*$pctD}" },
+  {  434300, "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
   {  435473, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  435475, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  436036, "$flight=$?a375517[${$375517s1/1000}][${0}]\r\n$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]" },
@@ -28717,6 +28717,7 @@ static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 11.2.0.63003
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  434300,  0, "$dmg=${$INT*3.8*(1+$@versadmg)*$pctD}", "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
 } };
 
