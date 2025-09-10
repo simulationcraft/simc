@@ -3257,15 +3257,9 @@ void sim_t::run()
     }
     catch ( const std::exception& )
     {
-      parent->exception_mutex.lock();
+      cancel();
+      AUTO_LOCK( parent->exception_mutex );
       parent->exception_queue.push_back( std::current_exception() );
-      parent->exception_mutex.unlock();
-
-      if ( parent )
-        parent->cancel();
-
-      if ( parent->parent )
-        parent->parent->cancel();
     }
   }
 }
@@ -3359,21 +3353,20 @@ bool sim_t::execute()
 
   bool success = false;
   {
-    // Always merge, even in cases of unsuccessful simulation!
-    auto merge_final_action = gsl::finally( [ & ]() { merge(); } );
-    // Split out to threads
+    // Always merge, even in cases of unsuccessful simulation, parent sim merge_mutex is unlocked in merge()
+    auto merge_final_action = gsl::finally( [ & ]() {
+      merge();
+      // Rethrow accumulated exceptions from threads
+      if ( rethrow_exception_queue() )
+        success = false;
+    } );
+
+    // Split out to threads, parent sim merge_mutex is locked in partition until merge()
     partition();
     success = iterate();
   }
 
-  while ( !exception_queue.empty() )
-  {
-    auto e = exception_queue.back();
-    exception_queue.pop_back();
-    std::rethrow_exception( e );
-  }
-
-  if( success )
+  if ( success )
     analyze();
 
   elapsed_cpu  = chrono::elapsed( start_cpu_time );
@@ -4712,4 +4705,22 @@ void sim_t::heartbeat_event_callback()
 void sim_t::register_heartbeat_event_callback(std::function<void(sim_t*)> fn)
 {
   heartbeat_event_callback_function.emplace_back( std::move( fn ) );
+}
+
+bool sim_t::rethrow_exception_queue()
+{
+  if ( !exception_queue.empty() )
+  {
+    AUTO_LOCK( exception_mutex );
+    while ( !exception_queue.empty() )
+    {
+      auto e = exception_queue.back();
+      exception_queue.pop_back();
+      std::rethrow_exception( e );
+    }
+
+    return true;
+  }
+
+  return false;
 }

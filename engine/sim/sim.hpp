@@ -839,6 +839,8 @@ struct sim_t : private sc_thread_t
     out_log.vprint( format, fmt::make_format_args( args... ) );
   }
 
+  bool rethrow_exception_queue();
+
 private:
   void set_error( error_level_e level, std::string error );
   void do_pause();

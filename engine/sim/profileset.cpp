@@ -415,9 +415,8 @@ void worker_t::execute()
     }
     catch ( const std::exception& )
     {
-      m_parent->exception_mutex.lock();
+      AUTO_LOCK( m_parent->exception_mutex );
       m_parent->exception_queue.push_back( std::current_exception() );
-      m_parent->exception_mutex.unlock();
       // TODO: find out how to cancel profilesets without deadlock.
     }
   }
@@ -565,6 +564,7 @@ bool profilesets_t::parse( sim_t* sim )
     m_mutex.unlock();
 
     sim_control_t* control = nullptr;
+    bool has_output_opts = false;
 
     try
     {
@@ -580,10 +580,15 @@ bool profilesets_t::parse( sim_t* sim )
       }
       catch ( const std::exception& )
       {
+        set_state( DONE );
+        m_control.notify_one();
+        if ( control )
+          delete control;
+
         std::throw_with_nested( sc_invalid_sim_argument( "Invalid profileset option" ) );
       }
 
-      auto has_output_opts = range::any_of( profileset_opts, []( std::string_view opt ) {
+      has_output_opts = range::any_of( profileset_opts, []( std::string_view opt ) {
         auto name_end = opt.find( "=" );
         if ( name_end == std::string::npos )
           return false;
@@ -599,11 +604,6 @@ bool profilesets_t::parse( sim_t* sim )
       test_sim->profileset_enabled = true;
       test_sim->setup( control );
       test_sim->init();
-
-      m_mutex.lock();
-      m_profilesets.push_back( std::make_unique<profile_set_t>( profileset_name, control, has_output_opts ) );
-      m_control.notify_one();
-      m_mutex.unlock();
     }
     catch ( const std::exception& )
     {
@@ -618,11 +618,16 @@ bool profilesets_t::parse( sim_t* sim )
       }
       catch ( const std::exception& )
       {
-        sim->exception_mutex.lock();
+        AUTO_LOCK( sim->exception_mutex );
         sim->exception_queue.push_back( std::current_exception() );
-        sim->exception_mutex.unlock();
+        return false;
       }
     }
+
+    m_mutex.lock();
+    m_profilesets.push_back( std::make_unique<profile_set_t>( profileset_name, control, has_output_opts ) );
+    m_control.notify_one();
+    m_mutex.unlock();
   }
 
   set_state( RUNNING );
@@ -793,6 +798,10 @@ bool profilesets_t::iterate( sim_t* parent )
   parent -> control = original_opts;
 
   set_state( DONE );
+
+  // rethrow any accumulated exceptions
+  if ( parent->rethrow_exception_queue() )
+    return false;
 
   return true;
 }
