@@ -15667,42 +15667,6 @@ struct druid_module_t final : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0 )
       .verification_value( 47 );
-
-    hotfix::register_effect( "Druid", "9-9-2025", "All direct damage increased by 5%", 179696, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All periodic damage increased by 5%", 191146, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All pet damage increased by 5%", 191147, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All guardian damage increased by 5%", 872569, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Ornaments of the Mother Eagle 2-piece: Starfire damage increased by 15% (was 20%)", 1232239, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 20 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Elune's Chosen: Boundless Moonlight's Fury of Elune flash damage reduced by 10%", 1109706, hotfix::HOTFIX_FLAG_PTR )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.277 )
-      .verification_value( 2.53 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Elune's Chosen: Minor Moon damage reduced by 10%", 1101681, hotfix::HOTFIX_FLAG_PTR )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.9836 )
-      .verification_value( 2.204 );
   }
 
   void combat_begin( sim_t* ) const override {}
