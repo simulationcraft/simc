@@ -1909,6 +1909,16 @@ struct reap_the_storm_t : public warrior_attack_t
     reduced_aoe_targets = p->talents.slayer.reap_the_storm->effectN( 1 ).base_value();
     weapon = &( p->main_hand_weapon );
   }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.slayer.overwhelming_blades->ok() && p()->talents.slayer.reap_the_storm->ok() )
+    {
+      td( state->target )->debuffs_overwhelmed->trigger();
+    }
+  }
 };
 
 // Devastate ================================================================
