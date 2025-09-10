@@ -5607,6 +5607,7 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   action_t* lightning_strike;
+  action_t* reap_the_storm;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   bool opportunist_up;
@@ -5616,7 +5617,7 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
-
+      reap_the_storm( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
       opportunist_up( false ),
