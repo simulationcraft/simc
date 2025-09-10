@@ -111,8 +111,7 @@ struct delete_disposer_t
   {
     using force_T_to_be_complete = int[ sizeof( T ) ? 1 : -1 ]; // NOLINT(modernize-avoid-c-arrays)
     (void)sizeof( force_T_to_be_complete );
-    if ( t )
-      delete t;
+    delete t;
   }
 };
 
