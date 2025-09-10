@@ -5552,7 +5552,6 @@ struct raging_blow_attack_t : public warrior_attack_t
     {
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
       reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
-      add_child( reap_the_storm );
     }
   }
 
@@ -5598,6 +5597,7 @@ struct raging_blow_t : public warrior_attack_t
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
   action_t* lightning_strike;
+  action_t* reap_the_storm;
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   bool opportunist_up;
@@ -5607,7 +5607,7 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr ),
       lightning_strike( nullptr ),
-
+      reap_the_storm( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
       opportunist_up( false ),
@@ -5636,6 +5636,14 @@ struct raging_blow_t : public warrior_attack_t
     if ( p->sets->has_set_bonus( WARRIOR_FURY, TWW2, B4 ) )
     {
       rage_gain += p->find_spell( 1216569 )->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
+
+    // We add the reap action here purely for the report
+    if ( p->sets->has_set_bonus( HERO_SLAYER, TWW3, B4 ) )
+    {
+      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_raging_blow", p );
+      reap_the_storm->base_multiplier = p->sets->set( HERO_SLAYER, TWW3, B4 )->effectN( 3 ).percent();
+      add_child( reap_the_storm );
     }
   }
 
