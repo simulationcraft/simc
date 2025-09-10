@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63092 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -348,7 +348,7 @@ Family Flags     : 12, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | PvP Coefficient: 1.188 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 9.72861 | PvP Coefficient: 1.057 | Target: Friendly (21)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1994,11 +1994,11 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.3945 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.57 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1104540)  : Dummy (3)
-                   Base Value: 125 | Scaled Value: 125
+                   Base Value: 100 | Scaled Value: 100
 Description      : Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
@@ -3158,7 +3158,7 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | Misc Value 2: 2931 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (110745)
 #24 (id=1104020) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 2932 (Label) | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Misc Value 2: 2932 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120692)
 #25 (id=1123085) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
@@ -3264,7 +3264,7 @@ Effects          :
                    Affected Spells: Renew (139)
                    Family Flags: 6
 #19 (id=1079597) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 128 | Scaled Value: 128 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #20 (id=1079598) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -3272,7 +3272,7 @@ Effects          :
 #21 (id=1081540) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
+                   Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #23 (id=1089477) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14587,7 +14587,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1155842)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
                    Affected Spells (Label): Surge of Light (114255)
 #2 (id=1155843)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Misc Value 2: 3626 (Label) | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63092 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1280,7 +1280,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Allow Item Spell In PvP (13), Do Not Sheath (18), No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Suppress Weapon Procs (151), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
@@ -1400,8 +1400,8 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting Spells : Veteran of the Third War (48263 effect#2), Veteran of the Fourth War (319278 effect#2)
@@ -1504,7 +1504,7 @@ Family Flags     : 43, 58, 120
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.214 | Misc Value: 127 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.214 | PvP Coefficient: 1.15 | Misc Value: 127 | Target: Any Target (25)
 #2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
@@ -1919,8 +1919,8 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 1140
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
@@ -3244,11 +3244,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 109 | Scaled Value: 109 | Target: Self (1)
+                   Base Value: 121 | Scaled Value: 121 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 109 | Scaled Value: 109 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 121 | Scaled Value: 121 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3277,9 +3277,9 @@ Effects          :
                    Affected Spells: Veteran of the Third War (48263), Veteran of the Fourth War (319278)
                    Family Flags: 107
 #12 (id=260813)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 76 | Scaled Value: 76 | Target: Self (1)
+                   Base Value: 86 | Scaled Value: 86 | Target: Self (1)
 #13 (id=752802)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 76 | Scaled Value: 76 | Target: Self (1)
+                   Base Value: 86 | Scaled Value: 86 | Target: Self (1)
 #14 (id=844542)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 48.2 | Scaled Value: 48.2 | Target: Self (1)
                    Affected Spells: Death and Decay (52212), Defile (156000), Death's Due (341340), Desecrate (1232346)
@@ -4191,7 +4191,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Can Proc From Procs (122)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+                   Base Value: 126 | Scaled Value: 126 | Target: Self (1)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
@@ -4986,7 +4986,7 @@ Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not L
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=306238)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 115 | Scaled Value: 115 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 115 | Scaled Value: 115 | PvP Coefficient: 0.25 | Misc Value: 15 | Target: Self (1)
 Description      : When Frost Strike damages an enemy with $51714u stacks of Razorice it will consume them to deal an additional $s1% damage.
 
 Name             : Murderous Efficiency (id=207061) [Spell Family (15), Passive] 
@@ -8678,7 +8678,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Triggered By     : Rune of Sanguination (326801), Rune of Sanguination (333114)
 Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -8758,8 +8758,8 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Rune of Spellwarding (326864), Rune of Spellwarding (333115)
@@ -8785,7 +8785,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
@@ -8803,7 +8803,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 1140
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
@@ -8827,7 +8827,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Rune of Hysteria (326913), Rune of Hysteria (333113)
@@ -8866,7 +8866,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
                  : 1140
 Proc Chance      : 101%
 Proc Flags       : Killing Blow
@@ -8886,9 +8886,9 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
-                 : 963: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
+                 : 963: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Unending Thirst (326982)
@@ -8951,7 +8951,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
@@ -8971,8 +8971,8 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Periodic Can Crit (265), Allow Class Ability Procs (416)
@@ -8993,7 +8993,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
@@ -9013,9 +9013,9 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1)
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
-                 : 963: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3)
+                 : 961: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
+                 : 963: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Allow Class Ability Procs (416)
@@ -9159,7 +9159,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 630
-                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
+                 : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell

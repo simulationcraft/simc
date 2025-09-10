@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63092 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -229659,9 +229659,9 @@ Triggered By     : Befouled Blood (442268), Befouling Strike (442280)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1137201)  : Apply Aura (6) | Proc Trigger Spell (42): Befouled Blood | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 41064.96 (coefficient=16.05504) | Trigger Spell: 442268 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41064.96 (coefficient=16.05504) | PvP Coefficient: 0.5 | Trigger Spell: 442268 | Target: Self (1)
 #2 (id=1137339)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 102662 (coefficient=40.13746) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 102662 (coefficient=40.13746) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your melee attacks and abilities have a chance to befoul the blood of your enemy dealing ${$<rolemult>*($s1*($442268d/$442268t))} Nature damage over $442268d. Additional injections overlap.
 
 If a target dies while afflicted with your Befouled Blood, siphon the remaining poison back into the blade granting your next melee abilities ${$<rolemult>*$s2} additional Nature damage.
@@ -232962,7 +232962,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142170)  : Unknown(301)
@@ -233198,7 +233198,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142189)  : Unknown(301)
@@ -233357,7 +233357,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142204)  : Unknown(301)
@@ -233592,7 +233592,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142232)  : Unknown(301)
@@ -233691,7 +233691,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142238)  : Unknown(301)
@@ -235367,6 +235367,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235387,6 +235388,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235407,6 +235409,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235462,6 +235465,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235480,6 +235484,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235498,6 +235503,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235649,7 +235655,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
 Attributes       : Passive (6)
 Effects          :
@@ -235701,7 +235707,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
@@ -235728,7 +235734,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
@@ -235755,7 +235761,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -235774,7 +235780,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -235793,7 +235799,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -235811,7 +235817,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -235827,7 +235833,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -235854,7 +235860,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Council's Guile (449088)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -235875,7 +235881,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -235894,7 +235900,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -235912,7 +235918,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -235928,7 +235934,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -235955,7 +235961,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -235974,7 +235980,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -235992,7 +235998,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236021,7 +236027,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236040,7 +236046,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236058,7 +236064,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236075,7 +236081,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236093,7 +236099,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236122,7 +236128,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236141,7 +236147,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236160,7 +236166,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236251,6 +236257,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236269,6 +236276,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236287,6 +236295,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236350,6 +236359,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236367,6 +236377,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236384,6 +236395,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -238290,6 +238302,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
+Labels           : 3425
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152654)  : Unknown(54)
@@ -264953,7 +264966,7 @@ Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
 Category Cooldown: 20 seconds
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268)
+Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=1225827)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
@@ -266658,7 +266671,7 @@ Labels           : 4968
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1228718)  : Apply Aura (6) | Grant Talent (224)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 133487 | Misc Value 2: 0x1a648 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 133487 | Misc Value 2: 0x1a648 | Target: Self (1)
 #2 (id=1229042)  : Apply Aura (6) | Grant Talent (224)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 132266 | Misc Value 2: 0x1a33d | Target: Self (1)
 Description      : Grants $s1 additional |4rank:ranks; of $@spellname1241854.
@@ -269332,6 +269345,46 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.
 
+Name             : Attuned to the Aether (id=1242344) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268)
+Effects          :
+#1 (id=1241805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8) | Scaling Class: -8
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Misc Value: 8 | Misc Value 2: 3409 (Label) | Target: Self (1)
+                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449022), Authority of Storms (449023), Authority of Storms (449024), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Council's Guile (449088), Keen Prowess (449091), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stormrider's Fury (449099), Storm's Fury (449100), Artisanal Flourish (449108), Stonebound Artistry (449111), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Forged Tenacity (449115), Oathsworn's Tenacity (449116), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
+#2 (id=1273011)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
+#3 (id=1273027)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
+                   Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Spellwarding (326867), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984), Pestilence (327093), War (327096), Rune of Hysteria (333113)
+#4 (id=1273028)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rune of Unending Thirst (326984), War (327096)
+#5 (id=1273029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.
+Tooltip          : Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.
+
+Name             : Attuned to the Aether (id=1242345) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268)
+Effects          :
+#1 (id=1241806)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Target: Self (1)
+#2 (id=1273069)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
+Description      : $@spelldesc1242344
+
 Name             : Soulgorged Augmentation (id=1242347) 
 School           : Physical
 Spell Type       : None
@@ -270511,64 +270564,70 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Infinite Power (id=1250717) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254924)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Critical Strike
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Critical Strike
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Critical Strike
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Critical Strike
 
 Name             : Infinite Power (id=1250750) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254982)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Mastery
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Mastery
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Mastery
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Mastery
 
 Name             : Infinite Power (id=1250751) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254983)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Haste
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][22][23][24][25]% Haste
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Haste
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Haste
 
 Name             : Infinite Power (id=1250753) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254985)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Critical Strike
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Critical Strike
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Critical Strike
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Critical Strike
 
 Name             : Infinite Power (id=1250757) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254989)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Mastery
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Mastery
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Mastery
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Mastery
 
 Name             : Infinite Power (id=1250760) [Passive] 
+Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254992)  : Dummy (3) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Haste
-Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][11][12][12]% Haste
+Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Haste
+Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Haste
 
 Name             : Add Keystone Affix: Dusk of the Infinite (id=1250864) 
 School           : Physical
@@ -271012,16 +271071,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Friendly (21)
 Description      : Increases attack and casting speed by $s1% for $d.
 Tooltip          : Attack and casting speed increased by $s1%.
-
-Name             : Infinite Power (id=1257586) [Passive] 
-School           : Physical
-Spell Type       : None
-Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=1265546)  : Dummy (3) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 3828.97 (coefficient=1) | Target: Self (1)
-Description      : $@switch<${($gte($s1,7419))+1}>[][+$@switch<${($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[1][2][3][4][5][6][6][6][6]% Versatility]
-Tooltip          : $@switch<${($gte($s1,7419))+1}>[][+$@switch<${($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[1][2][3][4][5][6][6][6][6]% Versatility]
 
 Name             : Conqueror's Astral Varnish (id=1257668) 
 School           : Arcane
