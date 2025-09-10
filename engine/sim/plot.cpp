@@ -5,6 +5,7 @@
 
 #include "plot.hpp"
 
+#include "dbc/dbc.hpp"
 #include "player/player.hpp"
 #include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
@@ -25,7 +26,7 @@
 
 plot_t::plot_t( sim_t* s )
   : sim( s ),
-    dps_plot_step( 160.0 ),
+    dps_plot_step( -1 ),
     dps_plot_points( 20 ),
     dps_plot_iterations( -1 ),
     dps_plot_target_error( 0 ),
@@ -35,32 +36,39 @@ plot_t::plot_t( sim_t* s )
     remaining_plot_stats( 0 ),
     remaining_plot_points( 0 ),
     dps_plot_positive( false ),
-    dps_plot_negative( false )
+    dps_plot_negative( false ),
+    dps_plot_display_delta( false )
 {
   create_options();
 }
 
-/// Will stat be plotted?
-bool plot_t::is_plot_stat( stat_e stat ) const
+void plot_t::initialize()
 {
-  // check if stat is in plot stat option
-  if ( !dps_plot_stat_str.empty() )
+  // set default step to 0.5% worth of rating. use haste if multiple stats are plotted, otherwise use the plotted stat
+  if ( dps_plot_step == -1 )
   {
-    auto stat_list = util::string_split<util::string_view>( dps_plot_stat_str, ",:;/|" );
+    auto rating = RATING_MELEE_HASTE;
+    if ( dps_plot_stats.size() == 1 )
+      rating = util::stat_to_rating( dps_plot_stats.begin()->first );
 
-    if ( !range::any_of( stat_list, [ stat ]( util::string_view s ) {
-           return stat == util::parse_stat_type( s );
-         } ) )
-    {
-      // not found
-      return false;
-    }
+    if ( rating == RATING_MAX )
+      rating = RATING_MELEE_HASTE;
+
+    dps_plot_step = util::round( sim->dbc->combat_rating( rating, sim->max_player_level ) * 0.005 );
   }
 
-  // also check if any player scales with that stat
-  return range::any_of( sim->player_no_pet_list, [ stat ]( player_t* p ) {
-    return !p->quiet && p->scaling->scales_with[ stat ];
-  } );
+  // prune out stats no players scale with
+  for ( auto it = dps_plot_stats.begin(); it != dps_plot_stats.end(); )
+  {
+    auto valid = range::any_of( sim->player_no_pet_list, [ stat = it->first ]( player_t* p ) {
+      return !p->quiet && p->scaling->scales_with[ stat ];
+    } );
+
+    if ( valid )
+      it++;
+    else
+      it = dps_plot_stats.erase( it );
+  }
 }
 
 /// execute plotting
@@ -69,7 +77,7 @@ void plot_t::analyze()
   if ( sim->is_canceled() )
     return;
 
-  if ( dps_plot_stat_str.empty() )
+  if ( dps_plot_stats.empty() )
     return;
 
   analyze_stats();
@@ -81,7 +89,7 @@ void plot_t::analyze()
 
 double plot_t::progress( std::string& phase, std::string* detailed )
 {
-  if ( dps_plot_stat_str.empty() )
+  if ( dps_plot_stats.empty() )
     return 1.0;
 
   if ( num_plot_stats <= 0 )
@@ -112,25 +120,16 @@ double plot_t::progress( std::string& phase, std::string* detailed )
 
 void plot_t::analyze_stats()
 {
-  if ( dps_plot_stat_str.empty() )
-    return;
-
   if ( sim->players_by_name.empty() )
     return;
 
-  remaining_plot_stats = 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-    if ( is_plot_stat( i ) )
-      remaining_plot_stats++;
+  remaining_plot_stats = as<int>( dps_plot_stats.size() );
   num_plot_stats = remaining_plot_stats;
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( auto [ i, starting_amount ] : dps_plot_stats )
   {
     if ( sim->is_canceled() )
       break;
-
-    if ( !is_plot_stat( i ) )
-      continue;
 
     current_plot_stat = i;
 
@@ -155,6 +154,12 @@ void plot_t::analyze_stats()
       end = -start;
     }
 
+    // redo the 0-sim if we need to override the initial rating
+    bool redo_zero = starting_amount >= 0;
+
+    if ( redo_zero )
+      remaining_plot_points++;
+
     for ( int j = start; j <= end; j++ )
     {
       if ( sim->is_canceled() )
@@ -162,16 +167,15 @@ void plot_t::analyze_stats()
 
       std::unique_ptr<sim_t> delta_sim;
 
-      if ( j != 0 )
+      if ( j != 0 || redo_zero )
       {
         delta_sim = std::make_unique<sim_t>( sim );
         if ( dps_plot_iterations > 0 )
-        {
           delta_sim->work_queue->init( dps_plot_iterations );
-        }
+
         if ( dps_plot_target_error > 0 )
           delta_sim->target_error = dps_plot_target_error;
-        // delta_sim->enchant.add_stat( i, j * dps_plot_step );
+
         delta_sim->scaling->scale_stat = i;
         delta_sim->scaling->scale_value = j * dps_plot_step;
         delta_sim->progress_bar.set_base( util::to_string( j * dps_plot_step ) + " " + util::stat_type_abbrev( i ) );
@@ -182,6 +186,10 @@ void plot_t::analyze_stats()
           report::print_text( delta_sim.get(), true );
         }
       }
+
+      // discard baseline result if we need to redo the 0-sim
+      if ( j == 0 && redo_zero && !delta_sim )
+        continue;
 
       for ( player_t* p : sim->players_by_name )
       {
@@ -206,13 +214,21 @@ void plot_t::analyze_stats()
           data.error = scaling_data.stddev * sim->confidence_estimator;
         }
         data.plot_step = j * dps_plot_step;
+
+        if ( dps_plot_display_delta )
+        {
+          plot_data_t delta;
+          delta.value = p->dps_plot_data[ i ].empty() ? 0.0 : data.value - p->dps_plot_data[ i ].back().value;
+          delta.error = data.error;
+          delta.plot_step = data.plot_step;
+          p->dps_plot_delta_data[ i ].push_back( delta );
+        }
+
         p->dps_plot_data[ i ].push_back( data );
       }
 
       if ( delta_sim )
-      {
         remaining_plot_points--;
-      }
     }
 
     remaining_plot_stats--;
@@ -222,9 +238,7 @@ void plot_t::analyze_stats()
 void plot_t::write_output_file()
 {
   if ( sim->reforge_plot_output_file_str.empty() )
-  {
     return;
-  }
 
   io::ofstream out;
   out.open( sim->reforge_plot_output_file_str );
@@ -241,20 +255,44 @@ void plot_t::write_output_file()
 
     out << player->name_str << " Plot Results:\n";
 
-    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( const auto& [ j, plot_data_list ] : player->dps_plot_data )
     {
-      if ( !is_plot_stat( j ) )
-        continue;
-
       out << util::stat_type_string( j ) << ", DPS, DPS-Error\n";
 
-      for ( const plot_data_t& p_data : player->dps_plot_data[ j ] )
-      {
+      for ( const auto& p_data : plot_data_list )
         out << p_data.plot_step << ", " << p_data.value << ", " << p_data.error << "\n";
-      }
+
       out << "\n";
     }
   }
+}
+
+bool parse_plot_string( sim_t* sim, std::string_view, std::string_view value )
+{
+  auto split = util::string_split<std::string_view>( value, ",;/|" );
+
+  for ( auto stat_str : split )
+  {
+    auto stat_split = util::string_split<std::string_view>( stat_str, ":" );
+
+    auto stat = util::parse_stat_type( stat_split[ 0 ] );
+    if ( stat == STAT_NONE )
+      throw std::invalid_argument( "Invalid stat for DPS plot." );
+
+    double starting_amount = -1;
+    if ( stat_split.size() > 1 )
+    {
+      auto amount = util::to_double( stat_split[ 1 ] );
+      if ( amount < 0 )
+        throw std::invalid_argument( "Invalid stat starting amount for DPS plot." );
+
+      starting_amount = amount;
+    }
+
+    sim->plot->dps_plot_stats[ stat ] = starting_amount;
+  }
+
+  return true;
 }
 
 // plot_t::create_options ===================================================
@@ -264,9 +302,10 @@ void plot_t::create_options()
   sim->add_option( opt_int( "dps_plot_iterations", dps_plot_iterations ) );
   sim->add_option( opt_float( "dps_plot_target_error", dps_plot_target_error ) );
   sim->add_option( opt_int( "dps_plot_points", dps_plot_points ) );
-  sim->add_option( opt_string( "dps_plot_stat", dps_plot_stat_str ) );
+  sim->add_option( opt_func( "dps_plot_stat", parse_plot_string ) );
   sim->add_option( opt_float( "dps_plot_step", dps_plot_step ) );
   sim->add_option( opt_bool( "dps_plot_debug", dps_plot_debug ) );
   sim->add_option( opt_bool( "dps_plot_positive", dps_plot_positive ) );
   sim->add_option( opt_bool( "dps_plot_negative", dps_plot_negative ) );
+  sim->add_option( opt_bool( "dps_plot_display_delta", dps_plot_display_delta ) );
 }

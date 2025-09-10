@@ -876,6 +876,7 @@ const help_box_t help_boxes[] = {
   { "Stats Raid Buffed",
     "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included." },
   { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers." },
+  { "Total Time", "Time spent on executing the ability. Includes cast times, gcd times, and channel times." },
   { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component "
              "will have zero ticks." },
   { "Ticks Crit", "Average crit tick damage." },
@@ -1116,7 +1117,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
          << "<table class=\"sc even\">\n"
          << "<thead>\n"
          << "<tr>\n"
-         << "<th>Tag</th>\n"
+         << "<th>Tag / ID</th>\n"
          << "<th class=\"left\">Spell / Effect</th>\n"
          << "<th class=\"left\">Field</th>\n"
          << "<th class=\"left\">Hotfixed Value</th>\n"
@@ -1136,9 +1137,8 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     }
     if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr>\n"
-         << "<td></td>\n";
       const spelleffect_data_t* effect = sim.dbc->effect( e->id_ );
+      os.format( "<tr><td>{}</td>", effect->id() );
 
       std::string name = report_decorators::decorated_spell_name( sim, *effect->spell() );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
@@ -1146,9 +1146,9 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     }
     else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr>\n"
-         << "<td></td>\n";
       const spell_data_t* spell = sim.dbc->spell( e->id_ );
+      os.format( "<tr><td>{}</td>", spell->id() );
+
       std::string name          = report_decorators::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
     }

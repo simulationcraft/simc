@@ -578,6 +578,12 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
     bottom: 0.8em;
     border-bottom-color: inherit;
 }
+table.sc tr.details td.details {
+    padding: 0;
+    text-align: left;
+    background-color: #333;
+    font-size: 11px;
+}
 table.sc tr.details td {
     padding: 5px 15px 15px 15px;
     text-align: left;

@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62801 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.63003 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -15,7 +15,7 @@ Cooldown         : 7.5 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Stance Mask      : 0x88000000
 Mechanic         : Shield
 Affecting Spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #19, #22), Shadow Priest (137033 effects: #19, #28), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Weal and Woe (390787 effect#2), Benevolence (415416 effect#3), Premonition of Piety (428930 effect#5), Preventive Measures (440662 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2), Holy Priest (1238052 effect#3)
@@ -43,7 +43,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Stance Mask      : 0x88000000
 Affecting Spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #14, #25, #26), Discipline Priest (137032 effects: #1, #2, #17, #18), Shadow Priest (137033 effect#26), Apotheosis (200183 effects: #3, #4), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3), Prismatic Echoes (390967 effect#2), Twist of Fate (390978 effects: #1, #2), Empowered Renew (391339 effect#3), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Preemptive Care (440671 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
 Family Flags     : 6, 126
@@ -312,7 +312,7 @@ Category         : 1673 (Type 0x1): Miracle Worker (235587 effect#1), Holy Celer
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1116
 Stance Mask      : 0x80000000
 Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4, #6), Light of T'uure (208065 effect#1), Al'maiesh, the Cord of Hope (211440 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Divine Conversation (363727 effect#3), Divine Word (372760 effect#1), Twist of Fate (390978 effects: #1, #2), Inspired Word (409479 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Sacred Reverence (423510 effect#2), Premonition of Piety (428930 effects: #1, #2), Prophet's Will (433905 effect#1), Resonant Energy (453846 effects: #1, #2), Light in the Darkness (471668 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
@@ -339,7 +339,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 954
 Stance Mask      : 0x80000000
 Affecting Spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Complete Healing (184914 effect#1), Apotheosis (200183 effects: #2, #3, #4, #5), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Temporal Shift (225770 effect#2), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Promise of Deliverance (287340 effect#1), Flash Concentration (336267 effects: #1, #2), Divine Conversation (363727 effect#2), Resonant Words (372313 effect#1), Divine Favor: Serenity (372791 effects: #1, #3), Unwavering Will (373456 effect#1), Crisis Management (390954 effect#1), Twist of Fate (390978 effects: #1, #2), Lightweaver (390993 effects: #1, #2), Prayer Focus (394729 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Prophet's Will (433905 effect#1), Waste No Time (440683 effects: #1, #2), Resonant Energy (453846 effect#1), Divinity (1216314 effects: #1, #2), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
@@ -348,7 +348,8 @@ Family Flags     : 12, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | PvP Coefficient: 1.188 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 9.72861 | PvP Coefficient: 1.057 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (8.68626 -> 9.72861), PvP Coefficient (1.188 -> 1.057)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -366,7 +367,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 889
                  : 954
@@ -698,7 +699,7 @@ Category         : 671 (Type 0x0): Angel's Mercy (238100 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 930
                  : 1284: Symbol of Hope (265144 effect#2)
 Category Cooldown: 90 seconds
@@ -1346,7 +1347,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -1447,7 +1448,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Family Flags     : 59
 Attributes       : Ignore Line of Sight (66), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Spellbook (143), Ignore Healing Modifiers (219)
 Effects          :
@@ -1994,11 +1995,13 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.3945 | Target: Self (1)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.57 | Target: Self (1)
+Hotfixed         : Base Value (28 -> 33), PvP Coefficient (1.3945 -> 1.57)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1104540)  : Dummy (3)
-                   Base Value: 125 | Scaled Value: 125
+                   Base Value: 100 | Scaled Value: 100
+Hotfixed         : Base Value (125 -> 100)
 Description      : Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
@@ -3158,8 +3161,9 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | Misc Value 2: 2931 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (110745)
 #24 (id=1104020) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value 2: 2932 (Label) | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Misc Value 2: 2932 (Label) | Target: Self (1)
                    Affected Spells (Label): Halo (120692)
+Hotfixed         : Base Value (5 -> 47)
 #25 (id=1123085) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608)
@@ -3264,17 +3268,19 @@ Effects          :
                    Affected Spells: Renew (139)
                    Family Flags: 6
 #19 (id=1079597) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 128 | Scaled Value: 128 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+Hotfixed         : Base Value (90 -> 128)
 #20 (id=1079598) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #21 (id=1081540) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
+                   Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+Hotfixed         : Base Value (-9 -> -24)
 #23 (id=1089477) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
@@ -11887,7 +11893,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
 Triggered By     : Dark Reprimand (400171)
 Family Flags     : 48, 126
@@ -14585,8 +14591,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1155842)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 33 | Misc Value 2: 3625 (Label) | Target: Self (1)
                    Affected Spells (Label): Surge of Light (114255)
+Hotfixed         : Base Value (30 -> 45)
 #2 (id=1155843)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Misc Value 2: 3626 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Flay: Insanity (391403)
@@ -15746,7 +15753,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -15799,7 +15806,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
 Affecting Spells : Renew (139 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #1, #2, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Twist of Fate (265258 effects: #1, #2), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Inner Focus (390693 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Resonant Energy (453846 effect#1), Bankroll (1216601 effects: #1, #2), Holy Priest (1238052 effects: #1, #2)
 Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)

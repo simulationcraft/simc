@@ -57,6 +57,7 @@
 #include "sim/cooldown_waste_data.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
+#include "sim/plot.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
 #include "sim/scale_factor_control.hpp"
@@ -1659,15 +1660,21 @@ void player_t::init_initial_stats()
   initial.stats += passive;
 
   // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
-  // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +
-  // sim_t::enchant).
+  // the items for the actor gives or the overridden value from gear_x_rating player scoped option or dps plot stat
+  // initial value override (player_t::gear + player_t::enchant + sim_t::enchant).
   if ( !is_pet() && !is_enemy() )
   {
     gear_stats_t item_stats = range::accumulate( items, gear_stats_t{}, &item_t::total_stats );
 
     for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
     {
-      if ( gear.get_stat( stat ) < 0 )
+      double scale_override = -1;
+      if ( scale_player && sim->scaling->scale_stat == stat && sim->plot->dps_plot_stats.count( stat ) )
+        scale_override = sim->plot->dps_plot_stats.at( stat );
+
+      if ( scale_override >= 0 )
+        total_gear.add_stat( stat, scale_override );
+      else if ( gear.get_stat( stat ) < 0 )
         total_gear.add_stat( stat, item_stats.get_stat( stat ) );
       else
         total_gear.add_stat( stat, gear.get_stat( stat ) );
@@ -2788,16 +2795,26 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
+      bool throwaway = false;  // read bits but don't add to player_traits
 
-      // hero talents don't seem to require a matching id_spec_set
+      // hero talents and selection talents don't seem to require a matching id_spec_set
       // TODO: utilize logic in trait_data_t::is_granted() to check against id_spec_set of the subtree selection trait
       if ( _tree != talent_tree::HERO &&
            !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
-        do_error( fmt::format( "selected node {} entry {} is not available to player's spec.", id,
-                               trait->id_trait_node_entry ) );
-        return;
+        if ( _tree == talent_tree::SELECTION )
+        {
+          throwaway = true;
+          do_error( fmt::format( "hero tree selection node {} entry {} is not for the player's spec, ignoring.", id,
+                                 trait->id_trait_node_entry ) );
+        }
+        else
+        {
+          do_error( fmt::format( "selected node {} entry {} is not available to player's spec.", id,
+                                 trait->id_trait_node_entry ) );
+          return;
+        }
       }
 
       if ( !get_bit( 1 ) )  // purchased
@@ -2847,6 +2864,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
           trait = node[ index ].first;
         }
       }
+
+      if ( throwaway )
+        continue;
 
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
@@ -9738,6 +9758,7 @@ struct wait_action_base_t : public action_t
   void execute() override
   {
     player->iteration_waiting_time += time_to_execute;
+    total_executions++;
   }
 };
 
@@ -10731,6 +10752,7 @@ struct pool_resource_t : public action_t
       sim->out_log.printf( "%s performs %s", player->name(), name() );
 
     player->iteration_pooling_time += wait;
+    total_executions++;
   }
 
   timespan_t gcd() const override
@@ -13602,6 +13624,8 @@ void player_t::create_options()
                        thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
   add_option( opt_bool( "thewarwithin.brand_of_ceaseless_ire_force_full_uptime",
                         thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
+  add_option( opt_bool( "thewarwithin.attuned_to_the_aether",
+                        thewarwithin_opts.attuned_to_the_aether ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

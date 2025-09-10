@@ -2398,7 +2398,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
   raid_event_t* e = nullptr;
   // For all remaining expression, go through the list of matching raid events and look for the one happening first
-  if ( type_or_name == "adds" && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  if ( ( type_or_name == "adds" || type_or_name == "pull" ) && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     e = get_next_pull_event( up );
   else
     e = get_next_raid_event( matching_events );
@@ -2410,7 +2410,12 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   if ( filter == "in" )
   {
     if ( e->type == "pull" )
-      return ( up->remains() + e->cooldown.mean ).total_seconds();
+    {
+      if ( up == nullptr )
+        return timespan_t::max().total_seconds();
+      else
+        return ( up->remains() + e->cooldown.mean ).total_seconds();
+    }
     else if ( e->until_next() > 0_ms )
       return e->until_next().total_seconds();
     else

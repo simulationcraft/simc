@@ -31,7 +31,7 @@ level=80
 race=dwarf
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAYMbDMgJY2YLwsAAAAAAAAAAAAAAzYGzMzMzYGZGjhZGYYWWmZwMzMw2mZmZMLmZYmZmZZzYWGMA
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYMbDMgJY2YLwsAAAAAAAAAAAAAAzYGzMzMzYGZGjhZGYYWWmZwYmB22MzMjZxMDzMzMLLGzygZA
 
 head=midnight_heralds_cowl,id=237646,bonus_id=1808,ilevel=723,gem_id=213743
 neck=ornately_engraved_amplifier,id=185842,bonus_id=8781,ilevel=723,gem_id=213458/213491

@@ -417,7 +417,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<target_specific_cooldown_t*>> target_specific_cooldown_list;
   auto_dispose<std::vector<proc_rng_t*>> proc_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
-  std::array<std::vector<plot_data_t>, STAT_MAX> dps_plot_data;
+  std::unordered_map<stat_e, std::vector<plot_data_t>> dps_plot_data, dps_plot_delta_data;
   std::vector<std::vector<plot_data_t>> reforge_plot_data;
   auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
@@ -945,6 +945,8 @@ struct player_t : public actor_t
     // Proc Brand of Ceaseless Ire based on outgoing damage to emulate full uptime.
     // NOTE: This behavior is default for Dungeon Slice & Dungeon Route
     bool brand_of_ceaseless_ire_force_full_uptime = false;
+    // Activate Attuned to the Aether renown perk (50% weapon enchants, 10% dk runeforge)
+    bool attuned_to_the_aether = false;
   } thewarwithin_opts;
 
 private:

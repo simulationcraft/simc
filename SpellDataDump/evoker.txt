@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.62801 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.63003 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -430,7 +430,8 @@ Family Flags     : 0, 34
 Attributes       : DoT Stacking Rule (103), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=885733)   : Apply Aura (6) | Periodic Damage (3): firestorm every 0.5 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65715 | PvP Coefficient: 1.2 | Radius: 3 - 6 yards | Target: Unknown(78) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | Radius: 3 - 6 yards | Target: Unknown(78) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.65715 -> 2), PvP Coefficient (1.2 -> 1)
 Description      : $@spelldesc357210
 Tooltip          : Suffering $w1 Volcanic damage every $t1 sec.
 
@@ -1632,7 +1633,7 @@ Spell Level      : 4
 Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5, #13), Preservation Evoker (356810 effects: #1, #2, #10), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5, #11), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1)
@@ -1718,7 +1719,7 @@ Velocity         : 40 yards/sec
 Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1464: Fire Breath (357209 effect#5), Fire Breath (444249 effect#5)
 Stacks           : 3 maximum
@@ -2160,7 +2161,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1467
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2, #3), Time Lord (372527 effect#1), Timeless Magic (376240 effects: #1, #3), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Hover (393271 effect#1), Augmentation Evoker (396186 effects: #4, #5), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Temporal Burst (431698 effect#15), Melt Armor (441172 effect#2), Arcane Reach (454983 effect#1), Golden Opportunity (459878 effect#1), Inner Flame (1236776 effect#1)
@@ -2289,7 +2290,7 @@ Charges          : 2 (9 seconds cooldown)
 Category         : 2010 (Type 0x1): Preservation Evoker (356810 effect#8), Flow State (390148 effect#6), Temporal Burst (431698 effect#6), Temporal Cycle (1237269 effect#6)
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1467
 Stacks           : 1 maximum
@@ -2421,7 +2422,7 @@ Velocity         : 60 yards/sec
 Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2)
@@ -2443,7 +2444,7 @@ Spell Type       : None
 Range            : 40 yards
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1), Unshakable (1239581 effects: #1, #2)
@@ -3465,7 +3466,7 @@ Cooldown         : 180 seconds
 Labels           : 16: Class Spells
                  : 118
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Proc Chance      : 100%
@@ -3519,7 +3520,7 @@ Spell Type       : None
 Range            : 40 yards
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
 Attributes       : Do Not Sheath (18), Can't Crit (93), Allow While Stunned (163), Ignore Healing Modifiers (219), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
@@ -4149,7 +4150,7 @@ Max Targets      : 5
 Labels           : 16: Class Spells
                  : 292
                  : 630
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2, #13), Initial Evoker (356816 effects: #5, #6), Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2), Dream Catalyst (371258 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Essence Burst (392268 effects: #1, #4), Augmentation Evoker (396186 effects: #4, #5), Nourishing Sands (406043 effect#2), Dream of Spring (414969 effects: #1, #3, #5), Melt Armor (441172 effect#2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1)
@@ -4308,7 +4309,7 @@ GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1464: Fire Breath (357209 effect#5), Fire Breath (444249 effect#5)
 Affecting Spells : Preservation Evoker (356810 effect#13), Arcane Reach (454983 effect#1)
@@ -7363,9 +7364,10 @@ Effects          :
 #18 (id=1097343) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 22 | Misc Value 2: 2840 (Label) | Target: Self (1)
 #19 (id=1206693) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -36 | Scaled Value: -36 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Melt Armor (441172)
                    Family Flags: 34
+Hotfixed         : Base Value (-15 -> -36)
 #20 (id=1240511) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 5607 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Scalecommander 11.2 Class Set 2pc (1236366)
@@ -11083,6 +11085,7 @@ Increases the duration of your active Ebon Might effects by ${$395153s3/1000} se
 Tooltip          : Spewing molten cinders. Immune to crowd control.
 
 Name             : Bombardments (desc=Black) (id=434300) [Spell Family (224), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Scalecommander (Devastation) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -11100,7 +11103,7 @@ Effects          :
 Description      : $?c1[Mass Disintegrate][Mass Eruption] marks your primary target for destruction for the next $434473d.
 
 You and your allies have a chance to trigger a Bombardment when attacking marked targets, dealing $<dmg> Volcanic damage split amongst all nearby enemies.
-Variables        : $dmg=${$INT*3.8*(1+$@versadmg)*$pctD}
+Variables        : $dmg=${$INT*4.75*(1+$@versadmg)*$pctD}
 
 Name             : Bombardments (id=434473) [Spell Family (224)] 
 Class            : Evoker
@@ -11136,7 +11139,8 @@ Family Flags     : 78
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1124499)  : School Damage (2): firestorm
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (3.8 -> 4.75)
 Description      : $@spelldesc434300
 
 Name             : Warp (desc=Bronze) (id=436036) 
@@ -11828,7 +11832,7 @@ Range            : 25 yards
 Velocity         : 80 yards/sec
 Labels           : 16: Class Spells
                  : 292
-                 : 741
+                 : 741: Healing Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
                  : 1464: Fire Breath (357209 effect#5), Fire Breath (444249 effect#5)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2, #13), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Red Hot (444081 effect#1), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1)
@@ -13232,7 +13236,8 @@ Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While 
 Channel Interrupt: Moving (3)
 Effects          :
 #1 (id=1233383)  : Apply Aura (6) | Periodic Damage (3): spellfrost every 0.5 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.041 | PvP Coefficient: 0.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15 | PvP Coefficient: 0.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.041 -> 1.15)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 

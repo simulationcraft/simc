@@ -65,6 +65,8 @@ public:
   {
     return *debug_cast<demon_hunter_t*>( source );
   }
+
+  void target_demise();
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
@@ -831,6 +833,7 @@ public:
     proc_t* soul_fragment_lesser;
     proc_t* felblade_reset;
     proc_t* soul_fragment_from_soul_sigils;
+    proc_t* soul_fragment_from_shattered_souls;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -949,8 +952,9 @@ public:
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
-    double felblade_lockout_from_vengeful_retreat = 0.6;
-    bool enable_dungeon_slice                     = false;
+    double felblade_lockout_from_vengeful_retreat    = 0.6;
+    bool enable_dungeon_slice                        = false;
+    double soul_fragment_from_shattered_souls_chance = 0.4;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -7802,6 +7806,25 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive =
       make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+}
+
+// Spawn soul fragments from shattered souls proc using chance from sim options,
+// TODO: only spawn for actors killing blows for non-single actor batch
+
+void demon_hunter_td_t::target_demise()
+{
+  if ( !( target->is_enemy() ) )
+    return;
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source->sim->event_mgr.canceled )
+    return;
+  if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
+  {
+    dh().spawn_soul_fragment( soul_fragment::GREATER );
+    dh().proc.soul_fragment_from_shattered_souls->occur();
+  }
 }
 
 // ==========================================================================
@@ -8391,6 +8414,8 @@ void demon_hunter_t::create_options()
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
+  add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
+                         0.0, 1.0 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8494,13 +8519,14 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range               = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser           = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset                 = get_proc( "felblade_reset" );
-  proc.soul_fragment_from_soul_sigils = get_proc( "soul_fragment_from_soul_sigils" );
+  proc.delayed_aa_range                   = get_proc( "delayed_aa_out_of_range" );
+  proc.soul_fragment_greater              = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon        = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon      = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser               = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset                     = get_proc( "felblade_reset" );
+  proc.soul_fragment_from_soul_sigils     = get_proc( "soul_fragment_from_soul_sigils" );
+  proc.soul_fragment_from_shattered_souls = get_proc( "soul_fragment_from_shattered_souls" );
 
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );

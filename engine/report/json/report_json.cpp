@@ -1131,15 +1131,12 @@ void dps_plot_json( const ::report::json::report_configuration_t& /* report_conf
     obj[ "name" ] = player->name();
     auto data_obj = obj[ "data" ].make_array();
 
-    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
+    for ( const auto& [ j, plot_data ] : player->dps_plot_data )
     {
-      if ( !dps_plot.is_plot_stat( j ) )
-        continue;
-
       auto&& dobj = data_obj.add();
       auto stat_obj = dobj[ util::stat_type_abbrev( j ) ].make_array();
 
-      for ( const auto& data : player->dps_plot_data[ j ] )
+      for ( const auto& data : plot_data )
       {
         auto&& sobj = stat_obj.add();
         sobj[ "rating" ] = data.plot_step;
@@ -1284,7 +1281,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
     profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
   }
 
-  if ( !sim.plot->dps_plot_stat_str.empty() )
+  if ( !sim.plot->dps_plot_stats.empty() )
   {
     auto dps_plot_root = root[ "dps_plot" ].make_array();
     dps_plot_json( report_configuration, *sim.plot, sim, dps_plot_root );

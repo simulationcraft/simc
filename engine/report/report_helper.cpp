@@ -10,14 +10,15 @@
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
-#include "player/covenant.hpp"
-#include "report/gear_weights.hpp"
+#include "player/stats.hpp"
 #include "report/charts.hpp"
+#include "report/gear_weights.hpp"
 #include "report/highchart.hpp"
-#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/sim.hpp"
 #include "util/xml.hpp"
 
 // ==========================================================================
@@ -770,4 +771,14 @@ void report_helper::print_distribution_chart( report::sc_html_stream& os,    // 
 
     p.sim->add_chart_data( chart );
   }
+}
+
+void report_helper::collect_aps( const stats_t* stats, double& amount, double& amount_pct )
+{
+  amount += stats->portion_apse.mean();
+  amount_pct += stats->portion_amount;
+
+  for ( const auto& s : stats->children )
+    if ( stats->type == s->type )
+      collect_aps( s, amount, amount_pct );
 }

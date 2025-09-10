@@ -875,6 +875,25 @@ bool parse_maximize_reporting( sim_t*             sim,
   return true;
 }
 
+bool parse_report_merged_stats( sim_t* sim, std::string_view, std::string_view value )
+{
+  static constexpr std::string_view valid_stats[] = { "dps", "dpspct", "count", "critpct" };
+
+  auto splits = util::string_split<std::string_view>( value, ",:/|" );
+  for ( auto str : splits )
+  {
+    if ( !range::contains( valid_stats, str ) )
+    {
+      throw std::invalid_argument(
+        fmt::format( "Invalid report_merged_stats '{}', valid stats are: {}.", str, fmt::join( valid_stats, "," ) ) );
+    }
+  }
+
+  sim->report_merged_stats = util::string_join( splits, "," );
+
+  return true;
+}
+
 /**
  * Parse threads option, and if equal or lower than 0, adjust
  * the number of threads to the number of cpu cores minus the absolute value given as a thread option.
@@ -1529,6 +1548,8 @@ sim_t::sim_t()
     report_targets( 1 ),
     report_details( 1 ),
     report_raw_abilities( 1 ),
+    report_merged_stats( "dps,dpspct" ),
+    full_damage_sources_chart( false ),
     report_rng( 0 ),
     hosted_html( 0 ),
     save_raid_summary( 0 ),
@@ -2950,11 +2971,12 @@ void sim_t::init()
     }
   }
 
-  // If save= option is used, don't bother initializing profilesets as the main thread is going to
+  // If save= option is used, don't bother initializing profilesets or plots as the main thread is going to
   // exit in any case
   if ( active_player && active_player->report_information.save_str.empty() )
   {
     profilesets->initialize( this );
+    plot->initialize();
   }
 
   initialized = true;
@@ -2981,13 +3003,10 @@ void sim_t::analyze()
   raid_dps.analyze();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
-    buff_list[ i ] -> analyze();
+    buff_list[ i ]->analyze();
 
-  if ( scaling -> scale_stat == STAT_NONE &&
-       scaling -> calculate_scale_factors == 0 &&
-       plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.empty() && ! profileset_enabled )
+  if ( scaling->scale_stat == STAT_NONE && scaling->calculate_scale_factors == 0 && plot->dps_plot_stats.empty() &&
+       reforge_plot->reforge_plot_stat_str.empty() && profileset_map.empty() && !profileset_enabled )
   {
     fmt::print( "Analyzing actor data ...\n" );
     std::fflush( stdout );
@@ -3174,11 +3193,8 @@ void sim_t::merge( sim_t& other_sim )
   auto_lock_t auto_lock( merge_mutex );
   const auto start_time = chrono::wall_clock::now();
 
-  if ( scaling -> scale_stat == STAT_NONE &&
-       scaling -> calculate_scale_factors == 0 &&
-       plot -> dps_plot_stat_str.empty() &&
-       reforge_plot -> reforge_plot_stat_str.empty() &&
-       profileset_map.empty() && ! profileset_enabled )
+  if ( scaling->scale_stat == STAT_NONE && scaling->calculate_scale_factors == 0 && plot->dps_plot_stats.empty() &&
+       reforge_plot->reforge_plot_stat_str.empty() && profileset_map.empty() && !profileset_enabled )
   {
     fmt::print( "Merging data from thread-{} ...\n", other_sim.thread_index );
     std::fflush( stdout );
@@ -3867,6 +3883,8 @@ void sim_t::create_options()
   add_option( opt_bool( "report_targets", report_targets ) );
   add_option( opt_bool( "report_details", report_details ) );
   add_option( opt_bool( "report_raw_abilities", report_raw_abilities ) );
+  add_option( opt_func( "report_merged_stats", parse_report_merged_stats) );
+  add_option( opt_bool( "full_damage_sources_chart", full_damage_sources_chart ) );
   add_option( opt_bool( "report_rng", report_rng ) );
   add_option( opt_int( "statistics_level", statistics_level ) );
   add_option( opt_bool( "separate_stats_by_actions", separate_stats_by_actions ) );
@@ -4276,7 +4294,7 @@ void sim_t::setup( sim_control_t* c )
 
     if ( target_error <= 0 )
     {
-      if ( scaling -> calculate_scale_factors )
+      if ( scaling->calculate_scale_factors )
       {
         target_error = 0.05;
       }
@@ -4285,27 +4303,27 @@ void sim_t::setup( sim_control_t* c )
         target_error = 0.2;
       }
     }
-    if ( plot -> dps_plot_iterations <= 0 )
+    if ( plot->dps_plot_iterations <= 0 )
     {
-      if ( plot -> dps_plot_target_error <= 0 )
+      if ( plot->dps_plot_target_error <= 0 )
       {
-        plot -> dps_plot_target_error = 0.5;
+        plot->dps_plot_target_error = target_error;
       }
     }
-    if ( reforge_plot -> reforge_plot_iterations <= 0 )
+    if ( reforge_plot->reforge_plot_iterations <= 0 )
     {
-      if ( reforge_plot -> reforge_plot_target_error <= 0 )
+      if ( reforge_plot->reforge_plot_target_error <= 0 )
       {
-        reforge_plot -> reforge_plot_target_error = 0.5;
+        reforge_plot->reforge_plot_target_error = target_error;
       }
     }
   }
 
   if ( single_actor_batch )
   {
-    work_queue -> batches( player_no_pet_list.size() );
+    work_queue->batches( player_no_pet_list.size() );
   }
-  work_queue -> init( iterations );
+  work_queue->init( iterations );
   if ( thread_index == 0 )
   {
     work_per_thread.resize( threads );

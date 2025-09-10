@@ -3138,7 +3138,7 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
   for ( const auto& fb : p->fallback_buff_names )
-    if ( fb.first == name && fb.second == source )
+    if ( fb.first == name && ( !source || fb.second == source ) )
       return p->sim->auras.fallback;
 
   return find( p->buff_list, name, source );

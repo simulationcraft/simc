@@ -111,7 +111,7 @@ void assassination( player_t* p )
   cds->add_action( "variable,name=deathmark_condition,value=dot.rupture.ticking&(variable.deathmark_kingsbane_condition|spell_targets.fan_of_knives>1&buff.slice_and_dice.remains>5|!talent.kingsbane&dot.crimson_tempest.ticking)&!debuff.deathmark.up", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
   cds->add_action( "call_action_list,name=items", "Usages for various special-case Trinkets and other Cantrips if applicable" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking", "Invoke Externals to Deathmark" );
-  cds->add_action( "call_action_list,name=shiv,if=!buff.darkest_night.up", "Check for Applicable Shiv usage" );
+  cds->add_action( "call_action_list,name=shiv,if=!buff.darkest_night.up&(!buff.deathstalkers_mark_buff.up|!variable.single_target)", "Check for Applicable Shiv usage" );
   cds->add_action( "deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)|fight_remains<=20", "Cast Deathmark if the target will survive long enough" );
   cds->add_action( "kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&(buff.envenom.up|spell_targets.fan_of_knives>1)&(cooldown.deathmark.remains>=50-15*(set_bonus.tww3_fatebound_4pc)|dot.deathmark.ticking)|fight_remains<=15" );
   cds->add_action( "thistle_tea,if=hero_tree.deathstalker&(!buff.thistle_tea.up&debuff.shiv.remains>=6|!buff.thistle_tea.up&dot.kingsbane.ticking&dot.kingsbane.remains<=6|!buff.thistle_tea.up&fight_remains<=cooldown.thistle_tea.charges*6)", "Use with shiv or in niche cases at the end of Kingsbane if not already up" );
@@ -129,7 +129,7 @@ void assassination( player_t* p )
   direct->add_action( "envenom,if=!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)", "Base Envenom Condition" );
   direct->add_action( "envenom,if=buff.darkest_night.up&effective_combo_points>=cp_max_spend", "Special Envenom handling for Darkest Night" );
   direct->add_action( "variable,name=use_filler,value=combo_points<=variable.effective_spend_cp&!variable.cd_soon|variable.not_pooling|!variable.single_target", "Various Checks to see if we need to use a generator" );
-  direct->add_action( "fan_of_knives,if=buff.clear_the_witnesses.up&(spell_targets.fan_of_knives>=2-(buff.lingering_darkness.up|!talent.vicious_venoms))" );
+  direct->add_action( "fan_of_knives,if=buff.clear_the_witnesses.up&(spell_targets.fan_of_knives>=2-(debuff.shiv.up&(!talent.vicious_venoms|buff.lingering_darkness.up)))" );
   direct->add_action( "variable,name=fok_target_count,value=spell_targets.fan_of_knives>=3-(talent.momentum_of_despair&talent.thrown_precision)+talent.vicious_venoms+talent.blindside" );
   direct->add_action( "fan_of_knives,if=buff.darkest_night.up&combo_points=6&(!talent.vicious_venoms|spell_targets.fan_of_knives>=2)", "Fan of Knives at 6cp for special case Darkest Night" );
   direct->add_action( "fan_of_knives,if=variable.use_filler&!priority_rotation&variable.fok_target_count", "Fan of Knives at 3+ targets, accounting for various edge cases" );
@@ -180,7 +180,7 @@ void assassination( player_t* p )
   vanish->add_action( "vanish,if=!talent.master_assassin&!talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)", "Vanish to spread Garrote during Deathmark without Indiscriminate Carnage" );
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
   vanish->add_action( "vanish,if=talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&spell_targets.fan_of_knives>2&(target.time_to_die-remains>15|raid_event.adds.in>20)", "Vanish for cleaving Improved Garrotes with Indiscriminate Carnage" );
-  vanish->add_action( "vanish,if=talent.indiscriminate_carnage&!talent.improved_garrote&!variable.scent_saturation&spell_targets.fan_of_knives>2&(target.time_to_die-remains>15|raid_event.adds.in>20)", "Vanish for cleaving Ruptures with Indiscriminate Carnage if not talented into Improved Garrote - WIP needs checking for possible helper line for rupture cleaving with improved garrote as a niche case" );
+  vanish->add_action( "vanish,if=talent.indiscriminate_carnage&!buff.indiscriminate_carnage.up&!talent.improved_garrote&!variable.scent_saturation&spell_targets.fan_of_knives>2&(target.time_to_die-remains>15|raid_event.adds.in>20)", "Vanish for cleaving Ruptures with Indiscriminate Carnage if not talented into Improved Garrote" );
   vanish->add_action( "vanish,if=talent.master_assassin&debuff.deathmark.up&dot.kingsbane.remains<=6+3*talent.subterfuge.rank", "Vanish fallback for Master Assassin during Deathmark" );
   vanish->add_action( "vanish,if=talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up)&raid_event.adds.in>30", "Vanish fallback for Improved Garrote during Deathmark if no add waves are expected" );
 }

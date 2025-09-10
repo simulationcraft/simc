@@ -45,7 +45,7 @@ namespace chart
   bool generate_gains(highchart::pie_chart_t&, const player_t&, resource_e);
   bool generate_spent_time(highchart::pie_chart_t&, const player_t&);
   bool generate_stats_sources(highchart::pie_chart_t&, const player_t&, std::string_view title,
-    const std::vector<stats_t*>& stats_list);
+    const std::vector<stats_t*>& stats_list, bool top_only = false);
   bool generate_damage_stats_sources(highchart::pie_chart_t&, const player_t&);
   bool generate_heal_stats_sources(highchart::pie_chart_t&, const player_t&);
   bool generate_raid_dpet(highchart::bar_chart_t&, const sim_t&);

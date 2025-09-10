@@ -302,7 +302,7 @@ struct pack_t
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
   std::vector<affect_list_t> affect_lists;
-  std::array<parse_cb_t, PARSE_CALLBACK_MAX> callback;;
+  std::array<parse_cb_t, PARSE_CALLBACK_MAX> callback;
   parse_callback_e callback_type = PARSE_CALLBACK_POST_EXECUTE;
   bool ignore_whitelist = false;
 
@@ -604,6 +604,7 @@ struct parse_effects_t : public parse_base_t
 protected:
   player_t* _player;
   std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
+  std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask;
   mutable uint32_t callback_idx = 0;
 
 public:
@@ -1040,6 +1041,10 @@ public:
 
   void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
   {
+    // "fake snapshots" can happens to states created during expression evaluation, and since the action never executes
+    // callback_idx is not cleared. as only post_snapshot callbacks can pollute callback_idx this way, we clear all
+    // post_snapshot callbacks every snapshot.
+    callback_idx &= ~callback_mask[ PARSE_CALLBACK_POST_SNAPSHOT ];
     BASE::snapshot_internal( s, fl, rt );
     if ( rt != result_amount_type::NONE )
       trigger_callbacks( PARSE_CALLBACK_POST_SNAPSHOT, s );

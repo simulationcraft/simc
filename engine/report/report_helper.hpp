@@ -26,6 +26,7 @@ struct spell_data_t;
 class extended_sample_data_t;
 struct player_processed_report_information_t;
 struct sim_report_information_t;
+struct stats_t;
 
 // Report helpers
 namespace report_helper
@@ -48,6 +49,7 @@ void print_distribution_chart( report::sc_html_stream& os, const player_t& p, ex
                                std::string_view name, std::string_view token, std::string_view suffix,
                                bool time_element = false );
 
+void collect_aps( const stats_t* stats, double& amount, double& amount_pct );
 }  // namespace report_helper
 
 #endif  // SC_REPORT_HPP

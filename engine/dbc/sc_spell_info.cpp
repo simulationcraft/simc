@@ -1393,6 +1393,7 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { 27, "Death Knight Spells" },
   { 66, "Demon Hunter Spells" },
   { 640, "Azerite Essences"   },
+  { 741, "Healing Spells"     },
   { 3959, "Item Effects"      },
 } );
 

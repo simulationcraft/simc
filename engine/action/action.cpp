@@ -1820,8 +1820,10 @@ void action_t::execute()
   // Handle tick_action initial state snapshotting, primarily for handling STATE_MUL_PERSISTENT
   if ( tick_action )
   {
-    if ( !tick_action->execute_state )
+    if ( !tick_action->execute_state )  // grab a new state
       tick_action->execute_state = tick_action->get_state();
+    else  // recycled state, so clean it first
+      tick_action->execute_state->initialize();
 
     tick_action->snapshot_state( tick_action->execute_state, amount_type( tick_action->execute_state, tick_action->direct_tick ) );
   }

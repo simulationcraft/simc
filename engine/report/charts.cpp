@@ -9,13 +9,15 @@
 #include "dbc/dbc.hpp"
 #include "player/gear_stats.hpp"
 #include "player/pet.hpp"
-#include "player/player_scaling.hpp"
 #include "player/player.hpp"
+#include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
 #include "report/highchart.hpp"
+#include "report/report_helper.hpp"
+#include "sim/plot.hpp"
 #include "sim/profileset.hpp"
 #include "sim/reforge_plot.hpp"
 #include "sim/sim.hpp"
@@ -26,7 +28,6 @@
 #include <clocale>
 #include <cmath>
 #include <utility>
-
 
 using namespace js;
 
@@ -71,16 +72,6 @@ struct filter_waiting_stats
     return false;
   }
 };
-
-bool compare_stats_by_mean( const stats_t* l, const stats_t* r )
-{
-  if ( l->actual_amount.mean() == r->actual_amount.mean() )
-  {
-    return l->name_str < r->name_str;
-  }
-
-  return l->actual_amount.mean() > r->actual_amount.mean();
-}
 
 void add_color_data( sc_js_t& data,
                      const std::vector<const player_t*>& player_list )
@@ -945,27 +936,53 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 }
 
 bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, std::string_view title,
-                                    const std::vector<stats_t*>& stats_list )
+                                    const std::vector<stats_t*>& stats_list, bool top_only )
 {
   if ( stats_list.empty() )
-  {
     return false;
-  }
 
   pc.set_title( title );
   pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
   if ( p.sim->player_no_pet_list.size() > 1 )
-  {
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
+
+  std::map<double, stats_t*, std::greater<double>> stat_map;  // local copy sorted by greater portion_amount
+
+  for ( auto stats : stats_list )
+  {
+    auto slice_value = stats->portion_amount;
+
+    if ( top_only && !stats->children.empty() )
+    {
+      double damage; // throwaway
+      double damage_pct = 0.0;
+      report_helper::collect_aps( stats, damage, damage_pct );
+      slice_value = damage_pct;
+
+      // empty top-level stats take the school of the biggest contribution child
+      if ( !stats->portion_amount )
+      {
+        double max_portion = 0.0;
+        for ( const auto& child : stats->children )
+        {
+          if ( child->portion_amount > max_portion && child->school != SCHOOL_NONE )
+          {
+            stats->school = child->school;
+            max_portion = child->portion_amount;
+          }
+        }
+      }
+    }
+
+    stat_map[ slice_value ] = stats;
   }
 
-  for ( const stats_t* stats : stats_list )
+  for ( const auto& [ slice_value, stats ] : stat_map )
   {
     const color::rgb c = color::school_color( stats->school );
-
     sc_js_t e;
     e.set( "color", c.str() );
-    e.set( "y", util::round( 100.0 * stats->portion_amount, 1 ) );
+    e.set( "y", util::round( 100.0 * slice_value, 1 ) );
     std::string name_str;
     if ( stats->player->is_pet() )
     {
@@ -987,30 +1004,34 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& 
 bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const player_t& p )
 {
   std::vector<stats_t*> stats_list;
+  bool top_only = !p.sim->full_damage_sources_chart;
 
-  auto stats_filter = []( const stats_t* stat ) {
-    if ( stat->quiet )
+  auto stats_filter = [ top_only ]( const stats_t* stat ) {
+    if ( stat->quiet || stat->type != STATS_DMG )
       return false;
-    if ( stat->actual_amount.mean() <= 0 )
-      return false;
-    if ( stat->type != STATS_DMG )
-      return false;
-    return true;
-  };
+
+    if ( top_only )
+      return !stat->parent && ( stat->actual_amount.mean() > 0 || !stat->children.empty() );
+    else
+      return stat->actual_amount.mean() > 0;
+    };
 
   range::copy_if( p.stats_list, std::back_inserter( stats_list ), stats_filter );
 
   for ( const auto& pet : p.pet_list )
-  {
     range::copy_if( pet->stats_list, std::back_inserter( stats_list ), stats_filter );
-  }
 
-  range::sort( stats_list, compare_stats_by_mean );
+  range::sort( stats_list, []( const auto& l, const auto& r ) {
+    if ( l->portion_amount == r->portion_amount ) 
+      return l->name_str < r->name_str;
+    else
+      return l->portion_amount > r->portion_amount;
+  } );
 
   if ( stats_list.size() <= 1 ) // Don't display chart for single source
     return false;
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list );
+  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list, top_only );
   chart.set( "series.0.name", "Damage" );
   chart.set( "plotOptions.pie.tooltip.pointFormat",
              "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
@@ -1044,7 +1065,12 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
   if ( stats_list.size() <= 1 ) // Don't display a chart for single source
     return false;
 
-  range::sort( stats_list, compare_stats_by_mean );
+  range::sort( stats_list, []( const auto& l, const auto& r ) {
+    if ( l->actual_amount.mean() == r->actual_amount.mean() )
+      return l->name_str < r->name_str;
+    else
+      return l->actual_amount.mean() > r->actual_amount.mean();
+  } );
 
   generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing & Absorb Sources", stats_list );
   chart.set( "plotOptions.pie.events.click", "open_details_from_chart" );
@@ -1477,21 +1503,21 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
   double max_dps = 0;
   double min_dps = std::numeric_limits<double>::max();
 
-  for ( const auto& plot_data_list : p.dps_plot_data )
+  const auto& source = p.sim->plot->dps_plot_display_delta ? p.dps_plot_delta_data : p.dps_plot_data;
+
+  for ( const auto& stat_plot_data : source )
   {
-    for ( const auto& plot_data : plot_data_list )
+    for ( const auto& data : stat_plot_data.second )
     {
-      if ( plot_data.value > max_dps )
-        max_dps = plot_data.value;
-      if ( plot_data.value < min_dps )
-        min_dps = plot_data.value;
+      if ( data.value > max_dps )
+        max_dps = data.value;
+      if ( data.value < min_dps )
+        min_dps = data.value;
     }
   }
 
   if ( max_dps <= 0 )
-  {
     return false;
-  }
 
   scaling_metric_data_t scaling_data = p.scaling_for_metric( metric );
 
@@ -1499,40 +1525,25 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
   chart.set_yaxis_title( util::scale_metric_type_string( metric ) );
   chart.set_xaxis_title( "Stat delta" );
   chart.set( "chart.type", "line" );
+  chart.set( "plotOptions.series.lineWidth", 1.25 );
   chart.set( "legend.enabled", true );
   chart.set( "legend.margin", 5 );
   chart.set( "legend.padding", 0 );
   chart.set( "legend.itemMarginBottom", 5 );
   chart.height_ = 500;
   if ( p.sim->player_no_pet_list.size() > 1 )
-  {
     chart.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
-  }
 
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  for ( const auto& [ i, pd ] : source )
   {
-    const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
-    // Odds of metric value being 0 is pretty far, so lets just use that to
-    // determine if we need to plot the stat or not
-    if ( pd.empty() )
-    {
-      continue;
-    }
-
     std::string color = color::stat_color( i );
-
     std::vector<std::pair<double, double> > data;
 
     chart.add( "colors", color );
-
-    data.reserve(pd.size());
+    data.reserve( pd.size() );
 
     for ( const auto& pdata : pd )
-    {
-      data.emplace_back(
-          pdata.plot_step,
-          util::round( pdata.value, p.sim->report_precision ) );
-    }
+      data.emplace_back( pdata.plot_step, util::round( pdata.value, p.sim->report_precision ) );
 
     chart.add_simple_series( "", {}, util::stat_type_abbrev( i ), data );
   }

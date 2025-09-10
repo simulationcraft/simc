@@ -556,13 +556,17 @@ void authority_of_radiant_power( special_effect_t& effect )
   damage->base_dd_min += damage_val;
   damage->base_dd_max += damage_val;
 
+  auto stat_val = effect.driver()->effectN( 2 ).average( effect );
+  stat_val *= attuned_mul( effect.player, effect.driver() );
+
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 448730 ) )
-    ->add_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 2 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_STAT, stat_val );
 
   if ( found )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445339 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -587,6 +591,7 @@ void authority_of_the_depths( special_effect_t& effect )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445341 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -611,6 +616,7 @@ void authority_of_storms( special_effect_t& effect )
     return;
 
   damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445336 ) );
+  damage->base_multiplier *= attuned_mul( effect.player, effect.driver() );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -626,8 +632,11 @@ void secondary_weapon_enchant( special_effect_t& effect )
 
   auto found = buff_t::find( effect.player, buff_name );
 
+  auto stat_val = effect.driver()->effectN( 1 ).average( effect );
+  stat_val *= attuned_mul( effect.player, effect.driver() );
+
   auto buff = create_buff<stat_buff_t>( effect.player, buff_name, buff_data )
-    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_RATING, stat_val );
 
   if ( found )
     return;
@@ -8859,6 +8868,8 @@ void perfidious_projector( special_effect_t& effect )
   auto damage         = create_proc_action<generic_aoe_proc_t>( "shadowguard_to_me", effect, 1244448, true );
   auto damage_val     = value_spell->effectN( 1 ).average( effect ) / n_ticks;
   damage->base_dd_min = damage->base_dd_max = damage_val;
+  // not present in tooltip desc, fallback to default value
+  damage->base_multiplier = role_mult( effect.player );
 
   auto dot         = create_proc_action<generic_proc_t>( "perfidious_projector", effect, dot_spell );
   dot->tick_action = damage;
@@ -9544,6 +9555,12 @@ void nexuskings_command( special_effect_t& effect )
   // assume you always heal the debuffed target
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1240000 ) )
     ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.player->callbacks.register_callback_trigger_function( effect.driver()->id(),
+    dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+      return a->data().affected_by_label( LABEL_HEALING_SPELLS );
+    } );
 
   effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
     [ bound ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* ) {
@@ -12732,5 +12749,17 @@ double writhing_mul( player_t* p )
     return 2.0;  // hardcoded
   else
     return 1.0;
+}
+
+// attuned to the aether renown perk
+double attuned_mul( player_t* p, const spell_data_t* spell )
+{
+  if ( !p->thewarwithin_opts.attuned_to_the_aether )
+    return 1.0;
+
+  auto attuned = p->find_spell( 1242344 );
+  const auto& eff = spell_data_t::find_spelleffect( *attuned, *spell, E_APPLY_AURA );
+
+  return 1.0 + eff.percent();
 }
 }  // namespace unique_gear::thewarwithin

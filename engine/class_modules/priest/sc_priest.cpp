@@ -181,19 +181,9 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
-    {
-      priest().buffs.mind_melt->expire();
-    }
-
     if ( priest().talents.shadow.shattered_psyche.enabled() && priest().buffs.shattered_psyche->check() )
     {
       priest().buffs.shattered_psyche->expire();
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
-    {
-      priest().buffs.gathering_shadows->trigger();
     }
 
     if ( priest().buffs.shadowy_insight->check() )
@@ -238,10 +228,6 @@ public:
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
-    {
-      m *= 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 1 ).percent();
-    }
     return m;
   }
 
@@ -848,15 +834,8 @@ struct halo_t final : public priest_spell_t
           priest().buffs.surge_of_light->trigger( 1, 0, 1 );
           break;
         case PRIEST_SHADOW:
-          // You get a full buff of MSI or MFI and keep Surge of Insanity state intact
-          if ( priest().talents.shadow.mind_spike.enabled() )
-          {
-            priest().buffs.mind_spike_insanity->trigger();
-          }
-          else
-          {
-            priest().buffs.mind_flay_insanity->trigger();
-          }
+          // You get a full buff of MFI and keep Surge of Insanity state intact
+          priest().buffs.mind_flay_insanity->trigger();
           SC_FALLTHROUGH;
         default:
           break;
@@ -2798,13 +2777,11 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
   cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
   cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
   cooldowns.mindbender                    = get_cooldown( "mindbender" );
@@ -2824,7 +2801,6 @@ void priest_t::create_gains()
   gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.voidwraith                       = get_gain( "Voidwraith" );
-  gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
   gains.throes_of_pain                   = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
@@ -2853,7 +2829,6 @@ void priest_t::create_procs()
   procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_msi         = get_proc( "Shadowy Apparition from Mind Spike: Insanity" );
   procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -2861,14 +2836,11 @@ void priest_t::create_procs()
   procs.shadowy_insight_overflow       = get_proc( "Shadowy Insight procs lost to overflow" );
   procs.shadowy_insight_missed         = get_proc( "Shadowy Insight procs not consumed" );
   procs.thing_from_beyond              = get_proc( "Thing from Beyond procs" );
-  procs.idol_of_nzoth_swp              = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
-  procs.idol_of_nzoth_vt               = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
   procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
   procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
@@ -3103,11 +3075,6 @@ void priest_t::assess_damage( school_e school, result_amount_type dtype, action_
 double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) && buffs.dark_reveries->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.dark_reveries->current_value );
-  }
 
   if ( buffs.call_of_the_void->check() )
   {
@@ -3415,10 +3382,20 @@ void priest_t::init_base_stats()
       base.distance = 24.0;
     }
 
+    // Bug: Halo is a few yards short
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1225
     if ( talents.halo.enabled() )
     {
-      base.distance = 30.0;
+      base.distance = ( bugs ? 28.0 : 30.0 ) + ( talents.archon.power_surge.enabled() ? 10.0 : 0.0 );
     }
+
+    if ( talents.phantom_reach.enabled() )
+    {
+      base.distance *= 1.0 + talents.phantom_reach->effectN( 1 ).percent();
+    }
+
+    // Going above 40 probably isn't a good idea
+    base.distance = std::max( base.distance, 40.00 );
   }
 
   base_t::init_base_stats();
@@ -3615,7 +3592,7 @@ void priest_t::init_spells()
 
   // Priest Tree Talents
   // Row 1
-  talents.renew        = CT( "Renew" );         // NYI
+  talents.renew        = CT( "Renew" );
   talents.dispel_magic = CT( "Dispel Magic" );  // NYI
   talents.shadowfiend  = CT( "Shadowfiend" );
   // Row 2
@@ -4038,7 +4015,6 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.mental_decay );
   action.apply_affecting_aura( talents.shadow.instilled_doubt );
@@ -4061,9 +4037,6 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.holy.light_in_the_darkness );
   action.apply_affecting_aura( talents.holy.crisis_management );
   action.apply_affecting_aura( talents.holy.prismatic_echoes );
-
-  // Disc T31 2pc
-  action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, T31, B2 ) );
 
   // Voidweaver Talents
   action.apply_affecting_aura( talents.voidweaver.inner_quietus );
@@ -4112,6 +4085,7 @@ void priest_t::init_items()
 {
   player_t::init_items();
 
+  // Special Handling for DF S4
   set_bonus_type_e tier_to_enable;
   switch ( specialization() )
   {
@@ -4339,11 +4313,6 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       {
         return "void_blast";
       }
-      // ensure we use mind_spike_insanity action instead of mind_spike
-      if ( options.find( "mind_spike_insanity" ) != std::string::npos )
-      {
-        return "mind_spike_insanity";
-      }
       // ensure we use mind_flay_insanity action instead of mind_flay
       if ( options.find( "mind_flay_insanity" ) != std::string::npos )
       {
@@ -4429,11 +4398,6 @@ void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
 std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 15407 && talents.shadow.mind_spike.enabled() )  // Mind Flay
-  {
-    spell_id = talents.shadow.mind_spike->id();
-  }
-
   if ( spell_id == 8092 && specialization() == PRIEST_HOLY )
     return { "holy_fire" };
 
@@ -4443,11 +4407,6 @@ std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spel
   if ( spell_id == 15407 )
   {
     return { "mind_flay_insanity", "mind_flay" };
-  }
-
-  if ( spell_id == 73510 )
-  {
-    return { "mind_spike_insanity", "mind_spike" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );
@@ -4572,7 +4531,6 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
-  add_option( opt_string( "priest.forced_yshaarj_type", options.forced_yshaarj_type ) );
   add_option( opt_float( "priest.twist_of_fate_heal_rppm", options.twist_of_fate_heal_rppm, 0, 120 ) );
   add_option( opt_timespan( "priest.twist_of_fate_heal_duration_mean", options.twist_of_fate_heal_duration_mean, 0_s,
                             timespan_t::max() ) );

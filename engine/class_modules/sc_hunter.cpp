@@ -1330,7 +1330,6 @@ public:
     ab::apply_affecting_aura( p->tier_set.tww_s3_dark_ranger_2pc );
     ab::apply_affecting_aura( p->tier_set.tww_s3_dark_ranger_4pc );
     ab::apply_affecting_aura( p->tier_set.tww_s3_sentinel_2pc );
-    ab::apply_affecting_aura( p->tier_set.tww_s3_sentinel_4pc );
     ab::apply_affecting_aura( p->tier_set.tww_s3_pack_leader_2pc );
 
     // Hero Tree passives
@@ -2769,7 +2768,7 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
 
     if ( o()->talents.phantom_pain.ok() )
     {
-      phantom_pain.replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent();
+      phantom_pain.replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent() + o()->specs.beast_mastery_hunter->effectN( 13 ).percent();
       phantom_pain.max_targets = as<int>( o()->talents.phantom_pain->effectN( 3 ).base_value() );
     }
   }
@@ -3746,11 +3745,24 @@ void hunter_t::trigger_deathblow( bool activated )
     return;
 
   procs.deathblow->occur();
+  // Kill Shot/Black Arrow is set up by default to require reacting to Deathblow,
+  // and Deathblow by default is set to be reactable and non activated to force reactions and aura delay,
+  // so that needs to be temporarily flipped here for the one case it's considered immediately available after pressing Trueshot.
   if ( activated )
   {
-    buffs.deathblow->increment();
-    if ( talents.razor_fragments.ok() )
-      buffs.razor_fragments->increment();
+    buffs.deathblow->reactable = false;
+    buffs.deathblow->activated = true;
+    buffs.deathblow->trigger();
+    buffs.deathblow->reactable = true;
+    buffs.deathblow->activated = false;
+
+    // This should just need to avoid the aura delay.
+    if (talents.razor_fragments.ok())
+    {
+      buffs.razor_fragments->activated = true;
+      buffs.razor_fragments->trigger();
+      buffs.razor_fragments->activated = false;
+    }
   }
   else
   {
@@ -3759,7 +3771,7 @@ void hunter_t::trigger_deathblow( bool activated )
       buffs.razor_fragments->trigger();
   }
   
-  talents.black_arrow.ok() ? cooldowns.black_arrow->reset( true ) : cooldowns.kill_shot->reset( true );
+  talents.black_arrow.ok() ? cooldowns.black_arrow->reset( !activated ) : cooldowns.kill_shot->reset( !activated );
 }
 
 void hunter_t::trigger_sentinel( player_t* target, bool force, proc_t* proc )
@@ -4582,11 +4594,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if ( p()->buffs.deathblow->up() && rng().roll( blighted_quiver_chance ) )
+      p()->buffs.blighted_quiver->trigger();
+
     p()->buffs.deathblow->expire();
     p()->buffs.razor_fragments->expire();
-    
-    if ( rng().roll( blighted_quiver_chance ) )
-      p()->buffs.blighted_quiver->trigger();
 
     if ( p()->talents.headshot.ok() )
       p()->consume_precise_shots();
@@ -5057,6 +5069,15 @@ struct sentinel_t : hunter_ranged_attack_t
   sentinel_t( hunter_t* p ) : hunter_ranged_attack_t( "sentinel", p, p->talents.sentinel_tick )
   {
     background = dual = true;
+
+    if ( p->tier_set.tww_s3_sentinel_4pc.ok() )
+    {
+      double mod = p->tier_set.tww_s3_sentinel_4pc->effectN( 2 ).percent();
+      if ( p->specialization() == HUNTER_MARKSMANSHIP )
+        mod += p->specs.marksmanship_hunter->effectN( 15 ).percent();
+
+      base_dd_multiplier *= 1 + mod;
+    }
 
     if ( p->talents.invigorating_pulse.ok() )
     {
@@ -8692,10 +8713,10 @@ void hunter_t::create_buffs()
 
   // Hunter Tree
 
-  buffs.deathblow =
-    make_buff( this, "deathblow", talents.deathblow_buff )
-      ->set_activated( false );
-  // Allows us to use may_react() in a ready check.
+  buffs.deathblow = make_buff( this, "deathblow", talents.deathblow_buff );
+  // By default, subject Deathblow to aura delay which allows queued casts to consume an existing Deathblow before a new Deathblow is applied.
+  buffs.deathblow->activated = false;
+  // By deafult, subject Deathblow to stack reaction, which allows may_react() in the ready().
   buffs.deathblow->reactable = true;
 
   // Marksmanship Tree
@@ -9100,12 +9121,13 @@ void hunter_t::create_buffs()
         } );
 
   if ( specialization() == HUNTER_BEAST_MASTERY )
-    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow(); } );
+    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow( true ); } );
 
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )
       ->set_default_value_from_effect( 1 )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->apply_affecting_aura( specs.beast_mastery_hunter );
 }
 
 void hunter_t::init_gains()

@@ -1281,8 +1281,9 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     for ( int ix : { 10, 11 } )
       if ( data().affected_by_label( o()->spec.arcane_mage->effectN( ix ) ) )
         base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( ix ).percent();
-    if ( data().affected_by_label( o()->spec.fire_mage->effectN( 14 ) ) )
-      base_dd_multiplier *= 1.0 + o()->spec.fire_mage->effectN( 14 ).percent();
+    for ( int ix : { 14, 25, 26, 27, 28, 29, 30 } )
+      if ( data().affected_by_label( o()->spec.fire_mage->effectN( ix ) ) )
+        base_dd_multiplier *= 1.0 + o()->spec.fire_mage->effectN( ix ).percent();
   }
 
   double action_multiplier() const override
@@ -3441,6 +3442,23 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
       double tick_amount = p->bugs ? base_ta( d->state ) : d->state->result_total;
       intensifying_flame->execute_on_target( d->target, p->talents.intensifying_flame->effectN( 2 ).percent() * tick_amount );
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = residual_action_t::composite_target_multiplier( target );
+
+    if ( sim->dbc->wowv() >= wowv_t{ 11, 2, 5 } )  // TODO: Remove PTR check
+    {
+      auto p = debug_cast<mage_t*>( player );
+      if ( auto td = p->find_target_data( target ) )
+      {
+        m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
+        m *= 1.0 + td->debuffs.molten_fury->check_value();
+      }
+    }
+
+    return m;
   }
 };
 

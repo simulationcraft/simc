@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.62785 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
@@ -7342,7 +7342,7 @@ bonus_id={ 12540 }, quality={ rare }
 bonus_id={ 12541 }, quality={ rare }
 bonus_id={ 12542 }, quality={ uncommon }
 bonus_id={ 12543 }, stats={ 100% Avoidance [0.6000] }
-bonus_id={ 12544 }, stats={ 100% Leech [0.5000] }
+bonus_id={ 12544 }, stats={ 100% Leech [0.6000] }
 bonus_id={ 12545 }, stats={ 100% RunSpeed [0.5973] }
 bonus_id={ 12546 }, stats={ 100% Vers [0.3000] }
 bonus_id={ 12547 }, stats={ 100% Crit [0.3000] }
@@ -7575,7 +7575,7 @@ bonus_id={ 13443 }, quality={ epic }
 bonus_id={ 13444 }, quality={ epic }
 bonus_id={ 13445 }, quality={ epic }
 bonus_id={ 13446 }, quality={ epic }
-bonus_id={ 13468 }, ilevel_adjust={ 6 }
+bonus_id={ 13468 }, ilevel_adjust={ 7 }
 bonus_id={ 13469 }, ilevel_adjust={ 3 }
 bonus_id={ 13501 }, effects={ Reshii Grace (id=1254906, index=0, type=equip) }
 bonus_id={ 13502 }, effects={ Reshii Grace (id=1254904, index=0, type=equip) }
@@ -7583,3 +7583,4 @@ bonus_id={ 13503 }, effects={ Reshii Grace (id=1254905, index=0, type=equip) }
 bonus_id={ 13504 }, effects={ Reshii Grace (id=1235409, index=0, type=equip) }
 bonus_id={ 13524 }, quality={ epic }, stats={ 100% Sta [0.1000] }
 bonus_id={ 13533 }, effects={ Infinite Power (id=1257586, index=0, type=no_delay_use) }
+bonus_id={ 13572 }, ilevel={ 1 @plvl 1 - 655 @plvl 80 }
