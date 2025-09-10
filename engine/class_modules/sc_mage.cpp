@@ -1281,8 +1281,9 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     for ( int ix : { 10, 11 } )
       if ( data().affected_by_label( o()->spec.arcane_mage->effectN( ix ) ) )
         base_dd_multiplier *= 1.0 + o()->spec.arcane_mage->effectN( ix ).percent();
-    if ( data().affected_by_label( o()->spec.fire_mage->effectN( 14 ) ) )
-      base_dd_multiplier *= 1.0 + o()->spec.fire_mage->effectN( 14 ).percent();
+    for ( int ix : { 14, 25, 26, 27, 28, 29, 30 } )
+      if ( data().affected_by_label( o()->spec.fire_mage->effectN( ix ) ) )
+        base_dd_multiplier *= 1.0 + o()->spec.fire_mage->effectN( ix ).percent();
   }
 
   double action_multiplier() const override
