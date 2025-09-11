@@ -1235,7 +1235,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 
       auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
 
-      throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
     }
   }
   else if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) )
@@ -1251,11 +1251,10 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-      throw std::invalid_argument(
-          fmt::format( "Cannot find any cooldown with name '{}'.",
-                       talents.voidweaver.voidwraith.enabled()
-                           ? "voidwraith"
-                           : talents.shared.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
+      throw sc_invalid_apl_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
+                                                  talents.voidweaver.voidwraith.enabled() ? "voidwraith"
+                                                  : talents.shared.mindbender.enabled()   ? "mindbender"
+                                                                                          : "shadowfiend" ) );
     }
   }
 

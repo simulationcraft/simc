@@ -377,7 +377,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 704;
+    int item_level = 715;
     std::string variant = "default";
   } option;
 
@@ -10651,7 +10651,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
         return expr_t::create_constant( "use_clipping", option.use_clipping );
       if ( util::str_compare_ci( splits[ 1 ], "use_early_chaining" ) )
         return expr_t::create_constant( "use_early_chaining", option.use_early_chaining );
-      throw std::invalid_argument( fmt::format( "Unsupported evoker expression '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unsupported evoker expression '{}'.", splits[ 1 ] ) );
     }
   }
 

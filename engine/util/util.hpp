@@ -26,6 +26,52 @@
 struct player_t;
 class dbc_t;
 
+// Exception & Exit Code Handling
+// 0: normal exit
+// 1: other exceptions
+// 10: invalid sim-scope argument
+// 11: invalid fight style
+// 20: invalid player-scope argument
+// 21: invalid talent string
+// 22: invalid item string
+// 30: invalid APL argument
+// 40: sim/player/action/buff initialization error
+// 50: simulation iteration runtime error
+// 51: simulation stuck
+// 60: network error
+// 51: report output error
+
+struct sc_exception : public std::exception
+{
+  std::string msg;
+
+  sc_exception( const std::string& __msg ) : exception(), msg( __msg ) {}
+  const char* what() const noexcept override { return msg.c_str(); }
+  virtual const char* type() const = 0;
+  virtual uint8_t code() const = 0;
+};
+
+#define SC_EXCEPTION( _exception, _code, _type ) \
+  struct _exception : public sc_exception { \
+    _exception( const std::string& __msg ) : sc_exception( __msg ) {} \
+    const char* type() const override { return _type; } \
+    uint8_t code() const override { return _code; } \
+  };
+
+SC_EXCEPTION( sc_invalid_sim_argument, 10, "Invalid sim argument" );
+SC_EXCEPTION( sc_invalid_fight_style, 11, "Invalid fight style" );
+SC_EXCEPTION( sc_invalid_player_argument, 20, "Invalid player argument" );
+SC_EXCEPTION( sc_invalid_talent_string, 21, "Invalid talent string" );
+SC_EXCEPTION( sc_invalid_item_string, 22, "Invalid item string" );
+SC_EXCEPTION( sc_invalid_apl_argument, 30, "Invalid APL argument" );
+SC_EXCEPTION( sc_initialization_error, 40, "Simulation initialization error" );
+SC_EXCEPTION( sc_runtime_error, 50, "Simulation runtime error" );
+SC_EXCEPTION( sc_simulation_stuck, 51, "Simulation stuck" );
+SC_EXCEPTION( sc_network_error, 60, "Network error" );
+SC_EXCEPTION( sc_report_output_error, 61, "Report output error" );
+
+#undef SC_EXCEPTION
+
 /**
  * Defines various utility, string and enum <-> string translation functions.
  */
@@ -240,8 +286,8 @@ int numDigits( T number );
 
 bool contains_non_ascii( util::string_view );
 
-void print_chained_exception( const std::exception& e, std::FILE* out, int level = 0 );
-void print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level = 0 );
+template <typename E>
+void print_chained_exception( const E& e, std::FILE* out, int8_t& exit_code, int level = 0 );
 
 std::string sc_time_str();
 

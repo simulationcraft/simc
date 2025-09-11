@@ -2949,7 +2949,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
         auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
 
-        throw std::invalid_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
       }
     }
 
@@ -3060,7 +3060,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         }
       }
 
-      throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
 

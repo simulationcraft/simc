@@ -572,11 +572,13 @@ protected:
 
 opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::string_view value ) const
 {
-  try {
+  try
+  {
     return do_parse( sim, name, value );
   }
-  catch ( const std::exception& ) {
-    std::throw_with_nested( std::runtime_error( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
   }
 }
 
@@ -755,9 +757,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, parsed_token, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", parsed_token) );
+      throw sc_network_error( fmt::format( "Unable to open input parameter file '{}'.", parsed_token ) );
     }
     parse_file( input );
     return;
@@ -790,9 +792,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, value, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unable to open input parameter file '{}'.", value) );
+      throw sc_network_error( fmt::format("Unable to open input parameter file '{}'.", value) );
     }
     else
     {

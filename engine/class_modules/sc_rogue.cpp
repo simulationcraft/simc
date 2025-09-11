@@ -10734,11 +10734,12 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       if ( split.size() == 3 )
       {
         util::string_view buff_name = split[ 2 ];
-        auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) {
-          return util::str_compare_ci( buff->name_str, buff_name ); } );
+        auto it = range::find_if( primary->buffs, [ buff_name ]( const buff_t* buff ) {
+          return util::str_compare_ci( buff->name_str, buff_name );
+        } );
 
         if ( it == primary->buffs.end() )
-          throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
+          throw sc_invalid_apl_argument( fmt::format( "Invalid buff in 'rtb_buffs.{}.{}'.", split[ 1 ], buff_name ) );
         else
           filter_buff = ( *it );
       }
@@ -12637,7 +12638,7 @@ static bool parse_fixed_rtb( sim_t* sim, util::string_view /* name */, util::str
   std::vector<size_t> buffs;
   for ( auto it = value.begin(); it < value.end(); ++it )
   {
-    if ( *it < '1' or *it > '6' )
+    if ( *it < '1' || *it > '6' )
     {
       continue;
     }

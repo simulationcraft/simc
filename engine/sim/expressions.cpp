@@ -16,7 +16,8 @@ namespace
 {  // ANONYMOUS ====================================================
 
 constexpr bool EXPRESSION_DEBUG = false;
-constexpr int EXPRESSION_CONSIDER_MARKING_THRESHOLD = 2; // number of false/true events to have been collected before offering the 'consider marking constant' info.
+// number of false/true events to have been collected before offering the 'consider marking constant' info.
+constexpr int EXPRESSION_CONSIDER_MARKING_THRESHOLD = 2;
 
 struct lexer_t
 {
@@ -1244,9 +1245,9 @@ std::unique_ptr<expr_t> build_player_expression_tree(
       auto e = player.create_expression( t.label );
       if ( !e )
       {
-        std::throw_with_nested(std::runtime_error("No expression found."));
+        throw std::invalid_argument( "No expression found." );
       }
-      stack.push_back( std::move(e) );
+      stack.push_back( std::move( e ) );
     }
     else if ( expression::is_unary( t.type ) )
     {
@@ -1310,9 +1311,9 @@ static std::unique_ptr<expr_t> build_expression_tree(
       auto e = action->create_expression( t.label );
       if ( !e )
       {
-        throw std::invalid_argument("No expression found.");
+        throw std::invalid_argument( "No expression found." );
       }
-      stack.push_back( std::move(e) );
+      stack.push_back( std::move( e ) );
     }
     else if ( expression::is_unary( t.type ) )
     {
@@ -1398,7 +1399,7 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
 
     if ( !expression::convert_to_rpn( tokens ) )
     {
-      throw std::invalid_argument( fmt::format( "Unable to convert '{}' into RPN.", expr_str ) );
+      throw std::invalid_argument( "Unable to convert into RPN." );
     }
 
     if ( action->sim->debug )
@@ -1407,12 +1408,11 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
     if ( auto e = build_expression_tree( action, tokens, optimize ) )
       return e;
 
-    throw std::invalid_argument("Unable to build expression tree.");
+    throw std::invalid_argument( "Unable to build expression tree." );
   }
-  catch (const std::exception& )
+  catch ( const std::exception& )
   {
-    std::throw_with_nested(std::runtime_error(fmt::format("Cannot parse expression from '{}'",
-        expr_str)));
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Invalid expression '{}'", expr_str ) ) );
   }
 }
 

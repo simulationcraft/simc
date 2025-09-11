@@ -3436,39 +3436,35 @@ bool util::contains_non_ascii( util::string_view s )
   return false;
 }
 
-/**
- * Print chained exceptions, separated by ' :'.
- */
-void util::print_chained_exception( const std::exception& e, std::FILE* out, int level )
+template <typename E>
+void util::print_chained_exception( const E& e, std::FILE* out, int8_t& exit_code, int level )
 {
   fmt::print( out, "{}{}", level > 0 ? ": " : "", e.what() );
+
+  // final exit code will be the deepest (last processed) exception
+  if constexpr ( std::is_same_v<E, sc_exception> )
+    exit_code = e.code();
+
   try
   {
     std::rethrow_if_nested( e );
+    return;
+  }
+  catch ( const sc_exception& e )
+  {
+    print_chained_exception( e, out, exit_code, level + 1 );
+    return;
   }
   catch ( const std::exception& e )
   {
-    print_chained_exception( e, out, level + 1 );
-  }
-  catch ( ... )
-  {
+    print_chained_exception( e, out, exit_code, level + 1 );
+    return;
   }
 }
 
-void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level )
-{
-  try
-  {
-    if ( eptr )
-    {
-      std::rethrow_exception( eptr );
-    }
-  }
-  catch ( const std::exception& e )
-  {
-    print_chained_exception( e, out, level );
-  }
-}
+// explicit template instantiations
+template void util::print_chained_exception<std::exception>( const std::exception&, std::FILE*, int8_t&, int );
+template void util::print_chained_exception<sc_exception>( const sc_exception&, std::FILE*, int8_t&, int );
 
 // FMT 11.2 no longer calculates time zone offsets. As not all platforms return time zone information with
 // std::localtime(), calculate the time display string ourselves.

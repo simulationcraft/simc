@@ -872,8 +872,8 @@ void item_t::parse_options()
         // .. otherwise, just warn that there's an unknown option
         if ( status == opts::parse_status::NOT_FOUND )
         {
-          sim->error( "Warning: Unknown item option '{}' with value '{}' for '{}' slot '{}', ignoring",
-            name, value, player->name(), slot_name() );
+          sim->error( "Warning: {} {} ({}) unknown option '{}' with value '{}', ignoring.", *player, full_name(),
+                      slot_name(), name, value );
         }
 
         return status;
@@ -881,7 +881,7 @@ void item_t::parse_options()
   }
   catch ( const std::exception& )
   {
-    std::throw_with_nested( std::invalid_argument( fmt::format( "Cannot parse option from '{}'", options_str ) ) );
+    std::throw_with_nested( sc_invalid_item_string( fmt::format( "Invalid option from '{}'.", options_str ) ) );
   }
 
   util::tokenize( option_name_str );
@@ -980,10 +980,10 @@ void item_t::parse_options()
 
   if ( !option_bonus_id_str.empty() )
   {
-    try
+    auto split = util::string_split<util::string_view>( option_bonus_id_str, "/:" );
+    for ( auto& elem : split )
     {
-      auto split = util::string_split<util::string_view>( option_bonus_id_str, "/:" );
-      for ( auto& elem : split )
+      try
       {
         int bonus_id = util::to_int( elem );
         if ( bonus_id <= 0 )
@@ -993,10 +993,10 @@ void item_t::parse_options()
 
         parsed.bonus_id.push_back( bonus_id );
       }
-    }
-    catch ( const std::exception& )
-    {
-      std::throw_with_nested( std::runtime_error( "Bonus ID" ) );
+      catch ( const std::exception& )
+      {
+        std::throw_with_nested( std::invalid_argument( fmt::format( "Invalid bonus id '{}'.", option_bonus_id_str ) ) );
+      }
     }
   }
 
@@ -1035,7 +1035,7 @@ void item_t::parse_options()
           }
           else
           {
-            sim->error( "Unsupported Blizzard item modifier {} on '{}'", stat_str, name() );
+            sim->error( "Unsupported Blizzard item modifier '{}' on {}, ignoring.", stat_str, name() );
           }
         }
         else
@@ -1048,14 +1048,15 @@ void item_t::parse_options()
           }
           else
           {
-            throw std::invalid_argument( fmt::format( "Unknown stat mod {}", stat_str ) );
+            throw std::invalid_argument( fmt::format( "Unknown stat mod '{}'.", stat_str ) );
           }
         }
       }
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::runtime_error( "Crafted Stats" ) );
+      std::throw_with_nested(
+        std::invalid_argument( fmt::format( "Invalid crafted stat '{}'.", option_crafted_stat_str ) ) );
     }
   }
 
@@ -1076,12 +1077,13 @@ bool item_t::initialize_data()
 
   if ( parsed.data.id > 0 )
   {
-    if ( ! item_t::download_item( *this ) &&
-         option_stats_str.empty() && option_weapon_str.empty() )
+    if ( !item_t::download_item( *this ) && option_stats_str.empty() && option_weapon_str.empty() )
       return false;
   }
   else
+  {
     name_str = option_name_str;
+  }
 
   return true;
 }
@@ -1641,7 +1643,7 @@ void item_t::decode_armor_type()
     parsed.data.item_subclass = util::parse_armor_type( option_armor_type_str );
     if ( parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_MISC )
     {
-      throw std::invalid_argument(fmt::format("Invalid item armor type '{}'.", option_armor_type_str));
+      throw std::invalid_argument( fmt::format( "Invalid item armor type '{}'.", option_armor_type_str ) );
     }
     parsed.data.item_class = ITEM_CLASS_ARMOR;
   }
@@ -1658,7 +1660,7 @@ void item_t::decode_ilevel()
     if ( parsed.item_level < 1 || parsed.item_level > MAX_ILEVEL )
     {
       throw std::invalid_argument(
-          fmt::format( "Invalid item level {}, item level must be between 1 and {}.", parsed.item_level, MAX_ILEVEL ) );
+        fmt::format( "Invalid item level '{}', item level must be between 1 and {}.", parsed.item_level, MAX_ILEVEL ) );
     }
   }
 }
@@ -1690,9 +1692,7 @@ void item_t::decode_stats()
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
       {
-
-        throw std::invalid_argument(fmt::format("Unknown 'stats=' token '{}' at slot {}.",
-            tokens[ i ].full, slot_name()));
+        throw std::invalid_argument( fmt::format( "Unknown stat in '{}'.", tokens[ i ].full ) );
       }
 
       if ( s != STAT_ARMOR )
@@ -1816,12 +1816,12 @@ void item_t::decode_gems()
     // DBC data
     //
     // Detect meta gem through DBC data, instead of clunky prefix matching
-    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( *player -> dbc, option_gems_str );
-    meta_gem_e meta_gem = enchant::meta_gem_type( *player -> dbc, meta_gem_enchant );
+    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( *player->dbc, option_gems_str );
+    meta_gem_e meta_gem = enchant::meta_gem_type( *player->dbc, meta_gem_enchant );
 
     if ( meta_gem != META_GEM_NONE )
     {
-      player -> meta_gem = meta_gem;
+      player->meta_gem = meta_gem;
     }
 
     auto tokens = item_database::parse_tokens( option_gems_str );
@@ -1829,17 +1829,16 @@ void item_t::decode_gems()
     for ( auto& t : tokens )
     {
       stat_e s = util::parse_stat_type( t.name );
-      if (s == STAT_NONE )
+      if ( s == STAT_NONE )
       {
-        throw std::invalid_argument(fmt::format("Invalid stat '{}'.", t.name));
+        throw std::invalid_argument( fmt::format( "Invalid stat '{}'.", t.name ) );
       }
       parsed.gem_stats.emplace_back( s, static_cast<int>( t.value ) );
     }
   }
-  catch (const std::exception&)
+  catch ( const std::exception& )
   {
-    std::throw_with_nested( std::invalid_argument(
-          fmt::format( "Error decoding gems from '{}'", option_gems_str ) ) ) ;
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Error decoding gems from '{}.'", option_gems_str ) ) );
   }
 }
 
@@ -1847,39 +1846,31 @@ void item_t::decode_gems()
 
 void item_t::decode_equip_effect()
 {
-  try
+  if ( option_equip_str.empty() || option_equip_str == "none" )
   {
-    if ( option_equip_str.empty() || option_equip_str == "none" )
-    {
-      return;
-    }
-
-    special_effect_t effect( this );
-
-    special_effect::parse_special_effect_encoding( effect, option_equip_str );
-
-    effect.name_str = name_str;
-    effect.type = SPECIAL_EFFECT_EQUIP;
-    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-    if (!special_effect::usable_proc( effect ))
-    {
-      throw std::invalid_argument(fmt::format("No proc trigger flags found for effect '{}'.",
-        option_equip_str ));
-    }
-
-    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
-         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
-    {
-      throw std::invalid_argument(fmt::format("No buff or action found for effect '{}'.", option_equip_str));
-    }
-
-    parsed.special_effects.push_back( new special_effect_t( effect ) );
+    return;
   }
-  catch (const std::exception&)
+
+  special_effect_t effect( this );
+
+  special_effect::parse_special_effect_encoding( effect, option_equip_str );
+
+  effect.name_str = name_str;
+  effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  if ( !special_effect::usable_proc( effect ) )
   {
-    std::throw_with_nested(std::invalid_argument(fmt::format("Error decoding equip='{}'", option_equip_str )));
+    throw std::invalid_argument(
+      fmt::format( "No proc trigger flags found for equip effect '{}'.", option_equip_str ) );
   }
+
+  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+  {
+    throw std::invalid_argument( fmt::format( "No buff or action found for equip effect '{}'.", option_equip_str ) );
+  }
+
+  parsed.special_effects.push_back( new special_effect_t( effect ) );
 }
 
 // item_t::decode_use_effect ================================================
@@ -1902,7 +1893,7 @@ void item_t::decode_use_effect()
   if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
        effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
   {
-    throw std::invalid_argument(fmt::format("No buff or action found for use effect '{}'.", option_use_str));
+    throw std::invalid_argument( fmt::format( "No buff or action found for use effect '{}'.", option_use_str ) );
   }
 
   parsed.special_effects.push_back( new special_effect_t( effect ) );
@@ -1931,7 +1922,7 @@ void item_t::decode_enchant()
   }
   else
   {
-    throw std::invalid_argument(fmt::format("Cannot find item enchant '{}'.", option_enchant_str));
+    throw std::invalid_argument( fmt::format( "Invalid item enchant '{}'.", option_enchant_str ) );
   }
 }
 
@@ -2061,7 +2052,7 @@ void item_t::decode_weapon()
       }
       else
       {
-        throw std::invalid_argument(fmt::format("unknown 'weapon=' token '{}'.", t.full));
+        throw std::invalid_argument( fmt::format( "Invalid weapon in '{}'.", t.full ) );
       }
     }
 
@@ -2125,8 +2116,7 @@ void item_t::decode_data_source()
   if ( ! item_database::initialize_item_sources( *this, parsed.source_list ) )
   {
     throw std::invalid_argument(
-        fmt::format("Your item-specific data source string '{}' contained no valid sources to download item id {}.\n",
-        option_data_source_str, parsed.data.id));
+      fmt::format( "Unable to download item id '{}' from data source '{}'.", option_data_source_str, parsed.data.id ) );
   }
 }
 

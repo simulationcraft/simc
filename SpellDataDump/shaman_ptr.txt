@@ -19342,4 +19342,3 @@ Effects          :
 Description      : $@spelldesc1236409
 Tooltip          : Your next $s1 $lTempest:Tempests; $lgathers:gather; a powerful storm at the target location.
 
-

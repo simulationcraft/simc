@@ -393,8 +393,7 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
     // Something went wrong in the creation of a new pet object, cancel the simulator
     if ( pet == nullptr )
     {
-      m_owner -> sim -> cancel();
-      return {};
+      throw sc_runtime_error( fmt::format( "{} could not spawn new pet '{}'.", *m_owner, m_name ) );
     }
 
     m_pets.push_back( pet );

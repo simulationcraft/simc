@@ -16305,4 +16305,3 @@ Effects          :
 #1 (id=1243042)  : Apply Aura (6) | Periodic Energize Power (24): every 0.25 seconds
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self (1)
 
-

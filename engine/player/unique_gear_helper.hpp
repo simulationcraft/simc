@@ -632,7 +632,7 @@ template <typename BUFF, typename... ARGS>
 BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
 {
   auto b = buff_t::find( p, name );
-  if ( b != nullptr )
+  if ( b && !b->is_fallback )
   {
 #ifdef NDEBUG
     return static_cast<BUFF*>( b );
@@ -645,6 +645,14 @@ BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
     }
     return result;
 #endif
+  }
+
+  // if we've found a fallback buff, remove it from the fallback list before creating the new buff
+  if ( b && b->is_fallback )
+  {
+    range::erase_remove( p->fallback_buff_names, [ & ]( const auto& fb ) {
+      return util::str_compare_ci( fb.first, name );
+    } );
   }
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );

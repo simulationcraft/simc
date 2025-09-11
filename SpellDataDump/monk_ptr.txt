@@ -19986,4 +19986,3 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Stomps the ground, dealing $s1 Physical damage to your target. Deals reduced damage to secondary targets.
 
-

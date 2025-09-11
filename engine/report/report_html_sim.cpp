@@ -876,6 +876,7 @@ const help_box_t help_boxes[] = {
   { "Stats Raid Buffed",
     "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included." },
   { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers." },
+  { "Total Time", "Time spent on executing the ability. Includes cast times, gcd times, and channel times." },
   { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component "
              "will have zero ticks." },
   { "Ticks Crit", "Average crit tick damage." },

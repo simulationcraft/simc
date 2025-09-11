@@ -53,13 +53,8 @@ struct buff_expr_t : public expr_t
 
     if ( !buff )
     {
-      action->sim->error(
-          "Unable to build buff action expression for {}: "
-          "Reference to unknown buff/debuff '{}' by {}.",
-          *action, buff_name, *action->player );
-      action->sim->cancel();
-      // Prevent segfault
-      buff = make_buff( action->player, "dummy" );
+      throw sc_invalid_apl_argument( fmt::format(
+        "Unable to build buff action expression for {}, reference to unknown buff/debuff '{}'.", *action, buff_name ) );
     }
 
     return buff;
@@ -232,15 +227,14 @@ struct expiration_t : public buff_event_t
   unsigned stack;
 
   expiration_t( buff_t* b, unsigned s, timespan_t d ) : buff_event_t( b, d ), stack( s )
-  { }
+  {}
 
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
-      b->sim->error( "{} {} creates asynchronous expiration with no stack count.",
-          *buff->player, *buff );
-      b->sim->cancel();
+      throw sc_runtime_error(
+        fmt::format( "{} {} creates asynchronous expiration with no stack count.", *buff->player, *buff ) );
     }
   }
 
@@ -580,9 +574,8 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       } );
   }
 
-  throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
+  throw sc_invalid_apl_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
 }
-
 }  // namespace
 
 
@@ -2170,6 +2163,10 @@ void buff_t::increment( int stacks, double value, timespan_t duration )
 
   if ( current_stack == 0 || stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
+    // increment the refresh count since async buffs never call refresh()
+    if ( current_stack > 0 )
+      refresh_count++;
+
     start( stacks, value, duration );
   }
   else
@@ -2236,7 +2233,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
+    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   if ( expiration.empty() )
@@ -2352,7 +2349,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
       constant = true;
   }
 
-  start_count++;
+  // async buffs will always start() so only increment when actually a new buff application
+  if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS || current_stack == 0 )
+    start_count++;
 
   if ( player && change_regen_rate )
   {
@@ -3138,7 +3137,7 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
   for ( const auto& fb : p->fallback_buff_names )
-    if ( fb.first == name && fb.second == source )
+    if ( fb.first == name && ( !source || fb.second == source ) )
       return p->sim->auras.fallback;
 
   return find( p->buff_list, name, source );
@@ -3257,11 +3256,11 @@ void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {
-    fmt::format_to( out, "Buff {} ({})", buff.name(), buff.data().id() );
+    fmt::format_to( out, "Buff '{}' ({})", buff.name(), buff.data().id() );
   }
   else
   {
-    fmt::format_to( out, "Buff {}", buff.name() );
+    fmt::format_to( out, "Buff '{}'", buff.name() );
   }
 }
 

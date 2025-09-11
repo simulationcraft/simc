@@ -1,5 +1,5 @@
 // Spell text, wow build 11.2.0.63003
-static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28034> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27949,6 +27949,8 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
   { 1242220, "$@spelldesc383860", "Pyroblast and Flamestrike damage increased by $s1%.", 0 },
   { 1242270, "$@spelldesc322740", 0, 0 },
   { 1242326, "Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.", 0, 0 },
+  { 1242344, "Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.", "Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.", 0 },
+  { 1242345, "$@spelldesc1242344", 0, 0 },
   { 1242347, "Increases $pri by $s1 for $d. Augment Rune. Persists through death.", "$pri increased by $w1. Persists through death.", 0 },
   { 1242352, "Stomps the ground, dealing $s1 Physical damage to all nearby enemies.", 0, 0 },
   { 1242373, "Stomps the ground, dealing $s1 Physical damage to your target. Deals reduced damage to secondary targets.", 0, 0 },
@@ -28035,7 +28037,11 @@ static constexpr std::array<spelltext_data_t, 28032> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.2.0.63003
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  { 1242344,  0, "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", "Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%." },
+  { 1242344,  1, "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", "Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%." },
+  { 1242345,  0, "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", "$@spelldesc1242344" },
+  { 1242345,  1, "Manaforge Omega's energy empowers your Mana Oils & Enchantments, improving their effects by 50% while inside its walls.", nullptr },
 } };
 
 // Spell description variables, wow build 11.2.0.63003
@@ -28541,7 +28547,7 @@ static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { 
   {  431443, "$cap=${($SP*2.5)*(1+$@versadmg)}" },
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
   {  433106, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
-  {  434300, "$dmg=${$INT*3.8*(1+$@versadmg)*$pctD}" },
+  {  434300, "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
   {  435473, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  435475, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  436036, "$flight=$?a375517[${$375517s1/1000}][${0}]\r\n$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]" },
@@ -28717,6 +28723,7 @@ static constexpr std::array<spelldesc_vars_data_t, 674> __spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 11.2.0.63003
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  434300,  0, "$dmg=${$INT*3.8*(1+$@versadmg)*$pctD}", "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
 } };
 

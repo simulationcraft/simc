@@ -335,7 +335,7 @@ bool covenant_state_t::is_conduit_socket_empowered( unsigned soulbind_id, unsign
     if ( tier < entry.tier )
       break;
 
-    if ( tier == entry.tier and ui_order == entry.ui_order )
+    if ( tier == entry.tier && ui_order == entry.ui_order )
       return renown() >= entry.renown_level;
   }
 

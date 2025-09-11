@@ -517,16 +517,14 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
   assert( s && "Could not clone spell to apply hotfix" );
 
   // Record original DBC value before overwriting it
-  dbc_value_ = s -> get_field( field_name_ );
+  dbc_value_ = s->get_field( field_name_ );
 
-  if ( ! valid() )
+  if ( !valid() )
   {
-    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
-                 "\" does not match verification value.";
-    std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << util::round( dbc_value_, 5 );
-    std::cerr << ", Verify: " << util::round( orig_value_, 5 );
-    std::cerr << std::endl;
+    fmt::print( stderr,
+      "[{}]: {}Hotfix '{}' for spell '{} ({})' failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(),
+      field_name_, util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
     return;
   }
 
@@ -538,21 +536,20 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   const spelleffect_data_t* source_effect = spelleffect_data_t::find( id_, ptr );
 
   // Cloning the spell chain will guarantee that the effect is also always cloned
-  const spell_data_t* s = hotfix_db_[ ptr ].clone_spell( source_effect -> spell() );
+  const spell_data_t* s = hotfix_db_[ ptr ].clone_spell( source_effect->spell() );
   assert( s && "Could not clone spell to apply hotfix" );
 
   spelleffect_data_t* e = hotfix_db_[ ptr ].get_mutable_effect( id_ );
-  if ( !e ) { return; }
+  if ( !e )
+    return;
 
-  dbc_value_ = e -> get_field( field_name_ );
+  dbc_value_ = e->get_field( field_name_ );
   if ( ! valid() )
   {
-    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_ << "\" for spell \"" << s -> name_cstr() <<
-                 "\" effect #" << ( e -> index() + 1 ) << " does not match verification value.";
-    std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
-    std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
-    std::cerr << std::endl;
+    fmt::print( stderr,
+      "[{}]: {}Hotfix '{}' for spell '{} ({})' effect#{} ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(), e->index() + 1, e->id(), field_name_,
+      util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
     return;
   }
 
@@ -569,17 +566,16 @@ void power_hotfix_entry_t::apply_hotfix( bool ptr )
   assert( s && "Could not clone spell to apply hotfix" );
 
   spellpower_data_t* p = hotfix_db_[ ptr ].get_mutable_power( id_ );
-  if ( !p ) { return; }
+  if ( !p )
+    return;
 
-  dbc_value_ = p -> get_field( field_name_ );
-  if ( ! valid() )
+  dbc_value_ = p->get_field( field_name_ );
+  if ( !valid() )
   {
-    std::cerr << "[" << tag_ << "]: " << ( ptr ? "PTR-" : "" ) << "Hotfix \"" << note_
-      << "\" for spell power " << p -> id() << " (spell " << s -> name_cstr() << ") does not match verification value.";
-    std::cerr << " Field: " << field_name_;
-    std::cerr << ", DBC: " << std::setprecision( 5 ) << util::round( dbc_value_, 5 );
-    std::cerr << ", Verify: " << std::setprecision( 5 ) << util::round( orig_value_, 5 );
-    std::cerr << std::endl;
+    fmt::print( stderr,
+      "[{}]: {}Hotfix '{}' for spell '{} ({})' power ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(), p->id(),
+      field_name_, util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
     return;
   }
 
@@ -793,10 +789,10 @@ void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::
 
   spell_data_t* spell = override_db_[ dbc.ptr ].clone_spell( dbc_spell );
   if ( !spell )
-    throw std::invalid_argument("Could not find spell");
+    throw std::invalid_argument( fmt::format( "Invalid spell id '{}', spell not found.", spell_id ) );
 
-  if ( !spell -> override_field( field, v ) )
-    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
+  if ( !spell->override_field( field, v ) )
+    throw std::invalid_argument( fmt::format( "Invalid spell field '{}'.", field ) );
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_SPELL, field, spell_id, v );
 }
@@ -830,10 +826,10 @@ void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util
     effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
   }
   if ( !effect )
-    throw std::runtime_error("Could not find effect");
+    throw std::invalid_argument( fmt::format( "Invalid effect id '{}', effect not found.", effect_id ) );
 
-  if ( !effect -> override_field( field, v ) )
-    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
+  if ( !effect->override_field( field, v ) )
+    throw std::invalid_argument( fmt::format( "Invalid effect field '{}'.", field ) );
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_EFFECT, field, effect_id, v );
 }
@@ -874,10 +870,10 @@ void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::
   }
 
   if ( !power )
-    throw std::runtime_error("Could not find power");
+    throw std::invalid_argument( fmt::format( "Invalid power id '{}', power not found.", power_id ) );
 
-  if ( !power -> override_field( field, v ) )
-    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
+  if ( !power->override_field( field, v ) )
+    throw std::invalid_argument( fmt::format( "Invalid power field '{}'.", field ) );
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_POWER, field, power_id, v );
 }
@@ -900,15 +896,15 @@ void dbc_override_t::parse( const dbc_t& dbc, util::string_view string )
 {
   auto v_pos = string.find( '=' );
   if ( v_pos == util::string_view::npos )
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+    throw std::invalid_argument( "Spell data override takes the form '<spell|effect|power>.<id>.<field>=value'." );
 
   auto splits = util::string_split<util::string_view>( string.substr( 0, v_pos ), "." );
   if ( splits.size() != 3 )
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+    throw std::invalid_argument( "Spell data override takes the form '<spell|effect|power>.<id>.<field>=value'." );
 
   int parsed_id = util::to_int( splits[ 1 ] );
   if ( parsed_id <= 0 )
-    throw std::invalid_argument("Invalid data id (negative or zero).");
+    throw std::invalid_argument( "Invalid data id (negative or zero)." );
 
   unsigned id = as<unsigned>( parsed_id );
   double value = util::to_double( string.substr( v_pos + 1 ) );
@@ -927,7 +923,7 @@ void dbc_override_t::parse( const dbc_t& dbc, util::string_view string )
   }
   else
   {
-    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+    throw std::invalid_argument( "Spell data override takes the form '<spell|effect|power>.<id>.<field>=value'." );
   }
 }
 

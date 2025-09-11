@@ -43,19 +43,15 @@ variable_t::variable_t(player_t* player, util::string_view options_str) :
   auto option_default = player->apl_variable_map.find(name_str);
   if (option_default != player->apl_variable_map.end())
   {
-    try
-    {
-      default_ = std::stod(option_default->second);
-    }
-    catch (const std::exception&)
-    {
-      std::throw_with_nested(std::runtime_error(fmt::format("Failed to parse player option for variable '{}'", name_str)));
-    }
+    if ( !util::is_number( option_default->second ) )
+      sim->error( "Invalid value '{}' for 'apl_variable.{}', ignoring.", option_default->second, name_str );
+    else
+      default_ = std::stod( option_default->second );
   }
 
-  if (name_str.empty())
+  if ( name_str.empty() )
   {
-    sim->errorf("Player %s unnamed 'variable' action used", player->name());
+    sim->error( "{} unnamed 'variable' action used.", *player );
     background = true;
     return;
   }
@@ -93,38 +89,37 @@ variable_t::variable_t(player_t* player, util::string_view options_str) :
       operation = OPERATION_SETIF;
     else
     {
-      sim->errorf(
-        "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.",
-        player->name(), operation_.c_str());
+      sim->error( "{} unknown operation '{}' given for variable, valid values are 'set', 'print', and 'reset'.",
+                  *player, operation_ );
       background = true;
       return;
     }
   }
 
   // Printing needs a delay, otherwise the action list will not progress
-  if (operation == OPERATION_PRINT && delay_ == timespan_t::zero())
-    delay_ = timespan_t::from_seconds(1.0);
+  if ( operation == OPERATION_PRINT && delay_ == timespan_t::zero() )
+    delay_ = timespan_t::from_seconds( 1.0 );
 
-  if (operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
-    operation != OPERATION_PRINT)
+  if ( operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
+       operation != OPERATION_PRINT )
   {
-    if (value_str.empty())
+    if ( value_str.empty() )
     {
-      sim->errorf("Player %s no value expression given for variable '%s'", player->name(), name_str.c_str());
+      sim->error( "{} no value expression given for variable '{}'", *player, name_str );
       background = true;
       return;
     }
-    if (operation == OPERATION_SETIF)
+    if ( operation == OPERATION_SETIF )
     {
-      if (condition_str.empty())
+      if ( condition_str.empty() )
       {
-        sim->errorf("Player %s no condition expression given for variable '%s'", player->name(), name_str.c_str());
+        sim->error( "{} no condition expression given for variable '{}'", *player, name_str );
         background = true;
         return;
       }
-      if (value_else_str.empty())
+      if ( value_else_str.empty() )
       {
-        sim->errorf("Player %s no value_else expression given for variable '%s'", player->name(), name_str.c_str());
+        sim->error( "{} no value_else expression given for variable '{}'", *player, name_str );
         background = true;
         return;
       }
@@ -132,14 +127,10 @@ variable_t::variable_t(player_t* player, util::string_view options_str) :
   }
 
   // Add a delay
-  if (delay_ > timespan_t::zero())
+  if ( delay_ > timespan_t::zero() )
   {
-    std::string cooldown_name = "variable_actor";
-    cooldown_name += util::to_string(player->index);
-    cooldown_name += "_";
-    cooldown_name += name_str;
-
-    cooldown = player->get_cooldown(cooldown_name);
+    auto cooldown_name = fmt::format( "variable_actor{}_{}", util::to_string( player->index ), name_str );
+    cooldown = player->get_cooldown( cooldown_name );
     cooldown->duration = delay_;
   }
 
@@ -164,35 +155,42 @@ void variable_t::init_finished()
 {
   action_t::init_finished();
 
-  if (!background && operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
-    operation != OPERATION_PRINT)
+  if ( !background && operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
+       operation != OPERATION_PRINT )
   {
-    value_expression = expr_t::parse(this, value_str, sim->optimize_expressions);
-    if (!value_expression)
+    try
     {
-      sim->errorf("Player %s unable to parse 'variable' value '%s'", player->name(), value_str.c_str());
-      background = true;
+      value_expression = expr_t::parse( this, value_str, sim->optimize_expressions );
+      if ( !value_expression )
+      {
+        sim->error( "{} unable to parse 'variable' value '{}'.", *player, value_str );
+        background = true;
+      }
+      if ( operation == OPERATION_SETIF )
+      {
+        condition_expression = expr_t::parse( this, condition_str, sim->optimize_expressions );
+        if ( !condition_expression )
+        {
+          sim->error( "{} unable to parse 'condition' value '{}'.", *player, condition_str );
+          background = true;
+        }
+        value_else_expression = expr_t::parse( this, value_else_str, sim->optimize_expressions );
+        if ( !value_else_expression )
+        {
+          sim->error( "{} unable to parse 'value_else' value '{}'.", *player, value_else_str );
+          background = true;
+        }
+      }
     }
-    if (operation == OPERATION_SETIF)
+    catch ( const std::exception& )
     {
-      condition_expression = expr_t::parse(this, condition_str, sim->optimize_expressions);
-      if (!condition_expression)
-      {
-        sim->errorf("Player %s unable to parse 'condition' value '%s'", player->name(), condition_str.c_str());
-        background = true;
-      }
-      value_else_expression = expr_t::parse(this, value_else_str, sim->optimize_expressions);
-      if (!value_else_expression)
-      {
-        sim->errorf("Player %s unable to parse 'value_else' value '%s'", player->name(), value_else_str.c_str());
-        background = true;
-      }
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid variable expression" ) );
     }
   }
 
-  if (!background)
+  if ( !background )
   {
-    var->variable_actions.push_back(this);
+    var->variable_actions.push_back( this );
   }
 }
 

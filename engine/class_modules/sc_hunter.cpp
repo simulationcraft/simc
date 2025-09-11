@@ -4594,11 +4594,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    if ( p()->buffs.deathblow->up() && rng().roll( blighted_quiver_chance ) )
+      p()->buffs.blighted_quiver->trigger();
+
     p()->buffs.deathblow->expire();
     p()->buffs.razor_fragments->expire();
-    
-    if ( rng().roll( blighted_quiver_chance ) )
-      p()->buffs.blighted_quiver->trigger();
 
     if ( p()->talents.headshot.ok() )
       p()->consume_precise_shots();
@@ -6821,7 +6821,8 @@ struct summon_pet_t: public hunter_spell_t
 
     if ( !pet && ( p() -> specialization() != HUNTER_MARKSMANSHIP || p()->talents.unbreakable_bond.ok() ) )
     {
-      throw std::invalid_argument(fmt::format("Unable to find pet '{}' for summons.", p() -> options.summon_pet_str));
+      throw sc_invalid_apl_argument(
+        fmt::format( "Unable to find pet '{}' for summons.", p()->options.summon_pet_str ) );
     }
 
     hunter_spell_t::init_finished();
@@ -8166,7 +8167,7 @@ pet_t* hunter_t::create_pet( util::string_view pet_name, util::string_view pet_t
 
   if ( !pet_type.empty() )
   {
-    throw std::invalid_argument(fmt::format("Pet '{}' has unknown type '{}'.", pet_name, pet_type ));
+    throw sc_invalid_player_argument( fmt::format( "Pet '{}' has unknown type '{}'.", pet_name, pet_type ) );
   }
 
   return nullptr;
@@ -9121,7 +9122,7 @@ void hunter_t::create_buffs()
         } );
 
   if ( specialization() == HUNTER_BEAST_MASTERY )
-    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow(); } );
+    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow( true ); } );
 
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )

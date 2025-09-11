@@ -19954,4 +19954,3 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2 | PvP Coefficient: 0.33 | Target: Enemy (6)
 Description      : $@spelldesc1236390
 
-

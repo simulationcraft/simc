@@ -2051,7 +2051,7 @@ struct fire_mines_detonator_t : public proc_spell_t
 
     if ( ! active_mines )
     {
-      throw std::invalid_argument("No active mines found to detonate.");
+      throw sc_invalid_apl_argument( "No active mines found to detonate." );
     }
 
    proc_spell_t::init_finished();

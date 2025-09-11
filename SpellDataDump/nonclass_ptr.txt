@@ -271165,4 +271165,3 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Target (63) -> At Enemy in Area (16)
 Description      : $@spelldesc1233592
 
-

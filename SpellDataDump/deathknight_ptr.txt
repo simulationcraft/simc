@@ -19262,4 +19262,3 @@ Effects          :
 #1 (id=1256924)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 
-

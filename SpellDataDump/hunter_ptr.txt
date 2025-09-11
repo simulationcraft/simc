@@ -18630,4 +18630,3 @@ Effects          :
 Description      : $@spelldesc260240
 Tooltip          : Damage of $?a471363[Kill Shot, ][]Arcane Shot or Multi-Shot increased by $s1% and their Focus cost is reduced by $s3%.
 
-

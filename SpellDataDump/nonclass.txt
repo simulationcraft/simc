@@ -233228,7 +233228,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142170)  : Unknown(301)
@@ -233464,7 +233464,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142189)  : Unknown(301)
@@ -233623,7 +233623,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142204)  : Unknown(301)
@@ -233858,7 +233858,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142232)  : Unknown(301)
@@ -233957,7 +233957,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1142238)  : Unknown(301)
@@ -235633,6 +235633,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235653,6 +235654,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235673,6 +235675,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Radiant Power (448623)
@@ -235728,6 +235731,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235746,6 +235750,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235764,6 +235769,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Air (448833)
@@ -235915,7 +235921,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
 Attributes       : Passive (6)
 Effects          :
@@ -235932,6 +235938,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235950,6 +235957,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235967,7 +235975,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
@@ -235994,7 +236001,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
@@ -236021,7 +236027,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -236040,7 +236045,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -236059,7 +236064,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -236077,7 +236082,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Council's Guile (449088)
 Attributes       : Passive (6)
 Effects          :
@@ -236093,7 +236098,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236120,7 +236124,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Triggered By     : Council's Guile (449088)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236141,7 +236144,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -236160,7 +236163,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -236178,7 +236181,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Passive (6)
 Effects          :
@@ -236194,7 +236197,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236221,7 +236223,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236240,7 +236241,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236258,7 +236258,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236287,7 +236286,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236306,7 +236305,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236324,7 +236323,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Passive (6)
 Effects          :
@@ -236341,7 +236340,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236359,7 +236357,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236388,7 +236385,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236407,7 +236404,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236426,7 +236423,7 @@ Labels           : 969
                  : 3232
                  : 3405
                  : 3406
-                 : 3409
+                 : 3409: Attuned to the Aether (1242344 effect#1)
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Passive (6)
 Effects          :
@@ -236517,6 +236514,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236535,6 +236533,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236553,6 +236552,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Fiery Resolve (449210)
@@ -236616,6 +236616,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236633,6 +236634,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -236650,6 +236652,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3414
 Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
@@ -238556,6 +238559,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
+Labels           : 3425
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152654)  : Unknown(54)
@@ -268021,6 +268025,55 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Channel for $1241801s5 sec to invoke the wrath of the idol, increasing your Critical Strike by $1241801s1 for $1241806d. The force slams the earth, dealing $1241801s2 Nature damage to all nearby enemies and increasing Critical Strike by $1241801s3 per enemy hit, up to a maximum of $1241801s4.
 
+Name             : Attuned to the Aether (id=1242344) 
+Hotfixed         : Description, Tooltip
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268)
+Effects          :
+#1 (id=1241805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8) | Scaling Class: -8
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Misc Value: 8 | Misc Value 2: 3409 (Label) | Target: Self (1)
+                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449019), Authority of Storms (449020), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
+Hotfixed         : Base Value (0 -> 50), Misc Value 2 (0 -> 3409)
+#2 (id=1273011)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
+Hotfixed         : Base Value (20 -> 10)
+#3 (id=1273027)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
+                   Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Spellwarding (326867), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984), Pestilence (327093), War (327096), Rune of Hysteria (333113)
+Hotfixed         : Base Value (20 -> 10)
+#4 (id=1273028)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rune of Unending Thirst (326984), War (327096)
+Hotfixed         : Base Value (20 -> 10)
+#5 (id=1273029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
+Description      : Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.
+Tooltip          : Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.
+
+Name             : Attuned to the Aether (id=1242345) 
+Hotfixed         : Description, Tooltip
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268)
+Effects          :
+#1 (id=1241806)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 50)
+#2 (id=1273069)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc1242344
+
 Name             : Soulgorged Augmentation (id=1242347) 
 School           : Physical
 Spell Type       : None
@@ -269110,5 +269163,4 @@ Effects          :
 #3 (id=1265664)  : Dummy (3)
                    Base Value: 723 | Scaled Value: 723
 Description      : Increase the minimum item level of Manaforge Omega set gloves or shoulder armor to $s3 in Arenas and Battlegrounds. 
-
 

@@ -17383,4 +17383,3 @@ Effects          :
 Description      : Shows the location of all nearby wild pets on the minimap.
 Tooltip          : Tracking Wild Pets.
 
-

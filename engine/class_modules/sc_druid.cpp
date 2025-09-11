@@ -6779,6 +6779,7 @@ struct nourish_t final : public druid_heal_t
 // Regrowth =================================================================
 struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_heal_t>>
 {
+  buff_t* boon_of_the_oathsworn_hack = nullptr;
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
@@ -6802,6 +6803,14 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    if ( is_precombat && unique_gear::find_special_effect( player, 1232776 ) )
+      boon_of_the_oathsworn_hack = buff_t::find( player, "boon_of_the_oathsworn" );
   }
 
   timespan_t gcd() const override
@@ -6895,6 +6904,9 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
       else
         p()->buff.blooming_infusion_damage->trigger();
     }
+
+    if ( is_precombat && boon_of_the_oathsworn_hack && !boon_of_the_oathsworn_hack->check() )
+      boon_of_the_oathsworn_hack->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -11567,8 +11579,7 @@ void druid_t::init_finished()
            util::str_in_str_ci( a->signature_str, "name=cat_form" ) ||
            util::str_in_str_ci( a->signature_str, "name=moonkin_form" ) ) )
     {
-      throw std::invalid_argument(
-        fmt::format( "Using {} on shapeshift form, use cancelform instead", a->signature_str ) );
+      throw sc_invalid_apl_argument( fmt::format( "Use 'cancelform' instead of 'cancel_buff,{}'.", a->signature_str ) );
     }
   }
 
@@ -12993,10 +13004,9 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 #ifdef NDEBUG
       if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice_for_balance )
       {
-        sim->error( error_level_e::SEVERE,
-                    "DungeonSlice is disabled for Balance Druids. To force enable, use "
-                    "druid.enable_dungeon_slice_for_balance=1 option." );
-        sim->cancel();
+        throw sc_invalid_fight_style(
+          "DungeonSlice is disabled for Balance Druids. To force enable, use "
+          "'druid.enable_dungeon_slice_for_balance=1'" );
       }
 #endif
       if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
@@ -14123,7 +14133,7 @@ std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::str
         dot_action = find_action( splits[ 1 ] );
 
       if ( !dot_action )
-        throw std::invalid_argument( "invalid action specified in ticks_gained_on_refresh" );
+        throw sc_invalid_apl_argument( fmt::format( "Invalid action in 'ticks_gained_on_refresh.{}'.", splits[ 1 ] ) );
     }
     else
       dot_action = &a;
@@ -14264,12 +14274,19 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
            return util::str_compare_ci( s, cd );
          } ) )
     {
-      if ( auto cd = get_cooldown( splits[ 1 ] ); cd && cd->charges == cd->current_charge )
+      if ( auto cd = get_cooldown( splits[ 1 ] ) )
       {
+        if ( cd->duration == 0_ms )
+          return expr_t::create_constant( name, 0 );
+
         timespan_t max_diff = timespan_t::from_seconds( talent.control_of_the_dream->effectN( 1 ).base_value() );
 
         return make_fn_expr( name, [ cd, max_diff, this ] {
           auto dur = cooldown_t::cooldown_duration( cd );
+
+          if ( cd->charges != cd->current_charge )
+            return dur;
+
           auto last = cd->charges > 1 ? cd->last_charged : cd->ready;
           auto diff = 0_ms;
 
@@ -14408,10 +14425,10 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
     }
     catch ( const std::invalid_argument& msg )
     {
-      throw std::invalid_argument(
-          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup. {}"
-                       "\n\tFormat is <min stacks>:<max stacks>:<min duration>:<max duration>:<chance>/...",
-                       entry, msg.what() ) );
+      throw sc_invalid_apl_argument(
+        fmt::format( "Invalid entry '{}' for druid.adaptive_swarm_prepull_setup. {} Format is <min stacks>:<max "
+                     "stacks>:<min duration>:<max duration>:<chance>/...",
+                     entry, msg.what() ) );
     }
   }
 
@@ -15657,42 +15674,6 @@ struct druid_module_t final : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0 )
       .verification_value( 47 );
-
-    hotfix::register_effect( "Druid", "9-9-2025", "All direct damage increased by 5%", 179696, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All periodic damage increased by 5%", 191146, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All pet damage increased by 5%", 191147, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "All guardian damage increased by 5%", 872569, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 33 )
-      .verification_value( 27 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Ornaments of the Mother Eagle 2-piece: Starfire damage increased by 15% (was 20%)", 1232239, hotfix::HOTFIX_FLAG_PTR )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 20 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Elune's Chosen: Boundless Moonlight's Fury of Elune flash damage reduced by 10%", 1109706, hotfix::HOTFIX_FLAG_PTR )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.277 )
-      .verification_value( 2.53 );
-    hotfix::register_effect( "Druid", "9-9-2025", "Elune's Chosen: Minor Moon damage reduced by 10%", 1101681, hotfix::HOTFIX_FLAG_PTR )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.9836 )
-      .verification_value( 2.204 );
   }
 
   void combat_begin( sim_t* ) const override {}

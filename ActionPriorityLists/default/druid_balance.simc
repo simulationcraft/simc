@@ -10,13 +10,11 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat=snapshot_stats
-# Variable to enable sims with no CDs, type druid.no_cds in Expert Mode footer to use it
+# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds
-# Variables to establish on-use trinket slots. on_use_trinket=1 is slot 1, on_use_trinket=2 is slot 2, on_use_trinket=3 is double on-use, on_use_trinket=0 is no on-use.
 actions.precombat+=/variable,name=on_use_trinket,value=0
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff)*2
-# Enter Moonkin Form and precast
 actions.precombat+=/moonkin_form
 actions.precombat+=/wrath
 actions.precombat+=/wrath
@@ -24,52 +22,34 @@ actions.precombat+=/starfire,if=!talent.stellar_flare
 actions.precombat+=/stellar_flare
 
 # Executed every time the actor is available.
-# Variable to establish passive AP gen
+# Executed every time the actor is available.
 actions=variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+((talent.bounteous_bloom&buff.bounteous_bloom.up)*15)+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24
-# Variable to map CA's effective CD, not always reliable to reference when using Whirling Stars
 actions+=/variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.force_of_nature.remains
-# Pre_Cd Condition referenced in every CD except for when using 11.2 Keeper Set
 actions+=/variable,name=pre_cd_condition,value=(!talent.whirling_stars|!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*2|fight_remains<cooldown.convoke_the_spirits.remains+3|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time+15*talent.control_of_the_dream)&(variable.on_use_trinket=0|(variable.on_use_trinket=1|variable.on_use_trinket=3)&(trinket.1.cooldown.remains>cooldown.ca_inc.full_recharge_time+(15*talent.control_of_the_dream)|!talent.convoke_the_spirits&hero_tree.elunes_chosen&(trinket.1.cooldown.duration<=100&trinket.1.cooldown.remains>cooldown.ca_inc.full_recharge_time-cooldown.ca_inc.duration|trinket.1.cooldown.duration>=100&cooldown.ca_inc.charges_fractional=1&(trinket.1.cooldown.duration>?cooldown.ca_inc.full_recharge_time))|talent.convoke_the_spirits&(cooldown.convoke_the_spirits.remains<3&(ceil((fight_remains-10)%cooldown.convoke_the_spirits.duration)>ceil((fight_remains-trinket.1.cooldown.remains-10)%cooldown.convoke_the_spirits.duration))|cooldown.convoke_the_spirits.remains>trinket.1.cooldown.remains&cooldown.ca_inc.full_recharge_time-cooldown.ca_inc.duration<trinket.1.cooldown.remains+15)|trinket.1.cooldown.remains+6>fight_remains|trinket.1.cooldown.ready)|variable.on_use_trinket=2&(trinket.2.cooldown.remains>cooldown.ca_inc.full_recharge_time+(15*talent.control_of_the_dream)|!talent.convoke_the_spirits&hero_tree.elunes_chosen&(trinket.2.cooldown.duration<=100&trinket.2.cooldown.remains>cooldown.ca_inc.full_recharge_time-cooldown.ca_inc.duration|trinket.2.cooldown.duration>=100&cooldown.ca_inc.charges_fractional=1&(trinket.2.cooldown.duration>?cooldown.ca_inc.full_recharge_time))|talent.convoke_the_spirits&(cooldown.convoke_the_spirits.remains<3&(ceil((fight_remains-10)%cooldown.convoke_the_spirits.duration)>ceil((fight_remains-trinket.2.cooldown.remains-10)%cooldown.convoke_the_spirits.duration))|cooldown.convoke_the_spirits.remains>trinket.2.cooldown.remains&cooldown.ca_inc.full_recharge_time-cooldown.ca_inc.duration<trinket.2.cooldown.remains+15)|trinket.2.cooldown.remains+6>fight_remains|trinket.2.cooldown.ready))&cooldown.ca_inc.remains<gcd.max&!buff.ca_inc.up
-# CD_condition used for CA/Incarn
 actions+=/variable,name=cd_condition,value=variable.pre_cd_condition&(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up))
-# Convoke condition variable
-actions+=/variable,name=convoke_condition,value=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)
-# Variable used to write time remaining on Eclipse
+actions+=/variable,name=convoke_condition,value=fight_remains<4+gcd.max|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)
 actions+=/variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.eclipse_solar.remains
-# Variable used to enter Eclipse. Negate variable.enter_lunar to enter Solar Eclipse.
 actions+=/variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>3-(talent.umbral_intensity|talent.soul_of_the_forest)
-# Variable used for Balance of All Things stacks
 actions+=/variable,name=boat_stacks,value=buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack
-# This APL is worse than original after the changes so no point running it
 actions+=/variable,name=tww3_keeper_4pc,value=hero_tree.keeper_of_the_grove&set_bonus.tww3_4pc
-# Keeper 11.2 CA condition
-actions+=/variable,name=kotg_ca_condition,value=(variable.tww3_keeper_4pc&astral_power.deficit<=50&(variable.on_use_trinket=1&trinket.1.cooldown.ready|variable.on_use_trinket=2&trinket.2.cooldown.ready|variable.on_use_trinket=0|variable.on_use_trinket=3&(trinket.1.cooldown.ready|trinket.2.cooldown.ready))&(cooldown.convoke_the_spirits.remains<gcd.max*4|!talent.convoke_the_spirits)&(cooldown.ca_inc.full_recharge_time<buff.dryad.duration&!(fight_remains<(cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration+5>?cooldown.convoke_the_spirits.duration+4*gcd.max+3>?(trinket.1.cooldown.duration+trinket.1.proc.any_dps.duration-20*trinket.1.is.arazs_ritual_forge|trinket.2.cooldown.duration+trinket.2.proc.any_dps.duration-20*trinket.2.is.arazs_ritual_forge))&fight_remains>(cooldown.force_of_nature.duration+cooldown.force_of_nature.remains+buff.harmony_of_the_grove.duration+buff.ca_inc.duration<?cooldown.potion.remains+15))|cooldown.ca_inc.full_recharge_time>30+buff.dryad.duration&fight_remains>(cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-4*gcd.max*talent.control_of_the_dream<?105)+4*gcd.max+5|fight_remains<cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration)&cooldown.force_of_nature.remains<gcd.max*4&!buff.ca_inc.up)|buff.harmony_of_the_grove.up&(buff.dryad.remains<gcd.max&buff.dryad.up|buff.dryads_favor.up)|fight_remains<15
-# Keeper 11.2 Incarn condition
+actions+=/variable,name=kotg_single_ca_condition,value=variable.tww3_keeper_4pc&!buff.ca_inc.up&cooldown.ca_inc.ready&((variable.on_use_trinket=1&(trinket.1.cooldown.ready|fight_remains<trinket.1.cooldown.remains)|variable.on_use_trinket=2&(trinket.2.cooldown.ready|fight_remains<trinket.2.cooldown.remains)|variable.on_use_trinket=0|variable.on_use_trinket=3&(trinket.1.cooldown.ready|trinket.2.cooldown.ready|fight_remains<(trinket.1.cooldown.remains>?trinket.2.cooldown.remains)))&(cooldown.convoke_the_spirits.remains<gcd.max*3-0.5|fight_remains<cooldown.convoke_the_spirits.remains|!talent.convoke_the_spirits)&(cooldown.force_of_nature.remains<gcd.max*2-0.3&!(fight_remains>cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration*0.3+gcd.max&fight_remains<cooldown.force_of_nature.remains+cooldown.force_of_nature.duration+gcd.max*2))&(cooldown.ca_inc.full_recharge_time>20&fight_remains>(cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-gcd.max*5*talent.control_of_the_dream<?105)+gcd.max*6+4+2|fight_remains<cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration+gcd.max&!(fight_remains>cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration*0.3+gcd.max&cooldown.ca_inc.full_recharge_time>cooldown.force_of_nature.remains+cooldown.force_of_nature.duration+gcd.max&fight_remains>cooldown.force_of_nature.remains+cooldown.force_of_nature.duration+buff.harmony_of_the_grove.duration+gcd.max)&!(!cooldown.potion.ready&fight_remains>cooldown.potion.remains+buff.harmony_of_the_grove.duration)|!cooldown.potion.ready&fight_remains<cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration*2+buff.dryad.duration+2&fight_remains>(cooldown.potion.remains+4+buff.dryad.duration+2+gcd.max<?cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration+buff.dryad.duration+2+gcd.max<?(cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-gcd.max*5*talent.control_of_the_dream<?105)+gcd.max*6+4+buff.dryad.duration+2<?(variable.on_use_trinket=1)*trinket.1.cooldown.duration+(variable.on_use_trinket=2)*trinket.2.cooldown.duration+(variable.on_use_trinket=3)*(trinket.1.cooldown.duration>?trinket.2.cooldown.duration)+4+buff.dryad.duration+2+gcd.max))|fight_remains<buff.ca_inc.duration+gcd.max*(1+(dot.moonfire.remains<(3>?fight_remains)+dot.sunfire.remains<(buff.ca_inc.duration+gcd.max>?fight_remains)<?dot.sunfire.remains<(buff.ca_inc.duration>?fight_remains)+dot.moonfire.remains<(3+gcd.max>?fight_remains))))
+actions+=/variable,name=kotg_double_ca_condition,value=variable.tww3_keeper_4pc&!buff.ca_inc.up&(variable.on_use_trinket=1&(trinket.1.cooldown.ready|trinket.1.proc.any_dps.up)|variable.on_use_trinket=2&(trinket.2.cooldown.ready|trinket.2.proc.any_dps.up)|variable.on_use_trinket=0|variable.on_use_trinket=3&(trinket.1.cooldown.ready|trinket.1.proc.any_dps.up|trinket.2.cooldown.ready|trinket.2.proc.any_dps.up))&(cooldown.convoke_the_spirits.remains<gcd.max*2-0.3|!talent.convoke_the_spirits)&(cooldown.ca_inc.full_recharge_time<4+gcd.max*3&(cooldown.force_of_nature.ready|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains<gcd.max*3-0.5&fight_remains<cooldown.force_of_nature.remains+buff.dryad.duration+2+4+gcd.max*4)|(cooldown.ca_inc.full_recharge_time-gcd.max<?cooldown.force_of_nature.remains)<buff.dryad.duration&(fight_remains<cooldown.force_of_nature.remains+buff.dryad.duration+2+4+gcd.max*2|fight_remains<cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration+gcd.max&fight_remains<cooldown.ca_inc.full_recharge_time-buff.dryad.duration-gcd.max))&!(!cooldown.potion.ready&fight_remains<cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration*2+buff.dryad.duration+2+gcd.max&fight_remains>(cooldown.potion.remains+buff.dryad.duration+2+gcd.max<?buff.dryad.duration+2+4+gcd.max*6)&(fight_remains<cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration+buff.dryad.duration+2+gcd.max|fight_remains>((cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-gcd.max*5*talent.control_of_the_dream<?105)+gcd.max*6+4+buff.dryad.duration+2<?(variable.on_use_trinket=1)*trinket.1.cooldown.duration+(variable.on_use_trinket=2)*trinket.2.cooldown.duration+(variable.on_use_trinket=3)*(trinket.1.cooldown.duration>?trinket.2.cooldown.duration)+4+buff.dryad.duration+2+gcd.max)))
+actions+=/variable,name=kotg_second_ca_condition,value=variable.tww3_keeper_4pc&buff.ca_inc.up&((buff.harmony_of_the_grove.up&(cooldown.convoke_the_spirits.remains>30|buff.harmony_of_the_grove.remains<gcd.max*2|buff.dryads_favor.up)&!(!cooldown.potion.ready&fight_remains<cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration+buff.dryad.duration+2+gcd.max&fight_remains>(cooldown.potion.remains+buff.dryad.duration+2+gcd.max<?cooldown.ca_inc.full_recharge_time+buff.dryad.duration+2+gcd.max)&(fight_remains<cooldown.ca_inc.full_recharge_time+buff.dryad.duration+2+gcd.max|fight_remains>((cooldown.convoke_the_spirits.remains-gcd.max*5*talent.control_of_the_dream<?105)+gcd.max*6+4+buff.dryad.duration+2<?(variable.on_use_trinket=1)*trinket.1.cooldown.remains+(variable.on_use_trinket=2)*trinket.2.cooldown.remains+(variable.on_use_trinket=3)*(trinket.1.cooldown.remains>?trinket.2.cooldown.remains)+4+buff.dryad.duration+2+gcd.max))))|fight_remains<buff.dryad.duration+2+gcd.max)
 actions+=/variable,name=kotg_inc_condition,value=variable.tww3_keeper_4pc&astral_power.deficit<=50&(variable.on_use_trinket=1&trinket.1.cooldown.ready|variable.on_use_trinket=2&trinket.2.cooldown.ready|variable.on_use_trinket=0|variable.on_use_trinket=3&(trinket.1.cooldown.ready|trinket.2.cooldown.ready)|(trinket.1.cooldown.remains>cooldown.force_of_nature.duration|trinket.2.cooldown.remains>cooldown.force_of_nature.duration)&cooldown.force_of_nature.remains<gcd.max*2)|fight_remains<(cooldown.ca_inc.full_recharge_time>?cooldown.force_of_nature.remains)
-# Variable to pool Astral Power for CA with 11.2 4pc
-actions+=/variable,name=pool_for_cd,value=astral_power<action.starsurge.cost*3&(variable.on_use_trinket=1&trinket.1.cooldown.ready|variable.on_use_trinket=2&trinket.2.cooldown.ready|variable.on_use_trinket=3&(trinket.1.cooldown.ready|trinket.2.cooldown.ready)|variable.on_use_trinket=0)&(cooldown.convoke_the_spirits.remains<4*gcd.max|!talent.convoke_the_spirits)&(cooldown.ca_inc.full_recharge_time<buff.dryad.duration&!(fight_remains<(cooldown.ca_inc.full_recharge_time+cooldown.ca_inc.duration+5>?cooldown.convoke_the_spirits.duration+4*gcd.max+3>?(trinket.1.cooldown.duration+trinket.1.proc.any_dps.duration-20*trinket.1.is.arazs_ritual_forge|trinket.2.cooldown.duration+trinket.2.proc.any_dps.duration-20*trinket.2.is.arazs_ritual_forge))&fight_remains>(cooldown.force_of_nature.duration+cooldown.force_of_nature.remains+buff.harmony_of_the_grove.duration+buff.ca_inc.duration<?cooldown.potion.remains+15))|cooldown.ca_inc.full_recharge_time>30+buff.dryad.duration&fight_remains>(cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-4*gcd.max*talent.control_of_the_dream<?105)+4*gcd.max+5|fight_remains<cooldown.ca_inc.full_recharge_time+buff.ca_inc.duration)&cooldown.force_of_nature.remains<4*gcd.max&!buff.ca_inc.up
-# Variable to pool Astral Power for Dryads Favor with 11.2 4pc
-actions+=/variable,name=pool_in_ca,value=buff.dryad.up&((astral_power-action.starsurge.cost)+((0<?(buff.dryad.remains-gcd.max))*(action.wrath.energize_amount%action.wrath.execute_time))+variable.passive_asp)<action.starsurge.cost*2
-# Lines for trinkets that require specific use-cases
+actions+=/variable,name=pool_for_cd,value=astral_power<(variable.kotg_single_ca_condition*action.starsurge.cost*2<?variable.kotg_double_ca_condition*(action.starsurge.cost*2-action.force_of_nature.energize_amount)<?(!buff.ca_inc.up&fight_remains>cooldown.ca_inc.remains+2+gcd.max&fight_remains<(fight_remains-cooldown.ca_inc.remains>?buff.ca_inc.duration)+5)*action.starsurge.cost*3<?(!buff.ca_inc.up&fight_remains>cooldown.ca_inc.full_recharge_time+2+gcd.max&fight_remains<(fight_remains-cooldown.ca_inc.full_recharge_time>?buff.ca_inc.duration)+4+8)*(action.starsurge.cost*3-action.force_of_nature.energize_amount*(cooldown.force_of_nature.ready)))
+actions+=/variable,name=pool_in_ca,value=buff.dryad.up&fight_remains>buff.dryad.remains&cooldown.convoke_the_spirits.remains>buff.dryad.remains&(astral_power-action.starsurge.cost+(0<?floor((buff.dryad.remains+2-gcd.max*2-0.5)%action.wrath.execute_time))*action.wrath.energize_amount)<action.starsurge.cost*2
 actions+=/use_item,name=imperfect_ascendancy_serum,if=dot.sunfire.remains>4&(dot.moonfire.remains>4|talent.treants_of_the_moon&(cooldown.force_of_nature.remains<3|buff.harmony_of_the_grove.up)&variable.ca_effective_cd<1|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29
-# Generic trinket conditions
-actions+=/variable,name=generic_trinket_condition,value=(buff.dryad.up|buff.ca_inc.up)|variable.no_cd_talent|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready)|(buff.spymasters_report.stack+variable.ca_effective_cd%6)>29&variable.ca_effective_cd>20|variable.on_use_trinket=0
-actions+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.araz_ritual_forge&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&!trinket.1.is.soulletting_ruby&(variable.on_use_trinket!=1&variable.on_use_trinket!=3&trinket.2.cooldown.remains>20|fight_remains<(20+20*(trinket.2.has_use&trinket.2.cooldown.remains<25))|variable.generic_trinket_condition)
-actions+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.araz_ritual_forge&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&(variable.on_use_trinket<2&trinket.1.cooldown.remains>20|variable.on_use_trinket=3&trinket.1.cooldown.remains>20&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|ceil((fight_remains-15)%trinket.2.cooldown.duration)>ceil((fight_remains-cooldown.force_of_nature.remains-15)%trinket.2.cooldown.duration))|fight_remains<(20+20*(trinket.1.has_use&trinket.1.cooldown.remains<25))|variable.generic_trinket_condition)
+actions+=/variable,name=generic_trinket_condition,value=(buff.dryad.up|buff.ca_inc.up)|variable.no_cd_talent|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready)&!cooldown.ca_inc.ready|(buff.spymasters_report.stack+variable.ca_effective_cd%6)>29&variable.ca_effective_cd>20|variable.on_use_trinket=0
+actions+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&!trinket.1.is.soulletting_ruby&(variable.on_use_trinket!=1&variable.on_use_trinket!=3&trinket.2.cooldown.remains>20|fight_remains<(20+20*(trinket.2.has_use&trinket.2.cooldown.remains<25))|variable.generic_trinket_condition)
+actions+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&(variable.on_use_trinket<2&trinket.1.cooldown.remains>20|variable.on_use_trinket=3&trinket.1.cooldown.remains>20&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|ceil((fight_remains-15)%trinket.2.cooldown.duration)>ceil((fight_remains-cooldown.force_of_nature.remains-15)%trinket.2.cooldown.duration))|fight_remains<(20+20*(trinket.1.has_use&trinket.1.cooldown.remains<25))|variable.generic_trinket_condition)
 actions+=/use_items
 actions+=/potion,if=fight_remains<=30
-# Line needed to enable sims using Power Infusion
-actions+=/invoke_external_buff,name=power_infusion,if=variable.cd_condition&!variable.tww3_keeper_4pc|variable.tww3_keeper_4pc&variable.kotg_ca_condition
-# Troll racial when using no cd talents
+actions+=/invoke_external_buff,name=power_infusion,if=variable.cd_condition&!variable.tww3_keeper_4pc|variable.tww3_keeper_4pc&(variable.kotg_single_ca_condition|variable.kotg_double_ca_condition)
 actions+=/berserking,if=variable.no_cd_talent|fight_remains<15
-# Run AoE action list when more than 1 target
-actions+=/run_action_list,name=aoe,if=spell_targets>1
-# RUN ST action list when just 1 target and no 11.2 Keeper 4pc
-actions+=/run_action_list,name=st,if=!variable.tww3_keeper_4pc&spell_targets=1
-# Run ST action list for 11.2 Keeper 4pc
 actions+=/run_action_list,name=kotg_st,if=variable.tww3_keeper_4pc&spell_targets=1
+actions+=/run_action_list,name=st,if=!variable.tww3_keeper_4pc&spell_targets=1
+actions+=/run_action_list,name=aoe,if=spell_targets>1
 
-# Spend Dryads Favor on AoE (this is wonky)
 actions.aoe=starsurge,if=buff.dryads_favor.up
 actions.aoe+=/wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time
 actions.aoe+=/starfire,if=!variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time
@@ -99,48 +79,40 @@ actions.aoe+=/force_of_nature,if=!hero_tree.keeper_of_the_grove
 actions.aoe+=/starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>3-(talent.umbral_intensity|talent.soul_of_the_forest)
 actions.aoe+=/wrath
 
-# 11.2 Keeper pre_cd list to align cooldowns and trinkets
 actions.kotg_pre_cd=potion,if=buff.ca_inc.up
 actions.kotg_pre_cd+=/use_items,if=buff.ca_inc.up|fight_remains<15
-actions.kotg_pre_cd+=/fury_of_elune,if=!buff.ca_inc.up&variable.kotg_ca_condition|cooldown.convoke_the_spirits.remains>cooldown.fury_of_elune.duration
+actions.kotg_pre_cd+=/fury_of_elune,if=!buff.ca_inc.up&(variable.kotg_single_ca_condition|variable.kotg_double_ca_condition)|cooldown.convoke_the_spirits.remains>cooldown.fury_of_elune.duration
 
-# Make Warrior of Elune work if talented (don't talent this)
 actions.kotg_st=warrior_of_elune,if=variable.eclipse_remains<=7
-# Wait line to prevent not being able to spend dryads favor before CA runs out
-actions.kotg_st+=/wait,if=!talent.incarnation_chosen_of_elune&buff.dryad.up&buff.ca_inc.remains<(cooldown.ca_inc.remains>?2*gcd.max),sec=buff.dryad.remains
-# Enter Eclipse if variable.enter_lunar is true or false
-actions.kotg_st+=/wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time|(variable.kotg_ca_condition|variable.kotg_inc_condition)&buff.parting_skies.up&(variable.eclipse_remains<cast_time|eclipse.in_none)
-actions.kotg_st+=/starfire,if=!variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!buff.dryads_favor.up&(!variable.kotg_ca_condition|!variable.kotg_inc_condition)
-# Use dots if less than 3 seconds remaining or if you're about to use CDs
-actions.kotg_st+=/moonfire,target_if=(remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up))|!dot.moonfire.ticking
-actions.kotg_st+=/sunfire,target_if=remains<3|remains<(12>?buff.ca_inc.duration)&variable.kotg_ca_condition&!buff.ca_inc.up
-# Run kotg_pre_cd list for cooldwns
+actions.kotg_st+=/wait,if=!talent.incarnation_chosen_of_elune&buff.dryad.up&(buff.ca_inc.remains<(cooldown.ca_inc.remains>?gcd.max*2)|buff.dryad.remains<gcd.max&fight_remains>buff.dryad.remains&fight_remains<buff.dryad.remains+gcd.max|buff.dryad.remains<gcd.max&fight_remains>buff.dryad.remains+gcd.max&fight_remains<buff.dryad.remains+gcd.max*2),sec=buff.dryad.remains
+actions.kotg_st+=/wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time|(variable.kotg_single_ca_condition|variable.kotg_double_ca_condition|variable.kotg_inc_condition)&buff.parting_skies.up&(variable.eclipse_remains<cast_time|eclipse.in_none)
+actions.kotg_st+=/starfire,if=!variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!buff.dryads_favor.up&!(variable.kotg_single_ca_condition|variable.kotg_double_ca_condition|variable.kotg_second_ca_condition|variable.kotg_inc_condition)
+actions.kotg_st+=/moonfire,target_if=(remains<(3>?fight_remains)&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up|variable.kotg_single_ca_condition))|!dot.moonfire.ticking
+actions.kotg_st+=/sunfire,target_if=remains<(3>?fight_remains)|variable.kotg_single_ca_condition&remains<(buff.dryad.duration+2>?fight_remains)&(astral_power>=action.starsurge.cost*2-action.sunfire.energize_amount|fight_remains<buff.ca_inc.duration+gcd.max*2)|variable.kotg_double_ca_condition&!buff.harmony_of_the_grove.up&remains<(buff.harmony_of_the_grove.duration>?fight_remains)&(astral_power>=action.starsurge.cost*2-action.sunfire.energize_amount-action.force_of_nature.energize_amount*cooldown.force_of_nature.ready|fight_remains<buff.dryad.duration+2+4+gcd.max*5)&!buff.ca_inc.up
 actions.kotg_st+=/call_action_list,name=kotg_pre_cd
-# Cooldowns
-actions.kotg_st+=/celestial_alignment,if=variable.kotg_ca_condition
+actions.kotg_st+=/force_of_nature,if=variable.kotg_double_ca_condition&astral_power>=action.starsurge.cost*2-action.force_of_nature.energize_amount&!(buff.harmony_of_the_grove.duration<cooldown.ca_inc.full_recharge_time+gcd.max*2)
+actions.kotg_st+=/celestial_alignment,if=variable.kotg_single_ca_condition&(astral_power>=action.starsurge.cost*2|fight_remains<buff.ca_inc.duration+gcd.max)
+actions.kotg_st+=/celestial_alignment,if=variable.kotg_double_ca_condition&(astral_power>=action.starsurge.cost*2|fight_remains<buff.dryad.duration+2+4+gcd.max*3)
+actions.kotg_st+=/force_of_nature,if=(buff.dryads_favor.up|cooldown.ca_inc.remains<gcd.max&fight_remains<buff.dryad.duration+2+gcd.max*2)&buff.ca_inc.up
+actions.kotg_st+=/celestial_alignment,if=variable.kotg_second_ca_condition
 actions.kotg_st+=/incarnation,if=variable.kotg_inc_condition
-# Starsurge with 4pc buff and CA/Incarn up
 actions.kotg_st+=/starsurge,if=buff.dryads_favor.up&buff.ca_inc.up
-# Enter Lunar from out of Eclipse
 actions.kotg_st+=/wrath,if=variable.enter_lunar&(eclipse.in_none|variable.eclipse_remains<cast_time)
 actions.kotg_st+=/starfire,if=!variable.enter_lunar&(eclipse.in_none|variable.eclipse_remains<cast_time)
-# Use Stellar Flare if you're about to use CDs and the duration is less than the duration of your CDs
 actions.kotg_st+=/stellar_flare,if=remains<=buff.ca_inc.duration&variable.pool_for_cd|remains<=buff.ca_inc.up&!buff.dryads_favor.up
-# Wrath to pool AP before using CDs
+actions.kotg_st+=/force_of_nature,if=buff.dryad.up&buff.harmony_of_the_grove.duration>(buff.dryad.remains+2>?cooldown.ca_inc.remains+gcd.max*2+0.5)
+actions.kotg_st+=/force_of_nature,if=!buff.ca_inc.up&variable.boat_stacks>=8&fight_remains>=cooldown.convoke_the_spirits.duration+cooldown.convoke_the_spirits.remains+4+gcd.max&!((cooldown.force_of_nature.duration>cooldown.convoke_the_spirits.remains&fight_remains<(cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration-(cooldown.force_of_nature.duration+gcd.max*5)*talent.control_of_the_dream<?105)+cooldown.force_of_nature.duration+4+gcd.max*6)|(variable.on_use_trinket=1&fight_remains>trinket.1.cooldown.duration+trinket.1.cooldown.remains+4+buff.dryad.duration+2+gcd.max&cooldown.force_of_nature.duration>trinket.1.cooldown.remains&fight_remains<cooldown.force_of_nature.duration+trinket.1.cooldown.duration+4+buff.dryad.duration+2+gcd.max)|(variable.on_use_trinket=2&fight_remains>trinket.2.cooldown.duration+trinket.2.cooldown.remains+4+buff.dryad.duration+2+gcd.max&cooldown.force_of_nature.duration>trinket.2.cooldown.remains&fight_remains<cooldown.force_of_nature.duration+trinket.2.cooldown.duration+4+buff.dryad.duration+2+gcd.max))&!((cooldown.convoke_the_spirits.remains<?(variable.on_use_trinket=1)*trinket.1.cooldown.remains<?(variable.on_use_trinket=2)*trinket.2.cooldown.remains<?(variable.on_use_trinket=3)*(trinket.1.cooldown.remains>?trinket.2.cooldown.remains))<cooldown.force_of_nature.duration-(60-talent.early_spring*15)*0.5)
+actions.kotg_st+=/force_of_nature,if=!buff.ca_inc.up&variable.boat_stacks>=8&fight_remains<cooldown.convoke_the_spirits.duration+cooldown.convoke_the_spirits.remains+4+gcd.max&!(fight_remains>cooldown.ca_inc.remains+buff.harmony_of_the_grove.duration*0.6+gcd.max&fight_remains<cooldown.force_of_nature.duration+buff.harmony_of_the_grove.duration*0.6+gcd.max*2)&!(fight_remains>cooldown.ca_inc.full_recharge_time+buff.dryad.duration+2+gcd.max&fight_remains<cooldown.force_of_nature.duration+buff.dryad.duration+2+gcd.max*2)&!(fight_remains<cooldown.force_of_nature.duration+gcd.max*2)
+actions.kotg_st+=/force_of_nature,if=fight_remains<buff.harmony_of_the_grove.duration+gcd.max
+actions.kotg_st+=/starsurge,if=buff.dryad.remains>buff.dryad.duration-gcd.max-0.3
 actions.kotg_st+=/wrath,if=variable.pool_for_cd
-# Hard force 2 Starsurge casts at start of Dryad
-actions.kotg_st+=/starsurge,if=buff.dryad.remains>8&buff.dryad.up
-# Use Treants if Dryad is up and the duration is less than Treants duration + 2 globals
-actions.kotg_st+=/force_of_nature,if=buff.dryad.up&buff.harmony_of_the_grove.duration>buff.dryad.remains+2|!buff.ca_inc.up&(cooldown.force_of_nature.duration<5+(cooldown.convoke_the_spirits.remains+(15*talent.control_of_the_dream)<?trinket.1.cooldown.remains+4*gcd.max)&!(fight_remains<cooldown.force_of_nature.duration+0.5*buff.harmony_of_the_grove.duration&fight_remains>(cooldown.ca_inc.remains+buff.ca_inc.duration>?(trinket.1.cooldown.remains+trinket.1.proc.any_dps.duration-20*trinket.1.is.arazs_ritual_forge|trinket.2.cooldown.remains+trinket.2.proc.any_dps.duration-20*trinket.2.is.arazs_ritual_forge)))|fight_remains<cooldown.convoke_the_spirits.duration+cooldown.convoke_the_spirits.remains+2&fight_remains>(cooldown.force_of_nature.duration+buff.harmony_of_the_grove.duration+5<?cooldown.ca_inc.full_recharge_time+5))|fight_remains<buff.harmony_of_the_grove.duration+gcd.max+1
-# Proceed with rotation
 actions.kotg_st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit&(cooldown.convoke_the_spirits.remains>buff.fury_of_elune.duration|!talent.convoke_the_spirits)|fight_remains<8+gcd.max
 actions.kotg_st+=/starfall,if=buff.starweavers_warp.up
 actions.kotg_st+=/starsurge,if=talent.starlord&buff.starlord.stack<3&!variable.pool_in_ca&!(variable.convoke_condition&cooldown.convoke_the_spirits.ready)
-actions.kotg_st+=/sunfire,target_if=refreshable
-actions.kotg_st+=/moonfire,target_if=refreshable&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)
-# Convoke when Convoke variable is true and Harmony of the Grove is up
-actions.kotg_st+=/starsurge,if=cooldown.convoke_the_spirits.remains<gcd.max*2&variable.convoke_condition&astral_power>action.starsurge.cost&buff.dryad.remains>4+gcd.max&buff.dryad.up&fight_remains>5
-actions.kotg_st+=/convoke_the_spirits,if=variable.convoke_condition&buff.harmony_of_the_grove.up
+actions.kotg_st+=/sunfire,target_if=refreshable&remains<fight_remains
+actions.kotg_st+=/moonfire,target_if=refreshable&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)&remains<fight_remains
+actions.kotg_st+=/starsurge,if=cooldown.convoke_the_spirits.remains<gcd.max*2&variable.convoke_condition&!(cooldown.ca_inc.remains<buff.dryad.remains&(buff.dryad.remains<4+gcd.max|fight_remains>cooldown.ca_inc.remains+buff.dryad.duration+2&fight_remains<4+buff.dryad.duration+2+gcd.max))&!(buff.harmony_of_the_grove.remains<4+gcd.max)&!(cooldown.ca_inc.remains<buff.harmony_of_the_grove.remains-gcd.max&buff.harmony_of_the_grove.remains<4+gcd.max*2)&!(fight_remains<4+gcd.max)&!(buff.ca_inc.remains<4+gcd.max)
+actions.kotg_st+=/convoke_the_spirits,if=variable.convoke_condition&!(cooldown.ca_inc.remains<buff.dryad.remains&(buff.dryad.remains<4|fight_remains>cooldown.ca_inc.remains+buff.dryad.duration+2&fight_remains<4+buff.dryad.duration+2))
 actions.kotg_st+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets)&!buff.ca_inc.up
 actions.kotg_st+=/starsurge,if=(buff.starlord.remains>4&variable.boat_stacks>=7|fight_remains<4)&!variable.pool_in_ca
 actions.kotg_st+=/new_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&((buff.harmony_of_the_grove.up&!buff.ca_inc.up|buff.ca_inc.up&!cooldown.ca_inc.ready)|cooldown.new_moon.full_recharge_time<cooldown.convoke_the_spirits.remains)|fight_remains<20
@@ -151,7 +123,6 @@ actions.kotg_st+=/starsurge,if=(astral_power.deficit<variable.passive_asp+action
 actions.kotg_st+=/wild_mushroom,if=!prev_gcd.1.wild_mushroom&dot.fungal_growth.remains<2
 actions.kotg_st+=/wrath
 
-# PRE_CD
 actions.pre_cd=use_item,name=spymasters_web,if=variable.cd_condition&(buff.spymasters_report.stack>29|fight_remains<cooldown.ca_inc.duration)
 actions.pre_cd+=/do_treacherous_transmitter_task,if=variable.cd_condition|buff.harmony_of_the_grove.up&(buff.spymasters_report.stack>29|!trinket.1.is.spymasters_web|!trinket.2.is.spymasters_web)
 actions.pre_cd+=/berserking,if=variable.cd_condition
@@ -160,7 +131,6 @@ actions.pre_cd+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket
 actions.pre_cd+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&variable.on_use_trinket=2&variable.cd_condition
 actions.pre_cd+=/use_item,name=bestinslots,if=hero_tree.keeper_of_the_grove&buff.harmony_of_the_grove.up|hero_tree.elunes_chosen&(cooldown.ca_inc.full_recharge_time>20|buff.ca_inc.up)
 
-# ST
 actions.st=warrior_of_elune,if=talent.lunar_calling|!talent.lunar_calling&variable.eclipse_remains<=7
 actions.st+=/wrath,if=variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition
 actions.st+=/starfire,if=!variable.enter_lunar&eclipse.in_eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition

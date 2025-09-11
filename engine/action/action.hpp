@@ -1232,6 +1232,7 @@ struct call_action_list_t : public action_t
   action_priority_list_t* alist;
 
   call_action_list_t( player_t*, util::string_view );
+  void init_finished() override;
   bool action_ready() override;
   void execute() override
   { assert( 0 ); }
@@ -1244,6 +1245,7 @@ struct swap_action_list_t : public action_t
   swap_action_list_t( player_t* player, util::string_view options_str,
     util::string_view name = "swap_action_list" );
 
+  void init_finished() override;
   void execute() override;
   bool ready() override;
 };

@@ -16981,4 +16981,3 @@ Effects          :
 Description      : $@spelldesc1235964
 Tooltip          : Your spell damage is increased by $s1%
 
-

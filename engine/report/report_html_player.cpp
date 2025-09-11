@@ -28,13 +28,30 @@
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
-
+// local enums
 enum stats_mask_e
 {
   MASK_DMG     = 1 << STATS_DMG,
   MASK_HEAL    = 1 << STATS_HEAL,
   MASK_ABSORB  = 1 << STATS_ABSORB,
   MASK_NEUTRAL = 1 << STATS_NEUTRAL
+};
+
+enum sort_flag_e : uint8_t
+{
+  SORT_FLAG_NONE  = 0x00,
+  SORT_FLAG_ASC   = 0x01,
+  SORT_FLAG_ALPHA = 0x02,
+  SORT_FLAG_LEFT  = 0x04,
+  SORT_FLAG_BOTH  = 0x08,
+};
+
+enum merge_stat : uint8_t
+{
+  MERGE_DPS     = 0x01,
+  MERGE_DPSPCT  = 0x02,
+  MERGE_COUNT   = 0x04,
+  MERGE_CRITPCT = 0x08,
 };
 
 bool has_avoidance( const std::array<stats_t::stats_results_t, RESULT_MAX>& s )
@@ -158,18 +175,9 @@ bool use_small_table( const player_t* p )
   return p->collected_data.dps.max() >= cutoff || p->collected_data.hps.max() >= cutoff;
 }
 
-enum sort_flag_e : unsigned
-{
-  SORT_FLAG_NONE  = 0x00,
-  SORT_FLAG_ASC   = 0x01,
-  SORT_FLAG_ALPHA = 0x02,
-  SORT_FLAG_LEFT  = 0x04,
-  SORT_FLAG_BOTH  = 0x08,
-};
-
 void sorttable_header( report::sc_html_stream& os,                    // output stream to html report
                        std::string_view header,                     // column header name
-                       unsigned flag = SORT_FLAG_NONE,                // bitflags to set header class
+                       uint8_t flag = SORT_FLAG_NONE,                // bitflags to set header class
                        std::string_view helptext = {} )  // optional hover help id
 {
   std::string class_str = "toggle-sort";
@@ -197,7 +205,7 @@ void sorttable_header( report::sc_html_stream& os,                    // output 
 }
 
 void sorttable_help_header( report::sc_html_stream& os, std::string_view header, std::string_view helptext,
-                            unsigned flag = SORT_FLAG_NONE )
+                            uint8_t flag = SORT_FLAG_NONE )
 {
   sorttable_header( os, header, flag, helptext );
 }
@@ -397,7 +405,7 @@ void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const sta
 }
 
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t& s,
-                                const player_t& p )
+                                const player_t& p, uint8_t merge_flags )
 {
   using full_result_t = std::array<stats_t::stats_results_t, FULLTYPE_MAX>;
   using result_t = std::array<stats_t::stats_results_t, RESULT_MAX>;
@@ -424,15 +432,20 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     collect_compound_stats( compound_stats, &s, compound_count, compound_tick_time );
     compound_stats->analyze();
 
-    count_str = fmt::format( "&#160;({:.1Lf})", compound_count );
+    if ( merge_flags & MERGE_COUNT )
+      count_str = fmt::format( "&#160;({:.1Lf})", compound_count );
 
-    const auto& compound_dr = compound_stats->direct_results;
-    const auto& compound_tr = compound_stats->tick_results;
+    if ( merge_flags & MERGE_CRITPCT )
+    {
+      const auto& compound_dr = compound_stats->direct_results;
+      const auto& compound_tr = compound_stats->tick_results;
 
-    double compound_critpct = result_type == 1 ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
-                                               : pct_value<full_result_t, full_result_e>( compound_dr,
-                                                 { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
-    critpct_str = fmt::format( "&#160;({:.1f}%)", compound_critpct );
+      double compound_critpct = result_type == 1
+                                  ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
+                                  : pct_value<full_result_t, full_result_e>(
+                                      compound_dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
+      critpct_str = fmt::format( "&#160;({:.1f}%)", compound_critpct );
+    }
 
     if ( show_uppct )
     {
@@ -501,7 +514,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
 }
 
 void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, const stats_t& s, int n_columns,
-                             const player_t* actor = nullptr, int indentation = 0 )
+                             const player_t* actor = nullptr, uint8_t merge_flags = 0, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
   bool hasparent = s.parent && s.parent->player == actor && ( s.mask() & s.parent->mask() );
@@ -546,7 +559,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     report_helper::collect_aps( &s, cAPS, cAPSpct );
 
-    if ( cAPS > s.portion_aps.mean() )
+    if ( merge_flags & MERGE_DPS && cAPS > s.portion_aps.mean() )
       compound_aps = fmt::format( "&#160;({:.0Lf})", cAPS );
 
     // For stats not belonging to the original actor (eg. pet spells added as child to the owner), report aps / apse,
@@ -554,7 +567,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( s.player != actor )
       compound_aps = fmt::format( "&#160;/&#160;{:.0Lf}", s.portion_apse.mean() );
 
-    if ( cAPSpct > s.portion_amount )
+    if ( merge_flags & MERGE_DPSPCT && cAPSpct > s.portion_amount )
       compound_aps_pct = fmt::format( "&#160;({:.1f}%)", cAPSpct * 100 );
 
     os.format( R"(<td{}>{:.0Lf}{}</td><td{}>{:.1f}%{}</td>)",
@@ -567,6 +580,14 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
              rowspan, s.num_executes.pretty_mean(),
              rowspan, s.total_intervals.pretty_mean() );
 
+  // Execute time & time percent
+  auto total_time = s.player != actor || s.background ? 0.0 : s.total_time.total_seconds();
+  std::string time_str = total_time ? fmt::format( "{:.1Lf}s&#160;/&#160;{:.1Lf}%", total_time,
+                                                   total_time * 100 / p.sim->max_time.total_seconds() )
+                                    : "0.0s";
+
+  os.format( R"(<td{}>{}</td>)", rowspan, time_str );
+
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
@@ -578,12 +599,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     bool periodic_only = false;
     if ( s.has_direct_amount_results() )
     {
-      print_html_action_summary( os, stats_mask, 0, s, p );
+      print_html_action_summary( os, stats_mask, 0, s, p, merge_flags);
     }
     else if ( s.has_tick_amount_results() )
     {
       periodic_only = true;
-      print_html_action_summary( os, stats_mask, 1, s, p );
+      print_html_action_summary( os, stats_mask, 1, s, p, merge_flags );
     }
     else
       os.format( R"(<td colspan="{}"></td>)", n_columns );
@@ -593,7 +614,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( !periodic_only && s.has_tick_amount_results() )
     {
       os.format( R"(<tr class="childrow{} right">)", row_class );
-      print_html_action_summary( os, stats_mask, 1, s, p );
+      print_html_action_summary( os, stats_mask, 1, s, p, merge_flags );
       os << "</tr>\n";
     }
   }
@@ -3345,6 +3366,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   {
     os.format( "<td>{:.1f}</td>"
                "<td>{:.1f}</td>"
+               "<td>{:.1f}</td>"
                "<td>{:.1f}s</td>"
                "<td>{:.1f}s</td>"
                "<td>{:.1f}s</td>"
@@ -3354,6 +3376,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                "<td>{:.1f}</td>\n",
                b.avg_start.pretty_mean(),
                b.avg_refresh.pretty_mean(),
+               b.avg_start.pretty_mean() + b.avg_refresh.pretty_mean(),
                b.start_intervals.pretty_mean(),
                b.trigger_intervals.pretty_mean(),
                b.duration_lengths.pretty_mean(),
@@ -3607,16 +3630,18 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
   // Dynamic Buffs table
   os << "<table class=\"sc sort stripebody\">\n"
-     << "<thead>\n"
-     << "<tr>\n";
+     << "<thead>\n";
+
+  os << R"(<tr><th></th><th colspan="3">Trigger Count</th><th colspan="2">Interval</th></tr><tr>)";
 
   sorttable_help_header( os, "Dynamic Buffs", "help-dynamic-buffs", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Start" );
   sorttable_header( os, "Refresh" );
-  sorttable_header( os, "Interval", SORT_FLAG_ASC );
+  sorttable_header( os, "Total" );
+  sorttable_header( os, "Start", SORT_FLAG_ASC );
   sorttable_header( os, "Trigger", SORT_FLAG_ASC );
-  sorttable_header( os, "Avg Dur" );
-  sorttable_header( os, "Up-Time" );
+  sorttable_header( os, "Duration" );
+  sorttable_header( os, "Uptime" );
   sorttable_help_header( os, "Benefit", "help-buff-benefit" );
   sorttable_header( os, "Overflow" );
   sorttable_header( os, "Expiry" );
@@ -4053,7 +4078,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
 }
 
 void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned mask, const stats_t& s,
-                           const player_t* actor, int level = 0 )
+                           const player_t* actor, uint8_t merge_flags = 0, int level = 0 )
 {
   if (level > 2 )
     return;
@@ -4064,11 +4089,11 @@ void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned m
   if ( level == 0 )
     os << "<tbody>\n";
 
-  print_html_action_info( os, mask, s, cols, actor, level );
+  print_html_action_info( os, mask, s, cols, actor, merge_flags, level );
 
   for ( auto child_stats : s.children )
   {
-    output_player_action( os, cols, mask, *child_stats, actor, level + 1 );
+    output_player_action( os, cols, mask, *child_stats, actor, merge_flags, level + 1 );
   }
   if ( level == 0 )
     os << "</tbody>\n";
@@ -4079,8 +4104,25 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   if ( actor.collected_data.dmg.max() == 0 && !actor.sim->debug )
     return;
 
+  uint8_t merge_flags = 0;
+  if ( !actor.sim->report_merged_stats.empty() )
+  {
+    auto splits = util::string_split<std::string_view>( actor.sim->report_merged_stats, "," );
+    for ( auto str : splits )
+    {
+      if ( str == "dps" )
+        merge_flags |= MERGE_DPS;
+      else if ( str == "dpspct" )
+        merge_flags |= MERGE_DPSPCT;
+      else if ( str == "count" )
+        merge_flags |= MERGE_COUNT;
+      else if ( str == "critpct" )
+        merge_flags |= MERGE_CRITPCT;
+    }
+  }
+
   // Number of static columns in table
-  const int static_columns = 5;
+  static constexpr int static_columns = 6;
   // Number of dynamically changing columns
   int n_optional_columns = 6;
 
@@ -4098,6 +4140,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   sorttable_help_header( os, "DPS%", "help-dps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
+  sorttable_help_header( os, "Total Time", "help-total-time" );
   sorttable_help_header( os, "DPE", "help-dpe" );
   sorttable_help_header( os, "DPET", "help-dpet" );
   // Optional columns begin here
@@ -4149,7 +4192,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   {
     if ( stat->compound_amount > 0 )
     {
-      output_player_action( os, n_optional_columns, MASK_DMG, *stat, &actor );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, &actor, merge_flags );
     }
   }
 
@@ -4188,7 +4231,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
             static_columns + n_optional_columns );
         os << "</tbody>\n";
       }
-      output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet, merge_flags );
     }
   }
   os << "</table>\n";

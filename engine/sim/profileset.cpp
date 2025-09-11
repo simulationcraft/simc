@@ -204,45 +204,36 @@ size_t profilesets_t::done_profilesets() const
   return m_work_index - n_workers();
 }
 
-sim_control_t* profilesets_t::create_sim_options( const sim_control_t*            original,
-                                                  const std::vector<std::string>& opts,
+sim_control_t* profilesets_t::create_sim_options( const sim_control_t* original, const std::vector<std::string>& opts,
                                                   unsigned main_actor_index )
 {
-  if ( original == nullptr )
-  {
+  if ( !original )
     return nullptr;
-  }
 
   sim_control_t new_options;
 
-  try
-  {
-    new_options.options.parse_args( opts );
-  }
-  catch ( const std::exception& e ) {
-    std::cerr << "ERROR! Incorrect option format: " << e.what() << std::endl;
-    return nullptr;
-  }
+  new_options.options.parse_args( opts );
 
   // Find the insertion indices only once, and cache the positions to speed up init.
   if ( m_actor_indices.empty() )
   {
-    for ( size_t i = 0; i < original -> options.size(); i++ )
+    for ( size_t i = 0; i < original->options.size(); i++ )
     {
-      if ( is_actor_scope( original -> options[ i ] ) )
+      if ( is_actor_scope( original->options[ i ] ) )
         m_actor_indices.push_back( i );
     }
 
     if ( m_actor_indices.empty() )
     {
-      std::cerr << "ERROR! No start of player-scope defined for the simulation" << std::endl;
+      throw std::invalid_argument( "No start of player-scope defined for this simulation." );
       return nullptr;
     }
 
     if ( main_actor_index >= m_actor_indices.size() )
     {
-      std::cerr << "ERROR! Option profileset_main_actor_index=" << main_actor_index << " is out of range. Only "
-                << m_actor_indices.size() << " actors are defined." << std::endl;
+      throw std::invalid_argument(
+        fmt::format( "'profileset_main_actor_index={}' out of range, only {} actors are defined.", main_actor_index,
+                     m_actor_indices.size() ) );
       return nullptr;
     }
 
@@ -262,7 +253,8 @@ sim_control_t* profilesets_t::create_sim_options( const sim_control_t*          
   {
     if ( is_actor_scope( t ) )
     {
-      std::cerr << fmt::format("ERROR! Profilesets cannot define additional actors: {}={}", t.name, t.value) << std::endl;
+      throw std::invalid_argument(
+        fmt::format( "Profilesets cannot define additional actors '{}={}'.", t.name, t.value ) );
       return nullptr;
     }
 
@@ -411,22 +403,27 @@ void worker_t::execute()
 {
   try
   {
-    m_sim = new sim_t( m_parent, 0, m_profileset -> options() );
+    m_sim = new sim_t( m_parent, 0, m_profileset->options() );
 
     simulate_profileset( m_parent, *m_profileset, m_sim );
   }
-  catch (const std::exception& e )
+  catch ( const std::exception& )
   {
-    fmt::print( stderr, "\n\nError in profileset worker: " );
-    util::print_chained_exception( e, stderr );
-    fmt::print( stderr, "\n\n" );
-    std::fflush( stderr );
-    // TODO: find out how to cancel profilesets without deadlock.
+    try
+    {
+      std::throw_with_nested( std::runtime_error( fmt::format( "Profileset '{}' worker", m_profileset->name() ) ) );
+    }
+    catch ( const std::exception& )
+    {
+      AUTO_LOCK( m_parent->exception_mutex );
+      m_parent->exception_queue.push_back( std::current_exception() );
+      // TODO: find out how to cancel profilesets without deadlock.
+    }
   }
 
   m_done = true;
 
-  m_master -> notify_worker();
+  m_master->notify_worker();
 }
 
 // Count the number of running workers
@@ -497,17 +494,22 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 {
   if ( m_mode == SEQUENTIAL )
   {
-    auto original_opts = parent -> control;
+    auto original_opts = parent->control;
+    parent->control = ptr_set->options();
 
-    parent -> control = ptr_set -> options();
+    try
+    {
+      sim_t* profile_sim = new sim_t( parent );
 
-    sim_t* profile_sim = new sim_t( parent );
+      parent->control = original_opts;
+      simulate_profileset( parent, *ptr_set, profile_sim );
 
-    parent -> control = original_opts;
-
-    simulate_profileset( parent, *ptr_set, profile_sim );
-
-    delete profile_sim;
+      delete profile_sim;
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( std::runtime_error( fmt::format( "Profileset '{}'", ptr_set->name() ) ) );
+    }
   }
   // Parallel processing
   else
@@ -539,7 +541,7 @@ bool profilesets_t::parse( sim_t* sim )
 {
   while ( true )
   {
-    if ( sim -> canceled )
+    if ( sim->canceled )
     {
       set_state( DONE );
       m_control.notify_one();
@@ -548,64 +550,82 @@ bool profilesets_t::parse( sim_t* sim )
 
     m_mutex.lock();
 
-    if ( m_init_index == sim -> profileset_map.cend() )
+    if ( m_init_index == sim->profileset_map.cend() )
     {
       m_mutex.unlock();
       break;
     }
 
-    const auto& profileset_name = m_init_index -> first;
-    const auto& profileset_opts = m_init_index -> second;
+    const auto& profileset_name = m_init_index->first;
+    const auto& profileset_opts = m_init_index->second;
 
     ++m_init_index;
 
     m_mutex.unlock();
 
-    auto control = create_sim_options( m_original.get(), profileset_opts, sim->profileset_main_actor_index );
-    if ( control == nullptr )
-    {
-      set_state( DONE );
-      m_control.notify_one();
-      return false;
-    }
+    sim_control_t* control = nullptr;
+    bool has_output_opts = false;
 
-    auto has_output_opts = range::any_of( profileset_opts, []( util::string_view opt ) {
-      auto name_end = opt.find( "=" );
-      if ( name_end == std::string::npos )
-      {
-        return false;
-      }
-
-      auto name = opt.substr( 0, name_end );
-
-      return util::str_compare_ci( name, "output" ) ||
-             util::str_compare_ci( name, "html" ) ||
-             util::str_compare_ci( name, "json2" );
-    } );
-
-    // Test that profileset options are OK, up to the simulation initialization
     try
     {
-      std::unique_ptr<sim_t> test_sim = std::make_unique<sim_t>();
-      test_sim -> profileset_enabled = true;
+      try
+      {
+        control = create_sim_options( m_original.get(), profileset_opts, sim->profileset_main_actor_index );
+        if ( !control )
+        {
+          set_state( DONE );
+          m_control.notify_one();
+          return false;
+        }
+      }
+      catch ( const std::exception& )
+      {
+        set_state( DONE );
+        m_control.notify_one();
+        if ( control )
+          delete control;
 
-      test_sim -> setup( control );
-      test_sim -> init();
+        std::throw_with_nested( sc_invalid_sim_argument( "Invalid profileset option" ) );
+      }
+
+      has_output_opts = range::any_of( profileset_opts, []( std::string_view opt ) {
+        auto name_end = opt.find( "=" );
+        if ( name_end == std::string::npos )
+          return false;
+
+        auto name = opt.substr( 0, name_end );
+
+        return util::str_compare_ci( name, "output" ) || util::str_compare_ci( name, "html" ) ||
+               util::str_compare_ci( name, "json2" );
+      } );
+
+      // Test that profileset options are OK, up to the simulation initialization
+      auto test_sim = std::make_unique<sim_t>();
+      test_sim->profileset_enabled = true;
+      test_sim->setup( control );
+      test_sim->init();
     }
-    catch ( const std::exception& e )
+    catch ( const std::exception& )
     {
-      fmt::print( stderr, "ERROR! Profileset '{}' Setup failure: ", profileset_name );
-      util::print_chained_exception( e, stderr );
-      fmt::print( stderr, "\n" );
-      set_state( DONE );
-      m_control.notify_one();
-      delete control;
-      return false;
+      try
+      {
+        set_state( DONE );
+        m_control.notify_one();
+        if ( control )
+          delete control;
+
+        std::throw_with_nested( std::runtime_error( fmt::format( "Profileset '{}'", profileset_name ) ) );
+      }
+      catch ( const std::exception& )
+      {
+        AUTO_LOCK( sim->exception_mutex );
+        sim->exception_queue.push_back( std::current_exception() );
+        return false;
+      }
     }
 
     m_mutex.lock();
-    m_profilesets.push_back( std::make_unique<profile_set_t>(
-        profileset_name, control, has_output_opts ) );
+    m_profilesets.push_back( std::make_unique<profile_set_t>( profileset_name, control, has_output_opts ) );
     m_control.notify_one();
     m_mutex.unlock();
   }
@@ -778,6 +798,10 @@ bool profilesets_t::iterate( sim_t* parent )
   parent -> control = original_opts;
 
   set_state( DONE );
+
+  // rethrow any accumulated exceptions
+  if ( parent->rethrow_exception_queue() )
+    return false;
 
   return true;
 }

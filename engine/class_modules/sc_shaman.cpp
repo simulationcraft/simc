@@ -2342,8 +2342,7 @@ struct wolves_active_for_t : public expr_t
   {
     if ( subexpr.size() == 0 || ( subexpr.size() > 0 && !expr_ ) )
     {
-      throw std::invalid_argument( fmt::format("{} unable to generate expression from {}",
-        p_->name(), subexpr ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unable to generate expression from '{}'.", subexpr ) );
     }
   }
 
@@ -12050,8 +12049,8 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     auto rotation_type = parse_rotation( splits[ 1 ] );
     if ( rotation_type == ROTATION_INVALID )
     {
-      throw std::invalid_argument( fmt::format( "Invalid rotation type {}, available values: {}",
-                                               splits[ 1 ], rotation_options() ) );
+      throw sc_invalid_apl_argument(
+        fmt::format( "Invalid rotation type {}, available values: {}", splits[ 1 ], rotation_options() ) );
     }
 
     return expr_t::create_constant( name, rotation_type == options.rotation );
@@ -12247,7 +12246,7 @@ void shaman_t::create_options()
     options.rotation = parse_rotation( val );
     if ( options.rotation == ROTATION_INVALID )
     {
-      throw std::invalid_argument( fmt::format( "Available options: {}.", rotation_options() ) );
+      throw sc_invalid_player_argument( fmt::format( "Available options: {}", rotation_options() ) );
     }
 
     return true;

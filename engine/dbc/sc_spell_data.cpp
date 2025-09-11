@@ -598,10 +598,10 @@ struct spell_list_expr_t : public spell_data_expr_t
     return res;
   }
 
-  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
-    throw std::invalid_argument(
-            fmt::format( "Unsupported right side operand '{}' ({}) for operator {}",
-              op, other.name_str, static_cast<int>(other.result_tok) ) );
+  void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const
+  {
+    throw std::invalid_argument( fmt::format( "Unsupported right side operand '{}' ({}) for operator {}.", op,
+                                              other.name_str, static_cast<int>( other.result_tok ) ) );
   }
 };
 
@@ -632,8 +632,8 @@ struct sd_expr_binary_t : public spell_list_expr_t
         valid_types.push_back( std::string( entry.name ) );
 
       throw std::invalid_argument(
-        fmt::format( "Invalid input type '{}' for binary operator '{}' with '{}'.\nValid types are: {}",
-                     left->name(), name(), right->name(), util::string_join( valid_types ) ) );
+        fmt::format( "Invalid input type '{}' for binary operator '{}' with '{}', valid types are: {}", left->name(),
+                     name(), right->name(), util::string_join( valid_types ) ) );
     }
 
     result_tok = expression::TOK_SPELL_LIST;
@@ -651,11 +651,10 @@ struct sd_expr_binary_t : public spell_list_expr_t
       case expression::TOK_LTEQ:  result_spell_list = *left <= *right; break;
       case expression::TOK_GT:    result_spell_list = *left > *right; break;
       case expression::TOK_GTEQ:  result_spell_list = *left >= *right; break;
-      case expression::TOK_IN:    result_spell_list = left -> in( *right ); break;
-      case expression::TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
+      case expression::TOK_IN:    result_spell_list = left->in( *right ); break;
+      case expression::TOK_NOTIN: result_spell_list = left->not_in( *right ); break;
       default:
-        throw std::invalid_argument(fmt::format("Unsupported spell query operator {}", operation));
-        break;
+        throw std::invalid_argument( fmt::format( "Unsupported spell query operator {}.", operation ) ); break;
     }
 
     return result_tok;
@@ -827,10 +826,11 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return build_list( other, expression::TOK_NOTIN );
   }
 
-  /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
-    throw std::invalid_argument(
-            fmt::format("Unsupported expression operator {} for left='{}' ({}), right='{}' ({})",
-              op, name_str, static_cast<int>(result_tok), other.name_str, static_cast<int>(other.result_tok)));
+  void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const
+  {
+    throw std::invalid_argument( fmt::format( "Unsupported expression operator {} for left='{}' ({}), right='{}' ({}).",
+                                              op, name_str, static_cast<int>( result_tok ), other.name_str,
+                                              static_cast<int>( other.result_tok ) ) );
   }
 };
 
@@ -1084,9 +1084,9 @@ std::unique_ptr<spell_data_expr_t> build_expression_tree(
     {
       auto e = spell_data_expr_t::create_spell_expression( dbc, t.label );
 
-      if ( ! e )
+      if ( !e )
       {
-        throw std::invalid_argument(fmt::format("Unable to decode expression function '{}'.", t.label));
+        throw std::invalid_argument( fmt::format( "Unable to decode expression function '{}'.", t.label ) );
       }
       stack.push_back( std::move( e ) );
     }
@@ -1170,37 +1170,28 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::create_spell_expression( d
     valid_fields.push_back( std::string( field.name ) );
   }
 
-  throw std::invalid_argument( fmt::format( "Unknown spell expression field '{}'. Valid fields for type '{}' are {{{}}}", splits[ 1 ],
-                                            data_type, util::string_join( valid_fields, ", " ) ) );
+  throw std::invalid_argument( fmt::format( "Unknown spell expression field '{}', valid fields for type '{}' are: {}",
+                                            splits[ 1 ], data_type, util::string_join( valid_fields, ", " ) ) );
 }
 
 std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, util::string_view expr_str )
 {
-  if ( expr_str.empty() ) return nullptr;
+  if ( expr_str.empty() )
+    return nullptr;
 
   std::vector<expression::expr_token_t> tokens = expression::parse_tokens( nullptr, expr_str );
 
-  if ( sim -> debug ) expression::print_tokens( tokens, sim );
+  if ( sim->debug )
+    expression::print_tokens( tokens, sim );
 
-  if ( ! expression::convert_to_rpn( tokens ) )
-  {
-    throw std::invalid_argument(fmt::format("Unable to convert '{}' into RPN.", expr_str ));
-  }
+  if ( !expression::convert_to_rpn( tokens ) )
+    throw std::invalid_argument( "Unable to convert into RPN." );
 
-  if ( sim -> debug ) expression::print_tokens( tokens, sim );
+  if ( sim->debug )
+    expression::print_tokens( tokens, sim );
 
-  try
-  {
-    auto e = build_expression_tree(*sim->dbc, tokens);
-    if (!e)
-    {
-      throw std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str));
-    }
-
+  if ( auto e = build_expression_tree( *sim->dbc, tokens ) )
     return e;
-  }
-  catch (const std::exception &)
-  {
-    std::throw_with_nested(std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str)));
-  }
+
+  throw std::invalid_argument( "Unable to build expression tree." );
 }

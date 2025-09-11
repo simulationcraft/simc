@@ -16469,4 +16469,3 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.96 | Radius: 0 - 9 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc51690
 
-
