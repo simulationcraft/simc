@@ -4912,13 +4912,9 @@ struct black_arrow_t final : public kill_shot_base_t
 
     if ( p()->buffs.withering_fire->up() )
     {
-      auto tl = target_list();
-
       // Prefer targets without Black Arrow ticking.
-      auto start = tl.begin();
-      std::partition( *start == target ? std::next( start ) : start, tl.end(), [ this ]( player_t* t ) {
-        return !td( t )->dots.black_arrow->is_ticking();
-      } );
+      auto tl = target_list();
+      range::erase_remove( tl, [ this ]( player_t* t ) { return t != target && td( t )->dots.black_arrow->is_ticking(); } );
       target_cache.is_valid = false;
 
       int count = withering_fire.count + p()->state.blighted_quiver_count;
