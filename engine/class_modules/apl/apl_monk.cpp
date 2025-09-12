@@ -281,7 +281,7 @@ void live_apl( monk_t* player )
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
 
   def->add_action(
-      "potion,if=talent.invoke_xuen_the_white_tiger&pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.up",
+      "potion,if=buff.invoke_xuen_the_white_tiger.up&buff.storm_earth_and_fire.up",
       "Potion" );
   def->add_action( "potion,if=!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up" );
   def->add_action( "potion,if=fight_remains<=30" );
@@ -376,14 +376,14 @@ void live_apl( monk_t* player )
 
   // Trinkets
   trinkets->add_action(
-      "use_item,slot=trinket1,if=trinket.1.has_use_buff&trinket.2.has_use_buff&pet.xuen_the_white_tiger.active&"
+      "use_item,slot=trinket1,if=trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up&"
       "variable.invoke_xuen_count%%2|fight_remains<20",
       "Double on Use Stats" );
   trinkets->add_action(
-      "use_item,slot=trinket2,if=trinket.1.has_use_buff&trinket.2.has_use_buff&pet.xuen_the_white_tiger.active|fight_"
+      "use_item,slot=trinket2,if=trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
       "remains<20" );
   trinkets->add_action(
-      "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&pet.xuen_the_white_tiger.active|fight_"
+      "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
       "remains<20",
       "Trinket 1 On use Stats" );
   trinkets->add_action(
@@ -394,7 +394,7 @@ void live_apl( monk_t* player )
       "remains>30|fight_remains<20",
       "Trinket 2 On use Stats" );
   trinkets->add_action(
-      "use_item,slot=trinket2,if=!trinket.1.has_use_buff&trinket.2.has_use_buff&pet.xuen_the_white_tiger.active|fight_"
+      "use_item,slot=trinket2,if=!trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
       "remains<20" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "No Stat on Use" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
@@ -402,7 +402,7 @@ void live_apl( monk_t* player )
 
   // Cooldowns
   cooldowns->add_action(
-      "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active&(!buff.bloodlust.up|buff.bloodlust."
+      "invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff.bloodlust."
       "up&cooldown.strike_of_the_windlord.remains)",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a "
       "href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is "
@@ -619,7 +619,7 @@ void live_apl( monk_t* player )
       "talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15|fight_style.dungeonroute&buff.invokers_delight.up&"
       "cooldown.strike_of_the_windlord.remains&buff.storm_earth_and_fire.remains<8|fight_remains<10" );
   default_cleave->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|"
+      "rising_sun_kick,target_if=max:target.time_to_die,if=buff.invoke_xuen_the_white_tiger.down&prev.tiger_palm&time<5|"
       "variable.small_hotjs_active&buff.pressure_point.up&cooldown.fists_of_fury.remains&(talent."
       "glory_of_the_dawn|active_enemies<3)" );
   default_cleave->add_action(
@@ -764,7 +764,7 @@ void live_apl( monk_t* player )
       "ordered_elements.up" );
   default_st->add_action( "touch_of_death" );
   default_st->add_action(
-      "rising_sun_kick,if=combo_strike&(!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|buff.storm_earth_and_"
+      "rising_sun_kick,if=combo_strike&(buff.invoke_xuen_the_white_tiger.down&prev.tiger_palm&time<5|buff.storm_earth_and_"
       "fire.up&talent.ordered_elements)" );
   default_st->add_action(
       "strike_of_the_windlord,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&talent.celestial_conduit&!buff."
