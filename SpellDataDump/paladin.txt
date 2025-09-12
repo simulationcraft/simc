@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63003 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.63163 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -15459,7 +15459,6 @@ Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Cl
 Effects          :
 #1 (id=1106904)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.80645 | PvP Coefficient: 0.68 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 0.68)
 #2 (id=1119306)  : Trigger Spell (64): Hammer of Light
                    Base Value: 4 | Scaled Value: 4 | Trigger Spell: 1217116 | Target: Self (1)
 Description      : Hammer down your enemy with the power of the Light, dealing $s1 Holy damage and $429826s1 Holy damage up to $s2 nearby enemies. 
@@ -15604,7 +15603,6 @@ Attributes       : Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc F
 Effects          :
 #1 (id=1114338)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.9 | PvP Coefficient: 0.85 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : $@spelldesc427453
 
 Name             : Dawnlight (id=431377) [Spell Family (10), Passive, Hidden] 
