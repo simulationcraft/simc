@@ -755,6 +755,9 @@ public:
         || (weapon && weapon_multiplier > 0);
   }
 
+  bool does_periodic_damage() const;
+  bool does_direct_damage() const;
+
   void parse_spell_data( const spell_data_t& );
 
   void parse_effect_direct_mods( const spelleffect_data_t& spelleffect_data, bool item_scaling );
@@ -1190,7 +1193,7 @@ public:
 
   virtual player_t* get_expression_target();
 
-  virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* g );
+  virtual double gain_energize_resource( resource_e resource_type, double amount, gain_t* g );
 
   virtual void html_customsection( report::sc_html_stream& );
 
@@ -1229,6 +1232,8 @@ struct call_action_list_t : public action_t
   action_priority_list_t* alist;
 
   call_action_list_t( player_t*, util::string_view );
+  void init_finished() override;
+  bool action_ready() override;
   void execute() override
   { assert( 0 ); }
 };
@@ -1240,6 +1245,7 @@ struct swap_action_list_t : public action_t
   swap_action_list_t( player_t* player, util::string_view options_str,
     util::string_view name = "swap_action_list" );
 
+  void init_finished() override;
   void execute() override;
   bool ready() override;
 };

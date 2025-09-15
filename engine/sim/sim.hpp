@@ -587,13 +587,15 @@ struct sim_t : private sc_thread_t
   std::vector<report::json::report_configuration_t> json_reports;
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
-  std::vector<std::string> error_list;
+  std::vector<std::pair<error_level_e, std::string>> error_list;
   int display_build;  // 0: none, 1: normal (default), 2: version + hotfix only
   int report_precision;
   int report_pets_separately;
   int report_targets;
   int report_details;
-  int report_raw_abilities;
+  std::string report_merged_stats;
+  bool full_damage_sources_chart;
+  bool report_all_variables;
   int report_rng;
   int hosted_html;
   int save_raid_summary;
@@ -626,8 +628,9 @@ struct sim_t : private sc_thread_t
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   computer_process::priority_e process_priority;
-
   std::shared_ptr<work_queue_t> work_queue;
+  std::vector<std::exception_ptr> exception_queue;
+  mutex_t exception_mutex;
 
   // Related Simulations
   mutex_t relatives_mutex;
@@ -677,7 +680,6 @@ struct sim_t : private sc_thread_t
   int profileset_work_threads, profileset_init_threads;
   std::unique_ptr<profileset::profilesets_t> profilesets;
 
-
   sim_t();
   sim_t( sim_t* parent, int thread_index = 0 );
   sim_t( sim_t* parent, int thread_index, sim_control_t* control );
@@ -725,28 +727,47 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( util::string_view name );
   void      use_optimal_buffs_and_debuffs( int value );
   std::unique_ptr<expr_t>   create_expression( util::string_view name );
+
   /**
    * Create error with printf formatting.
    */
   template <typename... Args>
-  void errorf( util::string_view format, Args&&... args )
+  void errorf( error_level_e level, std::string_view format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
-    set_error( fmt::sprintf( format, std::forward<Args>(args)... ) );
+    set_error( level, fmt::sprintf( format, std::forward<Args>(args)... ) );
+  }
+
+  template <typename... Args>
+  void errorf( std::string_view format, Args&&... args )
+  {
+    if ( thread_index != 0 )
+      return;
+
+    set_error( error_level_e::TRIVIAL, fmt::sprintf( format, std::forward<Args>(args)... ) );
   }
 
   /**
    * Create error using fmt libraries python-like formatting syntax.
    */
   template <typename... Args>
+  void error( error_level_e level, fmt::format_string<Args...> format, Args&&... args )
+  {
+    if ( thread_index != 0 )
+      return;
+
+    set_error( level, fmt::vformat( format, fmt::make_format_args( args... ) ) );
+  }
+
+  template <typename... Args>
   void error( fmt::format_string<Args...> format, Args&&... args )
   {
     if ( thread_index != 0 )
       return;
 
-    set_error( fmt::vformat( format, fmt::make_format_args( args... ) ) );
+    set_error( error_level_e::TRIVIAL, fmt::vformat( format, fmt::make_format_args( args... ) ) );
   }
 
   void abort();
@@ -818,8 +839,10 @@ struct sim_t : private sc_thread_t
     out_log.vprint( format, fmt::make_format_args( args... ) );
   }
 
+  bool rethrow_exception_queue();
+
 private:
-  void set_error(std::string error);
+  void set_error( error_level_e level, std::string error );
   void do_pause();
   void print_spell_query();
   void enable_debug_seed();

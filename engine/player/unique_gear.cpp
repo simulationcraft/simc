@@ -3721,22 +3721,25 @@ bool action_has_damage( const action_t* action )
     return false;
 
   // check direct damage
-  if ( action->has_direct_damage_effect( action->data() ) ||
-       action->base_dd_min > 0 ||
-       action->spell_power_mod.direct > 0 ||
-       action->attack_power_mod.direct > 0 ||
-       action->weapon_multiplier > 0 )
+  if ( action->does_direct_damage() )
   {
     return true;
   }
 
   // check periodic damage
-  if ( action->has_periodic_damage_effect( action->data() ) ||
-       ( action->dot_duration > 0_ms &&
-         ( action->base_td > 0 ||
-           action->spell_power_mod.tick > 0 ||
-           action->attack_power_mod.tick > 0 ||
-           action->rolling_periodic ) ) )
+  if ( action->does_periodic_damage() )
+  {
+    return true;
+  }
+
+  // check tick action
+  if ( action->tick_action && action_has_damage( action->tick_action ) )
+  {
+    return true;
+  }
+
+  // check impact action
+  if ( action->impact_action && action_has_damage( action->impact_action ) )
   {
     return true;
   }
@@ -4101,20 +4104,26 @@ struct item_effect_expr_t : public item_effect_base_expr_t
   }
 };
 
-// Buff based item expressions, creates buff expressions for the items from
-// user input
+// Buff based item expressions, creates buff expressions for the items from user input
 struct item_buff_expr_t : public item_effect_expr_t
 {
-  item_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, bool stacking, util::string_view expr_str ) :
-    item_effect_expr_t( player, slots, expr_str )
+  item_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, bool stacking,
+                    util::string_view expr_str )
+    : item_effect_expr_t( player, slots, expr_str )
   {
-    for (auto e : effects)
+    for ( auto e : effects )
     {
-      buff_t* b = buff_t::find( &player, e -> name() );
-      if ( buff_has_stat( b, s ) && ( ! stacking || ( stacking && b -> max_stack() > 1 ) ) )
+      auto _list = e->buff_list;  // make a copy
+      if ( auto _buff = buff_t::find( &player, e->name() ) )
+        _list.push_back( _buff );
+
+      for ( auto b : _list )
       {
-        if ( auto expr_obj = buff_t::create_expression( b -> name(), expr_str, *b ) )
-          exprs.push_back( std::move(expr_obj) );
+        if ( buff_has_stat( b, s ) && ( !stacking || ( stacking && b->max_stack() > 1 ) ) )
+        {
+          if ( auto expr_obj = buff_t::create_expression( b->name(), expr_str, *b ) )
+            exprs.push_back( std::move( expr_obj ) );
+        }
       }
     }
   }
@@ -4124,17 +4133,27 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 {
   double v;
 
-  item_buff_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s, util::string_view full_expression ) :
-    item_effect_expr_t( player, slots, full_expression ), v( 0 )
+  item_buff_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s,
+                           util::string_view full_expression )
+    : item_effect_expr_t( player, slots, full_expression ), v( 0 )
   {
-    for (auto e : effects)
+    for ( auto e : effects )
     {
-      buff_t* b = buff_t::find( &player, e -> name() );
-      if ( buff_has_stat( b, s ) )
+      auto _list = e->buff_list;  // make a copy
+      if ( auto _buff = buff_t::find( &player, e->name() ) )
+        _list.push_back( _buff );
+
+      for ( auto b : _list )
       {
-        v = 1;
-        break;
+        if ( buff_has_stat( b, s ) )
+        {
+          v = 1;
+          break;
+        }
       }
+
+      if ( v == 1 )
+        break;
     }
   }
 
@@ -4569,7 +4588,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( splits.size() <= ptype_idx )
   {
     throw std::invalid_argument(
-      fmt::format( "Cannot create unique gear expression: too few parts '{}' < '{}'.", splits.size(), ptype_idx + 1 ) );
+      fmt::format( "'{}' parts required, only '{}' provided.", ptype_idx + 1, splits.size() ) );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
@@ -4620,8 +4639,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     if ( splits.size() <= stat_idx )
     {
       throw std::invalid_argument(
-        fmt::format( "Cannot create unique gear expression: too few parts to parse stat: '{}' < '{}'.", splits.size(),
-                     stat_idx + 1 ) );
+        fmt::format( "'{}' parts required, only '{}' provided.", stat_idx + 1, splits.size() ) );
     }
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
@@ -4633,7 +4651,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
       stat = util::parse_stat_type( splits[ stat_idx ] );
       if ( stat == STAT_NONE )
       {
-        throw std::invalid_argument( fmt::format( "Cannot parse stat '{}'.", splits[ stat_idx ] ) );
+        throw std::invalid_argument( fmt::format( "Invalid stat '{}'.", splits[ stat_idx ] ) );
       }
     }
   }
@@ -4643,8 +4661,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     if ( splits.size() <= expr_idx )
     {
       throw std::invalid_argument(
-        fmt::format( "Cannot create unique gear expression: too few parts to parse buff expression: '{}' < '{}'.",
-                     splits.size(), expr_idx + 1 ) );
+        fmt::format( "'{}' parts required, only '{}' provided.", expr_idx + 1, splits.size() ) );
     }
     return std::make_unique<item_buff_expr_t>( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
@@ -4671,7 +4688,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_compare_ci (splits[ ptype_idx ], "cooldown_category" ) )
     return std::make_unique<item_cooldown_category_expr_t>( player, slots, name_str );
 
-  throw std::invalid_argument( fmt::format( "Unsupported unique gear expression '{}'.", splits.back() ) );
+  throw std::invalid_argument( fmt::format( "Invalid unique gear expression '{}'.", splits.back() ) );
 }
 
 namespace unique_gear
@@ -4735,6 +4752,20 @@ void proc_attack_t::override_data(const special_effect_t& e)
 
 } // unique_gear
 
+wrapper_callback_t::wrapper_callback_t( custom_cb_t cb_, wowv_t min_, wowv_t max_ )
+  : scoped_callback_t(), cb( std::move( cb_ ) ), min_build( min_ ), max_build( max_ )
+{}
+
+bool wrapper_callback_t::valid( const special_effect_t& effect ) const
+{
+  return effect.player->dbc->wowv() >= min_build && effect.player->dbc->wowv() < max_build;
+}
+
+void wrapper_callback_t::initialize( special_effect_t& effect )
+{
+  cb( effect );
+}
+
 static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
@@ -4786,21 +4817,22 @@ void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
     __fallback_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback )
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback,
+                                           wowv_t min_build, wowv_t max_build )
 {
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
-  dbitem.cb_obj = new wrapper_callback_t( std::move(init_callback) );
+  dbitem.cb_obj = new wrapper_callback_t( std::move( init_callback ), min_build, max_build );
   dbitem.fallback = fallback;
 
   add_effect( dbitem );
 }
 
 void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                                           bool fallback )
+                                           bool fallback, wowv_t min_build, wowv_t max_build )
 {
   for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback );
+    register_special_effect( id, init_callback, fallback, min_build, max_build );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )

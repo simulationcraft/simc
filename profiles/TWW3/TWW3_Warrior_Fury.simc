@@ -1,0 +1,174 @@
+warrior="TWW3_Warrior_Fury"
+source=default
+spec=fury
+level=80
+race=void_elf
+role=attack
+position=back
+professions=blacksmithing=100/alchemy=1
+talents=CgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQjhZmNzMMjBzswMzMmhZYmttxYmZWwMmZmxMzsMM8AmZAAAQM22GYBMBzwEYwGA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat=snapshot_stats
+actions.precombat+=/berserker_stance,toggle=on
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter
+# Evaluates a trinkets cooldown, divided by avatar or odyns fury. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%cooldown.avatar.duration=0|trinket.1.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%cooldown.avatar.duration=0|trinket.2.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_stat.any_dps&!variable.trinket_1_exclude)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_stat.any_dps&!variable.trinket_2_exclude)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=2
+actions.precombat+=/use_item,name=treacherous_transmitter
+actions.precombat+=/recklessness,if=!equipped.fyralath_the_dreamrender
+actions.precombat+=/avatar,if=!equipped.cursed_stone_idol
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time<=0.5|movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/potion,if=target.time_to_die>300|target.time_to_die<300&target.health.pct<35&buff.recklessness.up|target.time_to_die<25
+actions+=/pummel,if=target.debuff.casting.react
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=variables
+actions+=/lights_judgment,if=variable.on_gcd_racials
+actions+=/bag_of_tricks,if=variable.on_gcd_racials
+actions+=/berserking,if=buff.recklessness.up
+actions+=/blood_fury
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/invoke_external_buff,name=power_infusion,if=buff.avatar.remains>15&fight_remains>=135|variable.execute_phase&buff.avatar.up|fight_remains<=25
+actions+=/run_action_list,name=slayer,if=talent.slayers_dominance
+actions+=/run_action_list,name=thane,if=talent.lightning_strikes
+
+actions.slayer=recklessness
+actions.slayer+=/avatar
+actions.slayer+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<=gcd
+actions.slayer+=/execute,if=buff.sudden_death.remains<2&!variable.execute_phase
+actions.slayer+=/thunderous_roar,if=active_enemies>1&buff.enrage.up
+actions.slayer+=/champions_spear,if=!cooldown.bladestorm.remains&(!cooldown.avatar.remains|!cooldown.recklessness.remains|buff.avatar.up|buff.recklessness.up)&buff.enrage.up
+actions.slayer+=/odyns_fury,if=active_enemies>1&talent.titanic_rage&buff.meat_cleaver.stack=0
+actions.slayer+=/bladestorm,if=buff.enrage.up&(talent.reckless_abandon&cooldown.avatar.remains>=24|talent.anger_management&cooldown.recklessness.remains>=15&(buff.avatar.up|cooldown.avatar.remains>=8))
+actions.slayer+=/whirlwind,if=active_enemies>=2&talent.meat_cleaver&buff.meat_cleaver.stack=0
+actions.slayer+=/onslaught,if=talent.tenderize&buff.brutal_finish.up
+actions.slayer+=/rampage,if=buff.enrage.remains<gcd
+actions.slayer+=/execute,if=buff.sudden_death.stack=2&buff.enrage.up
+actions.slayer+=/execute,if=debuff.marked_for_execution.stack>1&buff.enrage.up
+actions.slayer+=/odyns_fury,if=active_enemies>1&!talent.titanic_rage
+actions.slayer+=/crushing_blow,if=action.raging_blow.charges=2|buff.brutal_finish.up&(!debuff.champions_might.up|debuff.champions_might.up&debuff.champions_might.remains>gcd)
+actions.slayer+=/bloodbath,if=buff.bloodcraze.stack>=1|(talent.uproar&dot.bloodbath_dot.remains<40&talent.bloodborne)|buff.enrage.up&buff.enrage.remains<gcd
+actions.slayer+=/raging_blow,if=buff.brutal_finish.up&buff.slaughtering_strikes.stack<5&(!debuff.champions_might.up|debuff.champions_might.up&debuff.champions_might.remains>gcd)
+actions.slayer+=/rampage,if=rage>115
+actions.slayer+=/execute,if=variable.execute_phase&debuff.marked_for_execution.up&buff.enrage.up&active_enemies=1
+actions.slayer+=/bloodthirst,if=target.health.pct<35&talent.vicious_contempt&buff.brutal_finish.up&buff.enrage.up&crit_pct_current>=85&active_enemies=1|(!set_bonus.tww3_4pc&active_enemies>4)
+actions.slayer+=/crushing_blow
+actions.slayer+=/bloodbath
+actions.slayer+=/raging_blow,if=buff.opportunist.up
+actions.slayer+=/bloodthirst,if=target.health.pct<35&talent.vicious_contempt&crit_pct_current>=70
+actions.slayer+=/raging_blow,if=action.raging_blow.charges=2
+actions.slayer+=/onslaught,if=talent.tenderize
+actions.slayer+=/raging_blow
+actions.slayer+=/rampage
+actions.slayer+=/odyns_fury,if=buff.enrage.up|talent.titanic_rage
+actions.slayer+=/execute,if=buff.sudden_death.up
+actions.slayer+=/bloodthirst
+actions.slayer+=/thunderous_roar
+actions.slayer+=/wrecking_throw
+actions.slayer+=/whirlwind
+actions.slayer+=/storm_bolt,if=buff.bladestorm.up
+
+actions.thane=recklessness
+actions.thane+=/avatar
+actions.thane+=/ravager
+actions.thane+=/thunderous_roar,if=active_enemies>1&buff.enrage.up
+actions.thane+=/champions_spear,if=buff.enrage.up&talent.champions_might
+actions.thane+=/thunder_clap,if=buff.meat_cleaver.stack=0&talent.meat_cleaver&active_enemies>=2
+actions.thane+=/thunder_blast,if=buff.enrage.up&talent.meat_cleaver
+actions.thane+=/rampage,if=buff.enrage.down|(talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up)
+actions.thane+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd
+actions.thane+=/bladestorm,if=buff.enrage.up&talent.unhinged
+actions.thane+=/bloodbath
+actions.thane+=/rampage,if=rage>=115&talent.reckless_abandon&buff.recklessness.up&buff.slaughtering_strikes.stack>=3
+actions.thane+=/crushing_blow
+actions.thane+=/onslaught,if=talent.tenderize
+actions.thane+=/bloodthirst,if=talent.vicious_contempt&target.health.pct<35
+actions.thane+=/rampage,if=rage>=100
+actions.thane+=/bloodthirst
+actions.thane+=/odyns_fury,if=active_enemies>1&(buff.enrage.up|talent.titanic_rage)
+actions.thane+=/raging_blow
+actions.thane+=/rampage
+actions.thane+=/thunder_blast,if=!talent.meat_cleaver
+actions.thane+=/thunderous_roar
+actions.thane+=/odyns_fury,if=buff.enrage.up|talent.titanic_rage
+actions.thane+=/champions_spear,if=!talent.champions_might
+actions.thane+=/execute
+actions.thane+=/wrecking_throw
+actions.thane+=/thunder_clap
+actions.thane+=/whirlwind
+
+# Trinkets
+actions.trinkets=do_treacherous_transmitter_task
+actions.trinkets+=/use_item,name=cursed_stone_idol,if=cooldown.avatar.remains<2
+actions.trinkets+=/use_item,name=unyielding_netherprism,if=cooldown.avatar.remains<=85
+# Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
+actions.trinkets+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&buff.avatar.up&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!buff.avatar.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&buff.avatar.up&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,slot=main_hand,if=!equipped.fyralath_the_dreamrender&!equipped.bestinslots&(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,name=bestinslots,if=target.time_to_die>120&(cooldown.avatar.remains>20&(trinket.1.cooldown.remains|trinket.2.cooldown.remains)|cooldown.avatar.remains>20&(!trinket.1.has_cooldown|!trinket.2.has_cooldown))|target.time_to_die<=120&target.health.pct<35&cooldown.avatar.remains>85|target.time_to_die<15
+
+# Variables
+actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)
+actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)
+actions.variables+=/variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
+actions.variables+=/variable,name=on_gcd_racials,value=buff.recklessness.down&buff.avatar.down&rage<80&buff.sudden_death.down&!cooldown.bladestorm.ready&(!cooldown.execute.ready|!variable.execute_phase)
+
+head=living_weapons_faceshield,id=237610,bonus_id=523/10356,ilevel=723,gem_id=213743
+neck=chrysalis_of_sundered_souls,id=237568,bonus_id=10356/8781,ilevel=723,gem_id=213470/213473
+shoulders=living_weapons_ramparts,id=237608,bonus_id=10356,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12401/9893,gem_id=238045,enchant=chant_of_winged_grace_3
+chest=living_weapons_bulwark,id=237613,bonus_id=10356,ilevel=723,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=9627/12053/12050/8960/1808/11109/8793,gem_id=213497,crafted_stats=36/40
+hands=living_weapons_crushers,id=237611,bonus_id=10356,ilevel=723
+waist=living_weapons_chain,id=237607,bonus_id=523/10356,ilevel=723,gem_id=213497
+legs=living_weapons_legguards,id=237609,bonus_id=10356,ilevel=723,enchant=defenders_armor_kit_3
+feet=interlopers_plated_sabatons,id=243307,bonus_id=10356/13504,ilevel=723,enchant=defenders_march_3
+finger1=radiant_necromancers_band,id=221200,bonus_id=657/12052/5877/10390/12361/12053/8781,ilevel=723,gem_id=213497/213482,enchant=radiant_haste_3
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=657/12052/5877/10390/12361/12053/8781,ilevel=723,gem_id=213485/213461,enchant=radiant_haste_3
+trinket1=astral_antenna,id=242395,bonus_id=10356,ilevel=723
+trinket2=eradicating_arcanocore,id=242394,bonus_id=10356,ilevel=723
+main_hand=circuit_breaker,id=234490,bonus_id=10356,ilevel=723,enchant=stormriders_fury_3
+off_hand=everforged_greataxe,id=222443,bonus_id=9627/12053/12050/11300/8960/8793,enchant=oathsworns_tenacity_3,crafted_stats=36/40
+
+# Gear Summary
+# gear_ilvl=723.06
+# gear_strength=93330
+# gear_stamina=730630
+# gear_crit_rating=4730
+# gear_haste_rating=18641
+# gear_mastery_rating=21785
+# gear_versatility_rating=12757
+# gear_avoidance_rating=545
+# gear_armor=97290
+# gear_bonus_armor=980
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=slayer,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=slayer,enable=1

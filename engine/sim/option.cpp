@@ -9,6 +9,7 @@
 
 #include "fmt/format.h"
 #include "lib/utf8-cpp/utf8.h"
+#include "sim.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
 #include "util/util.hpp"
@@ -179,26 +180,29 @@ protected:
 
 struct opt_string_t : public option_t
 {
-  opt_string_t( util::string_view name, std::string& addr ) :
-    option_t( name ),
-    _ref( addr )
-  { }
+  opt_string_t( util::string_view name, std::string& addr, bool warn = false )
+    : option_t( name ), _ref( addr ), _warn( warn )
+  {}
+
 protected:
   opts::parse_status do_parse( sim_t*, util::string_view n, util::string_view v ) const override
   {
     if ( n != name() )
       return opts::parse_status::CONTINUE;
 
+    bool do_warn = _warn && !_ref.empty();
     _ref = std::string( v );
-    return opts::parse_status::OK;
+    return do_warn ? opts::parse_status::WARNING : opts::parse_status::OK;
   }
 
   void do_format_to( fmt::format_context::iterator out ) const override
   {
     fmt::format_to( out, "{}={}\n", name(), _ref );
   }
+
 private:
   std::string& _ref;
+  bool _warn;
 };
 
 struct opt_append_t : public option_t
@@ -568,11 +572,13 @@ protected:
 
 opts::parse_status option_t::parse( sim_t* sim, util::string_view name, util::string_view value ) const
 {
-  try {
+  try
+  {
     return do_parse( sim, name, value );
   }
-  catch ( const std::exception& ) {
-    std::throw_with_nested( std::runtime_error( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( std::invalid_argument( fmt::format( "Option '{}' with value '{}'", name, value ) ) );
   }
 }
 
@@ -751,9 +757,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, parsed_token, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", parsed_token) );
+      throw sc_network_error( fmt::format( "Unable to open input parameter file '{}'.", parsed_token ) );
     }
     parse_file( input );
     return;
@@ -786,9 +792,9 @@ void option_db_t::parse_token( util::string_view token )
     std::string actual_name;
     io::ifstream input;
     open_file( input, auto_path, value, actual_name );
-    if ( ! input.is_open() )
+    if ( !input.is_open() )
     {
-      throw std::invalid_argument( fmt::format("Unable to open input parameter file '{}'.", value) );
+      throw sc_network_error( fmt::format("Unable to open input parameter file '{}'.", value) );
     }
     else
     {
@@ -898,59 +904,62 @@ option_db_t::option_db_t()
   auto_path.resize( std::distance(auto_path.begin(), it) );
 }
 
-std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v )
-{ return std::unique_ptr<option_t>(new opt_string_t( n, v )); }
+std::unique_ptr<option_t> opt_string( std::string_view n, std::string& v )
+{ return std::unique_ptr<option_t>( new opt_string_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_append( util::string_view n, std::string& v )
-{ return std::unique_ptr<option_t>(new opt_append_t( n, v )); }
+std::unique_ptr<option_t> opt_string_warn( std::string_view n, std::string& v )
+{ return std::unique_ptr<option_t>( new opt_string_t( n, v, true ) ); }
 
-std::unique_ptr<option_t> opt_bool( util::string_view n, int& v )
-{ return std::unique_ptr<option_t>(new opt_bool_int_t( n, v )); }
+std::unique_ptr<option_t> opt_append( std::string_view n, std::string& v )
+{ return std::unique_ptr<option_t>( new opt_append_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_bool( util::string_view n, bool& v )
-{ return std::unique_ptr<option_t>(new opt_bool_t( n, v )); }
+std::unique_ptr<option_t> opt_bool( std::string_view n, int& v )
+{ return std::unique_ptr<option_t>( new opt_bool_int_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_uint64( util::string_view n, uint64_t& v )
-{ return std::unique_ptr<option_t>(new opt_numeric_t<uint64_t, converter_uint64_t>( n, v )); }
+std::unique_ptr<option_t> opt_bool( std::string_view n, bool& v )
+{ return std::unique_ptr<option_t>( new opt_bool_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_int( util::string_view n, int& v )
-{ return std::unique_ptr<option_t>(new opt_numeric_t<int, converter_int_t>( n, v )); }
+std::unique_ptr<option_t> opt_uint64( std::string_view n, uint64_t& v )
+{ return std::unique_ptr<option_t>( new opt_numeric_t<uint64_t, converter_uint64_t>( n, v ) ); }
 
-std::unique_ptr<option_t> opt_int( util::string_view n, int& v, int min, int max )
-{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<int, converter_int_t>( n, v, min, max )); }
+std::unique_ptr<option_t> opt_int( std::string_view n, int& v )
+{ return std::unique_ptr<option_t>( new opt_numeric_t<int, converter_int_t>( n, v ) ); }
 
-std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v )
-{ return std::unique_ptr<option_t>(new opt_numeric_t<unsigned, converter_uint_t>( n, v )); }
+std::unique_ptr<option_t> opt_int( std::string_view n, int& v, int min, int max )
+{ return std::unique_ptr<option_t>( new opt_numeric_mm_t<int, converter_int_t>( n, v, min, max ) ); }
 
-std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v, unsigned min, unsigned max )
-{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<unsigned, converter_uint_t>( n, v, min, max )); }
+std::unique_ptr<option_t> opt_uint( std::string_view n, unsigned& v )
+{ return std::unique_ptr<option_t>( new opt_numeric_t<unsigned, converter_uint_t>( n, v ) ); }
 
-std::unique_ptr<option_t> opt_float( util::string_view n, double& v )
-{ return std::unique_ptr<option_t>(new opt_numeric_t<double, converter_double_t>( n, v )); }
+std::unique_ptr<option_t> opt_uint( std::string_view n, unsigned& v, unsigned min, unsigned max )
+{ return std::unique_ptr<option_t>( new opt_numeric_mm_t<unsigned, converter_uint_t>( n, v, min, max ) ); }
 
-std::unique_ptr<option_t> opt_float( util::string_view n, double& v, double min, double max )
-{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<double, converter_double_t>( n, v, min, max )); }
+std::unique_ptr<option_t> opt_float( std::string_view n, double& v )
+{ return std::unique_ptr<option_t>( new opt_numeric_t<double, converter_double_t>( n, v ) ); }
 
-std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v )
-{ return std::unique_ptr<option_t>(new opt_numeric_t<timespan_t, converter_timespan_t>( n, v )); }
+std::unique_ptr<option_t> opt_float( std::string_view n, double& v, double min, double max )
+{ return std::unique_ptr<option_t>( new opt_numeric_mm_t<double, converter_double_t>( n, v, min, max ) ); }
 
-std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v, timespan_t min, timespan_t max )
-{ return std::unique_ptr<option_t>(new opt_numeric_mm_t<timespan_t, converter_timespan_t>( n, v, min, max )); }
+std::unique_ptr<option_t> opt_timespan( std::string_view n, timespan_t& v )
+{ return std::unique_ptr<option_t>( new opt_numeric_t<timespan_t, converter_timespan_t>( n, v ) ); }
 
-std::unique_ptr<option_t> opt_list( util::string_view n, opts::list_t& v )
-{ return std::unique_ptr<option_t>(new opts_list_t( n, v )); }
+std::unique_ptr<option_t> opt_timespan( std::string_view n, timespan_t& v, timespan_t min, timespan_t max )
+{ return std::unique_ptr<option_t>( new opt_numeric_mm_t<timespan_t, converter_timespan_t>( n, v, min, max ) ); }
 
-std::unique_ptr<option_t> opt_map( util::string_view n, opts::map_t& v )
-{ return std::unique_ptr<option_t>(new opts_map_t( n, v )); }
+std::unique_ptr<option_t> opt_list( std::string_view n, opts::list_t& v )
+{ return std::unique_ptr<option_t>( new opts_list_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_map_list( util::string_view n, opts::map_list_t& v )
-{ return std::unique_ptr<option_t>(new opts_map_list_t( n, v )); }
+std::unique_ptr<option_t> opt_map( std::string_view n, opts::map_t& v )
+{ return std::unique_ptr<option_t>( new opts_map_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_func( util::string_view n, const opts::function_t& f )
-{ return std::unique_ptr<option_t>(new opts_sim_func_t( n, f )); }
+std::unique_ptr<option_t> opt_map_list( std::string_view n, opts::map_list_t& v )
+{ return std::unique_ptr<option_t>( new opts_map_list_t( n, v ) ); }
 
-std::unique_ptr<option_t> opt_deprecated( util::string_view n, util::string_view new_option )
-{ return std::unique_ptr<option_t>(new opts_deperecated_t( n, new_option )); }
+std::unique_ptr<option_t> opt_func( std::string_view n, const opts::function_t& f )
+{ return std::unique_ptr<option_t>( new opts_sim_func_t( n, f ) ); }
 
-std::unique_ptr<option_t> opt_obsoleted( util::string_view n )
-{ return std::unique_ptr<option_t>(new opts_obsoleted_t( n )); }
+std::unique_ptr<option_t> opt_deprecated( std::string_view n, std::string_view new_option )
+{ return std::unique_ptr<option_t>( new opts_deperecated_t( n, new_option ) ); }
+
+std::unique_ptr<option_t> opt_obsoleted( std::string_view n )
+{ return std::unique_ptr<option_t>( new opts_obsoleted_t( n ) ); }

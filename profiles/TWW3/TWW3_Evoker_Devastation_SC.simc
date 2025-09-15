@@ -1,0 +1,215 @@
+evoker="TWW3_Evoker_Devastation_SC"
+source=default
+spec=devastation
+level=80
+race=dracthyr
+role=spell
+position=back
+talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzYmBMYMTzYmJz2YZYmZmZMzyMgZMzGzMLzMgBGDWglxox2AyMIYDD
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.signet_of_the_priory
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.signet_of_the_priory
+actions.precombat+=/variable,name=weapon_buffs,value=equipped.bestinslots
+actions.precombat+=/variable,name=weapon_sync,op=setif,value=1,value_else=0.5,condition=equipped.bestinslots
+# Mythic one hardcoded - To Do implement something in simc to just get the value.
+actions.precombat+=/variable,name=weapon_stat_value,value=equipped.bestinslots*5142*15
+# Decide which trinket to pair with Dragonrage, prefer 2 minute and 1 minute trinkets
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.1.cooldown.duration=0|trinket.1.is.house_of_cards)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.2.cooldown.duration=0|trinket.2.is.house_of_cards)
+# Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a intellect modifier (currently 1.5x) to give a higher priority to intellect trinkets. The intellect modifier should be changed as intellect priority increases or decreases. As well as a modifier for if a trinket will or will not sync with cooldowns.
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.spymasters_web
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.spymasters_web
+actions.precombat+=/variable,name=trinket_1_ogcd_cast,value=0
+actions.precombat+=/variable,name=trinket_2_ogcd_cast,value=0
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.proc.any_dps.duration)*(variable.trinket_2_sync)*trinket.2.proc.any_dps.default_value)>((trinket.1.proc.any_dps.duration)*(variable.trinket_1_sync)*trinket.1.proc.any_dps.default_value)
+actions.precombat+=/variable,name=trinket_priority,op=setif,if=variable.weapon_buffs,value=3,value_else=variable.trinket_priority,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs|variable.weapon_stat_value*variable.weapon_sync>(((trinket.2.proc.any_dps.duration)*(variable.trinket_2_sync)*trinket.2.proc.any_dps.default_value)<?((trinket.1.proc.any_dps.duration)*(variable.trinket_1_sync)*trinket.1.proc.any_dps.default_value))
+actions.precombat+=/variable,name=trinket_priority,op=set,value=trinket.1.is.signet_of_the_priory+2*trinket.2.is.signet_of_the_priory,if=equipped.signet_of_the_priory&variable.trinket_priority=3
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
+# Rank 1 empower spell cast time
+actions.precombat+=/variable,name=r1_cast_time,value=1.0*spell_haste
+# Variable for when to start holding empowers for upcoming DR in AoE. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss.
+actions.precombat+=/variable,name=dr_prep_time,default=6,op=reset
+actions.precombat+=/variable,name=dr_prep_time_aoe,default=4,op=reset
+actions.precombat+=/variable,name=can_extend_dr,default=0,op=reset
+actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
+actions.precombat+=/variable,name=can_use_empower,value=1,default=1,if=!talent.animosity|!talent.dragonrage
+actions.precombat+=/variable,name=acceptable_engulf_loss,default=3,op=reset
+# Get Some Scarlet Adaptation Prepull
+actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation
+actions.precombat+=/hover,if=talent.slipstream
+actions.precombat+=/hover,if=talent.slipstream
+actions.precombat+=/firestorm,if=talent.firestorm&(!talent.engulf|!talent.ruby_embers)
+actions.precombat+=/living_flame,if=!talent.firestorm|talent.engulf&talent.ruby_embers
+
+# Executed every time the actor is available.
+# Delay pot in ST if you are about to SS - mostly relevant for opener where you want DR->FB->SS->rotation
+actions=potion,if=(!talent.dragonrage|buff.dragonrage.up)&(!cooldown.shattering_star.up|debuff.shattering_star_debuff.up|active_enemies>=2)|fight_remains<35
+# Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates.
+actions+=/variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?((cooldown.eternity_surge.remains-8)>?(cooldown.fire_breath.remains-8))
+# Invoke External Power Infusions if they're available during dragonrage
+actions+=/invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&(!cooldown.shattering_star.up|debuff.shattering_star_debuff.up|active_enemies>=2)|fight_remains<35
+actions+=/variable,name=pool_for_id,if=talent.imminent_destruction,default=0,op=set,value=cooldown.deep_breath.remains<7&essence.deficit>=1&!buff.essence_burst.up&(raid_event.adds.in>=action.deep_breath.cooldown*0.4|talent.melt_armor&talent.maneuverability|active_enemies>=3)
+actions+=/variable,name=can_extend_dr,if=talent.animosity,op=set,value=buff.dragonrage.up&(buff.dragonrage.duration+dbc.effect.1160688.base_value%1000-buff.dragonrage.elapsed-buff.dragonrage.remains)>0
+actions+=/variable,name=can_use_empower,op=set,value=cooldown.dragonrage.remains>=gcd.max*variable.dr_prep_time,if=talent.animosity&talent.dragonrage
+# Rupt to make the raidleader happy
+actions+=/quell,use_off_gcd=1,if=target.debuff.casting.react
+actions+=/call_action_list,name=trinkets
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/run_action_list,name=st
+
+# AOE action list. Use Hover for Mass Disintegrates.
+actions.aoe=hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&(buff.mass_disintegrate_stacks.up&talent.mass_disintegrate|active_enemies<=4)
+# Spend firestorm procs ASAP
+actions.aoe+=/firestorm,if=buff.snapfire.up
+actions.aoe+=/shattering_star,target_if=max:target.health.pct,if=(!buff.essence_burst.at_max_stacks&talent.arcane_vigor|talent.eternitys_span&active_enemies<=4)
+# BaumChange 1: Send DB before DR if FS FS FTF - +30k in 5T
+actions.aoe+=/deep_breath,if=talent.maneuverability&talent.melt_armor&!cooldown.fire_breath.up&!cooldown.eternity_surge.up|talent.feed_the_flames&talent.engulf&talent.imminent_destruction
+# Tip FB
+actions.aoe+=/tip_the_scales,use_off_gcd=1,if=(!talent.dragonrage|buff.dragonrage.up)&cooldown.fire_breath.remains<cooldown.eternity_surge.remains
+# Engulf at R4 with Scorch.
+actions.aoe+=/fire_breath,target_if=max:target.health.pct,empower_to=4,if=talent.scorching_embers&variable.can_use_empower&target.time_to_die>=duration
+# R2 funny breath good default.
+actions.aoe+=/fire_breath,target_if=max:target.health.pct,empower_to=2,if=variable.can_use_empower&target.time_to_die>=duration
+# DR if mobs will live 15s or there are no add events or pull events.
+actions.aoe+=/dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists
+actions.aoe+=/call_action_list,name=es,if=(!talent.dragonrage|buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe|!talent.animosity)&(!buff.jackpot.up|!set_bonus.tww2_4pc|talent.mass_disintegrate)
+actions.aoe+=/deep_breath,if=!buff.dragonrage.up&essence.deficit>3
+# Engulf if Firebreath is up and Enkindle is up. Ruby embers is ignored here. Probably can improve this with a target_if=max:dot.fire_breath_damage.remains> etc. Make FB up = 3, others no special interaction so 1 is fine. In if recheck for >=4 value.
+actions.aoe+=/engulf,target_if=(dot.fire_breath_damage.remains>travel_time)&(dot.enkindle.remains>travel_time|!talent.enkindle)&(!talent.scorching_embers|dot.fire_breath_damage.duration<=6|fight_remains<=30)&(cooldown.dragonrage.remains>=cooldown.engulf.duration+full_recharge_time|!talent.dragonrage|buff.tip_the_scales.up&cooldown.fire_breath.up|buff.dragonrage.up|full_recharge_time<=cooldown.fire_breath.duration_expected)
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=12&(cooldown.dragonrage.remains>gcd.max*4|!talent.dragonrage)
+# Use Mass Disintegrate if CB wont't overcap
+actions.aoe+=/disintegrate,target_if=min:debuff.bombardments.remains,if=buff.mass_disintegrate_stacks.up&talent.mass_disintegrate&(!variable.pool_for_id|buff.mass_disintegrate_stacks.remains<=buff.mass_disintegrate_stacks.stack*(duration+0.1))
+# Use Deep Breath on 2T, unless adds will come before it'll be ready again or if talented ID.
+actions.aoe+=/deep_breath,if=talent.imminent_destruction&!buff.essence_burst.up
+# Pyre 4T+ - 3T+ with Volatility - 12 stacks of CB - Pool CB for DR
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=(active_enemies>=4-(buff.imminent_destruction.up)|talent.snapfire|talent.volatility|talent.scorching_embers&active_dot.fire_breath_damage>=active_enemies*0.75)&(cooldown.dragonrage.remains>gcd.max*4|!talent.dragonrage|!talent.charged_blast)&!variable.pool_for_id&(!buff.mass_disintegrate_stacks.up|buff.essence_burst.stack=2|buff.essence_burst.stack=1&essence>=(3-buff.imminent_destruction.up)|essence>=(5-buff.imminent_destruction.up*2))
+# Cast LF with leaping flames up if: not playing burnout, burnout is up or the next firebreath is soon.
+actions.aoe+=/living_flame,target_if=max:target.health.pct,if=(!talent.burnout|buff.burnout.up|cooldown.fire_breath.remains<=gcd.max*5|buff.inner_flame.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&buff.leaping_flames.up&(!buff.essence_burst.up&essence.deficit>1|cooldown.fire_breath.remains<=gcd.max*3&buff.essence_burst.stack<buff.essence_burst.max_stack)
+# Yoinked the disintegrate logic from ST
+actions.aoe+=/disintegrate,target_if=max:target.health.pct,chain=1,early_chain_if=evoker.use_early_chaining&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=(raid_event.movement.in>2|buff.hover.up)&!variable.pool_for_id&(active_enemies<=4|buff.mass_disintegrate_stacks.up)
+# Cast LF with burnout to fish for snapfire procs
+actions.aoe+=/living_flame,target_if=max:target.health.pct,if=talent.snapfire&buff.burnout.up
+actions.aoe+=/firestorm
+# Get Ancient Flame as Filler actions.aoe+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.dragonrage.up
+actions.aoe+=/living_flame,if=talent.snapfire&!talent.engulfing_blaze
+# Fallback filler
+actions.aoe+=/azure_strike,target_if=max:target.health.pct
+
+# Eternity Surge, use rank most applicable to targets.
+actions.es=eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|(variable.can_extend_dr&talent.animosity|talent.mass_disintegrate)&active_enemies>(3+talent.font_of_magic+4*talent.eternitys_span)|buff.dragonrage.remains<1.75*spell_haste&buff.dragonrage.remains>=1*spell_haste&talent.animosity&variable.can_extend_dr
+actions.es+=/eternity_surge,empower_to=2,target_if=max:target.health.pct,if=active_enemies<=2+2*talent.eternitys_span|buff.dragonrage.remains<2.5*spell_haste&buff.dragonrage.remains>=1.75*spell_haste&talent.animosity&variable.can_extend_dr
+actions.es+=/eternity_surge,empower_to=3,target_if=max:target.health.pct,if=active_enemies<=3+3*talent.eternitys_span|!talent.font_of_magic&talent.mass_disintegrate|buff.dragonrage.remains<=3.25*spell_haste&buff.dragonrage.remains>=2.5*spell_haste&talent.animosity&variable.can_extend_dr
+actions.es+=/eternity_surge,empower_to=4,target_if=max:target.health.pct,if=talent.mass_disintegrate|active_enemies<=4+4*talent.eternitys_span
+
+# Green Spells used to trigger Ancient Flame
+actions.green=emerald_blossom
+actions.green+=/verdant_embrace
+
+actions.st=deep_breath,if=talent.maneuverability&set_bonus.tww3_4pc,cancel_if=gcd.remains=0&ticks>=8&active_enemies=1
+# CD on CD
+actions.st+=/dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists
+actions.st+=/eternity_surge,empower_to=1,if=set_bonus.tww3_4pc&buff.dragonrage.up&cooldown.engulf.full_recharge_time<gcd.max*3&cooldown.fire_breath.remains<gcd.max*3
+actions.st+=/living_flame,if=set_bonus.tww3_4pc&cooldown.engulf.remains<=execute_time*2&buff.essence_burst.stack<(2-talent.arcane_vigor.enabled)&buff.dragonrage.up&cooldown.fire_breath.remains<=execute_time*2
+# Flap wings
+actions.st+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5
+# Become a faster dragon (for one empower)
+actions.st+=/tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&cooldown.fire_breath.remains<cooldown.eternity_surge.remains
+# Dont overcap with Vigor.
+actions.st+=/shattering_star,if=(!buff.essence_burst.at_max_stacks|!talent.arcane_vigor|talent.engulf)&(set_bonus.tww2_2pc|!talent.scorching_embers|!talent.engulf|dot.fire_breath_damage.ticking&dot.fire_breath_damage.duration<=6|(action.engulf.usable_in<?cooldown.fire_breath.remains_expected+4)>=15)
+# Engulf at R4 with Scorch.
+actions.st+=/fire_breath,target_if=max:target.health.pct,empower_to=4,if=(talent.scorching_embers&talent.engulf&action.engulf.usable_in<=duration+0.5)&variable.can_use_empower&(cooldown.shattering_star.remains<=duration+0.5+6-gcd.max|!talent.shattering_star|cooldown.engulf.full_recharge_time<=cooldown.fire_breath.duration_expected+4)
+# R2 funny breath good default for SC.
+actions.st+=/fire_breath,target_if=max:target.health.pct,empower_to=2,if=variable.can_use_empower&!buff.dragonrage.up&talent.mass_disintegrate
+actions.st+=/fire_breath,target_if=max:target.health.pct,empower_to=1,if=variable.can_use_empower
+# Gulf :garf:
+actions.st+=/engulf,if=(dot.fire_breath_damage.remains>travel_time)&(dot.living_flame_damage.remains>travel_time|!talent.ruby_embers)&(dot.enkindle.remains>travel_time|!talent.enkindle)&(!talent.iridescence|buff.iridescence_red.up)&(!talent.scorching_embers|dot.fire_breath_damage.duration<=6|fight_remains<=30)&(debuff.shattering_star_debuff.remains>travel_time|full_recharge_time<action.shattering_star.usable_in|talent.scorching_embers)&(cooldown.dragonrage.remains>=cooldown.engulf.duration+full_recharge_time|raid_event.adds.in<=60&raid_event.adds.in>duration+full_recharge_time|!talent.dragonrage|buff.tip_the_scales.up&cooldown.fire_breath.up|buff.dragonrage.up|full_recharge_time<=cooldown.fire_breath.duration_expected)
+# Burnout LF for EB if DR expire soon
+actions.st+=/living_flame,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max&buff.burnout.up
+# AS for EB if DR expire soon
+actions.st+=/azure_strike,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max
+# Snappy FS big pump
+actions.st+=/firestorm,if=buff.snapfire.up|active_enemies>=2
+# Why would you do this to yourself. Talent span right meow.
+actions.st+=/eternity_surge,target_if=max:target.health.pct,empower_to=2,if=(!talent.power_swell|buff.power_swell.remains<=duration|!talent.mass_disintegrate)&active_enemies=2&!talent.eternitys_span&variable.can_use_empower
+# Surge all of eternity and swell power (but not if :engulf:)
+actions.st+=/eternity_surge,target_if=max:target.health.pct,empower_to=1,if=(!talent.power_swell|buff.power_swell.remains<=duration|!talent.mass_disintegrate)&variable.can_use_empower
+# Use the Deeper Breath
+actions.st+=/deep_breath,if=(talent.imminent_destruction|talent.melt_armor|talent.maneuverability)&!set_bonus.tww3_4pc,interrupt_immediate=1,interrupt_if=gcd.remains=0&ticks>=8,cancel_if=gcd.remains=0&ticks>=8
+# Leaping for essence bursts with TWW3 FS set
+actions.st+=/living_flame,if=buff.leaping_flames.up&buff.essence_burst.stack=0&buff.inner_flame.up&(buff.inner_flame.remains>execute_time|!buff.dragonrage.up&buff.burnout.up)&set_bonus.tww3_4pc
+# Mass Disintegrator pov
+actions.st+=/disintegrate,target_if=min:debuff.bombardments.remains,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&talent.mass_disintegrate&!variable.pool_for_id
+# Secret tech (dont leak)
+actions.st+=/pyre,if=talent.snapfire&active_enemies>=2&talent.volatility.rank>=2&(!talent.azure_celerity|talent.feed_the_flames)
+# Disintegrator pov
+actions.st+=/disintegrate,target_if=min:debuff.bombardments.remains,chain=1,interrupt_if=buff.inner_flame.up,if=(raid_event.movement.in>2|buff.hover.up)&!variable.pool_for_id
+# Get Ancient Flame if you have Engulfing Blaze and nothing interesting is happening
+actions.st+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.shattering_star_debuff.up&talent.scarlet_adaptation&!buff.dragonrage.up&!buff.burnout.up&talent.engulfing_blaze
+# LF
+actions.st+=/living_flame,if=buff.burnout.up|(buff.leaping_flames.up|buff.ancient_flame.up)&raid_event.movement.in>execute_time
+# AS
+actions.st+=/azure_strike,if=active_enemies>=2&!talent.snapfire
+# LF
+actions.st+=/living_flame,if=raid_event.movement.in>execute_time
+# Cry
+actions.st+=/azure_strike
+
+actions.trinkets=use_item,name=spymasters_web,if=(buff.dragonrage.up|!talent.dragonrage&(talent.imminent_destruction&buff.imminent_destruction.up|!talent.imminent_destruction&!talent.melt_armor|talent.melt_armor&debuff.melt_armor.up))&(fight_remains<130|buff.bloodlust.react)&buff.spymasters_report.stack>=15|(fight_remains<=20|cooldown.engulf.up&talent.engulf&fight_remains<=40&cooldown.dragonrage.remains>=40)
+actions.trinkets+=/use_item,name=neural_synapse_enhancer,if=buff.dragonrage.up|!talent.dragonrage|cooldown.dragonrage.remains>=5
+# The trinket with the highest estimated value, will be used first and paired with Dragonrage. Trinkets are used on 4 stacks of Emerald Trance, unless playing double buff trinket, then one is used after SS/FB and the next on CD. Or with DR in AoE
+actions.trinkets+=/use_item,slot=trinket1,if=buff.dragonrage.up&((variable.trinket_2_buffs&!cooldown.fire_breath.up&!cooldown.shattering_star.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&(!cooldown.shattering_star.up)&variable.trinket_priority=1|(!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual
+actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&((variable.trinket_1_buffs&!cooldown.fire_breath.up&!cooldown.shattering_star.up&trinket.1.cooldown.remains)|buff.tip_the_scales.up&(!cooldown.shattering_star.up)&variable.trinket_priority=2|(!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)&!variable.trinket_2_manual
+actions.trinkets+=/use_item,slot=main_hand,if=variable.weapon_buffs&((variable.trinket_2_buffs&(trinket.2.cooldown.remains|trinket.2.cooldown.duration<=20)|!variable.trinket_2_buffs|variable.trinket_2_exclude|variable.trinket_priority=3)&(variable.trinket_1_buffs&(trinket.1.cooldown.remains|trinket.1.cooldown.duration<=20)|!variable.trinket_1_buffs|variable.trinket_1_exclude|variable.trinket_priority=3)&(!cooldown.fire_breath.up&!cooldown.shattering_star.up|buff.tip_the_scales.up&(!cooldown.shattering_star.up|talent.engulf)|(!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3))&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=3|variable.trinket_priority=1&trinket.1.cooldown.remains|variable.trinket_priority=2&trinket.2.cooldown.remains)
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(gcd.remains>0.1&!prev_gcd.1.deep_breath)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(gcd.remains>0.1&!prev_gcd.1.deep_breath)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
+
+head=spellweavers_immaculate_focus,id=237655,bonus_id=1808,ilevel=723,gem_id=213743
+neck=ornately_engraved_amplifier,id=185842,bonus_id=8781,ilevel=723,gem_id=213470/213494
+shoulders=spellweavers_immaculate_pauldrons,id=237653,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=9893/12239,gem_id=238044,enchant=chant_of_winged_grace_3
+chest=spellweavers_immaculate_crestward,id=237658,ilevel=723,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=8790/11109/8960/1808,ilevel=720,gem_id=213482,enchant=chant_of_armored_leech_3
+hands=order_bashers,id=246282,ilevel=723
+waist=durable_information_securing_container,id=245965,bonus_id=1489/12352/12239,gem_id=213482,titan_disc_id=1236275
+legs=spellweavers_immaculate_runeslacks,id=237654,ilevel=723,enchant=sunset_spellthread_3
+feet=interlopers_chain_boots,id=243308,bonus_id=13504,ilevel=723,enchant=defenders_march_3
+finger1=logic_gate_omega,id=237570,bonus_id=8781,ilevel=723,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=ring_of_the_panoply,id=246281,bonus_id=8781,ilevel=723,gem_id=213482/213455,enchant=radiant_haste_3
+trinket1=astral_antenna,id=242395,ilevel=723
+trinket2=arazs_ritual_forge,id=242402,ilevel=723
+main_hand=voidglass_kris,id=237728,ilevel=723,enchant=stormriders_fury_3
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960,crafted_stats=32/36
+
+# Gear Summary
+# gear_ilvl=721.69
+# gear_stamina=654103
+# gear_intellect=104463
+# gear_crit_rating=19699
+# gear_haste_rating=21055
+# gear_mastery_rating=13673
+# gear_versatility_rating=147
+# gear_leech_rating=2040
+# gear_avoidance_rating=545
+# gear_armor=63693
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=scalecommander,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=scalecommander,enable=1

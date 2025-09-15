@@ -79,9 +79,6 @@ public:
   double rpe_sum, compound_amount, overkill_pct;
   double aps, ape, apet, etpe, ttpt;
   timespan_t total_time;
-  std::string aps_distribution_chart;
-
-  std::string timeline_aps_chart;
 
   struct stats_scaling_t {
     gear_stats_t value;

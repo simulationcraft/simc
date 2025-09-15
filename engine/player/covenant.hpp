@@ -6,13 +6,14 @@
 #define COVENANT_HPP
 
 #include "action/dbc_proc_callback.hpp"
+#include "rapidjson/document.h"
 #include "report/reports.hpp"
 #include "util/format.hpp"
 #include "util/span.hpp"
 #include "util/string_view.hpp"
 #include "util/timespan.hpp"
 
-#include "rapidjson/document.h"
+#include <memory>
 
 struct player_t;
 struct sim_t;

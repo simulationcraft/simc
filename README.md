@@ -16,16 +16,14 @@ A simple graphical interface is included with the tool, allowing players to down
 Go to the [downloads page](https://www.simulationcraft.org/download.html) and get the package for your particular platform.
 The Windows package offers both a formal install and a archive that can be extracted on to your desktop. There is no Linux release since it is so ridiculously easy to build it yourself on that platform. Releases occur quite frequently so be sure to check the release notes.
 
-Two executables are shipped: *SimulationCraft* sports a simple graphical user interface whereas *simc* uses a command-line interface.
+Two executables are shipped: *simc* uses a command-line interface whereas *SimulationCraft* sports a simple graphical user interface. The graphical user interface is largely unmaintained and it's highly recommended that you use the command-line interface.
 
-Launching SimulationCraft will present you with an explanation on how to use the tool.
-
-There is also an excellent [starters guide](../../wiki/StartersGuide) on our wiki.
+A [starters guide](../../wiki/StartersGuide) can be found on our wiki.
 
 
 ## How Can I Get Help?
 
-For a simple overview, thoroughly read the Welcome page that is presented upon launching SimulationCraft. In addition, detailed documentation material can be found on our [wiki pages](../../wiki/). Here you will find a list of features, a starters guide, as well as answers to frequently asked questions.
+Detailed documentation material can be found on our [wiki pages](../../wiki/). Here you will find a list of features, a starters guide, as well as answers to frequently asked questions.
 
 If your question is not answered there, then see the [Community](#community) section below on how to reach other users via Discord. We periodically scan the WoW, MMO, and Wowhead forums as well, but we cannot promise swift responses in those arenas.
 

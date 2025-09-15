@@ -110,10 +110,10 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
   {
     if ( item.player->profession[ profession ] < static_cast<int>( enchant.req_skill_value ) )
     {
-      item.sim->error( "Player {} attempting to use {} '{}' without {} skill level of {} (has {}), disabling enchant.",
-                        item.player->name(), util::special_effect_source_string( source ), enchant.name,
-                        util::profession_type_string( profession ), enchant.req_skill_value,
-                        item.player->profession[ profession ] );
+      item.sim->error( "{} attempting to use {} '{}' with {} skill level of {}, requires {}.",
+                       *item.player, util::special_effect_source_string( source ), enchant.name,
+                       util::profession_type_string( profession ), item.player->profession[ profession ],
+                       enchant.req_skill_value );
       // Don't initialize the special effects, but do "succeed" the
       // initialization process.
       return;
@@ -372,7 +372,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
   const auto& gem = item.player->dbc->item( gem_id );
   if ( gem.id == 0 )
   {
-    throw std::invalid_argument( fmt::format( "No gem data for id {}.", gem_id ) );
+    throw sc_invalid_item_string( fmt::format( "No gem data for id '{}'.", gem_id ) );
   }
 
   const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
@@ -384,6 +384,9 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
   {
     return initialize_relic( item, gem_idx, gem_prop );
   }
+
+  if ( gem_prop.color == SOCKET_COLOR_RESHII_FIBER )
+    remove_other_reshii_bonuses( item );
 
   const item_enchantment_data_t& data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
 
@@ -397,7 +400,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 
   if ( !dbc::valid_gem_color( gem_prop.color ) )
   {
-    throw std::invalid_argument( fmt::format( "Invalid gem color {} from id {}.", gem_prop.color, gem_id ) );
+    throw sc_invalid_item_string( fmt::format( "Invalid gem color {} from id '{}'.", gem_prop.color, gem_id ) );
   }
 
   return static_cast<item_socket_color>( gem_prop.color );
@@ -560,5 +563,57 @@ std::string enchant::encoded_enchant_name(
   else
   {
     return entry.tokenized_name;
+  }
+}
+
+void enchant::remove_other_reshii_bonuses( item_t& item )
+{
+  const std::array<int, 8> reshii_bonus_ids = { 12255, 12256, 12257, 12258, 12259, 12260, 12261, 12262 };
+  // Remove all Reshii bonus ids, as they can be additive with the gem parsing
+  auto& item_bonus_ids = item.parsed.bonus_id;
+  bool found           = false;
+
+  for ( auto bonus_id : item_bonus_ids )
+  {
+    if ( range::find( reshii_bonus_ids, bonus_id ) != reshii_bonus_ids.end() )
+    {
+      item.sim->print_debug( "Removing Reshii Wraps Stat bonus id {} from item {}", bonus_id, item.name() );
+      found = true;
+    }
+  }
+
+  if ( found )
+  {
+    item_bonus_ids.erase( std::remove_if( item_bonus_ids.begin(), item_bonus_ids.end(),
+                                          [ &reshii_bonus_ids ]( int bonus_id ) {
+                                            return range::find( reshii_bonus_ids, bonus_id ) != reshii_bonus_ids.end();
+                                          } ),
+                          item_bonus_ids.end() );
+
+    // Remove all Reshii stats, as they are additive with the gem parsing
+    for ( size_t i = 0; i < item.parsed.data.stat_type_e.size(); i++ )
+    {
+      stat_e s = item.stat( i );
+      switch ( s )
+      {
+        case STAT_STRENGTH:
+        case STAT_AGILITY:
+        case STAT_INTELLECT:
+        case STAT_STAMINA:
+        case STAT_STR_AGI_INT:
+        case STAT_STR_AGI:
+        case STAT_STR_INT:
+        case STAT_AGI_INT:
+          break;  // Do not remove these stats
+        default:
+          // Remove all other stats
+          item.base_stats.add_stat( s, -item.parsed.stat_val[ i ] );
+          item.stats.add_stat( s, -item.parsed.stat_val[ i ] );
+          item.parsed.stat_val[ i ]         = 0;
+          item.parsed.data.stat_type_e[ i ] = -1;
+          item.parsed.data.stat_alloc[ i ]  = 0;
+          break;
+      }
+    }
   }
 }

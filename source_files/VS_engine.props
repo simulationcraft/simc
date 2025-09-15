@@ -321,6 +321,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\instant_absorb.cpp" />
 		<ClCompile Include="..\engine\player\pet.cpp" />
 		<ClCompile Include="..\engine\player\player.cpp" />
+		<ClCompile Include="..\engine\player\player_collected_data.cpp" />
 		<ClCompile Include="..\engine\player\player_event.cpp" />
 		<ClCompile Include="..\engine\player\player_stat_cache.cpp" />
 		<ClCompile Include="..\engine\player\player_talent_points.cpp" />

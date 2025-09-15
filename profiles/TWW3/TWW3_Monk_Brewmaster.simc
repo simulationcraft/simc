@@ -1,0 +1,105 @@
+monk="TWW3_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=80
+race=tauren
+role=tank
+position=front
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgxCmxMmlZegtxMzAAAAAAAw2CGxMDMDDMYbmZGzsMMjtZZmY2mtZMMbAAwysNtMbzsMAAgAYGWA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/potion
+actions+=/call_action_list,name=race_actions
+actions+=/call_action_list,name=item_actions
+actions+=/black_ox_brew,if=energy<40&(!talent.aspect_of_harmony.enabled|cooldown.celestial_brew.charges_fractional<1)
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&buff.weapons_of_order.up&!dot.aspect_of_harmony_damage.ticking)
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&!talent.weapons_of_order.enabled&!dot.aspect_of_harmony_damage.ticking)
+actions+=/celestial_brew,if=(target.time_to_die<20&target.time_to_die>14&buff.aspect_of_harmony_accumulator.value>0.2*health.max)
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&cooldown.weapons_of_order.remains>20&!dot.aspect_of_harmony_damage.ticking)
+actions+=/celestial_brew,if=!buff.blackout_combo.up&(cooldown.celestial_brew.charges_fractional>1.8|(cooldown.celestial_brew.charges_fractional>1.2&cooldown.black_ox_brew.up))
+actions+=/blackout_kick
+actions+=/chi_burst,if=!talent.aspect_of_harmony.enabled|buff.balanced_stratagem_magic.stack>3
+actions+=/weapons_of_order
+actions+=/invoke_niuzao,if=!talent.call_to_arms.enabled
+actions+=/invoke_niuzao,if=talent.call_to_arms.enabled&buff.call_to_arms_invoke_niuzao.down&buff.weapons_of_order.remains<16
+actions+=/rising_sun_kick,if=!talent.fluidity_of_motion.enabled
+actions+=/keg_smash,if=buff.weapons_of_order.up&(debuff.weapons_of_order_debuff.remains<1.8|debuff.weapons_of_order_debuff.stack<3-buff.blackout_combo.up|(buff.weapons_of_order.remains<3-buff.blackout_combo.up&buff.weapons_of_order.remains<1+cooldown.rising_sun_kick.remains))
+actions+=/tiger_palm,if=buff.blackout_combo.up
+actions+=/keg_smash,if=talent.scalding_brew.enabled
+actions+=/spinning_crane_kick,if=talent.charred_passions.enabled&talent.scalding_brew.enabled&buff.charred_passions.up&buff.charred_passions.remains<3&dot.breath_of_fire.remains<9&active_enemies>4
+actions+=/rising_sun_kick,if=talent.fluidity_of_motion.enabled
+actions+=/purifying_brew,if=buff.blackout_combo.down&!(talent.call_to_arms.enabled|talent.invoke_niuzao_the_black_ox.enabled)
+actions+=/purifying_brew,if=buff.blackout_combo.down&(talent.call_to_arms.enabled|talent.invoke_niuzao_the_black_ox.enabled)&(buff.invoke_niuzao_the_black_ox.up|buff.call_to_arms_invoke_niuzao.up)
+actions+=/purifying_brew,if=buff.blackout_combo.down&(talent.call_to_arms.enabled|talent.invoke_niuzao_the_black_ox.enabled)&cooldown.weapons_of_order.remains>10&cooldown.invoke_niuzao_the_black_ox.remains>10
+actions+=/breath_of_fire,if=(buff.charred_passions.down&(!talent.scalding_brew.enabled|active_enemies<5))|!talent.charred_passions.enabled|(dot.breath_of_fire.remains<3&talent.scalding_brew.enabled)
+actions+=/exploding_keg,if=!talent.rushing_jade_wind.enabled|buff.rushing_jade_wind.up
+actions+=/rushing_jade_wind,if=talent.aspect_of_harmony.enabled&((buff.rushing_jade_wind.remains<2.5&buff.rushing_jade_wind.up)|!buff.rushing_jade_wind.up)
+actions+=/keg_smash
+actions+=/rushing_jade_wind,if=!talent.aspect_of_harmony.enabled&((buff.rushing_jade_wind.remains<2.5&buff.rushing_jade_wind.up)|!buff.rushing_jade_wind.up)
+actions+=/tiger_palm,if=energy>40-cooldown.keg_smash.remains*energy.regen
+actions+=/spinning_crane_kick,if=energy>40-cooldown.keg_smash.remains*energy.regen
+
+actions.item_actions=use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
+actions.item_actions+=/use_item,name=unyielding_netherprism,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack=4
+actions.item_actions+=/use_item,name=unyielding_netherprism,if=!talent.weapons_of_order.enabled
+actions.item_actions+=/use_item,name=lily_of_the_eternal_weave,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack=4
+actions.item_actions+=/use_item,name=lily_of_the_eternal_weave,if=!talent.weapons_of_order.enabled
+actions.item_actions+=/use_item,name=signet_of_the_priory,if=buff.weapons_of_order.up&debuff.weapons_of_order_debuff.stack=4
+actions.item_actions+=/use_item,name=signet_of_the_priory,if=!talent.weapons_of_order.enabled
+actions.item_actions+=/use_items
+
+actions.race_actions=blood_fury
+actions.race_actions+=/berserking
+actions.race_actions+=/arcane_torrent
+actions.race_actions+=/lights_judgment
+actions.race_actions+=/fireblood
+actions.race_actions+=/ancestral_call
+actions.race_actions+=/bag_of_tricks
+
+head=halfmask_of_fallen_storms,id=237673,bonus_id=7981/12052/5877/12361/12053/1808,gem_id=213743
+neck=bloodstained_memento,id=252009,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213467/213497
+shoulders=glyphs_of_fallen_storms,id=237671,bonus_id=7981/12052/5877/12361/12053
+back=reshii_wraps,id=235499,bonus_id=9893/12401,gem_id=238042,enchant=chant_of_leeching_fangs_3
+chest=gi_of_fallen_storms,id=237676,bonus_id=7981/12052/5877/12361/12053,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=12050/12053/9627/11307/8795/11109,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=grasp_of_fallen_storms,id=237674,bonus_id=7981/12052/5877/12361/12053
+waist=adrenal_surge_clasp,id=219502,bonus_id=12050/9627/12053/11307,gem_id=213461
+legs=anomalous_starlit_breeches,id=185801,bonus_id=657/12052/5877/10390/12361/12053,enchant=stormbound_armor_kit_3
+feet=interlopers_reinforced_sandals,id=243306,bonus_id=7981/12052/5877/12361/12053/13504,enchant=defenders_march_3
+finger1=logic_gate_alpha,id=237567,bonus_id=7981/12052/5877/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=high_nerubian_signet,id=221141,bonus_id=657/12052/5877/10390/12361/12053/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12052/5877/10390/12361/12053
+trinket2=brand_of_ceaseless_ire,id=242401,bonus_id=7981/12052/5877/12361/12053
+main_hand=harvesters_interdiction,id=221159,bonus_id=657/12052/5877/10390/12361/12053,enchant=stonebound_artistry_3
+
+# Gear Summary
+# gear_ilvl=723.07
+# gear_agility=69307
+# gear_stamina=664468
+# gear_attack_power=469
+# gear_crit_rating=20471
+# gear_haste_rating=2105
+# gear_mastery_rating=10247
+# gear_versatility_rating=23294
+# gear_leech_rating=3060
+# gear_armor=43761
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=master_of_harmony,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=master_of_harmony,enable=1

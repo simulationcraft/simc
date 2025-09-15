@@ -12,6 +12,7 @@
 #include "fmt/printf.h"
 
 #include <iosfwd>
+#include <memory>
 #include <utility>
 
 struct sim_t;
@@ -84,7 +85,7 @@ struct sim_ostream_t
   template <typename... Args>
   sim_ostream_t& printf( fmt::string_view format, Args&& ... args )
   {
-    vprintf( format, fmt::make_printf_args( std::forward<Args>(args)... ) );
+    vprintf( format, fmt::make_printf_args( std::forward<Args>( args )... ) );
     return *this;
   }
 

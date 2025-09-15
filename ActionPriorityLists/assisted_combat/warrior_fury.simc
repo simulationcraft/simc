@@ -17,20 +17,20 @@ actions.assisted_combat+=/thunder_clap,if=buff.thunder_blast.up&target.distance<
 actions.assisted_combat+=/thunderous_roar,if=target.distance<=6&buff.enrage.up
 actions.assisted_combat+=/ravager
 actions.assisted_combat+=/odyns_fury,if=target.distance<=12
-# (Overridden from 'target.distance<=5&talent.lightning_strikes&talent.improved_whirlwind&buff.meat_cleaver.down')
-actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.lightning_strikes&talent.improved_whirlwind&buff.meat_cleaver.down
-actions.assisted_combat+=/whirlwind,if=target.distance<=10&!talent.lightning_strikes&talent.improved_whirlwind&buff.meat_cleaver.down&active_enemies>3
+# (Overridden from 'target.distance<=5&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down
+actions.assisted_combat+=/whirlwind,if=target.distance<=10&!talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down&active_enemies>3
 actions.assisted_combat+=/champions_spear,if=target.distance<=25
 actions.assisted_combat+=/bladestorm,if=target.distance<=10&buff.enrage.up
 actions.assisted_combat+=/rampage
 actions.assisted_combat+=/onslaught
 actions.assisted_combat+=/execute
-# (Overridden from 'target.distance<=5&talent.lightning_strikes&active_enemies>3')
-actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.lightning_strikes&active_enemies>3
+# (Overridden from 'target.distance<=5&talent.crashing_thunder&active_enemies>3')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&active_enemies>3
 actions.assisted_combat+=/raging_blow
 actions.assisted_combat+=/bloodthirst
-# (Overridden from 'target.distance<=5&talent.lightning_strikes')
-actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.lightning_strikes
+# (Overridden from 'target.distance<=5&talent.crashing_thunder')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder
 actions.assisted_combat+=/slam
 actions.assisted_combat+=/heroic_throw,if=target.distance>15
 actions.assisted_combat+=/bloodthirst

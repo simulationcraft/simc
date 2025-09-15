@@ -19,8 +19,6 @@
 // report::print_profiles ===================================================
 namespace report
 {
-
-
 void print_profiles(sim_t* sim)
 {
   int k = 0;
@@ -235,14 +233,43 @@ void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spe
 
 void print_suite( sim_t* sim )
 {
-  if (!sim->profileset_enabled)
-  {
+  if ( !sim->profileset_enabled )
     fmt::print( "\nGenerating reports...\n" );
+
+  try
+  {
+    report::print_text( sim, sim->report_details != 0 );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_report_output_error( "Text output" ) );
   }
 
-  report::print_text(sim, sim->report_details != 0);
-  report::print_json(*sim);
-  report::print_html(*sim);
-  report::print_profiles(sim);
+  try
+  {
+    report::print_json( *sim );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_report_output_error( "JSON output" ) );
+  }
+
+  try
+  {
+    report::print_html( *sim );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_report_output_error( "HTML output" ) );
+  }
+
+  try
+  {
+    report::print_profiles( sim );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_report_output_error( "Profile output" ) );
+  }
 }
 }  // namespace report

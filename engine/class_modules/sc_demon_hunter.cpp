@@ -15,21 +15,6 @@ namespace
 class demon_hunter_t;
 struct soul_fragment_t;
 
-namespace buffs
-{
-}
-namespace actions
-{
-struct demon_hunter_attack_t;
-namespace attacks
-{
-struct auto_attack_damage_t;
-}
-}  // namespace actions
-namespace items
-{
-}
-
 // Target Data
 class demon_hunter_td_t : public actor_target_data_t
 {
@@ -80,6 +65,8 @@ public:
   {
     return *debug_cast<demon_hunter_t*>( source );
   }
+
+  void target_demise();
 };
 
 constexpr unsigned MAX_SOUL_FRAGMENTS      = 5;
@@ -184,7 +171,7 @@ enum demonsurge_ability
   ABYSSAL_GAZE,
   ANNIHILATION,
   DEATH_SWEEP,
-  TWW3
+  ENTER_META
 };
 
 const std::vector<demonsurge_ability> demonsurge_havoc_abilities{
@@ -215,8 +202,8 @@ std::string demonsurge_ability_name( demonsurge_ability ability )
       return "demonsurge_annihilation";
     case demonsurge_ability::DEATH_SWEEP:
       return "demonsurge_death_sweep";
-    case demonsurge_ability::TWW3:
-      return "demonsurge_tww3";
+    case demonsurge_ability::ENTER_META:
+      return "demonsurge_enter_meta";
     default:
       return "demonsurge_unknown";
   }
@@ -243,8 +230,8 @@ public:
   auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
 
   // Autoattacks
-  actions::attacks::auto_attack_damage_t* melee_main_hand;
-  actions::attacks::auto_attack_damage_t* melee_off_hand;
+  attack_t* melee_main_hand;
+  attack_t* melee_off_hand;
 
   double metamorphosis_health;  // Vengeance temp health from meta;
   double expected_max_health;
@@ -336,7 +323,7 @@ public:
     buff_t* winning_streak;
     buff_t* winning_streak_residual;
     buff_t* necessary_sacrifice;
-    buff_t* tww3_demon_soul;
+    buff_t* demon_soul_tww3;
     buff_t* scarred_strikes;
   } buff;
 
@@ -600,7 +587,6 @@ public:
     // Cross-Expansion Override Spells
     const spell_data_t* sigil_of_spite;
     const spell_data_t* sigil_of_spite_damage;
-    const spell_data_t* the_hunt;
 
   } spell;
 
@@ -656,6 +642,7 @@ public:
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
     const spell_data_t* cycle_of_hatred_buff;
+    const spell_data_t* furious_throws_damage;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -708,6 +695,7 @@ public:
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
     const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
+    const spell_data_t* thrill_of_the_fight_damage_buff;
     double wounded_quarry_proc_rate;
 
     // Fel-scarred
@@ -726,6 +714,7 @@ public:
     const spell_data_t* sigil_of_doom_damage;
     const spell_data_t* abyssal_gaze;
     const spell_data_t* fel_desolation;
+    std::vector<demonsurge_ability> demonsurge_abilities;
   } hero_spec;
 
   // Set Bonus effects
@@ -753,6 +742,7 @@ public:
     const spell_data_t* demon_soul_vengeance_buff;
     const spell_data_t* demon_soul_buff;
     const spell_data_t* scarred_strikes;
+    const spell_data_t* demonsurge_meta_trigger;
   } set_bonuses;
 
   // Mastery Spells
@@ -843,6 +833,7 @@ public:
     proc_t* soul_fragment_lesser;
     proc_t* felblade_reset;
     proc_t* soul_fragment_from_soul_sigils;
+    proc_t* soul_fragment_from_shattered_souls;
 
     // Havoc
     proc_t* demonic_appetite;
@@ -882,6 +873,10 @@ public:
     proc_t* winning_streak_drop_wasted_from_tww2_havoc_2pc;
     proc_t* winning_streak_wasted_from_tww2_havoc_4pc;
     proc_t* necessary_sacrifice_wasted_from_tww2_havoc_4pc;
+    proc_t* chaos_strike_in_immolation_aura;
+    proc_t* annihilation_in_immolation_aura;
+    proc_t* soul_cleave_in_immolation_aura;
+    proc_t* soul_sunder_in_immolation_aura;
   } proc;
 
   // RPPM objects
@@ -927,10 +922,10 @@ public:
     heal_t* frailty_heal    = nullptr;
 
     // Aldrachi Reaver
-    attack_t* art_of_the_glaive = nullptr;
-    attack_t* preemptive_strike = nullptr;
-    attack_t* warblades_hunger  = nullptr;
-    attack_t* wounded_quarry    = nullptr;
+    attack_t* fury_of_the_aldrachi = nullptr;
+    attack_t* preemptive_strike    = nullptr;
+    attack_t* warblades_hunger     = nullptr;
+    attack_t* wounded_quarry       = nullptr;
 
     // Fel-scarred
     action_t* burning_blades = nullptr;
@@ -957,7 +952,9 @@ public:
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
-    double felblade_lockout_from_vengeful_retreat = 0.6;
+    double felblade_lockout_from_vengeful_retreat    = 0.6;
+    bool enable_dungeon_slice                        = false;
+    double soul_fragment_from_shattered_souls_chance = 0.4;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1039,9 +1036,9 @@ public:
                                               int misc_value               = P_GENERIC,
                                               const spell_data_t* affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
-  const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
+  const spell_data_t* talent_spell_lookup( player_talent_t t, int id );
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -1056,6 +1053,7 @@ public:
   void spawn_soul_fragment( soul_fragment, unsigned, player_t* target, bool = false );
   void trigger_demonic();
   void trigger_demonsurge( demonsurge_ability, bool = true );
+  void trigger_demonsurge( demonsurge_ability, timespan_t, bool = true );
   double get_target_reach() const
   {
     return options.target_reach >= 0 ? options.target_reach : sim->target->combat_reach;
@@ -1355,14 +1353,20 @@ struct soul_fragment_t
 
     if ( activation )
     {
-      // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
-      if ( dh->specialization() == DEMON_HUNTER_HAVOC )
+      // TODO: MIDNIGHT - ADD DEVOURER
+      switch ( dh->specialization() )
       {
-        return 1_s;
+        case DEMON_HUNTER_HAVOC:
+          // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
+          return 1_s;
+        case DEMON_HUNTER_VENGEANCE:
+          // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
+          //               with some slight variance
+          return dh->rng().gauss<760, 120>();
+        default:
+          // cause it to fall down to velocity check
+          break;
       }
-      // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
-      //               with some slight variance
-      return dh->rng().gauss<760, 120>();
     }
 
     double distance = get_distance( dh );
@@ -1405,9 +1409,20 @@ struct soul_fragment_t
   void set_position()
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
-    const double distance = ( dh->specialization() == DEMON_HUNTER_HAVOC ) ? 4.6066 : 10.6066;
-    x                     = dh->x_position + ( dh->next_fragment_spawn % 2 ? -distance : distance );
-    y                     = dh->y_position + distance;
+    double distance = 0;
+    switch ( dh->specialization() )
+    {
+      case DEMON_HUNTER_HAVOC:
+        distance = 4.6066;
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        distance = 10.6066;
+        break;
+      default:
+        break;
+    }
+    x = dh->x_position + ( dh->next_fragment_spawn % 2 ? -distance : distance );
+    y = dh->y_position + distance;
 
     // Calculate random offset, 2-5 yards from the base position.
     double r_min = 2.0;
@@ -1484,7 +1499,7 @@ struct soul_fragment_t
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
-      dh->buff.tww3_demon_soul->trigger();
+      dh->buff.demon_soul_tww3->trigger();
     }
     else if ( is_type( soul_fragment::GREATER_DEMON ) )
     {
@@ -1702,43 +1717,47 @@ public:
     ab::apply_affecting_aura( p->talent.felscarred.flamebound );
 
     // Rank Passives
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p->specialization() )
     {
-      // Rank Passives
-      ab::apply_affecting_aura( p->spec.immolation_aura_3 );
+      case DEMON_HUNTER_HAVOC:
+        // Rank Passives
+        ab::apply_affecting_aura( p->spec.immolation_aura_3 );
 
-      // Set Bonus Passives
-      ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_2pc );
-      ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_4pc );
+        // Set Bonus Passives
+        ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_2pc );
+        ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_4pc );
 
-      // Affect Flags
-      parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
-      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
-      parse_affect_flags( p->talent.havoc.demon_hide, affected_by.demon_hide );
+        // Affect Flags
+        parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
+        parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
+        parse_affect_flags( p->talent.havoc.demon_hide, affected_by.demon_hide );
 
-      if ( p->talent.havoc.chaos_theory->ok() )
-      {
-        affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
-      }
+        if ( p->talent.havoc.chaos_theory->ok() )
+        {
+          affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
+        }
 
-      if ( p->talent.havoc.chaotic_disposition->ok() )
-      {
-        uint32_t mask                   = dbc::get_school_mask( SCHOOL_CHROMATIC );
-        affected_by.chaotic_disposition = ( dbc::get_school_mask( ab::school ) & mask ) == mask;
-      }
-    }
-    else  // DEMON_HUNTER_VENGEANCE
-    {
-      // Rank Passives
-      ab::apply_affecting_aura( p->spec.immolation_aura_cdr );
+        if ( p->talent.havoc.chaotic_disposition->ok() )
+        {
+          uint32_t mask                   = dbc::get_school_mask( SCHOOL_CHROMATIC );
+          affected_by.chaotic_disposition = ( dbc::get_school_mask( ab::school ) & mask ) == mask;
+        }
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        // Rank Passives
+        ab::apply_affecting_aura( p->spec.immolation_aura_cdr );
 
-      // Set Bonus Passives
-      ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_2pc );
-      ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_4pc );
+        // Set Bonus Passives
+        ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_2pc );
+        ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_4pc );
 
-      // Affect Flags
+        // Affect Flags
 
-      // Talents
+        // Talents
+        break;
+      default:
+        break;
     }
 
     // Aldrachi Reaver
@@ -1817,7 +1836,14 @@ public:
 
       if ( const auto& effect = p()->talent.aldrachi_reaver.art_of_the_glaive->effectN( idx );
            effect.ok() && in_whitelist() )
-        add_parse_entry( ab::da_multiplier_effects ).set_buff( buff ).set_value( effect.percent() ).set_eff( &effect );
+      {
+        auto added_entry = add_parse_entry( ab::da_multiplier_effects )
+                               .set_buff( buff )
+                               .set_value( effect.percent() )
+                               .set_eff( &effect );
+        ab::debug_message( added_entry, "direct damage", fmt::format( "{:.1f}%", effect.base_value() ), false,
+                           &buff->data(), idx );
+      }
     };
     std::vector<int> art_of_the_glaive_glaive_flurry_affected_list  = { 199552, 200685, 391374, 391378, 210153,
                                                                         210155, 393054, 393055, 228478 };
@@ -1848,7 +1874,7 @@ public:
     ab::parse_effects( p()->buff.winning_streak );
     ab::parse_effects( p()->buff.winning_streak_residual );
     ab::parse_effects( p()->buff.luck_of_the_draw );
-    ab::parse_effects( p()->buff.tww3_demon_soul );
+    ab::parse_effects( p()->buff.demon_soul_tww3 );
     ab::parse_effects( p()->buff.scarred_strikes );
   }
 
@@ -2226,7 +2252,8 @@ struct art_of_the_glaive_trigger_t : public BASE
 
   art_of_the_glaive_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
     : BASE( n, p, s, o ),
-      // 2024-07-16 -- This is seems to be 700ms for everything but Death Sweep
+      // 2025-07-18 -- Death sweep triggers this with the same delay as other abilities, also proccing the second
+      // art of the glaive buff early before the final hit of death sweep
       thrill_delay( 700_ms )
   {
   }
@@ -2243,12 +2270,18 @@ struct art_of_the_glaive_trigger_t : public BASE
 
       if ( BASE::p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
       {
-        BASE::p()->active.art_of_the_glaive->execute_on_target( BASE::target );
+        BASE::p()->active.fury_of_the_aldrachi->execute_on_target( BASE::target );
       }
 
       BASE::p()->buff.glaive_flurry->expire();
       make_event( *BASE::p()->sim, thrill_delay, [ this, second_ability ] {
-        BASE::p()->buff.art_of_the_glaive_first->expire();
+        // 2025-07-19 -- Using glaive flurry as havoc causes all subsequent death sweeps and blade dances to
+        // gain the first art of the glaive buff, even after all related reavers glaives buffs expire until
+        // either chaos strike of annihilation are used.
+        if ( BASE::p()->specialization() != DEMON_HUNTER_HAVOC )
+        {
+          BASE::p()->buff.art_of_the_glaive_first->expire();
+        }
         BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->expire();
         BASE::p()->buff.art_of_the_glaive_second_rending_strike->expire();
         if ( !second_ability )
@@ -2262,13 +2295,24 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
-      int first_ability_amount  = 1 + BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
-      int second_ability_amount = 1 + BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() +
-                                  BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value();
+      int second_ability_increase =
+          as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
+
+      int first_ability_amount = 1;
+      int second_ability_amount =
+          1 + second_ability_increase + as<int>( BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value() );
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
         BASE::td( BASE::target )
             ->debuffs.reavers_mark->trigger( second_ability ? second_ability_amount : first_ability_amount );
+      }
+      // 2025-07-19 -- Consuming rending strike as havoc during a death sweep before the final hit causes the
+      // final death sweep hit to also gain the second art of the glaive damage buff. This applies that buff
+      // temporarily during the rending strike even to ensure the final death sweep hit also gains the buff.
+      if ( ( BASE::p()->specialization() == DEMON_HUNTER_HAVOC ) && second_ability )
+      {
+        BASE::p()->buff.art_of_the_glaive_first->expire();
+        BASE::p()->buff.art_of_the_glaive_second_glaive_flurry->trigger();
       }
 
       BASE::p()->buff.rending_strike->expire();
@@ -2287,10 +2331,10 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::p()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        make_event( *BASE::p()->sim, thrill_delay, [ this ] {
-          BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
-          BASE::p()->buff.thrill_of_the_fight_damage->trigger();
-        } );
+        BASE::p()->buff.thrill_of_the_fight_attack_speed->trigger();
+
+        make_event( *BASE::p()->sim, thrill_delay,
+                    [ this ] { BASE::p()->buff.thrill_of_the_fight_damage->trigger(); } );
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
@@ -2640,24 +2684,26 @@ struct consume_soul_t : public demon_hunter_heal_t
 
   double calculate_heal( const action_state_t* ) const
   {
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p()->specialization() )
     {
-      // Havoc always heals for the same percentage of HP, regardless of the soul type consumed
-      return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+      case DEMON_HUNTER_HAVOC:
+        // Havoc always heals for the same percentage of HP, regardless of the soul type consumed
+        return player->resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+      case DEMON_HUNTER_VENGEANCE:
+        if ( type == soul_fragment::LESSER )
+        {
+          // Vengeance-Specific Healing Logic
+          // This is not in the heal data and they use SpellId 203783 to control the healing parameters
+          return std::max(
+              player->resources.max[ RESOURCE_HEALTH ] * vengeance_heal->effectN( 3 ).percent(),
+              player->compute_incoming_damage( vengeance_heal_interval ) * vengeance_heal->effectN( 2 ).percent() );
+        }
+        // SOUL_FRAGMENT_GREATER for Vengeance uses AP mod calculations
+        break;
+      default:
+        break;
     }
-    else
-    {
-      if ( type == soul_fragment::LESSER )
-      {
-        // Vengeance-Specific Healing Logic
-        // This is not in the heal data and they use SpellId 203783 to control the healing parameters
-        return std::max(
-            player->resources.max[ RESOURCE_HEALTH ] * vengeance_heal->effectN( 3 ).percent(),
-            player->compute_incoming_damage( vengeance_heal_interval ) * vengeance_heal->effectN( 2 ).percent() );
-      }
-      // SOUL_FRAGMENT_GREATER for Vengeance uses AP mod calculations
-    }
-
     return 0.0;
   }
 
@@ -3077,7 +3123,7 @@ struct eye_beam_t : public eye_beam_base_t
     {
       return abyssal_gaze_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return eye_beam_base_t::cost();
   }
 
   void execute() override
@@ -3276,7 +3322,7 @@ struct fel_devastation_t : public fel_devastation_base_t
     {
       return fel_desolation_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return fel_devastation_base_t::cost();
   }
 
   void execute() override
@@ -3742,7 +3788,7 @@ struct sigil_of_flame_t : public sigil_of_flame_base_t
     {
       return sigil_of_doom_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return sigil_of_flame_base_t::cost();
   }
 
   void execute() override
@@ -3911,13 +3957,17 @@ struct immolation_aura_t : public demon_hunter_spell_t
       gain = p->get_gain( "immolation_aura_tick" );
       if ( !initial )
       {
-        if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
+        // TODO: MIDNIGHT - ADD DEVOURER
+        switch ( p->specialization() )
         {
-          energize_amount = data().effectN( 3 ).base_value();
-        }
-        else  // DEMON_HUNTER_HAVOC
-        {
-          energize_amount = p->talent.havoc.burning_hatred->ok() ? data().effectN( 2 ).base_value() : 0;
+          case DEMON_HUNTER_HAVOC:
+            energize_amount = p->talent.havoc.burning_hatred->ok() ? data().effectN( 2 ).base_value() : 0;
+            break;
+          case DEMON_HUNTER_VENGEANCE:
+            energize_amount = data().effectN( 3 ).base_value();
+            break;
+          default:
+            break;
         }
       }
     }
@@ -4023,13 +4073,17 @@ struct immolation_aura_t : public demon_hunter_spell_t
     dot_duration = timespan_t::zero();
     set_target( p );  // Does not require a hostile target
 
-    if ( p->specialization() == DEMON_HUNTER_VENGEANCE )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p->specialization() )
     {
-      energize_amount = data().effectN( 3 ).base_value();
-    }
-    else
-    {
-      energize_amount = data().effectN( 2 ).base_value();
+      case DEMON_HUNTER_HAVOC:
+        energize_amount = data().effectN( 2 ).base_value();
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        energize_amount = data().effectN( 3 ).base_value();
+        break;
+      default:
+        break;
     }
 
     if ( !p->active.immolation_aura )
@@ -4103,23 +4157,27 @@ struct metamorphosis_t : public demon_hunter_spell_t
     may_miss     = false;
     dot_duration = timespan_t::zero();
 
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p->specialization() )
     {
-      base_teleport_distance  = data().max_range();
-      movement_directionality = movement_direction_type::OMNI;
-      min_gcd                 = 1_s;  // Cannot use skills during travel time, adjusted below
-      travel_speed            = 1.0;  // Allows use in the precombat list
+      case DEMON_HUNTER_HAVOC:
+        base_teleport_distance  = data().max_range();
+        movement_directionality = movement_direction_type::OMNI;
+        min_gcd                 = 1_s;  // Cannot use skills during travel time, adjusted below
+        travel_speed            = 1.0;  // Allows use in the precombat list
 
-      // If we are landing outside of the impact radius, we don't need to assign the impact spell
-      if ( landing_distance < 8.0 )
-      {
-        impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
-      }
+        // If we are landing outside of the impact radius, we don't need to assign the impact spell
+        if ( landing_distance < 8.0 )
+        {
+          impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
+        }
 
-      // Don't assign the stats here because we don't want Meta to show up in the DPET chart
-    }
-    else  // DEMON_HUNTER_VENGEANCE
-    {
+        // Don't assign the stats here because we don't want Meta to show up in the DPET chart
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        break;
+      default:
+        break;
     }
   }
 
@@ -4135,74 +4193,91 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
   timespan_t travel_time() const override
   {
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
-      return min_gcd;
-    else  // DEMON_HUNTER_VENGEANCE
-      return timespan_t::zero();
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p()->specialization() )
+    {
+      case DEMON_HUNTER_HAVOC:
+        return min_gcd;
+      case DEMON_HUNTER_VENGEANCE:
+        return timespan_t::zero();
+      default:
+        return timespan_t::zero();
+    }
   }
 
   void execute() override
   {
     demon_hunter_spell_t::execute();
 
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p()->specialization() )
     {
-      // 2023-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
-      //               This means it (probably inadvertently) triggers Restless Hunter
-      if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
-      {
-        p()->cooldown.fel_rush->reset( false, 1 );
-        p()->buff.restless_hunter->trigger();
-      }
+      case DEMON_HUNTER_HAVOC:
+        // 2023-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
+        //               This means it (probably inadvertently) triggers Restless Hunter
+        if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
+        {
+          p()->cooldown.fel_rush->reset( false, 1 );
+          p()->buff.restless_hunter->trigger();
+        }
 
-      for ( demonsurge_ability ability : demonsurge_havoc_abilities )
-      {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
-      }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
-      p()->buff.demonsurge->expire();
+        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.demonsurge->expire();
 
-      // Buff is gained at the start of the leap.
-      p()->buff.metamorphosis->extend_duration_or_trigger();
+        // Buff is gained at the start of the leap.
+        p()->buff.metamorphosis->extend_duration_or_trigger();
 
-      if ( p()->talent.havoc.chaotic_transformation->ok() )
-      {
-        p()->cooldown.eye_beam->reset( false );
-        p()->cooldown.blade_dance->reset( false );
-      }
+        if ( p()->talent.havoc.chaotic_transformation->ok() )
+        {
+          p()->cooldown.eye_beam->reset( false );
+          p()->cooldown.blade_dance->reset( false );
+        }
 
-      if ( p()->talent.felscarred.violent_transformation->ok() )
-      {
-        p()->cooldown.immolation_aura->reset( false, -1 );
-        p()->cooldown.sigil_of_flame->reset( false );
-      }
+        if ( p()->talent.felscarred.violent_transformation->ok() )
+        {
+          p()->cooldown.immolation_aura->reset( false, -1 );
+          p()->cooldown.sigil_of_flame->reset( false );
+        }
 
-      // Cancel all previous movement events, as Metamorphosis is ground-targeted
-      // If we are landing outside of point-blank range, trigger the movement buff
-      p()->set_out_of_range( timespan_t::zero() );
-      if ( landing_distance > 0.0 )
-      {
-        p()->buff.metamorphosis_move->distance_moved = landing_distance;
-        p()->buff.metamorphosis_move->trigger();
-      }
+        // Cancel all previous movement events, as Metamorphosis is ground-targeted
+        // If we are landing outside of point-blank range, trigger the movement buff
+        p()->set_out_of_range( timespan_t::zero() );
+        if ( landing_distance > 0.0 )
+        {
+          p()->buff.metamorphosis_move->distance_moved = landing_distance;
+          p()->buff.metamorphosis_move->trigger();
+        }
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.metamorphosis->trigger();
+        p()->buff.demonsurge->expire();
+
+        if ( p()->talent.felscarred.violent_transformation->ok() )
+        {
+          p()->cooldown.fel_devastation->reset( false );
+          p()->cooldown.sigil_of_flame->reset( false, -1 );
+        }
+        break;
+      default:
+        break;
     }
-    else  // DEMON_HUNTER_VENGEANCE
-    {
-      for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
-      {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
-      }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
-      p()->buff.metamorphosis->trigger();
-      p()->buff.demonsurge->expire();
 
-      if ( p()->talent.felscarred.violent_transformation->ok() )
-      {
-        p()->cooldown.fel_devastation->reset( false );
-        p()->cooldown.sigil_of_flame->reset( false, -1 );
-      }
+    if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
+    {
+      p()->trigger_demonsurge(
+          demonsurge_ability::ENTER_META,
+          timespan_t::from_millis( p()->set_bonuses.demonsurge_meta_trigger->effectN( 1 ).misc_value1() ), false );
     }
   }
 
@@ -4544,7 +4619,7 @@ struct spirit_bomb_t : public spirit_bomb_base_t
     {
       return spirit_burst_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return spirit_bomb_base_t::cost();
   }
 
   void execute() override
@@ -4626,15 +4701,16 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
     struct the_hunt_dot_t : public demon_hunter_spell_t
     {
       the_hunt_dot_t( util::string_view name, demon_hunter_t* p )
-        : demon_hunter_spell_t( name, p, p->spell.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
+        : demon_hunter_spell_t( name, p,
+                                p->talent.demon_hunter.the_hunt->effectN( 1 ).trigger()->effectN( 4 ).trigger() )
       {
         dual = true;
-        aoe  = as<int>( p->spell.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+        aoe  = as<int>( p->talent.demon_hunter.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
       }
     };
 
     the_hunt_damage_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spell.the_hunt->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( name, p, p->talent.demon_hunter.the_hunt->effectN( 1 ).trigger() )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
@@ -4642,7 +4718,7 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
   };
 
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "the_hunt", p, p->spell.the_hunt, options_str )
+    : base_t( "the_hunt", p, p->talent.demon_hunter.the_hunt, options_str )
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
@@ -5185,6 +5261,11 @@ struct blade_dance_base_t
       return am;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return demon_hunter_attack_t::composite_da_multiplier( s );
+    }
+
     void impact( action_state_t* s ) override
     {
       demon_hunter_attack_t::impact( s );
@@ -5419,7 +5500,6 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay                 = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
     winning_streak_removal_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
@@ -5707,6 +5787,16 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
+
+  void execute() override
+  {
+    chaos_strike_base_t::execute();
+
+    if ( !from_onslaught && p()->buff.immolation_aura->check() )
+    {
+      p()->proc.chaos_strike_in_immolation_aura->occur();
+    }
+  }
 };
 
 // Annihilation =============================================================
@@ -5744,6 +5834,16 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
     }
 
     return base_t::ready();
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( !from_onslaught && p()->buff.immolation_aura->check() )
+    {
+      p()->proc.annihilation_in_immolation_aura->occur();
+    }
   }
 };
 
@@ -5945,17 +6045,18 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
   unsigned max_fragments_consumed;
 
   felblade_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
-      max_fragments_consumed(
-          p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok()
-              ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
-              : 0 )
+    : base_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ), max_fragments_consumed( 0 )
   {
     may_block               = false;
     movement_directionality = movement_direction_type::TOWARDS;
 
     execute_action        = p->get_background_action<felblade_damage_t>( "felblade_damage" );
     execute_action->stats = stats;
+
+    if ( p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok() )
+    {
+      max_fragments_consumed = as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() );
+    }
 
     // Add damage modifiers in felblade_damage_t, not here.
   }
@@ -6109,8 +6210,7 @@ struct fracture_t : public felblade_trigger_t<
 
   fracture_damage_t *mh, *oh;
 
-  fracture_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "fracture", p, p->talent.vengeance.fracture, options_str )
+  fracture_t( demon_hunter_t* p ) : base_t( "fracture", p, p->talent.vengeance.fracture, "" )
   {
     int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
     // divide the number in 2 as half come from main hand, half come from offhand.
@@ -6207,8 +6307,29 @@ struct inner_demon_t : public demon_hunter_spell_t
 struct shear_t : public felblade_trigger_t<
                      art_of_the_glaive_trigger_t<art_of_the_glaive_ability::RENDING_STRIKE, demon_hunter_attack_t>>
 {
-  shear_t( demon_hunter_t* p, util::string_view options_str ) : base_t( "shear", p, p->spec.shear, options_str )
+  fracture_t* fracture;
+
+  shear_t( demon_hunter_t* p, util::string_view options_str )
+    : base_t( "shear", p, p->spec.shear, options_str ), fracture( nullptr )
   {
+    if ( p->talent.vengeance.fracture->ok() )
+    {
+      fracture = new fracture_t( p );
+      cooldown = fracture->cooldown;
+      stats    = fracture->stats;
+    }
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.vengeance.fracture->ok() )
+    {
+      fracture->execute_on_target( target );
+      //      stats->add_execute( 0_ms, target );
+      return;
+    }
+
+    base_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -6250,12 +6371,14 @@ struct shear_t : public felblade_trigger_t<
     return ea;
   }
 
-  bool verify_actor_spec() const override
+  bool ready() override
   {
     if ( p()->talent.vengeance.fracture->ok() )
-      return false;
+    {
+      return fracture->ready();
+    }
 
-    return demon_hunter_attack_t::verify_actor_spec();
+    return demon_hunter_action_t::ready();
   }
 };
 
@@ -6370,6 +6493,16 @@ struct soul_sunder_t : public demonsurge_trigger_t<demonsurge_ability::SOUL_SUND
   soul_sunder_t( demon_hunter_t* p ) : base_t( "soul_sunder", p, p->hero_spec.soul_sunder, "" )
   {
   }
+
+  void execute() override
+  {
+    soul_cleave_base_t::execute();
+
+    if ( p()->buff.immolation_aura->check() )
+    {
+      p()->proc.soul_sunder_in_immolation_aura->occur();
+    }
+  }
 };
 
 struct soul_cleave_t : public soul_cleave_base_t
@@ -6396,7 +6529,7 @@ struct soul_cleave_t : public soul_cleave_base_t
     {
       return soul_sunder_cost;
     }
-    return base_costs[ POWER_FURY ];
+    return soul_cleave_base_t::cost();
   }
 
   void execute() override
@@ -6409,6 +6542,11 @@ struct soul_cleave_t : public soul_cleave_base_t
     }
 
     soul_cleave_base_t::execute();
+
+    if ( p()->buff.immolation_aura->check() )
+    {
+      p()->proc.soul_cleave_in_immolation_aura->occur();
+    }
   }
 };
 
@@ -6428,8 +6566,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     glaive_source source;
 
-    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN )
-      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
+    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN,
+                           const spell_data_t* spell = nullptr )
+      : base_t( name, p, spell ? spell : p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
     {
       background = dual = true;
       radius            = 10.0;
@@ -6523,18 +6662,19 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
           furious_throws = p->get_background_action<throw_glaive_damage_t>(
-              "throw_glaive_furious_throws_sb_slash_proc_throw", source );
+              "throw_glaive_furious_throws_sb_slash_proc_throw", source, p->spec.furious_throws_damage );
           break;
         case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw",
+                                                                            source, p->spec.furious_throws_damage );
           break;
         case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
-          furious_throws =
-              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw",
+                                                                            source, p->spec.furious_throws_damage );
           break;
         default:
-          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source );
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source,
+                                                                            p->spec.furious_throws_damage );
           break;
       }
 
@@ -6821,14 +6961,14 @@ struct soul_carver_t : public demon_hunter_attack_t
 };
 
 // Art of the Glaive ===================================================
-struct art_of_the_glaive_t : public demon_hunter_attack_t
+struct fury_of_the_aldrachi_t : public demon_hunter_attack_t
 {
-  struct art_of_the_glaive_damage_t : public demon_hunter_attack_t
+  struct fury_of_the_aldrachi_damage_t : public demon_hunter_attack_t
   {
     timespan_t delay;
 
-    art_of_the_glaive_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
-                                std::basic_string<char> reporting_name )
+    fury_of_the_aldrachi_damage_t( util::string_view name, demon_hunter_t* p, const spelleffect_data_t& eff,
+                                   std::basic_string<char> reporting_name )
       : demon_hunter_attack_t( name, p, eff.trigger() ), delay( timespan_t::from_millis( eff.misc_value1() ) )
     {
       background = dual  = true;
@@ -6837,9 +6977,9 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     }
   };
 
-  std::vector<art_of_the_glaive_damage_t*> attacks;
+  std::vector<fury_of_the_aldrachi_damage_t*> attacks;
 
-  art_of_the_glaive_t( util::string_view name, demon_hunter_t* p )
+  fury_of_the_aldrachi_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_attack_t( name, p, p->hero_spec.art_of_the_glaive_damage )
   {
     background = dual = true;
@@ -6848,8 +6988,8 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
       if ( effect.type() != E_TRIGGER_SPELL )
         continue;
 
-      attacks.push_back( p->get_background_action<art_of_the_glaive_damage_t>(
-          fmt::format( "art_of_the_glaive_{}", effect.index() ), effect, "art_of_the_glaive" ) );
+      attacks.push_back( p->get_background_action<fury_of_the_aldrachi_damage_t>(
+          fmt::format( "fury_of_the_aldrachi_{}", effect.index() ), effect, "fury_of_the_aldrachi" ) );
     }
   }
 
@@ -6874,7 +7014,13 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
     if ( p()->talent.aldrachi_reaver.fury_of_the_aldrachi->ok() && p()->buff.glaive_flurry->up() &&
          !p()->buff.rending_strike->up() )
     {
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active.art_of_the_glaive, target, 300_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      // with TWW3 tier set, it triggers 6 more times
+      if ( p()->set_bonuses.tww3_aldrachi_4pc->ok() )
+      {
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+        make_event<delayed_execute_event_t>( *sim, p(), p()->active.fury_of_the_aldrachi, target, 300_ms );
+      }
     }
 
     for ( auto attack : attacks )
@@ -7211,16 +7357,20 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     buff_period   = timespan_t::zero();
     tick_behavior = buff_tick_behavior::NONE;
 
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( p->specialization() )
     {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      add_invalidate( CACHE_HASTE );
-      add_invalidate( CACHE_LEECH );
-    }
-    else  // DEMON_HUNTER_VENGEANCE
-    {
-      set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT );
-      add_invalidate( CACHE_ARMOR );
+      case DEMON_HUNTER_HAVOC:
+        set_default_value_from_effect_type( A_HASTE_ALL );
+        add_invalidate( CACHE_HASTE );
+        add_invalidate( CACHE_LEECH );
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT );
+        add_invalidate( CACHE_ARMOR );
+        break;
+      default:
+        break;
     }
 
     if ( p->talent.demon_hunter.soul_rending->ok() )
@@ -7233,17 +7383,26 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
   {
     if ( !p()->buff.metamorphosis->up() )
     {
-      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+      // TODO: MIDNIGHT - ADD DEVOURER
+      switch ( p()->specialization() )
       {
-        p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-        p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
-      }
-      else
-      {
-        p()->buff.demonsurge_abilities[ demonsurge_ability::SOUL_SUNDER ]->trigger();
-        p()->buff.demonsurge_abilities[ demonsurge_ability::SPIRIT_BURST ]->trigger();
+        case DEMON_HUNTER_HAVOC:
+          p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+          p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
+          break;
+        case DEMON_HUNTER_VENGEANCE:
+          p()->buff.demonsurge_abilities[ demonsurge_ability::SOUL_SUNDER ]->trigger();
+          p()->buff.demonsurge_abilities[ demonsurge_ability::SPIRIT_BURST ]->trigger();
+          break;
+        default:
+          break;
       }
       p()->buff.demonsurge_demonic->trigger();
+
+      if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
+      {
+        p()->trigger_demonsurge( demonsurge_ability::ENTER_META, false );
+      }
     }
 
     const timespan_t extend_duration = p()->talent.demon_hunter.demonic->effectN( 1 ).time_value();
@@ -7298,12 +7457,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.enduring_torment->expire();
     }
-
-    if ( p()->set_bonuses.tww3_felscarred_4pc->ok() )
-    {
-      p()->spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON );
-      p()->trigger_demonsurge( demonsurge_ability::TWW3, false );
-    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7331,12 +7484,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       p()->buff.enduring_torment->trigger();
     }
 
-    auto demonsurge_spec_abilities =
-        p()->specialization() == DEMON_HUNTER_HAVOC ? demonsurge_havoc_abilities : demonsurge_vengeance_abilities;
-    for ( demonsurge_ability ability : demonsurge_spec_abilities )
+    for ( demonsurge_ability ability : p()->hero_spec.demonsurge_abilities )
     {
       p()->buff.demonsurge_abilities[ ability ]->expire();
     }
+    p()->buff.demonsurge->expire();
     p()->buff.demonsurge_demonic->expire();
     p()->buff.demonsurge_hardcast->expire();
   }
@@ -7570,30 +7722,34 @@ void tww2_vengeance_2pc( const special_effect_t& e )
 demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   : actor_target_data_t( target, &p ), dots( dots_t() ), debuffs( debuffs_t() )
 {
-  if ( p.specialization() == DEMON_HUNTER_HAVOC )
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( p.specialization() )
   {
-    debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
-                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
-                                ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                ->set_cooldown( timespan_t::zero() );
+    case DEMON_HUNTER_HAVOC:
+      debuffs.essence_break = make_buff( *this, "essence_break", p.spec.essence_break_debuff )
+                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                  ->set_cooldown( timespan_t::zero() );
 
-    debuffs.initiative_tracker =
-        make_buff( *this, "initiative_tracker", p.talent.havoc.initiative )->set_duration( timespan_t::min() );
+      debuffs.initiative_tracker =
+          make_buff( *this, "initiative_tracker", p.talent.havoc.initiative )->set_duration( timespan_t::min() );
 
-    debuffs.burning_wound = make_buff( *this, "burning_wound", p.spec.burning_wound_debuff )
-                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
-                                ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-    dots.burning_wound = target->get_dot( "burning_wound", &p );
-  }
-  else  // DEMON_HUNTER_VENGEANCE
-  {
-    dots.fiery_brand = target->get_dot( "fiery_brand", &p );
-    debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                          ->set_period( 0_ms )
-                          ->apply_affecting_aura( p.talent.vengeance.soulcrush );
+      debuffs.burning_wound = make_buff( *this, "burning_wound", p.spec.burning_wound_debuff )
+                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+      dots.burning_wound = target->get_dot( "burning_wound", &p );
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      dots.fiery_brand = target->get_dot( "fiery_brand", &p );
+      debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                            ->set_period( 0_ms )
+                            ->apply_affecting_aura( p.talent.vengeance.soulcrush );
+      break;
+    default:
+      break;
   }
 
   // TODO: make this conditional on hero spec
@@ -7650,6 +7806,25 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.serrated_glaive =
       make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
           ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
+  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+}
+
+// Spawn soul fragments from shattered souls proc using chance from sim options,
+// TODO: only spawn for actors killing blows for non-single actor batch
+
+void demon_hunter_td_t::target_demise()
+{
+  if ( !( target->is_enemy() ) )
+    return;
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( source->sim->event_mgr.canceled )
+    return;
+  if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
+  {
+    dh().spawn_soul_fragment( soul_fragment::GREATER );
+    dh().proc.soul_fragment_from_shattered_souls->occur();
+  }
 }
 
 // ==========================================================================
@@ -7802,8 +7977,6 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new felblade_t( this, options_str );
   if ( name == "fel_rush" )
     return new fel_rush_t( this, options_str );
-  if ( name == "fracture" )
-    return new fracture_t( this, options_str );
   if ( name == "shear" )
     return new shear_t( this, options_str );
   if ( name == "soul_cleave" )
@@ -7931,30 +8104,42 @@ void demon_hunter_t::create_buffs()
   // Aldrachi Reaver ========================================================
 
   buff.reavers_glaive = make_buff( this, "reavers_glaive", hero_spec.reavers_glaive_buff )->set_quiet( true );
-  buff.art_of_the_glaive =
-      make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff )
-          ->set_default_value( specialization() == DEMON_HUNTER_HAVOC
-                                   ? talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value()
-                                   : talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value() )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
-            // applying Reaver's Glaive only occurs upon gaining new stack on Art of the Glaive
-            if ( new_ > old )
-            {
-              int target_stacks = static_cast<int>( b->default_value );
-              if ( new_ >= target_stacks && !buff.reavers_glaive->check() &&
-                   cooldown.art_of_the_glaive_consumption_icd->up() )
-              {
-                // use a cooldown to prevent multiple consumptions
-                cooldown.art_of_the_glaive_consumption_icd->start( 100_ms );
 
-                // using an event
-                make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
-                  b->decrement( target_stacks );
-                  buff.reavers_glaive->trigger();
-                } );
-              }
-            }
-          } );
+  // TODO: MIDNIGHT - ADD DEVOURER
+  double art_of_the_glaive_buff_value = 0;
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      art_of_the_glaive_buff_value = talent.aldrachi_reaver.art_of_the_glaive->effectN( 1 ).base_value();
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      art_of_the_glaive_buff_value = talent.aldrachi_reaver.art_of_the_glaive->effectN( 2 ).base_value();
+      break;
+    default:
+      break;
+  }
+  buff.art_of_the_glaive = make_buff( this, "art_of_the_glaive", hero_spec.art_of_the_glaive_buff )
+                               ->set_default_value( art_of_the_glaive_buff_value )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int new_ ) {
+                                 // applying Reaver's Glaive only occurs upon gaining new stack on Art of the Glaive
+                                 if ( new_ > old )
+                                 {
+                                   int target_stacks = static_cast<int>( b->default_value );
+                                   if ( new_ >= target_stacks && !buff.reavers_glaive->check() &&
+                                        cooldown.art_of_the_glaive_consumption_icd->up() )
+                                   {
+                                     // use a cooldown to prevent multiple consumptions
+                                     cooldown.art_of_the_glaive_consumption_icd->start( 100_ms );
+
+                                     // using an event
+                                     make_event( *sim, 0_ms, [ b, target_stacks, this ]() {
+                                       b->decrement( target_stacks );
+                                       buff.reavers_glaive->trigger();
+                                     } );
+                                   }
+                                 }
+                               } );
+
   buff.glaive_flurry    = make_buff( this, "glaive_flurry", hero_spec.glaive_flurry );
   buff.rending_strike   = make_buff( this, "rending_strike", hero_spec.rending_strike );
   buff.warblades_hunger = make_buff( this, "warblades_hunger", hero_spec.warblades_hunger_buff )->set_max_stack( 6 );
@@ -7962,10 +8147,10 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "thrill_of_the_fight_attack_speed", hero_spec.thrill_of_the_fight_attack_speed_buff )
           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
+
   buff.thrill_of_the_fight_damage =
-      make_buff( this, "thrill_of_the_fight_damage",
-                 specialization() == DEMON_HUNTER_HAVOC ? hero_spec.thrill_of_the_fight_damage_buff_havoc
-                                                        : hero_spec.thrill_of_the_fight_damage_buff_vengeance );
+      make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
+
   buff.art_of_the_glaive_first = make_buff( this, "art_of_the_glaive_first", talent.aldrachi_reaver.art_of_the_glaive )
                                      ->set_duration( buff.glaive_flurry->buff_duration() );
   buff.art_of_the_glaive_second_glaive_flurry =
@@ -8016,16 +8201,15 @@ void demon_hunter_t::create_buffs()
                            gain.student_of_suffering );
           } );
 
-  auto demonsurge_spec_abilities =
-      specialization() == DEMON_HUNTER_HAVOC ? demonsurge_havoc_abilities : demonsurge_vengeance_abilities;
-  for ( demonsurge_ability ability : demonsurge_spec_abilities )
+  for ( demonsurge_ability ability : hero_spec.demonsurge_abilities )
   {
     buff.demonsurge_abilities[ ability ] = make_buff( this, demonsurge_ability_name( ability ), spell_data_t::nil() );
   }
 
   buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonic_buff );
   buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_hardcast_buff );
-  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
+  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff )
+                        ->apply_affecting_aura( set_bonuses.tww3_felscarred_4pc );
 
   // Set Bonus Items ========================================================
 
@@ -8046,7 +8230,8 @@ void demon_hunter_t::create_buffs()
       make_buff( this, "winning_streak_residual", set_bonuses.winning_streak_residual_buff )->set_chance( 1.01 );
   buff.necessary_sacrifice = make_buff( this, "necessary_sacrifice", set_bonuses.necessary_sacrifice_buff );
 
-  buff.tww3_demon_soul = make_buff( this, "tww3_demon_soul", set_bonuses.demon_soul_buff );
+  buff.demon_soul_tww3 = make_buff( this, "demon_soul_tww3", set_bonuses.demon_soul_buff )
+                             ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
   buff.scarred_strikes = make_buff( this, "scarred_strikes", set_bonuses.scarred_strikes )->set_quiet( true );
 }
 
@@ -8198,7 +8383,7 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       }
       else if ( !util::str_compare_ci( splits[ 1 ], "active" ) )
       {
-        throw std::invalid_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", splits[ 1 ] ) );
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported soul_fragments filter '{}'.", splits[ 1 ] ) );
       }
     }
 
@@ -8228,6 +8413,9 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
+  add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
+  add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
+                         0.0, 1.0 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -8331,13 +8519,14 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range               = get_proc( "delayed_aa_out_of_range" );
-  proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser           = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset                 = get_proc( "felblade_reset" );
-  proc.soul_fragment_from_soul_sigils = get_proc( "soul_fragment_from_soul_sigils" );
+  proc.delayed_aa_range                   = get_proc( "delayed_aa_out_of_range" );
+  proc.soul_fragment_greater              = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon        = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon      = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser               = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset                     = get_proc( "felblade_reset" );
+  proc.soul_fragment_from_soul_sigils     = get_proc( "soul_fragment_from_soul_sigils" );
+  proc.soul_fragment_from_shattered_souls = get_proc( "soul_fragment_from_shattered_souls" );
 
   // Havoc
   proc.demonic_appetite                = get_proc( "demonic_appetite" );
@@ -8377,6 +8566,10 @@ void demon_hunter_t::init_procs()
   proc.winning_streak_drop_wasted_from_tww2_havoc_2pc = get_proc( "winning_streak_drop_wasted_from_tww2_havoc_2pc" );
   proc.winning_streak_wasted_from_tww2_havoc_4pc      = get_proc( "winning_streak_wasted_from_tww2_havoc_4pc" );
   proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc = get_proc( "necessary_sacrifice_wasted_from_tww2_havoc_4pc" );
+  proc.chaos_strike_in_immolation_aura                = get_proc( "chaos_strike_in_immolation_aura" );
+  proc.annihilation_in_immolation_aura                = get_proc( "annihilation_in_immolation_aura" );
+  proc.soul_cleave_in_immolation_aura                 = get_proc( "soul_cleave_in_immolation_aura" );
+  proc.soul_sunder_in_immolation_aura                 = get_proc( "soul_sunder_in_immolation_aura" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -8436,14 +8629,18 @@ void demon_hunter_t::init_rng()
   // RPPM objects
 
   // General
-  if ( specialization() == DEMON_HUNTER_HAVOC )
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
   {
-    rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
-    rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
-  }
-  else  // DEMON_HUNTER_VENGEANCE
-  {
-    rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
+    case DEMON_HUNTER_HAVOC:
+      rppm.felblade         = get_rppm( "felblade", spell.felblade_reset_havoc );
+      rppm.demonic_appetite = get_rppm( "demonic_appetite", spec.demonic_appetite );
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      rppm.felblade = get_rppm( "felblade", spell.felblade_reset_vengeance );
+      break;
+    default:
+      break;
   }
 
   player_t::init_rng();
@@ -8494,21 +8691,24 @@ void demon_hunter_t::init_spells()
   spec.immolation_aura_cdr = find_spell( 320378, DEMON_HUNTER_VENGEANCE );
   spec.thick_skin          = find_specialization_spell( "Thick Skin" );
 
-  if ( specialization() == DEMON_HUNTER_HAVOC )
+  switch ( specialization() )
   {
-    spell.throw_glaive        = find_class_spell( "Throw Glaive" );
-    spec.consume_soul_greater = find_spell( 178963 );
-    spec.consume_soul_lesser  = spec.consume_soul_greater;
-    spec.metamorphosis        = find_class_spell( "Metamorphosis" );
-    spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
-  }
-  else
-  {
-    spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
-    spec.consume_soul_greater = find_spell( 210042 );
-    spec.consume_soul_lesser  = find_spell( 203794 );
-    spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
-    spec.metamorphosis_buff   = spec.metamorphosis;
+    case DEMON_HUNTER_HAVOC:
+      spell.throw_glaive        = find_class_spell( "Throw Glaive" );
+      spec.consume_soul_greater = find_spell( 178963 );
+      spec.consume_soul_lesser  = spec.consume_soul_greater;
+      spec.metamorphosis        = find_class_spell( "Metamorphosis" );
+      spec.metamorphosis_buff   = spec.metamorphosis->effectN( 2 ).trigger();
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      spell.throw_glaive        = find_specialization_spell( "Throw Glaive" );
+      spec.consume_soul_greater = find_spell( 210042 );
+      spec.consume_soul_lesser  = find_spell( 203794 );
+      spec.metamorphosis        = find_specialization_spell( "Metamorphosis" );
+      spec.metamorphosis_buff   = spec.metamorphosis;
+      break;
+    default:
+      break;
   }
 
   // Havoc Spells
@@ -8536,7 +8736,7 @@ void demon_hunter_t::init_spells()
   spec.demon_spikes        = find_specialization_spell( "Demon Spikes" );
   spec.infernal_strike     = find_specialization_spell( "Infernal Strike" );
   spec.soul_cleave         = find_specialization_spell( "Soul Cleave" );
-  spec.shear               = find_specialization_spell( "Shear" );
+  spec.shear               = find_spell( 203782, DEMON_HUNTER_VENGEANCE );
   spec.soul_cleave_2       = find_rank_spell( "Soul Cleave", "Rank 2" );
   spec.riposte             = find_specialization_spell( "Riposte" );
   spec.soul_fragments_buff = find_spell( 203981, DEMON_HUNTER_VENGEANCE );
@@ -8764,149 +8964,178 @@ void demon_hunter_t::init_spells()
   talent.felscarred.demonic_intensity = find_talent_spell( talent_tree::HERO, "Demonic Intensity" );
 
   // Class Background Spells
-  spell.felblade_damage          = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 213243 );
-  spell.felblade_reset_havoc     = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 236167 );
-  spell.felblade_reset_vengeance = conditional_spell_lookup( talent.demon_hunter.felblade->ok(), 203557 );
-  spell.infernal_armor_damage    = conditional_spell_lookup( talent.demon_hunter.infernal_armor->ok(), 320334 );
+  spell.felblade_damage          = talent_spell_lookup( talent.demon_hunter.felblade, 213243 );
+  spell.felblade_reset_havoc     = talent_spell_lookup( talent.demon_hunter.felblade, 236167 );
+  spell.felblade_reset_vengeance = talent_spell_lookup( talent.demon_hunter.felblade, 203557 );
+  spell.infernal_armor_damage    = talent_spell_lookup( talent.demon_hunter.infernal_armor, 320334 );
   spell.immolation_aura_damage   = conditional_spell_lookup( spell.immolation_aura_2->ok(), 258921 );
   spell.sigil_of_flame_damage    = find_spell( 204598 );
   spell.sigil_of_flame_fury      = find_spell( 389787 );
-  spell.the_hunt                 = talent.demon_hunter.the_hunt;
-  spec.sigil_of_misery_debuff    = conditional_spell_lookup( talent.demon_hunter.sigil_of_misery->ok(), 207685 );
+  spec.sigil_of_misery_debuff    = talent_spell_lookup( talent.demon_hunter.sigil_of_misery, 207685 );
 
   // Spec Background Spells
   mastery.a_fire_inside = talent.havoc.a_fire_inside->effectN( 6 ).trigger();
 
-  spec.burning_wound_debuff = talent.havoc.burning_wound->effectN( 1 ).trigger();
-  spec.chaos_theory_buff    = talent.havoc.chaos_theory->ok() ? find_spell( 390195 ) : spell_data_t::not_found();
-  spec.demon_blades_damage  = talent.havoc.demon_blades->effectN( 1 ).trigger();
-  spec.essence_break_debuff = talent.havoc.essence_break->ok() ? find_spell( 320338 ) : spell_data_t::not_found();
-  spec.eye_beam_damage      = talent.havoc.eye_beam->ok() ? find_spell( 198030 ) : spell_data_t::not_found();
-  spec.furious_gaze_buff    = talent.havoc.furious_gaze->ok() ? find_spell( 343312 ) : spell_data_t::not_found();
-  spec.first_blood_blade_dance_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 391374 ) : spell_data_t::not_found();
-  spec.first_blood_blade_dance_2_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 391378 ) : spell_data_t::not_found();
-  spec.first_blood_death_sweep_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 393055 ) : spell_data_t::not_found();
-  spec.first_blood_death_sweep_2_damage =
-      talent.havoc.first_blood->ok() ? find_spell( 393054 ) : spell_data_t::not_found();
-  spec.glaive_tempest_damage = talent.havoc.glaive_tempest->ok() ? find_spell( 342857 ) : spell_data_t::not_found();
-  spec.initiative_buff       = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
-  spec.inner_demon_buff      = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
-  spec.inner_demon_damage    = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
-  spec.exergy_buff           = talent.havoc.exergy->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
-  spec.inertia_buff          = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
-  spec.ragefire_damage       = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
-  spec.restless_hunter_buff  = talent.havoc.restless_hunter->ok() ? find_spell( 390212 ) : spell_data_t::not_found();
-  spec.soulscar_debuff       = talent.havoc.soulscar->ok() ? find_spell( 390181 ) : spell_data_t::not_found();
-  spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
-  spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
-  spec.cycle_of_hatred_buff  = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.burning_wound_debuff             = talent.havoc.burning_wound->effectN( 1 ).trigger();
+  spec.chaos_theory_buff                = talent_spell_lookup( talent.havoc.chaos_theory, 390195 );
+  spec.demon_blades_damage              = talent.havoc.demon_blades->effectN( 1 ).trigger();
+  spec.essence_break_debuff             = talent_spell_lookup( talent.havoc.essence_break, 320338 );
+  spec.eye_beam_damage                  = talent_spell_lookup( talent.havoc.eye_beam, 198030 );
+  spec.furious_gaze_buff                = talent_spell_lookup( talent.havoc.furious_gaze, 343312 );
+  spec.first_blood_blade_dance_damage   = talent_spell_lookup( talent.havoc.first_blood, 391374 );
+  spec.first_blood_blade_dance_2_damage = talent_spell_lookup( talent.havoc.first_blood, 391378 );
+  spec.first_blood_death_sweep_damage   = talent_spell_lookup( talent.havoc.first_blood, 393055 );
+  spec.first_blood_death_sweep_2_damage = talent_spell_lookup( talent.havoc.first_blood, 393054 );
+  spec.glaive_tempest_damage            = talent_spell_lookup( talent.havoc.glaive_tempest, 342857 );
+  spec.initiative_buff                  = talent_spell_lookup( talent.havoc.initiative, 391215 );
+  spec.inner_demon_buff                 = talent_spell_lookup( talent.havoc.inner_demon, 390145 );
+  spec.inner_demon_damage               = talent_spell_lookup( talent.havoc.inner_demon, 390137 );
+  spec.exergy_buff                      = talent_spell_lookup( talent.havoc.exergy, 208628 );
+  spec.inertia_buff                     = talent_spell_lookup( talent.havoc.inertia, 427641 );
+  spec.ragefire_damage                  = talent_spell_lookup( talent.havoc.ragefire, 390197 );
+  spec.restless_hunter_buff             = talent_spell_lookup( talent.havoc.restless_hunter, 390212 );
+  spec.soulscar_debuff                  = talent_spell_lookup( talent.havoc.soulscar, 390181 );
+  spec.tactical_retreat_buff            = talent_spell_lookup( talent.havoc.tactical_retreat, 389890 );
+  spec.unbound_chaos_buff               = talent_spell_lookup( talent.havoc.unbound_chaos, 347462 );
+  spec.cycle_of_hatred_buff             = conditional_spell_lookup( talent.havoc.cycle_of_hatred->ok(), 1214887 );
+  spec.furious_throws_damage            = conditional_spell_lookup( talent.havoc.furious_throws->ok(), 393035 );
 
-  spec.demon_spikes_buff  = find_spell( 203819 );
-  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
-  spec.frailty_debuff     = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
-  spec.painbringer_buff   = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
-  spec.calcified_spikes_buff =
-      talent.vengeance.calcified_spikes->ok() ? find_spell( 391171 ) : spell_data_t::not_found();
-  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
-  spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
-  spec.retaliation_damage      = talent.vengeance.retaliation->ok() ? find_spell( 391159 ) : spell_data_t::not_found();
-  spec.sigil_of_silence_debuff =
-      talent.vengeance.sigil_of_silence->ok() ? find_spell( 204490 ) : spell_data_t::not_found();
-  spec.sigil_of_chains_debuff =
-      talent.vengeance.sigil_of_chains->ok() ? find_spell( 204843 ) : spell_data_t::not_found();
-  spec.burning_alive_controller =
-      talent.vengeance.burning_alive->ok() ? find_spell( 207760 ) : spell_data_t::not_found();
-  spec.infernal_strike_impact = find_spell( 189112 );
-  spec.spirit_bomb_damage     = talent.vengeance.spirit_bomb->ok() ? find_spell( 247455 ) : spell_data_t::not_found();
-  spec.frailty_heal           = talent.vengeance.frailty->ok() ? find_spell( 227255 ) : spell_data_t::not_found();
-  spec.feast_of_souls_heal  = talent.vengeance.feast_of_souls->ok() ? find_spell( 207693 ) : spell_data_t::not_found();
-  spec.fel_devastation_2    = find_rank_spell( "Fel Devastation", "Rank 2" );
-  spec.fel_devastation_heal = talent.vengeance.fel_devastation->ok() ? find_spell( 212106 ) : spell_data_t::not_found();
+  spec.demon_spikes_buff        = find_spell( 203819 );
+  spec.fiery_brand_debuff       = talent_spell_lookup( talent.vengeance.fiery_brand, 207771 );
+  spec.frailty_debuff           = talent_spell_lookup( talent.vengeance.frailty, 247456 );
+  spec.painbringer_buff         = talent_spell_lookup( talent.vengeance.painbringer, 212988 );
+  spec.calcified_spikes_buff    = talent_spell_lookup( talent.vengeance.calcified_spikes, 391171 );
+  spec.soul_furnace_damage_amp  = talent_spell_lookup( talent.vengeance.soul_furnace, 391172 );
+  spec.soul_furnace_stack       = talent_spell_lookup( talent.vengeance.soul_furnace, 391166 );
+  spec.retaliation_damage       = talent_spell_lookup( talent.vengeance.retaliation, 391159 );
+  spec.sigil_of_silence_debuff  = talent_spell_lookup( talent.vengeance.sigil_of_silence, 204490 );
+  spec.sigil_of_chains_debuff   = talent_spell_lookup( talent.vengeance.sigil_of_chains, 204843 );
+  spec.burning_alive_controller = talent_spell_lookup( talent.vengeance.burning_alive, 207760 );
+  spec.infernal_strike_impact   = find_spell( 189112 );
+  spec.spirit_bomb_damage       = talent_spell_lookup( talent.vengeance.spirit_bomb, 247455 );
+  spec.frailty_heal             = talent_spell_lookup( talent.vengeance.frailty, 227255 );
+  spec.feast_of_souls_heal      = talent_spell_lookup( talent.vengeance.feast_of_souls, 207693 );
+  spec.fel_devastation_2        = find_rank_spell( "Fel Devastation", "Rank 2" );
+  spec.fel_devastation_heal     = talent_spell_lookup( talent.vengeance.fel_devastation, 212106 );
 
   // Hero spec background spells
-  hero_spec.reavers_glaive =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442294 ) : spell_data_t::not_found();
-  hero_spec.reavers_mark = talent.aldrachi_reaver.reavers_mark->ok() ? find_spell( 442624 ) : spell_data_t::not_found();
-  hero_spec.glaive_flurry =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442435 ) : spell_data_t::not_found();
-  hero_spec.rending_strike =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 442442 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_buff =
-      talent.aldrachi_reaver.art_of_the_glaive->ok() ? find_spell( 444661 ) : spell_data_t::not_found();
-  hero_spec.art_of_the_glaive_damage =
-      talent.aldrachi_reaver.fury_of_the_aldrachi->ok() ? find_spell( 444810 ) : spell_data_t::not_found();
-  hero_spec.warblades_hunger_buff =
-      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442503 ) : spell_data_t::not_found();
-  hero_spec.warblades_hunger_damage =
-      talent.aldrachi_reaver.warblades_hunger->ok() ? find_spell( 442507 ) : spell_data_t::not_found();
-  hero_spec.wounded_quarry_damage =
-      talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
+  hero_spec.reavers_glaive           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442294 );
+  hero_spec.reavers_mark             = talent_spell_lookup( talent.aldrachi_reaver.reavers_mark, 442624 );
+  hero_spec.glaive_flurry            = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442435 );
+  hero_spec.rending_strike           = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 442442 );
+  hero_spec.art_of_the_glaive_buff   = talent_spell_lookup( talent.aldrachi_reaver.art_of_the_glaive, 444661 );
+  hero_spec.art_of_the_glaive_damage = talent_spell_lookup( talent.aldrachi_reaver.fury_of_the_aldrachi, 444810 );
+  hero_spec.warblades_hunger_buff    = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442503 );
+  hero_spec.warblades_hunger_damage  = talent_spell_lookup( talent.aldrachi_reaver.warblades_hunger, 442507 );
+  hero_spec.wounded_quarry_damage    = talent_spell_lookup( talent.aldrachi_reaver.wounded_quarry, 442808 );
   hero_spec.thrill_of_the_fight_attack_speed_buff =
-      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442695 );
   hero_spec.thrill_of_the_fight_damage_buff_havoc =
-      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 442688 );
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 442688 );
   hero_spec.thrill_of_the_fight_damage_buff_vengeance =
-      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 1227062 );
-  hero_spec.burning_blades_debuff =
-      talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
-  hero_spec.student_of_suffering_buff =
-      talent.felscarred.student_of_suffering->ok() ? find_spell( 453239 ) : spell_data_t::not_found();
-  hero_spec.monster_rising_buff =
-      talent.felscarred.monster_rising->ok() ? find_spell( 452550 ) : spell_data_t::not_found();
-  hero_spec.enduring_torment_buff =
-      talent.felscarred.enduring_torment->ok() ? find_spell( 453314 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_demonic_buff =
-      talent.felscarred.demonsurge->ok() ? find_spell( 452435 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_hardcast_buff =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452489 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_damage = talent.felscarred.demonsurge->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_stacking_buff =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452416 ) : spell_data_t::not_found();
-  hero_spec.demonsurge_trigger = talent.felscarred.demonsurge->ok() ? find_spell( 453323 ) : spell_data_t::not_found();
-  hero_spec.soul_sunder        = talent.felscarred.demonsurge->ok() ? find_spell( 452436 ) : spell_data_t::not_found();
-  hero_spec.spirit_burst       = talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok()
-                                     ? find_spell( 452437 )
-                                     : spell_data_t::not_found();
-  hero_spec.sigil_of_doom =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452490 ) : spell_data_t::not_found();
-  hero_spec.sigil_of_doom_damage =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 462030 ) : spell_data_t::not_found();
-  hero_spec.abyssal_gaze = talent.felscarred.demonic_intensity->ok() ? find_spell( 452497 ) : spell_data_t::not_found();
-  hero_spec.fel_desolation =
-      talent.felscarred.demonic_intensity->ok() ? find_spell( 452486 ) : spell_data_t::not_found();
+      talent_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight, 1227062 );
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_havoc;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      hero_spec.thrill_of_the_fight_damage_buff = hero_spec.thrill_of_the_fight_damage_buff_vengeance;
+      break;
+    default:
+      break;
+  }
+
+  hero_spec.burning_blades_debuff     = talent_spell_lookup( talent.felscarred.burning_blades, 453177 );
+  hero_spec.student_of_suffering_buff = talent_spell_lookup( talent.felscarred.student_of_suffering, 453239 );
+  hero_spec.monster_rising_buff       = talent_spell_lookup( talent.felscarred.monster_rising, 452550 );
+  hero_spec.enduring_torment_buff     = talent_spell_lookup( talent.felscarred.enduring_torment, 453314 );
+  hero_spec.demonsurge_demonic_buff   = talent_spell_lookup( talent.felscarred.demonsurge, 452435 );
+  hero_spec.demonsurge_hardcast_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452489 );
+  hero_spec.demonsurge_damage         = talent_spell_lookup( talent.felscarred.demonsurge, 452416 );
+  hero_spec.demonsurge_stacking_buff  = talent_spell_lookup( talent.felscarred.demonic_intensity, 452416 );
+  hero_spec.demonsurge_trigger        = talent_spell_lookup( talent.felscarred.demonsurge, 453323 );
+  hero_spec.soul_sunder               = talent_spell_lookup( talent.felscarred.demonsurge, 452436 );
+  hero_spec.spirit_burst =
+      conditional_spell_lookup( talent.vengeance.spirit_bomb->ok() && talent.felscarred.demonsurge->ok(), 452437 );
+  hero_spec.sigil_of_doom        = talent_spell_lookup( talent.felscarred.demonic_intensity, 452490 );
+  hero_spec.sigil_of_doom_damage = talent_spell_lookup( talent.felscarred.demonic_intensity, 462030 );
+  hero_spec.abyssal_gaze         = talent_spell_lookup( talent.felscarred.demonic_intensity, 452497 );
+  hero_spec.fel_desolation       = talent_spell_lookup( talent.felscarred.demonic_intensity, 452486 );
+
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      hero_spec.demonsurge_abilities = demonsurge_havoc_abilities;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      hero_spec.demonsurge_abilities = demonsurge_vengeance_abilities;
+      break;
+    default:
+      break;
+  }
 
   if ( talent.aldrachi_reaver.art_of_the_glaive->ok() )
   {
-    hero_spec.reavers_glaive_buff =
-        specialization() == DEMON_HUNTER_HAVOC ? find_spell( 444686 ) : find_spell( 444764 );
+    // TODO: MIDNIGHT - ADD DEVOURER
+    switch ( specialization() )
+    {
+      case DEMON_HUNTER_HAVOC:
+        hero_spec.reavers_glaive_buff = find_spell( 444686 );
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        hero_spec.reavers_glaive_buff = find_spell( 444764 );
+        break;
+      default:
+        break;
+    }
   }
   else
   {
     hero_spec.reavers_glaive_buff = spell_data_t::not_found();
   }
 
-  hero_spec.wounded_quarry_proc_rate = specialization() == DEMON_HUNTER_HAVOC ? options.wounded_quarry_chance_havoc
-                                                                              : options.wounded_quarry_chance_vengeance;
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_havoc;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      hero_spec.wounded_quarry_proc_rate = options.wounded_quarry_chance_vengeance;
+      break;
+    default:
+      break;
+  }
 
   // Sigil overrides for Precise/Concentrated Sigils
   std::vector<const spell_data_t*> sigil_overrides = { talent.demon_hunter.precise_sigils };
-  spell.sigil_of_flame                             = find_spell_override( find_spell( 204596 ), sigil_overrides );
+
+  spell.sigil_of_flame = find_spell_override( find_spell( 204596 ), sigil_overrides );
   spell.sigil_of_spite = find_spell_override( talent.demon_hunter.sigil_of_spite, sigil_overrides );
-  spell.sigil_of_spite_damage =
-      talent.demon_hunter.sigil_of_spite->ok() ? find_spell( 389860 ) : spell_data_t::not_found();
-  spec.sigil_of_misery  = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
-  spec.sigil_of_silence = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
-  spec.sigil_of_chains  = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
+
+  spell.sigil_of_spite_damage = talent_spell_lookup( talent.demon_hunter.sigil_of_spite, 389860 );
+  spec.sigil_of_misery        = find_spell_override( talent.demon_hunter.sigil_of_misery, sigil_overrides );
+  spec.sigil_of_silence       = find_spell_override( talent.vengeance.sigil_of_silence, sigil_overrides );
+  spec.sigil_of_chains        = find_spell_override( talent.vengeance.sigil_of_chains, sigil_overrides );
 
   if ( talent.demon_hunter.collective_anguish->ok() )
   {
-    spell.collective_anguish = specialization() == DEMON_HUNTER_HAVOC ? find_spell( 393831 ) : find_spell( 391057 );
-    spell.collective_anguish_damage =
-        ( specialization() == DEMON_HUNTER_HAVOC ? spell.collective_anguish->effectN( 1 ).trigger()
-                                                 : find_spell( 391058 ) );
+    switch ( specialization() )
+    {
+      case DEMON_HUNTER_HAVOC:
+        spell.collective_anguish        = find_spell( 393831 );
+        spell.collective_anguish_damage = spell.collective_anguish->effectN( 1 ).trigger();
+        break;
+      case DEMON_HUNTER_VENGEANCE:
+        spell.collective_anguish        = find_spell( 391057 );
+        spell.collective_anguish_damage = find_spell( 391058 );
+        break;
+      default:
+        break;
+    }
   }
   else
   {
@@ -8924,25 +9153,33 @@ void demon_hunter_t::init_spells()
   set_bonuses.tww2_havoc_4pc      = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
   set_bonuses.tww2_vengeance_2pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
   set_bonuses.tww2_vengeance_4pc  = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
-  set_bonuses.tww3_aldrachi_2pc   = spell_data_t::not_found();
-  set_bonuses.tww3_aldrachi_4pc   = spell_data_t::not_found();
-  set_bonuses.tww3_felscarred_2pc = spell_data_t::not_found();
-  set_bonuses.tww3_felscarred_4pc = spell_data_t::not_found();
+  set_bonuses.tww3_aldrachi_2pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B2 );
+  set_bonuses.tww3_aldrachi_4pc   = sets->set( HERO_ALDRACHI_REAVER, TWW3, B4 );
+  set_bonuses.tww3_felscarred_2pc = sets->set( HERO_FELSCARRED, TWW3, B2 );
+  set_bonuses.tww3_felscarred_4pc = sets->set( HERO_FELSCARRED, TWW3, B4 );
 
   // Set Bonus Auxilliary ===================================================
 
-  set_bonuses.tww1_havoc_4pc_buff = set_bonuses.tww1_havoc_4pc->ok() ? find_spell( 454628 ) : spell_data_t::not_found();
-  set_bonuses.tww1_vengeance_4pc_buff =
-      set_bonuses.tww1_vengeance_4pc->ok() ? find_spell( 454774 ) : spell_data_t::not_found();
-  set_bonuses.winning_streak_residual_buff =
-      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1220706 ) : spell_data_t::not_found();
-  set_bonuses.necessary_sacrifice_buff =
-      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1217055 ) : spell_data_t::not_found();
-  set_bonuses.demon_soul_havoc_buff     = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
-  set_bonuses.demon_soul_vengeance_buff = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
-  set_bonuses.demon_soul_buff           = specialization() == DEMON_HUNTER_HAVOC ? set_bonuses.demon_soul_havoc_buff
-                                                                                 : set_bonuses.demon_soul_vengeance_buff;
-  set_bonuses.scarred_strikes           = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
+  set_bonuses.tww1_havoc_4pc_buff          = conditional_spell_lookup( set_bonuses.tww1_havoc_4pc->ok(), 454628 );
+  set_bonuses.tww1_vengeance_4pc_buff      = conditional_spell_lookup( set_bonuses.tww1_vengeance_4pc->ok(), 454774 );
+  set_bonuses.winning_streak_residual_buff = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1220706 );
+  set_bonuses.necessary_sacrifice_buff     = conditional_spell_lookup( set_bonuses.tww2_havoc_4pc->ok(), 1217055 );
+  set_bonuses.demon_soul_havoc_buff        = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238676 );
+  set_bonuses.demon_soul_vengeance_buff    = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238675 );
+  set_bonuses.scarred_strikes              = conditional_spell_lookup( set_bonuses.tww3_felscarred_2pc->ok(), 1238462 );
+  set_bonuses.demonsurge_meta_trigger      = conditional_spell_lookup( set_bonuses.tww3_felscarred_4pc->ok(), 1238696 );
+
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      set_bonuses.demon_soul_buff = set_bonuses.demon_soul_havoc_buff;
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      set_bonuses.demon_soul_buff = set_bonuses.demon_soul_vengeance_buff;
+      break;
+    default:
+      break;
+  }
 
   // Spell Initialization ===================================================
 
@@ -9005,7 +9242,7 @@ void demon_hunter_t::init_spells()
 
   if ( talent.aldrachi_reaver.fury_of_the_aldrachi->ok() )
   {
-    active.art_of_the_glaive = get_background_action<art_of_the_glaive_t>( "art_of_the_glaive" );
+    active.fury_of_the_aldrachi = get_background_action<fury_of_the_aldrachi_t>( "fury_of_the_aldrachi" );
   }
   if ( talent.aldrachi_reaver.preemptive_strike->ok() )
   {
@@ -9038,6 +9275,7 @@ void demon_hunter_t::init_blizzard_action_list()
 
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
 
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -9064,18 +9302,26 @@ void demon_hunter_t::init_finished()
 
 bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 {
-  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+#ifdef NDEBUG
+  if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice )
   {
-    switch ( style )
-    {
-      case FIGHT_STYLE_DUNGEON_ROUTE:
-      case FIGHT_STYLE_DUNGEON_SLICE:
-        return false;
-      default:
-        return true;
-    }
+    throw sc_invalid_fight_style(
+      "Dungeon Slice is disabled for Demon Hunter. To force enable, use enable_dungeon_slice=1 option." );
   }
-  return true;
+#endif
+
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
+  {
+    case DEMON_HUNTER_HAVOC:
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
+             style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+    case DEMON_HUNTER_VENGEANCE:
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK ||
+             style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+    default:
+      return false;
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
@@ -9118,6 +9364,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
 
 resource_e demon_hunter_t::primary_resource() const
 {
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -9132,6 +9379,7 @@ resource_e demon_hunter_t::primary_resource() const
 
 role_e demon_hunter_t::primary_role() const
 {
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
@@ -9147,6 +9395,7 @@ role_e demon_hunter_t::primary_role() const
 
 std::string demon_hunter_t::default_flask() const
 {
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
@@ -9167,6 +9416,7 @@ std::string demon_hunter_t::default_potion() const
 
 std::string demon_hunter_t::default_food() const
 {
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
@@ -9187,6 +9437,7 @@ std::string demon_hunter_t::default_rune() const
 
 std::string demon_hunter_t::default_temporary_enchant() const
 {
+  // TODO: MIDNIGHT - ADD DEVOURER
   switch ( specialization() )
   {
     case DEMON_HUNTER_VENGEANCE:
@@ -9624,40 +9875,44 @@ void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, 
     s->result_amount *= 1.0 + talent.demon_hunter.illidari_knowledge->effectN( 1 ).percent();
   }
 
-  if ( specialization() == DEMON_HUNTER_HAVOC )
+  const demon_hunter_td_t* td = get_target_data( s->action->player );
+  // TODO: MIDNIGHT - ADD DEVOURER
+  switch ( specialization() )
   {
-    s->result_amount *= 1.0 + buff.blur->value();
+    case DEMON_HUNTER_HAVOC:
+      s->result_amount *= 1.0 + buff.blur->value();
 
-    if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-    {
-      s->result_amount *=
-          1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
-    }
+      if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+      {
+        s->result_amount *=
+            1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
+      }
 
-    if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
-    {
-      s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
-    }
-  }
-  else  // DEMON_HUNTER_VENGEANCE
-  {
-    s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
-                        spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
+      if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
+      {
+        s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
+      }
+      break;
+    case DEMON_HUNTER_VENGEANCE:
+      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
+                          spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
 
-    s->result_amount *= 1.0 + buff.painbringer->check_stack_value();
+      s->result_amount *= 1.0 + buff.painbringer->check_stack_value();
 
-    s->result_amount *= 1.0 + buff.calcified_spikes->check_stack_value();
+      s->result_amount *= 1.0 + buff.calcified_spikes->check_stack_value();
 
-    const demon_hunter_td_t* td = get_target_data( s->action->player );
-    if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
-    {
-      s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
-    }
+      if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
+      {
+        s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
+      }
 
-    if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
-    {
-      s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
-    }
+      if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
+      {
+        s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent() * td->debuffs.frailty->check();
+      }
+      break;
+    default:
+      break;
   }
 }
 
@@ -9973,15 +10228,24 @@ void demon_hunter_t::trigger_demonic()
 
 void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, bool check_buff )
 {
+  trigger_demonsurge( ability, timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ),
+                      check_buff );
+}
+
+void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t delay, bool check_buff )
+{
   if ( active.demonsurge && ( !check_buff || buff.demonsurge_abilities[ ability ]->up() ) )
   {
     if ( check_buff )
     {
       buff.demonsurge_abilities[ ability ]->expire();
     }
-    make_event<delayed_execute_event_t>(
-        *sim, this, active.demonsurge, target,
-        timespan_t::from_millis( hero_spec.demonsurge_trigger->effectN( 1 ).misc_value1() ) );
+    make_event<delayed_execute_event_t>( *sim, this, active.demonsurge, target, delay );
+    if ( ability == ENTER_META )
+    {
+      make_event( *sim, timespan_t::from_millis( delay.total_millis() + 1 ),
+                  [ this ] { spawn_soul_fragment( soul_fragment::EMPOWERED_DEMON ); } );
+    }
   }
 }
 
@@ -10103,18 +10367,6 @@ const spelleffect_data_t* demon_hunter_t::find_spelleffect( const spell_data_t* 
 }
 
 // Return the appropriate spell when `base` is overriden to another spell by `passive`
-const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* base, const spell_data_t* passive )
-{
-  if ( !passive->ok() || !base->ok() )
-    return base;
-
-  auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
-  if ( !id )
-    return base;
-
-  return find_spell( id );
-}
-
 const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* base,
                                                          std::vector<const spell_data_t*> passives )
 {
@@ -10141,6 +10393,11 @@ const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
     return spell_data_t::not_found();
   }
   return find_spell( id );
+}
+
+const spell_data_t* demon_hunter_t::talent_spell_lookup( player_talent_t t, int id )
+{
+  return conditional_spell_lookup( t->ok(), id );
 }
 
 /* Report Extension Class

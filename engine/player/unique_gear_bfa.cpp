@@ -5634,6 +5634,13 @@ void items::shorting_bit_band( special_effect_t& effect )
 
 void items::hyperthread_wristwraps( special_effect_t& effect )
 {
+  // Don't create the use item action if the player doesn't have access to the spell
+  if ( !effect.player->find_spell( effect.spell_id )->ok() )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   auto spell_tracker          = new special_effect_t( effect.player );
   spell_tracker->name_str     = "hyperthread_wristwraps_spell_tracker";
   spell_tracker->type         = SPECIAL_EFFECT_EQUIP;

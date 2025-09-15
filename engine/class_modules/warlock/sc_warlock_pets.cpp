@@ -53,9 +53,6 @@ void warlock_pet_t::create_buffs()
   buffs.the_expendables = make_buff( this, "the_expendables", o()->talents.the_expendables_buff )
                               ->set_default_value_from_effect( 1 );
 
-  buffs.reign_of_tyranny = make_buff( this, "reign_of_tyranny", o()->talents.reign_of_tyranny_buff )
-                               ->set_default_value_from_effect( 1 );
-
   buffs.fiendish_wrath = make_buff( this, "fiendish_wrath", o()->talents.fiendish_wrath_buff )
                              ->set_default_value_from_effect( 1 );
 
@@ -478,7 +475,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   if ( owner->talents.soul_strike.ok() )
-    action_list_str += "/soul_strike";
+    action_list_str += "/soul_strike,use_while_casting=1";
 
   felstorm_cd = get_cooldown( "felstorm" );
   dstr_cd = get_cooldown( "felstorm_demonic_strength" );
@@ -541,6 +538,7 @@ struct axe_toss_t : public warlock_pet_spell_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     ignore_false_positive = is_interrupt = true;
+    usable_while_casting = true;
   }
 };
 
@@ -621,7 +619,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       warlock_pet_melee_attack_t::impact( s );
 
       if ( applies_fel_sunder )
-        owner_td( s->target )->debuffs_fel_sunder->trigger();
+        owner_td( s->target )->debuffs.fel_sunder->trigger();
     }
   };
 
@@ -749,6 +747,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
 
     cooldown->duration = p->o()->talents.soul_strike_pet->cooldown();
     trigger_gcd = p->o()->talents.soul_strike_pet->gcd();
+    usable_while_casting = true;
 
     soul_cleave = new soul_cleave_t( p );
     add_child( soul_cleave );
@@ -1299,7 +1298,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     if ( p->o()->talents.dreadlash.ok() )
     {
       aoe = -1;
-      reduced_aoe_targets = 5; // TOCHECK: Is this removed in TWW?
+      reduced_aoe_targets = 5; // TOCHECK regularly: 2025-08-27 This still applies in TWW
       radius = 8.0;
 
       base_dd_multiplier *= 1.0 + p->o()->talents.dreadlash->effectN( 1 ).percent();
@@ -1327,7 +1326,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::impact( s );
 
     if ( p()->o()->talents.wicked_maw.ok() )
-      owner_td( s->target )->debuffs_wicked_maw->trigger();
+      owner_td( s->target )->debuffs.wicked_maw->trigger();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1446,7 +1445,8 @@ double dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+  // TOCHECK: 2025-08-27 The Houndmasters Gambit talent cannot be applied by the second Vilefiend (bug?)
+  if ( o()->talents.the_houndmasters_gambit.ok() && ( bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check() ) )
     m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
 
   return m;
@@ -1559,7 +1559,7 @@ struct bile_spit_t : public warlock_pet_spell_t
     warlock_pet_spell_t::impact( s );
 
     if ( p()->o()->talents.foul_mouth.ok() )
-      owner_td( s->target )->debuffs_wicked_maw->trigger();
+      owner_td( s->target )->debuffs.wicked_maw->trigger();
   }
 };
 
@@ -1646,8 +1646,16 @@ void vilefiend_t::arise()
   }
 }
 
-action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
+void vilefiend_t::demise()
 {
+  if ( !current.sleeping )
+    o()->buffs.vilefiend->decrement( 1, 0.0 ); // Set value to 0.0 to prevent Houndmasters Gambit talent from being applied by the 2nd Vilefiend
+
+  warlock_simple_pet_t::demise();
+}
+
+action_t* vilefiend_t::create_action( util::string_view name, util::string_view options_str )
+  {
   if ( name == "bile_spit" )
     return new bile_spit_t( this );
   if ( name == "headbutt" )
@@ -1685,8 +1693,6 @@ action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_
 double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
-
-  m *= 1.0 + buffs.reign_of_tyranny->check_stack_value();
 
   m *= 1.0 + o()->hero.abyssal_dominion->effectN( 1 ).percent();
 
@@ -1770,7 +1776,7 @@ void greater_dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
-  vilefiend_present_on_summon = o()->buffs.vilefiend->check();
+  vilefiend_present_on_summon = bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check();
 
   dreadbite_executes = 1;
 
@@ -1793,9 +1799,10 @@ double greater_dreadstalker_t::composite_player_multiplier( school_e school ) co
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  // 2025-03-28: Houndmasters Gambit talent is only applied to Greater Dreadstalkers if Vilefiend is present on summon
+  // 2025-08-27: Houndmasters Gambit talent is only applied to Greater Dreadstalkers if Vilefiend is present on summon
   // Unlike normal Dreadstalkers, summoning Vilefiend when Greater Dreadstalkers are present does not apply the Houndmasters Gambit talent (maybe a bug?)
-  if ( ( vilefiend_present_on_summon || !bugs ) && o()->talents.the_houndmasters_gambit.ok() && o()->buffs.vilefiend->check() )
+  // TOCHECK: 2025-08-27 The Houndmasters Gambit talent cannot be applied by the second Vilefiend (bug?)
+  if ( ( vilefiend_present_on_summon || !bugs ) && o()->talents.the_houndmasters_gambit.ok() && ( bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check() ) )
     m *= 1.0 + o()->talents.houndmasters_aura->effectN( 1 ).percent();
 
   m *= buffs.demonic_hunger->check_value();
@@ -1819,8 +1826,8 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 
   type = MAIN;
 
-  owner_coeff.ap_from_sp = 1.65;
-  owner_coeff.sp_from_sp = 1.65;
+  owner_coeff.ap_from_sp = 2.2275;
+  owner_coeff.sp_from_sp = 2.2275;
 }
 
 struct immolation_tick_t : public warlock_pet_spell_t
@@ -1900,6 +1907,17 @@ double infernal_t::composite_player_multiplier( school_e school ) const
 
 /// Infernal End
 
+/// Infernal Rain of Chaos Begin
+
+infernal_roc_t::infernal_roc_t( warlock_t* owner, util::string_view name ) : destruction::infernal_t( owner, name )
+{
+  type                   = RAIN;
+  owner_coeff.ap_from_sp = 1.5;
+  owner_coeff.sp_from_sp = 1.5;
+}
+
+/// Infernal Rain of Chaos End
+/// 
 /// Dimensional Rifts Begin
 
 struct dimensional_cinder_t : public warlock_pet_spell_t
@@ -1945,7 +1963,13 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
 {
   rift_shadow_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Shadow Bolt", p, p->o()->talents.rift_shadow_bolt )
-  { background = dual = true; }
+  {
+      background = dual = true;
+
+      // Double dips from whitelist+guardian aura
+      base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+  }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
@@ -2025,7 +2049,13 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
 {
   chaos_barrage_tick_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Barrage (tick)", p, p->o()->talents.chaos_barrage_tick )
-  { background = dual = true; }
+  {
+      background = dual = true; 
+  
+      // Double dips from whitelist+guardian aura
+      base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+  }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
@@ -2103,6 +2133,11 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
   rift_chaos_bolt_t( warlock_pet_t* p )
     : warlock_pet_spell_t( "Chaos Bolt", p, p->o()->talents.rift_chaos_bolt )
   {
+
+    // Double dips from whitelist+guardian aura
+    base_dd_multiplier *= 1.0 + p->o()->talents.summoners_embrace->effectN( 1 ).percent();
+    base_dd_multiplier *= 1.0 + p->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+
     if ( p->o()->talents.unstable_rifts.ok() )
     {
       debug_cast<chaos_tear_t*>( p )->cinder = new dimensional_cinder_t( p );
@@ -2318,12 +2353,50 @@ namespace diabolist
       debug_cast<overlord_t*>( p() )->cleaves--;
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
     void impact( action_state_t* s ) override
     {
       warlock_pet_spell_t::impact( s );
 
       if ( p()->o()->hero.cloven_souls.ok() )
-        owner_td( s->target )->debuffs_cloven_soul->trigger();
+        owner_td( s->target )->debuffs.cloven_soul->trigger();
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = spell_t::composite_target_multiplier( target );
+
+      // TOCHECK: 2025-07-27 Wicked Cleave spell from Overlord does not benefit from Shadowtouched talent even though its damage school is Shadowflame (bug?)
+      if ( !p()->bugs && p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
+        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+
+      return m;
     }
   };
 
@@ -2357,6 +2430,33 @@ namespace diabolist
       aoe = -1;
 
       travel_speed = p->o()->hero.chaos_salvo_missile->missile_speed();
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      }
+
+      return m;
     }
   };
 
@@ -2410,6 +2510,8 @@ namespace diabolist
 
   struct felseeker_tick_t : public warlock_pet_spell_t
   {
+    const double shadowtouched_value = 0.25;
+
     felseeker_tick_t( warlock_pet_t* p )
       : warlock_pet_spell_t( "Felseeker (tick)", p, p->o()->hero.felseeker_dmg )
     {
@@ -2417,6 +2519,44 @@ namespace diabolist
       aoe = -1;
 
       base_costs[ RESOURCE_ENERGY ] = 0.0;
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = spell_t::composite_target_multiplier( target );
+
+      // TOCHECK: 2025-07-27 Despite what is listed in spell data, Shadowtouched increases the damage of Feelseeker spell from Pit Lord by 25% instead of 20% (bug?)
+      if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
+        m *= 1.0 + ( ( p()->bugs ) ? shadowtouched_value : p()->o()->talents.shadowtouched->effectN( 1 ).percent() );
+
+      return m;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_pet_spell_t::composite_da_multiplier( s );  // base value
+
+      if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
+        // Wicked Cleave is mistakenly whitelisted on Effect 1 for Demonology Aura, Double Dipping alongside effect 5.
+        m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+      }
+
+      if ( p()->o()->specialization() == WARLOCK_DESTRUCTION )
+      {
+        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
+        // Destruction Aura Double Dips due to Diabolist Demon spells being whitelisted on effect 1.
+        m *= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 1 ).percent();
+        // Destruction Summoners Embrace also Double Dip due to the same fact.
+        // Those two effects together is what made me believe the May 27 buff got applied.
+        if ( p()->o()->talents.summoners_embrace.ok() )
+          m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
+      }
+
+      return m;
     }
   };
 
@@ -2477,8 +2617,8 @@ namespace diabolist
     : destruction::infernal_t( owner, name )
   {
     type = FRAG;
-    owner_coeff.ap_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
-    owner_coeff.sp_from_sp *= owner->hero.abyssal_dominion->effectN( 4 ).percent();
+    owner_coeff.ap_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
+    owner_coeff.sp_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
   }
 
   /// Infernal Fragment End
@@ -2532,5 +2672,139 @@ namespace diabolist
 
   /// Diabolic Imp End
 }  // namespace diabolist
+
+namespace soul_harvester
+{
+/// Rampaging Demonic Soul Begin
+struct rampaging_demonic_soul_shard_event_t : public event_t
+{
+  rampaging_demonic_soul_shard_event_t( rampaging_demonic_soul_t* pet, timespan_t delay )
+    : event_t( *pet->sim, delay ), pet( pet )
+  {
+  }
+
+  void execute() override
+  {
+    pet->o()->resource_gain( RESOURCE_SOUL_SHARD, pet->summon_spell->effectN( 2 ).base_value() / 10.0,
+                             pet->o()->gains.rampaging_demonic_soul );
+
+    if ( !pet->is_sleeping() )
+    {
+      make_event<rampaging_demonic_soul_shard_event_t>( *pet->sim, pet, pet->summon_spell->effectN( 2 ).period() );
+    }
+  }
+
+  rampaging_demonic_soul_t* pet;
+};
+
+struct soul_swipe_base_t : public warlock_pet_spell_t
+{
+  soul_swipe_base_t( std::string_view n, warlock_pet_t* p, const spell_data_t* s ) : warlock_pet_spell_t( n, p, s )
+  {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
+
+    m *= 1.0 + p()->o()->talents.summoners_embrace->effectN( 1 ).percent();
+    // Not in whitelist but appears to scale, likely a bug.
+    if ( p()->o()->bugs )
+      m *= 1.0 + p()->o()->hero.wicked_reaping->effectN( 1 ).percent();
+
+    if ( p()->o()->specialization() == WARLOCK_DEMONOLOGY )
+    {
+      m *= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 1 ).percent();
+    }
+    if ( p()->o()->specialization() == WARLOCK_AFFLICTION )
+    {
+      m *= 1.0 + p()->o()->warlock_base.affliction_warlock->effectN( 1 ).percent();
+      // Oddly a scripted dummy effect. Needs to be double checked to be sure this actually works.
+      m *= 1.0 + p()->o()->sets->set( HERO_SOUL_HARVESTER, TWW3, B2 )->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    if ( p()->o()->talents.shadowtouched.ok() )
+    {
+      if ( owner_td( target )->debuffs.wicked_maw->check() )
+        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+};
+
+struct soul_swipe_aoe_t : public soul_swipe_base_t
+{
+  soul_swipe_aoe_t( warlock_pet_t* p, std::string_view n = "soul_swipe_aoe" )
+    : soul_swipe_base_t( n, p, p->find_spell( 1239714 ) )
+  {
+    spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
+    aoe                    = -1;
+    background             = true;
+  }
+
+  // Doesnt hit the main target, so we need to override this
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    soul_swipe_base_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+};
+
+struct soul_swipe_t : public soul_swipe_base_t
+{
+  soul_swipe_t( warlock_pet_t* p, std::string_view n ) : soul_swipe_base_t( n, p, p->find_spell( 1239714 ) )
+  {
+    // Actually just an auto attack with a 1s swing time. Simplifying the code doing it this way.
+    trigger_gcd = 1_s;
+    min_gcd = 0_s;
+
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    aoe                    = 0;  // Single target spell
+    impact_action          = new soul_swipe_aoe_t( p );
+    add_child( impact_action );
+  }
+};
+
+rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true ), summon_spell( nullptr )
+{
+  resource_regeneration  = regen_type::DISABLED;
+  action_list_str        = "soul_swipe";
+  owner_coeff.sp_from_sp = 1.0;
+  summon_spell           = owner->find_spell( 1239689 );  // Rampaging Demonic Soul
+}
+
+void rampaging_demonic_soul_t::arise()
+{
+  warlock_pet_t::arise();
+  if ( o()->sets->has_set_bonus( HERO_SOUL_HARVESTER, TWW3, B4 ) )
+    make_event<rampaging_demonic_soul_shard_event_t>( *sim, this, summon_spell->effectN( 2 ).period() );
+}
+
+action_t* rampaging_demonic_soul_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "soul_swipe" )
+    return new soul_swipe_t( this, name );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+/// Rampaging Demonic Soul End
+
+}  // namespace soul_harvester
 }  // namespace pets
 }  // namespace warlock

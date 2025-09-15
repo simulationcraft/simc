@@ -6,8 +6,9 @@
 #pragma once
 
 #include "config.hpp"
+
+#include "sc_enums.hpp"
 #include "util/chrono.hpp"
-#include "util/string_view.hpp"
 
 #include <string>
 
@@ -45,7 +46,7 @@ private:
   bool update_simple( const sim_progress_t&, bool finished, int index );
   bool update_normal( const sim_progress_t&, bool finished, int index );
 
-  size_t n_stat_scaling_players( util::string_view stat ) const;
+  size_t n_stat_scaling_players( stat_e stat ) const;
   // Compute the number of various option-related phases
   size_t n_plot_phases() const;
   size_t n_reforge_plot_phases() const;

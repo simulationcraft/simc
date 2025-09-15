@@ -456,43 +456,37 @@ size_t progress_bar_t::total_work() const
   return total_work_;
 }
 
-size_t progress_bar_t::n_stat_scaling_players( util::string_view stat_str ) const
+size_t progress_bar_t::n_stat_scaling_players( stat_e stat ) const
 {
-  auto stat = util::parse_stat_type( stat_str );
   if ( stat == STAT_NONE )
-  {
     return 0;
-  }
 
   // Ensure sim has at least someone who scales with the stat
-  return std::count_if( sim.player_no_pet_list.begin(), sim.player_no_pet_list.end(),
-    [ stat ]( const player_t* p ) {
-      return ! p -> quiet && p -> scaling -> scales_with[ stat ];
-    } );
+  return std::count_if( sim.player_no_pet_list.begin(), sim.player_no_pet_list.end(), [ stat ]( const player_t* p ) {
+    return !p->quiet && p->scaling->scales_with[ stat ];
+  } );
 }
 
 size_t progress_bar_t::n_plot_phases() const
 {
-  if ( sim.plot -> dps_plot_stat_str.empty() )
-  {
+  if ( sim.plot->dps_plot_stats.empty() )
     return 0;
-  }
 
   size_t n_phases = 0;
-  auto stat_list = util::string_split<util::string_view>( sim.plot -> dps_plot_stat_str, ",:;/|" );
-  range::for_each( stat_list, [ &n_phases, this ]( util::string_view stat_str ) {
-    auto n_players = n_stat_scaling_players( stat_str );
-
-    if ( n_players > 0 )
+  for ( auto [ stat, override ] : sim.plot->dps_plot_stats )
+  {
+    if ( n_stat_scaling_players( stat ) > 0 )
     {
       // Don't use fancy context-sensitive number of phases, but rather just multiply with the
       // number of actors if single_actor_batch=1. In the future if scale factor calculation is made
       // context (stat) sensitive, adjust this.
       /* n_phases += sim.plot -> dps_plot_points * ( sim.single_actor_batch == 1 ? n_players : 1 ); */
-      n_phases += sim.plot -> dps_plot_points *
-                  ( sim.single_actor_batch == 1 ? sim.player_no_pet_list.size() : 1 );
+      n_phases += sim.plot->dps_plot_points * ( sim.single_actor_batch == 1 ? sim.player_no_pet_list.size() : 1 );
     }
-  } );
+
+    if ( override >= 0 )
+      n_phases++;
+  }
 
   return n_phases;
 }
@@ -554,14 +548,11 @@ size_t progress_bar_t::n_reforge_plot_phases() const
     return 0;
   }
 
-  auto stat_list = util::string_split<util::string_view>( sim.reforge_plot -> reforge_plot_stat_str, ",:;/|" );
+  auto stat_list = util::string_split<std::string_view>( sim.reforge_plot -> reforge_plot_stat_str, ",:;/|" );
   std::vector<stat_e> stat_indices;
-  range::for_each( stat_list, [ &stat_indices, this ]( util::string_view stat_str ) {
-    if ( n_stat_scaling_players( stat_str ) > 0 )
-    {
-      stat_indices.push_back( util::parse_stat_type( stat_str ) );
-    }
-  } );
+  for ( auto stat_str : stat_list )
+    if ( auto stat = util::parse_stat_type( stat_str ); n_stat_scaling_players( stat ) > 0 )
+      stat_indices.push_back( stat );
 
   std::vector<int> cur_stat_mods( stat_indices.size() );
   std::vector<std::vector<int>> stat_mods;

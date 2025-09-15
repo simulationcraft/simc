@@ -1163,28 +1163,10 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   void execute() override
   {
-    paladin_spell_t::execute();
-
-    if ( p()->talents.seething_flames->ok() )
-    {
-      for ( int i = 0; i < as<int>( p()->talents.seething_flames->effectN( 1 ).base_value() ); i++ )
-      {
-        make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
-      }
-    }
-    if ( p()->talents.templar.lights_guidance->ok() )
-    {
-      p()->buffs.templar.hammer_of_light_ready->trigger();
-    }
-
-    if ( p()->talents.templar.sacrosanct_crusade->ok() )
-    {
-      p()->buffs.templar.sacrosanct_crusade->trigger();
-    }
-
     if ( p()->talents.radiant_glory->ok() )
     {
-      bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() && !( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() );
+      bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() &&
+                       !( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() );
       if ( p()->talents.crusade->ok() )
       {
         if ( !p()->buffs.crusade->up() )
@@ -1209,6 +1191,25 @@ struct wake_of_ashes_t : public paladin_spell_t
       }
     }
 
+    paladin_spell_t::execute();
+
+    if ( p()->talents.seething_flames->ok() )
+    {
+      for ( int i = 0; i < as<int>( p()->talents.seething_flames->effectN( 1 ).base_value() ); i++ )
+      {
+        make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
+      }
+    }
+    if ( p()->talents.templar.lights_guidance->ok() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->trigger();
+    }
+
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      p()->buffs.templar.sacrosanct_crusade->trigger();
+    }
+
     if ( p()->talents.herald_of_the_sun.dawnlight->ok() )
     {
       p()->buffs.herald_of_the_sun.dawnlight->trigger( as<int>( p()->talents.herald_of_the_sun.dawnlight->effectN( 1 ).base_value() ) );
@@ -1228,7 +1229,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
       return false;
     }
@@ -1643,7 +1644,17 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade = new buffs::crusade_buff_t( this );
   buffs.crusade->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-    buffs.herald_of_the_sun.suns_avatar->expire();
+    
+    if ( sets->has_set_bonus( HERO_HERALD_OF_THE_SUN, TWW3, B2 ) )
+    {
+      // 5s with Radiant Glory, 20s without
+      buffs.herald_of_the_sun.solar_wrath->trigger(
+          sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 2 ).time_value() -
+          ( talents.radiant_glory->ok() ? sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 5 ).time_value()
+                                        : -sets->set( HERO_HERALD_OF_THE_SUN, TWW3, B2 )->effectN( 4 ).time_value() ) );
+    }
+    else
+      buffs.herald_of_the_sun.suns_avatar->expire();
   } );
 
   buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )

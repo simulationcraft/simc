@@ -749,6 +749,28 @@ struct spell_data_t
     return ( _attributes[ index ] & mask ) != 0;
   }
 
+  bool aura_flags( aura_interrupt flag ) const
+  {
+    unsigned bit = static_cast<unsigned>( flag ) % 32u + 1u;
+    unsigned index = static_cast<unsigned>( flag ) / 32u;
+    uint32_t mask = 1u << bit;
+
+    assert( index < std::size( _aura_interrupt ) );
+
+    return ( _aura_interrupt[ index ] & mask ) != 0;
+  }
+
+  bool channel_flags( aura_interrupt flag ) const
+  {
+    unsigned bit = static_cast<unsigned>( flag ) % 32u + 1u;
+    unsigned index = static_cast<unsigned>( flag ) / 32u;
+    uint32_t mask = 1u << bit;
+
+    assert( index < std::size( _aura_interrupt ) );
+
+    return ( _channel_interrupt[ index ] & mask ) != 0;
+  }
+
   bool class_flag( unsigned flag ) const
   {
     unsigned index = flag / 32;
@@ -762,6 +784,12 @@ struct spell_data_t
   {
     assert( idx < std::size( _attributes ) );
     return _attributes[ idx ];
+  }
+
+  unsigned aura_interrupts( unsigned idx ) const
+  {
+    assert( idx < std::size( _aura_interrupt ) );
+    return _aura_interrupt[ idx ];
   }
 
   unsigned class_flags( unsigned idx ) const

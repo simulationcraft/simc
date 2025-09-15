@@ -29,7 +29,8 @@ enum class parse_status : unsigned
   OK,           /// Parsing succeeded
   NOT_FOUND,    /// Option with specific name not found in the option database
   CONTINUE,     /// Parsing should continue (e.g. name, value pair not meant for this option_t object)
-  DEPRECATED    /// Option is deprecated, parsing failure (use non-deprecated option instead)
+  DEPRECATED,   /// Option is deprecated, parsing failure (use non-deprecated option instead)
+  WARNING       /// Parsing successful, but warn of an issue (such as string being overwritten)
 };
 } // Namespace opts ends
 
@@ -72,25 +73,26 @@ inline void sc_format_to( const std::unique_ptr<option_t>& option, fmt::format_c
   sc_format_to(*option, out);
 }
 
-std::unique_ptr<option_t> opt_string( util::string_view n, std::string& v );
-std::unique_ptr<option_t> opt_append( util::string_view n, std::string& v );
-std::unique_ptr<option_t> opt_bool( util::string_view n, int& v );
-std::unique_ptr<option_t> opt_bool( util::string_view n, bool& v );
-std::unique_ptr<option_t> opt_uint64( util::string_view n, uint64_t& v );
-std::unique_ptr<option_t> opt_int( util::string_view n, int& v );
-std::unique_ptr<option_t> opt_int( util::string_view n, int& v, int , int );
-std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v );
-std::unique_ptr<option_t> opt_uint( util::string_view n, unsigned& v, unsigned , unsigned  );
-std::unique_ptr<option_t> opt_float( util::string_view n, double& v );
-std::unique_ptr<option_t> opt_float( util::string_view n, double& v, double , double  );
-std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v );
-std::unique_ptr<option_t> opt_timespan( util::string_view n, timespan_t& v, timespan_t , timespan_t  );
-std::unique_ptr<option_t> opt_list( util::string_view n, opts::list_t& v );
-std::unique_ptr<option_t> opt_map( util::string_view n, opts::map_t& v );
-std::unique_ptr<option_t> opt_map_list( util::string_view n, opts::map_list_t& v );
-std::unique_ptr<option_t> opt_func( util::string_view n, const opts::function_t& f );
-std::unique_ptr<option_t> opt_deprecated( util::string_view n, util::string_view new_option );
-std::unique_ptr<option_t> opt_obsoleted( util::string_view n );
+std::unique_ptr<option_t> opt_string( std::string_view n, std::string& v );
+std::unique_ptr<option_t> opt_string_warn( std::string_view n, std::string& v );
+std::unique_ptr<option_t> opt_append( std::string_view n, std::string& v );
+std::unique_ptr<option_t> opt_bool( std::string_view n, int& v );
+std::unique_ptr<option_t> opt_bool( std::string_view n, bool& v );
+std::unique_ptr<option_t> opt_uint64( std::string_view n, uint64_t& v );
+std::unique_ptr<option_t> opt_int( std::string_view n, int& v );
+std::unique_ptr<option_t> opt_int( std::string_view n, int& v, int , int );
+std::unique_ptr<option_t> opt_uint( std::string_view n, unsigned& v );
+std::unique_ptr<option_t> opt_uint( std::string_view n, unsigned& v, unsigned , unsigned  );
+std::unique_ptr<option_t> opt_float( std::string_view n, double& v );
+std::unique_ptr<option_t> opt_float( std::string_view n, double& v, double , double  );
+std::unique_ptr<option_t> opt_timespan( std::string_view n, timespan_t& v );
+std::unique_ptr<option_t> opt_timespan( std::string_view n, timespan_t& v, timespan_t , timespan_t  );
+std::unique_ptr<option_t> opt_list( std::string_view n, opts::list_t& v );
+std::unique_ptr<option_t> opt_map( std::string_view n, opts::map_t& v );
+std::unique_ptr<option_t> opt_map_list( std::string_view n, opts::map_list_t& v );
+std::unique_ptr<option_t> opt_func( std::string_view n, const opts::function_t& f );
+std::unique_ptr<option_t> opt_deprecated( std::string_view n, std::string_view new_option );
+std::unique_ptr<option_t> opt_obsoleted( std::string_view n );
 
 struct option_tuple_t
 {

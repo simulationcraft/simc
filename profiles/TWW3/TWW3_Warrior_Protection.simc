@@ -1,0 +1,113 @@
+warrior="TWW3_Warrior_Protection_Thane"
+source=default
+spec=protection
+level=80
+race=mechagnome
+role=tank
+position=front
+talents=CkEAAAAAAAAAAAAAAAAAAAAAA02AAAAwMzYmZmZYmNzMLDGjRzMLjZYmFww2MzwMMjZAAAAAAglBAYGLAGYDWWMaMDgZJYDzMA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/battle_stance,toggle=on
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time=0
+actions+=/use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up
+actions+=/use_items
+actions+=/avatar,if=buff.thunder_blast.down|buff.thunder_blast.stack<=2
+actions+=/shield_wall,if=talent.immovable_object.enabled&buff.avatar.down
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/lights_judgment
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks
+actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20
+actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains>=4&set_bonus.tier31_2pc,use_off_gcd=1
+actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc
+actions+=/ravager
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/champions_spear
+actions+=/thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.stack=2
+actions+=/demolish,if=buff.colossal_might.stack>=3
+actions+=/thunderous_roar
+actions+=/shield_charge
+actions+=/shield_block,if=buff.shield_block.remains<=10
+actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
+actions+=/call_action_list,name=generic
+
+actions.aoe=thunder_blast,if=dot.rend.remains<=1
+actions.aoe+=/thunder_clap,if=dot.rend.remains<=1
+actions.aoe+=/thunder_blast,if=buff.violent_outburst.up&spell_targets.thunderclap>=2&buff.avatar.up&talent.unstoppable_force.enabled
+actions.aoe+=/execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled
+actions.aoe+=/thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>=4&buff.avatar.up&talent.unstoppable_force.enabled&talent.crashing_thunder.enabled|buff.violent_outburst.up&spell_targets.thunderclap>6&buff.avatar.up&talent.unstoppable_force.enabled
+actions.aoe+=/revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3
+actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4&talent.crashing_thunder.enabled
+actions.aoe+=/thunder_blast
+actions.aoe+=/thunder_clap
+actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+
+actions.generic=thunder_blast,if=(buff.thunder_blast.stack=2&buff.burst_of_power.stack<=1&buff.avatar.up&talent.unstoppable_force.enabled)
+actions.generic+=/shield_slam,if=(buff.burst_of_power.stack=2&buff.thunder_blast.stack<=1|buff.violent_outburst.up)|rage<=70&talent.demolish.enabled
+actions.generic+=/execute,if=rage>=70|(rage>=40&cooldown.shield_slam.remains&talent.demolish.enabled|rage>=50&cooldown.shield_slam.remains)|buff.sudden_death.up&talent.sudden_death.enabled
+actions.generic+=/shield_slam
+actions.generic+=/thunder_blast,if=dot.rend.remains<=2&buff.violent_outburst.down
+actions.generic+=/thunder_blast
+actions.generic+=/thunder_clap,if=dot.rend.remains<=2&buff.violent_outburst.down
+actions.generic+=/thunder_blast,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
+actions.generic+=/revenge,if=(rage>=80&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=80&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
+actions.generic+=/execute
+actions.generic+=/revenge
+actions.generic+=/thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)
+actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)
+actions.generic+=/devastate
+
+head=living_weapons_faceshield,id=237610,bonus_id=12361/10356/12231/40/12921/12676/1533/10255
+neck=duskblazes_desperation,id=237569,bonus_id=4800/4786/1533/12361/8781,gem_id=213470/213470
+shoulders=living_weapons_ramparts,id=237608,bonus_id=12361/10356/12233/40/12675/1533/10255
+back=reshii_wraps,id=235499,bonus_id=12401/9893,gem_id=238042,enchant=chant_of_winged_grace_3
+chest=living_weapons_bulwark,id=237613,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
+hands=breached_containment_guards,id=237526,bonus_id=4800/4786/1533/12361
+waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11304,gem_id=213470,crafted_stats=32/36
+legs=living_weapons_legguards,id=237609,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant=defenders_armor_kit_3
+feet=interlopers_plated_sabatons,id=243307,bonus_id=40/10356/12361/1533/10255/13504,enchant=defenders_march_3
+finger1=devout_zealots_ring,id=221136,bonus_id=4786/3215/12361/8781,gem_id=213470/213470,enchant=radiant_critical_strike_3
+finger2=high_nerubian_signet,id=221141,bonus_id=4786/3215/12361/8781,gem_id=213470/213470,enchant=radiant_critical_strike_3
+trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
+trinket2=astral_antenna,id=242395,bonus_id=4800/4786/1533/12361
+main_hand=factoryissue_plexhammer,id=237813,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
+off_hand=ward_of_the_weavingbeast,id=237723,bonus_id=1533/12361/12239
+
+# Gear Summary
+# gear_ilvl=723.06
+# gear_strength=77016
+# gear_stamina=663573
+# gear_intellect=12730
+# gear_attack_power=469
+# gear_crit_rating=14432
+# gear_haste_rating=20644
+# gear_mastery_rating=10930
+# gear_versatility_rating=10189
+# gear_avoidance_rating=5932
+# gear_armor=148422
+# gear_bonus_armor=980
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=mountain_thane,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=mountain_thane,enable=1

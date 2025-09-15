@@ -18,21 +18,40 @@
 #include "report/highchart.hpp"
 #include "report/report_helper.hpp"
 #include "reports.hpp"
+#include "sim/plot.hpp"
 #include "sim/profileset.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "util/plot_data.hpp"
 #include "util/util.hpp"
 
 #include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
-
+// local enums
 enum stats_mask_e
 {
   MASK_DMG     = 1 << STATS_DMG,
   MASK_HEAL    = 1 << STATS_HEAL,
   MASK_ABSORB  = 1 << STATS_ABSORB,
   MASK_NEUTRAL = 1 << STATS_NEUTRAL
+};
+
+enum sort_flag_e : uint8_t
+{
+  SORT_FLAG_NONE  = 0x00,
+  SORT_FLAG_ASC   = 0x01,
+  SORT_FLAG_ALPHA = 0x02,
+  SORT_FLAG_LEFT  = 0x04,
+  SORT_FLAG_BOTH  = 0x08,
+};
+
+enum merge_stat : uint8_t
+{
+  MERGE_DPS     = 0x01,
+  MERGE_DPSPCT  = 0x02,
+  MERGE_COUNT   = 0x04,
+  MERGE_CRITPCT = 0x08,
 };
 
 bool has_avoidance( const std::array<stats_t::stats_results_t, RESULT_MAX>& s )
@@ -156,18 +175,9 @@ bool use_small_table( const player_t* p )
   return p->collected_data.dps.max() >= cutoff || p->collected_data.hps.max() >= cutoff;
 }
 
-enum sort_flag_e : unsigned
-{
-  SORT_FLAG_NONE  = 0x00,
-  SORT_FLAG_ASC   = 0x01,
-  SORT_FLAG_ALPHA = 0x02,
-  SORT_FLAG_LEFT  = 0x04,
-  SORT_FLAG_BOTH  = 0x08,
-};
-
 void sorttable_header( report::sc_html_stream& os,                    // output stream to html report
                        std::string_view header,                     // column header name
-                       unsigned flag = SORT_FLAG_NONE,                // bitflags to set header class
+                       uint8_t flag = SORT_FLAG_NONE,                // bitflags to set header class
                        std::string_view helptext = {} )  // optional hover help id
 {
   std::string class_str = "toggle-sort";
@@ -195,7 +205,7 @@ void sorttable_header( report::sc_html_stream& os,                    // output 
 }
 
 void sorttable_help_header( report::sc_html_stream& os, std::string_view header, std::string_view helptext,
-                            unsigned flag = SORT_FLAG_NONE )
+                            uint8_t flag = SORT_FLAG_NONE )
 {
   sorttable_header( os, header, flag, helptext );
 }
@@ -395,7 +405,7 @@ void collect_compound_stats( std::unique_ptr<stats_t>& compound_stats, const sta
 }
 
 void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t& s,
-                                const player_t& p )
+                                const player_t& p, uint8_t merge_flags )
 {
   using full_result_t = std::array<stats_t::stats_results_t, FULLTYPE_MAX>;
   using result_t = std::array<stats_t::stats_results_t, RESULT_MAX>;
@@ -422,15 +432,20 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     collect_compound_stats( compound_stats, &s, compound_count, compound_tick_time );
     compound_stats->analyze();
 
-    count_str = fmt::format( "&#160;({:.1Lf})", compound_count );
+    if ( merge_flags & MERGE_COUNT )
+      count_str = fmt::format( "&#160;({:.1Lf})", compound_count );
 
-    const auto& compound_dr = compound_stats->direct_results;
-    const auto& compound_tr = compound_stats->tick_results;
+    if ( merge_flags & MERGE_CRITPCT )
+    {
+      const auto& compound_dr = compound_stats->direct_results;
+      const auto& compound_tr = compound_stats->tick_results;
 
-    double compound_critpct = result_type == 1 ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
-                                               : pct_value<full_result_t, full_result_e>( compound_dr,
-                                                 { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
-    critpct_str = fmt::format( "&#160;({:.1f}%)", compound_critpct );
+      double compound_critpct = result_type == 1
+                                  ? pct_value<result_t, result_e>( compound_tr, { RESULT_CRIT } )
+                                  : pct_value<full_result_t, full_result_e>(
+                                      compound_dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } );
+      critpct_str = fmt::format( "&#160;({:.1f}%)", compound_critpct );
+    }
 
     if ( show_uppct )
     {
@@ -498,21 +513,8 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
     os.printf( "<td></td>" );
 }
 
-void collect_aps( const stats_t* stats, double& caps, double& capspct )
-{
-  caps += stats->portion_apse.mean();
-  capspct += stats->portion_amount;
-
-  range::for_each( stats->children, [&]( const stats_t* s ) {
-    if (stats->type == s -> type)
-    {
-      collect_aps( s, caps, capspct );
-    }
-  } );
-}
-
 void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, const stats_t& s, int n_columns,
-                             const player_t* actor = nullptr, int indentation = 0 )
+                             const player_t* actor = nullptr, uint8_t merge_flags = 0, int indentation = 0 )
 {
   const player_t& p = *s.player->get_owner_or_self();
   bool hasparent = s.parent && s.parent->player == actor && ( s.mask() & s.parent->mask() );
@@ -555,9 +557,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     double cAPS                  = 0.0;
     double cAPSpct               = 0.0;
 
-    collect_aps( &s, cAPS, cAPSpct );
+    report_helper::collect_aps( &s, cAPS, cAPSpct );
 
-    if ( cAPS > s.portion_aps.mean() )
+    if ( merge_flags & MERGE_DPS && cAPS > s.portion_aps.mean() )
       compound_aps = fmt::format( "&#160;({:.0Lf})", cAPS );
 
     // For stats not belonging to the original actor (eg. pet spells added as child to the owner), report aps / apse,
@@ -565,7 +567,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( s.player != actor )
       compound_aps = fmt::format( "&#160;/&#160;{:.0Lf}", s.portion_apse.mean() );
 
-    if ( cAPSpct > s.portion_amount )
+    if ( merge_flags & MERGE_DPSPCT && cAPSpct > s.portion_amount )
       compound_aps_pct = fmt::format( "&#160;({:.1f}%)", cAPSpct * 100 );
 
     os.format( R"(<td{}>{:.0Lf}{}</td><td{}>{:.1f}%{}</td>)",
@@ -578,6 +580,14 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
              rowspan, s.num_executes.pretty_mean(),
              rowspan, s.total_intervals.pretty_mean() );
 
+  // Execute time & time percent
+  auto total_time = s.player != actor || s.background ? 0.0 : s.total_time.total_seconds();
+  std::string time_str = total_time ? fmt::format( "{:.1Lf}s&#160;/&#160;{:.1Lf}%", total_time,
+                                                   total_time * 100 / p.sim->max_time.total_seconds() )
+                                    : "0.0s";
+
+  os.format( R"(<td{}>{}</td>)", rowspan, time_str );
+
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
@@ -589,12 +599,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     bool periodic_only = false;
     if ( s.has_direct_amount_results() )
     {
-      print_html_action_summary( os, stats_mask, 0, s, p );
+      print_html_action_summary( os, stats_mask, 0, s, p, merge_flags);
     }
     else if ( s.has_tick_amount_results() )
     {
       periodic_only = true;
-      print_html_action_summary( os, stats_mask, 1, s, p );
+      print_html_action_summary( os, stats_mask, 1, s, p, merge_flags );
     }
     else
       os.format( R"(<td colspan="{}"></td>)", n_columns );
@@ -604,7 +614,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
     if ( !periodic_only && s.has_tick_amount_results() )
     {
       os.format( R"(<tr class="childrow{} right">)", row_class );
-      print_html_action_summary( os, stats_mask, 1, s, p );
+      print_html_action_summary( os, stats_mask, 1, s, p, merge_flags );
       os << "</tr>\n";
     }
   }
@@ -615,19 +625,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
   if ( p.sim->report_details )
   {
-    // TODO: Transitional; Highcharts
-    std::string timeline_stat_aps_str;
-    if ( !s.timeline_aps_chart.empty() )
-    {
-      timeline_stat_aps_str = "<img src=\"" + s.timeline_aps_chart + "\" alt=\"" +
-        ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Timeline Chart\" />\n";
-    }
-    std::string aps_distribution_str;
-    if ( !s.aps_distribution_chart.empty() )
-    {
-      aps_distribution_str = "<img src=\"" + s.aps_distribution_chart + "\" alt=\"" +
-        ( s.type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
-    }
     os << "<tr class=\"details hide\">\n"
        << "<td colspan=\"" << ( n_columns > 0 ? ( 7 + n_columns ) : 3 ) << "\" class=\"filler\">\n";
 
@@ -1937,8 +1934,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       case talent_tree::HERO:
         {
           auto id = trait->id_sub_tree;
-          if ( range::contains( p.player_sub_trees, id ) ||
-                range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
+          if ( p.player_sub_trees.count( id ) || range::contains( p.player_sub_traits, trait->id_trait_node_entry ) )
           {
             hero_traits[ id ].at( trait->row - 1 ).emplace_back( trait, _rank );
             if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
@@ -2270,75 +2266,16 @@ bool print_html_sample_sequence_resource( const player_t& p,
 
 void print_html_sample_sequence_string_entry( report::sc_html_stream& os,
                                               const player_collected_data_t::action_sequence_data_t& data,
-                                              const player_t& p,
-                                              bool precombat = false )
+                                              std::string_view player_name )
 {
   // Skip waiting on the condensed list
   if ( !data.action )
     return;
 
-  std::string targetname = data.action->harmful ? util::remove_special_chars( data.target->name_str ) : "none";
-  std::string time_str;
-
-  if ( precombat )
-  {
-    time_str = "Pre";
-  }
-  else
-  {
-    time_str = fmt::format( "{:d}:{:02d}.{:03d}",
-                            static_cast<int>( data.time.total_minutes() ),
-                            static_cast<int>( data.time.total_seconds() ) % 60,
-                            static_cast<int>( data.time.total_millis() ) % 1000 );
-  }
-
-  os.printf( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|",
-             util::remove_special_chars( p.name_str ).c_str(),
-             targetname.c_str(),
-             time_str,
-             util::remove_special_chars( data.action->name_str ).c_str(),
-             ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
-
-  resource_e pr = p.primary_resource();
-
-  if ( print_html_sample_sequence_resource( p, data, pr ) )
-  {
-    if ( pr == RESOURCE_HEALTH || pr == RESOURCE_MANA )
-      os.printf( " %.0f%%", ( data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] ) * 100 );
-    else
-      os.printf( " %.1f", data.resource_snapshot[ pr ] );
-
-    os.printf( " %s |", util::resource_type_string( pr ) );
-  }
-
-  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
-  {
-    if ( print_html_sample_sequence_resource( p, data, r ) && r != pr )
-    {
-      if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
-        os.printf( " %.0f%%", ( data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] ) * 100 );
-      else
-        os.printf( " %.1f", data.resource_snapshot[ r ] );
-
-      os.printf( " %s |", util::resource_type_string( r ) );
-    }
-  }
-
-  for ( const auto& b_data : data.buff_list )
-  {
-    buff_t* buff = b_data.object;
-    int stacks   = b_data.value;
-
-    if ( !buff->constant )
-    {
-      os.printf( "\n%s", util::encode_html( buff->name() ).c_str() );
-
-      if ( stacks > 1 )
-        os.printf( "(%d)", stacks );
-    }
-  }
-
-  os.printf( "\">%c</span>", data.action ? data.action->marker : 'W' );
+  os.format( R"(<span class="{}_seq_target_{}">{}</span>)",
+             player_name,
+             data.action->harmful ? util::remove_special_chars( data.target->name_str ) : "none",
+             data.action->marker );
 }
 // print_html_sample_sequence_table_entry =====================================
 
@@ -2367,9 +2304,10 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
                "<td><b>{}</b>{}<br/>[{}]</td>"
                "<td>{}</td>",
                data.action->marker != 0 ? data.action->marker : ' ',
-               util::encode_html( data.action->name() ), data.queue_failed ? " (queue failed)" : "",
+               data.action_reporting.empty() ? util::encode_html( data.action->name_str ) : data.action_reporting,
+               data.queue_failed ? " (queue failed)" : "",
                data.action->action_list ? util::encode_html( data.action->action_list->name_str ): "unknown",
-               util::encode_html( data.target_name ) );
+               data.target_reporting.empty() ? util::encode_html( data.target->name_str ) : data.target_reporting );
   }
   else
   {
@@ -2522,72 +2460,57 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
 
   if ( !p.collected_data.action_sequence.empty() && !p.is_enemy()  )
   {
+    // Condensed Sample Sequence (text string)
     std::vector<std::string> targets;
 
-    targets.emplace_back("none" );
+    targets.emplace_back( "none" );
     if ( p.target )
-    {
-      targets.emplace_back(p.target->name() );
-    }
+      targets.emplace_back( p.target->name_str );
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
     {
       if ( !sequence_data.action || !sequence_data.action->harmful )
         continue;
-      bool found = false;
-      for ( const auto& target : targets )
-      {
-        if ( target == sequence_data.target->name() )
-        {
-          found = true;
-          break;
-        }
-      }
-      if ( !found )
-        targets.emplace_back(sequence_data.target->name() );
-    }
 
-    // Sample Sequence (text string)
+      if ( !range::contains( targets, sequence_data.target->name_str ) )
+        targets.emplace_back( sequence_data.target->name_str );
+    }
 
     os << "<div class=\"subsection subsection-small\">\n"
        << "<h4>Sample Sequence</h4>\n"
        << "<div class=\"force-wrap mono\">\n";
 
     os << "<style type=\"text/css\" media=\"all\" scoped>\n";
+    static constexpr std::string_view colors[ 12 ] = { "999", "fff", "f55", "5f5", "55f", "ff5",
+                                                       "5ff", "f99", "9f9", "99f", "ff9", "9ff" };
 
-    char colors[ 12 ][ 4 ] = { "999", "fff", "f55", "5f5", "55f", "ff5", "5ff", "f99", "9f9", "99f", "ff9", "9ff" };
-
+    auto p_name = util::remove_special_chars( p.name_str );
     int j = 0;
 
     for ( const auto& target : targets )
     {
       if ( j == 12 )
         j = 2;
-      os.printf( ".%s_seq_target_%s { color: #%s; }\n", util::remove_special_chars( p.name_str ).c_str(),
-                 util::remove_special_chars( target ).c_str(), colors[ j ] );
+
+      os.format( ".{}_seq_target_{} {{ color: #{}; }}\n", p_name, util::remove_special_chars( target ), colors[ j ] );
       j++;
     }
 
     os << "</style>\n";
 
     for ( const auto& sequence_data : p.collected_data.action_sequence_precombat )
-    {
-      print_html_sample_sequence_string_entry( os, sequence_data, p, true );
-    }
+      print_html_sample_sequence_string_entry( os, sequence_data, p_name );
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
-    {
-      print_html_sample_sequence_string_entry( os, sequence_data, p );
-    }
+      print_html_sample_sequence_string_entry( os, sequence_data, p_name );
 
-    os << "\n</div>\n"
-       << "</div>\n";
+    os << "\n</div></div>\n";
 
     // Sample Sequence (table)
 
     // define collapsable section
-    os << "<h3 class=\"toggle\">Sample Sequence Table</h3>\n"
-       << "<div class=\"toggle-content hide\">\n";
+    os << "<h3>Sample Sequence Table</h3>\n"
+       << "<div>\n";
 
     // create table header
     os << "<table class=\"sc\">\n"
@@ -3181,20 +3104,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     }
   }
 
-  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
-  if ( chart::generate_scaling_plot( scaling_plot, p, p.sim->scaling->scaling_metric ) )
-  {
-    os << scaling_plot.to_target_div();
-    p.sim->add_chart_data( scaling_plot );
-  }
-
-  highchart::chart_t reforge_plot( highchart::build_id( p, "reforge_plot" ), *p.sim );
-  if ( chart::generate_reforge_plot( reforge_plot, p ) )
-  {
-    os << reforge_plot.to_target_div();
-    p.sim->add_chart_data( reforge_plot );
-  }
-
   for ( const auto& timeline : p.collected_data.stat_timelines )
   {
     if ( timeline.timeline.mean() == 0 )
@@ -3211,6 +3120,76 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
   os << "</div>\n"
      << "</div>\n";
+}
+
+void print_html_player_plots( report::sc_html_stream& os, const player_t& p, const player_processed_report_information_t& )
+{
+  if ( p.dps_plot_data.empty() && p.reforge_plot_data.empty() )
+    return;
+
+  os << R"(<div class="player-section"><h3 class="toggle open">Plots</h3><div class="toggle-content">)";
+
+  highchart::chart_t scaling_plot( highchart::build_id( p, "scaling_plot" ), *p.sim );
+  scaling_plot.width_ = 1165;
+  if ( chart::generate_scaling_plot( scaling_plot, p, p.sim->scaling->scaling_metric ) )
+  {
+    os << scaling_plot.to_target_div();
+    p.sim->add_chart_data( scaling_plot );
+
+    os << R"(<h3 class="toggle">DPS Plot Values</h3><div class="toggle-content hide">)";
+
+    const auto& source = p.sim->plot->dps_plot_display_delta ? p.dps_plot_delta_data : p.dps_plot_data;
+
+    for ( const auto& [ i, plot_data ] : source )
+    {
+      double scale_override = -1;
+      if ( p.sim->plot->dps_plot_stats.count( i ) )
+        scale_override = p.sim->plot->dps_plot_stats.at( i );
+
+      auto gear_rating = scale_override >= 0 ? scale_override : p.composite_rating( util::stat_to_rating( i ) );
+
+      size_t count = plot_data.size();
+      size_t rows = as<size_t>( std::ceil( count / 6 ) );
+
+      os.format(
+        R"(<table class="sc"><tr class="details"><td class="details"><h4>{}</h4></td></tr><tr class="details">)",
+        util::inverse_tokenize( util::stat_type_string( i ) ) );
+
+      size_t idx = 0;
+      for ( const auto& data : plot_data )
+      {
+        if ( idx % rows == 0 )
+        {
+          if ( idx )
+          {
+            os << "</table></td>\n";
+            os << R"(<td class="details" valign="top" style="border-left: 1px solid #555"><table class="details">)";
+          }
+          else
+          {
+            os << R"(<td class="details" valign="top"><table class="details">)";
+          }
+          os << "<tr><th>Rating</th><th>Offset</th><th>Value</th></tr>";
+        }
+        os.format( R"(<tr><td>{:.0Lf}</td><td>{:.0Lf}</td><td>{:.0Lf}</td></tr>)",
+                   gear_rating + data.plot_step, data.plot_step, data.value );
+        idx++;
+      }
+      os << "</table></td>\n"
+         << "</tr></table>\n";
+    }
+    os << "</div>\n";
+  }
+
+  highchart::chart_t reforge_plot( highchart::build_id( p, "reforge_plot" ), *p.sim );
+  reforge_plot.width_ = 1165;
+  if ( chart::generate_reforge_plot( reforge_plot, p ) )
+  {
+    os << reforge_plot.to_target_div();
+    p.sim->add_chart_data( reforge_plot );
+  }
+
+  os << "</div></div>\n";
 }
 
 void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data,
@@ -3301,6 +3280,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   {
     os.format( "<td>{:.1f}</td>"
                "<td>{:.1f}</td>"
+               "<td>{:.1f}</td>"
                "<td>{:.1f}s</td>"
                "<td>{:.1f}s</td>"
                "<td>{:.1f}s</td>"
@@ -3310,6 +3290,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                "<td>{:.1f}</td>\n",
                b.avg_start.pretty_mean(),
                b.avg_refresh.pretty_mean(),
+               b.avg_start.pretty_mean() + b.avg_refresh.pretty_mean(),
                b.start_intervals.pretty_mean(),
                b.trigger_intervals.pretty_mean(),
                b.duration_lengths.pretty_mean(),
@@ -3563,16 +3544,18 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
   // Dynamic Buffs table
   os << "<table class=\"sc sort stripebody\">\n"
-     << "<thead>\n"
-     << "<tr>\n";
+     << "<thead>\n";
+
+  os << R"(<tr><th></th><th colspan="3">Trigger Count</th><th colspan="2">Interval</th></tr><tr>)";
 
   sorttable_help_header( os, "Dynamic Buffs", "help-dynamic-buffs", SORT_FLAG_ASC | SORT_FLAG_ALPHA | SORT_FLAG_LEFT );
   sorttable_header( os, "Start" );
   sorttable_header( os, "Refresh" );
-  sorttable_header( os, "Interval", SORT_FLAG_ASC );
+  sorttable_header( os, "Total" );
+  sorttable_header( os, "Start", SORT_FLAG_ASC );
   sorttable_header( os, "Trigger", SORT_FLAG_ASC );
-  sorttable_header( os, "Avg Dur" );
-  sorttable_header( os, "Up-Time" );
+  sorttable_header( os, "Duration" );
+  sorttable_header( os, "Uptime" );
   sorttable_help_header( os, "Benefit", "help-buff-benefit" );
   sorttable_header( os, "Overflow" );
   sorttable_header( os, "Expiry" );
@@ -3913,7 +3896,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       {
         int curr_tier = set_bonus_type_e::SET_BONUS_NONE;
 
-        os << "<tr class=\"left\"><th>Set Bonus</th><td><ul class=\"float\">\n";
+        os << "<tr class=\"left nowrap\"><th>Set Bonus</th><td><ul class=\"float\">\n";
 
         for ( auto bonus : bonuses )
         {
@@ -4009,7 +3992,7 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
 }
 
 void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned mask, const stats_t& s,
-                           const player_t* actor, int level = 0 )
+                           const player_t* actor, uint8_t merge_flags = 0, int level = 0 )
 {
   if (level > 2 )
     return;
@@ -4020,11 +4003,11 @@ void output_player_action( report::sc_html_stream& os, unsigned cols, unsigned m
   if ( level == 0 )
     os << "<tbody>\n";
 
-  print_html_action_info( os, mask, s, cols, actor, level );
+  print_html_action_info( os, mask, s, cols, actor, merge_flags, level );
 
   for ( auto child_stats : s.children )
   {
-    output_player_action( os, cols, mask, *child_stats, actor, level + 1 );
+    output_player_action( os, cols, mask, *child_stats, actor, merge_flags, level + 1 );
   }
   if ( level == 0 )
     os << "</tbody>\n";
@@ -4035,8 +4018,25 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   if ( actor.collected_data.dmg.max() == 0 && !actor.sim->debug )
     return;
 
+  uint8_t merge_flags = 0;
+  if ( !actor.sim->report_merged_stats.empty() )
+  {
+    auto splits = util::string_split<std::string_view>( actor.sim->report_merged_stats, "," );
+    for ( auto str : splits )
+    {
+      if ( str == "dps" )
+        merge_flags |= MERGE_DPS;
+      else if ( str == "dpspct" )
+        merge_flags |= MERGE_DPSPCT;
+      else if ( str == "count" )
+        merge_flags |= MERGE_COUNT;
+      else if ( str == "critpct" )
+        merge_flags |= MERGE_CRITPCT;
+    }
+  }
+
   // Number of static columns in table
-  const int static_columns = 5;
+  static constexpr int static_columns = 6;
   // Number of dynamically changing columns
   int n_optional_columns = 6;
 
@@ -4054,6 +4054,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   sorttable_help_header( os, "DPS%", "help-dps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
+  sorttable_help_header( os, "Total Time", "help-total-time" );
   sorttable_help_header( os, "DPE", "help-dpe" );
   sorttable_help_header( os, "DPET", "help-dpet" );
   // Optional columns begin here
@@ -4105,7 +4106,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
   {
     if ( stat->compound_amount > 0 )
     {
-      output_player_action( os, n_optional_columns, MASK_DMG, *stat, &actor );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, &actor, merge_flags );
     }
   }
 
@@ -4144,7 +4145,7 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
             static_columns + n_optional_columns );
         os << "</tbody>\n";
       }
-      output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet );
+      output_player_action( os, n_optional_columns, MASK_DMG, *stat, pet, merge_flags );
     }
   }
   os << "</table>\n";
@@ -4856,6 +4857,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_scale_factors( os, p, p.report_information );
 
   print_html_player_charts( os, p, p.report_information );
+
+  print_html_player_plots( os, p, p.report_information );
 
   print_html_player_abilities( os, p );
 

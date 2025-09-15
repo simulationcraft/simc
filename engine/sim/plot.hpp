@@ -10,6 +10,7 @@
 #include "sc_enums.hpp"
 
 #include <string>
+#include <unordered_map>
 
 struct sim_t;
 
@@ -17,7 +18,7 @@ struct plot_t
 {
 public:
   sim_t* sim;
-  std::string dps_plot_stat_str;
+  std::unordered_map<stat_e, double> dps_plot_stats;
   double dps_plot_step;
   int dps_plot_points;
   int dps_plot_iterations;
@@ -26,10 +27,11 @@ public:
   stat_e current_plot_stat;
   int num_plot_stats, remaining_plot_stats, remaining_plot_points;
   bool dps_plot_positive, dps_plot_negative;
+  bool dps_plot_display_delta;
 
   plot_t( sim_t* s );
+  void initialize();
   void analyze();
-  bool is_plot_stat( stat_e ) const;
   double progress( std::string& phase, std::string* detailed = nullptr );
 
 private:

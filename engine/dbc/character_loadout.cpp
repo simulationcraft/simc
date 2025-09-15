@@ -38,7 +38,7 @@ util::span<const character_loadout_data_t> character_loadout_data_t::data( unsig
 int character_loadout_data_t::default_item_level( bool ptr )
 {
 #if defined(SC_USE_PTR) && (SC_USE_PTR != 0)
-  return ptr ? ptr_MYTHIC_TARGET_ITEM_LEVEL : MYTHIC_TARGET_ITEM_LEVEL;
+  return ptr ? PTR_MYTHIC_TARGET_ITEM_LEVEL : MYTHIC_TARGET_ITEM_LEVEL;
 #else
   return MYTHIC_TARGET_ITEM_LEVEL;
 #endif

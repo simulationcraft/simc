@@ -279,6 +279,51 @@ enum player_e
   PLAYER_MAX
 };
 
+enum hero_tree_e
+{
+  HERO_NONE                      = 0,
+  HERO_VOIDWEAVER                = 18,
+  HERO_ARCHON                    = 19,
+  HERO_ORACLE                    = 20,
+  HERO_DRUID_OF_THE_CLAW         = 21,
+  HERO_WILDSTALKER               = 22,
+  HERO_KEEPER_OF_THE_GROVE       = 23,
+  HERO_ELUNES_CHOSEN             = 24,
+  HERO_SANLAYN                   = 31,
+  HERO_RIDER_OF_THE_APOCALYPSE   = 32,
+  HERO_DEATHBRINGER              = 33,
+  HERO_FELSCARRED                = 34,
+  HERO_ALDRACHI_REAVER           = 35,
+  HERO_SCALECOMMANDER            = 36,
+  HERO_FLAMESHAPER               = 37,
+  HERO_CHRONOWARDEN              = 38,
+  HERO_SUNFURY                   = 39,
+  HERO_SPELLSLINGER              = 40,
+  HERO_FROSTFIRE                 = 41,
+  HERO_SENTINEL                  = 42,
+  HERO_PACK_LEADER               = 43,
+  HERO_DARK_RANGER               = 44,
+  HERO_TEMPLAR                   = 48,
+  HERO_LIGHTSMITH                = 49,
+  HERO_HERALD_OF_THE_SUN         = 50,
+  HERO_TRICKSTER                 = 51,
+  HERO_FATEBOUND                 = 52,
+  HERO_DEATHSTALKER              = 53,
+  HERO_TOTEMIC                   = 54,
+  HERO_STORMBRINGER              = 55,
+  HERO_FARSEER                   = 56,
+  HERO_SOUL_HARVESTER            = 57,
+  HERO_HELLCALLER                = 58,
+  HERO_DIABOLIST                 = 59,
+  HERO_SLAYER                    = 60,
+  HERO_MOUNTAIN_THANE            = 61,
+  HERO_COLOSSUS                  = 62,
+  HERO_CONDUIT_OF_THE_CELESTIALS = 64,
+  HERO_SHADOPAN                  = 65,
+  HERO_MASTER_OF_HARMONY         = 66,
+  HERO_MAX
+};
+
 enum pet_e
 {
   PET_NONE = 0,
@@ -599,54 +644,6 @@ enum action_e
   ACTION_MAX
 };
 
-enum action_var_e
-{
-  /// Invalid operation
-  OPERATION_NONE = -1,
-
-  /// Set variable to value
-  OPERATION_SET,
-
-  /// (debug) Print variable data to standard output
-  OPERATION_PRINT,
-
-  /// Reset variable to default value
-  OPERATION_RESET,
-
-  /// Add value to variable
-  OPERATION_ADD,
-
-  // Subtract value from variable
-  OPERATION_SUB,
-
-  /// Multiply variable by value
-  OPERATION_MUL,
-
-  /// Divide variable by value
-  OPERATION_DIV,
-
-  /// Raise variable to power of value
-  OPERATION_POW,
-
-  /// Take variable remainder of value
-  OPERATION_MOD,
-
-  /// Assign minimum of variable, value to variable
-  OPERATION_MIN,
-
-  /// Assign maximum of variable, value to variable
-  OPERATION_MAX,
-
-  /// Floor variable
-  OPERATION_FLOOR,
-
-  /// Raise variable to next integer value
-  OPERATION_CEIL,
-
-  ///Set variable to value if condition met
-  OPERATION_SETIF
-};
-
 enum school_e
 {
   SCHOOL_NONE = 0,
@@ -856,6 +853,7 @@ enum set_bonus_type_e
   TWW_WDawn,
   TWW2,
   TWW3,
+  TWW_SOTV,
   SET_BONUS_MAX,
 };
 
@@ -1475,4 +1473,12 @@ enum trait_definition_op : int
   TRAIT_OP_NONE = -1,
   TRAIT_OP_SET,
   TRAIT_OP_MUL
+};
+
+// sim_t::error() severity level
+enum error_level_e : unsigned short
+{
+  TRIVIAL,
+  MODERATE,
+  SEVERE
 };

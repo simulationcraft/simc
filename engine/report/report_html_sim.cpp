@@ -20,194 +20,6 @@
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
-
-// Experimental Raw Ability Output for Blizzard to do comparisons
-namespace raw_ability_summary
-{
-template <class ResultRange>
-double aggregate_damage( const ResultRange& results )
-{
-  return std::accumulate(begin(results), end(results), 0.0, [](auto l, auto r) {
-    return l + r.fight_actual_amount.mean();
-  });
-}
-
-/* Find the first action id associated with a given stats object
- */
-int find_id( const stats_t& s )
-{
-  int id = 0;
-
-  for ( const auto& a : s.action_list )
-  {
-    if ( a->id != 0 )
-    {
-      id = a->id;
-      break;
-    }
-  }
-  return id;
-}
-
-void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s, const player_t& p, int j, const sim_t& sim )
-{
-  if ( s.num_executes.mean() == 0 && s.compound_amount == 0 && !sim.debug )
-    return;
-
-  if ( s.player->collected_data.fight_length.mean() == 0 )
-    return;
-
-  int id = find_id( s );
-
-  char format[] =
-      "<td class=\"left  small\">%s</td>\n"
-      "<td class=\"left  small\">%s</td>\n"
-      "<td class=\"left  small\">%s%s</td>\n"
-      "<td class=\"right small\">%d</td>\n"
-      "<td class=\"right small\">%.0f</td>\n"
-      "<td class=\"right small\">%.0f</td>\n"
-      "<td class=\"right small\">%.2f</td>\n"
-      "<td class=\"right small\">%.0f</td>\n"
-      "<td class=\"right small\">%.0f</td>\n"
-      "<td class=\"right small\">%.1f</td>\n"
-      "<td class=\"right small\">%.1f</td>\n"
-      "<td class=\"right small\">%.1f%%</td>\n"
-      "<td class=\"right small\">%.1f%%</td>\n"
-      "<td class=\"right small\">%.1f%%</td>\n"
-      "<td class=\"right small\">%.1f%%</td>\n"
-      "<td class=\"right small\">%.2fsec</td>\n"
-      "<td class=\"right small\">%.0f</td>\n"
-      "<td class=\"right small\">%.2fsec</td>\n"
-      "</tr>\n";
-
-  double direct_total = aggregate_damage( s.direct_results );
-  double tick_total   = aggregate_damage( s.tick_results );
-  if ( direct_total > 0.0 || tick_total <= 0.0 )
-  {
-    os << "<tr";
-    if ( j & 1 )
-      os << " class=\"odd\"";
-    os << ">\n";
-
-    os.printf(
-      format,
-      util::encode_html( p.name() ).c_str(),
-      util::encode_html( s.player->name() ).c_str(),
-      util::encode_html( s.name_str ).c_str(),
-      "",
-      id,
-      direct_total,
-      direct_total / s.player->collected_data.fight_length.mean(),
-      s.num_direct_results.mean() / ( s.player->collected_data.fight_length.mean() / 60.0 ),
-      s.direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
-      s.direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
-      s.num_executes.mean(),
-      s.num_direct_results.mean(),
-      s.direct_results[ FULLTYPE_CRIT ].pct,
-      s.direct_results[ FULLTYPE_MISS ].pct + s.direct_results[ FULLTYPE_DODGE ].pct
-        + s.direct_results[ FULLTYPE_PARRY ].pct,
-      s.direct_results[ FULLTYPE_GLANCE ].pct,
-      s.direct_results[ FULLTYPE_HIT_BLOCK ].pct + s.direct_results[ FULLTYPE_HIT_CRITBLOCK ].pct
-        + s.direct_results[ FULLTYPE_GLANCE_BLOCK ].pct + s.direct_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct
-        + s.direct_results[ FULLTYPE_CRIT_BLOCK ].pct + s.direct_results[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-      s.total_intervals.mean(),
-      s.total_amount.mean(),
-      s.player->collected_data.fight_length.mean() );
-  }
-
-  if ( tick_total > 0.0 )
-  {
-    os << "<tr";
-    if ( j & 1 )
-      os << " class=\"odd\"";
-    os << ">\n";
-
-    os.printf(
-      format,
-      util::encode_html( p.name() ).c_str(),
-      util::encode_html( s.player->name() ).c_str(),
-      util::encode_html( s.name_str ).c_str(),
-      " ticks",
-      -id,
-      tick_total,
-      tick_total / sim.max_time.total_seconds(),
-      s.num_ticks.mean() / sim.max_time.total_minutes(),
-      s.tick_results[ RESULT_HIT ].actual_amount.mean(),
-      s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
-      s.num_executes.mean(),
-      s.num_ticks.mean(),
-      s.tick_results[ RESULT_CRIT ].pct,
-      s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct + s.tick_results[ RESULT_PARRY ].pct,
-      s.tick_results[ RESULT_GLANCE ].pct,
-      0.0,
-      s.total_intervals.mean(),
-      s.total_amount.mean(),
-      s.player->collected_data.fight_length.mean() );
-  }
-
-  for ( auto& elem : s.children )
-  {
-    print_raw_action_damage( os, *elem, p, j, sim );
-  }
-}
-
-void print( report::sc_html_stream& os, const sim_t& sim )
-{
-  os << "<div id=\"raw-abilities\" class=\"section\">\n\n"
-     << "<h2 class=\"toggle\">Raw Ability Summary</h2>\n"
-     << "<div class=\"toggle-content hide\">\n";
-
-  // Abilities Section
-  os << "<table class=\"sc\">\n"
-     << "<tr>\n"
-     << "<th class=\"left small\">Character</th>\n"
-     << "<th class=\"left small\">Unit</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-ability\">Ability</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-id\">Id</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-total\">Total</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-dps\">DPS</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-ipm\">Imp/Min</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-hit\">Hit</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-crit\">Crit</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-execute\">Execute</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-count\">Count</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-crit-pct\">Crit%</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-miss-pct\">Avoid%</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-glance-pct\">G%</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-block-pct\">B%</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-interval\">Interval</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-combined\">Combined</th>\n"
-     << "<th class=\"small help\" data-help=\"#help-duration\">Duration</th>\n"
-     << "</tr>\n";
-
-  int count = 0;
-  for ( const auto& p : sim.players_by_name )
-  {
-    for ( const auto& stat : p->stats_list )
-    {
-      if ( stat->parent == nullptr )
-        print_raw_action_damage( os, *stat, *p, count++, sim );
-    }
-
-    for ( const auto& pet : p->pet_list )
-    {
-      for ( const auto& stat : pet->stats_list )
-      {
-        if ( stat->parent == nullptr )
-          print_raw_action_damage( os, *stat, *p, count++, sim );
-      }
-    }
-  }
-
-  // closure
-  os << "</table>\n"
-     << "<div class=\"clear\"></div>\n"
-     << "</div>\n"
-     << "</div>\n\n";
-}
-
-}  // raw_ability_summary
-
 /* Prints a array of strings line by line. Necessary because we can't have big
  * single text strings,
  * because VS limits the size of static objects.
@@ -348,11 +160,6 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
         ci++;
         os << "<li><a href=\"#sim-info\">Simulation Information</a></li>\n";
         ci++;
-        if ( sim.report_raw_abilities )
-        {
-          os << "<li><a href=\"#raw-abilities\">Raw Ability Summary</a></li>\n";
-          ci++;
-        }
       }
       if ( sim.report_targets && ab > 0 )
       {
@@ -827,7 +634,7 @@ struct help_box_t
  * with '-',
  * everything lowerspace and '%' replaced by '-pct'
  */
-const help_box_t help_boxes[] = {
+static constexpr help_box_t help_boxes[] = {
   { "APM", "Average number of actions executed per minute." },
   { "APS", "Average absorption per active player duration." },
   { "Constant Buffs", "Buffs received prior to combat and present the entire fight." },
@@ -876,6 +683,7 @@ const help_box_t help_boxes[] = {
   { "Stats Raid Buffed",
     "Amount after all static buffs have been accounted for. Dynamic buffs (i.e. trinkets, potions) not included." },
   { "Stats Unbuffed", "Amount after class modifiers and effects, but before buff modifiers." },
+  { "Total Time", "Time spent on executing the ability. Includes cast times, gcd times, and channel times." },
   { "Ticks", "Average number of periodic ticks per iteration. Spells that do not have a damage-over-time component "
              "will have zero ticks." },
   { "Ticks Crit", "Average crit tick damage." },
@@ -1007,16 +815,13 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
         commit_link.c_str(), git_info::revision());
   }
 
-  std::time_t rawtime = std::time(nullptr);
-  const tm localtime  = fmt::localtime( rawtime );
-
   os << "<ul class=\"params\">\n";
   if constexpr ( SC_NO_NETWORKING_ON )
   {
     os.format( "<li><b>No Networking</b></li>\n" );
   }
-  os.format( "<li><b>Timestamp:</b> {:%Y-%m-%d %H:%M:%S%z}</li>\n", localtime);
-  os.printf( "<li><b>Iterations:</b> %d</li>\n", sim.iterations );
+  os.format( "<li><b>Timestamp:</b> {}</li>\n", util::sc_time_str() );
+  os.format( "<li><b>Iterations:</b> {}</li>\n", sim.iterations );
 
   if ( sim.vary_combat_length > 0.0 )
   {
@@ -1041,10 +846,19 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
+    std::map<error_level_e, std::vector<std::string_view>> error_map;
+    for ( const auto& error : sim.error_list )
+      error_map[ error.first ].emplace_back( error.second );
+
     os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
 
-    for ( const auto& error : sim.error_list )
-      os << util::encode_html( error ) << "\n";
+    for ( const auto& error_list : error_map )
+    {
+      os.format( "{}:\n", util::error_level_string( error_list.first ) );
+
+      for ( const auto& error : error_list.second )
+        os.format( "  {}\n", util::encode_html( error ) );
+    }
 
     os << "</pre>\n\n";
   }
@@ -1110,7 +924,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
          << "<table class=\"sc even\">\n"
          << "<thead>\n"
          << "<tr>\n"
-         << "<th>Tag</th>\n"
+         << "<th>Tag / ID</th>\n"
          << "<th class=\"left\">Spell / Effect</th>\n"
          << "<th class=\"left\">Field</th>\n"
          << "<th class=\"left\">Hotfixed Value</th>\n"
@@ -1130,9 +944,8 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     }
     if ( const hotfix::effect_hotfix_entry_t* e = dynamic_cast<const hotfix::effect_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr>\n"
-         << "<td></td>\n";
       const spelleffect_data_t* effect = sim.dbc->effect( e->id_ );
+      os.format( "<tr><td>{}</td>", effect->id() );
 
       std::string name = report_decorators::decorated_spell_name( sim, *effect->spell() );
       name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
@@ -1140,9 +953,9 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
     }
     else if ( const hotfix::spell_hotfix_entry_t* e = dynamic_cast<const hotfix::spell_hotfix_entry_t*>( entry ) )
     {
-      os << "<tr>\n"
-         << "<td></td>\n";
       const spell_data_t* spell = sim.dbc->spell( e->id_ );
+      os.format( "<tr><td>{}</td>", spell->id() );
+
       std::string name          = report_decorators::decorated_spell_name( sim, *spell );
       os << "<td class=\"left\">" << name << "</td>\n";
     }
@@ -1432,9 +1245,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   }
 
   print_html_sim_summary( os, sim );
-
-  if ( sim.report_raw_abilities )
-    raw_ability_summary::print( os, sim );
 
   // Report Targets
   if ( sim.report_targets )

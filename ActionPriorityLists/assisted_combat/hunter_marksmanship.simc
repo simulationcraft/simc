@@ -14,11 +14,13 @@ actions.assisted_combat+=/multishot,if=buff.trick_shots.down&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.trick_shots.up&buff.trick_shots.remains<=2&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.precise_shots.up&active_enemies>3
 actions.assisted_combat+=/kill_shot,if=talent.black_arrow
+actions.assisted_combat+=/black_arrow,if=talent.black_arrow
 actions.assisted_combat+=/rapid_fire
 actions.assisted_combat+=/explosive_shot
 actions.assisted_combat+=/aimed_shot,if=charges>=2,cooldown_allow_casting_success=1
 actions.assisted_combat+=/aimed_shot
 actions.assisted_combat+=/kill_shot
+actions.assisted_combat+=/black_arrow
 actions.assisted_combat+=/multishot,if=active_enemies>3&focus>=90
 actions.assisted_combat+=/arcane_shot,if=buff.precise_shots.up
 actions.assisted_combat+=/arcane_shot,if=!talent.precise_shots

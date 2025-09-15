@@ -115,21 +115,28 @@ struct parsed_assisted_combat_rule_t
   std::string expr;
   std::string comment;
   bool show_diff;
+  bool allow_duplicates;
 
   parsed_assisted_combat_rule_t( const char* expr )
-    : expr( expr ), comment( {} ), show_diff( false ) {}
+    : expr( expr ), comment( {} ), show_diff( false ), allow_duplicates( true ) {}
 
   parsed_assisted_combat_rule_t( std::string expr )
-    : expr( expr ), comment( {} ), show_diff( false ) {}
+    : expr( expr ), comment( {} ), show_diff( false ), allow_duplicates( true ) {}
 
   parsed_assisted_combat_rule_t( std::string expr, bool show_diff )
-    : expr( expr ), comment( {} ), show_diff( show_diff ) {}
+    : expr( expr ), comment( {} ), show_diff( show_diff ), allow_duplicates( true ) {}
 
   parsed_assisted_combat_rule_t( std::string expr, const char* comment )
-    : expr( expr ), comment( comment ), show_diff( true ) {}
+    : expr( expr ), comment( comment ), show_diff( true ), allow_duplicates( true ) {}
 
   parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff )
-    : expr( expr ), comment( comment ), show_diff( show_diff ) {}
+    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( true ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, const char* comment, bool show_diff, bool allow_duplicates )
+    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( allow_duplicates ) {}
+
+  parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff, bool allow_duplicates )
+    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( allow_duplicates ) {}
 
   operator std::string() { return expr; }
 };
@@ -224,10 +231,10 @@ struct player_t : public actor_t
   // Player selected (trait entry id, rank) tuples
   std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
 
-  // Player activated sub trees
+  // Player activated dbc sub trees ids
   std::set<unsigned> player_sub_trees;
 
-  // Player added sub tree traits that don't require activated sub tree
+  // Player added dbc sub tree traits ids that don't require activated sub tree ids
   std::vector<unsigned> player_sub_traits;
 
   // Profs
@@ -344,6 +351,7 @@ struct player_t : public actor_t
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
   std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
+  std::vector<std::function<void( player_t* )>> callbacks_on_init_finished;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -380,6 +388,8 @@ struct player_t : public actor_t
   {
     stat_e stat;
     double amount;
+    timespan_t start;
+    timespan_t duration;
     bool is_percentage;
   };
   std::unordered_map<std::string, custom_stat_buff_t> custom_stat_buffs;
@@ -407,7 +417,7 @@ struct player_t : public actor_t
   auto_dispose<std::vector<target_specific_cooldown_t*>> target_specific_cooldown_list;
   auto_dispose<std::vector<proc_rng_t*>> proc_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
-  std::array<std::vector<plot_data_t>, STAT_MAX> dps_plot_data;
+  std::unordered_map<stat_e, std::vector<plot_data_t>> dps_plot_data, dps_plot_delta_data;
   std::vector<std::vector<plot_data_t>> reforge_plot_data;
   auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
@@ -432,8 +442,9 @@ struct player_t : public actor_t
 
   player_processed_report_information_t report_information;
 
-  void sequence_add( const action_t* a, const player_t* target, timespan_t ts );
-  void sequence_add_wait( timespan_t amount, timespan_t ts );
+  void sequence_add_wait( timespan_t wait );
+  void sequence_add( const action_t* a, const player_t* target,
+                     std::function<void( std::string&, std::string& )> fn = nullptr );
 
   // Gear
   std::string meta_gem_str, potion_str, flask_str, food_str, rune_str;
@@ -442,6 +453,7 @@ struct player_t : public actor_t
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   std::unique_ptr<set_bonus_t> sets;
+  std::string set_bonus_str;
   meta_gem_e meta_gem;
   bool matching_gear;
   std::unique_ptr<cooldown_t> item_cooldown;
@@ -912,9 +924,9 @@ struct player_t : public actor_t
     // time to pick up Fury of the Stormrook lightning orb
     timespan_t fury_of_the_stormrook_pickup_delay  = 3_s;
     timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
-    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high becauee pets exist and its
+    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high because pets exist and its
     // currently bugged to trigger on them.
-    double mereldars_toll_ally_trigger_chance             = 0.7;
+    double mereldars_toll_ally_trigger_chance             = 0.6;
     double sureki_zealots_insignia_rppm_multiplier        = 0.9;
     player_option_t<std::string> windsingers_passive_stat = "";
     // Mister Lock-n-Stalk mode of operation
@@ -922,6 +934,20 @@ struct player_t : public actor_t
     player_option_t<std::string> jastor_diamond_ally_stat = "none";
     double suspicious_energy_drink_bonus_chance           = 0;
     timespan_t additional_gcd_time                        = 0_s;
+    // Alchemical Chaos Flask
+    player_option_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
+    player_option_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
+    // Whether or not to use lowest or highest (ethereal) secondary stat
+    bool incorporeal_essence_gorger_ethereal = false;
+    // Chance to miss the astral antenna orbs due to movement
+    double astral_antenna_miss_chance = 0.0;
+    // Initial debuff stacks for Scream of a Forgotten Sky
+    int screams_of_a_forgotten_sky_initial_stacks = 0;
+    // Proc Brand of Ceaseless Ire based on outgoing damage to emulate full uptime.
+    // NOTE: This behavior is default for Dungeon Slice & Dungeon Route
+    bool brand_of_ceaseless_ire_force_full_uptime = false;
+    // Activate Attuned to the Aether renown perk (50% weapon enchants, 10% dk runeforge)
+    bool attuned_to_the_aether = false;
   } thewarwithin_opts;
 
 private:
@@ -956,7 +982,6 @@ public:
   { return name_str.c_str(); }
 
   // Normal methods
-  void init_character_properties();
   double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
@@ -989,6 +1014,7 @@ public:
   specialization_e specialization() const
   { return _spec; }
   const char* primary_tree_name() const;
+  bool has_hero_tree( hero_tree_e ) const;
   timespan_t total_reaction_time();
   double avg_item_level() const;
   double get_attribute( attribute_e a ) const;
@@ -1095,11 +1121,10 @@ public:
   shuffled_rng_t* get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data = {} );
   shuffled_rng_t* get_shuffled_rng( std::string_view name, int success_entries = 0, int total_entries = 0 );
   accumulated_rng_t* get_accumulated_rng( std::string_view name, double chance = 0.0,
-                                          std::function<double( double, unsigned )> accumulator_fn = nullptr,
-                                          unsigned initial_count                                   = 0 );
+                                          accumulated_rng_fn accumulator_fn = nullptr, unsigned initial_count = 0 );
   threshold_rng_t* get_threshold_rng( std::string_view name, double increment_max = 0.0,
-                                      std::function<double( double )> accumulator_fn = nullptr,
-                                      bool random_initial_state = true, bool roll_over = false );
+                                      threshold_rng_fn accumulator_fn = nullptr, bool random_initial_state = true,
+                                      bool roll_over = false );
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
@@ -1530,6 +1555,7 @@ public:
   void register_on_kill_callback( std::function<void( player_t* )> fn );
   void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
   void register_movement_callback( std::function<void( bool )> fn );
+  void register_init_finished_callback( std::function<void( player_t* )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

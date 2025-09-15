@@ -57,6 +57,7 @@
 #include "sim/cooldown_waste_data.hpp"
 #include "sim/event.hpp"
 #include "sim/expressions.hpp"
+#include "sim/plot.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
 #include "sim/scale_factor_control.hpp"
@@ -424,9 +425,8 @@ struct execute_pet_action_t : public action_t
 
     if ( !pet_action )
     {
-
-      throw std::invalid_argument(fmt::format("Player {} refers to unknown action {} for pet {}.", player->name(), action_str,
-          pet->name()));
+      throw sc_invalid_apl_argument(
+        fmt::format( "{} refers to unknown action {} for pet {}.", *player, action_str, pet->name() ) );
     }
 
     action_t::init_finished();
@@ -838,35 +838,19 @@ bool parse_source( sim_t* sim, std::string_view, std::string_view value )
 
 bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 {
-  static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
-
   player_t* p = sim->active_player;
 
-  auto set_bonus_split = util::string_split<std::string_view>( value, "=" );
-
-  if ( set_bonus_split.size() != 2 )
+  if ( !p->set_bonus_str.empty() )
   {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
-  }
+    sim->error( error_level_e::MODERATE,
+                "Starting with 12.0, multiples lines of the 'set_bonus=' option must be either A) on a single line, delimited by '/', or B) have extra lines concatenated by using 'set_bonus+=', note the '+='." );
 
-  int opt_val = util::to_int( set_bonus_split[ 1 ] );
-  if ( opt_val != 0 && opt_val != 1 )
+    p->set_bonus_str += fmt::format( "/{}", value );
+  }
+  else
   {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
+    p->set_bonus_str = std::string{ value };
   }
-
-  set_bonus_type_e set_bonus = SET_BONUS_NONE;
-  set_bonus_e bonus          = B_NONE;
-
-  if ( !p->sets->parse_set_bonus_option( set_bonus_split[ 0 ], set_bonus, bonus ) )
-  {
-    sim->error( error_str, p->name(), value, p->sets->generate_set_bonus_options() );
-    return false;
-  }
-
-  p->sets->set_bonus_spec_data[ set_bonus ][ dbc::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
   return true;
 }
@@ -903,27 +887,6 @@ bool parse_initial_resource( sim_t* sim, std::string_view, std::string_view valu
 
   return true;
 }
-
-bool tank_container_type(const player_t* for_actor, int target_statistics_level)
-{
-  if (true) // FIXME: cannot use virtual function calls here! if ( for_actor->primary_role() == ROLE_TANK )
-  {
-    return for_actor->sim->statistics_level < target_statistics_level;
-  }
-
-  return true;
-}
-
-bool generic_container_type(const player_t* for_actor, int target_statistics_level)
-{
-  if (!for_actor->is_enemy() && (!for_actor->is_pet() || for_actor->sim->report_pets_separately))
-  {
-    return for_actor->sim->statistics_level < target_statistics_level;
-  }
-
-  return true;
-}
-
 }  // namespace
 
 /**
@@ -1387,7 +1350,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( error_level_e::SEVERE, "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
@@ -1453,18 +1416,6 @@ void player_t::init()
     world_lag.stddev = world_lag.mean * 0.1;
   if ( brain_lag.stddev < 0_ms )
     brain_lag.stddev = brain_lag.mean * 0.1;
-}
-
-/**
- * Initialize race, specialization, talents, professions
- */
-void player_t::init_character_properties()
-{
-  init_race();
-  init_talents();
-  replace_spells();
-  init_position();
-  init_professions();
 }
 
 /**
@@ -1687,15 +1638,21 @@ void player_t::init_initial_stats()
   initial.stats += passive;
 
   // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
-  // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +
-  // sim_t::enchant).
+  // the items for the actor gives or the overridden value from gear_x_rating player scoped option or dps plot stat
+  // initial value override (player_t::gear + player_t::enchant + sim_t::enchant).
   if ( !is_pet() && !is_enemy() )
   {
     gear_stats_t item_stats = range::accumulate( items, gear_stats_t{}, &item_t::total_stats );
 
     for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
     {
-      if ( gear.get_stat( stat ) < 0 )
+      double scale_override = -1;
+      if ( scale_player && sim->scaling->scale_stat == stat && sim->plot->dps_plot_stats.count( stat ) )
+        scale_override = sim->plot->dps_plot_stats.at( stat );
+
+      if ( scale_override >= 0 )
+        total_gear.add_stat( stat, scale_override );
+      else if ( gear.get_stat( stat ) < 0 )
         total_gear.add_stat( stat, item_stats.get_stat( stat ) );
       else
         total_gear.add_stat( stat, gear.get_stat( stat ) );
@@ -1753,20 +1710,25 @@ void player_t::parse_temporary_enchants()
         if_expr = expr_t::parse( this, expr_str, false );
       }
     }
-    catch ( const std::exception& e )
+    catch ( const std::exception& )
     {
-      sim->error( "Player {} Unable to parse temporary enchant string str '{}': {}",
-        name(), token, e.what() );
-      sim->cancel();
-      return;
+      std::throw_with_nested(
+        sc_invalid_player_argument( fmt::format( "Invalid temporary enchant '{}'.", token ) ) );
     }
 
     auto token_split = util::string_split<util::string_view>( value_str, ":" );
     if ( token_split.size() != 2 )
     {
-      sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",
-        name(), token );
-      continue;
+      if ( sim->strict_parsing )
+      {
+        throw sc_invalid_player_argument(
+          fmt::format( "Invalid temporary enchant '{}', format is 'slot:name'.", token ) );
+      }
+      else
+      {
+        sim->error( "{} invalid temporary enchant '{}', format is 'slot:name', ignoring.", *this, token );
+        continue;
+      }
     }
     auto slot = util::parse_slot_type( token_split[ 0 ] );
     util::string_view enchant_str = token_split[ 1 ];
@@ -1789,9 +1751,18 @@ void player_t::parse_temporary_enchants()
     const auto& temp_enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
     if ( slot == SLOT_INVALID || temp_enchant.enchant_id == 0 )
     {
-      sim->error( "Player {} unknown temporary enchant token '{}' (slot={}, enchant_id={})",
-        name(), token, util::slot_type_string( slot ), temp_enchant.enchant_id );
-      continue;
+      if ( sim->strict_parsing )
+      {
+        throw sc_invalid_player_argument( fmt::format( "Invalid temporary enchant '{}' (slot={}, enchant_id={}).",
+                                                       token, util::slot_type_string( slot ),
+                                                       temp_enchant.enchant_id ) );
+      }
+      else
+      {
+        sim->error( "{} invalid temporary enchant '{}' (slot={}, enchant_id={}), ignoring.", *this, token,
+                    util::slot_type_string( slot ), temp_enchant.enchant_id );
+        continue;
+      }
     }
 
     items[ slot ].parsed.temporary_enchants.emplace_back( temp_enchant.enchant_id, if_expr );
@@ -1884,12 +1855,13 @@ void player_t::init_items()
 
       if ( !item.initialize_data() )
       {
-        throw std::invalid_argument("Cannot initialize data");
+        throw std::invalid_argument( "Cannot initialize data." );
       }
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
+      std::throw_with_nested(
+        sc_invalid_item_string( fmt::format( "Item '{}' Slot '{}'", item.name(), item.slot_name() ) ) );
     }
   }
 
@@ -1929,12 +1901,13 @@ void player_t::init_items()
       item.init();
       if ( !item.is_valid_type() )
       {
-        throw std::invalid_argument("Invalid type");
+        throw std::invalid_argument( "Invalid type." );
       }
     }
-    catch (const std::exception& )
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
+      std::throw_with_nested(
+        sc_invalid_item_string( fmt::format( "Item '{}' Slot '{}'", item.name(), item.slot_name() ) ) );
     }
 
     matching_gear_slots[ item.slot ] = item.is_matching_type();
@@ -1983,7 +1956,7 @@ void player_t::init_azerite()
 
   sim->print_debug( "Initializing Azerite sub-system for {}.", *this );
 
-  azerite -> initialize();
+  azerite->initialize();
 }
 
 void player_t::init_meta_gem()
@@ -1995,10 +1968,9 @@ void player_t::init_meta_gem()
     meta_gem = util::parse_meta_gem_type( meta_gem_str );
     if ( meta_gem == META_GEM_NONE )
     {
-      throw std::invalid_argument(fmt::format( "Invalid meta gem '{}'.", meta_gem_str ));
+      throw sc_invalid_player_argument( fmt::format( "Invalid meta gem '{}'.", meta_gem_str ) );
     }
   }
-
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
@@ -2015,7 +1987,7 @@ void player_t::init_position()
     base.position = util::parse_position_type( position_str );
     if ( base.position == POSITION_NONE )
     {
-      throw std::invalid_argument(fmt::format( "Invalid position '{}'.", position_str ));
+      throw sc_invalid_player_argument( fmt::format( "Invalid position '{}'.", position_str ) );
     }
     else
     {
@@ -2052,9 +2024,9 @@ void player_t::init_race()
   else
   {
     race = util::parse_race_type( race_str );
-    if ( race == RACE_UNKNOWN)
+    if ( race == RACE_UNKNOWN )
     {
-      throw std::invalid_argument(fmt::format("Unknown race '{}'.", race_str ));
+      throw sc_invalid_player_argument( fmt::format( "Unknown race '{}'.", race_str ) );
     }
   }
 }
@@ -2282,8 +2254,8 @@ void player_t::init_professions()
       }
       catch ( const std::exception& )
       {
-        std::throw_with_nested(std::runtime_error(fmt::format("Could not parse profession level '{}' for profession '{}'",
-            subsplit[ 1 ], prof_name)));
+        std::throw_with_nested( sc_invalid_player_argument(
+          fmt::format( "Invalid level '{}' for profession '{}'.", subsplit[ 1 ], prof_name ) ) );
       }
     }
     else
@@ -2295,7 +2267,7 @@ void player_t::init_professions()
     auto prof_type = util::parse_profession_type( prof_name );
     if ( prof_type == PROFESSION_NONE )
     {
-      throw std::invalid_argument(fmt::format("Invalid profession '{}'.", prof_name ));
+      throw sc_invalid_player_argument( fmt::format( "Invalid profession '{}'.", prof_name ) );
     }
 
     profession[ prof_type ] = prof_value;
@@ -2420,9 +2392,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
     auto talent_split = util::string_split<std::string_view>( talent, ":" );
     if ( talent_split.size() != 2 )
     {
-      player->sim->error( "Invalid talent string {}", talent );
-      player->sim->cancel();
-      return;
+      throw std::invalid_argument( fmt::format( "'{}' is invalid, format must be '<talent>:<rank>'.", talent ) );
     }
 
     bool is_spell_id = false;
@@ -2451,8 +2421,8 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
         }
         else if ( objs.size() > 1U )
         {
-          player->sim->error( "Multiple talents for spell id {} found", talent_split[ 0 ].substr( 1 ) );
-          player->sim->cancel();
+          throw std::invalid_argument(
+            fmt::format( "Multiple talents for spell id '{}' found.", talent_split[ 0 ].substr( 1 ) ) );
         }
         else
         {
@@ -2472,8 +2442,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
     if ( trait_obj->id_spell == 0 )
     {
-      player->sim->error( "Unable to find talent {}", talent_split[ 0 ] );
-      player->sim->cancel();
+      throw std::invalid_argument( fmt::format( "Unable to find talent '{}'.", talent_split[ 0 ] ) );
     }
     else
     {
@@ -2482,10 +2451,11 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       } );
 
       auto id_entry = trait_obj->id_trait_node_entry;
-      auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
 
       if ( it != player->player_traits.end() )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
           player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}", trait_obj->name, id_entry,
@@ -2494,23 +2464,25 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
         *it = entry;
       }
-      else
+      else if ( ranks )
       {
+        auto entry = std::make_tuple( tree, id_entry, std::min( ranks, trait_obj->max_ranks ) );
+
         player->player_traits.push_back( entry );
         player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( tree ),
                                   trait_obj->name );
-      }
 
-      if ( tree == talent_tree::HERO )
-      {
-        player->player_sub_traits.push_back( id_entry );
-
-        if( !player->player_sub_trees.count( trait_obj->id_sub_tree ) )
+        if ( tree == talent_tree::HERO )
         {
-          player->player_sub_trees.insert( trait_obj->id_sub_tree );
-          player->sim->print_debug( "{} activating sub tree {} ({})", *player,
-                                    trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
-                                    trait_obj->id_sub_tree );
+          player->player_sub_traits.push_back( id_entry );
+
+          auto _ret = player->player_sub_trees.insert( trait_obj->id_sub_tree );
+          if ( _ret.second )
+          {
+            player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                      trait_data_t::get_hero_tree_name( trait_obj->id_sub_tree, player->is_ptr() ),
+                                      trait_obj->id_sub_tree );
+          }
         }
       }
     }
@@ -2524,7 +2496,13 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
       auto id = trait.id_trait_node_entry;
       auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
       if ( it == player->player_traits.end() )
+      {
         player->player_traits.emplace_back( tree, id, 1 );
+
+        player->sim->print_debug( "{} granted free {} talent {} (node={} entry={})", *player,
+                                  util::talent_tree_string( tree ), trait.name, trait.id_node,
+                                  trait.id_trait_node_entry );
+      }
     }
   }
 }
@@ -2544,6 +2522,9 @@ static bool generate_tree_nodes( player_t* player,
     for ( const auto& trait : trait_data_t::data( class_idx, i, maybe_ptr( player->dbc->ptr ) ) )
       tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
   }
+
+  player->sim->print_debug( "{}: {} tree nodes generated for spec {}.", *player, tree_nodes.size(),
+                            util::specialization_string( spec ) );
 
   return true;
 }
@@ -2580,16 +2561,16 @@ static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, boo
 namespace
 {
 // MakeBase64ConversionTable() from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
-const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static constexpr std::string_view base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 // hardcoded values from Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentImportExport.lua
-constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 2;
-constexpr size_t version_bits = 8;    // serialization version
-constexpr size_t spec_bits    = 16;   // specialization id
-constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
-constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
-constexpr size_t choice_bits  = 2;    // choice index, 0-based
+static constexpr unsigned LOADOUT_SERIALIZATION_VERSION = 2;
+static constexpr size_t version_bits = 8;    // serialization version
+static constexpr size_t spec_bits    = 16;   // specialization id
+static constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
+static constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
+static constexpr size_t choice_bits  = 2;    // choice index, 0-based
 // hardcoded value from Interface/AddOns/Blizzard_SharedXMLBase/ExportUtil.lua
-constexpr size_t byte_size    = 6;
+static constexpr size_t byte_size    = 6;
 }
 
 static std::string generate_traits_hash( player_t* player )
@@ -2721,19 +2702,19 @@ static std::string generate_traits_hash( player_t* player )
 
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
-  auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
-    player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
+  auto do_error = []( std::string_view msg ) {
+    throw std::invalid_argument( fmt::format( "{}", msg ) );
   };
 
-  if ( talents_str.find_first_not_of( base64_char ) != std::string::npos )
+  if ( auto _z = talents_str.find_first_not_of( base64_char ); _z != std::string::npos )
   {
-    do_error();
+    do_error( fmt::format( "Invalid character '{}' found.", talents_str.at( _z ) ) );
     return;
   }
 
   if ( version_bits + spec_bits + tree_bits > talents_str.size() * byte_size )
   {
-    do_error( "Not enough characters" );
+    do_error( "Not enough characters." );
     return;
   }
 
@@ -2762,13 +2743,13 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
   if ( version_id != LOADOUT_SERIALIZATION_VERSION )
   {
-    do_error( "Invalid serialization version" );
+    do_error( "Invalid serialization version." );
     return;
   }
 
   if ( spec_id != player->specialization() )
   {
-    do_error( "Wrong specialization" );
+    do_error( "Wrong specialization." );
     return;
   }
 
@@ -2777,9 +2758,9 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   player->player_sub_trees.clear();
   player->player_sub_traits.clear();
 
-  // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
-  // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
-  // in later checks
+  // As per Interface/AddOns/Blizzard_PlayerSpells/ClassTalents/Blizzard_ClassTalentImportExport.lua: treeHash is a
+  // 128bit hash, passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated
+  // strings can error in later checks
   get_bit( tree_bits );
 
   std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
@@ -2803,15 +2784,26 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
       auto _tree = static_cast<talent_tree>( trait->tree_index );
+      bool throwaway = false;  // read bits but don't add to player_traits
 
-      // hero talents don't seem to require a matching id_spec_set
+      // hero talents and selection talents don't seem to require a matching id_spec_set
       // TODO: utilize logic in trait_data_t::is_granted() to check against id_spec_set of the subtree selection trait
       if ( _tree != talent_tree::HERO &&
            !std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) &&
            !range::contains( trait->id_spec, player->specialization() ) )
       {
-        do_error( fmt::format( "selected node {} is not available to player's spec.", id ) );
-        return;
+        if ( _tree == talent_tree::SELECTION )
+        {
+          throwaway = true;
+          do_error( fmt::format( "Hero tree selection node {} entry {} is not for the player's spec, ignoring.", id,
+                                 trait->id_trait_node_entry ) );
+        }
+        else
+        {
+          do_error( fmt::format( "Selected node {} entry {} is not available to player's spec.", id,
+                                 trait->id_trait_node_entry ) );
+          return;
+        }
       }
 
       if ( !get_bit( 1 ) )  // purchased
@@ -2824,7 +2816,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         {
           if ( node.size() > 1 )
           {
-            do_error( fmt::format( "non-choice node {} has multiple entries.", id ) );
+            do_error( fmt::format( "Non-choice node {} has multiple entries.", id ) );
             return;
           }
 
@@ -2838,7 +2830,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
           if ( rank == trait->max_ranks )
           {
-            do_error( fmt::format( "partial rank for node {} but all {} ranks are allocated.", id, rank ) );
+            do_error( fmt::format( "Partial rank for node {} but all {} ranks are allocated.", id, rank ) );
             return;
           }
         }
@@ -2847,14 +2839,14 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         {
           if ( node[ 0 ].first->node_type != 2 && node[ 0 ].first->node_type != 3 )
           {
-            do_error( fmt::format( "node {} is not a choice node but has index selection.", id ) );
+            do_error( fmt::format( "Node {} is not a choice node but has index selection.", id ) );
             return;
           }
 
           size_t index = get_bit( choice_bits );
           if ( index >= node.size() )
           {
-            do_error( fmt::format( "index {} for choice node {} out of bounds.", index, id ) );
+            do_error( fmt::format( "Index {} for choice node {} out of bounds.", index, id ) );
             return;
           }
 
@@ -2862,19 +2854,23 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         }
       }
 
+      if ( throwaway )
+        continue;
+
       player->player_traits.emplace_back( _tree, trait->id_trait_node_entry, as<unsigned>( rank ) );
 
       if ( _tree == talent_tree::SELECTION )
       {
         player->player_sub_trees.insert( trait->id_sub_tree );
 
-        player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+        player->sim->print_debug( "{} activating sub tree {} (id={})", *player,
                                   trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
                                   trait->id_sub_tree );
       }
       else
       {
-        player->sim->print_debug( "{} adding {} talent {}", *player, util::talent_tree_string( _tree ), trait->name );
+        player->sim->print_debug( "{} adding {} talent {} (node={} entry={})", *player, util::talent_tree_string( _tree ),
+                                  trait->name, trait->id_node, trait->id_trait_node_entry );
       }
     }
   }
@@ -2949,6 +2945,35 @@ static void enable_default_talents( player_t* player )
   }
 }
 
+static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
+{
+  player->sim->print_debug( "Loading all {} hero tree talents for {}.",
+                            trait_data_t::get_hero_tree_name( hero_tree_id ), *player );
+
+  auto traits = trait_data_t::data( util::class_id( player->type ), talent_tree::SELECTION, player->is_ptr() );
+  for ( const auto& trait : traits )
+  {
+    if ( trait.id_sub_tree == hero_tree_id && range::contains( trait.id_spec, player->specialization() ) )
+    {
+      player->player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, trait.max_ranks );
+      player->player_sub_trees.insert( hero_tree_id );
+      player->sim->print_debug( "{} activating sub tree {} ({})", *player,
+                                trait_data_t::get_hero_tree_name( hero_tree_id, player->is_ptr() ), hero_tree_id );
+    }
+  }
+
+  traits = trait_data_t::data( util::class_id( player->type ), talent_tree::HERO, player->is_ptr() );
+  for ( const auto& trait : traits )
+  {
+    // assume 'off-screen' nodes are invalid
+    if ( trait.row <= 0 || trait.col <= 0 || trait.max_ranks <= 0 )
+      continue;
+
+    player->player_traits.emplace_back( talent_tree::HERO, trait.id_trait_node_entry, trait.max_ranks );
+    player->sim->print_debug( "{} adding hero talent {}", *player, trait.name );
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -2969,14 +2994,79 @@ void player_t::init_talents()
   }
   else if ( !talents_str.empty() )
   {
-    parse_traits_hash( talents_str, this );
+    try
+    {
+      parse_traits_hash( talents_str, this );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_talent_string( fmt::format( "Hash '{}'", talents_str ) ) );
+    }
   }
 
   auto parsed_sub_trees = player_sub_trees;
 
-  parse_traits( talent_tree::CLASS, class_talents_str, this );
-  parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
-  parse_traits( talent_tree::HERO, hero_talents_str, this );
+  // parse_traits MUST BE CALLED for all talent trees to ensure that freely granted traits are properly processed, as
+  // the trait hash may not always encode this information
+  try
+  {
+    parse_traits( talent_tree::CLASS, class_talents_str, this );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_invalid_talent_string( "Invalid 'class_talents'" ) );
+  }
+
+  try
+  {
+    parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_invalid_talent_string( "Invalid 'spec_talents'" ) );
+  }
+
+  if ( !hero_talents_str.empty() )
+  {
+    try
+    {
+      // enable all hero tree, tokenized name
+      if ( auto hero_tree_id = trait_data_t::get_hero_tree_id( hero_talents_str, is_ptr() );
+           trait_data_t::is_hero_tree_valid( static_cast<hero_tree_e>( hero_tree_id ), specialization(), is_ptr() ) )
+      {
+        enable_hero_tree( this, hero_tree_id );
+      }
+      // enable all hero tree, index (1 or 2)
+      else if ( util::is_number( hero_talents_str ) )
+      {
+        auto _id = util::to_unsigned( hero_talents_str );
+        auto hero_trees = trait_data_t::get_valid_hero_tree_ids( specialization(), is_ptr() );
+
+        if ( _id > hero_trees.size() )
+        {
+          throw std::invalid_argument(
+            fmt::format( "Invalid hero tree index '{}', {} has {} hero trees.", _id, *this, hero_trees.size() ) );
+        }
+
+        auto hero_id = trait_data_t::get_valid_hero_tree_ids( specialization(), is_ptr() ).at( _id - 1 );
+        enable_hero_tree( this, hero_id );
+      }
+      // standard talent:rank/ format
+      else
+      {
+        parse_traits( talent_tree::HERO, hero_talents_str, this );
+      }
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_talent_string( "Invalid 'hero_talents'" ) );
+    }
+  }
+  else
+  {
+    // call with empty string to add freely granted traits
+    parse_traits( talent_tree::HERO, hero_talents_str, this );
+  }
 
   // Add selection traits for any manually added hero traits from new trees
   if ( player_sub_trees.size() > parsed_sub_trees.size() )
@@ -3405,8 +3495,15 @@ void player_t::init_blizzard_action_list()
   cooldowns->add_action( "fireblood" );
   cooldowns->add_action( "ancestral_call" );
 
-  for ( const auto& step : assisted_combat_step_data_t::data( specialization(), is_ptr() ) )
-    parse_assisted_combat_step( step, assisted_combat );
+  try
+  {
+    for ( const auto& step : assisted_combat_step_data_t::data( specialization(), is_ptr() ) )
+      parse_assisted_combat_step( step, assisted_combat );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( sc_initialization_error( "Assisted combat parse error" ) );
+  }
 }
 
 std::vector<std::string> player_t::action_names_from_spell_id( unsigned int spell_id ) const
@@ -3414,7 +3511,7 @@ std::vector<std::string> player_t::action_names_from_spell_id( unsigned int spel
   std::vector<std::string> names;
   const spell_data_t* spell = find_spell( spell_id );
 
-  if ( spell )
+  if ( spell && !spell->flags( SX_PASSIVE ) )
     names.push_back( util::tokenize_fn( spell->name_cstr() ) );
 
   return names;
@@ -3469,6 +3566,8 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   std::string comment = "";
   bool show_diff = false;
   bool cooldown_allow_casting_success = false;
+  bool allow_duplicates = true;
+
   for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
   {
     if ( rule.condition_type == COOLDOWN_ALLOW_CASTING_SUCCESS )
@@ -3481,6 +3580,9 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
       expr += expr.empty() ? derived_combat_rule.expr : "&" + derived_combat_rule.expr;
     if ( !derived_combat_rule.comment.empty() )
       comment += comment.empty() ? derived_combat_rule.comment : ", " + derived_combat_rule.comment;
+    if ( !derived_combat_rule.allow_duplicates )
+      allow_duplicates = false;
+
     if ( !base_combat_rule.expr.empty() )
       base_expr += base_expr.empty() ? base_combat_rule.expr : "&" + base_combat_rule.expr;
 
@@ -3503,6 +3605,10 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
     if ( cooldown_allow_casting_success )
       action_str += ",cooldown_allow_casting_success=1";
 
+    // Optional duplicate filtering for messy action lists or duplicated overriden criteria
+    if ( !allow_duplicates && range::contains( assisted_combat->action_list, action_str, []( const auto& entry ) { return entry.action_; } ) )
+      continue;
+
     assisted_combat->add_action( action_str, comment );
   }
 }
@@ -3510,14 +3616,17 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                                     const assisted_combat_step_data_t& step ) const
 {
-  auto tokenize_spell = [ & ] ( unsigned int spell_id )
-  {
+  auto tokenize_spell = [ & ]( unsigned int spell_id ) {
     const spell_data_t* spell = find_spell( spell_id );
     if ( !spell )
-      throw std::runtime_error( fmt::format( "Unable to find spell '{}' for assisted combat condition '{}'.", spell_id, rule.id ) );
+    {
+      throw std::runtime_error( fmt::format( "Unable to find spell '{}' condition '{}'.", spell_id, rule.id ) );
+    }
+
     std::string spell_name = util::tokenize_fn( spell->name_cstr() );
     if ( spell_name.empty() )
       return fmt::format( "unknown_spell_{}", spell_id );
+
     return spell_name;
   };
 
@@ -3630,7 +3739,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "active_{}>={}", expr_str, v1 ); // TODO: > or >=?
       // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_GREATER." );
+      throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_GREATER." );
     case AFFORD_COST:
       assert( v2 == 0 && v3 == 0 );
       if ( v1 )
@@ -3654,7 +3763,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       expr_str = aura_expr_from_spell_id( v1, true );
       // TODO: Are there any cases where these would be talents we should worry about?
       if ( expr_str.find( "talent." ) == 0 )
-        throw std::runtime_error( fmt::format( "Talents are unsupported for assisted combat condition AURA_DURATION_PLAYER.", rule.condition_type ) );
+        throw std::runtime_error( "Talents are unsupported for condition AURA_DURATION_PLAYER." );
       return fmt::format( "{}.up&{}.remains<={:g}", expr_str, expr_str, v2 / 1000.0 );
     case AURA_DURATION_TARGET:
       assert( v3 == 0 );
@@ -3764,7 +3873,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       if ( expr_str.find( "dot." ) == 0 )
         return fmt::format( "active_{}<={}", expr_str, v1 ); // TODO: < or <=?
       // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for assisted combat condition AURA_COUNT_NEAR_PLAYER_LESS." );
+      throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_LESS." );
     case TARGET_AURA_APPLICATION_GREATER:
       assert( v3 == 0 );
       expr_str = aura_expr_from_spell_id( v1, false );
@@ -3839,7 +3948,7 @@ parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assist
       assert( v2 == 0 && v3 == 0 );
       return fmt::format( "health.pct<={}", v1 );
     default:
-      throw std::runtime_error( fmt::format( "unknown assisted combat condition type '{}'", rule.condition_type ) );
+      throw std::runtime_error( fmt::format( "Unknown condition type '{}.'", rule.condition_type ) );
   }
 }
 
@@ -3876,7 +3985,14 @@ void player_t::create_actions()
   }
   else
   {
-    init_action_list();  // virtual function which creates the action list string
+    try
+    {
+      init_action_list();  // virtual function which creates the action list string
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_initialization_error( "Invalid action list" ) );
+    }
   }
 
   std::string modify_action_options;
@@ -3964,8 +4080,7 @@ void player_t::create_actions()
 
       if ( !a )
       {
-        throw std::invalid_argument(
-            fmt::format("{} unable to create action: {}", *this, action_str));
+        throw sc_initialization_error( fmt::format( "Unable to create action '{}'.", action_str ) );
       }
 
       // When using the assisted combat system, certain action options need different default values.
@@ -4002,12 +4117,12 @@ void player_t::create_actions()
 
         if ( sim->separate_stats_by_actions > 0 && !is_pet() )
         {
-          a->marker =
-              (char)( ( j < 10 ) ? ( '0' + j )
-                                 : ( j < 36 ) ? ( 'A' + j - 10 )
-                                              : ( j < 66 ) ? ( 'a' + j - 36 )
-                                                           : ( j < 79 ) ? ( '!' + j - 66 )
-                                                                        : ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
+          a->marker = (char)( ( j < 10 ) ? ( '0' + j )
+                            : ( j < 36 ) ? ( 'A' + j - 10 )
+                            : ( j < 66 ) ? ( 'a' + j - 36 )
+                            : ( j < 79 ) ? ( '!' + j - 66 )
+                            : ( j < 86 ) ? ( ':' + j - 79 )
+                                           : '.' );
 
           a->stats = get_stats( a->name_str + "__" + a->marker, a );
         }
@@ -4044,11 +4159,11 @@ void player_t::init_actions()
     action_t* action = action_list[ i ];
     try
     {
-      action -> init();
+      action->init();
     }
-    catch (const std::exception&)
+    catch ( const std::exception& )
     {
-      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+      std::throw_with_nested( std::runtime_error( fmt::format( "{}", *action ) ) );
     }
   }
 
@@ -4225,7 +4340,7 @@ void player_t::init_finished()
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
+      std::throw_with_nested( std::runtime_error( fmt::format( "{}", *action ) ) );
     }
   }
 
@@ -4237,7 +4352,7 @@ void player_t::init_finished()
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::runtime_error( fmt::format( "Action '{}'", action->name() ) ) );
+      std::throw_with_nested( std::runtime_error( fmt::format( "{}", *action ) ) );
     }
   }
 
@@ -4245,20 +4360,20 @@ void player_t::init_finished()
   // TODO: Energy pooling, and energy-based expressions (energy>=10) are not included yet
   for ( auto action : action_list )
   {
-    if ( !action->background && action->base_costs[ primary_resource() ] > 0 )
-    {
-      if ( std::find( resource_thresholds.begin(), resource_thresholds.end(),
-                      action->base_costs[ primary_resource() ] ) == resource_thresholds.end() )
-      {
-        resource_thresholds.push_back( action->base_costs[ primary_resource() ] );
-      }
-    }
+    auto _cost = action->base_costs[ primary_resource() ];
+
+    if ( !action->background && _cost > 0 && !range::contains( resource_thresholds, _cost ) )
+      resource_thresholds.push_back( action->base_costs[ primary_resource() ] );
   }
 
   range::sort( resource_thresholds );
 
   // Sort outbound assessors
   assessor_out_damage.sort();
+
+  // Trigger init finished callbacks
+  for ( const auto& cb : callbacks_on_init_finished )
+    cb( this );
 
   // Print items to debug log
   if ( sim->debug )
@@ -4290,8 +4405,7 @@ void player_t::init_finished()
       buff_t* buff = buff_t::find( this, buff_name );
       if ( !buff )
       {
-        sim->error( "No buff found for 'override.precombat_state' buff expression: '{}'", buff_name );
-        return;
+        throw std::invalid_argument( fmt::format( "No buff found for '{}'.", buff_name ) );
       }
 
       if ( type == "stack" )
@@ -4301,67 +4415,69 @@ void player_t::init_finished()
       else if ( type == "remains" )
         precombat_buff_state[ buff ].duration = timespan_t::from_seconds( util::to_double( value ) );
       else
-        throw std::invalid_argument(
-            fmt::format( "Invalid 'override.precombat_state' buff expression type: '{}'", type ) );
+        throw std::invalid_argument( fmt::format( "Invalid buff expression type '{}'.", type ) );
     };
 
-    for ( const auto& v : precombat_state_map )
+    try
     {
-      auto splits = util::string_split<std::string_view>( v.first, "." );
-
-      if ( splits.size() < 2 )
+      for ( const auto& v : precombat_state_map )
       {
-        sim->error( "Invalid 'override.precombat_state' option: '{}'", v.first );
-        continue;
-      }
+        auto splits = util::string_split<std::string_view>( v.first, "." );
 
-      auto type_str = splits[ 0 ];
-      auto name = splits[ 1 ];
-
-      if ( type_str == "buff" )
-      {
-        if ( splits.size() != 3 )
+        if ( splits.size() < 2 )
         {
-          throw std::invalid_argument(
-              fmt::format( "Invalid 'override.precombat_state' buff expression: '{}'", v.first ) );
+          throw std::invalid_argument( fmt::format( "Invalid option for '{}'.", v.first ) );
         }
 
-        update_buff_state( name, splits[ 2 ], v.second );
-      }
-      else if ( type_str == "cooldown" )
-      {
-        if ( splits.size() != 2 )
-        {
-          throw std::invalid_argument(
-              fmt::format( "Invalid 'override.precombat_state' cooldown expression: '{}'", v.first ) );
-        }
+        auto type_str = splits[ 0 ];
+        auto name = splits[ 1 ];
 
-        auto cd = find_cooldown( name );
-        if ( !cd )
+        if ( type_str == "buff" )
         {
-          sim->error( "No cooldown found for 'override.precombat_state' cooldown expression: '{}'", name );
-          continue;
-        }
+          if ( splits.size() != 3 )
+          {
+            throw std::invalid_argument( fmt::format( "Invalid buff expression '{}.'", v.first ) );
+          }
 
-        timespan_t duration = timespan_t::from_seconds( util::to_double( v.second ) );
-        add_precombat_cooldown_state( cd, duration );
+          update_buff_state( name, splits[ 2 ], v.second );
+        }
+        else if ( type_str == "cooldown" )
+        {
+          if ( splits.size() != 2 )
+          {
+            throw std::invalid_argument( fmt::format( "Invalid cooldown expression '{}'.", v.first ) );
+          }
+
+          auto cd = find_cooldown( name );
+          if ( !cd )
+          {
+            throw std::invalid_argument( fmt::format( "No cooldown found for '{}'.", name ) );
+          }
+
+          timespan_t duration = timespan_t::from_seconds( util::to_double( v.second ) );
+          add_precombat_cooldown_state( cd, duration );
+        }
+        else
+        {
+          throw std::invalid_argument( fmt::format( "Invalid option type '{}'.", type_str ) );
+        }
       }
-      else
+
+      for ( const auto& [ buff, buff_state ] : precombat_buff_state )
       {
-        throw std::invalid_argument(
-            fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type_str ) );
+        add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
       }
     }
-
-    for ( const auto& [ buff, buff_state ] : precombat_buff_state )
+    catch ( const std::exception& )
     {
-      add_precombat_buff_state( buff, buff_state.stacks, buff_state.value, buff_state.duration );
+      std::throw_with_nested( sc_invalid_player_argument( "Invalid 'override.precombat_state'" ) );
     }
   }
 
-  buff_t* custom_buff;
   for ( const auto& [ buff_name, c ] : custom_stat_buffs )
   {
+    buff_t* custom_buff = nullptr;
+
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
@@ -4377,20 +4493,36 @@ void player_t::init_finished()
         case STAT_INTELLECT:          stat_pct = STAT_PCT_BUFF_INTELLECT; break;
         case STAT_SPIRIT:             stat_pct = STAT_PCT_BUFF_SPIRIT; break;
         default:
-          throw std::invalid_argument(
-            fmt::format( "Unsupported 'custom_stat' percentage stat type: '{}'", util::stat_type_string( c.stat ) ) );
+          throw sc_invalid_player_argument(
+            fmt::format( "Invalid 'custom_stat' percentage stat type '{}'.", util::stat_type_string( c.stat ) ) );
       }
 
       custom_buff = make_buff( this, buff_name )
                       ->set_default_value( c.amount * 0.01 )
-                      ->set_pct_buff_type( stat_pct );
-      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+                      ->set_pct_buff_type( stat_pct )
+                      ->set_duration( c.duration );
     }
     else
     {
       custom_buff = make_buff<stat_buff_t>( this, buff_name )
-                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount );
-      register_precombat_begin( [ custom_buff ] ( player_t* ) { custom_buff->execute(); } );
+                      ->add_stat( convert_hybrid_stat( c.stat ), c.amount )
+                      ->set_duration( c.duration );
+    }
+
+    if ( !custom_buff )
+      continue;
+
+    if ( c.start == timespan_t::min() )
+    {
+      register_precombat_begin( [ custom_buff ]( player_t* ) {
+        custom_buff->execute();
+      } );
+    }
+    else
+    {
+      register_precombat_begin( [ this, custom_buff, dur = c.start ]( player_t* ) {
+        make_event( *sim, dur, [ custom_buff ]() { custom_buff->execute(); } );
+      } );
     }
   }
 }
@@ -4398,10 +4530,9 @@ void player_t::init_finished()
 void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
 {
   if ( !buff->allow_precombat )
-    throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
+    throw std::invalid_argument( fmt::format( "Precombat states for buff '{}' are disabled.", buff->name_str ) );
 
-  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* )
-  {
+  register_precombat_begin( [ buff, stacks, value, duration ]( player_t* ) {
     buff->execute( stacks, value, duration );
     buff->predict();
   } );
@@ -4410,7 +4541,7 @@ void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value,
 void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
 {
   if ( !cd->allow_precombat )
-    throw std::invalid_argument( fmt::format( "Invalid cooldown for 'override.precombat_state' option. Precombat states for '{}' are disabled.", cd->name_str ) );
+    throw std::invalid_argument( fmt::format( "Precombat states for cooldown '{}' are disabled.", cd->name_str ) );
 
   // A cooldown may need an action to have its recharge rate properly adjusted.
   // Attempt to find an action with the same name that uses this cooldown.
@@ -4418,7 +4549,9 @@ void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration
   if ( action->cooldown != cd )
     action = nullptr;
 
-  register_precombat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
+  register_precombat_begin( [ cd, action, duration ]( player_t* ) {
+    cd->start( action, duration );
+  } );
 }
 
 /// Called in every action constructor for all actions constructred for a player
@@ -4465,7 +4598,7 @@ void player_t::min_threshold_trigger()
   timespan_t time_to_threshold = timespan_t::zero();
   if ( i < resource_thresholds.size() )
   {
-    double rps = resources.base_regen_per_second[ pres ];
+    double rps = resource_regen_per_second( pres );
 
     if ( rps > 0 )
     {
@@ -4527,10 +4660,11 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned = make_buff( this, "stunned" )
     ->set_max_stack( 1 )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 )
-        schedule_ready();
-    } );
+    ->set_expire_callback( [ this ]( buff_t*, int, timespan_t d ) 
+      {
+        if ( !sim->event_mgr.canceled && d == timespan_t::zero() )
+          trigger_ready();
+      } );
 
   buffs.rooted = make_buff( this, "rooted" )->set_max_stack( 1 )->set_quiet( true );
 
@@ -4653,12 +4787,10 @@ void player_t::create_buffs()
 
             debug_cast<stat_buff_t*>( buffs.elegy_of_the_eternals_external )->add_stat( stat, coeff * points * mult );
           }
-          catch ( const std::invalid_argument& msg )
+          catch ( const std::exception& )
           {
-            throw std::invalid_argument(
-                fmt::format( "\n\tInvalid entry '{}' for external_buffs.elegy_of_the_eternals. {}"
-                             "\n\tFormat is <ilevel>:<stat>/...",
-                             entry, msg.what() ) );
+            std::throw_with_nested( sc_invalid_player_argument(
+              fmt::format( "Invalid 'external_buffs.elegy_of_the_eternals', format is '<ilevel>:<stat:/...'" ) ) );
           }
         }
       }
@@ -6040,21 +6172,19 @@ void player_t::invalidate_cache( cache_e c )
 void invalidate_cache( cache_e ) {}
 #endif
 
-void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
+void player_t::sequence_add_wait( timespan_t wait )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
-  if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
-       ( sim->iterations > 1 && nth_iteration() == 1 ) )
+  if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
       if ( in_combat )
       {
-        if ( !collected_data.action_sequence.empty() &&
-             collected_data.action_sequence.back().wait_time > timespan_t::zero() )
-          collected_data.action_sequence.back().wait_time += amount;
+        if ( !collected_data.action_sequence.empty() && collected_data.action_sequence.back().wait_time > 0_ms )
+          collected_data.action_sequence.back().wait_time += wait;
         else
-          collected_data.action_sequence.emplace_back( ts, amount, this );
+          collected_data.action_sequence.emplace_back( sim->current_time(), wait, this );
       }
     }
     else
@@ -6067,18 +6197,26 @@ void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* t, timespan_t ts )
+void player_t::sequence_add( const action_t* a, const player_t* t,
+                             std::function<void( std::string&, std::string& )> fn )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
-  if ( ( a->sim->iterations <= 1 && a->sim->current_iteration == 0 ) ||
-       ( a->sim->iterations > 1 && nth_iteration() == 1 ) )
+  if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
       if ( a->is_precombat )
-        collected_data.action_sequence_precombat.emplace_back( a, t, ts, this );
+      {
+        auto& data = collected_data.action_sequence_precombat.emplace_back( a, t, sim->current_time(), this );
+        if ( fn )
+          fn( data.action_reporting, data.target_reporting );
+      }
       else
-        collected_data.action_sequence.emplace_back( a, t, ts, this );
+      {
+        auto& data = collected_data.action_sequence.emplace_back( a, t, sim->current_time(), this );
+        if ( fn )
+          fn( data.action_reporting, data.target_reporting );
+      }
     }
     else
     {
@@ -6126,9 +6264,8 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-            {
-              sequence_add( action, action->target, sim->current_time() );
-            }
+              sequence_add( action, action->target );
+
             action->execute();
             first_cast = false;
           }
@@ -6140,9 +6277,8 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-          {
-            sequence_add( action, action->target, sim->current_time() );
-          }
+            sequence_add( action, action->target );
+
           action->execute();
         }
       }
@@ -6708,7 +6844,7 @@ void player_t::reset()
 
   range::for_each( proc_list, []( proc_t* proc ) { proc->reset(); } );
 
-  range::for_each( proc_rng_list, []( proc_rng_t* prng ) { prng->reset(); } );
+  range::for_each( proc_rng_list, []( proc_rng_t* prng ) { prng->reset( reset_type_e::ITERATION ); } );
 
   range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
@@ -6769,12 +6905,15 @@ void player_t::trigger_ready()
     return;
   if ( !active_during_iteration )
     return;
+  if ( sim->event_mgr.canceled )
+    return;
 
   if ( buffs.stunned->check() )
     return;
+  if ( is_moving() )
+    return;
 
-  sim->print_debug( "{} is triggering ready, interval={}", *this,
-                           ( sim->current_time() - started_waiting ) );
+  sim->print_debug( "{} is triggering ready, interval={}", *this, ( sim->current_time() - started_waiting ) );
 
   iteration_waiting_time += sim->current_time() - started_waiting;
   started_waiting = timespan_t::min();
@@ -6900,14 +7039,15 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   if ( readying )
   {
-    throw std::runtime_error(fmt::format("{} scheduled ready while already ready.", *this ));
+    throw sc_runtime_error( fmt::format( "{} scheduled ready while already ready.", *this ) );
   }
+
   action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( queueing )
   {
     sim->print_debug( "{} canceling queued action '{}' at {}", *this, queueing->name(),
-                             queueing->queue_event->occurs() );
+                      queueing->queue_event->occurs() );
     event_t::cancel( queueing->queue_event );
     queueing = nullptr;
   }
@@ -6929,9 +7069,8 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
   if ( waiting )
   {
     if ( !is_enemy() )
-    {
-      sequence_add_wait( delta_time, sim->current_time() );
-    }
+      sequence_add_wait( delta_time );
+
     iteration_waiting_time += delta_time;
   }
   else
@@ -7088,7 +7227,9 @@ void player_t::arise()
     acquire_target( retarget_source::SELF_ARISE );
   }
 
-  if ( has_foreground_actions( *this ) )
+  // ready_type READY_TRIGGER may already have scheduled a ready event, so we need to check if we are already
+  // readying.
+  if ( !readying && has_foreground_actions( *this ) )
     schedule_ready();
 
   active_during_iteration = true;
@@ -7405,9 +7546,7 @@ action_t* player_t::execute_action()
         off_gcdactions.push_back( action );
 
       if ( !is_enemy() )
-      {
-        sequence_add( action, action->target, sim->current_time() );
-      }
+        sequence_add( action, action->target );
     }
   }
 
@@ -7548,6 +7687,15 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
     return 0.0;
 
   double actual_amount = std::min( amount, resources.max[ resource_type ] - resources.current[ resource_type ] );
+  double previous_amount;
+  double previous_pct_points;
+  bool check_callbacks = has_active_resource_callbacks;
+
+  if ( check_callbacks )
+  {
+    previous_amount     = resources.current[ resource_type ];
+    previous_pct_points = resources.current[ resource_type ] / resources.max[ resource_type ] * 100.0;
+  }
 
   if ( actual_amount > 0.0 )
   {
@@ -7567,6 +7715,11 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
   if ( source )
   {
     source->add( resource_type, actual_amount, amount - actual_amount );
+  }
+
+  if ( check_callbacks )
+  {
+    check_resource_change_for_callback( resource_type, previous_amount, previous_pct_points );
   }
 
   if ( sim->log )
@@ -7648,6 +7801,11 @@ role_e player_t::primary_role() const
 const char* player_t::primary_tree_name() const
 {
   return dbc::specialization_string( specialization() );
+}
+
+bool player_t::has_hero_tree( hero_tree_e hero ) const
+{
+  return player_sub_trees.count( static_cast<unsigned>( hero ) );
 }
 
 bool player_t::has_shield_equipped() const
@@ -8776,15 +8934,15 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_e
 }
 
 accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
-                                                  std::function<double( double, unsigned )> accumulator_fn,
+                                                  accumulated_rng_fn accumulator_fn,
                                                   unsigned initial_count )
 {
   return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
 }
 
 threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
-                                              std::function<double( double )> accumulator_fn, bool random_initial_state,
-                                              bool roll_over )
+                                              threshold_rng_fn accumulator_fn,
+                                              bool random_initial_state, bool roll_over )
 {
   return get_rng<threshold_rng_t>( name, increment_max, accumulator_fn, random_initial_state, roll_over );
 }
@@ -8836,7 +8994,7 @@ sample_data_helper_t* player_t::get_sample_data( util::string_view name )
 
   if ( !sd )
   {
-    sd = new sample_data_helper_t( name, generic_container_type(this, 3));
+    sd = new sample_data_helper_t( name, player_collected_data_t::generic_container_type( this, 3 ) );
 
     sample_data_list.push_back( sd );
   }
@@ -8898,7 +9056,7 @@ action_priority_list_t* player_t::get_action_priority_list( util::string_view na
   {
     if ( action_list_id_ == 64 )
     {
-      throw std::invalid_argument("Maximum number of action lists is 64");
+      throw sc_invalid_apl_argument( "Maximum number of action lists is 64." );
     }
 
     a                   = new action_priority_list_t( name, this, comment );
@@ -9563,8 +9721,8 @@ struct restart_sequence_t : public action_t
 
       if ( !seq )
       {
-        throw std::invalid_argument(fmt::format("Can't find sequence '{}'.",
-            seq_name_str.empty() ? "(default)" : seq_name_str.c_str() ));
+        throw sc_invalid_apl_argument(
+          fmt::format( "{} can't find sequence '{}'.", *player, seq_name_str.empty() ? "(default)" : seq_name_str ) );
       }
     }
   }
@@ -9572,7 +9730,8 @@ struct restart_sequence_t : public action_t
   void execute() override
   {
     if ( sim->debug )
-      sim->out_debug.printf( "%s restarting sequence %s", player->name(), seq_name_str.c_str() );
+      sim->print_debug( "{} restarting sequence {}", *player, seq_name_str );
+
     seq->restart();
   }
 
@@ -9635,6 +9794,7 @@ struct wait_action_base_t : public action_t
   void execute() override
   {
     player->iteration_waiting_time += time_to_execute;
+    total_executions++;
   }
 };
 
@@ -9683,20 +9843,28 @@ struct wait_for_cooldown_t : public wait_action_base_t
 struct wait_fixed_t : public wait_action_base_t
 {
   std::unique_ptr<expr_t> time_expr;
+  std::string sec_str;
 
   wait_fixed_t( player_t* player, util::string_view options_str ) :
-    wait_action_base_t( player, "wait" ), time_expr()
+    wait_action_base_t( player, "wait" ), time_expr(), sec_str( "1.0" )
   {
-    std::string sec_str = "1.0";
-
     add_option( opt_string( "sec", sec_str ) );
     parse_options( options_str );
+  }
 
-    time_expr = expr_t::parse( this, sec_str );
-    if ( !time_expr )
+  void init_finished() override
+  {
+    wait_action_base_t::init_finished();
+
+    try
     {
-      sim->error( "{}: Unable to generate wait expression from '{}'", player->name(), options_str );
-      background = true;
+      time_expr = expr_t::parse( this, sec_str );
+      if ( !time_expr )
+        background = true;
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'sec' expression" ) );
     }
   }
 
@@ -10074,41 +10242,41 @@ struct use_item_t : public action_t
     {
       auto tail = name.substr( 14 );
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
 
-      throw std::invalid_argument( fmt::format( "Unsupported expression 'other_trinket' for '{}' slot", item_slot ) );
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'other_trinket' for '{}' slot.", item_slot ) );
     }
 
     if ( split.size() > 1 && split[ 0 ] == "this_trinket" )
     {
       auto tail = name.substr( 13 );
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
 
-      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket' for '{}' slot", item_slot ) );
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket' for '{}' slot.", item_slot ) );
     }
 
     if ( split.size() == 1 && split[ 0 ] == "this_trinket_slot" )
     {
       slot_e s = util::parse_slot_type( item_slot );
-      
+
       if ( s == SLOT_TRINKET_1 )
         return std::make_unique<const_expr_t>( name, 1 );
-      
+
       if ( s == SLOT_TRINKET_2 )
         return std::make_unique<const_expr_t>( name, 2 );
 
-      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket_slot' for '{}' slot", item_slot ) );
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket_slot' for '{}' slot.", item_slot ) );
     }
 
     if ( auto e = create_special_effect_expr( split ) )
@@ -10127,6 +10295,7 @@ struct use_items_t : public action_t
   std::vector<use_item_t*> use_actions;  // List of proxy use_item_t actions to execute
   std::vector<slot_e> priority_slots;    // Slot priority, or custom slots to check
   bool custom_slots;                     // Custom slots= parameter passed. Only check priority_slots.
+  bool check_existing = true;            // Ignore a slot if a matching use_item already exists for it
 
   use_items_t( player_t* player, util::string_view options_str ) :
     action_t( ACTION_USE, "use_items", player ),
@@ -10141,6 +10310,7 @@ struct use_items_t : public action_t
 
     add_option( opt_func( "slots", std::bind( &use_items_t::parse_slots, this, std::placeholders::_1,
                                               std::placeholders::_2, std::placeholders::_3 ) ) );
+    add_option( opt_bool( "check_existing", check_existing ) );
 
     parse_options( options_str );
   }
@@ -10280,77 +10450,86 @@ struct use_items_t : public action_t
 
     // Remove any slots from the slot list that have custom use item actions. Note that this search
     // looks for use_item,slot=X.
-    range::for_each( use_item_actions, [&slot_order]( const use_item_t* action ) {
-      slot_e slot = util::parse_slot_type( action->item_slot );
-      if ( slot == SLOT_INVALID )
-      {
-        return;
-      }
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ &slot_order ]( const use_item_t* action ) {
+        slot_e slot = util::parse_slot_type( action->item_slot );
+        if ( slot == SLOT_INVALID )
+        {
+          return;
+        }
 
-      auto it = range::find( slot_order, slot );
-      if ( it != slot_order.end() )
-      {
-        slot_order.erase( it );
-      }
-    } );
+        auto it = range::find( slot_order, slot );
+        if ( it != slot_order.end() )
+        {
+          slot_order.erase( it );
+        }
+      } );
+    }
 
     // Remove any slots from the list, where the actor has an item equipped, and corresponding a
     // use_item,name=X action for the item.
-    range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
-      if ( action->item_name.empty() )
-      {
-        return;
-      }
-
-      // As precombat /use_item,name=X are only used once, don't remove them.
-      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
-        return;
-
-      // Find out if the item is worn
-      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-        return util::str_compare_ci( item.name(), action->item_name );
-      } );
-
-      // Worn item, remove slot if necessary
-      if ( it != player->items.end() )
-      {
-        auto slot_it = range::find( slot_order, it->slot );
-        if ( slot_it != slot_order.end() )
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ this, &slot_order ]( const use_item_t* action ) {
+        if ( action->item_name.empty() )
         {
-          slot_order.erase( slot_it );
+          return;
         }
-      }
-    } );
+
+        // As precombat /use_item,name=X are only used once, don't remove them.
+        if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+          return;
+
+        // Find out if the item is worn
+        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
+          return util::str_compare_ci( item.name(), action->item_name );
+        } );
+
+        // Worn item, remove slot if necessary
+        if ( it != player->items.end() )
+        {
+          auto slot_it = range::find( slot_order, it->slot );
+          if ( slot_it != slot_order.end() )
+          {
+            slot_order.erase( slot_it );
+          }
+        }
+      } );
+    }
 
     // Remove any slots from the list, where the actor has an item equipped, and corresponding a
     // use_item,effect_name=X action for the item.
-    range::for_each( use_item_actions, [this, &slot_order]( const use_item_t* action ) {
-      if ( action->effect_name.empty() )
-      {
-        return;
-      }
-
-      // As precombat /use_item,effect_name=X are only used once, don't remove them.
-      if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
-        return;
-
-      // Find out if the item is worn
-      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-        return item.has_use_special_effect() &&
-               util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
-                                     action->effect_name );
-      } );
-
-      // Worn item, remove slot if necessary
-      if ( it != player->items.end() )
-      {
-        auto slot_it = range::find( slot_order, it->slot );
-        if ( slot_it != slot_order.end() )
+    if ( check_existing )
+    {
+      range::for_each( use_item_actions, [ this, &slot_order ]( const use_item_t* action ) {
+        if ( action->effect_name.empty() )
         {
-          slot_order.erase( slot_it );
+          return;
         }
-      }
-    } );
+
+        // As precombat /use_item,effect_name=X are only used once, don't remove them.
+        if ( action->action_list && action->action_list->name_str == "precombat" && action->action )
+          return;
+
+        // Find out if the item is worn
+        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
+          return item.has_use_special_effect() &&
+                 util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
+                                       action->effect_name );
+        } );
+
+        // Worn item, remove slot if necessary
+        if ( it != player->items.end() )
+        {
+          auto slot_it = range::find( slot_order, it->slot );
+          if ( slot_it != slot_order.end() )
+          {
+            slot_order.erase( slot_it );
+          }
+        }
+      } );
+    }
 
     // Create use_item actions for each remaining slot, if the user has an on-use item in that slot.
     // Note that this only looks at item-sourced on-use actions (e.g., no engineering addons).
@@ -10409,13 +10588,12 @@ struct cancel_buff_t : public action_t
 
     if ( buff_name.empty() )
     {
-      throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff without specifying the name of the buff", player->name() ) );
+      throw sc_invalid_apl_argument( "Missing buff name." );
     }
 
     buff = buff_t::find( player, buff_name );
 
-    // if the buff isn't in the player_t -> buff_list, try again in the player_td_t -> target -> buff_list
+    // if the buff isn't in the player_t::buff_list, try again in the player_td_t::target::buff_list
     if ( !buff )
     {
       buff = buff_t::find( player->get_target_data( player )->target, buff_name );
@@ -10423,15 +10601,11 @@ struct cancel_buff_t : public action_t
 
     if ( !buff )
     {
-      if ( sim->debug ) {
-        player->sim->error(
-          "Player {} uses cancel_buff with unknown buff {}", player->name(), buff_name );
-      }
+      throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", buff_name ) );
     }
     else if ( !buff->can_cancel )
     {
-      throw std::invalid_argument( fmt::format(
-        "Player {} uses cancel_buff on {}, which cannot be cancelled in game", player->name(), buff_name ) );
+      throw sc_invalid_apl_argument( fmt::format( "Buff '{}' cannot be cancelled.", buff_name ) );
     }
   }
 
@@ -10493,21 +10667,27 @@ struct dismiss_pet_t final : public action_t
     harmful = false;
     usable_while_casting = use_while_casting = ignore_false_positive = true;
     trigger_gcd = timespan_t::zero();
-
-    if ( pet_name.empty() )
-      throw std::invalid_argument( fmt::format( "{} must specify the name of the pet", name() ) );
   }
 
-  void init() override
+  void init_finished() override
   {
+    action_t::init_finished();
+
+    if ( pet_name.empty() )
+    {
+      throw sc_invalid_apl_argument( "Missing pet name." );
+    }
+
     pet = player->find_pet( pet_name );
-    if ( !pet && sim->debug )
-      sim->error( "Player {}: Could not find pet with name '{}' for Action '{}'", player->name(), pet_name, name() );
+    if ( !pet )
+    {
+      throw sc_invalid_apl_argument( fmt::format( "Pet '{}' not found.", pet_name ) );
+    }
 
-    if ( pet && !pet->can_dismiss )
-      throw std::invalid_argument( fmt::format( "{} cannot be dismissed", pet->name() ) );
-
-    action_t::init();
+    if ( !pet->can_dismiss )
+    {
+      throw sc_invalid_apl_argument( fmt::format( "Pet '{}' cannot be dismissed.", pet->name() ) );
+    }
   }
 
   void execute() override
@@ -10538,23 +10718,27 @@ struct pool_resource_t : public action_t
 {
   resource_e resource;
   std::string resource_str;
-  timespan_t wait;
-  int for_next;
+  timespan_t wait, wait_override;
+  bool for_next;
   action_t* next_action;
+  bool force_wait;
   std::string amount_str;
   std::unique_ptr<expr_t> amount_expr;
 
   pool_resource_t( player_t* p, util::string_view options_str, resource_e r = RESOURCE_NONE ) :
     action_t( ACTION_OTHER, "pool_resource", p ),
     resource( r != RESOURCE_NONE ? r : p->primary_resource() ),
-    wait( timespan_t::from_seconds( 0.251 ) ),
-    for_next( 0 ),
+    wait( 0_ms ),
+    wait_override( 0_ms ),
+    for_next( false ),
     next_action( nullptr ),
+    force_wait( false ),
     amount_expr()
   {
     quiet = true;
-    add_option( opt_timespan( "wait", wait ) );
+    add_option( opt_timespan( "wait", wait_override ) );
     add_option( opt_bool( "for_next", for_next ) );
+    add_option( opt_bool( "force_wait", force_wait ) );
     add_option( opt_string( "resource", resource_str ) );
     add_option( opt_string( "extra_amount", amount_str ) );
     parse_options( options_str );
@@ -10565,6 +10749,27 @@ struct pool_resource_t : public action_t
       if ( res != RESOURCE_NONE )
         resource = res;
     }
+
+    if ( force_wait )
+    {
+      if ( !for_next )
+      {
+        force_wait = false;
+        sim->error( "'for_next=1' is required to pool with force_wait, ignoring." );
+      }
+
+      if ( resource != RESOURCE_MANA && resource != RESOURCE_ENERGY && resource != RESOURCE_FOCUS )
+      {
+        force_wait = false;
+        sim->error( "Only Mana, Energy, and Focus can pool with force_wait, ignoring." );
+      }
+
+      if ( wait_override != 0_ms )
+      {
+        force_wait = false;
+        sim->error( "Cannot force_wait with set wait time, ignoring." );
+      }
+    }
   }
 
   void init_finished() override
@@ -10573,12 +10778,14 @@ struct pool_resource_t : public action_t
 
     if ( !amount_str.empty() )
     {
-      amount_expr = expr_t::parse( this, amount_str, false );
-      if (amount_expr == nullptr)
+      try
       {
-        throw std::invalid_argument(fmt::format("Could not parse amount if expression from '{}'", amount_str));
+        amount_expr = expr_t::parse( this, amount_str, false );
       }
-
+      catch ( const std::exception& )
+      {
+        std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'extra_amount' expression" ) );
+      }
     }
   }
 
@@ -10605,7 +10812,7 @@ struct pool_resource_t : public action_t
 
       if ( !next_action )
       {
-        sim->errorf( "%s: can't find next action.\n", __FUNCTION__ );
+        sim->error( "{} can't find next action.", *this );
         background = true;
       }
     }
@@ -10614,9 +10821,10 @@ struct pool_resource_t : public action_t
   void execute() override
   {
     if ( sim->log )
-      sim->out_log.printf( "%s performs %s", player->name(), name() );
+      sim->print_log( "{} performs {}", *player, *this );
 
     player->iteration_pooling_time += wait;
+    total_executions++;
   }
 
   timespan_t gcd() const override
@@ -10626,30 +10834,61 @@ struct pool_resource_t : public action_t
 
   bool ready() override
   {
-    bool rd = action_t::ready();
-    if ( !rd )
-      return rd;
+    if ( !action_t::ready() )
+      return false;
 
+    // If the next action in the list would be "ready" if it was not constrained by energy, then this command will pool
+    // energy until we have enough.
     if ( next_action )
     {
-      if ( next_action->action_ready() )
+      // cache current resource amount while we do evaluations
+      double current = player->resources.current[ resource ];
+      double extra = amount_expr ? amount_expr->eval() : 0.0;
+
+      // must at least have more current resources than the extra amount
+      if ( current >= extra )
+      {
+        // check if we can cast next ability after accounting for the extra amount required
+        player->resources.current[ resource ] -= extra;
+        bool next_is_ready = next_action->action_ready();
+        player->resources.current[ resource ] = current;
+
+        // if next action is ready, we'll have enough resource remaining after cost so we don't need to pool
+        if ( next_is_ready )
+          return false;
+
+        // check against maximum resource to see if we're resource limited
+        player->resources.current[ resource ] = player->resources.max[ resource ];
+        bool next_is_resource_limited = next_action->action_ready();
+        player->resources.current[ resource ] = current;
+
+        // if next action still can't be cast with max resources, we're not resource limited and don't need to pool
+        if ( !next_is_resource_limited )
+          return false;
+
+        // force_wait suspends APL re-evaluation until the next ability can be cast
+        if ( force_wait )
+        {
+          assert( next_action->current_resource() == resource &&
+                  "Cannot pool to force_wait with mismatched resources." );
+
+          double next_cost = next_action->cost();
+          double diff = next_cost + extra - current;
+          double regen = player->resource_regen_per_second( resource );
+
+          wait = timespan_t::from_seconds( std::max( 0.0, diff ) / regen ) + player->available();
+          return true;
+        }
+      }
+      else
+      {
+        // not enough resources to cover the extra, even if next action has 0 cost
         return false;
-
-      // If the next action in the list would be "ready" if it was not constrained by energy,
-      // then this command will pool energy until we have enough.
-
-      double theoretical_cost = next_action->cost() + ( amount_expr ? amount_expr->eval() : 0 );
-      player->resources.current[ resource ] += theoretical_cost;
-
-      bool resource_limited = next_action->action_ready();
-
-      player->resources.current[ resource ] -= theoretical_cost;
-
-      if ( !resource_limited )
-        return false;
+      }
     }
 
-    return rd;
+    wait = wait_override + player->available();
+    return true;
   }
 };
 
@@ -10734,18 +10973,13 @@ struct invoke_external_buff_t : public action_t
 
     if ( buff_str.empty() )
     {
-      throw std::invalid_argument( fmt::format(
-          "Player {} uses invoke_external_buff without specifying the name of the buff", player->name() ) );
+      throw sc_invalid_apl_argument( "Missing external buff name." );
     }
 
     buff = buff_t::find( player, buff_str );
-
     if ( !buff )
     {
-      if ( sim->debug )
-      {
-        player->sim->error( "Player {} uses invoke_external_buff with unknown buff {}", player->name(), buff_str );
-      }
+      throw sc_invalid_apl_argument( fmt::format( "External buff '{}' not found.", buff_str ) );
     }
 
     // Initialise an action cooldown per buff type.
@@ -10788,8 +11022,7 @@ struct invoke_external_buff_t : public action_t
                 cds->emplace_back( player->get_cooldown( fmt::format( "invoke_{}_{}", splits[ 0 ], cds->size() ) ) );
             cd->duration = cd->base_duration = cd_time;
 
-            sim->print_debug( "{} creates cooldown {} with cd {} ", *player, cd->name(),
-                              cd->duration );
+            sim->print_debug( "{} creates cooldown {} with cd {} ", *player, cd->name(), cd->duration );
           }
         }
       }
@@ -10841,7 +11074,7 @@ struct invoke_external_buff_t : public action_t
   void execute() override
   {
     if ( sim->log )
-      sim->out_log.printf( "%s invokes buff %s", player->name(), buff->name() );
+      sim->print_log( "{} invokes {}", *player, *buff );
 
     buff->trigger( buff_stacks, buff_duration );
 
@@ -11122,7 +11355,7 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
 
   // all allocated hero talents are present but disabled if the control talent is not active unless it has been manually
   // added to the profile or sim_t::enable_all_talents is set
-  if ( _tree == talent_tree::HERO && !range::contains( player->player_sub_trees, trait->id_sub_tree ) &&
+  if ( _tree == talent_tree::HERO && !player->player_sub_trees.count( trait->id_sub_tree ) &&
        !range::contains( player->player_sub_traits, trait->id_trait_node_entry ) && !player->sim->enable_all_talents )
   {
     rank = 0U;
@@ -11726,7 +11959,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     double percent = -1.0;
 
     if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
+    {
       percent = 0.0;
+    }
     else if ( util::str_in_str_ci( parts[ 2 ], "pct" ) )
     {
       if (parts.size() == 4 )
@@ -11736,19 +11971,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       }
       else
       {
-        throw std::invalid_argument(fmt::format("No pct value given for time_to_pct_ expression."));
+        throw sc_invalid_apl_argument( "No pct value given for 'time_to_pct_' expression." );
       }
     }
     else
     {
-      throw std::invalid_argument(fmt::format("Unsupported time_to_ expression '{}'.", parts[ 2 ]));
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'time_to_' expression '{}'.", parts[ 2 ] ) );
     }
 
-    return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
+    return make_fn_expr( expression_str, [ this, percent ] {
+      return time_to_percent( percent ).total_seconds();
+    } );
   }
 
   // incoming_damage_X expressions
-  if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) || util::str_in_str_ci( expression_str, "incoming_magic_damage_" ))
+  if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) ||
+       util::str_in_str_ci( expression_str, "incoming_magic_damage_" ) )
   {
     bool magic_damage = util::str_in_str_ci( expression_str, "incoming_magic_damage_" );
     auto parts = util::string_split<util::string_view>( expression_str, "_" );
@@ -11762,18 +12000,23 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
     {
-      if (magic_damage)
+      if ( magic_damage )
       {
-        return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_magic_damage( window_duration );});
+        return make_fn_expr( expression_str, [ this, window_duration ] {
+          return compute_incoming_magic_damage( window_duration );
+        } );
       }
       else
       {
-        return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
+        return make_fn_expr( expression_str, [ this, window_duration ] {
+          return compute_incoming_damage( window_duration );
+        } );
       }
     }
     else
     {
-      throw std::invalid_argument(fmt::format("Non-positive window duration '{}'.", window_duration));
+      throw sc_invalid_apl_argument(
+        fmt::format( "Non-positive 'incoming_damage_' window duration '{}'.", window_duration ) );
     }
   }
 
@@ -11798,8 +12041,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
           if ( it == p->variables.end() )
           {
-            throw std::invalid_argument( fmt::format( "Player {} no variable named '{}' found",
-                  p->name(), name ) );
+            throw sc_invalid_apl_argument( fmt::format( "Variable '{}' not found.", name ) );
           }
           else
           {
@@ -11888,10 +12130,10 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
 
     // stat
-    if (splits[ 0 ] == "stat"  )
+    if ( splits[ 0 ] == "stat" )
     {
       if ( util::str_compare_ci( "spell_haste", splits[ 1 ] ) )
-        return make_fn_expr(expression_str, [this] {return 1.0 / cache.spell_haste() - 1.0;});
+        return make_fn_expr( expression_str, [ this ] { return 1.0 / cache.spell_haste() - 1.0; } );
 
       stat_e stat = util::parse_stat_type( splits[ 1 ] );
       switch ( stat )
@@ -11947,14 +12189,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           break;
       }
 
-      throw std::invalid_argument(fmt::format("Cannot build expression from '{}' because stat type '{}' could not be parsed.",
-          expression_str, splits[ 1 ]));
+      throw sc_invalid_apl_argument( fmt::format( "Stat '{}' not found.", splits[ 1 ] ) );
     }
 
     if ( splits[ 0 ] == "using_apl" )
-    {
       return expr_t::create_constant( expression_str, util::str_compare_ci( splits[ 1 ], use_apl ) );
-    }
 
     if ( splits[ 0 ] == "set_bonus" )
       return sets->create_expression( this, splits[ 1 ] );
@@ -11968,60 +12207,63 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           return !action->data().ok() ? 0 : get_active_dots( action->get_dot() );
         } );
       }
-      throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
+
+      throw sc_invalid_apl_argument( fmt::format( "Action '{}' not found.", splits[ 1 ] ) );
     }
 
     if ( splits[ 0 ] == "movement" )
     {
       if ( splits[ 1 ] == "remains" )
       {
-        return make_fn_expr(expression_str, [this] {
+        return make_fn_expr( expression_str, [ this ] {
           if ( current.distance_to_move > 0 )
             return ( current.distance_to_move / composite_movement_speed() );
           else
             return buffs.movement->remains().total_seconds();
-        });
+        } );
       }
       else if ( splits[ 1 ] == "distance" )
       {
-        return make_fn_expr(expression_str, [this] {return current.distance_to_move;});
+        return make_fn_expr( expression_str, [ this ] { return current.distance_to_move; } );
       }
       else if ( splits[ 1 ] == "speed" )
+      {
         return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
+      }
 
-      throw std::invalid_argument(fmt::format("Unsupported movement expression '{}'.", splits[ 1 ]));
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'movement' expression '{}'.", splits[ 1 ] ) );
     }
 
-    // specific bfa. options
+    // Expansion specific option expressions
     if ( splits[ 0 ] == "bfa" )
     {
       if ( splits[ 1 ] == "font_of_power_precombat_channel" )
       {
-        return make_fn_expr( expression_str, [this] {
+        return make_fn_expr( expression_str, [ this ] {
           return sim->bfa_opts.font_of_power_precombat_channel.total_seconds();
         } );
       }
 
-      throw std::invalid_argument( fmt::format( "Unsupported bfa. option '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'bfa.' option '{}'.", splits[ 1 ] ) );
     }
 
     if ( splits[ 0 ] == "shadowlands" )
     {
       if ( splits[ 1 ] == "shadowed_orb_of_torment_precombat_channel" )
       {
-        return make_fn_expr( expression_str, [this] {
+        return make_fn_expr( expression_str, [ this ] {
           return sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel.total_seconds();
         } );
       }
 
-      throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'shadowlands.' option '{}'.", splits[ 1 ] ) );
     }
 
     if ( splits[ 0 ] == "dragonflight" )
     {
       if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
       {
-        return make_fn_expr( expression_str, [this] {
+        return make_fn_expr( expression_str, [ this ] {
           return sim->dragonflight_opts.screaming_black_dragonscale_damage;
         } );
       }
@@ -12040,7 +12282,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         } );
       }
 
-      throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'dragonflight.' option '{}'.", splits[ 1 ] ) );
     }
 
     if ( splits[ 0 ] == "hero_tree" )
@@ -12048,7 +12290,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( auto id = trait_data_t::get_hero_tree_id( splits[ 1 ] ) )
       {
         // check hash-activated hero trees
-        if ( range::contains( player_sub_trees, id ) )
+        if ( player_sub_trees.count( id ) )
           return expr_t::create_constant( expression_str, 1 );
 
         // check manually added hero talents
@@ -12062,15 +12304,25 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         return expr_t::create_constant( expression_str, 0 );
       }
 
-      throw std::invalid_argument( fmt::format( "Cannot find hero tree '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Hero tree '{}' not found.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
-
 
   if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
+      // Universal PvP rules aura check, primarily used in Blizzard rotations
+      if ( splits[ 1 ] == "pvp_rules_enabled_hardcoded" )
+      {
+        if ( splits[ 2 ] == "up" )
+          return expr_t::create_constant( "pvp_enabled", as<double>( sim->pvp_rules && sim->pvp_rules->ok() ) );
+        else if ( splits[ 2 ] == "down" )
+          return expr_t::create_constant( "pvp_disabled", as<double>( !sim->pvp_rules || !sim->pvp_rules->ok() ) );
+
+        throw sc_invalid_apl_argument( fmt::format( "Invalid PvP rule check '{}.{}'.", splits[ 1 ], splits[ 2 ] ) );
+      }
+
       // buff.buff_name.buff_property
       get_target_data( this );
       buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
@@ -12078,7 +12330,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs & fallback buffs
       if ( buff )
         return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
-      throw std::invalid_argument(fmt::format("Cannot find buff '{}'.", splits[ 1 ]));
+
+      throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", splits[ 1 ] ) );
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
@@ -12086,7 +12339,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-      throw std::invalid_argument(fmt::format("Cannot find any cooldown with name '{}'.", splits[ 1 ]));
+
+      throw sc_invalid_apl_argument( fmt::format( "Cooldown '{}' not found.", splits[ 1 ] ) );
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -12097,16 +12351,17 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       if ( s == "oh" || s == "offhand" || s == "off_hand" )
         hand = SLOT_OFF_HAND;
       if ( hand == SLOT_INVALID )
-        throw std::invalid_argument(fmt::format("Invalid slot '{}' for swing expression.", splits[ 1 ]));
+        throw sc_invalid_apl_argument( fmt::format( "Invalid 'swing' slot '{}'.", splits[ 1 ] ) );
 
       if ( splits[ 2 ] == "remains" )
       {
         struct swing_remains_expr_t : public player_expr_t
         {
           slot_e slot;
+
           swing_remains_expr_t( player_t& p, slot_e s ) : player_expr_t( "swing_remains", p ), slot( s )
-          {
-          }
+          {}
+
           double evaluate() override
           {
             attack_t* attack = ( slot == SLOT_MAIN_HAND ) ? player.main_hand_attack : player.off_hand_attack;
@@ -12136,7 +12391,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( ctalent.invalid() && stalent.invalid() && htalent.invalid() )
     {
-      throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+      throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
     }
 
     if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
@@ -12148,8 +12403,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       return expr_t::create_constant( expression_str, std::max( { ctalent.rank(), stalent.rank(), htalent.rank() } ) );
     }
 
-    throw std::invalid_argument(
-        fmt::format( "Unsupported talent expression '{}'.", splits[ 2 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
   }
 
   // trinkets
@@ -12192,7 +12446,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( !pet && !pet_spawner )
     {
-      throw std::invalid_argument( fmt::format( "Cannot find pet or pet spawner '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Pet or pet spawner '{}' not found.", splits[ 1 ] ) );
     }
 
     if ( pet )
@@ -12229,7 +12483,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           return e;
         }
 
-        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+        throw sc_invalid_apl_argument( fmt::format( "Invalid pet expression '{}'.", tail ) );
       }
     }
     // No pet found, but a pet spawner was found. Make a pet-spawner based expression out of the
@@ -12256,14 +12510,13 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         {
           return e;
         }
-        throw std::invalid_argument(fmt::format("Unsupported owner expression '{}'.", tail));
+        throw sc_invalid_apl_argument( fmt::format( "Invalid owner expression '{}'.", tail ) );
       }
-      throw std::invalid_argument(fmt::format("Pet has no owner."));
+      throw sc_invalid_apl_argument( "Pet has no owner." );
     }
     else
     {
-      throw std::invalid_argument(fmt::format("Cannot use expression '{}' because player is not a pet.",
-          expression_str));
+      throw sc_invalid_apl_argument( "Player is not a pet." );
     }
   }
 
@@ -12423,7 +12676,7 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
   }
 
   auto tail = expression_str.substr( splits[ 0 ].length() + 1 );
-  throw std::invalid_argument(fmt::format("Unsupported resource expression '{}'.", tail));
+  throw sc_invalid_apl_argument( fmt::format( "Invalid resource expression '{}'.", tail ) );
 }
 
 double player_t::compute_incoming_damage( timespan_t interval ) const
@@ -12928,6 +13181,8 @@ void player_t::copy_from( player_t* source )
   shadowlands_opts                  = source->shadowlands_opts;
   dragonflight_opts                 = source->dragonflight_opts;
   thewarwithin_opts                 = source->thewarwithin_opts;
+  load_default_gear                 = source->load_default_gear;
+  load_default_talents              = source->load_default_talents;
   use_blizzard_action_list          = source->use_blizzard_action_list;
   one_button_mode                   = source->one_button_mode;
   use_cds_with_blizzard_action_list = source->use_cds_with_blizzard_action_list;
@@ -13094,6 +13349,7 @@ void player_t::create_options()
 
   // Set Bonus
   add_option( opt_func( "set_bonus", parse_set_bonus ) );
+  add_option( opt_append( "set_bonus+", set_bonus_str ) );
 
   // Gear Stats
   add_option( opt_float( "gear_strength", gear.attribute[ ATTR_STRENGTH ] ) );
@@ -13186,83 +13442,92 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_timespan( "default_item_group_cooldown", default_item_group_cooldown, 0_ms, timespan_t::max() ) );
-  add_option( opt_func( "override.precombat_state",
-    [ this ] ( sim_t*, util::string_view, util::string_view value ) {
-      auto splits = util::string_split<std::string>( value, "=" );
+  add_option( opt_func( "override.precombat_state", [ this ]( sim_t*, std::string_view, std::string_view value ) {
+    auto splits = util::string_split<std::string>( value, "=" );
+    if ( splits.size() != 2 )
+      throw std::invalid_argument( fmt::format( "Invalid value '{}'.", value ) );
+    precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
+    return true;
+  } ) );
+  add_option( opt_func( "set_custom_buff", [ this ]( sim_t*, std::string_view, std::string_view value ) {
+    if ( value.empty() )
+      return true;
+
+    auto splits = util::string_split<std::string>( value, "," );
+    std::string name{};
+    bool has_data = false;
+    std::string stat_value{};
+    timespan_t start = timespan_t::min();
+    timespan_t duration = 0_ms;
+    for ( auto s : splits )
+    {
+      auto sub_splits = util::string_split<std::string>( s, "=" );
+
+      if ( sub_splits.size() == 1 )
+      {
+        name = fmt::format( "custom_buff_{}", sub_splits[ 0 ] );
+        continue;
+      }
+
+      if ( sub_splits.size() != 2 )
+        throw std::invalid_argument( fmt::format( "Invalid sub option '{}'.", s ) );
+
+      if ( sub_splits[ 0 ] == "name" )
+      {
+      }
+      else if ( sub_splits[ 0 ] == "stat_value" )
+      {
+        stat_value = sub_splits[ 1 ];
+        has_data = true;
+      }
+      else if ( sub_splits[ 0 ] == "start" )
+      {
+        start = timespan_t::from_seconds( util::to_double( sub_splits[ 1 ] ) );
+      }
+      else if ( sub_splits[ 0 ] == "duration" )
+      {
+        duration = timespan_t::from_seconds( util::to_double( sub_splits[ 1 ] ) );
+      }
+      else
+      {
+        throw std::invalid_argument( fmt::format( "Invalid option '{}'.", sub_splits[ 0 ] ) );
+      }
+    }
+
+    if ( name.empty() )
+      throw std::invalid_argument( fmt::format( "Missing buff name from '{}'.", value ) );
+
+    // If the custom buff has no data, remove any existing buffs with the name.
+    if ( !has_data )
+    {
+      custom_stat_buffs.erase( name );
+      return true;
+    }
+
+    // Parse the data for the stat buff
+    if ( !stat_value.empty() )
+    {
+      splits = util::string_split<std::string>( stat_value, "_" );
       if ( splits.size() != 2 )
-        throw std::invalid_argument( fmt::format( "Invalid 'override.precombat_state' option: '{}'", value ) );
-      precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
-      return true;
-    } ) );
-  add_option( opt_func( "set_custom_buff",
-    [ this ] ( sim_t*, util::string_view, util::string_view value ) {
-      if ( value.empty() )
-        return true;
+        throw std::invalid_argument( fmt::format( "Invalid value option '{}'.", stat_value ) );
 
-      auto splits = util::string_split<std::string>( value, "," );
-      std::string name{};
-      bool has_data = false;
-      std::string stat_value{};
-      for ( auto s : splits )
+      stat_e stat = util::parse_stat_type( splits[ 1 ] );
+      if ( stat == STAT_NONE )
+        throw std::invalid_argument( fmt::format( "Invalid stat type '{}'.", splits[ 1 ] ) );
+
+      bool is_percentage = false;
+      if ( splits[ 0 ].back() == '%' )
       {
-        auto sub_splits = util::string_split<std::string>( s, "=" );
-
-        if ( sub_splits.size() == 1 )
-        {
-          name = fmt::format( "custom_buff_{}", sub_splits[ 0 ] );
-          continue;
-        }
-
-        if ( sub_splits.size() != 2 )
-          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' sub option: '{}'", s ) );
-
-        if ( sub_splits[ 0 ] == "name" )
-        {
-
-        }
-        else if ( sub_splits[ 0 ] == "stat_value" )
-        {
-          stat_value = sub_splits[ 1 ];
-          has_data = true;
-        }
-        else
-        {
-          throw std::invalid_argument( fmt::format( "Unsupported 'custom_stat_buff' option: '{}'", sub_splits[ 0 ] ) );
-        }
+        // The stat type will be checked later when creating the buff to ensure that it supports percentage buffs.
+        is_percentage = true;
+        splits[ 0 ].pop_back();
       }
+      double amount = util::to_double( splits[ 0 ] );
+      custom_stat_buffs[ name ] = { stat, amount, start, duration, is_percentage };
+    }
 
-      if ( name.empty() )
-        throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' usage, the buff must have a name: '{}'", value ) );
-
-      // If the custom buff has no data, remove any existing buffs with the name.
-      if ( !has_data )
-      {
-        custom_stat_buffs.erase( name );
-        return true;
-      }
-
-      // Parse the data for the stat buff
-      if ( !stat_value.empty() )
-      {
-        splits = util::string_split<std::string>( stat_value, "_" );
-        if ( splits.size() != 2 )
-          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' value option: '{}'", stat_value ) );
-        stat_e stat = util::parse_stat_type( splits[ 1 ] );
-        if ( stat == STAT_NONE )
-          throw std::invalid_argument( fmt::format( "Invalid 'custom_stat_buff' stat type: '{}'", splits[ 1 ] ) );
-        bool is_percentage = false;
-        if ( splits[ 0 ].back() == '%' )
-        {
-          // The stat type will be checked later when creating the buff to ensure that it supports percentage buffs.
-          is_percentage = true;
-          splits[ 0 ].pop_back();
-        }
-        double amount = util::to_double( splits[ 0 ] );
-        custom_stat_buffs[ name ] = { stat, amount, is_percentage };
-      }
-
-      return true;
-    } ) );
+    return true;
+  } ) );
 
   // Invoke External Buffs
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
@@ -13273,17 +13538,18 @@ void player_t::create_options()
   add_option( opt_string( "external_buffs.elegy_of_the_eternals", external_buffs.elegy_of_the_eternals ) );
 
   // Timed External Buffs
-  auto opt_external_buff_times = [] ( util::string_view name, std::vector<timespan_t>& times )
+  auto opt_external_buff_times = [] ( std::string_view name, std::vector<timespan_t>& times )
   {
-    return opt_func( name, [ & times ] ( sim_t*, util::string_view, util::string_view val )
+    return opt_func( name, [ & times ] ( sim_t*, std::string_view, std::string_view val )
     {
       times.clear();
-      auto splits = util::string_split<util::string_view>( val, "/" );
+      auto splits = util::string_split<std::string_view>( val, "/" );
       for ( auto split : splits )
       {
         double t = util::to_double( split );
         if ( t < 0.0 )
-          throw std::invalid_argument( "external buffs cannot be applied at negative times" );
+          throw std::invalid_argument( fmt::format( "Invalid external buff application time '{}'.", t ) );
+
         times.push_back( timespan_t::from_seconds( t ) );
       }
       return true;
@@ -13305,7 +13571,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
-  add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, util::string_view, util::string_view val )
+  add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, std::string_view, std::string_view val )
   {
     unsigned rank = util::to_unsigned( val );
     if ( rank <= 0 )
@@ -13313,35 +13579,34 @@ void player_t::create_options()
 
     const auto &conduit = conduit_entry_t::find( "The Long Summer", dbc->ptr );
     if ( conduit.id == 0 )
-      throw std::invalid_argument( "unable to find conduit entry data for The Long Summer" );
+      throw std::invalid_argument( "Conduit entry not found." );
 
     const auto &rank_entry = conduit_rank_entry_t::find( conduit.id, rank - 1, dbc->ptr );
     if ( rank_entry.conduit_id == 0 )
-      throw std::invalid_argument( "invalid conduit rank" );
+      throw std::invalid_argument( "Invalid conduit rank." );
 
     external_buffs.blessing_of_summer_duration_multiplier = 0.01 * rank_entry.value;
     return true;
   } ) );
   add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
-  // Azerite options
-  if ( ! is_enemy() && ! is_pet() )
+  // Player only options
+  if ( !is_enemy() && !is_pet() )
   {
     add_option( opt_func( "azerite_override", std::bind( &azerite::azerite_state_t::parse_override,
-          azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+      azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
     add_option( opt_func( "azerite_essences", std::bind( &azerite::azerite_essence_state_t::parse_azerite_essence,
-          azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+      azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 
     if ( covenant )
     {
       covenant->register_options( this );
     }
 
-    add_option( opt_func( "override.player.spell_data",
-        [ this ]( sim_t*, util::string_view, util::string_view value ) {
-          dbc_override_->parse( *dbc, value );
-          return true;
-        } ) );
+    add_option( opt_func( "override.player.spell_data", [ this ]( sim_t*, std::string_view, std::string_view value ) {
+      dbc_override_->parse( *dbc, value );
+      return true;
+    } ) );
   }
 
   // Shadowlands options
@@ -13359,27 +13624,23 @@ void player_t::create_options()
   add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
   add_option( opt_bool( "dragonflight.voice_of_the_silent_star_enable", dragonflight_opts.voice_of_the_silent_star_enable ) );
   add_option( opt_bool( "dragonflight.nymue_forced_immobilized", dragonflight_opts.nymue_forced_immobilized ) );
-  add_option( opt_func( "dragonflight.witherbarks_branch_timing", [ this ]( sim_t*, util::string_view,
-                                                                            util::string_view value ) {
+  add_option( opt_func( "dragonflight.witherbarks_branch_timing", [ this ]( sim_t*, std::string_view, std::string_view value ) {
     auto splits = util::string_split<std::string>( value, "/" );
     if ( splits.size() != 3 )
-      throw std::invalid_argument( fmt::format( "Invalid 'dragonflight.witherbarks_branch_timing' option: '{}'", value ) );
+      throw std::invalid_argument( "Requires three timings separated by '/'." );
 
     for ( size_t i = 0; i < 3; i++ )
-    {
       dragonflight_opts.witherbarks_branch_timing[ i ] = timespan_t::from_seconds( util::to_double( splits[ i ] ) );
-    }
+
     return true;
   } ) );
   add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
   add_option( opt_float( "dragonflight.rallied_to_victory_min_allies", dragonflight_opts.rallied_to_victory_min_allies, 0.0, 4 ) );
   add_option( opt_bool( "dragonflight.player.embersoul_debuff_immune", dragonflight_opts.embersoul_debuff_immune ) );
-  add_option( opt_float( "dragonflight.rallied_to_victory_multi_actor_skip_chance",
-                         dragonflight_opts.rallied_to_victory_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_float( "dragonflight.rallied_to_victory_multi_actor_skip_chance", dragonflight_opts.rallied_to_victory_multi_actor_skip_chance, 0.0, 1 ) );
   add_option( opt_bool( "dragonflight.string_of_delicacies_ally_estimate", dragonflight_opts.string_of_delicacies_ally_estimate ) );
   add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
-  add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance",
-                         dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
+  add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance", dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
   add_option( opt_string( "dragonflight.balefire_branch_loss_rng_type", dragonflight_opts.balefire_branch_loss_rng_type ) );
   add_option( opt_float( "dragonflight.balefire_branch_loss_rppm", dragonflight_opts.balefire_branch_loss_rppm, 0.0, std::numeric_limits<double>::max() ) );
   add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_percent, 0.0, 1.0 ) );
@@ -13450,12 +13711,28 @@ void player_t::create_options()
                          thewarwithin_opts.mereldars_toll_ally_trigger_chance, 0, 1 ) );
   add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
                          thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
-  add_option( opt_string( "thewarwithin.windsingers_passive_stat", thewarwithin_opts.windsingers_passive_stat ) );
-  add_option( opt_string( "thewarwithin.mister_locknstalk_mode", thewarwithin_opts.mister_locknstalk_mode ) );
-  add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat", thewarwithin_opts.jastor_diamond_ally_stat ) );
+  add_option( opt_string( "thewarwithin.windsingers_passive_stat",
+                           thewarwithin_opts.windsingers_passive_stat ) );
+  add_option( opt_string( "thewarwithin.mister_locknstalk_mode",
+                           thewarwithin_opts.mister_locknstalk_mode ) );
+  add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat",
+                           thewarwithin_opts.jastor_diamond_ally_stat ) );
   add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance",
                          thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
-  add_option( opt_timespan( "thewarwithin.additional_gcd_time", thewarwithin_opts.additional_gcd_time, 0_s, 10_s ) );
+  add_option( opt_timespan( "thewarwithin.additional_gcd_time",
+                             thewarwithin_opts.additional_gcd_time, 0_s, 10_s ) );
+  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_stat",
+                           thewarwithin_opts.alchemical_initial_stat ) );
+  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_penalty_stats",
+                          thewarwithin_opts.alchemical_initial_penalty ) );
+  add_option( opt_bool( "thewarwithin.incorporeal_essence_gorger_ethereal", thewarwithin_opts.incorporeal_essence_gorger_ethereal ) );
+  add_option( opt_float( "thewarwithin.astral_antenna_miss_chance", thewarwithin_opts.astral_antenna_miss_chance, 0.0, 1.0 ) );
+  add_option( opt_int( "thewarwithin.screams_of_a_forgotten_sky_initial_stacks",
+                       thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
+  add_option( opt_bool( "thewarwithin.brand_of_ceaseless_ire_force_full_uptime",
+                        thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
+  add_option( opt_bool( "thewarwithin.attuned_to_the_aether",
+                        thewarwithin_opts.attuned_to_the_aether ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -13918,401 +14195,6 @@ void player_t::do_update_movement( double yards )
   }
 }
 
-player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
-                                                                         timespan_t ts, timespan_t wait,
-                                                                         const player_t* p )
-  : action( a ), target( t ), target_name( t ? t->name_str : "" ), time( ts ), wait_time( wait ), queue_failed( false )
-{
-  for ( buff_t* b : p->buff_list )
-  {
-    if ( b->check() && !b->quiet && !b->constant )
-    {
-      buff_list.emplace_back( b, b->check(), b->remains() );
-    }
-  }
-
-  // Adding cooldown and debuffs snapshots if asking for json full states
-  if ( p->sim->json_full_states )
-  {
-    for ( cooldown_t* c : p->cooldown_list )
-    {
-      if ( c->down() )
-      {
-        cooldown_list.emplace_back( c, c->charges, c->remains() );
-      }
-    }
-    for ( player_t* current_target : p->sim->target_list )
-    {
-      decltype(target_list)::value_type::second_type debuff_list;
-      for ( buff_t* d : current_target->buff_list )
-      {
-        if ( d->check() && !d->quiet && !d->constant )
-        {
-          debuff_list.emplace_back( d, d->check(), d->remains() );
-        }
-      }
-      target_list.emplace_back( current_target, std::move( debuff_list ) );
-    }
-  }
-
-  range::fill( resource_snapshot, -1 );
-  range::fill( resource_max_snapshot, -1 );
-
-  for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
-  {
-    if ( p->resources.max[ i ] > 0.0 )
-    {
-      resource_snapshot[ i ]     = p->resources.current[ i ];
-      resource_max_snapshot[ i ] = p->resources.max[ i ];
-    }
-  }
-}
-
-player_collected_data_t::player_collected_data_t( const player_t* player ) :
-  fight_length( player->name_str + " Fight Length", generic_container_type( player, 2 ) ),
-  waiting_time( player->name_str + " Waiting Time", generic_container_type( player, 2 ) ),
-  pooling_time( player->name_str + " Pooling Time", generic_container_type( player, 4 ) ),
-  executed_foreground_actions( player->name_str + " Executed Foreground Actions", generic_container_type( player, 4 ) ),
-  dmg( player->name_str + " Damage", generic_container_type( player, 2 ) ),
-  compound_dmg( player->name_str + " Total Damage", generic_container_type( player, 2 ) ),
-  prioritydps( player->name_str + " Priority Target Damage Per Second", generic_container_type( player, 1 ) ),
-  dps( player->name_str + " Damage Per Second", generic_container_type( player, 1 ) ),
-  dpse( player->name_str + " Damage Per Second (Effective)", generic_container_type( player, 2 ) ),
-  dtps( player->name_str + " Damage Taken Per Second", tank_container_type( player, 2 ) ),
-  dmg_taken( player->name_str + " Damage Taken", tank_container_type( player, 2 ) ),
-  timeline_dmg(),
-  heal( player->name_str + " Heal", generic_container_type( player, 2 ) ),
-  compound_heal( player->name_str + " Total Heal", generic_container_type( player, 2 ) ),
-  hps( player->name_str + " Healing Per Second", generic_container_type( player, 1 ) ),
-  hpse( player->name_str + " Healing Per Second (Effective)", generic_container_type( player, 2 ) ),
-  htps( player->name_str + " Healing Taken Per Second", tank_container_type( player, 2 ) ),
-  heal_taken( player->name_str + " Healing Taken", tank_container_type( player, 2 ) ),
-  absorb( player->name_str + " Absorb", generic_container_type( player, 2 ) ),
-  compound_absorb( player->name_str + " Total Absorb", generic_container_type( player, 2 ) ),
-  aps( player->name_str + " Absorb Per Second", generic_container_type( player, 1 ) ),
-  atps( player->name_str + " Absorb Taken Per Second", tank_container_type( player, 2 ) ),
-  absorb_taken( player->name_str + " Absorb Taken", tank_container_type( player, 2 ) ),
-  deaths( player->name_str + " Deaths", tank_container_type( player, 2 ) ),
-  target_metric( player->name_str + " Target Metric", generic_container_type( player, 1 ) ),
-  resource_timelines(),
-  health_pct(),
-  combat_start_resource(
-    ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
-  combat_end_resource(
-    ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) ) ? RESOURCE_MAX : 0 ),
-  stat_timelines(),
-  health_changes(),
-  total_iterations( 0 ),
-  buffed_stats_snapshot()
-{
-  if ( !player->is_enemy() && ( !player->is_pet() || player->sim->report_pets_separately ) )
-  {
-    resource_lost.resize( RESOURCE_MAX );
-    resource_gained.resize( RESOURCE_MAX );
-    resource_overflowed.resize( RESOURCE_MAX );
-  }
-
-  // Enemies only have health
-  if ( player->is_enemy() )
-  {
-    resource_lost.resize( RESOURCE_HEALTH + 1 );
-    resource_gained.resize( RESOURCE_HEALTH + 1 );
-    resource_overflowed.resize( RESOURCE_HEALTH + 1 );
-  }
-}
-
-void player_collected_data_t::reserve_memory( const player_t& p )
-{
-  unsigned size = std::min( as<unsigned>( p.sim->iterations ), 2048U );
-  fight_length.reserve( size );
-  // DMG
-  dmg.reserve( size );
-  compound_dmg.reserve( size );
-  dps.reserve( size );
-  prioritydps.reserve( size );
-  dpse.reserve( size );
-  dtps.reserve( size );
-  // HEAL
-  heal.reserve( size );
-  compound_heal.reserve( size );
-  hps.reserve( size );
-  hpse.reserve( size );
-  htps.reserve( size );
-  heal_taken.reserve( size );
-  deaths.reserve( size );
-
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-    p.sim->num_tanks++;
-  }
-
-void player_collected_data_t::merge( const player_t& other_player )
-{
-  const auto& other = other_player.collected_data;
-  // No data got collected for this player in this thread, so skip merging player collected data
-  // entirely
-  if ( other.fight_length.count() == 0 )
-  {
-    return;
-  }
-
-  total_iterations += other.total_iterations;
-
-  fight_length.merge( other.fight_length );
-  waiting_time.merge( other.waiting_time );
-  executed_foreground_actions.merge( other.executed_foreground_actions );
-  // DMG
-  dmg.merge( other.dmg );
-  compound_dmg.merge( other.compound_dmg );
-  dps.merge( other.dps );
-  prioritydps.merge( other.prioritydps );
-  dtps.merge( other.dtps );
-  dpse.merge( other.dpse );
-  dmg_taken.merge( other.dmg_taken );
-  timeline_dmg.merge( other.timeline_dmg );
-  // HEAL
-  heal.merge( other.heal );
-  compound_heal.merge( other.compound_heal );
-  hps.merge( other.hps );
-  htps.merge( other.htps );
-  hpse.merge( other.hpse );
-  heal_taken.merge( other.heal_taken );
-  // Tank
-  deaths.merge( other.deaths );
-  timeline_dmg_taken.merge( other.timeline_dmg_taken );
-  timeline_healing_taken.merge( other.timeline_healing_taken );
-
-  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
-  {
-    resource_lost[ i ].merge( other.resource_lost[ i ] );
-    resource_gained[ i ].merge( other.resource_gained[ i ] );
-    resource_overflowed[ i ].merge( other.resource_overflowed[ i ] );
-  }
-
-  if ( resource_timelines.size() == other.resource_timelines.size() )
-  {
-    for ( size_t i = 0; i < resource_timelines.size(); ++i )
-    {
-      assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
-      assert( resource_timelines[ i ].type != RESOURCE_NONE );
-      resource_timelines[ i ].timeline.merge( other.resource_timelines[ i ].timeline );
-    }
-  }
-
-  health_pct.merge( other.health_pct );
-
-  for ( size_t i = 0, end = combat_start_resource.size(); i < end; ++i )
-  {
-    combat_start_resource[ i ].merge( other.combat_start_resource[ i ] );
-    combat_end_resource[ i ].merge( other.combat_end_resource[ i ] );
-  }
-
-  assert( stat_timelines.size() == other.stat_timelines.size() );
-  for ( size_t i = 0; i < stat_timelines.size(); ++i )
-  {
-    assert( stat_timelines[ i ].type == other.stat_timelines[ i ].type );
-    stat_timelines[ i ].timeline.merge( other.stat_timelines[ i ].timeline );
-  }
-
-  health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
-}
-
-void player_collected_data_t::analyze( const player_t& p )
-{
-  fight_length.analyze();
-  // DMG
-  dmg.analyze();
-  compound_dmg.analyze();
-  dps.analyze();
-  prioritydps.analyze();
-  dpse.analyze();
-  dmg_taken.analyze();
-  dtps.analyze();
-  // Heal
-  heal.analyze();
-  compound_heal.analyze();
-  hps.analyze();
-  hpse.analyze();
-  heal_taken.analyze();
-  htps.analyze();
-  // Absorb
-  absorb.analyze();
-  compound_absorb.analyze();
-  aps.analyze();
-  absorb_taken.analyze();
-  atps.analyze();
-  // Tank
-  deaths.analyze();
-
-  if ( !p.sim->single_actor_batch )
-  {
-    timeline_dmg_taken.adjust( *p.sim );
-    timeline_healing_taken.adjust( *p.sim );
-
-    health_pct.adjust( *p.sim );
-    range::for_each( resource_timelines, [&p]( resource_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
-    range::for_each( stat_timelines, [&p]( stat_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
-
-    // health changes need their own divisor
-    health_changes.merged_timeline.adjust( *p.sim );
-  }
-  // Single actor batch mode has to analyze the timelines in relation to their own fight lengths,
-  // instead of the simulation-wide fight length.
-  else
-  {
-    timeline_dmg_taken.adjust( fight_length );
-    timeline_healing_taken.adjust( fight_length );
-
-    health_pct.adjust( fight_length );
-    range::for_each( resource_timelines, [this]( resource_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
-    range::for_each( stat_timelines, [this]( stat_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
-
-    // health changes need their own divisor
-    health_changes.merged_timeline.adjust( fight_length );
-  }
-}
-
-double player_collected_data_t::calculate_max_spike_damage( const health_changes_timeline_t& tl, int window )
-{
-  double max_spike = 0;
-
-  // declare sliding average timeline
-  sc_timeline_t sliding_average_tl;
-
-  // create sliding average timelines from data
-  tl.timeline_normalized.build_sliding_average_timeline( sliding_average_tl, window );
-
-  // pull the data out of the normalized sliding average timeline
-  std::vector<double> weighted_value = sliding_average_tl.data();
-
-  // extract the max spike size from the sliding average timeline
-  max_spike = *std::max_element( weighted_value.begin(), weighted_value.end() );  // todo: remove weighted_value here
-  max_spike *= window;
-
-  return max_spike;
-}
-
-void player_collected_data_t::collect_data( const player_t& p )
-{
-  double f_length   = p.iteration_fight_length.total_seconds();
-  // Use a composite uptime for the amount per second calculations to accurately take into account
-  // dynamic pets (for example wild imps) spawned through the pet spawner system. Only used for
-  // output metrics.
-  double uptime     = p.composite_active_time().total_seconds();
-  double sim_length = p.sim->current_time().total_seconds();
-  double w_time     = p.iteration_waiting_time.total_seconds();
-  double p_time     = p.iteration_pooling_time.total_seconds();
-  assert( p.iteration_fight_length <= p.sim->current_time() );
-
-  fight_length.add( f_length );
-  waiting_time.add( w_time );
-  pooling_time.add( p_time );
-
-  executed_foreground_actions.add( p.iteration_executed_foreground_actions );
-
-  // Player only dmg/heal
-  dmg.add( p.iteration_dmg );
-  heal.add( p.iteration_heal );
-  absorb.add( p.iteration_absorb );
-
-  // player + pet dmg
-  double total_iteration_dmg = range::accumulate(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
-
-  double total_priority_iteration_dmg = range::accumulate(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
-
-  // player + pet heal
-  double total_iteration_heal = range::accumulate(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
-
-  double total_iteration_absorb = range::accumulate(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
-
-  compound_dmg.add( total_iteration_dmg );
-  prioritydps.add( uptime ? total_priority_iteration_dmg / uptime : 0 );
-  dps.add( uptime ? total_iteration_dmg / uptime : 0 );
-  dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
-  double dps_metric = uptime ? ( total_iteration_dmg / uptime ) : 0;
-
-  compound_heal.add( total_iteration_heal );
-  hps.add( uptime ? total_iteration_heal / uptime : 0 );
-  hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
-  compound_absorb.add( total_iteration_absorb );
-  aps.add( uptime ? total_iteration_absorb / uptime : 0.0 );
-  double heal_metric = uptime ? ( ( total_iteration_heal + total_iteration_absorb ) / uptime ) : 0;
-
-  heal_taken.add( p.iteration_heal_taken );
-  htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
-  absorb_taken.add( p.iteration_absorb_taken );
-  atps.add( f_length ? p.iteration_absorb_taken / f_length : 0.0 );
-
-  dmg_taken.add( p.iteration_dmg_taken );
-  dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
-
-  for ( size_t i = 0, end = resource_lost.size(); i < end; ++i )
-  {
-    resource_lost[ i ].add( p.iteration_resource_lost[ i ] );
-  }
-  for ( size_t i = 0, end = resource_gained.size(); i < end; ++i )
-  {
-    resource_gained[ i ].add( p.iteration_resource_gained[ i ] );
-  }
-  for ( size_t i = 0, end = resource_overflowed.size(); i < end; ++i )
-  {
-    resource_overflowed[ i ].add( p.iteration_resource_overflowed[ i ] );
-  }
-
-  for ( size_t i = 0, end = combat_end_resource.size(); i < end; ++i )
-  {
-    combat_end_resource[ i ].add( p.resources.current[ i ] );
-  }
-
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
-    health_changes.merged_timeline.merge( health_changes.timeline );
-
-  if ( p.sim->target_error > 0 && !p.is_pet() && !p.is_enemy() )
-  {
-    double metric = 0;
-
-    role_e target_error_role = p.sim -> target_error_role;
-    // use player's role if sim didn't provide an override
-    if (target_error_role == ROLE_NONE)
-    {
-      target_error_role = p.primary_role();
-      // exception for tanks - use DPS by default.
-      if (target_error_role == ROLE_TANK)
-      {
-        target_error_role = ROLE_DPS;
-      }
-    }
-
-    // ROLE is used here primarily to stay in-line with the previous version of the code.
-    // An ideal implementation is probably to rewrite this to allow specification of a scale_metric_e
-    // to make it more flexible. That was beyond my capability/available time and it would also likely be
-    // very, very low use (as of legion/bfa, almost all tanks are simming DPS, not survival).
-    switch( target_error_role )
-    {
-      case ROLE_ATTACK:
-      case ROLE_SPELL:
-      case ROLE_HYBRID:
-      case ROLE_DPS:
-        metric = dps_metric;
-        break;
-
-      case ROLE_TANK:
-        metric = dps_metric;
-        break;
-
-      case ROLE_HEAL:
-        metric = heal_metric;
-        break;
-
-      default:;
-    }
-
-    player_collected_data_t& cd = p.parent ? p.parent->collected_data : *this;
-
-    AUTO_LOCK( cd.target_metric_mutex );
-    cd.target_metric.add( metric );
-  }
-}
-
 // Note, root call needs to set player_t::visited_apls_ to 0
 action_t* player_t::select_action( const action_priority_list_t& list,
                                    execute_type                  et,
@@ -14391,7 +14273,7 @@ action_t* player_t::select_action( const action_priority_list_t& list,
         // infinite loop, and need to cancel the sim
         if ( visited_apls_ & call->alist->internal_id_mask )
         {
-          throw std::runtime_error(fmt::format("'{}' action list in infinite loop", name() ));
+          throw sc_runtime_error( fmt::format( "{} {} in infinite loop.", *this, *call ) );
         }
 
         // We get an action from the call, return it
@@ -15022,6 +14904,11 @@ void player_t::register_movement_callback( std::function<void( bool )> fn )
   callbacks_on_movement.emplace_back( std::move( fn ) );
 }
 
+void player_t::register_init_finished_callback( std::function<void( player_t* )> fn )
+{
+  callbacks_on_init_finished.emplace_back( std::move( fn ) );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -15131,7 +15018,7 @@ void player_t::init_distance_targeting()
 
 void sc_format_to( const player_t& player, fmt::format_context::iterator out )
 {
-  fmt::format_to( out, "Player '{}'", player.name() );
+  fmt::format_to( out, "{} '{}'", player.is_enemy() ? "Enemy" : "Player", player.name() );
 }
 
 bool player_t::is_ptr() const

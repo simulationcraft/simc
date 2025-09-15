@@ -51,7 +51,7 @@ const dbc_item_data_t* find_consumable( const dbc_t& dbc, std::string_view name_
   }
 
   // Poor man's longest matching prefix!
-  const auto& item = dbc::find_consumable( type, dbc.ptr, [ name, quality ]( const dbc_item_data_t* i ) {
+  if ( auto item = &dbc::find_consumable( type, dbc.ptr, [ name, quality ]( const dbc_item_data_t* i ) {
     auto n = util::tokenize_fn( i->name ? i->name : "unknown" );
     if ( util::str_in_str_ci( n, name ) )
     {
@@ -60,10 +60,10 @@ const dbc_item_data_t* find_consumable( const dbc_t& dbc, std::string_view name_
     }
 
     return false;
-  } );
-
-  if ( item.id != 0 )
-    return &item;
+  } ); item->id != 0 )
+  {
+    return item;
+  }
 
   return nullptr;
 }
@@ -115,7 +115,7 @@ struct elixir_t : public action_t
     }
     if ( !data )
     {
-      sim->error( "Player {} attempting to use unsupported elixir '{}'.\n", player->name(), type_str );
+      sim->error( "{} attempting to use unsupported elixir '{}'.", *player, type_str );
       background = true;
     }
     else
@@ -508,7 +508,7 @@ struct potion_t : public dbc_consumable_base_t
 
     if ( cooldown->duration == 0_ms )
     {
-      throw std::invalid_argument( fmt::format( "No cooldown found for potion '{}'.", item_data->name ) );
+      throw std::invalid_argument( "No cooldown found." );
     }
 
     // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
@@ -884,8 +884,8 @@ void dbc_consumable_base_t::init()
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::invalid_argument(
-        fmt::format( "Unable to initialize consumable '{}' from '{}'", signature_str, consumable_name ) ) );
+      std::throw_with_nested( sc_invalid_apl_argument(
+        fmt::format( "Invalid consumable '{}' with expression '{}'.", consumable_name, signature_str ) ) );
     }
   }
 

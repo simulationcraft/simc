@@ -156,7 +156,7 @@ class BuildCfg(object):
 		# Slight hack to get the configuration file read easily
 		conf_str = '[base]\n' + open(build_cfg_path, 'r').read()
 		conf_str_fp = io.StringIO(conf_str)
-		self.cfg.readfp(conf_str_fp)
+		self.cfg.read_file(conf_str_fp)
 
 		print(f'Wow build: {build_version}')
 

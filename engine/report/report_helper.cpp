@@ -10,14 +10,15 @@
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
+#include "player/covenant.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
-#include "player/covenant.hpp"
-#include "report/gear_weights.hpp"
+#include "player/stats.hpp"
 #include "report/charts.hpp"
+#include "report/gear_weights.hpp"
 #include "report/highchart.hpp"
-#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
+#include "sim/sim.hpp"
 #include "util/xml.hpp"
 
 // ==========================================================================
@@ -381,6 +382,11 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   {
     tier_name          = "TWW2";
     max_ilevel_allowed = 684;
+  }
+  else if ( p.report_information.save_str.find( "TWW3" ) != std::string::npos )
+  {
+    tier_name          = "TWW3";
+    max_ilevel_allowed = 730; // TODO: Reshi wraps are 730, everything else is 723
   }
   else
   {
@@ -765,4 +771,14 @@ void report_helper::print_distribution_chart( report::sc_html_stream& os,    // 
 
     p.sim->add_chart_data( chart );
   }
+}
+
+void report_helper::collect_aps( const stats_t* stats, double& amount, double& amount_pct )
+{
+  amount += stats->portion_apse.mean();
+  amount_pct += stats->portion_amount;
+
+  for ( const auto& s : stats->children )
+    if ( stats->type == s->type )
+      collect_aps( s, amount, amount_pct );
 }

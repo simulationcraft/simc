@@ -45,7 +45,6 @@ stats_t::stats_t( util::string_view n, player_t* p ) :
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
   aps( 0 ), ape( 0 ), apet( 0 ), etpe( 0 ), ttpt( 0 ),
   total_time( timespan_t::zero() ),
-  timeline_aps_chart(),
   scaling( nullptr ),
   timeline_amount( nullptr )
 {

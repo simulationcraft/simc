@@ -9,22 +9,23 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=pillar_of_frost,can_have_one_button_penalty=1,if=cooldown.frost_strike.ready&target.distance<=8
+actions.assisted_combat+=/frostwyrms_fury,can_have_one_button_penalty=1,if=target.distance<=30&buff.pillar_of_frost.up
+actions.assisted_combat+=/empower_rune_weapon,can_have_one_button_penalty=1,if=runic_power<=8&buff.killing_machine.stack<=1
+actions.assisted_combat+=/empower_rune_weapon,can_have_one_button_penalty=1,if=runic_power<=8&buff.killing_machine.down
 actions.assisted_combat+=/frostwyrms_fury,can_have_one_button_penalty=1,if=target.distance<=30
 actions.assisted_combat+=/reapers_mark,can_have_one_button_penalty=1
-actions.assisted_combat+=/chill_streak,can_have_one_button_penalty=1
-actions.assisted_combat+=/frostscythe,can_have_one_button_penalty=1,if=target.distance<=8
-actions.assisted_combat+=/death_and_decay,can_have_one_button_penalty=1,if=target.distance<=10&active_enemies>3&buff.death_and_decay.down
+actions.assisted_combat+=/frostscythe,can_have_one_button_penalty=1,if=target.distance<=8&active_enemies>3&buff.killing_machine.up
 actions.assisted_combat+=/obliterate,can_have_one_button_penalty=1,if=buff.killing_machine.up
-actions.assisted_combat+=/remorseless_winter,can_have_one_button_penalty=1,if=target.distance<=10
+actions.assisted_combat+=/remorseless_winter,can_have_one_button_penalty=1,if=target.distance<=10&!talent.frozen_dominion
+actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1,if=target.distance<=8&buff.frostbane.up
 actions.assisted_combat+=/howling_blast,can_have_one_button_penalty=1,if=buff.rime.up
-actions.assisted_combat+=/obliterate,can_have_one_button_penalty=1,if=active_enemies>3
-actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1,if=buff.breath_of_sindragosa.down&debuff.razorice.stack>=5
-actions.assisted_combat+=/glacial_advance,can_have_one_button_penalty=1,if=target.distance<=10&active_enemies>3&buff.breath_of_sindragosa.down
-actions.assisted_combat+=/soul_reaper,can_have_one_button_penalty=1,if=target.health.pct<=35
-actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1,if=buff.breath_of_sindragosa.down&runic_power>=8
+actions.assisted_combat+=/soul_reaper,can_have_one_button_penalty=1,if=target.health.pct<=35&active_enemies<=2
+actions.assisted_combat+=/glacial_advance,can_have_one_button_penalty=1,if=target.distance<=10&active_enemies>3&runic_power>=8
+actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1,if=runic_power>=8
+actions.assisted_combat+=/frostscythe,can_have_one_button_penalty=1,if=target.distance<=8&active_enemies>3
 actions.assisted_combat+=/obliterate,can_have_one_button_penalty=1
-actions.assisted_combat+=/horn_of_winter,can_have_one_button_penalty=1,if=runic_power<=8
-actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1,if=buff.breath_of_sindragosa.down
+actions.assisted_combat+=/glacial_advance,can_have_one_button_penalty=1,if=target.distance<=10&active_enemies>3
+actions.assisted_combat+=/frost_strike,can_have_one_button_penalty=1
 actions.assisted_combat+=/howling_blast,can_have_one_button_penalty=1,if=target.distance>15
 actions.assisted_combat+=/obliterate,can_have_one_button_penalty=1
 
@@ -35,6 +36,5 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/breath_of_sindragosa,if=runic_power>60
-actions.cooldowns+=/empower_rune_weapon
-actions.cooldowns+=/abomination_limb
+actions.cooldowns+=/breath_of_sindragosa
+actions.cooldowns+=/raise_dead

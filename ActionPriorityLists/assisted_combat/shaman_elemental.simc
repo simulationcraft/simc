@@ -18,10 +18,12 @@ actions.assisted_combat+=/liquid_magma_totem
 actions.assisted_combat+=/flame_shock,if=!dot.flame_shock.ticking&active_enemies<=2
 actions.assisted_combat+=/lava_burst,if=talent.master_of_the_elements&buff.master_of_the_elements.down&dot.flame_shock.ticking&active_enemies<=2
 actions.assisted_combat+=/primordial_wave,if=dot.flame_shock.ticking
+actions.assisted_combat+=/earth_shock,if=buff.echoes_of_great_sundering.down&talent.echoes_of_great_sundering
+actions.assisted_combat+=/elemental_blast,if=buff.echoes_of_great_sundering.down&talent.echoes_of_great_sundering
 actions.assisted_combat+=/earthquake,if=buff.echoes_of_great_sundering.up
 actions.assisted_combat+=/earthquake,if=buff.echoes_of_great_sundering.up
-actions.assisted_combat+=/earthquake,if=active_enemies>3
-actions.assisted_combat+=/earthquake,if=active_enemies>3
+actions.assisted_combat+=/earthquake,if=active_enemies>3&!talent.echoes_of_great_sundering
+actions.assisted_combat+=/earthquake,if=active_enemies>3&!talent.echoes_of_great_sundering
 actions.assisted_combat+=/ancestral_swiftness,if=action.elemental_blast.cost_affordable&cooldown.elemental_blast.ready
 actions.assisted_combat+=/elemental_blast
 actions.assisted_combat+=/earth_shock

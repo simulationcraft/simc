@@ -75,7 +75,28 @@ std::string pet_type( uint32_t opt )
 {
   return opt ? "Guardian" : "Pet";
 }
+
+std::string parse_cb_str( parse_callback_e type )
+{
+  switch ( type )
+  {
+    case PARSE_CALLBACK_POST_SNAPSHOT: return "post-snapshot";
+    case PARSE_CALLBACK_POST_IMPACT:   return "post-impact";
+    case PARSE_CALLBACK_POST_EXECUTE:  return "post-execute";
+    default:                           return "unknown";
+  }
+}
 }  // namespace opt_strings
+
+player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, parse_callback_e type, parse_cb_t fn )
+{
+  uint32_t mask = 1U << ( base->callback_list[ type ].size() + 8 * static_cast<unsigned>( type ) );
+  idx |= mask;
+  base->callback_mask[ type ] |= mask;
+  base->callback_list[ type ].push_back( std::move( fn ) );
+  simple = false;
+  return *this;
+}
 
 std::string player_effect_t::value_type_name( uint16_t t ) const
 {
@@ -566,9 +587,14 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
   double val_mul = 0.01;
 
   if ( mastery )
+  {
     val = eff.mastery_value();
+    pack.data.base_mastery = eff.percent();
+  }
   else
+  {
     val = eff.base_value();
+  }
 
   if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
@@ -628,7 +654,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
                         : flat  ? fmt::format( "{}", val )
-                                : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
+                                : fmt::format( "{:.1f}%", val * ( tmp.value != 0.0 ? 100 : 1 / val_mul ) );
 
   if ( tmp.value != 0.0 )
     val_str = val_str + " (value override)";
@@ -664,7 +690,8 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   if constexpr ( is_detected_v<detect_simple, U> )
   {
-    if ( tmp.func || tmp.value_func || tmp.type & USE_CURRENT || tmp.mastery || !tmp.use_stacks || pack.callback )
+    if ( tmp.func || tmp.value_func || tmp.type & USE_CURRENT || tmp.mastery || !tmp.use_stacks ||
+         pack.num_callbacks() )
     {
       tmp.simple = false;
     }
@@ -720,7 +747,10 @@ double parse_effects_t::get_effect_value_full( const player_effect_t& i, bool be
   }
 
   if ( i.mastery )
+  {
     eff_val *= _player->cache.mastery();
+    eff_val += i.base_mastery;
+  }
 
   callback_idx |= i.idx;
 
@@ -1376,51 +1406,54 @@ size_t parse_player_effects_t::total_effects_count()
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_cb_t cb )
 {
-  assert( pack.data.idx == 0 && "cannot parse multiple parse callbacks" );
-  // 32 max as parse_effects_t::callback_idx is uint32_t
-  assert( callback_list.size() < 32 && "cannot register more than 32 parse callbacks" );
+  // 8 max per type as parse_effects_t::callback_idx is uint32_t
+  assert( callback_list[ pack.callback_type ].size() < 8 && "cannot register more than 8 parse callbacks per type" );
 
   // set values on main pack, to be propagated to all copies
-  pack.callback = std::move( cb );
+  pack.callback[ pack.callback_type ] = std::move( cb );
+
   // this is set BEFORE the callback is added to the vector, so the idx will be 1bit left of size()
-  pack.data.idx = 1U << ( callback_list.size() );
+  uint32_t mask = 1U << ( callback_list[ pack.callback_type ].size() + 8 * static_cast<unsigned>( pack.callback_type ) );
+  pack.data.idx |= mask;
+  callback_mask[ pack.callback_type ] |= mask;
 }
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_flag_e type )
 {
-  assert( pack.data.buff && "EXPIRE_BUFF/DECREMENT_BUFF requires a buff" );
+  if ( type == CONSUME_BUFF )
+  {
+    assert( pack.data.buff && "CONSUME_BUFF requires a buff" );
 
-  if ( type == EXPIRE_BUFF )
-  {
-    parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( parse_callback_e cb_type ) {
-      if ( cb_type == PARSE_CALLBACK_POST_EXECUTE )
-        b->expire( a );
-    } );
-  }
-  else if ( type == DECREMENT_BUFF )
-  {
-    parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( parse_callback_e cb_type ) {
-      if ( cb_type == PARSE_CALLBACK_POST_EXECUTE && b->can_expire( a ) )
-        b->decrement();
+    parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( action_state_t* ) {
+      b->consume( a );
     } );
   }
 }
 
 void parse_action_base_t::register_callback_function( pack_t<player_effect_t>& pack )
 {
-  callback_list.push_back( std::move( pack.callback ) );
+  for ( size_t i = 0; i < pack.callback.size(); i++ )
+  {
+    if ( !pack.callback[ i ] )
+      continue;
 
-  _player->sim->print_debug( "action-effects: {} ({}) registering parse callback on {} {} ({})", _action->name(),
-                             _action->id, pack.data.buff ? "buff" : "spell", pack.spell->name_cstr(),
-                             pack.spell->id() );
+    callback_list[ i ].push_back( std::move( pack.callback[ i ] ) );
+    _player->sim->print_debug( "action-effects: {} registering {} parse callback ({:#010x}) on {} {} ({})", *_action,
+                               opt_strings::parse_cb_str( static_cast<parse_callback_e>( i ) ),
+                               pack.data.idx & ( 0xFF << ( i * 8 ) ), pack.data.buff ? "buff" : "spell",
+                               pack.spell->name_cstr(), pack.spell->id() );
+  }
 }
 
-void parse_action_base_t::trigger_callbacks( parse_callback_e cb_type )
+void parse_action_base_t::trigger_callbacks( parse_callback_e cb_type, action_state_t* state )
 {
   if ( callback_idx )
-    for ( size_t i = 0; i < callback_list.size(); i++ )
-      if ( callback_idx & ( 1U << i ) )
-        callback_list[ i ]( cb_type );
+  {
+    auto i = 8 * static_cast<unsigned>( cb_type );
+    for ( const auto& cb : callback_list[ cb_type ] )
+      if ( callback_idx & ( 1U << i++ ) )
+        cb( state );
+  }
 }
 
 bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
@@ -1464,8 +1497,13 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       tmp.type |= AFFECTED_OVERRIDE;
   }
 
-  if ( !force && !_action->data().affected_by_all( eff ) )
-    return nullptr;
+  if ( !force )  // force_effect or positive affect_list_t will result in force == true
+  {
+    if ( pack.ignore_whitelist )  // if ignoring whitelist, anything not forced results in no match.
+      return nullptr;
+    else if ( !_action->data().affected_by_all( eff ) )  // standard DBC whitelist filter
+      return nullptr;
+  }
 
   if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
   {
@@ -1564,23 +1602,23 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
         stack_str = "with";
     }
 
-    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} {} buff {} ({}#{})", _action->name(),
-                               _action->id, tok1, tok2, stack_str, data.buff->name(), data.buff->data().id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} {} buff {} ({}#{})", *_action, tok1, tok2,
+                               stack_str, data.buff->name(), data.buff->data().id(), i );
   }
   else if ( mastery && !data.func )
   {
-    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
+                               s_data->name_cstr(), s_data->id(), i );
   }
   else if ( data.func )
   {
-    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} with condition from {} ({}#{})",
-                               _action->name(), _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} with condition from {} ({}#{})", *_action, tok1,
+                               tok2, s_data->name_cstr(), s_data->id(), i );
   }
   else
   {
-    _action->sim->print_debug( "action-effects: {} ({}) {} modified by {} from {} ({}#{})", _action->name(),
-                               _action->id, tok1, tok2, s_data->name_cstr(), s_data->id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
+                               s_data->name_cstr(), s_data->id(), i );
   }
 }
 
@@ -1611,8 +1649,13 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
       tmp.type |= AFFECTED_OVERRIDE;
   }
 
-  if ( !force && !_action->data().affected_by_all( eff ) )
-    return nullptr;
+  if ( !force )  // force_effect or positive affect_list_t will result in force == true
+  {
+    if ( pack.ignore_whitelist )  // if ignoring whitelist, anything not forced results in no match.
+      return nullptr;
+    else if ( !_action->data().affected_by_all( eff ) )  // standard DBC whitelist filter
+      return nullptr;
+  }
 
   switch ( eff.subtype() )
   {
@@ -1630,8 +1673,8 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
 void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
                                          bool, const spell_data_t* s_data, size_t i )
 {
-  _action->sim->print_debug( "target-effects: {} ({}) {} modified by {} on targets with debuff {} ({}#{})",
-                             _action->name(), _action->id, type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  _action->sim->print_debug( "target-effects: {} {} modified by {} on targets with debuff {} ({}#{})", *_action,
+                             type_str, val_str, s_data->name_cstr(), s_data->id(), i );
 }
 
 bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const

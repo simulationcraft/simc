@@ -318,6 +318,7 @@ SOURCES += engine/player/ground_aoe.cpp
 SOURCES += engine/player/instant_absorb.cpp
 SOURCES += engine/player/pet.cpp
 SOURCES += engine/player/player.cpp
+SOURCES += engine/player/player_collected_data.cpp
 SOURCES += engine/player/player_event.cpp
 SOURCES += engine/player/player_stat_cache.cpp
 SOURCES += engine/player/player_talent_points.cpp

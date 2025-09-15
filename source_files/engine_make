@@ -121,6 +121,7 @@ SRC += \
     player$(PATHSEP)instant_absorb.cpp \
     player$(PATHSEP)pet.cpp \
     player$(PATHSEP)player.cpp \
+    player$(PATHSEP)player_collected_data.cpp \
     player$(PATHSEP)player_event.cpp \
     player$(PATHSEP)player_stat_cache.cpp \
     player$(PATHSEP)player_talent_points.cpp \

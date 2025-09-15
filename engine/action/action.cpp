@@ -71,7 +71,7 @@ void do_execute( action_t* action, execute_type type )
     {
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
-      action->player->sequence_add( action, action->target, action->sim->current_time() );
+      action->player->sequence_add( action, action->target );
     }
     action->execute();
     action->line_cooldown->start();
@@ -278,8 +278,8 @@ struct action_execute_event_t : public player_event_t
     {
       if ( p()->readying )
       {
-        throw std::runtime_error( fmt::format( "Non-channeling action {} for {} is trying to overwrite "
-          "player-ready-event upon execute.", action->name(), *p() ) );
+        throw sc_runtime_error( fmt::format(
+          "{} non-channeling {} is trying to overwrite player-ready-event upon execute.", *p(), *action ) );
       }
 
       p()->schedule_ready( timespan_t::zero() );
@@ -503,22 +503,20 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
 
   if ( sim->initialized && player->nth_iteration() > 0 )
   {
-    sim->errorf( "Player %s action %s created after simulator initialization.", player->name(), name() );
+    sim->error( "{} {} created after simulator initialization.", *player, *this );
   }
   if ( player->nth_iteration() > 0 )
   {
-    sim->errorf( "Player %s creating action %s ouside of the first iteration", player->name(), name() );
+    sim->error( "{} creating {} ouside of the first iteration", *player, *this );
     assert( false );
   }
 
   if ( sim->debug )
-    sim->out_debug.print( "{} creates {} ({})", *player, *this,
-                           ( data().ok() ? data().id() : -1 ) );
+    sim->print_debug( "{} creates {} ({})", *player, *this, ( data().ok() ? data().id() : -1 ) );
 
   if ( !player->initialized )
   {
-    sim->errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player->name(), name() );
-    sim->cancel();
+    throw sc_initialization_error( fmt::format( "{} being created before player_t::init().", *this ) );
   }
 
   player->action_list.push_back( this );
@@ -534,25 +532,23 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
     if ( sim->debug )
     {
-      sim->error(
-        "Player {} attempting to use action {} without the required talent, spec, class, race, or level; ignoring.\n",
-        player->name(), name() );
+      sim->error( "{} attempting to use {} without the meeting requirements, ignoring.", *player, *this );
     }
 
     background = true;
   }
 
-  add_option( opt_string( "if", option.if_expr_str ) );
-  add_option( opt_string( "interrupt_if", option.interrupt_if_expr_str ) );
-  add_option( opt_string( "early_chain_if", option.early_chain_if_expr_str ) );
-  add_option( opt_string( "cancel_if", option.cancel_if_expr_str ) );
+  add_option( opt_string_warn( "if", option.if_expr_str ) );
+  add_option( opt_string_warn( "interrupt_if", option.interrupt_if_expr_str ) );
+  add_option( opt_string_warn( "early_chain_if", option.early_chain_if_expr_str ) );
+  add_option( opt_string_warn( "cancel_if", option.cancel_if_expr_str ) );
   add_option( opt_bool( "interrupt", option.interrupt ) );
   add_option( opt_bool( "interrupt_global", interrupt_global ) );
   add_option( opt_bool( "chain", option.chain ) );
   add_option( opt_bool( "cycle_targets", option.cycle_targets ) );
   add_option( opt_bool( "cycle_players", option.cycle_players ) );
   add_option( opt_int( "max_cycle_targets", option.max_cycle_targets ) );
-  add_option( opt_string( "target_if", option.target_if_str ) );
+  add_option( opt_string_warn( "target_if", option.target_if_str ) );
   add_option( opt_bool( "moving", option.moving ) );
   add_option( opt_string( "sync", option.sync_str ) );
   add_option( opt_bool( "wait_on_ready", option.wait_on_ready ) );
@@ -607,6 +603,19 @@ bool action_t::has_direct_damage_effect( const spell_data_t& spell )
 bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_periodic_damage_effect );
+}
+
+bool action_t::does_direct_damage() const
+{
+  return has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
+         attack_power_mod.direct > 0 || weapon_multiplier > 0;
+}
+
+bool action_t::does_periodic_damage() const
+{
+  return has_periodic_damage_effect( data() ) ||
+         ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
+           dot_duration > 0_ms );
 }
 
 /**
@@ -693,22 +702,34 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     aoe = spell_data.max_targets();
 
   const auto spell_powers = spell_data.powers();
+  bool require_spec_aura = false;
+
   if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
   {
     resource_current = spell_powers.front().resource();
   }
+  // Find the first power entry without a aura id
+  else if ( auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id ); it != spell_powers.end() )
+  {
+    resource_current = it->resource();
+  }
+  // If all entries have an aura, find the one matching the spec aura
+  else if ( auto it = range::find( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id );
+            it != spell_powers.end() )
+  {
+    resource_current = it->resource();
+    require_spec_aura = true;
+  }
   else
   {
-    // Find the first power entry without a aura id
-    auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
-    if ( it != spell_powers.end() )
-    {
-      resource_current = it->resource();
-    }
+    sim->print_debug( "{} could not determine resource for {}.", *player, *this );
   }
 
   for ( const spellpower_data_t& pd : spell_powers )
   {
+    if ( require_spec_aura && pd.aura_id() != player->spec_spell->id() )
+      continue;
+
     if ( pd._cost != 0 )
       base_costs[ pd.resource() ] = pd.cost();
     else
@@ -973,8 +994,13 @@ void action_t::parse_options( util::string_view options_str )
         // .. otherwise, just warn that there's an unknown option
         if ( status == opts::parse_status::NOT_FOUND )
         {
-          sim->error( "Warning: Unknown '{}' option '{}' with value '{}' for {}, ignoring",
-            this->name(), name, value, player->name() );
+          sim->error( "Warning: {} {} unknown option '{}' with value '{}', ignoring.", *player, *this, name, value );
+        }
+
+        // warn on if= overwriting a previous if=
+        if ( status == opts::parse_status::WARNING )
+        {
+          sim->error( "Warning: option '{}' with value '{}' overwriting previous value.", name, value );
         }
 
         return status;
@@ -982,15 +1008,14 @@ void action_t::parse_options( util::string_view options_str )
 
     parse_target_str();
 
-    auto parse_bool = [ this ]( bool& b, std::string_view n, std::string_view v )
+    auto parse_bool = []( bool& b, std::string_view n, std::string_view v )
     {
       if ( v.empty() )
         return;
 
       if ( v != "0" && v != "1" )
       {
-        throw std::invalid_argument( fmt::format( "Acceptable '{}' option '{}' values are '1' or '0' for {}",
-                                                  this->name(), n, player->name() ) );
+        throw std::invalid_argument( fmt::format( "Acceptable values for '{}' are '1' or '0'.", n ) );
       }
 
       if ( v == "0" )
@@ -1002,19 +1027,28 @@ void action_t::parse_options( util::string_view options_str )
     parse_bool( can_have_one_button_penalty,    "can_have_one_button_penalty",    option.can_have_one_button_penalty_str );
     parse_bool( cooldown_allow_casting_success, "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str );
   }
-  catch ( const std::exception& e )
+  catch ( const std::exception& )
   {
-    sim->error( "{} {}: Unable to parse options str '{}': {}", player->name(), name(), options_str, e.what() );
-    sim->cancel();
+    try
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( fmt::format( "{}", *this ) ) );
+    }
+    catch ( const std::exception& )
+    {
+      // action_t constructors are not exception-safe, so toss into the queue instead of throwing
+      sim->cancel();
+      AUTO_LOCK( sim->exception_mutex );
+      sim->exception_queue.push_back( std::current_exception() );
+    }
   }
 }
 
 bool action_t::verify_actor_level() const
 {
-  if ( ! background && data().id() && !data().is_level( player->true_level ) && data().level() <= MAX_LEVEL )
+  if ( !background && data().id() && !data().is_level( player->true_level ) && data().level() <= MAX_LEVEL )
   {
-    sim->errorf( "Player %s attempting to use action %s without the required level (%d < %d).\n", player->name(),
-                 name(), player->true_level, data().level() );
+    sim->error( "{} attempting to use {} at level {}, requires level {}.", *player, *this, player->true_level,
+                data().level() );
     return false;
   }
 
@@ -1030,8 +1064,7 @@ bool action_t::verify_actor_spec() const
   {
     // Note that this check can produce false positives for talent abilities which have a different spec set in their
     // talent data from that in the spell data pointed to.
-    sim->errorf( "Player %s attempting to use action %s without the required spec.\n", player->name(), name() );
-
+    sim->error( "{} attempting to use {} without the required spec.", *player, *this );
     return false;
   }
 
@@ -1049,36 +1082,16 @@ bool action_t::verify_actor_weapon() const
   if ( data().flags( spell_attribute::SX_REQ_MAIN_HAND ) &&
        !( mask & ( 1U << util::translate_weapon( player->main_hand_weapon.type ) ) ) )
   {
-    std::vector<std::string> types;
-    for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
-    {
-      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
-      {
-        types.emplace_back(util::weapon_subclass_string( wt ) );
-      }
-    }
-    sim->error( "Player {} attempting to use action {} without the required main-hand weapon "
-                "(requires {}, wielded {}).\n",
-      player->name(), name(), fmt::join( types, ", " ),
-      util::weapon_subclass_string( util::translate_weapon( player->main_hand_weapon.type ) ) );
+    sim->error( "{} attempting to use {} with invalid main-hand weapon type '{}'.", *player, *this,
+                util::weapon_subclass_string( util::translate_weapon( player->main_hand_weapon.type ) ) );
     return false;
   }
 
   if ( data().flags( spell_attribute::SX_REQ_OFF_HAND ) &&
        !( mask & ( 1U << util::translate_weapon( player->off_hand_weapon.type ) ) ) )
   {
-    std::vector<std::string> types;
-    for ( auto wt = ITEM_SUBCLASS_WEAPON_AXE; wt < ITEM_SUBCLASS_WEAPON_FISHING_POLE; ++wt )
-    {
-      if ( mask & ( 1U << static_cast<unsigned>( wt ) ) )
-      {
-        types.emplace_back(util::weapon_subclass_string( wt ) );
-      }
-    }
-    sim->error( "Player {} attempting to use action {} without the required off-hand weapon "
-                "(requires {}, wielded {}).\n",
-      player->name(), name(), fmt::join( types, ", " ),
-      util::weapon_subclass_string( util::translate_weapon( player->off_hand_weapon.type ) ) );
+    sim->error( "{} attempting to use {} with invalid off-hand weapon type '{}'.", *player, *this,
+                util::weapon_subclass_string( util::translate_weapon( player->off_hand_weapon.type ) ) );
     return false;
   }
 
@@ -1759,15 +1772,13 @@ void action_t::execute()
 #ifndef NDEBUG
   if ( !initialized )
   {
-    throw std::runtime_error(
-        fmt::format( "{} {} action_t::execute: is not initialized.\n", *player, *this ) );
+    throw sc_runtime_error( fmt::format( "{} {} action_t::execute: is not initialized.", *player, *this ) );
   }
 #endif
 
   if ( &data() == spell_data_t::not_found() )
   {
-    sim->errorf( "Player %s could not find spell data for action %s\n", player->name(), name() );
-    sim->cancel();
+    throw sc_runtime_error( fmt::format( "{} could not find spell data for {}.", *player, *this ) );
   }
 
   int num_targets = n_targets();
@@ -1790,8 +1801,10 @@ void action_t::execute()
   // Handle tick_action initial state snapshotting, primarily for handling STATE_MUL_PERSISTENT
   if ( tick_action )
   {
-    if ( !tick_action->execute_state )
+    if ( !tick_action->execute_state )  // grab a new state
       tick_action->execute_state = tick_action->get_state();
+    else  // recycled state, so clean it first
+      tick_action->execute_state->initialize();
 
     tick_action->snapshot_state( tick_action->execute_state, amount_type( tick_action->execute_state, tick_action->direct_tick ) );
   }
@@ -2556,10 +2569,9 @@ bool action_t::action_ready()
   if ( if_expr && !if_expr->success() )
     return false;
 
-  if ( !cooldown_allow_casting_success && ( ( player->last_foreground_action
-    && player->last_foreground_action->internal_id == internal_id
-    && player->last_foreground_action->time_to_execute > 0_ms )
-    || ( player->executing && player->executing->internal_id == internal_id ) ) )
+  if ( !cooldown_allow_casting_success &&
+       ( ( player->last_foreground_action == this && player->last_foreground_action->time_to_execute > 0_ms ) ||
+         ( player->executing == this ) ) )
   {
     return false;
   }
@@ -2634,18 +2646,16 @@ void action_t::init()
 
     if ( !sync_action )
     {
-      throw std::runtime_error(fmt::format("Unable to find sync action '{}' for primary action.",
-          option.sync_str ));
+      throw sc_invalid_apl_argument(
+        fmt::format( "Unable to find sync action '{}' for primary action.", option.sync_str ) );
     }
   }
 
   if ( option.cycle_targets && option.target_number )
   {
     option.target_number = 0;
-    sim->errorf(
-        "Player %s trying to use both cycle_targets and a numerical target for action %s - defaulting to "
-        "cycle_targets\n",
-        player->name(), name() );
+    sim->error( "{} trying to use both cycle_targets and a numerical target for {} - defaulting to cycle_targets.",
+                *player, *this );
   }
 
   if ( tick_action )
@@ -2677,15 +2687,12 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( has_periodic_damage_effect( data() ) ||
-       ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || rolling_periodic ) &&
-         dot_duration > 0_ms ) )
+  if ( does_periodic_damage() )
   {
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
-  if ( has_direct_damage_effect( data() ) || base_dd_min > 0 || spell_power_mod.direct > 0 ||
-       attack_power_mod.direct > 0 || weapon_multiplier > 0 )
+  if ( does_direct_damage() )
   {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
@@ -2790,7 +2797,7 @@ void action_t::init()
     }
     else
     {
-      throw std::runtime_error( "Can only add harmful action with travel or cast-time to precombat action list." );
+      throw sc_invalid_apl_argument( "Can only add harmful action with travel or cast-time to precombat action list." );
     }
   }
   else if ( action_list && action_list->name_str != "precombat" )
@@ -2872,41 +2879,44 @@ void action_t::init_finished()
 {
   if ( !option.target_if_str.empty() )
   {
-    std::string::size_type offset = option.target_if_str.find( ':' );
-    if ( offset != std::string::npos )
+    try
     {
-      std::string target_if_type_str = option.target_if_str.substr( 0, offset );
-      option.target_if_str.erase( 0, offset + 1 );
-      if ( util::str_compare_ci( target_if_type_str, "max" ) )
+      std::string::size_type offset = option.target_if_str.find( ':' );
+      if ( offset != std::string::npos )
       {
-        target_if_mode = TARGET_IF_MAX;
+        std::string target_if_type_str = option.target_if_str.substr( 0, offset );
+        option.target_if_str.erase( 0, offset + 1 );
+        if ( util::str_compare_ci( target_if_type_str, "max" ) )
+        {
+          target_if_mode = TARGET_IF_MAX;
+        }
+        else if ( util::str_compare_ci( target_if_type_str, "min" ) )
+        {
+          target_if_mode = TARGET_IF_MIN;
+        }
+        else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+        {
+          target_if_mode = TARGET_IF_FIRST;
+        }
+        else
+        {
+          throw std::invalid_argument( fmt::format(
+            "Unknown choose_target mode '{}'. Valid values are 'min', 'max', 'first'.", target_if_type_str ) );
+        }
       }
-      else if ( util::str_compare_ci( target_if_type_str, "min" ) )
-      {
-        target_if_mode = TARGET_IF_MIN;
-      }
-      else if ( util::str_compare_ci( target_if_type_str, "first" ) )
+      else if ( !option.target_if_str.empty() )
       {
         target_if_mode = TARGET_IF_FIRST;
       }
-      else
+
+      if ( !option.target_if_str.empty() )
       {
-        throw std::invalid_argument(fmt::format("Unknown target_if mode '{}' for choose_target. Valid values are 'min', 'max', 'first'.",
-                     target_if_type_str ));
+        target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
       }
     }
-    else if ( !option.target_if_str.empty() )
+    catch ( const std::exception& )
     {
-      target_if_mode = TARGET_IF_FIRST;
-    }
-
-    if ( !option.target_if_str.empty() )
-    {
-       target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
-       if ( !target_if_expr )
-       {
-         throw std::invalid_argument(fmt::format("Could not parse target if expression from '{}'", option.target_if_str));
-       }
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'target_if' expression" ) );
     }
   }
 
@@ -2919,38 +2929,50 @@ void action_t::init_finished()
 
   if ( !option.if_expr_str.empty() )
   {
-    if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
-    if ( if_expr == nullptr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse if expression from '{}'", option.if_expr_str));
+      if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'if' expression" ) );
     }
   }
 
   if ( !option.interrupt_if_expr_str.empty() )
   {
-    interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
-    if ( !interrupt_if_expr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse interrupt if expression from '{}'", option.interrupt_if_expr_str));
+      interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'interrupt_if' expression" ) );
     }
   }
 
   if ( !option.early_chain_if_expr_str.empty() )
   {
-    early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
-    if ( !early_chain_if_expr )
+    try
     {
-      throw std::invalid_argument(fmt::format("Could not parse chain if expression from '{}'", option.early_chain_if_expr_str));
+      early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'chain_if' expression" ) );
     }
   }
 
   if ( !option.cancel_if_expr_str.empty() )
   {
-    cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
-    if ( !cancel_if_expr )
+    try
     {
-      throw std::invalid_argument( fmt::format( "Could not parse cancel if expression from '{}'",
-            option.cancel_if_expr_str ) );
+      cancel_if_expr = expr_t::parse( this, option.cancel_if_expr_str, sim->optimize_expressions );
+    }
+    catch ( const std::exception& )
+    {
+      std::throw_with_nested( sc_invalid_apl_argument( "Invalid 'cancel_if' expression" ) );
     }
   }
 
@@ -3718,7 +3740,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
         };
         return std::make_unique<gcd_remains_expr_t>( *this );
       }
-      throw std::invalid_argument( fmt::format( "Unsupported gcd expression '{}'.", splits[ 1 ] ) );
+      throw std::invalid_argument( fmt::format( "Invalid gcd expression '{}'.", splits[ 1 ] ) );
     }
   }
 
@@ -3860,7 +3882,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
     }
     else
     {
-      throw std::invalid_argument( fmt::format( "Cannot create a valid dot expression from '{}'", splits[ 2 ] ) );
+      throw std::invalid_argument( fmt::format( "Invalid dot expression '{}'.", splits[ 2 ] ) );
     }
   }
 
@@ -3930,7 +3952,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
 
       if ( splits.size() == 2 )
       {
-        throw std::invalid_argument("Insufficient parameters for expression 'target.<number>.<expression>'");
+        throw std::invalid_argument( "Insufficient parameters for expression 'target.<number>.<expression>'" );
       }
 
       tail = name.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -3993,9 +4015,8 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
           expr = target->create_action_expression( action, suffix_expr_str );
           if ( !expr )
           {
-            throw std::invalid_argument(
-                fmt::format( "Cannot create dynamic target expression for target '{}' from '{}'.",
-                             target->name(), suffix_expr_str ) );
+            throw std::invalid_argument( fmt::format(
+              "Cannot create dynamic target expression for target '{}' from '{}'.", target->name(), suffix_expr_str ) );
           }
         }
 
@@ -4006,20 +4027,23 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
     return std::make_unique<target_proxy_expr_t>( *this, tail );
   }
 
-  if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-       splits[ 0 ] == "in_flight_to_target" || splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" )
+  auto is_in_flight_expr_name = [] ( std::string_view str ) {
+    return str == "in_flight" || str == "in_flight_count" || str == "in_flight_to_target" ||
+           str == "in_flight_remains" || str == "in_flight_to_target_count";
+  };
+
+  if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || is_in_flight_expr_name( splits[ 0 ] ) )
   {
     std::vector<action_t*> in_flight_list;
-    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" ||
-                                 splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" );
-    auto action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+    bool in_flight_singleton = is_in_flight_expr_name( splits[ 0 ] );
+    auto action_name = in_flight_singleton ? name_str : splits[ 1 ];
+    bool is_in_flight_expr = in_flight_singleton || is_in_flight_expr_name( splits[ 2 ] );
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
       if ( action->name_str == action_name )
       {
-        if ( in_flight_singleton || splits[ 2 ] == "in_flight" ||
-          splits[ 2 ] == "in_flight_to_target" || splits[ 2 ] == "in_flight_remains" )
+        if ( is_in_flight_expr )
         {
           in_flight_list.push_back( action );
         }
@@ -4029,6 +4053,7 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
         }
       }
     }
+
     if ( !in_flight_list.empty() )
     {
       if ( splits[ 0 ] == "in_flight" || ( !in_flight_singleton && splits[ 2 ] == "in_flight" ) )
@@ -4049,6 +4074,20 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
           }
         };
         return std::make_unique<in_flight_multi_expr_t>( std::move(in_flight_list) );
+      }
+      else if ( splits[ 0 ] == "in_flight_count" || ( !in_flight_singleton && splits[ 2 ] == "in_flight_count" ) )
+      {
+        struct in_flight_count_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          in_flight_count_multi_expr_t( std::vector<action_t*> al ) : expr_t( "in_flight_count" ), action_list( std::move( al ) )
+          { }
+          double evaluate() override
+          { return 1.0 * range::accumulate( action_list, 0, [] ( const auto* a ) { return a->num_travel_events(); } ); }
+          bool is_constant() override
+          { return action_list.empty(); }
+        };
+        return std::make_unique<in_flight_count_multi_expr_t>( std::move( in_flight_list ) );
       }
       else if ( splits[ 0 ] == "in_flight_to_target" ||
                 ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
@@ -4541,22 +4580,36 @@ call_action_list_t::call_action_list_t( player_t* player, util::string_view opti
   use_while_casting = true;
   usable_while_casting = true;
 
-  if ( alist_name.empty() )
-  {
-    sim->errorf( "Player %s uses call_action_list without specifying the name of the action list\n", player->name() );
-    sim->cancel();
-  }
-
   alist = player->find_action_priority_list( alist_name );
 
-  if ( randomtoggle == 1 )
+  if ( alist && randomtoggle == 1 )
     alist->random = randomtoggle;
+}
+
+void call_action_list_t::init_finished()
+{
+  action_t::init_finished();
 
   if ( !alist )
   {
-    sim->error( "{} uses call_action_list with unknown action list {}\n", *player, alist_name );
-    sim->cancel();
+    throw sc_invalid_apl_argument( "'call_action_list' used with unknown action list." );
   }
+}
+
+bool call_action_list_t::action_ready()
+{
+  // TODO: require a valid target for now. possibly change to `target = player` to allow call_action_list evaluation
+  // during dungeon sim downtime
+  if ( target && target->is_sleeping() )
+    return false;
+
+  if ( line_cooldown->down() )
+    return false;
+
+  if ( if_expr && !if_expr->success() )
+    return false;
+
+  return true;
 }
 
 swap_action_list_t::swap_action_list_t( player_t* player, util::string_view options_str,
@@ -4570,26 +4623,26 @@ swap_action_list_t::swap_action_list_t( player_t* player, util::string_view opti
   add_option( opt_int( "random", randomtoggle ) );
   parse_options( options_str );
   ignore_false_positive = true;
-  if ( alist_name.empty() )
-  {
-    sim->error( "Player {} uses {} without specifying the name of the action list\n", player->name(), name );
-    sim->cancel();
-  }
 
   alist = player->find_action_priority_list( alist_name );
 
-  if ( !alist )
-  {
-    sim->error( "Player {} uses {} with unknown action list {}\n", player->name(), name, alist_name );
-    sim->cancel();
-  }
-  else if ( randomtoggle == 1 )
+  if ( alist && randomtoggle == 1 )
     alist->random = randomtoggle;
 
   trigger_gcd = timespan_t::zero();
   use_off_gcd = true;
   use_while_casting = true;
   usable_while_casting = true;
+}
+
+void swap_action_list_t::init_finished()
+{
+  action_t::init_finished();
+
+  if ( !alist )
+  {
+    throw sc_invalid_apl_argument( "'swap_action_list' used with unknown action list." );
+  }
 }
 
 void swap_action_list_t::execute()
@@ -5025,9 +5078,9 @@ player_t* action_t::get_expression_target()
   return ( target == player ) ? player->target : target;
 }
 
-void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* g )
+double action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* g )
 {
-  player->resource_gain( resource_type, amount, g, this );
+  return player->resource_gain( resource_type, amount, g, this );
 }
 
 bool action_t::usable_during_current_cast() const
@@ -5075,11 +5128,11 @@ void sc_format_to( const action_t& action, fmt::format_context::iterator out )
 {
   if ( action.sim->log_spell_id )
   {
-    fmt::format_to( out, "Action {} ({})", action.name(), action.data().id() );
+    fmt::format_to( out, "Action '{}' ({})", action.name(), action.data().id() );
   }
   else
   {
-    fmt::format_to( out, "Action {}", action.name() );
+    fmt::format_to( out, "Action '{}'", action.name() );
   }
 }
 

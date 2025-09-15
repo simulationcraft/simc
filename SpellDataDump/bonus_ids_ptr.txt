@@ -1,7 +1,6 @@
-SimulationCraft 1115-02 for World of Warcraft 11.2.0.61476 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.62940 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
-bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
 bonus_id={ 17 }, stats={ 100% Crit [0.3506] }
 bonus_id={ 18 }, stats={ 100% Haste [0.3506] }
@@ -442,20 +441,19 @@ bonus_id={ 489 }, suffix={ of the Decimator }, stats={ 100% Crit [0.7012] }
 bonus_id={ 490 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
 bonus_id={ 491 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
 bonus_id={ 492 }, suffix={ of the Adaptable }, stats={ 100% Vers [0.7012] }
-bonus_id={ 497 }, suffix={ of the Merciless }, ilevel_adjust={ 50 }, socket={ 1 }
 bonus_id={ 499 }, desc={ Warforged }, ilevel_adjust={ 1 }
 bonus_id={ 503 }, stats={ 100% Int [0.0053] }
 bonus_id={ 504 }, stats={ 100% Int [0.0106] }
 bonus_id={ 505 }, stats={ 100% Int [0.0159] }
-bonus_id={ 506 }, stats={ 100% Int [-0.0053] }
-bonus_id={ 507 }, stats={ 100% Int [-0.0106] }
-bonus_id={ 508 }, stats={ 100% Int [-0.0159] }
+bonus_id={ 506 }, stats={ -100% Int [-0.0053] }
+bonus_id={ 507 }, stats={ -100% Int [-0.0106] }
+bonus_id={ 508 }, stats={ -100% Int [-0.0159] }
 bonus_id={ 509 }, stats={ 100% Sta [0.0079] }
 bonus_id={ 510 }, stats={ 100% Sta [0.0158] }
 bonus_id={ 511 }, stats={ 100% Sta [0.0237] }
-bonus_id={ 512 }, stats={ 100% Sta [-0.0079] }
-bonus_id={ 513 }, stats={ 100% Sta [-0.0158] }
-bonus_id={ 514 }, stats={ 100% Sta [-0.0237] }
+bonus_id={ 512 }, stats={ -100% Sta [-0.0079] }
+bonus_id={ 513 }, stats={ -100% Sta [-0.0158] }
+bonus_id={ 514 }, stats={ -100% Sta [-0.0237] }
 bonus_id={ 517 }, stats={ 100% Agi [0.5259] }
 bonus_id={ 523 }, socket={ 1 }
 bonus_id={ 526 }, desc={ Stage 2 of 6 }, ilevel_adjust={ 1 }
@@ -4870,45 +4868,45 @@ bonus_id={ 9269 }, quality={ legendary }, ilevel={ 24 @plvl 1 - 385 @plvl 70 }
 bonus_id={ 9270 }, quality={ legendary }, ilevel={ 30 @plvl 1 - 391 @plvl 70 }
 bonus_id={ 9271 }, quality={ legendary }, ilevel={ 32 @plvl 1 - 393 @plvl 70 }
 bonus_id={ 9272 }, quality={ legendary }, ilevel={ 22 @plvl 1 - 383 @plvl 70 }
-bonus_id={ 9294 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
-bonus_id={ 9295 }, desc={ Dragonflight Season 2 }, quality={ uncommon }
-bonus_id={ 9296 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9297 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9298 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9299 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9300 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9301 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9302 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9303 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9304 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9305 }, desc={ Dragonflight Season 2 }, quality={ rare }
-bonus_id={ 9306 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9307 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9308 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9309 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9294 }, quality={ uncommon }
+bonus_id={ 9295 }, quality={ uncommon }
+bonus_id={ 9296 }, quality={ rare }
+bonus_id={ 9297 }, quality={ rare }
+bonus_id={ 9298 }, quality={ rare }
+bonus_id={ 9299 }, quality={ rare }
+bonus_id={ 9300 }, quality={ rare }
+bonus_id={ 9301 }, quality={ rare }
+bonus_id={ 9302 }, quality={ rare }
+bonus_id={ 9303 }, quality={ rare }
+bonus_id={ 9304 }, quality={ rare }
+bonus_id={ 9305 }, quality={ rare }
+bonus_id={ 9306 }, quality={ epic }
+bonus_id={ 9307 }, quality={ epic }
+bonus_id={ 9308 }, quality={ epic }
+bonus_id={ 9309 }, quality={ epic }
 bonus_id={ 9310 }, quality={ legendary }, ilevel={ 30 @plvl 1 - 391 @plvl 70 }
 bonus_id={ 9311 }, base_ilevel={ 366 }
-bonus_id={ 9313 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9314 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9315 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9316 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9317 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9318 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9319 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9320 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9321 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9322 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9323 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9324 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9325 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9327 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9328 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9329 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9330 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9331 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9332 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9333 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9334 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9313 }, quality={ epic }
+bonus_id={ 9314 }, quality={ epic }
+bonus_id={ 9315 }, quality={ epic }
+bonus_id={ 9316 }, quality={ epic }
+bonus_id={ 9317 }, quality={ epic }
+bonus_id={ 9318 }, quality={ epic }
+bonus_id={ 9319 }, quality={ epic }
+bonus_id={ 9320 }, quality={ epic }
+bonus_id={ 9321 }, quality={ epic }
+bonus_id={ 9322 }, quality={ epic }
+bonus_id={ 9323 }, quality={ epic }
+bonus_id={ 9324 }, quality={ epic }
+bonus_id={ 9325 }, quality={ epic }
+bonus_id={ 9327 }, quality={ epic }
+bonus_id={ 9328 }, quality={ epic }
+bonus_id={ 9329 }, quality={ epic }
+bonus_id={ 9330 }, quality={ epic }
+bonus_id={ 9331 }, quality={ epic }
+bonus_id={ 9332 }, quality={ epic }
+bonus_id={ 9333 }, quality={ epic }
+bonus_id={ 9334 }, quality={ epic }
 bonus_id={ 9335 }, quality={ epic }
 bonus_id={ 9336 }, quality={ epic }
 bonus_id={ 9337 }, quality={ epic }
@@ -4938,12 +4936,12 @@ bonus_id={ 9374 }, base_ilevel={ 421 }
 bonus_id={ 9375 }, base_ilevel={ 434 }
 bonus_id={ 9376 }, base_ilevel={ 434 }
 bonus_id={ 9379 }, effects={ Roiling Shadowflame (id=406254, index=0, type=equip) }
-bonus_id={ 9380 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9381 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9382 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9383 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9384 }, desc={ Dragonflight Season 2 }, quality={ epic }
-bonus_id={ 9385 }, desc={ Dragonflight Season 2 }, quality={ epic }
+bonus_id={ 9380 }, quality={ epic }
+bonus_id={ 9381 }, quality={ epic }
+bonus_id={ 9382 }, quality={ epic }
+bonus_id={ 9383 }, quality={ epic }
+bonus_id={ 9384 }, quality={ epic }
+bonus_id={ 9385 }, quality={ epic }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
 bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
 bonus_id={ 9402 }, ilevel_adjust={ 3 }
@@ -4955,21 +4953,11 @@ bonus_id={ 9407 }, quality={ rare }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
 bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
 bonus_id={ 9413 }, socket={ 1 }
 bonus_id={ 9416 }, effects={ Medical Wrap Kit (id=409923, index=0, type=equip) }
-bonus_id={ 9435 }, quality={ epic }
 bonus_id={ 9436 }, socket={ 1 }
 bonus_id={ 9438 }, socket={ 1 }
-bonus_id={ 9439 }, quality={ epic }
-bonus_id={ 9440 }, quality={ epic }
-bonus_id={ 9441 }, quality={ epic }
-bonus_id={ 9442 }, quality={ epic }
 bonus_id={ 9443 }, ilevel={ 2 @plvl 1 - 343 @plvl 70 }
 bonus_id={ 9444 }, ilevel={ 4 @plvl 1 - 345 @plvl 70 }
 bonus_id={ 9445 }, ilevel={ 3 @plvl 1 - 344 @plvl 70 }
-bonus_id={ 9447 }, quality={ epic }
-bonus_id={ 9448 }, quality={ epic }
-bonus_id={ 9449 }, quality={ epic }
-bonus_id={ 9450 }, quality={ epic }
-bonus_id={ 9451 }, quality={ epic }
 bonus_id={ 9455 }, ilevel_adjust={ 401 }
 bonus_id={ 9456 }, ilevel_adjust={ 402 }
 bonus_id={ 9457 }, ilevel_adjust={ 403 }
@@ -5004,50 +4992,50 @@ bonus_id={ 9532 }, effects={ Dreamtender's Charm (id=419368, index=0, type=equip
 bonus_id={ 9533 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 411 @plvl 70 }
 bonus_id={ 9534 }, quality={ rare }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
 bonus_id={ 9535 }, ilevel={ 21 @plvl 1 - 428 @plvl 70 }
-bonus_id={ 9536 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9537 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9538 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9539 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9540 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9541 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9542 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9543 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9544 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
-bonus_id={ 9545 }, desc={ Dragonflight Season 3 }, quality={ uncommon }
-bonus_id={ 9546 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9547 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9548 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9549 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9550 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9551 }, desc={ Dragonflight Season 3 }, quality={ rare }
-bonus_id={ 9552 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9553 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9554 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9555 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9556 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9557 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9558 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9559 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9560 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9561 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9562 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9563 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9564 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9565 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9566 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9567 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9568 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9569 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9570 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9571 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9572 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9573 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9574 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9575 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9576 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9577 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9578 }, desc={ Dragonflight Season 3 }, quality={ epic }
-bonus_id={ 9581 }, desc={ Dragonflight Season 3 }, quality={ epic }
+bonus_id={ 9536 }, quality={ rare }
+bonus_id={ 9537 }, quality={ rare }
+bonus_id={ 9538 }, quality={ rare }
+bonus_id={ 9539 }, quality={ rare }
+bonus_id={ 9540 }, quality={ epic }
+bonus_id={ 9541 }, quality={ epic }
+bonus_id={ 9542 }, quality={ epic }
+bonus_id={ 9543 }, quality={ epic }
+bonus_id={ 9544 }, quality={ uncommon }
+bonus_id={ 9545 }, quality={ uncommon }
+bonus_id={ 9546 }, quality={ rare }
+bonus_id={ 9547 }, quality={ rare }
+bonus_id={ 9548 }, quality={ rare }
+bonus_id={ 9549 }, quality={ rare }
+bonus_id={ 9550 }, quality={ rare }
+bonus_id={ 9551 }, quality={ rare }
+bonus_id={ 9552 }, quality={ epic }
+bonus_id={ 9553 }, quality={ epic }
+bonus_id={ 9554 }, quality={ epic }
+bonus_id={ 9555 }, quality={ epic }
+bonus_id={ 9556 }, quality={ epic }
+bonus_id={ 9557 }, quality={ epic }
+bonus_id={ 9558 }, quality={ epic }
+bonus_id={ 9559 }, quality={ epic }
+bonus_id={ 9560 }, quality={ epic }
+bonus_id={ 9561 }, quality={ epic }
+bonus_id={ 9562 }, quality={ epic }
+bonus_id={ 9563 }, quality={ epic }
+bonus_id={ 9564 }, quality={ epic }
+bonus_id={ 9565 }, quality={ epic }
+bonus_id={ 9566 }, quality={ epic }
+bonus_id={ 9567 }, quality={ epic }
+bonus_id={ 9568 }, quality={ epic }
+bonus_id={ 9569 }, quality={ epic }
+bonus_id={ 9570 }, quality={ epic }
+bonus_id={ 9571 }, quality={ epic }
+bonus_id={ 9572 }, quality={ epic }
+bonus_id={ 9573 }, quality={ epic }
+bonus_id={ 9574 }, quality={ epic }
+bonus_id={ 9575 }, quality={ epic }
+bonus_id={ 9576 }, quality={ epic }
+bonus_id={ 9577 }, quality={ epic }
+bonus_id={ 9578 }, quality={ epic }
+bonus_id={ 9581 }, quality={ epic }
 bonus_id={ 9598 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9601 }, ilevel={ 13 @plvl 10 - 342 @plvl 70 }
 bonus_id={ 9613 }, stats={ 100% Haste [0.4779] }
@@ -5476,99 +5464,99 @@ bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
 bonus_id={ 10250 }, base_ilevel={ 438 }
 bonus_id={ 10254 }, quality={ rare }
 bonus_id={ 10255 }, quality={ epic }
-bonus_id={ 10256 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10257 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10258 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10259 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10260 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10261 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10262 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10263 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10264 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10265 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10266 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10267 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10268 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10269 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10270 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10271 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10272 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10273 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10274 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10275 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10276 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10277 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10278 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10279 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10280 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10281 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10282 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10283 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10284 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10285 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10286 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10287 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10288 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10289 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10290 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10291 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10292 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10293 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10294 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10295 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10296 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10297 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10298 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10299 }, desc={ The War Within Season 1 }, quality={ epic }
+bonus_id={ 10256 }, quality={ epic }
+bonus_id={ 10257 }, quality={ epic }
+bonus_id={ 10258 }, quality={ epic }
+bonus_id={ 10259 }, quality={ epic }
+bonus_id={ 10260 }, quality={ epic }
+bonus_id={ 10261 }, quality={ epic }
+bonus_id={ 10262 }, quality={ epic }
+bonus_id={ 10263 }, quality={ epic }
+bonus_id={ 10264 }, quality={ epic }
+bonus_id={ 10265 }, quality={ epic }
+bonus_id={ 10266 }, quality={ epic }
+bonus_id={ 10267 }, quality={ epic }
+bonus_id={ 10268 }, quality={ epic }
+bonus_id={ 10269 }, quality={ epic }
+bonus_id={ 10270 }, quality={ epic }
+bonus_id={ 10271 }, quality={ epic }
+bonus_id={ 10272 }, quality={ epic }
+bonus_id={ 10273 }, quality={ epic }
+bonus_id={ 10274 }, quality={ epic }
+bonus_id={ 10275 }, quality={ epic }
+bonus_id={ 10276 }, quality={ epic }
+bonus_id={ 10277 }, quality={ epic }
+bonus_id={ 10278 }, quality={ epic }
+bonus_id={ 10279 }, quality={ epic }
+bonus_id={ 10280 }, quality={ epic }
+bonus_id={ 10281 }, quality={ epic }
+bonus_id={ 10282 }, quality={ rare }
+bonus_id={ 10283 }, quality={ rare }
+bonus_id={ 10284 }, quality={ rare }
+bonus_id={ 10285 }, quality={ rare }
+bonus_id={ 10286 }, quality={ rare }
+bonus_id={ 10287 }, quality={ rare }
+bonus_id={ 10288 }, quality={ uncommon }
+bonus_id={ 10289 }, quality={ uncommon }
+bonus_id={ 10290 }, quality={ epic }
+bonus_id={ 10291 }, quality={ epic }
+bonus_id={ 10292 }, quality={ epic }
+bonus_id={ 10293 }, quality={ epic }
+bonus_id={ 10294 }, quality={ rare }
+bonus_id={ 10295 }, quality={ rare }
+bonus_id={ 10296 }, quality={ rare }
+bonus_id={ 10297 }, quality={ rare }
+bonus_id={ 10298 }, quality={ epic }
+bonus_id={ 10299 }, quality={ epic }
 bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
 bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
 bonus_id={ 10303 }, ilevel={ 0 @plvl 0 - 459 @plvl 80 }
 bonus_id={ 10304 }, ilevel={ 0 @plvl 0 - 463 @plvl 80 }
-bonus_id={ 10305 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10306 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10307 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10308 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10309 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10310 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10311 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10312 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10313 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10314 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10315 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10316 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10317 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10318 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10319 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10320 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10321 }, desc={ Dragonflight Season 4 }, quality={ uncommon }
-bonus_id={ 10322 }, desc={ Dragonflight Season 4 }, quality={ uncommon }
-bonus_id={ 10323 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10324 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10325 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10326 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10327 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10328 }, desc={ Dragonflight Season 4 }, quality={ rare }
-bonus_id={ 10329 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10330 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10331 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10332 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10333 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10334 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10335 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10336 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10337 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10338 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10305 }, quality={ rare }
+bonus_id={ 10306 }, quality={ rare }
+bonus_id={ 10307 }, quality={ rare }
+bonus_id={ 10308 }, quality={ rare }
+bonus_id={ 10309 }, quality={ epic }
+bonus_id={ 10310 }, quality={ epic }
+bonus_id={ 10311 }, quality={ epic }
+bonus_id={ 10312 }, quality={ epic }
+bonus_id={ 10313 }, quality={ epic }
+bonus_id={ 10314 }, quality={ epic }
+bonus_id={ 10315 }, quality={ epic }
+bonus_id={ 10316 }, quality={ epic }
+bonus_id={ 10317 }, quality={ epic }
+bonus_id={ 10318 }, quality={ epic }
+bonus_id={ 10319 }, quality={ epic }
+bonus_id={ 10320 }, quality={ epic }
+bonus_id={ 10321 }, quality={ uncommon }
+bonus_id={ 10322 }, quality={ uncommon }
+bonus_id={ 10323 }, quality={ rare }
+bonus_id={ 10324 }, quality={ rare }
+bonus_id={ 10325 }, quality={ rare }
+bonus_id={ 10326 }, quality={ rare }
+bonus_id={ 10327 }, quality={ rare }
+bonus_id={ 10328 }, quality={ rare }
+bonus_id={ 10329 }, quality={ epic }
+bonus_id={ 10330 }, quality={ epic }
+bonus_id={ 10331 }, quality={ epic }
+bonus_id={ 10332 }, quality={ epic }
+bonus_id={ 10333 }, quality={ epic }
+bonus_id={ 10334 }, quality={ epic }
+bonus_id={ 10335 }, quality={ epic }
+bonus_id={ 10336 }, quality={ epic }
+bonus_id={ 10337 }, quality={ epic }
+bonus_id={ 10338 }, quality={ epic }
 bonus_id={ 10339 }, quality={ epic }
 bonus_id={ 10340 }, quality={ epic }
-bonus_id={ 10341 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10342 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10343 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10344 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10345 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10346 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10347 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10348 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10341 }, quality={ epic }
+bonus_id={ 10342 }, quality={ epic }
+bonus_id={ 10343 }, quality={ epic }
+bonus_id={ 10344 }, quality={ epic }
+bonus_id={ 10345 }, quality={ epic }
+bonus_id={ 10346 }, quality={ epic }
+bonus_id={ 10347 }, quality={ epic }
+bonus_id={ 10348 }, quality={ epic }
 bonus_id={ 10349 }, base_ilevel={ 564 }, desc={ Beginner Crafted }
 bonus_id={ 10350 }, ilevel={ 362 @plvl 50 - 362 @plvl 90 }
 bonus_id={ 10357 }, base_ilevel={ 473 }, quality={ epic }
@@ -5589,18 +5577,18 @@ bonus_id={ 10391 }, quality={ common }, effects={ Combo Attack (id=471633, index
 bonus_id={ 10397 }, socket={ 1 }
 bonus_id={ 10405 }, effects={ Fervor (id=429389, index=0, type=equip) }
 bonus_id={ 10406 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
-bonus_id={ 10407 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10408 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10409 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10410 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10411 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10412 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10413 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10414 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10415 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10416 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10417 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10418 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10407 }, quality={ epic }
+bonus_id={ 10408 }, quality={ epic }
+bonus_id={ 10409 }, quality={ epic }
+bonus_id={ 10410 }, quality={ epic }
+bonus_id={ 10411 }, quality={ epic }
+bonus_id={ 10412 }, quality={ epic }
+bonus_id={ 10413 }, quality={ epic }
+bonus_id={ 10414 }, quality={ epic }
+bonus_id={ 10415 }, quality={ epic }
+bonus_id={ 10416 }, quality={ epic }
+bonus_id={ 10417 }, quality={ epic }
+bonus_id={ 10418 }, quality={ epic }
 bonus_id={ 10421 }, base_ilevel={ 593 }
 bonus_id={ 10426 }, ilevel={ 5 @plvl 1 - 441 @plvl 70 }
 bonus_id={ 10427 }, quality={ common }, effects={ Mana Sphere (id=431501, index=0, type=equip) }
@@ -5666,20 +5654,20 @@ bonus_id={ 10486 }, quality={ common }, effects={ Holy Shield (id=433380, index=
 bonus_id={ 10487 }, quality={ uncommon }, effects={ Holy Shield (id=433472, index=0, type=equip) }
 bonus_id={ 10488 }, quality={ rare }, effects={ Holy Shield (id=433473, index=0, type=equip) }
 bonus_id={ 10489 }, quality={ epic }, effects={ Holy Shield (id=433474, index=0, type=equip) }
-bonus_id={ 10490 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10491 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10492 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10493 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10494 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10495 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10496 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10497 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10498 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10499 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10500 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10501 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10502 }, desc={ Dragonflight Season 4 }, quality={ epic }
-bonus_id={ 10503 }, desc={ Dragonflight Season 4 }, quality={ epic }
+bonus_id={ 10490 }, quality={ epic }
+bonus_id={ 10491 }, quality={ epic }
+bonus_id={ 10492 }, quality={ epic }
+bonus_id={ 10493 }, quality={ epic }
+bonus_id={ 10494 }, quality={ epic }
+bonus_id={ 10495 }, quality={ epic }
+bonus_id={ 10496 }, quality={ epic }
+bonus_id={ 10497 }, quality={ epic }
+bonus_id={ 10498 }, quality={ epic }
+bonus_id={ 10499 }, quality={ epic }
+bonus_id={ 10500 }, quality={ epic }
+bonus_id={ 10501 }, quality={ epic }
+bonus_id={ 10502 }, quality={ epic }
+bonus_id={ 10503 }, quality={ epic }
 bonus_id={ 10504 }, quality={ common }, effects={ Star Bomb (id=434880, index=0, type=equip) }
 bonus_id={ 10505 }, quality={ uncommon }, effects={ Star Bomb (id=435030, index=0, type=equip) }
 bonus_id={ 10506 }, quality={ rare }, effects={ Star Bomb (id=435032, index=0, type=equip) }
@@ -6990,9 +6978,9 @@ bonus_id={ 12025 }, quality={ epic }
 bonus_id={ 12026 }, quality={ epic }
 bonus_id={ 12027 }, quality={ epic }
 bonus_id={ 12028 }, quality={ epic }
-bonus_id={ 12037 }, base_ilevel={ 571 }, quality={ uncommon }
-bonus_id={ 12038 }, base_ilevel={ 584 }, quality={ rare }
-bonus_id={ 12039 }, base_ilevel={ 623 }, quality={ epic }
+bonus_id={ 12037 }, base_ilevel={ 597 }, quality={ uncommon }
+bonus_id={ 12038 }, base_ilevel={ 610 }, quality={ rare }
+bonus_id={ 12039 }, base_ilevel={ 649 }, quality={ epic }
 bonus_id={ 12040 }, base_ilevel={ 632 }, desc={ Fortune Crafted }
 bonus_id={ 12041 }, base_ilevel={ 616 }, quality={ epic }
 bonus_id={ 12042 }, base_ilevel={ 645 }
@@ -7015,20 +7003,6 @@ bonus_id={ 12065 }, quality={ epic }, effects={ Celestial Barrage (id=472406, in
 bonus_id={ 12067 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12068 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12070 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
-bonus_id={ 12071 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12072 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12073 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12074 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12075 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12076 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12077 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12078 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12079 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12080 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12081 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12082 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12083 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12084 }, desc={ The War Within Season 2 }, quality={ epic }
 bonus_id={ 12085 }, quality={ common }, effects={ Void Tear (id=472696, index=0, type=equip) }
 bonus_id={ 12086 }, quality={ uncommon }, effects={ Void Tear (id=472852, index=0, type=equip) }
 bonus_id={ 12087 }, quality={ rare }, effects={ Void Tear (id=472859, index=0, type=equip) }
@@ -7105,6 +7079,7 @@ bonus_id={ 12171 }, effects={ Unknown Effect (id=205095) }
 bonus_id={ 12172 }, effects={ Unknown Effect (id=205096) }
 bonus_id={ 12173 }, effects={ C.H.E.T.T. List (id=1217214, index=0, type=use) }
 bonus_id={ 12174 }, effects={ C.H.E.T.T. List (id=1219241, index=0, type=unknown) }
+bonus_id={ 12175 }, quality={ rare }, stats={ 100% AgiInt [0.2045] }
 bonus_id={ 12180 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
 bonus_id={ 12215 }, suffix={ of the Abbot }, effects={ Hallowed Tome of the Abbot (id=1223886, index=0, type=equip) }
 bonus_id={ 12216 }, suffix={ of the Zealot }, effects={ Hallowed Tome of the Zealot (id=1223899, index=0, type=equip) }
@@ -7114,14 +7089,24 @@ bonus_id={ 12219 }, suffix={ on Dark Summons }, stats={ 100% Mastery [0.6666] },
 bonus_id={ 12220 }, suffix={ on Sacrificial Rituals }, stats={ 100% Haste [0.6666] }, effects={ Excerpt on Sacrificial Rituals (id=1225233, index=0, type=equip) }
 bonus_id={ 12221 }, suffix={ on Prophetic Death }, stats={ 100% Crit [0.6666] }, effects={ Excerpt on Prophetic Death (id=1225234, index=0, type=equip) }
 bonus_id={ 12222 }, suffix={ of the Savage }, effects={ Darktide Wavebender's Orb (id=468034, index=0, type=equip) }
-bonus_id={ 12255 }, stats={ 100% Mastery [0.3333] }
-bonus_id={ 12256 }, stats={ 100% Mastery [0.4000] }
-bonus_id={ 12257 }, stats={ 100% Crit [0.4000] }
-bonus_id={ 12258 }, stats={ 100% Haste [0.4000] }
-bonus_id={ 12259 }, stats={ 100% Vers [0.4000] }
-bonus_id={ 12260 }, stats={ 100% Vers [0.3333] }
-bonus_id={ 12261 }, stats={ 100% Crit [0.3333] }
-bonus_id={ 12262 }, stats={ 100% Haste [0.4000] }
+bonus_id={ 12223 }, effects={ Unknown Effect (id=206749) }
+bonus_id={ 12224 }, effects={ Unknown Effect (id=206750) }
+bonus_id={ 12225 }, effects={ Unknown Effect (id=206751) }
+bonus_id={ 12226 }, effects={ Unknown Effect (id=206752) }
+bonus_id={ 12227 }, effects={ Treatise of the Council's Wisdom (id=1223471, index=0, type=equip) }
+bonus_id={ 12228 }, effects={ Unknown Effect (id=206754) }
+bonus_id={ 12234 }, socket={ 3 }
+bonus_id={ 12235 }, effects={ Unknown Effect (id=206760) }
+bonus_id={ 12236 }, effects={ Unknown Effect (id=206761) }
+bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
+bonus_id={ 12255 }, stats={ 100% Mastery [0.5600] }
+bonus_id={ 12256 }, stats={ 100% Mastery [0.8000] }
+bonus_id={ 12257 }, stats={ 100% Crit [0.8000] }
+bonus_id={ 12258 }, stats={ 100% Haste [0.8000] }
+bonus_id={ 12259 }, stats={ 100% Vers [0.8000] }
+bonus_id={ 12260 }, stats={ 100% Vers [0.5600] }
+bonus_id={ 12261 }, stats={ 100% Crit [0.5600] }
+bonus_id={ 12262 }, stats={ 100% Haste [0.5600] }
 bonus_id={ 12263 }, ilevel={ 24 @plvl 1 - 623 @plvl 80 }
 bonus_id={ 12264 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 587 @plvl 80 }
 bonus_id={ 12265 }, quality={ uncommon }
@@ -7132,6 +7117,7 @@ bonus_id={ 12269 }, quality={ rare }
 bonus_id={ 12270 }, quality={ rare }
 bonus_id={ 12271 }, quality={ rare }
 bonus_id={ 12272 }, quality={ rare }
+bonus_id={ 12273 }, effects={ Unknown Effect (id=207254) }
 bonus_id={ 12274 }, quality={ rare }
 bonus_id={ 12275 }, quality={ rare }
 bonus_id={ 12276 }, quality={ rare }
@@ -7231,36 +7217,117 @@ bonus_id={ 12373 }, ilevel_adjust={ 6 }
 bonus_id={ 12374 }, ilevel_adjust={ 3 }
 bonus_id={ 12375 }, quality={ epic }
 bonus_id={ 12376 }, quality={ epic }
-bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 626 @plvl 80 }
-bonus_id={ 12378 }, ilevel={ 24 @plvl 1 - 662 @plvl 80 }
+bonus_id={ 12377 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 632 @plvl 80 }
+bonus_id={ 12378 }, ilevel={ 24 @plvl 1 - 668 @plvl 80 }
 bonus_id={ 12379 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
 bonus_id={ 12380 }, quality={ rare }, ilevel={ 21 @plvl 1 - 632 @plvl 80 }
+bonus_id={ 12409 }, quality={ common }, effects={ Unknown Effect (id=210070) }
+bonus_id={ 12410 }, quality={ uncommon }, effects={ Unknown Effect (id=210081) }
+bonus_id={ 12411 }, quality={ rare }, effects={ Unknown Effect (id=210082) }
+bonus_id={ 12412 }, quality={ epic }, effects={ Unknown Effect (id=210083) }
+bonus_id={ 12413 }, quality={ legendary }, effects={ Unknown Effect (id=210084) }
+bonus_id={ 12414 }, quality={ common }, effects={ Unknown Effect (id=210085) }
+bonus_id={ 12415 }, quality={ uncommon }, effects={ Unknown Effect (id=210086) }
+bonus_id={ 12416 }, quality={ rare }, effects={ Unknown Effect (id=210087) }
+bonus_id={ 12417 }, quality={ epic }, effects={ Unknown Effect (id=210088) }
+bonus_id={ 12418 }, quality={ legendary }, effects={ Unknown Effect (id=210089) }
+bonus_id={ 12419 }, quality={ common }, effects={ Unknown Effect (id=210090) }
+bonus_id={ 12420 }, quality={ uncommon }, effects={ Unknown Effect (id=210091) }
+bonus_id={ 12421 }, quality={ rare }, effects={ Unknown Effect (id=210092) }
+bonus_id={ 12422 }, quality={ epic }, effects={ Unknown Effect (id=210093) }
+bonus_id={ 12423 }, quality={ legendary }, effects={ Unknown Effect (id=210094) }
+bonus_id={ 12424 }, quality={ common }, effects={ Unknown Effect (id=210095) }
+bonus_id={ 12425 }, quality={ uncommon }, effects={ Unknown Effect (id=210096) }
+bonus_id={ 12426 }, quality={ rare }, effects={ Unknown Effect (id=210097) }
+bonus_id={ 12427 }, quality={ epic }, effects={ Unknown Effect (id=210098) }
+bonus_id={ 12428 }, quality={ legendary }, effects={ Unknown Effect (id=210099) }
+bonus_id={ 12429 }, quality={ common }, effects={ Unknown Effect (id=210100) }
+bonus_id={ 12430 }, quality={ uncommon }, effects={ Unknown Effect (id=210101) }
+bonus_id={ 12431 }, quality={ rare }, effects={ Unknown Effect (id=210102) }
+bonus_id={ 12432 }, quality={ epic }, effects={ Unknown Effect (id=210103) }
+bonus_id={ 12433 }, quality={ legendary }, effects={ Unknown Effect (id=210104) }
+bonus_id={ 12434 }, quality={ common }, effects={ Unknown Effect (id=210105) }
+bonus_id={ 12435 }, quality={ uncommon }, effects={ Unknown Effect (id=210106) }
+bonus_id={ 12436 }, quality={ rare }, effects={ Unknown Effect (id=210107) }
+bonus_id={ 12437 }, quality={ epic }, effects={ Unknown Effect (id=210108) }
+bonus_id={ 12438 }, quality={ legendary }, effects={ Unknown Effect (id=210109) }
+bonus_id={ 12439 }, quality={ common }, effects={ Unknown Effect (id=210110) }
+bonus_id={ 12440 }, quality={ uncommon }, effects={ Unknown Effect (id=210111) }
+bonus_id={ 12441 }, quality={ rare }, effects={ Unknown Effect (id=210112) }
+bonus_id={ 12442 }, quality={ epic }, effects={ Unknown Effect (id=210113) }
+bonus_id={ 12443 }, quality={ legendary }, effects={ Unknown Effect (id=210114) }
+bonus_id={ 12444 }, quality={ common }, effects={ Unknown Effect (id=210115) }
+bonus_id={ 12445 }, quality={ uncommon }, effects={ Unknown Effect (id=210116) }
+bonus_id={ 12446 }, quality={ rare }, effects={ Unknown Effect (id=210117) }
+bonus_id={ 12447 }, quality={ epic }, effects={ Unknown Effect (id=210118) }
+bonus_id={ 12448 }, quality={ legendary }, effects={ Unknown Effect (id=210119) }
+bonus_id={ 12449 }, quality={ common }, effects={ Unknown Effect (id=210120) }
+bonus_id={ 12450 }, quality={ uncommon }, effects={ Unknown Effect (id=210121) }
+bonus_id={ 12451 }, quality={ rare }, effects={ Unknown Effect (id=210122) }
+bonus_id={ 12452 }, quality={ epic }, effects={ Unknown Effect (id=210123) }
+bonus_id={ 12453 }, quality={ legendary }, effects={ Unknown Effect (id=210124) }
+bonus_id={ 12454 }, quality={ common }, effects={ Unknown Effect (id=210125) }
+bonus_id={ 12455 }, quality={ uncommon }, effects={ Unknown Effect (id=210126) }
+bonus_id={ 12456 }, quality={ rare }, effects={ Unknown Effect (id=210127) }
+bonus_id={ 12457 }, quality={ epic }, effects={ Unknown Effect (id=210128) }
+bonus_id={ 12458 }, quality={ legendary }, effects={ Unknown Effect (id=210129) }
+bonus_id={ 12459 }, quality={ common }, effects={ Unknown Effect (id=210130) }
+bonus_id={ 12460 }, quality={ uncommon }, effects={ Unknown Effect (id=210131) }
+bonus_id={ 12461 }, quality={ rare }, effects={ Unknown Effect (id=210132) }
+bonus_id={ 12462 }, quality={ epic }, effects={ Unknown Effect (id=210133) }
+bonus_id={ 12463 }, quality={ legendary }, effects={ Unknown Effect (id=210134) }
+bonus_id={ 12464 }, quality={ common }, effects={ Unknown Effect (id=210135) }
+bonus_id={ 12465 }, quality={ uncommon }, effects={ Unknown Effect (id=210136) }
+bonus_id={ 12466 }, quality={ rare }, effects={ Unknown Effect (id=210137) }
+bonus_id={ 12467 }, quality={ epic }, effects={ Unknown Effect (id=210138) }
+bonus_id={ 12468 }, quality={ legendary }, effects={ Unknown Effect (id=210139) }
+bonus_id={ 12469 }, quality={ common }, effects={ Unknown Effect (id=210140) }
+bonus_id={ 12470 }, quality={ uncommon }, effects={ Unknown Effect (id=210141) }
+bonus_id={ 12471 }, quality={ rare }, effects={ Unknown Effect (id=210142) }
+bonus_id={ 12472 }, quality={ epic }, effects={ Unknown Effect (id=210143) }
+bonus_id={ 12473 }, quality={ legendary }, effects={ Unknown Effect (id=210144) }
+bonus_id={ 12474 }, quality={ common }, effects={ Unknown Effect (id=210145) }
+bonus_id={ 12475 }, quality={ uncommon }, effects={ Unknown Effect (id=210146) }
+bonus_id={ 12476 }, quality={ rare }, effects={ Unknown Effect (id=210147) }
+bonus_id={ 12477 }, quality={ epic }, effects={ Unknown Effect (id=210148) }
+bonus_id={ 12478 }, quality={ legendary }, effects={ Unknown Effect (id=210149) }
+bonus_id={ 12479 }, quality={ common }, effects={ Unknown Effect (id=210150) }
+bonus_id={ 12480 }, quality={ uncommon }, effects={ Unknown Effect (id=210151) }
+bonus_id={ 12481 }, quality={ rare }, effects={ Unknown Effect (id=210152) }
+bonus_id={ 12482 }, quality={ epic }, effects={ Unknown Effect (id=210153) }
+bonus_id={ 12483 }, quality={ legendary }, effects={ Unknown Effect (id=210154) }
+bonus_id={ 12484 }, quality={ common }, effects={ Unknown Effect (id=210155) }
+bonus_id={ 12485 }, quality={ uncommon }, effects={ Unknown Effect (id=210156) }
+bonus_id={ 12486 }, quality={ rare }, effects={ Unknown Effect (id=210157) }
+bonus_id={ 12487 }, quality={ epic }, effects={ Unknown Effect (id=210158) }
+bonus_id={ 12488 }, quality={ legendary }, effects={ Unknown Effect (id=210159) }
+bonus_id={ 12489 }, stats={ 100% StrAgiInt [0.5259] }
 bonus_id={ 12504 }, quality={ epic }
-bonus_id={ 12505 }, desc={ Voidtouched }, stats={ inf% Crit [0.2000], -inf% Haste [-0.2000] }
-bonus_id={ 12506 }, desc={ Voidtouched }, stats={ inf% Mastery [0.2000], -inf% Vers [-0.2000] }
-bonus_id={ 12507 }, desc={ Voidtouched }, stats={ inf% Crit [0.2000], -inf% Mastery [-0.2000] }
-bonus_id={ 12508 }, desc={ Voidtouched }, stats={ inf% Crit [0.2000], -inf% Vers [-0.2000] }
-bonus_id={ 12509 }, desc={ Voidtouched }, stats={ inf% Haste [0.2000], -inf% Crit [-0.2000] }
-bonus_id={ 12510 }, desc={ Voidtouched }, stats={ inf% Haste [0.2000], -inf% Mastery [-0.2000] }
-bonus_id={ 12511 }, desc={ Voidtouched }, stats={ inf% Haste [0.2000], -inf% Vers [-0.2000] }
-bonus_id={ 12512 }, desc={ Voidtouched }, stats={ inf% Mastery [0.2000], -inf% Crit [-0.2000] }
-bonus_id={ 12513 }, desc={ Voidtouched }, stats={ inf% Mastery [0.2000], -inf% Haste [-0.2000] }
-bonus_id={ 12514 }, desc={ Voidtouched }, stats={ inf% Vers [0.2000], -inf% Crit [-0.2000] }
-bonus_id={ 12515 }, desc={ Voidtouched }, stats={ inf% Vers [0.2000], -inf% Haste [-0.2000] }
-bonus_id={ 12516 }, desc={ Voidtouched }, stats={ inf% Vers [0.2000], -inf% Mastery [-0.2000] }
+bonus_id={ 12505 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Haste [-0.2000] }
+bonus_id={ 12506 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Vers [-0.2000] }
+bonus_id={ 12507 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Mastery [-0.2000] }
+bonus_id={ 12508 }, desc={ Voidtouched }, stats={ 50% Crit [0.2000], -50% Vers [-0.2000] }
+bonus_id={ 12509 }, desc={ Voidtouched }, stats={ 50% Haste [0.2000], -50% Crit [-0.2000] }
+bonus_id={ 12510 }, desc={ Voidtouched }, stats={ 50% Haste [0.2000], -50% Mastery [-0.2000] }
+bonus_id={ 12511 }, desc={ Voidtouched }, stats={ 50% Haste [0.2000], -50% Vers [-0.2000] }
+bonus_id={ 12512 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Crit [-0.2000] }
+bonus_id={ 12513 }, desc={ Voidtouched }, stats={ 50% Mastery [0.2000], -50% Haste [-0.2000] }
+bonus_id={ 12514 }, desc={ Voidtouched }, stats={ 50% Vers [0.2000], -50% Crit [-0.2000] }
+bonus_id={ 12515 }, desc={ Voidtouched }, stats={ 50% Vers [0.2000], -50% Haste [-0.2000] }
+bonus_id={ 12516 }, desc={ Voidtouched }, stats={ 50% Vers [0.2000], -50% Mastery [-0.2000] }
 bonus_id={ 12517 }, quality={ epic }
-bonus_id={ 12518 }, desc={ Voidtouched }, stats={ inf% Crit [0.5000], -inf% Haste [-0.5000] }
-bonus_id={ 12519 }, desc={ Voidtouched }, stats={ inf% Crit [0.5000], -inf% Mastery [-0.5000] }
-bonus_id={ 12520 }, desc={ Voidtouched }, stats={ inf% Crit [0.5000], -inf% Vers [-0.5000] }
-bonus_id={ 12521 }, desc={ Voidtouched }, stats={ inf% Haste [0.5000], -inf% Crit [-0.5000] }
-bonus_id={ 12522 }, desc={ Voidtouched }, stats={ inf% Haste [0.5000], -inf% Mastery [-0.5000] }
-bonus_id={ 12523 }, desc={ Voidtouched }, stats={ inf% Haste [0.5000], -inf% Vers [-0.5000] }
-bonus_id={ 12524 }, desc={ Voidtouched }, stats={ inf% Mastery [0.5000], -inf% Crit [-0.5000] }
-bonus_id={ 12525 }, desc={ Voidtouched }, stats={ inf% Mastery [0.5000], -inf% Haste [-0.5000] }
-bonus_id={ 12526 }, desc={ Voidtouched }, stats={ inf% Mastery [0.5000], -inf% Vers [-0.5000] }
-bonus_id={ 12527 }, desc={ Voidtouched }, stats={ inf% Vers [0.5000], -inf% Crit [-0.5000] }
-bonus_id={ 12528 }, desc={ Voidtouched }, stats={ inf% Vers [0.5000], -inf% Haste [-0.5000] }
-bonus_id={ 12529 }, desc={ Voidtouched }, stats={ inf% Vers [0.5000], -inf% Mastery [-0.5000] }
+bonus_id={ 12518 }, desc={ Voidtouched }, stats={ 50% Crit [0.5000], -50% Haste [-0.5000] }
+bonus_id={ 12519 }, desc={ Voidtouched }, stats={ 50% Crit [0.5000], -50% Mastery [-0.5000] }
+bonus_id={ 12520 }, desc={ Voidtouched }, stats={ 50% Crit [0.5000], -50% Vers [-0.5000] }
+bonus_id={ 12521 }, desc={ Voidtouched }, stats={ 50% Haste [0.5000], -50% Crit [-0.5000] }
+bonus_id={ 12522 }, desc={ Voidtouched }, stats={ 50% Haste [0.5000], -50% Mastery [-0.5000] }
+bonus_id={ 12523 }, desc={ Voidtouched }, stats={ 50% Haste [0.5000], -50% Vers [-0.5000] }
+bonus_id={ 12524 }, desc={ Voidtouched }, stats={ 50% Mastery [0.5000], -50% Crit [-0.5000] }
+bonus_id={ 12525 }, desc={ Voidtouched }, stats={ 50% Mastery [0.5000], -50% Haste [-0.5000] }
+bonus_id={ 12526 }, desc={ Voidtouched }, stats={ 50% Mastery [0.5000], -50% Vers [-0.5000] }
+bonus_id={ 12527 }, desc={ Voidtouched }, stats={ 50% Vers [0.5000], -50% Crit [-0.5000] }
+bonus_id={ 12528 }, desc={ Voidtouched }, stats={ 50% Vers [0.5000], -50% Haste [-0.5000] }
+bonus_id={ 12529 }, desc={ Voidtouched }, stats={ 50% Vers [0.5000], -50% Mastery [-0.5000] }
 bonus_id={ 12530 }, quality={ epic }
 bonus_id={ 12531 }, quality={ epic }
 bonus_id={ 12532 }, quality={ epic }
@@ -7268,12 +7335,133 @@ bonus_id={ 12533 }, quality={ epic }
 bonus_id={ 12534 }, quality={ rare }
 bonus_id={ 12535 }, quality={ rare }
 bonus_id={ 12536 }, quality={ rare }
-bonus_id={ 12537 }, quality={ rare }, ilevel={ 1 @plvl 1 - 664 @plvl 80 }
+bonus_id={ 12537 }, quality={ rare }
 bonus_id={ 12538 }, quality={ rare }
 bonus_id={ 12539 }, quality={ rare }
 bonus_id={ 12540 }, quality={ rare }
 bonus_id={ 12541 }, quality={ rare }
 bonus_id={ 12542 }, quality={ uncommon }
+bonus_id={ 12543 }, stats={ 100% Avoidance [0.6000] }
+bonus_id={ 12544 }, stats={ 100% Leech [0.6000] }
+bonus_id={ 12545 }, stats={ 100% RunSpeed [0.5973] }
+bonus_id={ 12546 }, stats={ 100% Vers [0.3000] }
+bonus_id={ 12547 }, stats={ 100% Crit [0.3000] }
+bonus_id={ 12548 }, stats={ 100% Haste [0.3000] }
+bonus_id={ 12549 }, quality={ rare }, stats={ 50% Sta [0.2045], 50% StrInt [0.2045] }
+bonus_id={ 12550 }, quality={ epic }, stats={ 50% Sta [0.2245], 50% StrInt [0.2245] }
+bonus_id={ 12551 }, stats={ 100% Mastery [0.3000] }
+bonus_id={ 12552 }, quality={ rare }
+bonus_id={ 12553 }, quality={ rare }, stats={ 50% Sta [0.2045], 50% Int [0.2045] }
+bonus_id={ 12554 }, quality={ epic }
+bonus_id={ 12555 }, quality={ epic }, stats={ 50% Sta [0.2245], 50% Int [0.2245] }
+bonus_id={ 12556 }, quality={ rare }, stats={ 50% Sta [0.2045], 50% StrAgiInt [0.2045] }
+bonus_id={ 12557 }, quality={ epic }, stats={ 50% Sta [0.2245], 50% StrAgiInt [0.2245] }
+bonus_id={ 12558 }, quality={ artifact }
+bonus_id={ 12559 }, quality={ artifact }
+bonus_id={ 12560 }, quality={ artifact }
+bonus_id={ 12561 }, quality={ artifact }
+bonus_id={ 12562 }, quality={ artifact }
+bonus_id={ 12563 }, quality={ artifact }
+bonus_id={ 12564 }, quality={ artifact }
+bonus_id={ 12565 }, quality={ artifact }
+bonus_id={ 12566 }, quality={ artifact }
+bonus_id={ 12567 }, quality={ artifact }
+bonus_id={ 12568 }, quality={ artifact }
+bonus_id={ 12569 }, quality={ artifact }
+bonus_id={ 12570 }, quality={ artifact }
+bonus_id={ 12571 }, quality={ artifact }
+bonus_id={ 12572 }, quality={ artifact }
+bonus_id={ 12573 }, quality={ artifact }
+bonus_id={ 12574 }, quality={ artifact }
+bonus_id={ 12575 }, quality={ artifact }
+bonus_id={ 12576 }, quality={ artifact }
+bonus_id={ 12577 }, quality={ artifact }
+bonus_id={ 12578 }, quality={ artifact }
+bonus_id={ 12579 }, quality={ artifact }
+bonus_id={ 12580 }, quality={ artifact }
+bonus_id={ 12581 }, quality={ artifact }
+bonus_id={ 12582 }, quality={ artifact }
+bonus_id={ 12583 }, quality={ artifact }
+bonus_id={ 12584 }, quality={ artifact }
+bonus_id={ 12585 }, quality={ artifact }
+bonus_id={ 12586 }, quality={ artifact }
+bonus_id={ 12587 }, quality={ artifact }
+bonus_id={ 12588 }, quality={ artifact }
+bonus_id={ 12589 }, quality={ artifact }
+bonus_id={ 12590 }, quality={ artifact }
+bonus_id={ 12591 }, quality={ artifact }
+bonus_id={ 12592 }, quality={ artifact }
+bonus_id={ 12593 }, quality={ artifact }
+bonus_id={ 12594 }, quality={ artifact }
+bonus_id={ 12595 }, quality={ artifact }
+bonus_id={ 12596 }, quality={ artifact }
+bonus_id={ 12597 }, quality={ artifact }
+bonus_id={ 12598 }, quality={ artifact }
+bonus_id={ 12599 }, quality={ artifact }
+bonus_id={ 12600 }, quality={ artifact }
+bonus_id={ 12601 }, quality={ artifact }
+bonus_id={ 12602 }, quality={ artifact }
+bonus_id={ 12603 }, quality={ artifact }
+bonus_id={ 12604 }, quality={ artifact }
+bonus_id={ 12605 }, quality={ artifact }
+bonus_id={ 12606 }, quality={ artifact }
+bonus_id={ 12607 }, quality={ artifact }
+bonus_id={ 12608 }, quality={ artifact }
+bonus_id={ 12609 }, quality={ artifact }
+bonus_id={ 12610 }, quality={ artifact }
+bonus_id={ 12613 }, ilevel={ 1 @plvl 1 - 571 @plvl 80 }
+bonus_id={ 12614 }, ilevel={ 1 @plvl 1 - 571 @plvl 80 }
+bonus_id={ 12615 }, quality={ uncommon }, ilevel={ 13 @plvl 1 - 571 @plvl 80 }
+bonus_id={ 12616 }, quality={ rare }, ilevel={ 18 @plvl 1 - 578 @plvl 80 }
+bonus_id={ 12617 }, quality={ epic }, stats={ 100% Sta [0.1000] }, ilevel={ 24 @plvl 1 - 584 @plvl 80 }
+bonus_id={ 12618 }, effects={ Volatile Magics (id=1234416, index=0, type=equip) }
+bonus_id={ 12619 }, quality={ rare }, effects={ Volatile Magics (id=1234415, index=0, type=equip) }
+bonus_id={ 12620 }, quality={ epic }, effects={ Volatile Magics (id=1234414, index=0, type=equip) }
+bonus_id={ 12621 }, quality={ legendary }, effects={ Volatile Magics (id=1234413, index=0, type=equip) }
+bonus_id={ 12622 }, quality={ legendary }, effects={ Arcane Aegis (id=1234426, index=0, type=equip) }
+bonus_id={ 12623 }, quality={ epic }, effects={ Arcane Aegis (id=1234424, index=0, type=equip) }
+bonus_id={ 12624 }, quality={ rare }, effects={ Arcane Aegis (id=1234425, index=0, type=equip) }
+bonus_id={ 12625 }, effects={ Arcane Aegis (id=1234426, index=0, type=equip) }
+bonus_id={ 12626 }, quality={ legendary }, effects={ Terror from Below (id=1234398, index=0, type=equip) }
+bonus_id={ 12627 }, quality={ epic }, effects={ Terror from Below (id=1234399, index=0, type=equip) }
+bonus_id={ 12628 }, quality={ rare }, effects={ Terror from Below (id=1234400, index=0, type=equip) }
+bonus_id={ 12629 }, effects={ Terror from Below (id=1234401, index=0, type=equip) }
+bonus_id={ 12630 }, quality={ legendary }, effects={ Highmountain Fortitude (id=1234433, index=0, type=equip) }
+bonus_id={ 12631 }, quality={ epic }, effects={ Highmountain Fortitude (id=1234434, index=0, type=equip) }
+bonus_id={ 12632 }, quality={ rare }, effects={ Highmountain Fortitude (id=1234435, index=0, type=equip) }
+bonus_id={ 12633 }, effects={ Highmountain Fortitude (id=1234286, index=0, type=equip) }
+bonus_id={ 12634 }, quality={ legendary }, effects={ Touch of Malice (id=1234363, index=0, type=equip) }
+bonus_id={ 12635 }, quality={ epic }, effects={ Touch of Malice (id=1234364, index=0, type=equip) }
+bonus_id={ 12636 }, quality={ rare }, effects={ Touch of Malice (id=1234365, index=0, type=equip) }
+bonus_id={ 12637 }, effects={ Touch of Malice (id=1234366, index=0, type=equip) }
+bonus_id={ 12638 }, quality={ legendary }, effects={ Souls of the Caw (id=1234428, index=0, type=equip) }
+bonus_id={ 12639 }, quality={ epic }, effects={ Souls of the Caw (id=1234429, index=0, type=equip) }
+bonus_id={ 12640 }, quality={ rare }, effects={ Souls of the Caw (id=1234430, index=0, type=equip) }
+bonus_id={ 12641 }, effects={ Souls of the Caw (id=1234431, index=0, type=equip) }
+bonus_id={ 12642 }, quality={ legendary }, effects={ Temporal Retaliation (id=1234418, index=0, type=equip) }
+bonus_id={ 12643 }, quality={ epic }, effects={ Temporal Retaliation (id=1234419, index=0, type=equip) }
+bonus_id={ 12644 }, quality={ rare }, effects={ Temporal Retaliation (id=1234420, index=0, type=equip) }
+bonus_id={ 12645 }, effects={ Temporal Retaliation (id=1234421, index=0, type=equip) }
+bonus_id={ 12646 }, quality={ legendary }, effects={ Storm Surger (id=1234373, index=0, type=equip) }
+bonus_id={ 12647 }, quality={ epic }, effects={ Storm Surger (id=1234374, index=0, type=equip) }
+bonus_id={ 12648 }, quality={ rare }, effects={ Storm Surger (id=1234375, index=0, type=equip) }
+bonus_id={ 12649 }, effects={ Storm Surger (id=1234376, index=0, type=equip) }
+bonus_id={ 12650 }, quality={ legendary }, effects={ Arcane Ward (id=1234368, index=0, type=equip) }
+bonus_id={ 12651 }, quality={ epic }, effects={ Arcane Ward (id=1234369, index=0, type=equip) }
+bonus_id={ 12652 }, quality={ rare }, effects={ Arcane Ward (id=1234370, index=0, type=equip) }
+bonus_id={ 12653 }, effects={ Arcane Ward (id=1234371, index=0, type=equip) }
+bonus_id={ 12654 }, quality={ legendary }, effects={ Brewing Storm (id=1258768, index=0, type=equip) }
+bonus_id={ 12655 }, quality={ epic }, effects={ Brewing Storm (id=1258769, index=0, type=equip) }
+bonus_id={ 12656 }, quality={ rare }, effects={ Brewing Storm (id=1258770, index=0, type=equip) }
+bonus_id={ 12657 }, effects={ Brewing Storm (id=1258771, index=0, type=equip) }
+bonus_id={ 12658 }, quality={ legendary }, effects={ Light's Vengeance (id=1253870, index=0, type=equip) }
+bonus_id={ 12659 }, quality={ epic }, effects={ Light's Vengeance (id=1253869, index=0, type=equip) }
+bonus_id={ 12660 }, quality={ rare }, effects={ Light's Vengeance (id=1253868, index=0, type=equip) }
+bonus_id={ 12661 }, effects={ Light's Vengeance (id=1253867, index=0, type=equip) }
+bonus_id={ 12662 }, quality={ legendary }, effects={ I Am My Scars! (id=1234358, index=0, type=equip) }
+bonus_id={ 12663 }, quality={ epic }, effects={ I Am My Scars! (id=1234359, index=1, type=equip) }
+bonus_id={ 12664 }, quality={ rare }, effects={ I Am My Scars! (id=1234360, index=1, type=equip) }
+bonus_id={ 12665 }, effects={ I Am My Scars! (id=1234361, index=0, type=equip) }
 bonus_id={ 12677 }, desc={ Rank 3/4 }, quality={ epic }, effects={ Adding (id=474563, index=0, type=use) }
 bonus_id={ 12678 }, desc={ Rank 3/4 }, quality={ epic }, effects={ Adding (id=474587, index=0, type=use) }
 bonus_id={ 12679 }, desc={ Rank 2/4 }, quality={ rare }, effects={ Adding (id=474595, index=0, type=use) }
@@ -7282,4 +7470,117 @@ bonus_id={ 12681 }, desc={ Rank 1/4 }, effects={ Adding (id=474605, index=0, typ
 bonus_id={ 12682 }, desc={ Rank 1/4 }, quality={ uncommon }, effects={ Adding (id=474615, index=0, type=use) }
 bonus_id={ 12683 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474616, index=0, type=use) }
 bonus_id={ 12684 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474617, index=0, type=use) }
+bonus_id={ 12694 }, quality={ epic }
+bonus_id={ 12695 }, quality={ epic }
+bonus_id={ 12696 }, quality={ epic }
+bonus_id={ 12697 }, quality={ epic }
+bonus_id={ 12706 }, stats={ 25% Crit [0.0750], 25% Vers [0.0750], 25% Haste [0.0750], 25% Mastery [0.0750] }
+bonus_id={ 12707 }, stats={ 100% Vers [0.1500] }
+bonus_id={ 12708 }, stats={ 100% Haste [0.1500] }
+bonus_id={ 12709 }, stats={ 100% Mastery [0.1500] }
+bonus_id={ 12710 }, stats={ 100% Crit [0.1500] }
+bonus_id={ 12711 }, stats={ 100% Crit [0.3000] }
+bonus_id={ 12712 }, stats={ 100% Mastery [0.3000] }
+bonus_id={ 12713 }, stats={ 100% Haste [0.3000] }
+bonus_id={ 12714 }, stats={ 100% Vers [0.3000] }
 bonus_id={ 12922 }, socket={ 1 }
+bonus_id={ 13253 }, quality={ artifact }
+bonus_id={ 13254 }, quality={ artifact }
+bonus_id={ 13255 }, quality={ artifact }
+bonus_id={ 13256 }, quality={ artifact }
+bonus_id={ 13257 }, quality={ artifact }
+bonus_id={ 13258 }, quality={ artifact }
+bonus_id={ 13259 }, quality={ artifact }
+bonus_id={ 13260 }, quality={ artifact }
+bonus_id={ 13261 }, quality={ artifact }
+bonus_id={ 13262 }, quality={ artifact }
+bonus_id={ 13263 }, quality={ artifact }
+bonus_id={ 13264 }, quality={ artifact }
+bonus_id={ 13265 }, quality={ artifact }
+bonus_id={ 13266 }, quality={ artifact }
+bonus_id={ 13267 }, quality={ artifact }
+bonus_id={ 13268 }, quality={ artifact }
+bonus_id={ 13269 }, quality={ artifact }
+bonus_id={ 13270 }, quality={ artifact }
+bonus_id={ 13271 }, quality={ artifact }
+bonus_id={ 13272 }, quality={ artifact }
+bonus_id={ 13273 }, quality={ artifact }
+bonus_id={ 13274 }, quality={ artifact }
+bonus_id={ 13275 }, quality={ artifact }
+bonus_id={ 13276 }, quality={ artifact }
+bonus_id={ 13277 }, quality={ artifact }
+bonus_id={ 13278 }, quality={ artifact }
+bonus_id={ 13279 }, quality={ artifact }
+bonus_id={ 13280 }, quality={ artifact }
+bonus_id={ 13281 }, quality={ artifact }
+bonus_id={ 13282 }, quality={ artifact }
+bonus_id={ 13283 }, quality={ artifact }
+bonus_id={ 13284 }, quality={ artifact }
+bonus_id={ 13285 }, quality={ artifact }
+bonus_id={ 13286 }, quality={ artifact }
+bonus_id={ 13287 }, quality={ artifact }
+bonus_id={ 13288 }, quality={ artifact }
+bonus_id={ 13289 }, quality={ artifact }
+bonus_id={ 13290 }, quality={ artifact }
+bonus_id={ 13291 }, quality={ artifact }
+bonus_id={ 13292 }, quality={ artifact }
+bonus_id={ 13293 }, quality={ artifact }
+bonus_id={ 13294 }, quality={ artifact }
+bonus_id={ 13295 }, quality={ artifact }
+bonus_id={ 13296 }, quality={ artifact }
+bonus_id={ 13297 }, quality={ artifact }
+bonus_id={ 13298 }, quality={ artifact }
+bonus_id={ 13299 }, quality={ artifact }
+bonus_id={ 13300 }, quality={ artifact }
+bonus_id={ 13301 }, quality={ artifact }
+bonus_id={ 13302 }, quality={ artifact }
+bonus_id={ 13303 }, quality={ artifact }
+bonus_id={ 13304 }, quality={ artifact }
+bonus_id={ 13305 }, quality={ artifact }
+bonus_id={ 13306 }, quality={ artifact }
+bonus_id={ 13307 }, quality={ artifact }
+bonus_id={ 13308 }, quality={ artifact }
+bonus_id={ 13309 }, quality={ artifact }
+bonus_id={ 13310 }, quality={ artifact }
+bonus_id={ 13311 }, quality={ artifact }
+bonus_id={ 13312 }, quality={ artifact }
+bonus_id={ 13313 }, quality={ artifact }
+bonus_id={ 13314 }, quality={ artifact }
+bonus_id={ 13315 }, quality={ artifact }
+bonus_id={ 13316 }, quality={ artifact }
+bonus_id={ 13317 }, quality={ artifact }
+bonus_id={ 13318 }, quality={ artifact }
+bonus_id={ 13319 }, quality={ artifact }
+bonus_id={ 13320 }, quality={ artifact }
+bonus_id={ 13321 }, quality={ artifact }
+bonus_id={ 13322 }, quality={ artifact }
+bonus_id={ 13323 }, quality={ artifact }
+bonus_id={ 13324 }, quality={ artifact }
+bonus_id={ 13325 }, quality={ artifact }
+bonus_id={ 13326 }, quality={ artifact }
+bonus_id={ 13327 }, quality={ artifact }
+bonus_id={ 13328 }, quality={ artifact }
+bonus_id={ 13329 }, quality={ artifact }
+bonus_id={ 13330 }, quality={ artifact }
+bonus_id={ 13331 }, quality={ artifact }
+bonus_id={ 13357 }, quality={ epic }
+bonus_id={ 13360 }, effects={ Infinite Power (id=1250717, index=0, type=no_delay_use) }
+bonus_id={ 13361 }, effects={ Infinite Power (id=1250753, index=0, type=no_delay_use) }
+bonus_id={ 13362 }, effects={ Infinite Power (id=1250750, index=0, type=no_delay_use) }
+bonus_id={ 13363 }, effects={ Infinite Power (id=1250757, index=0, type=no_delay_use) }
+bonus_id={ 13364 }, effects={ Infinite Power (id=1250751, index=0, type=no_delay_use) }
+bonus_id={ 13365 }, effects={ Infinite Power (id=1250760, index=0, type=no_delay_use) }
+bonus_id={ 13435 }, effects={ Infinite Power (id=1250552, index=0, type=equip) }
+bonus_id={ 13443 }, quality={ epic }
+bonus_id={ 13444 }, quality={ epic }
+bonus_id={ 13445 }, quality={ epic }
+bonus_id={ 13446 }, quality={ epic }
+bonus_id={ 13468 }, ilevel_adjust={ 7 }
+bonus_id={ 13469 }, ilevel_adjust={ 3 }
+bonus_id={ 13501 }, effects={ Reshii Grace (id=1254906, index=0, type=equip) }
+bonus_id={ 13502 }, effects={ Reshii Grace (id=1254904, index=0, type=equip) }
+bonus_id={ 13503 }, effects={ Reshii Grace (id=1254905, index=0, type=equip) }
+bonus_id={ 13504 }, effects={ Reshii Grace (id=1235409, index=0, type=equip) }
+bonus_id={ 13524 }, quality={ epic }, stats={ 100% Sta [0.1000] }
+bonus_id={ 13533 }, effects={ Infinite Power (id=1257586, index=0, type=no_delay_use) }
+bonus_id={ 13572 }, ilevel={ 1 @plvl 1 - 655 @plvl 80 }

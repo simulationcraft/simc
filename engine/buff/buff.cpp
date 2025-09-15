@@ -53,13 +53,8 @@ struct buff_expr_t : public expr_t
 
     if ( !buff )
     {
-      action->sim->error(
-          "Unable to build buff action expression for {}: "
-          "Reference to unknown buff/debuff '{}' by {}.",
-          *action, buff_name, *action->player );
-      action->sim->cancel();
-      // Prevent segfault
-      buff = make_buff( action->player, "dummy" );
+      throw sc_invalid_apl_argument( fmt::format(
+        "Unable to build buff action expression for {}, reference to unknown buff/debuff '{}'.", *action, buff_name ) );
     }
 
     return buff;
@@ -232,15 +227,14 @@ struct expiration_t : public buff_event_t
   unsigned stack;
 
   expiration_t( buff_t* b, unsigned s, timespan_t d ) : buff_event_t( b, d ), stack( s )
-  { }
+  {}
 
   expiration_t( buff_t* b, timespan_t d ) : buff_event_t( b, d ), stack( 0 )
   {
     if ( b->stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
     {
-      b->sim->error( "{} {} creates asynchronous expiration with no stack count.",
-          *buff->player, *buff );
-      b->sim->cancel();
+      throw sc_runtime_error(
+        fmt::format( "{} {} creates asynchronous expiration with no stack count.", *buff->player, *buff ) );
     }
   }
 
@@ -400,6 +394,12 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       []( buff_t* buff ) {
         return buff->cooldown->remains();
       } );
+  }
+  else if ( type == "internal_cooldown_remains" )
+  {
+    return make_buff_expr( "buff_internal_cooldown_remains", []( buff_t* buff ) {
+      return buff->internal_cooldown ? buff->internal_cooldown->remains() : 0_ms;
+    } );
   }
   else if ( type == "up" )
   {
@@ -574,9 +574,8 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
       } );
   }
 
-  throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
+  throw sc_invalid_apl_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
 }
-
 }  // namespace
 
 
@@ -613,6 +612,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     delay(),
     expiration_delay(),
     cooldown(),
+    internal_cooldown(),
     rppm( nullptr ),
     _max_stack( -1 ),
     _initial_stack( -1 ),
@@ -632,6 +632,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     is_fallback(),
     requires_invalidation(),
     expire_at_max_stack(),
+    consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
     current_value(),
@@ -704,6 +705,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
 
   // Set Buff Cooldown
   set_cooldown( timespan_t::min() );
+  set_internal_cooldown( timespan_t::min() );
 
   set_trigger_spell( spell_data_t::nil() );
 
@@ -743,6 +745,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   update_trigger_calculations();
 }
 
+buff_t::~buff_t() = default;
+
 const spell_data_t& buff_t::data_reporting() const
 {
   if (s_data_reporting == spell_data_t::nil())
@@ -771,6 +775,10 @@ void buff_t::update_trigger_calculations()
         {
           default_chance = trigger_data->proc_chance();
         }
+
+        // the driver's internal cooldown becomes the triggering cooldown of the buff
+        if ( trigger_data->id() != data().id() )
+          set_cooldown( trigger_data->internal_cooldown() );
       }
       // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
       // easily enable/disable spells based on conditional things (such as talents,
@@ -1028,21 +1036,23 @@ buff_t* buff_t::set_expire_at_max_stack( bool expire )
   return this;
 }
 
+buff_t* buff_t::set_consume_all_stacks( bool consume_all )
+{
+  if ( is_fallback )
+    return this;
+
+  consume_all_stacks = consume_all;
+
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
-  // Set Buff duration
-  if ( duration == timespan_t::min() )
+  if ( duration == timespan_t::min() )  // min() called in buff_t constructor
   {
-    if ( data().ok() )
+    if ( data().ok() && data().cooldown() != 0_ms )
     {
-      if ( data().cooldown() != timespan_t::zero() )
-      {
-        cooldown->duration = data().cooldown();
-      }
-      else
-      {
-        cooldown->duration = data().internal_cooldown();
-      }
+      cooldown->duration = data().cooldown();
     }
   }
   else
@@ -1050,10 +1060,45 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
     cooldown->duration = duration;
   }
 
-  if ( cooldown->duration < timespan_t::zero() )
+  if ( cooldown->duration < 0_ms )
   {
-    cooldown->duration = timespan_t::zero();
+    cooldown->duration = 0_ms;
   }
+
+  return this;
+}
+
+buff_t* buff_t::set_internal_cooldown( timespan_t duration )
+{
+  timespan_t _dur = timespan_t::min();
+
+  if ( duration == timespan_t::min() )  // min() called in buff_t constructor
+  {
+    if ( data().ok() && data().internal_cooldown() != 0_ms )
+    {
+      _dur = data().internal_cooldown();
+    }
+  }
+  else
+  {
+    _dur = duration;
+  }
+
+  if ( _dur == timespan_t::min() )  // no icd in data, don't create obj
+    return this;
+
+  if ( !internal_cooldown )
+  {
+    if ( source )
+      internal_cooldown = std::make_unique<cooldown_t>( "buff_icd", *source );
+    else
+      internal_cooldown = std::make_unique<cooldown_t>( "buff_icd", *sim );
+  }
+
+  internal_cooldown->duration = _dur;
+
+  if ( internal_cooldown->duration < 0_ms )
+    internal_cooldown->duration = 0_ms;
 
   return this;
 }
@@ -1383,7 +1428,6 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
     trigger_data = s;
   }
 
-  // TODO: update cooldown with internal cooldown of the trigger spell
   // TODO: if trigger spell has an A_PROC_TRIGGER effect, set the percent chance to the effect value
   update_trigger_calculations();
   return this;
@@ -1504,6 +1548,15 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           modify_cooldown( effect.time_value() );
           sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(), cooldown->duration );
+        }
+        break;
+
+      case P_PROC_COOLDOWN:
+        if ( internal_cooldown && internal_cooldown->duration > 0_ms )
+        {
+          set_internal_cooldown( internal_cooldown->duration + effect.time_value() );
+          sim->print_debug( "{} internal cooldown duration modified by {} to {}", *this, effect.time_value(),
+                            internal_cooldown->duration );
         }
         break;
 
@@ -2117,6 +2170,10 @@ void buff_t::increment( int stacks, double value, timespan_t duration )
 
   if ( current_stack == 0 || stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
+    // increment the refresh count since async buffs never call refresh()
+    if ( current_stack > 0 )
+      refresh_count++;
+
     start( stacks, value, duration );
   }
   else
@@ -2183,7 +2240,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
+    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
   if ( expiration.empty() )
@@ -2299,7 +2356,9 @@ void buff_t::start( int stacks, double value, timespan_t duration )
       constant = true;
   }
 
-  start_count++;
+  // async buffs will always start() so only increment when actually a new buff application
+  if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS || current_stack == 0 )
+    start_count++;
 
   if ( player && change_regen_rate )
   {
@@ -2654,7 +2713,7 @@ bool buff_t::trigger( action_t* action, int stacks, double value, double chance,
   return false;
 }
 
-bool buff_t::can_expire( action_t* action ) const
+bool buff_t::can_consume( action_t* action ) const
 {
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
@@ -2669,10 +2728,36 @@ bool buff_t::can_expire( action_t* action ) const
   return true;
 }
 
-void buff_t::expire( action_t* action, timespan_t d )
+int buff_t::consume( action_t* action, int stacks )
 {
-  if ( can_expire( action ) )
-    expire( d );
+  if ( !check() )
+    return 0;
+
+  if ( internal_cooldown && internal_cooldown->down() )
+    return 0;
+
+  if ( !can_consume( action ) )
+    return 0;
+
+  int old_stacks = check();
+
+  // default behavior
+  if ( stacks == -1 )
+  {
+    if ( consume_all_stacks )
+      expire();
+    else
+      decrement();
+  }
+  else
+  {
+    decrement( stacks );
+  }
+
+  if ( internal_cooldown )
+    internal_cooldown->start();
+
+  return old_stacks - check();
 }
 
 void buff_t::expire( timespan_t d )
@@ -2852,6 +2937,8 @@ void buff_t::reset()
   last_expire       = timespan_t::min();
   last_stack_change = timespan_t::min();
   dynamic_time_duration_multiplier = 1.0;
+  if ( internal_cooldown )
+    internal_cooldown->reset_init();
 }
 
 void buff_t::merge( const buff_t& other )
@@ -2965,9 +3052,8 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
       continue;
     }
 
-    const auto& item = dbc::find_consumable( ITEM_SUBCLASS_POTION, b->player->is_ptr(),
-                                             potion_spell_filter{ b->data().id(), *b->player->dbc } );
-    if ( item.id != 0 )
+    if ( auto item = &dbc::find_consumable( ITEM_SUBCLASS_POTION, b->player->is_ptr(),
+                              potion_spell_filter{ b->data().id(), *b->player->dbc } ); item->id != 0 )
     {
       return b;
     }
@@ -3007,6 +3093,8 @@ std::string buff_t::to_str() const
   s << " max_stack=" << _max_stack;
   s << " initial_stack=" << data().initial_stacks();
   s << " cooldown=" << cooldown->duration.total_seconds();
+  if ( internal_cooldown )
+    s << " internal_cooldown=" << internal_cooldown->duration.total_seconds();
   s << " duration=" << buff_duration().total_seconds();
   s << " default_chance=" << default_chance;
 
@@ -3055,7 +3143,7 @@ buff_t* buff_t::find( sim_t* s, util::string_view name )
 buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
 {
   for ( const auto& fb : p->fallback_buff_names )
-    if ( fb.first == name && fb.second == source )
+    if ( fb.first == name && ( !source || fb.second == source ) )
       return p->sim->auras.fallback;
 
   return find( p->buff_list, name, source );
@@ -3174,11 +3262,11 @@ void sc_format_to( const buff_t& buff, fmt::format_context::iterator out )
 {
   if ( buff.sim->log_spell_id )
   {
-    fmt::format_to( out, "Buff {} ({})", buff.name(), buff.data().id() );
+    fmt::format_to( out, "Buff '{}' ({})", buff.name(), buff.data().id() );
   }
   else
   {
-    fmt::format_to( out, "Buff {}", buff.name() );
+    fmt::format_to( out, "Buff '{}'", buff.name() );
   }
 }
 
@@ -3837,6 +3925,13 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
         {
           direct_mod.labels.push_back( e.misc_value2() );
         }
+        else if ( direct_mod.multiplier == 1.0 )
+        {
+          sim->print_debug( "{} no existing direct effect value of {}, setting direct value to match",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), direct_mod.multiplier );
+          set_direct_mod( spell, idx, multiplier );
+          direct_mod.labels.push_back( e.misc_value2() );
+        }
         else
         {
           sim->print_debug( "{} ignoring label modifier of {} due to not matching existing direct effect value of {}",
@@ -3850,6 +3945,13 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 
         if ( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
         {
+          periodic_mod.labels.push_back( e.misc_value2() );
+        }
+        else if ( periodic_mod.multiplier == 1.0 )
+        {
+          sim->print_debug( "{} no existing periodic effect value of {}, setting periodic value to match",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), periodic_mod.multiplier );
+          set_periodic_mod( spell, idx, multiplier );
           periodic_mod.labels.push_back( e.misc_value2() );
         }
         else
@@ -3870,6 +3972,55 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       crit_chance_mod.labels.push_back( e.misc_value2() );
     }
   }
+
+  return this;
+}
+
+damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
+{
+  auto parse_dynamic_buff_multiplier_for_mod = [ this, buff ]( damage_buff_modifier_t& mod ) {
+    
+    if ( !mod.s_data || !mod.s_data->ok() )
+      return false;
+
+    if ( range::contains( mod.dynamic_buff_multipliers, buff, []( const auto& entry ) { return entry.first; } ) )
+      return false;
+
+    for ( const spelleffect_data_t& effect : buff->data().effects() )
+    {
+      if ( !effect.ok() || effect.type() != E_APPLY_AURA )
+        continue;
+
+      if ( ( effect.subtype() == A_ADD_PCT_MODIFIER && mod.s_data->affected_by( effect ) ) ||
+           ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER && mod.s_data->affected_by_label( effect ) ) )
+      {
+        if ( effect.property_type() == P_EFFECTS )
+        {
+          mod.dynamic_buff_multipliers.push_back( { buff, effect.percent() } );
+          sim->print_debug( "{} damage buff registering dynamic buff multiplier {} of {}%", *this, *buff, effect.base_value() );
+          return true;
+        }
+        else if ( mod.effect_idx >= 1 && mod.effect_idx <= 5 )
+        {
+          constexpr property_type_t effect_types[] = { P_EFFECT_1, P_EFFECT_2, P_EFFECT_3, P_EFFECT_4, P_EFFECT_5 };
+          if ( effect.property_type() == effect_types[ mod.effect_idx - 1 ] )
+          {
+            mod.dynamic_buff_multipliers.push_back( { buff, effect.percent() } );
+            sim->print_debug( "{} damage buff registering dynamic buff multiplier {} of {}%", *this, *buff, effect.base_value() );
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  };
+
+  parse_dynamic_buff_multiplier_for_mod( direct_mod );
+  parse_dynamic_buff_multiplier_for_mod( periodic_mod );
+  parse_dynamic_buff_multiplier_for_mod( auto_attack_mod );
+  if ( parse_dynamic_buff_multiplier_for_mod( crit_chance_mod ) )
+    buff->add_invalidate( CACHE_CRIT_CHANCE );
 
   return this;
 }
@@ -4029,4 +4180,23 @@ bool damage_buff_t::is_affecting_crit_chance( const spell_data_t* s )
   }
 
   return false;
+}
+
+double damage_buff_t::get_mod_multiplier( const damage_buff_modifier_t& mod ) const
+{
+  if ( mod.dynamic_buff_multipliers.empty() )
+    return mod.multiplier;
+
+  double multiplier = mod.multiplier - 1.0;
+
+  // Iterate over dynamic buff multipliers, check they are currently active, and apply if they are
+  for ( const std::pair<buff_t*, double>& dynamic_buff_multiplier : mod.dynamic_buff_multipliers )
+  {
+    if ( dynamic_buff_multiplier.first->check() )
+    {
+      multiplier *= 1.0 + dynamic_buff_multiplier.second;
+    }
+  }
+
+  return 1.0 + multiplier;
 }

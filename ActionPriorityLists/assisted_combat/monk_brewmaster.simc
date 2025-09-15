@@ -10,10 +10,10 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=touch_of_death
-actions.assisted_combat+=/blackout_kick,if=talent.blackout_combo&buff.blackout_combo.down
+actions.assisted_combat+=/blackout_kick,if=buff.blackout_combo.down
+actions.assisted_combat+=/tiger_palm,if=!talent.press_the_advantage&buff.blackout_combo.up&active_enemies<=2
 actions.assisted_combat+=/keg_smash,if=charges>=2
 actions.assisted_combat+=/chi_burst,if=target.distance<=30
-actions.assisted_combat+=/tiger_palm,if=!talent.press_the_advantage&buff.blackout_combo.up&active_enemies<=2
 actions.assisted_combat+=/breath_of_fire,if=target.distance<=12
 actions.assisted_combat+=/keg_smash
 actions.assisted_combat+=/exploding_keg,if=target.distance<=40

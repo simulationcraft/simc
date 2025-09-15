@@ -31,10 +31,13 @@ namespace unique_gear
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_callback,
-                              bool fallback = false );
+                              bool fallback = false, wowv_t min_build = wowv_t(),
+                              wowv_t max_build = wowv_t( UINT8_MAX ) );
 // register multiple IDs to the same callback
 void register_special_effect( std::initializer_list<unsigned> spell_ids,
-                              std::function<void( special_effect_t& )> init_callback, bool fallback = false );
+                              std::function<void( special_effect_t& )> init_callback, bool fallback = false,
+                              wowv_t min_build = wowv_t(),
+                              wowv_t max_build = wowv_t( UINT8_MAX ) );
 
 // New-style special effect registering function
 template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>
@@ -629,9 +632,27 @@ template <typename BUFF, typename... ARGS>
 BUFF* create_buff( player_t* p, util::string_view name, ARGS&&... args )
 {
   auto b = buff_t::find( p, name );
-  if ( b != nullptr )
+  if ( b && !b->is_fallback )
   {
-    return debug_cast<BUFF*>( b );
+#ifdef NDEBUG
+    return static_cast<BUFF*>( b );
+#else
+    BUFF* result = dynamic_cast<BUFF*>( b );
+    if ( b && !result )
+    {
+      p->sim->error( "{} has duplicate buff '{}'", *p, name );
+      assert( result );
+    }
+    return result;
+#endif
+  }
+
+  // if we've found a fallback buff, remove it from the fallback list before creating the new buff
+  if ( b && b->is_fallback )
+  {
+    range::erase_remove( p->fallback_buff_names, [ & ]( const auto& fb ) {
+      return util::str_compare_ci( fb.first, name );
+    } );
   }
 
   return make_buff<BUFF>( p, name, std::forward<ARGS>( args )... );

@@ -1,4 +1,27 @@
 {
+  "Achievement": {
+    "fields": [
+      { "data_type": "S", "field": "description" },
+      { "data_type": "S", "field": "title" },
+      { "data_type": "S", "field": "reward" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "h", "field": "id_instance" },
+      { "data_type": "b", "field": "faction" },
+      { "data_type": "i", "field": "supercedes" },
+      { "data_type": "h", "field": "category" },
+      { "data_type": "b", "field": "minimum_criteria" },
+      { "data_type": "b", "field": "points" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "h", "field": "ui_order" },
+      { "data_type": "i", "field": "id_icon_file_data" },
+      { "data_type": "i", "field": "id_reward_item" },
+      { "data_type": "I", "field": "criteria_tree", "ref": "CriteriaTree" },
+      { "data_type": "h", "field": "shares_criteria" },
+      { "data_type": "i", "field": "id_covenant" },
+      { "data_type": "i", "field": "hidden_before_display_season" },
+      { "data_type": "i", "field": "legacy_after_time_event" }
+    ]
+  },
   "ArmorLocation": {
     "fields": [
       { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%9.3ff" } },
@@ -192,7 +215,8 @@
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "H", "field": "cinematic_sequence_id" },
       { "data_type": "H", "field": "default_spec" },
-      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "id" },
+      { "data_type": "B", "field": "has_strength_attack_bonus" },
       { "data_type": "B", "field": "primary_stat_priority" },
       { "data_type": "B", "field": "display_power" },
       { "data_type": "B", "field": "ranged_attack_power_per_agility" },
@@ -201,7 +225,10 @@
       { "data_type": "B", "field": "spell_class_set" },
       { "data_type": "B", "field": "chat_color_r" },
       { "data_type": "B", "field": "chat_color_g" },
-      { "data_type": "B", "field": "chat_color_b" }
+      { "data_type": "B", "field": "chat_color_b" },
+      { "data_type": "B", "field": "unk_5" },
+      { "data_type": "B", "field": "unk_6" },
+      { "data_type": "B", "field": "unk_7"}
     ]
   },
   "ChrSpecialization": {
@@ -321,6 +348,17 @@
   "CraftingQuality": {
     "fields": [
       { "data_type": "i", "field": "tier" }
+    ]
+  },
+  "CriteriaTree": {
+    "fields": [
+      { "data_type": "S", "field": "description" },
+      { "data_type": "I", "field": "parent" },
+      { "data_type": "I", "field": "amount" },
+      { "data_type": "i", "field": "operator" },
+      { "data_type": "i", "field": "id_criteria" },
+      { "data_type": "i", "field": "order_index" },
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "CurrencyCategory": {
@@ -510,12 +548,12 @@
   },
   "Item": {
     "fields": [
-      { "data_type": "B", "field": "classs" },
+      { "data_type": "i", "field": "classs" },
       { "data_type": "B", "field": "subclass" },
       { "data_type": "B", "field": "material" },
-      { "data_type": "B", "field": "type_inv" },
+      { "data_type": "b", "field": "type_inv" },
       { "data_type": "B", "field": "sheath" },
-      { "data_type": "B", "field": "unk_2" },
+      { "data_type": "b", "field": "unk_2" },
       { "data_type": "i", "field": "id_icon", "ref": "ManifestInterfaceData" },
       { "data_type": "B", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" },
@@ -946,8 +984,8 @@
       { "data_type": "b", "field": "flags_2" },
       { "data_type": "i", "field": "flags_3" },
       { "data_type": "b", "field": "flags_1" },
-      { "data_type": "i", "field": "unk_1" },
-      { "data_type": "i", "field": "unk_7" }
+      { "data_type": "i", "field": "id_display_season" },
+      { "data_type": "i", "field": "id_world_state_expression" }
     ]
   },
   "JournalEncounterSection": {
@@ -2067,5 +2105,3 @@
     ]
   }
 }
-
-

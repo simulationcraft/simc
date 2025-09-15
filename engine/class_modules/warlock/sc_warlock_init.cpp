@@ -263,9 +263,6 @@ namespace warlock
     talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
     talents.umbral_blaze_dot = find_spell( 405802 );
 
-    talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 427684
-    talents.reign_of_tyranny_buff = find_spell( 427687 );
-
     talents.demonic_calling = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Calling" ); // Should be ID 205145
     talents.demonic_calling_buff = find_spell( 205146 );
 
@@ -328,6 +325,8 @@ namespace warlock
     talents.fiendish_wrath_buff = find_spell( 386601 );
     talents.fiendish_wrath_dmg = find_spell( 386702 );
     talents.fel_explosion = find_spell( 386609 );
+
+    talents.master_summoner = find_talent_spell( talent_tree::SPECIALIZATION, "Master Summoner" );  // Should be ID 1240189
 
     // Additional Tier Set spell data
 
@@ -508,6 +507,12 @@ namespace warlock
     tier.spliced_destro_jackpot = find_spell( 1217798 );
     tier.demonfire_flurry = find_spell( 1217731 );
 
+    // Manaforge omega
+    tier.rampaging_demonic_soul = find_spell( 1239689 );
+    tier.demonic_oculus         = find_spell( 1238810 );
+    tier.eye_blast              = find_spell( 1239510 );
+    tier.demonic_intelligence   = find_spell( 1239569 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
@@ -594,7 +599,7 @@ namespace warlock
     hero.malevolence_buff = find_spell( 442726 );
     hero.malevolence_dmg = find_spell( 446285 );
 
-    cooldowns.blackened_soul->duration = 500_ms; // TODO: Set using data once hotfix is in using hero.blackened_soul->internal_cooldown();
+    cooldowns.blackened_soul->duration = 0_ms; // TODO: Set using data once hotfix is in using hero.blackened_soul->internal_cooldown();
     cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
@@ -612,8 +617,7 @@ namespace warlock
     hero.demoniacs_fervor = find_talent_spell( talent_tree::HERO, "Demoniac's Fervor" ); // Should be ID 449629
 
     hero.shared_fate = find_talent_spell( talent_tree::HERO, "Shared Fate" ); // Should be ID 449704
-    hero.shared_fate_debuff = find_spell( 450591 );
-    hero.shared_fate_dmg = find_spell( 450593 );
+    hero.shared_fate_dot = find_spell( 450591 );
 
     hero.feast_of_souls = find_talent_spell( talent_tree::HERO, "Feast of Souls" ); // Should be ID 449706
 
@@ -666,9 +670,6 @@ namespace warlock
 
     // Affliction buffs
     create_buffs_affliction();
-
-    buffs.soul_rot = make_buff( this, "soul_rot", talents.soul_rot)
-                         ->set_cooldown( 0_ms );
 
     buffs.malign_omen = make_buff( this, "malign_omen", talents.malign_omen_buff )
                             ->set_default_value( talents.malign_omen_buff->effectN( 1 ).percent() );
@@ -738,7 +739,7 @@ namespace warlock
     buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
                           ->set_duration( talents.call_dreadstalkers_2->duration() );
 
-    buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
+    buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 2 )
                       ->set_duration( talents.summon_vilefiend->duration() );
 
     buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
@@ -850,52 +851,60 @@ namespace warlock
                                     ->set_default_value_from_effect( 1 );
   }
 
+  struct diabolic_ritual_buff_t : public buff_t
+  {
+    const int diabolic_ritual_next_index; // Index of the next Diabolic Ritual buff to cycle
+    buff_t *art_buff_trigger; // Demonic Art buff to trigger when the effect of this Diabolic Ritual buff is consumed
+
+    diabolic_ritual_buff_t( warlock_t* p, util::string_view name, const spell_data_t* spell_data, const int _diabolic_ritual_next_index = 0, buff_t* _art_buff_trigger = nullptr )
+      : buff_t( p, name, spell_data ),
+        diabolic_ritual_next_index(_diabolic_ritual_next_index),
+        art_buff_trigger(_art_buff_trigger)
+    {
+      set_can_cancel( false );
+      set_stack_change_callback( [ this, p ]( buff_t*, int, int cur )
+      {
+        if ( cur == 0 )
+        {
+          // The trigger of the Demonic Art buff has a certain delay that can be modeled fairly closely using a normal distribution
+          const timespan_t buff_delay = timespan_t::from_millis( rng().gauss(200, 15) );
+          make_event( sim, buff_delay, [ this, p ] {
+            if ( p->buffs.art_mother->check() || p->buffs.art_pit_lord->check() || p->buffs.art_overlord->check() )
+            {
+              // Expire other Demonic Art buffs without triggering their effect
+              p->demonic_art_buff_replaced = true;
+              p->buffs.art_mother->expire();
+              p->buffs.art_pit_lord->expire();
+              p->buffs.art_overlord->expire();
+              p->demonic_art_buff_replaced = false;
+            }
+            if (art_buff_trigger)
+              art_buff_trigger->trigger();
+          } );
+          p->diabolic_ritual = diabolic_ritual_next_index;
+        }
+      } );
+    }
+  };
+
   void warlock_t::create_buffs_diabolist()
   {
-    buffs.ritual_overlord = make_buff( this, "diabolic_ritual_overlord", hero.ritual_overlord )
-                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                  {
-                                    if ( cur == 0 )
-                                    {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_overlord->trigger(); } );
-                                      diabolic_ritual = 1;
-                                    }
-                                  } );
-
-    buffs.ritual_mother = make_buff( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother )
-                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                {
-                                  if ( cur == 0 )
-                                  {
-                                    make_event( sim, 0_ms, [ this ] { buffs.art_mother->trigger(); } );
-                                    diabolic_ritual = 2;
-                                  }
-                                } );
-
-    buffs.ritual_pit_lord = make_buff( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord )
-                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() )
-                                ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
-                                  {
-                                    if ( cur == 0 )
-                                    {
-                                      make_event( sim, 0_ms, [ this ] { buffs.art_pit_lord->trigger(); } );
-                                      diabolic_ritual = 0;
-                                    }
-                                  } );
 
     buffs.art_overlord = make_buff( this, "demonic_art_overlord", hero.art_overlord )
+                             ->set_can_cancel( false )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
-                                 if ( cur == 0 )
+                                 if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
+                                 {
                                    warlock_pet_list.overlords.spawn();
+                                 }
                                } );
 
     buffs.art_mother = make_buff( this, "demonic_art_mother_of_chaos", hero.art_mother )
+                           ->set_can_cancel( false )
                            ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                              {
-                               if ( cur == 0 )
+                               if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                {
                                  warlock_pet_list.mothers.spawn();
 
@@ -905,9 +914,10 @@ namespace warlock
                              } );
 
     buffs.art_pit_lord = make_buff( this, "demonic_art_pit_lord", hero.art_pit_lord )
+                             ->set_can_cancel( false )
                              ->set_stack_change_callback( [ this ]( buff_t*, int, int cur )
                                {
-                                 if ( cur == 0 )
+                                 if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                  {
                                    warlock_pet_list.pit_lords.spawn();
 
@@ -916,11 +926,26 @@ namespace warlock
                                  }
                                } );
 
+    buffs.ritual_overlord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_overlord", hero.ritual_overlord, 1, buffs.art_overlord )
+                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+
+    buffs.ritual_mother = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother, 2, buffs.art_mother )
+                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+
+    buffs.ritual_pit_lord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord, 0, buffs.art_pit_lord )
+                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
     buffs.abyssal_dominion = make_buff( this, "Abyssal Dominion", hero.abyssal_dominion_buff );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
+
+    buffs.demonic_oculus = make_buff( this, "demonic_oculus", tier.demonic_oculus );
+
+    buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence )
+                                      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
   }
 
   void warlock_t::create_buffs_hellcaller()
@@ -929,6 +954,8 @@ namespace warlock
                             ->set_cooldown( hero.malevolence_buff->cooldown() - 1_s )
                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                             ->set_default_value_from_effect( 1 );
+
+    buffs.maintained_withering = make_buff( this, "maintained_withering", find_spell( 1239577 ) );
   }
 
   void warlock_t::create_buffs_soul_harvester()
@@ -1011,6 +1038,7 @@ namespace warlock
   {
     gains.feast_of_souls = get_gain( "feast_of_souls" );
     gains.shadow_of_death = get_gain( "shadow_of_death" );
+    gains.rampaging_demonic_soul = get_gain( "rampaging_demonic_soul" );
   }
 
   void warlock_t::init_procs()
@@ -1205,6 +1233,99 @@ namespace warlock
     return player_t::parse_assisted_combat_rule( rule, step );
   }
 
+  std::vector<std::string> warlock_t::action_names_from_spell_id( unsigned int spell_id ) const
+  {
+    if ( spell_id == 172 )  // Wither from corruption
+    {
+      if ( specialization() == WARLOCK_DESTRUCTION )
+        return { "wither" };
+
+      return { "wither", "corruption" };
+    }
+
+    if ( spell_id == 348 )  // Wither from immolate
+      return { "wither", "immolate" };
+
+    if ( spell_id == 686 )  // Shadowbolt
+    {
+      if ( specialization() == WARLOCK_DESTRUCTION )
+        return { "infernal_bolt", "incinerate" };
+
+      return { "infernal_bolt", "shadow_bolt" };
+    }
+
+    if ( spell_id == 105174 )  // Hand of guldan
+      return { "ruination", "hand_of_guldan" };
+
+    if ( spell_id == 116858 )  // Chaos bolt
+      return { "ruination", "chaos_bolt" };
+
+    if ( spell_id == 688 || spell_id == 691 )  // imp & felhunter. Stop infinite summon issue.
+      return { };
+
+    return player_t::action_names_from_spell_id( spell_id );
+  }
+
+  
+  void warlock_t::init_blizzard_action_list()
+  {
+    [[maybe_unused]] action_priority_list_t* default_ = get_action_priority_list( "default" );
+    player_t::init_blizzard_action_list();
+
+    // precombat overrides
+    action_priority_list_t* pre_c = get_action_priority_list( "precombat" );
+
+    pre_c->add_action( "summon_pet" );
+
+    switch ( specialization() )
+    {
+      case WARLOCK_DEMONOLOGY:
+        pre_c->add_action( "power_siphon" );
+        pre_c->add_action( "demonbolt,if=!buff.power_siphon.up" );
+        pre_c->add_action( "shadow_bolt" );
+        break;
+      case WARLOCK_DESTRUCTION:
+        pre_c->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
+        pre_c->add_action( "soul_fire" );
+        pre_c->add_action( "incinerate" );
+        break;
+      case WARLOCK_AFFLICTION:
+        pre_c->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
+        pre_c->add_action( "haunt" );
+        pre_c->add_action( "unstable_affliction" );
+        break;
+      default:
+        break;
+    }
+
+    // cooldown overrides
+    action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+    // reset this from player.cpp
+    cooldowns->action_list.clear();
+
+    cooldowns->add_action( "potion" );
+    cooldowns->add_action( "blood_fury" );
+    cooldowns->add_action( "berserking" );
+    cooldowns->add_action( "fireblood" );
+    cooldowns->add_action( "ancestral_call" );
+    cooldowns->add_action( "use_items" );
+
+    switch ( specialization() )
+    {
+      case WARLOCK_DEMONOLOGY:
+        cooldowns->add_action( "summon_demonic_tyrant,if=buff.dreadstalkers.up" );
+        break;
+      case WARLOCK_DESTRUCTION:
+        cooldowns->add_action( "summon_infernal" );
+        break;
+      case WARLOCK_AFFLICTION:
+        cooldowns->add_action( "summon_darkglare,if=dot.soul_rot.ticking|!talent.soul_rot" );
+        break;
+      default:
+        break;
+    }
+  }
+
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
     add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );
@@ -1234,7 +1355,8 @@ namespace warlock
     add_rng_option( rng_settings.mark_of_perotharn );
     add_rng_option( rng_settings.succulent_soul_aff );
     add_rng_option( rng_settings.succulent_soul_demo );
-    add_rng_option( rng_settings.feast_of_souls );
+    add_rng_option( rng_settings.feast_of_souls_aff );
+    add_rng_option( rng_settings.feast_of_souls_demo );
     add_rng_option( rng_settings.umbral_lattice );
     add_rng_option( rng_settings.empowered_legion_strike );
   }
@@ -1271,5 +1393,6 @@ namespace warlock
     corruption_accumulator = rng().range( 0.0, 0.99 );
     wild_imp_spawns.clear();
     diabolic_ritual = as<int>( rng().range( 0, 3 ) );
+    demonic_art_buff_replaced = false;
   }
 }

@@ -12,6 +12,7 @@
 #include "dbc/dbc.hpp"
 
 #include "lib/utf8-cpp/utf8.h"
+#include "fmt/chrono.h"
 
 #include <cctype>
 #include <limits>
@@ -2767,6 +2768,18 @@ const char* util::trait_definition_op_string( trait_definition_op op )
       return "unk";
   }
 }
+
+const char* util::error_level_string( error_level_e level )
+{
+  switch ( level )
+  {
+    case error_level_e::TRIVIAL:          return "Trivial";
+    case error_level_e::MODERATE:         return "Moderate";
+    case error_level_e::SEVERE:           return "Severe";
+    default:                              return "Unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {
@@ -2821,7 +2834,7 @@ const char* util::specialization_string( specialization_e spec )
   return "Unknown";
 }
 
-// parse_position_type ======================================================
+// parse_specialization type ================================================
 
 specialization_e util::parse_specialization_type( util::string_view name )
 {
@@ -3423,38 +3436,52 @@ bool util::contains_non_ascii( util::string_view s )
   return false;
 }
 
-/**
- * Print chained exceptions, separated by ' :'.
- */
-void util::print_chained_exception( const std::exception& e, std::FILE* out, int level )
+template <typename E>
+void util::print_chained_exception( const E& e, std::FILE* out, int8_t& exit_code, int level )
 {
   fmt::print( out, "{}{}", level > 0 ? ": " : "", e.what() );
+
+  // final exit code will be the deepest (last processed) exception
+  if constexpr ( std::is_same_v<E, sc_exception> )
+    exit_code = e.code();
+
   try
   {
     std::rethrow_if_nested( e );
+    return;
+  }
+  catch ( const sc_exception& e )
+  {
+    print_chained_exception( e, out, exit_code, level + 1 );
+    return;
   }
   catch ( const std::exception& e )
   {
-    print_chained_exception( e, out, level + 1 );
-  }
-  catch ( ... )
-  {
+    print_chained_exception( e, out, exit_code, level + 1 );
+    return;
   }
 }
 
-void util::print_chained_exception( const std::exception_ptr& eptr, std::FILE* out, int level )
+// explicit template instantiations
+template void util::print_chained_exception<std::exception>( const std::exception&, std::FILE*, int8_t&, int );
+template void util::print_chained_exception<sc_exception>( const sc_exception&, std::FILE*, int8_t&, int );
+
+// FMT 11.2 no longer calculates time zone offsets. As not all platforms return time zone information with
+// std::localtime(), calculate the time display string ourselves.
+// NOTE: std::localtime/std::gmtime are not thread-safe, so this should only be used during report processing.
+std::string util::sc_time_str()
 {
-  try
-  {
-    if ( eptr )
-    {
-      std::rethrow_exception( eptr );
-    }
-  }
-  catch ( const std::exception& e )
-  {
-    print_chained_exception( e, out, level );
-  }
+  const auto cur_time = std::time( nullptr );
+  const auto utc_time = std::mktime( std::gmtime( &cur_time ) );
+  const auto local_tm = std::localtime( &cur_time );  // overwrite tm from std::gmtime()
+
+  const auto offset = cur_time - utc_time + ( local_tm->tm_isdst ? 3600 : 0 );
+
+  return fmt::format( "{:%Y-%m-%d %H:%M:%S}{:c}{:02d}{:02d}",
+                      *local_tm,
+                      offset < 0 ? '-' : '+',
+                      std::abs( offset ) / 3600,
+                      offset % 3600 );
 }
 
 namespace util {

@@ -1480,8 +1480,8 @@ struct buff_raid_event_t final : public raid_event_t
       }
       else
       {
-        sim->error( "Error: Invalid buff raid event, buff_name '{}' not found on player '{}'.", buff_str, p->name() );
-        sim->cancel();
+        throw sc_invalid_sim_argument(
+          fmt::format( "Invalid buff raid event, buff '{}' not found on {}.", buff_str, *p ) );
       }
     }
   }
@@ -1782,10 +1782,10 @@ void raid_event_t::start()
       {
         expr_uptr = expr_t::parse( p, player_if_expr_str, false );
       }
-      catch ( const std::exception& e )
+      catch ( const std::exception& )
       {
-        sim->error( "{} player_if expression error '{}': {}", log_name(), player_if_expr_str, e.what() );
-        sim->cancel();
+        throw sc_invalid_sim_argument(
+          fmt::format( "{} invalid player_if expression '{}'.", log_name(), player_if_expr_str ) );
       }
     }
 
@@ -2276,7 +2276,7 @@ void raid_event_t::init( sim_t* sim )
     }
     catch ( const std::exception& )
     {
-      std::throw_with_nested( std::invalid_argument( fmt::format( "Error creating raid event from '{}'", split ) ) );
+      std::throw_with_nested( sc_initialization_error( fmt::format( "Error creating raid event from '{}'", split ) ) );
     }
   }
 
@@ -2287,7 +2287,7 @@ void raid_event_t::init( sim_t* sim )
       if ( raid_event->type == "pull" && raid_event->pull == 1 )
         return;
     }
-    throw std::invalid_argument( "DungeonRoute fight style requires at least one pull event with pull=1." );
+    throw sc_initialization_error( "DungeonRoute fight style requires at least one pull event with pull=1." );
   }
 }
 
@@ -2398,7 +2398,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
   raid_event_t* e = nullptr;
   // For all remaining expression, go through the list of matching raid events and look for the one happening first
-  if ( type_or_name == "adds" && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  if ( ( type_or_name == "adds" || type_or_name == "pull" ) && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     e = get_next_pull_event( up );
   else
     e = get_next_raid_event( matching_events );
@@ -2410,7 +2410,12 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   if ( filter == "in" )
   {
     if ( e->type == "pull" )
-      return ( up->remains() + e->cooldown.mean ).total_seconds();
+    {
+      if ( up == nullptr )
+        return timespan_t::max().total_seconds();
+      else
+        return ( up->remains() + e->cooldown.mean ).total_seconds();
+    }
     else if ( e->until_next() > 0_ms )
       return e->until_next().total_seconds();
     else

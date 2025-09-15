@@ -1,5 +1,5 @@
-// Gem properties, wow build 11.1.7.61491
-static const std::array<gem_property_data_t, 2283> __gem_property_data { {
+// Gem properties, wow build 11.2.0.63003
+static constexpr std::array<gem_property_data_t, 2291> __gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
   {    4,  2688, 0x00000004, 0 }, // +$k1 Stamina
@@ -2283,5 +2283,13 @@ static const std::array<gem_property_data_t, 2283> __gem_property_data { {
   { 4264,  7583, 0x20000000, 14190 }, // |C00f58cbaLegendary Skipper's Citrine
   { 4265,  7584, 0x10000000, 14189 }, // |C003fc7ebSeabed Leviathan's Citrine
   { 4266,  7585, 0x08000000, 14185 }, // |C00fff569Roaring War-Queen's Citrine
+  { 4280,  7897, 0x40000000, 0 }, // Energizing Fiber
+  { 4281,  7898, 0x40000000, 0 }, // Pure Energizing Fiber
+  { 4282,  7899, 0x40000000, 0 }, // Pure Precise Fiber
+  { 4283,  7900, 0x40000000, 0 }, // Precise Fiber
+  { 4284,  7902, 0x40000000, 0 }, // Pure Chronomantic Fiber
+  { 4285,  7901, 0x40000000, 0 }, // Chronomantic Fiber
+  { 4286,  7903, 0x40000000, 0 }, // Pure Dexterous Fiber
+  { 4287,  7904, 0x40000000, 0 }, // Dexterous Fiber
 } };
 

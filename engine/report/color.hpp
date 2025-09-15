@@ -9,7 +9,7 @@
 #include "sc_enums.hpp"
 #include "util/string_view.hpp"
 
-#include "fmt/core.h"
+#include "fmt/format.h"
 
 #include <string>
 
@@ -204,7 +204,7 @@ struct formatter<color::rgb> {
   template <typename ParseContext>
   constexpr auto parse( ParseContext& ctx ) { return ctx.begin(); }
   template <typename FormatContext>
-  auto format( color::rgb c, FormatContext& ctx ) {
+  auto format( color::rgb c, FormatContext& ctx ) const {
     return fmt::format_to( ctx.out(), "#{:02X}{:02X}{:02X}", c.r_, c.g_, c.b_ );
   }
 };

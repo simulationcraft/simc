@@ -1,5 +1,5 @@
-// Mastery abilities, wow build 11.2.0.61476
-static const std::array<mastery_spell_entry_t, 39> __ptr_mastery_spell_data { {
+// Mastery abilities, wow build 11.2.5.62940
+static constexpr std::array<mastery_spell_entry_t, 39> __ptr_mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
   {   64,  76613 }, // Mastery: Icicles (Frost Mage)

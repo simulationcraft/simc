@@ -7,6 +7,8 @@
 #include "sc_priest.hpp"
 
 #include "class_modules/apl/apl_priest.hpp"
+#include "report/charts.hpp"
+#include "report/highchart.hpp"
 #include "sc_enums.hpp"
 #include "sim/option.hpp"
 #include "tcb/span.hpp"
@@ -149,14 +151,19 @@ struct mind_blast_base_t : public priest_spell_t
 private:
   propagate_const<expiation_t*> child_expiation;
 
+  double void_blast_cdr;
+
 public:
   mind_blast_base_t( priest_t& p, util::string_view options_str, const spell_data_t* s )
-    : priest_spell_t( s->name_cstr(), p, s ), child_expiation( nullptr )
+    : priest_spell_t( s->name_cstr(), p, s ),
+      child_expiation( nullptr ),
+      void_blast_cdr( p.find_spell( 450404 )->effectN( 3 ).percent() )
   {
     parse_options( options_str );
-    affected_by_shadow_weaving = true;
-    cooldown                   = p.cooldowns.mind_blast;
-    cooldown->hasted           = true;
+    affected_by_shadow_weaving   = true;
+    cooldown                     = p.cooldowns.mind_blast;
+    cooldown->hasted             = true;
+    idol_of_nzoth_execute_stacks = 6;
 
     if ( priest().talents.discipline.expiation.enabled() )
     {
@@ -174,14 +181,9 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
+    if ( priest().talents.shadow.shattered_psyche.enabled() && priest().buffs.shattered_psyche->check() )
     {
-      priest().buffs.mind_melt->expire();
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
-    {
-      priest().buffs.gathering_shadows->trigger();
+      priest().buffs.shattered_psyche->expire();
     }
 
     if ( priest().buffs.shadowy_insight->check() )
@@ -205,6 +207,18 @@ public:
     return priest().buffs.insidious_ire->check();
   }
 
+  double recharge_multiplier( const cooldown_t& c ) const override
+  {
+    auto m = base_t::recharge_multiplier( c );
+
+    if ( p().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) && p().buffs.entropic_rift->check() )
+    {
+      m *= 1 + void_blast_cdr;
+    }
+
+    return m;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
@@ -214,10 +228,6 @@ public:
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
-    {
-      m *= 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 1 ).percent();
-    }
     return m;
   }
 
@@ -266,7 +276,7 @@ public:
 
       if ( priest().talents.shadow.shadowy_apparitions.enabled() )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mb, s->result == RESULT_CRIT );
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mb );
       }
 
       priest().trigger_psychic_link( s );
@@ -276,11 +286,10 @@ public:
         td.buffs.apathy->trigger();
       }
 
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
+      if ( priest().talents.shadow.dark_thoughts.enabled() && priest().buffs.shadowy_insight->check() )
       {
-        priest().generate_insanity(
-            priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
-            priest().gains.insanity_t30_2pc, s->action );
+        priest().generate_insanity( priest().talents.shadow.dark_thoughts->effectN( 1 ).resource( RESOURCE_INSANITY ),
+                                    priest().gains.insanity_dark_thoughts, s->action );
       }
 
       if ( child_expiation )
@@ -371,6 +380,10 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     if ( priest().talents.voidweaver.darkening_horizon.enabled() )
     {
       priest().extend_entropic_rift();
+      if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+      {
+        priest().expand_entropic_rift();
+      }
     }
   }
 
@@ -793,7 +806,7 @@ struct halo_t final : public priest_spell_t
       }
     }
 
-    if ( priest().talents.archon.sustained_potency.enabled() )
+    if ( priest().talents.archon.sustained_potency.enabled() && !is_precombat )
     {
       bool extended = false;
       if ( priest().buffs.voidform->check() )
@@ -821,19 +834,17 @@ struct halo_t final : public priest_spell_t
           priest().buffs.surge_of_light->trigger( 1, 0, 1 );
           break;
         case PRIEST_SHADOW:
-          // You get a full buff of MSI or MFI and keep Surge of Insanity state intact
-          if ( priest().talents.shadow.mind_spike.enabled() )
-          {
-            priest().buffs.mind_spike_insanity->trigger();
-          }
-          else
-          {
-            priest().buffs.mind_flay_insanity->trigger();
-          }
+          // You get a full buff of MFI and keep Surge of Insanity state intact
+          priest().buffs.mind_flay_insanity->trigger();
           SC_FALLTHROUGH;
         default:
           break;
       }
+    }
+
+    if ( priest().sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
+    {
+      priest().buffs.ascension->trigger();
     }
   }
 
@@ -895,7 +906,6 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 // Smite
 // ==========================================================================
-
 struct smite_base_t : public priest_spell_t
 {
   timespan_t train_of_thought_cdr;
@@ -975,7 +985,6 @@ struct smite_base_t : public priest_spell_t
     if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
       priest().buffs.darkness_from_light->trigger();
 
-    
     if ( priest().talents.holy.holy_word_chastise.enabled() )
     {
       timespan_t chastise_cdr =
@@ -1089,6 +1098,10 @@ struct void_blast_disc_t final : public smite_base_t
 
     // This call contains the relevant talent checks, do not need to make them twice.
     p().extend_entropic_rift();
+    if ( priest().sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+    {
+      priest().expand_entropic_rift( 2 );
+    }
   }
 
   double composite_atonement_multiplier( action_state_t* s ) override
@@ -1208,8 +1221,9 @@ struct mindgames_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    affected_by_shadow_weaving = true;
-    triggers_atonement         = true;
+    affected_by_shadow_weaving   = true;
+    triggers_atonement           = true;
+    idol_of_nzoth_execute_stacks = 10;
 
     if ( priest().options.mindgames_healing_reversal )
     {
@@ -1254,7 +1268,7 @@ struct mindgames_t final : public priest_spell_t
 
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+      if ( priest().shadow_weaving_active_dots( target, id ) < 3.0 )
       {
         priest().procs.mindgames_casts_no_mastery->occur();
       }
@@ -1305,11 +1319,13 @@ struct summon_fiend_t final : public priest_spell_t
 
   summon_fiend_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( pet_name( p ), p, pet_summon_spell( p ) ),
-      default_duration( data().duration() ),
+      default_duration( data().duration() * ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) ),
       spawner( pet_spawner( p ) )
   {
     parse_options( options_str );
     harmful = false;
+
+    idol_of_nzoth_execute_stacks = 5;
 
     if ( p.talents.voidweaver.voidwraith.ok() && p.talents.shared.mindbender.ok() )
     {
@@ -1327,101 +1343,6 @@ struct summon_fiend_t final : public priest_spell_t
     if ( priest().talents.discipline.shadow_covenant.enabled() )
     {
       priest().buffs.shadow_covenant->trigger();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
-    {
-      make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
-    }
-  }
-};
-
-// ==========================================================================
-// Echoing Void
-// TODO: move to sc_priest_shadow.cpp
-// ==========================================================================
-struct echoing_void_demise_t final : public priest_spell_t
-{
-  int stacks;
-
-  echoing_void_demise_t( priest_t& p )
-    : priest_spell_t( "echoing_void_demise", p, p.talents.shadow.echoing_void ), stacks( 1 )
-  {
-    background          = true;
-    proc                = false;
-    callbacks           = true;
-    may_miss            = false;
-    harmful             = false;
-    aoe                 = -1;
-    range               = data().effectN( 1 ).radius_max();
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-
-    affected_by_shadow_weaving = true;
-  }
-
-  // Demise action does not hit the target we are triggering it on, only using it for the proper radius
-  std::vector<player_t*>& target_list() const override
-  {
-    target_cache.is_valid = false;
-
-    std::vector<player_t*>& tl = priest_spell_t::target_list();
-
-    range::erase_remove( tl, target );
-
-    return tl;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    m *= stacks;
-
-    return m;
-  }
-
-  // Demise trigger for Idol of N'Zoth
-  // When something dies that has stacks it explodes around that target
-  // based on how many stacks it has. 10 stacks == 1 explosion 10x more powerful
-  void trigger( player_t* target, int trigger_stacks )
-  {
-    if ( trigger_stacks == 0 )
-    {
-      return;
-    }
-
-    stacks = trigger_stacks;
-    sim->print_debug( "{} dies. Triggering {} stacks of echoing_void", target->name(), trigger_stacks );
-    set_target( target );
-    execute();
-  }
-};
-
-struct echoing_void_t final : public priest_spell_t
-{
-  stats_t* child_action_stats;
-
-  echoing_void_t( priest_t& p )
-    : priest_spell_t( "echoing_void", p, p.talents.shadow.echoing_void ), child_action_stats( nullptr )
-  {
-    background          = true;
-    proc                = false;
-    callbacks           = true;
-    may_miss            = false;
-    aoe                 = -1;
-    range               = data().effectN( 1 ).radius_max();
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
-
-    affected_by_shadow_weaving = true;
-
-    child_action_stats = priest().get_stats( "echoing_void_demise" );
-    if ( child_action_stats )
-    {
-      stats->add_child( child_action_stats );
     }
   }
 };
@@ -1502,16 +1423,6 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     execute();
   }
 
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B4 ) )
-    {
-      p().buffs.deaths_torment->trigger();
-    }
-  }
-
   void init() override
   {
     base_t::init();
@@ -1533,9 +1444,8 @@ struct shadow_word_death_t final : public priest_spell_t
 protected:
   struct swd_data
   {
-    int chain_number  = 0;
-    int max_chain     = 2;
-    bool deathspeaker = false;
+    int chain_number = 0;
+    int max_chain    = 2;
   };
   using state_t = priest_action_state_t<swd_data>;
   using ab      = priest_spell_t;
@@ -1543,7 +1453,6 @@ protected:
 public:
   double execute_percent;
   double execute_modifier;
-  double deathspeaker_mult;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   timespan_t depth_of_shadows_duration;
   double depth_of_shadows_threshold;
@@ -1551,21 +1460,26 @@ public:
   action_t* child_searing_light;
   timespan_t execute_override;
 
+  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1359
   shadow_word_death_t( priest_t& p, timespan_t execute_override = timespan_t::min() )
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
-      execute_percent( data().effectN( 3 ).base_value() ),
+      execute_percent(
+          priest().talents.shadow.deathspeaker.enabled()
+              ? ( data().effectN( 3 ).base_value() + priest().talents.shadow.deathspeaker->effectN( 2 ).base_value() )
+              : data().effectN( 3 ).base_value() ),
       execute_modifier( data().effectN( 4 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
-      deathspeaker_mult(
-          p.talents.shadow.deathspeaker.enabled() ? 1 + p.buffs.deathspeaker->data().effectN( 2 ).percent() : 1.0 ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       depth_of_shadows_duration(
-          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
-      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
+          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) *
+          ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) ),
+      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() +
+                                  priest().talents.shadow.deathspeaker->effectN( 5 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
   {
-    affected_by_shadow_weaving = true;
+    affected_by_shadow_weaving   = true;
+    idol_of_nzoth_execute_stacks = 4;
 
     if ( priest().talents.discipline.expiation.enabled() )
     {
@@ -1592,6 +1506,8 @@ public:
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
       spell_power_mod.direct += data().effectN( 1 ).sp_coeff();
     }
+
+    apply_affecting_aura( priest().talents.shadow.deathspeaker );
   }
 
   shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
@@ -1624,9 +1540,6 @@ public:
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    if ( cast_state( s )->chain_number == 0 )
-      cast_state( s )->deathspeaker = p().buffs.deathspeaker->check();
-
     ab::snapshot_state( s, rt );
   }
 
@@ -1636,10 +1549,10 @@ public:
 
     if ( cast_state( s )->chain_number > 0 )
     {
-      m *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+      m *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
     }
 
-    if ( s->target->health_percentage() < execute_percent || cast_state( s )->deathspeaker )
+    if ( s->target->health_percentage() < execute_percent )
     {
       if ( sim->debug )
       {
@@ -1647,11 +1560,6 @@ public:
                           execute_modifier * 100 );
       }
       m *= 1 + execute_modifier;
-    }
-
-    if ( cast_state( s )->deathspeaker )
-    {
-      m *= deathspeaker_mult;
     }
 
     return m;
@@ -1666,17 +1574,12 @@ public:
       // Cooldown is reset only if you have't already gotten a reset
       if ( !priest().buffs.death_and_madness_reset->check() )
       {
-        if ( target->health_percentage() <= execute_percent && !priest().buffs.deathspeaker->check() )
+        if ( target->health_percentage() <= execute_percent )
         {
           priest().buffs.death_and_madness_reset->trigger();
           cooldown->reset( false );
         }
       }
-    }
-
-    if ( priest().talents.shadow.deathspeaker.enabled() )
-    {
-      priest().buffs.deathspeaker->expire();
     }
   }
 
@@ -1701,7 +1604,7 @@ public:
       auto mod = 1.0;
       if ( cast_state( s )->chain_number > 0 )
       {
-        mod *= priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 3 ).percent();
+        mod *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
       }
       priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
     }
@@ -1712,16 +1615,22 @@ public:
 
       if ( priest().talents.voidweaver.depth_of_shadows.enabled() )
       {
+        double chance = 0.9;
+        // TODO: Find out the actual chance, this is a guess
+        if ( cast_state( s )->chain_number > 0 )
+        {
+          chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        }
+
         // TODO: Find out the chance. Placeholder value of 90%. It is not 100% but it is is extremely high.
-        if ( ( priest().buffs.deathspeaker->check() || save_health_percentage <= depth_of_shadows_threshold ) &&
-             rng().roll( 0.9 ) )
+        if ( ( save_health_percentage <= depth_of_shadows_threshold ) && rng().roll( chance ) )
         {
           priest().procs.depth_of_shadows->occur();
           priest().get_current_main_pet().spawn( depth_of_shadows_duration );
         }
       }
 
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T31, B2 ) )
+      if ( priest().talents.shadow.deaths_torment.enabled() )
       {
         int number_of_chains;
         state_t* curr_state = cast_state( s );
@@ -1731,12 +1640,7 @@ public:
         }
         else
         {
-          number_of_chains = as<int>( priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 1 ).base_value() );
-          // Chains amount differs if you have a Deathspeaker proc or while in execute but you still keep the modifier
-          if ( priest().buffs.deathspeaker->check() || s->target->health_percentage() < execute_percent )
-          {
-            number_of_chains += as<int>( priest().sets->set( PRIEST_SHADOW, T31, B2 )->effectN( 2 ).base_value() );
-          }
+          number_of_chains = as<int>( priest().talents.shadow.deaths_torment->effectN( 1 ).base_value() );
         }
 
         sim->print_debug( "{} shadow_word_death_state: chain_number: {}, max_chain: {}", player->name(),
@@ -1744,12 +1648,12 @@ public:
 
         if ( curr_state->chain_number < curr_state->max_chain )
         {
-          shadow_word_death_t* child_death = priest().background_actions.shadow_word_death.get();
-          state_t* state                   = child_death->cast_state( child_death->get_state() );
-          state->target                    = s->target;
-          state->chain_number              = curr_state->chain_number + 1;
-          state->deathspeaker              = curr_state->deathspeaker;
-          state->max_chain                 = number_of_chains;
+          shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
+          child_death->idol_of_nzoth_execute_stacks = 1;
+          state_t* state                            = child_death->cast_state( child_death->get_state() );
+          state->target                             = s->target;
+          state->chain_number                       = curr_state->chain_number + 1;
+          state->max_chain                          = number_of_chains;
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
@@ -2140,11 +2044,9 @@ struct flash_heal_t final : public priest_heal_t
       priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
     }
 
-    
     if ( priest().talents.holy.holy_word_serenity.enabled() )
     {
-      timespan_t cdr =
-          timespan_t::from_seconds( priest().talents.holy.holy_word_serenity->effectN( 2 ).base_value() );
+      timespan_t cdr = timespan_t::from_seconds( priest().talents.holy.holy_word_serenity->effectN( 2 ).base_value() );
 
       priest().do_holy_word_cdr( priest().cooldowns.holy_word_serenity, cdr );
     }
@@ -2207,6 +2109,11 @@ struct renew_t final : public priest_heal_t
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
       priest().cooldowns.power_word_shield->adjust( train_of_thought_cdr );
+    }
+
+    if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
+    {
+      priest().buffs.twist_of_fate->trigger();
     }
   }
 
@@ -2781,23 +2688,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff )
                      ->apply_affecting_aura( p.talents.discipline.malicious_intent );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
-  buffs.echoing_void             = make_buff( *this, "echoing_void", p.talents.shadow.echoing_void_debuff );
-
-  // TODO: stacks generated mid-collapse need to get re-triggered to collapse
-  buffs.echoing_void_collapse = make_buff( *this, "echoing_void_collapse" )
-                                    ->set_quiet( true )
-                                    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                                    ->set_period( timespan_t::from_seconds( 1.0 ) )
-                                    ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
-                                      if ( buffs.echoing_void->check() )
-                                        p.background_actions.echoing_void->execute_on_target( target );
-                                      buffs.echoing_void->decrement();
-                                      if ( !buffs.echoing_void->check() )
-                                      {
-                                        make_event( b->sim, [ b ] { b->cancel(); } );
-                                      }
-                                    } );
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
@@ -2821,6 +2711,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
 
   buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
                                               p.talents.archon.resonant_energy_shadow );
+
+  buffs.horrific_visions = make_buff( *this, "horrific_visions", p.talents.shadow.horrific_visions );
 }
 
 void priest_td_t::reset()
@@ -2847,15 +2739,6 @@ void priest_td_t::target_demise()
     }
   }
 
-  // Stacks of Idol of N'Zoth will detonate on death
-  if ( priest().talents.shadow.idol_of_nzoth.enabled() )
-  {
-    if ( buffs.echoing_void->check() )
-    {
-      priest().background_actions.echoing_void_demise->trigger( target, buffs.echoing_void->check() );
-    }
-  }
-
   reset();
 }
 
@@ -2875,6 +2758,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     benefits(),
     procs(),
+    sample_data(),
     background_actions(),
     active_items(),
     allies_with_atonement(),
@@ -2893,13 +2777,11 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
   cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
   cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.power_word_shield             = get_cooldown( "power_word_shield" );
   cooldowns.mindbender                    = get_cooldown( "mindbender" );
@@ -2919,15 +2801,17 @@ void priest_t::create_gains()
   gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.voidwraith                       = get_gain( "Voidwraith" );
-  gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
   gains.throes_of_pain                   = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
-  gains.insanity_t30_2pc                 = get_gain( "Insanity Gained from T30 2PC" );
   gains.cauterizing_shadows_health       = get_gain( "Health from Cauterizing Shadows" );
   gains.shield_discipline                = get_gain( "Shield Discipline" );
+  gains.ascension_tww3_2pc               = get_gain( "Ascension" );
+  gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
+  gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
+  gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
 }
 
 /** Construct priest procs */
@@ -2945,7 +2829,6 @@ void priest_t::create_procs()
   procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
   procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_msi         = get_proc( "Shadowy Apparition from Mind Spike: Insanity" );
   procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
   procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -2953,16 +2836,11 @@ void priest_t::create_procs()
   procs.shadowy_insight_overflow       = get_proc( "Shadowy Insight procs lost to overflow" );
   procs.shadowy_insight_missed         = get_proc( "Shadowy Insight procs not consumed" );
   procs.thing_from_beyond              = get_proc( "Thing from Beyond procs" );
-  procs.deathspeaker                   = get_proc( "Shadow Word: Death resets from Deathspeaker" );
-  procs.idol_of_nzoth_swp              = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
-  procs.idol_of_nzoth_vt               = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
-  procs.idol_of_yshaarj_extra_duration = get_proc( "Idol of Y'Shaarj Devoured Violence procs" );
   procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.shadowy_apparition_crit        = get_proc( "Shadowy Apparitions that dealt 100% more damage" );
   procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
@@ -3071,7 +2949,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
 
         auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
 
-        throw std::invalid_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
+        throw sc_invalid_apl_argument( fmt::format( "Unsupported crash expression '{}'.", tail ) );
       }
     }
 
@@ -3182,7 +3060,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         }
       }
 
-      throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
+      throw sc_invalid_apl_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
 
@@ -3198,14 +3076,14 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) && buffs.dark_reveries->check() )
+  if ( buffs.call_of_the_void->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.dark_reveries->current_value );
+    h *= 1.0 / ( 1.0 + buffs.call_of_the_void->check_value() );
   }
 
-  if ( buffs.devoured_anger->check() )
+  if ( buffs.overburdened_mind->check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
+    h *= 1.0 / ( 1.0 + buffs.overburdened_mind->check_value() );
   }
 
   if ( buffs.borrowed_time->check() )
@@ -3219,11 +3097,6 @@ double priest_t::composite_spell_haste() const
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.devoured_anger->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.devoured_anger->check_value() );
-  }
 
   if ( buffs.borrowed_time->check() )
   {
@@ -3250,6 +3123,7 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   {
     m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
+    m *= ( 1.0 + talents.shadow.subservient_shadows->effectN( 1 ).percent() );
   }
   else
   {
@@ -3263,11 +3137,6 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
   }
 
-  // Auto parsing does not cover melee attacks, and other attacks double dip with this
-  if ( buffs.devoured_pride->check() )
-  {
-    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
-  }
   return m;
 }
 
@@ -3363,6 +3232,11 @@ void priest_t::analyze( sim_t& sim )
       swp->stats->apet = 0;
       swp->stats->ape  = swp->stats->total_amount.mean();
     }
+  }
+
+  if ( talents.shadow.void_eruption.enabled() )
+  {
+    sample_data.voidform_duration->analyze();
   }
 }
 
@@ -3493,6 +3367,7 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
 void priest_t::create_pets()
 {
   base_t::create_pets();
+  pets.set_pet_defaults( *this );
 }
 
 void priest_t::init_base_stats()
@@ -3507,10 +3382,20 @@ void priest_t::init_base_stats()
       base.distance = 24.0;
     }
 
+    // Bug: Halo is a few yards short
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1225
     if ( talents.halo.enabled() )
     {
-      base.distance = 30.0;
+      base.distance = ( bugs ? 28.0 : 30.0 ) + ( talents.archon.power_surge.enabled() ? 10.0 : 0.0 );
     }
+
+    if ( talents.phantom_reach.enabled() )
+    {
+      base.distance *= 1.0 + talents.phantom_reach->effectN( 1 ).percent();
+    }
+
+    // Going above 40 probably isn't a good idea
+    base.distance = std::max( base.distance, 40.00 );
   }
 
   base_t::init_base_stats();
@@ -3531,20 +3416,6 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
-  // Can perform pre-pull actions that are harmful without actually hitting the boss
-  // to build up Insanity before pulling
-  if ( ( specialization() == PRIEST_SHADOW ) && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 &&
-       options.init_insanity )
-  {
-    auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
-
-    if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
-    {
-      // One Shadow Crash == 6 Insanity
-      resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity;
-    }
-  }
-
   base_t::init_resources( force );
 }
 
@@ -3581,7 +3452,6 @@ void priest_t::init_finished()
       }
 
       timespan_t time_spent = 0_ms;
-      bool harmful_found    = false;
 
       for ( auto iter = pre + 1; iter < precombat_action_list.end(); iter++ )
       {
@@ -3593,17 +3463,16 @@ void priest_t::init_finished()
 
         if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
-          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
+          timespan_t time = std::max( a->base_execute_time.value(), a->trigger_gcd );
+
+          if ( time_spent + time > 2_s )
+            break;
+
+          time_spent += time;
+
           if ( a->harmful )
           {
-            if ( harmful_found )
-            {
-              break;
-            }
-            else
-            {
-              harmful_found = true;
-            }
+            break;
           }
         }
       }
@@ -3684,6 +3553,12 @@ void priest_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
+  auto sd_nf = spell_data_t::not_found();
+
+  tww3_spells.archon_2pc_buff = sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) ? find_spell( 1239336 ) : sd_nf;
+
+  tww3_spells.voidweaver_4pc_buff = sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) ? find_spell( 1237615 ) : sd_nf;
+
   init_spells_shadow();
   init_spells_discipline();
   init_spells_holy();
@@ -3717,7 +3592,7 @@ void priest_t::init_spells()
 
   // Priest Tree Talents
   // Row 1
-  talents.renew        = CT( "Renew" );         // NYI
+  talents.renew        = CT( "Renew" );
   talents.dispel_magic = CT( "Dispel Magic" );  // NYI
   talents.shadowfiend  = CT( "Shadowfiend" );
   // Row 2
@@ -3803,11 +3678,6 @@ void priest_t::init_spells()
   talents.void_shift                   = CT( "Void Shift" );     // NYI
   talents.phantom_reach                = CT( "Phantom Reach" );  // NYI
 
-  // Shadow Talents
-  // TODO: move this to sc_priest_shadow.cpp
-  talents.shadow.echoing_void        = find_spell( 373304 );
-  talents.shadow.echoing_void_debuff = find_spell( 373281 );
-
   // PvP Talents
   talents.pvp.mindgames                  = find_spell( 375901 );
   talents.pvp.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
@@ -3833,7 +3703,7 @@ void priest_t::init_spells()
   talents.archon.divine_halo            = HT( "Divine Halo" );
 
   // Oracle Hero Talents (Holy/Discipline)
-  talents.oracle.premonition           = HT( "Premonition" );            // NYI
+  talents.oracle.premonition           = HT( "Premonition" );  // NYI
   talents.oracle.preventive_measures   = HT( "Preventive Measures" );
   talents.oracle.preemptive_care       = HT( "Preemptive Care" );        // NYI
   talents.oracle.waste_no_time         = HT( "Waste No Time" );          // NYI
@@ -3876,6 +3746,16 @@ void priest_t::init_spells()
   talents.voidweaver.embrace_the_shadow     = HT( "Embrace the Shadow" );  // NYI
   talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
+
+  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+  {
+    tww3_spells.voidweaver_4pc = std::make_unique<modified_spell_data_t>( sets->set( HERO_VOIDWEAVER, TWW3, B4 ) );
+    tww3_spells.voidweaver_4pc->parse_effects( specs.shadow_priest )->parse_effects( specs.discipline_priest );
+  }
+  else
+  {
+    tww3_spells.voidweaver_4pc = std::make_unique<modified_spell_data_t>( sd_nf );
+  }
 }
 
 void priest_t::create_buffs()
@@ -3956,13 +3836,22 @@ void priest_t::create_buffs()
           }
         } )
         ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+          if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B2 ) )
+            cooldowns.mind_blast->adjust_recharge_multiplier();
+
           if ( !new_ )
           {
-            buffs.voidheart->expire();
             buffs.darkening_horizon->expire();
             background_actions.collapsing_void->trigger( state.last_entropic_rift_target,
                                                          buffs.collapsing_void->check() );
+            if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+            {
+              auto value = ( 1.0 + as<double>( buffs.collapsing_void->check() ) / buffs.collapsing_void->max_stack() ) *
+                           buffs.overflowing_void->default_value;
+              buffs.overflowing_void->trigger( 1, value );
+            }
             buffs.collapsing_void->expire();
+            buffs.voidheart->expire();
           }
         } );
   }
@@ -3978,7 +3867,13 @@ void priest_t::create_buffs()
                               ->set_default_value_from_effect( specialization() == PRIEST_SHADOW ? 3 : 4, 0.01 )
                               ->set_duration( 0_s )
                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                              ->set_max_stack( 10 );
+                              ->set_max_stack( specialization() == PRIEST_SHADOW ? 5 : 10 );
+
+  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+  {
+    buffs.collapsing_void->default_value +=
+        tww3_spells.voidweaver_4pc->effectN( specialization() == PRIEST_SHADOW ? 3 : 1 ).percent();
+  }
 
   // Unknown what this piece of spell data is for. Discipline testing shows a maximum of 10 stacks.
   /*if ( talents.voidweaver.collapsing_void.enabled() )
@@ -3995,9 +3890,64 @@ void priest_t::create_buffs()
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
 
+  buffs.ascension =
+      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ), this, "ascension", tww3_spells.archon_2pc_buff )
+          ->set_default_value_from_effect( 1, 0.01 )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            resource_gain( RESOURCE_INSANITY, b->current_value, gains.ascension_tww3_2pc );
+          } );
+
+  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B2 ) )
+  {
+    buffs.ascension->base_buff_duration -= 1_ms;
+    buffs.ascension->buff_period -= 1_ms;
+  }
+
+  buffs.overflowing_void = make_buff_fallback( tww3_spells.voidweaver_4pc_buff->ok(), this, "overflowing_void",
+                                               tww3_spells.voidweaver_4pc_buff )
+                               ->set_default_value( 0 );
+
+  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
+  {
+    buffs.overflowing_void->set_default_value( tww3_spells.voidweaver_4pc->effectN( 2 ).percent() / 2 );
+  }
+
+  buffs.tww3_archon_4pc =
+      make_buff_fallback( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ), this, "tww3_archon_4pc_helper" );
+
+  if ( sets->has_set_bonus( HERO_ARCHON, TWW3, B4 ) )
+  {
+    int casts_per_extend = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 1 ).base_value() );
+    int max_extension    = as<int>( sets->set( HERO_ARCHON, TWW3, B4 )->effectN( 3 ).base_value() );
+    buffs.tww3_archon_4pc->set_max_stack( casts_per_extend * max_extension )
+        ->set_stack_change_callback( [ this, casts_per_extend ]( buff_t*, int, int _new ) {
+          if ( _new % casts_per_extend == 0 && _new != 0 )
+          {
+            buffs.power_surge->extend_duration( this, buffs.power_surge->tick_time() );
+          }
+        } );
+
+    buffs.power_surge->add_stack_change_callback( [ this ]( buff_t*, int, int _new ) {
+      if ( !_new )
+      {
+        buffs.tww3_archon_4pc->expire();
+      }
+    } );
+  }
+
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
+}
+
+void priest_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  if ( talents.shadow.void_eruption.enabled() )
+  {
+    sample_data.voidform_duration = std::make_unique<extended_sample_data_t>( "Voidform duration", false );
+  }
 }
 
 void priest_t::init_rng()
@@ -4013,9 +3963,7 @@ void priest_t::init_background_actions()
 {
   player_t::init_background_actions();
 
-  background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
   background_actions.shadow_word_death   = new actions::spells::shadow_word_death_t( *this, 200_ms );
-  background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   background_actions.essence_devourer    = new actions::heals::essence_devourer_t( *this );
   background_actions.atonement           = new actions::heals::atonement_t( *this );
   background_actions.halo                = new actions::spells::halo_t( *this, true );
@@ -4067,9 +4015,11 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.mental_agility );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.malediction );  // Void Torrent CDR
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.mental_decay );
+  action.apply_affecting_aura( talents.shadow.instilled_doubt );
+  action.apply_affecting_aura( talents.shadow.subservient_shadows );
+  action.apply_affecting_aura( talents.shadow.dark_evangelism );
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
@@ -4088,9 +4038,6 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.holy.crisis_management );
   action.apply_affecting_aura( talents.holy.prismatic_echoes );
 
-  // Disc T31 2pc
-  action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, T31, B2 ) );
-
   // Voidweaver Talents
   action.apply_affecting_aura( talents.voidweaver.inner_quietus );
 
@@ -4104,6 +4051,9 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   // TWW1 2pc
   action.apply_affecting_aura( sets->set( PRIEST_SHADOW, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, TWW1, B2 ) );
+
+  // TWW3 2pc
+  action.apply_affecting_aura( sets->set( HERO_VOIDWEAVER, TWW3, B2 ) );
 }
 
 double priest_t::composite_mastery_value() const
@@ -4135,6 +4085,7 @@ void priest_t::init_items()
 {
   player_t::init_items();
 
+  // Special Handling for DF S4
   set_bonus_type_e tier_to_enable;
   switch ( specialization() )
   {
@@ -4228,7 +4179,7 @@ void priest_t::init_action_list()
   switch ( specialization() )
   {
     case PRIEST_SHADOW:
-      if ( is_ptr() )
+      if ( sim->dbc->wowv() > dbc::client_data_version( false ) )
       {
         priest_apl::shadow_ptr( this );
       }
@@ -4255,7 +4206,7 @@ void priest_t::init_action_list()
 
 void priest_t::init_blizzard_action_list()
 {
-  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  [[maybe_unused]] action_priority_list_t* default_ = get_action_priority_list( "default" );
   player_t::init_blizzard_action_list();
 
   // default overrides
@@ -4336,7 +4287,7 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   // vampiric touch action checks if shadow crash is available
   if ( rule.condition_type == AURA_MISSING_PLAYER && rule.condition_value_1 == 1243723 )
   {
-    return { "(!action.shadow_crash.in_flight|!talent.whispering_shadows)" };
+    return { "(!action.shadow_crash.in_flight)" };
   }
 
   // instead of checking for hidden void blast buff we check for entropic rift
@@ -4361,11 +4312,6 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       if ( options.find( "buff.entropic_rift.up" ) != std::string::npos )
       {
         return "void_blast";
-      }
-      // ensure we use mind_spike_insanity action instead of mind_spike
-      if ( options.find( "mind_spike_insanity" ) != std::string::npos )
-      {
-        return "mind_spike_insanity";
       }
       // ensure we use mind_flay_insanity action instead of mind_flay
       if ( options.find( "mind_flay_insanity" ) != std::string::npos )
@@ -4414,7 +4360,6 @@ void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( base_expr != expr && show_diff )
     comment += ( comment.empty() ? "" : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
-  
   // This is kinda ugly, maybe find a better way to do this?
   if ( !expr.empty() )
   {
@@ -4453,11 +4398,6 @@ void priest_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
 
 std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 15407 && talents.shadow.mind_spike.enabled() )  // Mind Flay
-  {
-    spell_id = talents.shadow.mind_spike->id();
-  }
-
   if ( spell_id == 8092 && specialization() == PRIEST_HOLY )
     return { "holy_fire" };
 
@@ -4467,11 +4407,6 @@ std::vector<std::string> priest_t::action_names_from_spell_id( unsigned int spel
   if ( spell_id == 15407 )
   {
     return { "mind_flay_insanity", "mind_flay" };
-  }
-
-  if ( spell_id == 73510 )
-  {
-    return { "mind_spike_insanity", "mind_spike" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );
@@ -4596,7 +4531,6 @@ void priest_t::create_options()
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
   add_option( opt_bool( "priest.init_insanity", options.init_insanity ) );
-  add_option( opt_string( "priest.forced_yshaarj_type", options.forced_yshaarj_type ) );
   add_option( opt_float( "priest.twist_of_fate_heal_rppm", options.twist_of_fate_heal_rppm, 0, 120 ) );
   add_option( opt_timespan( "priest.twist_of_fate_heal_duration_mean", options.twist_of_fate_heal_duration_mean, 0_s,
                             timespan_t::max() ) );
@@ -4633,6 +4567,18 @@ void priest_t::copy_from( player_t* source )
   auto* source_p = debug_cast<priest_t*>( source );
 
   options = source_p->options;
+}
+
+void priest_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  priest_t& priest = dynamic_cast<priest_t&>( other );
+
+  if ( talents.shadow.void_eruption.enabled() )
+  {
+    sample_data.voidform_duration->merge( *priest.sample_data.voidform_duration );
+  }
 }
 
 void priest_t::arise()
@@ -4713,13 +4659,19 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
   }
 }
 
-int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
+double priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const
 {
-  int dots = 0;
+  double dots = 0.0;
 
   if ( buffs.voidform->check() )
   {
-    dots = 3;
+    dots = 3.0;
+
+    // Voidform gets this benefit automatically - 6/22/2025
+    if ( talents.shadow.madness_weaving.enabled() )
+    {
+      dots += talents.shadow.madness_weaving->effectN( 1 ).percent();
+    }
   }
   else
   {
@@ -4736,6 +4688,11 @@ int priest_t::shadow_weaving_active_dots( const player_t* target, const unsigned
       bool dp_ticking  = ( spell_id == dot_spells.devouring_plague->id() ) || dp->is_ticking();
 
       dots = swp_ticking + vt_ticking + dp_ticking;
+
+      if ( dp_ticking && talents.shadow.madness_weaving.enabled() )
+      {
+        dots += talents.shadow.madness_weaving->effectN( 1 ).percent();
+      }
     }
   }
 
@@ -4750,9 +4707,9 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
   {
     auto dots = shadow_weaving_active_dots( target, spell_id );
 
-    if ( dots > 0 )
+    if ( dots > 0.0 )
     {
-      multiplier *= 1 + dots * cache.mastery_value();
+      multiplier *= 1.0 + dots * cache.mastery_value();
     }
   }
 
@@ -4770,14 +4727,14 @@ void priest_t::trigger_entropic_rift()
   background_actions.entropic_rift->execute();
 }
 
-void priest_t::expand_entropic_rift()
+void priest_t::expand_entropic_rift( int stacks )
 {
   if ( !talents.voidweaver.collapsing_void.enabled() || !buffs.entropic_rift->check() )
   {
     return;
   }
 
-  buffs.collapsing_void->trigger();
+  buffs.collapsing_void->trigger( stacks );
 }
 
 void priest_t::extend_entropic_rift()
@@ -4824,6 +4781,74 @@ void priest_t::trigger_cauterizing_shadows()
   background_actions.cauterizing_shadows->execute();
 }
 
+class priest_report_t final : public player_report_extension_t
+{
+public:
+  priest_report_t( priest_t& player ) : p( player )
+  {
+  }
+
+  void html_customsection_voidform( report::sc_html_stream& os )
+  {
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Voidform</h3>\n"
+          "<div class=\"toggle-content\">\n";
+
+    auto& d         = *p.sample_data.voidform_duration;
+    int num_buckets = std::min( 30, static_cast<int>( 2 * ( d.max() - d.min() ) ) + 1 );
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "voidform_duration" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "Voidform Duration", d.mean(), d.min(), d.max() ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> s<br/>" );
+      chart.set( "chart.width", std::to_string( 80 + num_buckets * 20 ) );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    os << "<table class=\"sc\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\">Statistics</th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Minimum</th>\n"
+       << "<th>5<sup>th</sup> percentile</th>\n"
+       << "<th>Mean / Median</th>\n"
+       << "<th>75<sup>th</sup> percentile</th>\n"
+       << "<th>95<sup>th</sup> percentile</th>\n"
+       << "<th>Maximum</th>\n"
+       << "</tr>\n";
+
+    os << "<tr>\n";
+    os.printf( "<td class=\"right\">%.3f</td>", d.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", d.mean(), d.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .75 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", d.max() );
+    os << "</tr>\n";
+    os << "</table>\n";
+
+    os << "</div>\n"
+          "</div>\n";
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    if ( p.sim->report_details == 0 )
+      return;
+
+    if ( p.talents.shadow.void_eruption.enabled() )
+    {
+      html_customsection_voidform( os );
+    }
+  }
+
+private:
+  priest_t& p;
+};
+
 struct priest_module_t final : public module_t
 {
   priest_module_t() : module_t( PRIEST )
@@ -4832,7 +4857,9 @@ struct priest_module_t final : public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    return new priest_t( sim, name, r );
+    auto p              = new priest_t( sim, name, r );
+    p->report_extension = std::make_unique<priest_report_t>( *p );
+    return p;
   }
   bool valid() const override
   {

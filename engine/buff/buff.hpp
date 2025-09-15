@@ -69,6 +69,7 @@ public:
   event_t* delay;
   event_t* expiration_delay;
   cooldown_t* cooldown;
+  std::unique_ptr<cooldown_t> internal_cooldown;
   sc_timeline_t uptime_array;
   real_ppm_t* rppm;
 
@@ -93,7 +94,7 @@ public:
   bool reactable;
   bool reverse, constant, quiet, overridden, can_cancel, is_fallback;
   bool requires_invalidation;
-  bool expire_at_max_stack;
+  bool expire_at_max_stack, consume_all_stacks;
   bool ignore_time_modifier;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
@@ -154,7 +155,7 @@ public:
   simple_sample_data_with_min_max_t start_intervals, trigger_intervals, duration_lengths;
   std::vector<uptime_simple_t> stack_uptime;
 
-  virtual ~buff_t() = default;
+  virtual ~buff_t();
 
   buff_t( actor_pair_t q, util::string_view name );
   buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
@@ -270,12 +271,12 @@ public:
   // check if the action matches the trigger spell's proc flags
   virtual bool can_trigger( action_t* action ) const;
   // check if the action matches the buff's proc flags
-  virtual bool can_expire( action_t* action ) const;
+  virtual bool can_consume( action_t* action ) const;
   // trigger the buff only if the action matches the trigger_spell's proc flags
   bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() );
-  // expire if the action match the buff's proc flags
-  void expire( action_t* action, timespan_t d = timespan_t::zero() );
+  // remove stacks if the action match the buff's proc flags
+  int consume( action_t*, int stacks = -1 );
   // Completely remove the buff, including any delayed applications and expirations.
   void cancel();
 
@@ -370,7 +371,9 @@ public:
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
   buff_t* set_expire_at_max_stack( bool );
+  buff_t* set_consume_all_stacks( bool );
   buff_t* set_cooldown( timespan_t duration );
+  buff_t* set_internal_cooldown( timespan_t );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   buff_t* modify_period( timespan_t );
@@ -542,6 +545,7 @@ struct damage_buff_t : public buff_t
     double multiplier = 1.0;
     double initial_multiplier = 1.0;
     std::vector<int> labels;
+    std::vector<std::pair<buff_t*, double>> dynamic_buff_multipliers;
   };
 
   bool is_stacking;
@@ -556,6 +560,7 @@ struct damage_buff_t : public buff_t
   damage_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, double );
 
   damage_buff_t* parse_spell_data( const spell_data_t*, double = 0.0, double = 0.0 );
+  damage_buff_t* apply_dynamic_buff_multiplier( buff_t* buff );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
   buff_t* apply_affecting_effect( const spelleffect_data_t& effect ) override;
@@ -592,11 +597,14 @@ struct damage_buff_t : public buff_t
   bool is_affecting_periodic( const spell_data_t* );
   bool is_affecting_crit_chance( const spell_data_t* );
 
+  // Get final mod multiplier, taking into consideration any dynamic buff multipliers
+  double get_mod_multiplier( const damage_buff_modifier_t& ) const;
+
   // Get current direct damage buff multiplier value + benefit tracking.
   double value_direct()
   {
     buff_t::stack();
-    return current_stack ? direct_mod.multiplier : 1.0;
+    return current_stack ? get_mod_multiplier( direct_mod ) : 1.0;
   }
 
   // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
@@ -605,7 +613,7 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const
-  { return current_stack ? direct_mod.multiplier : 1.0; }
+  { return current_stack ? get_mod_multiplier( direct_mod ) : 1.0; }
 
   // Get current direct damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_direct() const
@@ -615,7 +623,7 @@ struct damage_buff_t : public buff_t
   double value_periodic()
   {
     buff_t::stack();
-    return current_stack ? periodic_mod.multiplier : 1.0;
+    return current_stack ? get_mod_multiplier( periodic_mod ) : 1.0;
   }
 
   // Get current periodic damage buff multiplier value multiplied by current stacks + benefit tracking.
@@ -624,7 +632,7 @@ struct damage_buff_t : public buff_t
 
   // Get current periodic damage buff multiplier value + NO benefit tracking.
   double check_value_periodic() const
-  { return current_stack ? periodic_mod.multiplier : 1.0; }
+  { return current_stack ? get_mod_multiplier( periodic_mod ) : 1.0; }
 
   // Get current periodic damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_periodic() const
@@ -634,7 +642,7 @@ struct damage_buff_t : public buff_t
   double value_auto_attack()
   {
     buff_t::stack();
-    return current_stack ? auto_attack_mod.multiplier : 1.0;
+    return current_stack ? get_mod_multiplier( auto_attack_mod ) : 1.0;
   }
 
   // Get current AA damage buff multiplier value multiplied by current stacks + benefit tracking.
@@ -643,7 +651,7 @@ struct damage_buff_t : public buff_t
 
   // Get current AA damage buff multiplier value + NO benefit tracking.
   double check_value_auto_attack() const
-  { return current_stack ? auto_attack_mod.multiplier : 1.0; }
+  { return current_stack ? get_mod_multiplier( auto_attack_mod ) : 1.0; }
 
   // Get current AA damage buff multiplier value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_auto_attack() const
@@ -653,7 +661,7 @@ struct damage_buff_t : public buff_t
   double value_crit_chance()
   {
     buff_t::stack();
-    return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0;
+    return current_stack ? get_mod_multiplier( crit_chance_mod ) - 1.0 : 0.0;
   }
 
   // Get current additive crit chance buff value multiplied by current stacks + benefit tracking.
@@ -662,7 +670,7 @@ struct damage_buff_t : public buff_t
 
   // Get current additive crit chance buff value + NO benefit tracking.
   double check_value_crit_chance() const
-  { return current_stack ? crit_chance_mod.multiplier - 1.0 : 0.0; }
+  { return current_stack ? get_mod_multiplier( crit_chance_mod ) - 1.0 : 0.0; }
 
   // Get current additive crit chance buff value multiplied by current stacks + NO benefit tracking.
   double check_stack_value_crit_chance() const

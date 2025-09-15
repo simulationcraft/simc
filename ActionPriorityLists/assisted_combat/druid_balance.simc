@@ -1,23 +1,26 @@
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
+actions.precombat+=/moonkin_form,if=buff.moonkin_form.down
 
 # Executed every time the actor is available.
 actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=moonkin_form,if=buff.moonkin_form.down
-actions.assisted_combat+=/sunfire,if=!dot.sunfire.ticking
+actions.assisted_combat=sunfire,if=!dot.sunfire.ticking
 actions.assisted_combat+=/stellar_flare,if=!dot.stellar_flare.ticking&active_enemies<=2
 actions.assisted_combat+=/force_of_nature
 actions.assisted_combat+=/moonfire,if=!dot.moonfire.ticking&buff.harmony_of_the_grove.down
-actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies>3&buff.eclipse_lunar.stack>=2&talent.eclipse,cooldown_allow_casting_success=1
+# (Overridden from 'buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies>3&buff.eclipse_lunar.stack>=2&talent.eclipse')
+actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies>3&eclipse.wrath_counter>=2&talent.eclipse,cooldown_allow_casting_success=1
 actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies>3&talent.eclipse
-actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&talent.lunar_calling&buff.eclipse_lunar.stack>=2&talent.eclipse,cooldown_allow_casting_success=1
+# (Overridden from 'buff.eclipse_solar.down&buff.eclipse_lunar.down&talent.lunar_calling&buff.eclipse_lunar.stack>=2&talent.eclipse')
+actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&talent.lunar_calling&eclipse.wrath_counter>=2&talent.eclipse,cooldown_allow_casting_success=1
 actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&talent.lunar_calling&talent.eclipse
 actions.assisted_combat+=/warrior_of_elune,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&cooldown.starfire.ready&target.distance<=45&talent.eclipse
-actions.assisted_combat+=/starfire,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&buff.eclipse_solar.stack>=2&talent.eclipse,cooldown_allow_casting_success=1
+# (Overridden from 'buff.eclipse_solar.down&buff.eclipse_lunar.down&buff.eclipse_solar.stack>=2&talent.eclipse')
+actions.assisted_combat+=/starfire,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&eclipse.starfire_counter>=2&talent.eclipse,cooldown_allow_casting_success=1
 actions.assisted_combat+=/starfire,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&talent.eclipse
 actions.assisted_combat+=/starfall,if=active_enemies>3&astral_power>=90
 actions.assisted_combat+=/starsurge,if=astral_power>=90&active_enemies<=2
@@ -30,6 +33,8 @@ actions.assisted_combat+=/starsurge,if=active_enemies<=2
 actions.assisted_combat+=/starsurge,if=astral_power>=50
 actions.assisted_combat+=/wild_mushroom,if=!dot.fungal_growth.ticking
 actions.assisted_combat+=/new_moon
+actions.assisted_combat+=/half_moon
+actions.assisted_combat+=/full_moon
 actions.assisted_combat+=/warrior_of_elune,if=active_enemies>3&cooldown.starfire.ready&target.distance<=45
 actions.assisted_combat+=/starfire,if=active_enemies>3,cooldown_allow_casting_success=1
 actions.assisted_combat+=/warrior_of_elune,if=talent.lunar_calling&cooldown.starfire.ready&target.distance<=45
@@ -37,10 +42,11 @@ actions.assisted_combat+=/starfire,if=talent.lunar_calling,cooldown_allow_castin
 actions.assisted_combat+=/wrath,cooldown_allow_casting_success=1
 actions.assisted_combat+=/moonfire
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/celestial_alignment,if=!buff.celestial_alignment.up
+actions.cooldowns+=/incarnation,if=!buff.incarnation.up

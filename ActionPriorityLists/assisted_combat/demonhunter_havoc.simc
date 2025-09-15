@@ -12,7 +12,7 @@ actions.assisted_combat=blade_dance,if=buff.metamorphosis.up&debuff.essence_brea
 actions.assisted_combat+=/chaos_strike,if=buff.metamorphosis.up&debuff.essence_break.up
 actions.assisted_combat+=/throw_glaive,if=buff.reavers_glaive.up
 actions.assisted_combat+=/sigil_of_flame,if=buff.demonsurge_hardcast.up&target.distance<=30
-actions.assisted_combat+=/immolation_aura,if=active_enemies>1
+actions.assisted_combat+=/immolation_aura,if=active_enemies>3
 actions.assisted_combat+=/essence_break,if=target.distance<=8&buff.metamorphosis.up&cooldown.blade_dance.ready
 actions.assisted_combat+=/blade_dance,if=buff.metamorphosis.up&target.distance<=5
 actions.assisted_combat+=/sigil_of_spite,if=target.distance<=30
@@ -21,6 +21,7 @@ actions.assisted_combat+=/blade_dance,if=target.distance<=5
 actions.assisted_combat+=/chaos_strike,if=buff.metamorphosis.up
 actions.assisted_combat+=/sigil_of_flame,if=target.distance<=30
 actions.assisted_combat+=/chaos_strike
+actions.assisted_combat+=/immolation_aura,if=active_enemies>1
 actions.assisted_combat+=/throw_glaive
 actions.assisted_combat+=/demons_bite,if=!talent.demon_blades
 actions.assisted_combat+=/chaos_strike

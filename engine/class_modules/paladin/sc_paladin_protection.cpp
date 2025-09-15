@@ -328,6 +328,58 @@ struct moment_of_glory_t : public paladin_spell_t
 
 };
 
+struct hammer_and_anvil_t : public paladin_spell_t
+{
+  hammer_and_anvil_t( util::string_view n, paladin_t* p ) : paladin_spell_t( n, p, p->find_spell( 433717 ) )
+  {
+    background = proc = may_crit = true;
+    may_miss                     = false;
+    aoe                          = -1;
+    if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) )
+      apply_affecting_aura( p->sets->set( HERO_LIGHTSMITH, TWW3, B2 ) );
+  }
+};
+
+void trigger_hammer_and_anvil( paladin_t* p, action_state_t* s, hammer_and_anvil_t* haa, bool judgment = false )
+{
+  if ( p->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
+  {
+    if ( judgment || p->cooldowns.tww3_lightsmith_2p_icd->up() )
+    {
+      if ( judgment || ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) &&
+                         ( !p->talents.blessed_hammer->ok() || p->buffs.lightsmith.fake_tww3_ls_bh->up() ) ) )
+      {
+        haa->set_target( s->target );
+        haa->execute();
+      }
+
+      // 20.07.25 Fluttershy - BH currently triggers Masterwork on ICD, but does not trigger HaA meanwhile
+      if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B4 ) &&
+           ( judgment || !p->talents.blessed_hammer->ok() ||
+             ( p->buffs.lightsmith.fake_tww3_ls_bh->up() || p->bugs ) ) )
+      {
+        if ( p->buffs.lightsmith.masterwork->at_max_stacks() )
+        {
+          p->cast_lesser_armament( 1, p->next_lesser_armament );
+          p->next_lesser_armament = p->next_lesser_armament == LESSER_WEAPON ? LESSER_BULWARK : LESSER_WEAPON;
+          p->buffs.lightsmith.masterwork->trigger();
+        }
+        else
+        {
+          p->buffs.lightsmith.masterwork->trigger();
+        }
+        
+      }
+    }
+    if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) && !judgment && p->cooldowns.tww3_lightsmith_2p_icd->up() )
+    {
+      p->cooldowns.tww3_lightsmith_2p_icd->start();
+      if ( p->talents.blessed_hammer->ok() )
+        p->buffs.lightsmith.fake_tww3_ls_bh->decrement();
+    }
+  }
+}
+
 struct blessed_hammer_data_t
 {
   double blessed_assurance_mult;
@@ -339,15 +391,21 @@ struct blessed_hammer_t : public paladin_spell_t
   // Blessed Hammer (Protection) ================================================
   struct blessed_hammer_tick_t : public paladin_spell_t
   {
-    blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
+    hammer_and_anvil_t* hammer_and_anvil;
+    blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) ), hammer_and_anvil(nullptr)
     {
       aoe        = -1;
       background = dual = direct_tick = true;
       callbacks                       = false;
       radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
       may_crit                        = true;
+      if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) && p->talents.lightsmith.hammer_and_anvil->ok() )
+      {
+        hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_bh", p );
+        hammer_and_anvil->base_dd_multiplier *= p->sets->set( HERO_LIGHTSMITH, TWW3, B2 )->effectN( 3 ).percent();
+        add_child( hammer_and_anvil );
+      }
     }
-
     action_state_t* new_state() override
     {
       return new state_t( this, target );
@@ -370,6 +428,8 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+      if ( p()->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) )
+        trigger_hammer_and_anvil( p(), s, hammer_and_anvil );
     }
   };
 
@@ -380,8 +440,9 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t( "blessed_hammer", p, p->talents.blessed_hammer ),
     hammer( new blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
-    add_option( opt_float( "strikes", num_strikes) );
     parse_options( options_str );
+    if ( p->options.blessed_hammer_strikes )
+      num_strikes = p->options.blessed_hammer_strikes;
 
     // Sanity check for num_strikes
     if ( num_strikes <= 0 || num_strikes > 10)
@@ -422,6 +483,8 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
+    if ( p()->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B4 ) )
+      p()->buffs.lightsmith.fake_tww3_ls_bh->trigger();
   }
   void impact( action_state_t* s ) override
   {
@@ -523,6 +586,7 @@ struct hammer_of_the_righteous_data_t
 struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;
+  hammer_and_anvil_t* hammer_and_anvil;
   struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
     hammer_of_the_righteous_aoe_t( paladin_t* p )
@@ -568,7 +632,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
   hammer_of_the_righteous_aoe_t* hotr_aoe;
   hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
-      : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
+      : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) ),
+      hammer_and_anvil(nullptr)
   {
     parse_options( options_str );
 
@@ -578,6 +643,12 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
     add_child( hotr_aoe );
+    if ( p->sets->has_set_bonus(HERO_LIGHTSMITH, TWW3, B2) && p->talents.lightsmith.hammer_and_anvil->ok() )
+    {
+      hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_hotr", p );
+      hammer_and_anvil->base_dd_multiplier *= p->sets->set( HERO_LIGHTSMITH, TWW3, B2 )->effectN( 3 ).percent();
+      add_child( hammer_and_anvil );
+    }
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
     cooldown->hasted        = true;
@@ -617,6 +688,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe->target = s->target;
       hotr_aoe->schedule_execute( state );
     }
+    if ( p()->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) )
+      trigger_hammer_and_anvil( p(), s, hammer_and_anvil );
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -664,7 +737,7 @@ struct eye_of_tyr_t : public paladin_spell_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
+    if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
       return false;
     }
@@ -707,18 +780,6 @@ struct eye_of_tyr_t : public paladin_spell_t
 
 struct judgment_prot_t : public judgment_t
 {
-  // This should be in the main Paladin file, but that would need much restructuring. Since Holy is not implemented anyways ..
-  struct hammer_and_anvil_t : public paladin_spell_t
-  {
-    // ToDo (Fluttershy): Find out how Hammer and Anvil behaves above 5 targets
-    hammer_and_anvil_t( paladin_t* p ) : paladin_spell_t( "hammer_and_anvil", p, p->find_spell( 433717 ) )
-    {
-      background = proc = may_crit = true;
-      may_miss                     = false;
-      aoe                          = -1;
-    }
-  };
-
   heartfire_t* heartfire;
   int judge_holy_power, sw_holy_power;
   hammer_and_anvil_t* hammer_and_anvil;
@@ -734,7 +795,7 @@ struct judgment_prot_t : public judgment_t
     triggers_higher_calling = true;
     if (p->talents.lightsmith.hammer_and_anvil->ok())
     {
-      hammer_and_anvil = new hammer_and_anvil_t( p );
+      hammer_and_anvil = new hammer_and_anvil_t( "hammer_and_anvil_j", p );
       add_child( hammer_and_anvil );
     }
   }
@@ -762,12 +823,7 @@ struct judgment_prot_t : public judgment_t
   void impact( action_state_t* s ) override
   {
     judgment_t::impact( s );
-
-    if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
-    {
-      hammer_and_anvil->set_target( s->target );
-      hammer_and_anvil->execute();
-    }
+    trigger_hammer_and_anvil( p(), s, hammer_and_anvil, true );
   }
 };
 

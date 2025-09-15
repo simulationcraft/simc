@@ -35,6 +35,7 @@ actions.assisted_combat+=/ice_strike,if=action.ice_strike.ready
 actions.assisted_combat+=/frost_shock,if=buff.hailstorm.up
 actions.assisted_combat+=/ice_strike,if=buff.hailstorm.up
 actions.assisted_combat+=/lava_lash,if=talent.lively_totems
+actions.assisted_combat+=/flame_shock,if=buff.voltaic_blaze.up
 actions.assisted_combat+=/stormstrike
 actions.assisted_combat+=/lava_lash
 actions.assisted_combat+=/flame_shock

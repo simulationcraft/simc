@@ -1,0 +1,206 @@
+mage="TWW3_Mage_Arcane_Sunfury"
+source=default
+spec=arcane
+level=80
+race=void_elf
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzgZ8AjZxwYmhx0MjZAAAAAAYAAzMTLz2yMAQsBAAAAAAAwgZWmlZmZGjZMzMzMjZYZM
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=beledars_bounty
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=arcane_intellect
+# Option to sim offsetting your primary burst into the Arcane Soul window as Sunfury.
+actions.precombat+=/variable,name=soul_burst,default=0,op=reset
+actions.precombat+=/variable,name=soul_cd,op=set,value=1,if=set_bonus.thewarwithin_season_3_4pc&talent.spellfire_spheres&talent.resonance&!talent.magis_spark&(active_enemies>=3)&variable.soul_burst
+actions.precombat+=/variable,name=aoe_target_count,op=reset,default=2
+actions.precombat+=/variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave
+actions.precombat+=/variable,name=opener,op=set,value=1
+actions.precombat+=/variable,name=aoe_list,default=0,op=reset
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.imperfect_ascendancy_serum|equipped.quickwick_candlestick|equipped.soulletting_ruby|equipped.funhouse_lens|equipped.house_of_cards|equipped.flarendos_pilot_light|equipped.neural_synapse_enhancer|equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.arazs_ritual_forge|equipped.incorporeal_essencegorger
+actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.blastmaster3000|equipped.ratfang_toxin|equipped.ingenious_mana_battery|equipped.geargrinders_spare_keys|equipped.ringing_ritual_mud|equipped.goo_blin_grenade|equipped.noggenfogger_ultimate_deluxe|equipped.garbagemancers_last_resort|equipped.mad_queens_mandate|equipped.fearbreakers_echo|equipped.mereldars_toll|equipped.gooblin_grenade|equipped.perfidious_projector|equipped.chaotic_nethergate
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/arcane_blast,if=!talent.evocation
+actions.precombat+=/evocation,if=talent.evocation&!variable.soul_cd
+actions.precombat+=/arcane_surge,if=variable.soul_cd
+
+# Executed every time the actor is available.
+actions=counterspell
+# Tempered Potions last 30s so we generally will use them at the start of our cooldown windows.
+actions+=/potion,if=(buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready)|((cooldown.arcane_surge.ready|buff.arcane_surge.up)&variable.soul_cd))|fight_remains<30
+# Lights Judgment is the only racial ability worth using and is only worthwhile to use outside of cooldowns.
+actions+=/lights_judgment,if=(buff.arcane_surge.down&debuff.touch_of_the_magi.down&buff.arcane_soul.down&buff.siphon_storm.down&active_enemies>=2)
+# Racials are used after Surge.
+actions+=/berserking,if=(buff.siphon_storm.up&variable.soul_cd)|(prev_gcd.1.arcane_surge&!variable.soul_cd)
+actions+=/blood_fury,if=(buff.siphon_storm.up&variable.soul_cd)|(prev_gcd.1.arcane_surge&!variable.soul_cd)
+actions+=/fireblood,if=(buff.siphon_storm.up&variable.soul_cd)|(prev_gcd.1.arcane_surge&!variable.soul_cd)
+actions+=/ancestral_call,if=(buff.siphon_storm.up&variable.soul_cd)|(prev_gcd.1.arcane_surge&!variable.soul_cd)
+# Invoke Externals with cooldowns except Autumn which should come just after cooldowns
+actions+=/invoke_external_buff,name=power_infusion,if=prev_gcd.1.arcane_surge
+actions+=/invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5
+# Trinket specific use cases vary, default is just after Surge.
+actions+=/use_items,if=(((!variable.soul_cd&prev_gcd.1.arcane_surge)|(variable.soul_cd&buff.siphon_storm.up&debuff.touch_of_the_magi.up))&(variable.steroid_trinket_equipped|(!variable.steroid_trinket_equipped&!variable.nonsteroid_trinket_equipped)))|(!variable.steroid_trinket_equipped&variable.nonsteroid_trinket_equipped)|(variable.nonsteroid_trinket_equipped&buff.siphon_storm.remains<10&(cooldown.evocation.remains>17|trinket.cooldown.remains>20))|fight_remains<20
+actions+=/variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0
+actions+=/arcane_barrage,if=fight_remains<2
+# Enter cooldowns, then action list depending on your hero talent choices.
+actions+=/call_action_list,name=cd_opener,if=!variable.soul_cd
+actions+=/call_action_list,name=cd_opener_soul,if=variable.soul_cd
+actions+=/call_action_list,name=sunfury,if=talent.spellfire_spheres
+actions+=/call_action_list,name=spellslinger,if=!talent.spellfire_spheres
+actions+=/arcane_barrage
+
+# Touch of the Magi used if you just used Arcane Surge, the wait simulates the time it takes to queue another spell after Touch when you Surge into Touch, otherwise we'll Touch off cooldown either after Barrage or if we just need Charges.
+actions.cd_opener=touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_surge|(cooldown.arcane_surge.remains>30&cooldown.touch_of_the_magi.ready&((buff.arcane_charge.stack<4&!prev_gcd.1.arcane_barrage)|prev_gcd.1.arcane_barrage))|fight_remains<15
+actions.cd_opener+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge&time-action.touch_of_the_magi.last_used<0.015,line_cd=15
+actions.cd_opener+=/arcane_blast,if=buff.presence_of_mind.up
+# Use Orb for Charges on the opener if you have High Voltage as the Missiles will generate the remaining Charge you need
+actions.cd_opener+=/arcane_orb,if=talent.high_voltage&variable.opener,line_cd=10
+# Barrage before Evocation if Tempo will expire
+actions.cd_opener+=/arcane_barrage,if=buff.arcane_tempo.up&cooldown.evocation.ready&buff.arcane_tempo.remains<gcd.max*5,line_cd=11
+actions.cd_opener+=/evocation,if=cooldown.arcane_surge.remains<(gcd.max*3)&cooldown.touch_of_the_magi.remains<(gcd.max*5)|fight_remains<25
+# Use Missiles to get Nether Precision up for your burst window, clipping logic applies as long as you don't have Aether Attunement.
+actions.cd_opener+=/arcane_missiles,if=(prev_gcd.1.evocation|prev_gcd.1.arcane_surge|variable.opener)&buff.nether_precision.down,interrupt_if=tick_time>gcd.remains&buff.aether_attunement.react=0,interrupt_immediate=1,interrupt_global=1,chain=1,line_cd=30
+actions.cd_opener+=/arcane_surge,if=cooldown.touch_of_the_magi.remains<(action.arcane_surge.execute_time+(gcd.max*(buff.arcane_charge.stack=4)))|fight_remains<25
+
+# Alternate tier set opener for AOE. Surge, then Evocate 5-7s later, then Touch when Surge has a few seconds remaining.
+actions.cd_opener_soul=arcane_surge,if=(cooldown.touch_of_the_magi.remains<15)
+actions.cd_opener_soul+=/evocation,if=buff.arcane_surge.up&(buff.arcane_surge.remains<=8.5|((buff.glorious_incandescence.up|buff.intuition.react)&buff.arcane_surge.remains<=10))
+actions.cd_opener_soul+=/touch_of_the_magi,if=(buff.arcane_surge.remains<=2.5&prev_gcd.1.arcane_barrage)|(cooldown.evocation.remains>40&cooldown.evocation.remains<60&prev_gcd.1.arcane_barrage)
+
+# With Shifting Shards we can use Shifting Power whenever basically favoring cooldowns slightly, without it though we want to use it outside of cooldowns, don't cast if it'll conflict with Intuition expiration.
+actions.spellslinger=shifting_power,if=(((((action.arcane_orb.charges=0)&cooldown.arcane_orb.remains>16)|cooldown.touch_of_the_magi.remains<20)&buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&(buff.intuition.react=0|(buff.intuition.react&buff.intuition.remains>cast_time))&cooldown.touch_of_the_magi.remains>(12+6*gcd.max))|(prev_gcd.1.arcane_barrage&talent.shifting_shards&(buff.intuition.react=0|(buff.intuition.react&buff.intuition.remains>cast_time))&(buff.arcane_surge.up|debuff.touch_of_the_magi.up|cooldown.evocation.remains<20)))&fight_remains>10&(buff.arcane_tempo.remains>gcd.max*2.5|buff.arcane_tempo.down)
+# In single target, use Presence of Mind at the very end of Touch of the Magi, then cancelaura the buff to start the cooldown, wait is to simulate the delay of hitting Presence of Mind after another spell cast.
+actions.spellslinger+=/cancel_buff,name=presence_of_mind,use_off_gcd=1,if=prev_gcd.1.arcane_blast&buff.presence_of_mind.stack=1
+actions.spellslinger+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.nether_precision.up&active_enemies<variable.aoe_target_count&!talent.unerring_proficiency
+actions.spellslinger+=/wait,sec=0.05,if=time-action.presence_of_mind.last_used<0.015,line_cd=15
+actions.spellslinger+=/supernova,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.unerring_proficiency.stack=30
+# Orb if you need charges.
+actions.spellslinger+=/arcane_orb,if=buff.arcane_charge.stack<4
+# Barrage if Tempo is about to expire.
+actions.spellslinger+=/arcane_barrage,if=(buff.arcane_tempo.up&buff.arcane_tempo.remains<gcd.max)
+# Use Aether Attunement up before casting Touch if you have S2 4pc equipped to avoid munching.
+actions.spellslinger+=/arcane_missiles,if=buff.aether_attunement.react&cooldown.touch_of_the_magi.remains<gcd.max*3&buff.clearcasting.react&set_bonus.thewarwithin_season_2_4pc
+# Barrage if Touch is up or will be up while Barrage is in the air.
+actions.spellslinger+=/arcane_barrage,if=(cooldown.touch_of_the_magi.ready|cooldown.touch_of_the_magi.remains<((travel_time+0.05)>?gcd.max))&(cooldown.arcane_surge.remains>30&cooldown.arcane_surge.remains<75)
+# Anticipate the Intuition granted from the Season 3 set bonus.
+actions.spellslinger+=/arcane_barrage,if=buff.arcane_charge.stack=4&buff.arcane_harmony.stack>=20&set_bonus.thewarwithin_season_3_4pc
+# Use Clearcasting procs to keep Nether Precision up, if you don't have S2 4pc try to pool Aether Attunement for cooldown windows.
+actions.spellslinger+=/arcane_missiles,if=(buff.clearcasting.react&buff.nether_precision.down&((cooldown.touch_of_the_magi.remains>gcd.max*7&cooldown.arcane_surge.remains>gcd.max*7)|buff.clearcasting.react>1|!talent.magis_spark|(cooldown.touch_of_the_magi.remains<gcd.max*4&buff.aether_attunement.react=0)|set_bonus.thewarwithin_season_2_4pc))|(fight_remains<5&buff.clearcasting.react),interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1
+# Missile to refill charges if you have High Voltage and either Aether Attunement or more than one Clearcasting proc. Recheck AOE
+actions.spellslinger+=/arcane_missiles,if=talent.high_voltage&(buff.clearcasting.react>1|(buff.clearcasting.react&buff.aether_attunement.react))&buff.arcane_charge.stack<3,interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1
+# Use Intuition.
+actions.spellslinger+=/arcane_barrage,if=buff.intuition.react
+# Make sure to always activate Spark!
+actions.spellslinger+=/arcane_blast,if=debuff.magis_spark_arcane_blast.up|buff.leydrinker.up,line_cd=2
+# In single target, spending your Nether Precision stacks on Blast is a higher priority in single target.
+actions.spellslinger+=/arcane_blast,if=buff.nether_precision.up&buff.arcane_harmony.stack<=16&buff.arcane_charge.stack=4&active_enemies=1
+# Barrage if you're going to run out of mana and have Orb ready.
+actions.spellslinger+=/arcane_barrage,if=mana.pct<10&buff.arcane_surge.down&(cooldown.arcane_orb.remains<gcd.max)
+# Orb in ST if you don't have Charged Orb, will overcap soon, and before entering cooldowns.
+actions.spellslinger+=/arcane_orb,if=active_enemies=1&(cooldown.touch_of_the_magi.remains<6|!talent.charged_orb|buff.arcane_surge.up|cooldown.arcane_orb.charges_fractional>1.5)
+# Barrage if you have orb coming off cooldown in AOE and you don't have enough harmony stacks to make it worthwhile to hold for set proc.
+actions.spellslinger+=/arcane_barrage,if=active_enemies>=2&buff.arcane_charge.stack=4&cooldown.arcane_orb.remains<gcd.max&(buff.arcane_harmony.stack<=(8+(10*!set_bonus.thewarwithin_season_3_4pc)))&(((prev_gcd.1.arcane_barrage|prev_gcd.1.arcane_orb)&buff.nether_precision.stack=1)|buff.nether_precision.stack=2|buff.nether_precision.down)
+actions.spellslinger+=/arcane_barrage,if=active_enemies>2&(buff.arcane_charge.stack=4&!set_bonus.thewarwithin_season_3_4pc)
+# Orb if you're low on Harmony stacs.
+actions.spellslinger+=/arcane_orb,if=active_enemies>1&buff.arcane_harmony.stack<20&(buff.arcane_surge.up|buff.nether_precision.up|active_enemies>=7)&set_bonus.thewarwithin_season_3_4pc
+# Arcane Barrage in AOE if you have Aether Attunement ready and High Voltage
+actions.spellslinger+=/arcane_barrage,if=talent.high_voltage&active_enemies>=2&buff.arcane_charge.stack=4&buff.aether_attunement.react&buff.clearcasting.react
+# Use Orb more aggressively if cleave and a little less in AOE.
+actions.spellslinger+=/arcane_orb,if=active_enemies>1&(active_enemies<3|buff.arcane_surge.up|(buff.nether_precision.up))&set_bonus.thewarwithin_season_3_4pc
+# Barrage if Orb is available in AOE.
+actions.spellslinger+=/arcane_barrage,if=active_enemies>1&buff.arcane_charge.stack=4&cooldown.arcane_orb.remains<gcd.max
+# If you have High Voltage throw out a Barrage before you need to use Clearcasting for NP.
+actions.spellslinger+=/arcane_barrage,if=talent.high_voltage&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.nether_precision.stack=1
+# Barrage with Orb Barrage or execute if you have orb up and no Nether Precision or no way to get another and use Arcane Orb to recover Arcane Charges, hold resources for Touch of the Magi if you have Magi's Spark. Skip this with Season 3 set.
+actions.spellslinger+=/arcane_barrage,if=(active_enemies=1&(talent.orb_barrage|(target.health.pct<35&talent.arcane_bombardment))&(cooldown.arcane_orb.remains<gcd.max)&buff.arcane_charge.stack=4&(cooldown.touch_of_the_magi.remains>gcd.max*6|!talent.magis_spark)&(buff.nether_precision.down|(buff.nether_precision.stack=1&buff.clearcasting.stack=0)))&!set_bonus.thewarwithin_season_3_4pc
+# Use Explosion for your first charge or if you have High Voltage you can use it for charge 2 and 3, but at a slightly higher target count.
+actions.spellslinger+=/arcane_explosion,if=active_enemies>1&((buff.arcane_charge.stack<1&!talent.high_voltage)|(buff.arcane_charge.stack<3&(buff.clearcasting.react=0|talent.reverberate)))
+# You can use Arcane Explosion in single target for your first 2 charges when you have no Clearcasting procs and aren't out of mana. This is only a very slight gain for some profiles so don't feel you have to do this.
+actions.spellslinger+=/arcane_explosion,if=active_enemies=1&buff.arcane_charge.stack<2&buff.clearcasting.react=0
+# Barrage in execute if you're at the end of Touch or at the end of Surge windows. Skip this with Season 3 set.
+actions.spellslinger+=/arcane_barrage,if=(((target.health.pct<35&(debuff.touch_of_the_magi.remains<(gcd.max*1.25))&(debuff.touch_of_the_magi.remains>action.arcane_barrage.travel_time))|((buff.arcane_surge.remains<gcd.max)&buff.arcane_surge.up))&buff.arcane_charge.stack=4)&!set_bonus.thewarwithin_season_3_4pc
+# Nothing else to do? Blast. Out of mana? Barrage.
+actions.spellslinger+=/arcane_blast
+actions.spellslinger+=/arcane_barrage
+
+# For Sunfury, Shifting Power only when you're not under the effect of any cooldowns.
+actions.sunfury=shifting_power,if=((buff.arcane_surge.down&buff.siphon_storm.down&debuff.touch_of_the_magi.down&cooldown.evocation.remains>15&cooldown.touch_of_the_magi.remains>10)&fight_remains>10)&buff.arcane_soul.down&(buff.intuition.react=0|(buff.intuition.react&buff.intuition.remains>cast_time))
+actions.sunfury+=/cancel_buff,name=presence_of_mind,use_off_gcd=1,if=(prev_gcd.1.arcane_blast&buff.presence_of_mind.stack=1)|active_enemies<4
+actions.sunfury+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.nether_precision.up&active_enemies<4
+actions.sunfury+=/wait,sec=0.05,if=time-action.presence_of_mind.last_used<0.015,line_cd=15
+# When Arcane Soul is up, use Missiles to generate Nether Precision as needed while also ensuring you end Soul with 3 Clearcasting.
+actions.sunfury+=/arcane_missiles,if=buff.nether_precision.down&buff.clearcasting.react&buff.arcane_soul.up&buff.arcane_soul.remains>gcd.max*(4-buff.clearcasting.react),interrupt_if=tick_time>gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1
+actions.sunfury+=/arcane_barrage,if=buff.arcane_soul.up
+# Dump a clearcasting proc before you go into Soul if you have one.
+actions.sunfury+=/arcane_missiles,if=buff.clearcasting.react&buff.arcane_surge.up&buff.arcane_surge.remains<gcd.max,interrupt_if=tick_time>gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1
+# Prioritize Tempo and Intuition if they are about to expire.
+actions.sunfury+=/arcane_barrage,if=(buff.arcane_tempo.up&buff.arcane_tempo.remains<(gcd.max+(gcd.max*buff.nether_precision.stack=1)))|(buff.intuition.react&buff.intuition.remains<(gcd.max+(gcd.max*buff.nether_precision.stack=1)))
+# Gamble on Orb Barrage in AOE to prevent overcapping on Harmony stacks.
+actions.sunfury+=/arcane_barrage,if=(talent.orb_barrage&active_enemies>1&buff.arcane_harmony.stack>=18&((active_enemies>3&(talent.resonance|talent.high_voltage))|buff.nether_precision.down|buff.nether_precision.stack=1|(buff.nether_precision.stack=2&buff.clearcasting.react=3)))
+# Spend Aether Attunement if you have 4pc S2 set before Touch.
+actions.sunfury+=/arcane_missiles,if=buff.clearcasting.react&set_bonus.thewarwithin_season_2_4pc&buff.aether_attunement.react&cooldown.touch_of_the_magi.remains<gcd.max*(3-(1.5*(active_enemies>3&(!talent.time_loop|talent.resonance)))),interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1
+# Barrage into Touch if you have charges when it comes up.
+actions.sunfury+=/arcane_barrage,if=buff.arcane_charge.stack=4&((cooldown.touch_of_the_magi.ready)|cooldown.touch_of_the_magi.remains<((travel_time+50)>?gcd.max))&!variable.soul_cd
+actions.sunfury+=/arcane_barrage,if=(cooldown.touch_of_the_magi.ready|(cooldown.touch_of_the_magi.remains<((travel_time+50)>?gcd.max)))&(buff.arcane_surge.down|(buff.arcane_surge.up&buff.arcane_surge.remains<=2.5))&variable.soul_cd
+# Blast if Magi's Spark is up.
+actions.sunfury+=/arcane_blast,if=debuff.magis_spark_arcane_blast.up&buff.arcane_charge.stack=4,line_cd=2
+# AOE Barrage conditions revolve around sending Barrages various talents. Whenever you have Clearcasting and Nether Precision or if you have Aether Attunement to recharge with High Voltage. Whenever you have Orb Barrage you should gamble basically any chance you get in execute. Lastly, with Arcane Orb available, you can send Barrage as long as you're not going to use Touch soon and don't have a reason to use Blast up.
+actions.sunfury+=/arcane_barrage,if=(talent.high_voltage&active_enemies>1&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.nether_precision.stack=1)
+actions.sunfury+=/arcane_barrage,if=(talent.high_voltage&active_enemies>1&buff.arcane_charge.stack=4&buff.clearcasting.react&buff.aether_attunement.react&buff.glorious_incandescence.down&buff.intuition.down)
+actions.sunfury+=/arcane_barrage,if=(active_enemies>2&talent.orb_barrage&talent.high_voltage&debuff.magis_spark_arcane_blast.down&buff.arcane_charge.stack=4&target.health.pct<35&talent.arcane_bombardment&(buff.nether_precision.up|(buff.nether_precision.down&buff.clearcasting.stack=0)))
+actions.sunfury+=/arcane_barrage,if=(active_enemies>2|(active_enemies>1&target.health.pct<35&talent.arcane_bombardment))&cooldown.arcane_orb.remains<gcd.max&buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.remains>gcd.max*6&(debuff.magis_spark_arcane_blast.down|!talent.magis_spark)&buff.nether_precision.up&(talent.high_voltage|((buff.leydrinker.down|(target.health.pct<35&talent.arcane_bombardment&active_enemies>=4&talent.resonance))&buff.nether_precision.stack=2)|(buff.nether_precision.stack=1&buff.clearcasting.react=0))
+# Missiles to recoup Charges with High Voltage or maintain Nether Precision and combine it with other Barrage buffs.
+actions.sunfury+=/arcane_missiles,if=buff.clearcasting.react&((talent.high_voltage&buff.arcane_charge.stack<4)|(buff.nether_precision.down&(buff.clearcasting.react>1|buff.spellfire_spheres.stack=6|buff.burden_of_power.up|buff.glorious_incandescence.up|(buff.intuition.react)))),interrupt_if=tick_time>gcd.remains&(buff.aether_attunement.react=0|(active_enemies>3&(!talent.time_loop|talent.resonance))),interrupt_immediate=1,interrupt_global=1,chain=1
+# Arcane Orb to recover Charges quickly if below 3.
+actions.sunfury+=/arcane_orb,if=buff.arcane_charge.stack<3
+# Barrage with Incadescence or Intuition.
+actions.sunfury+=/arcane_barrage,if=buff.glorious_incandescence.up|buff.intuition.react
+# In AOE, Presence of Mind is used to build Charges. Arcane Explosion can be used to build your first Charge.
+actions.sunfury+=/presence_of_mind,if=(buff.arcane_charge.stack=3|buff.arcane_charge.stack=2)&active_enemies>=3
+actions.sunfury+=/arcane_explosion,if=buff.arcane_charge.stack<2&active_enemies>1
+actions.sunfury+=/arcane_blast
+actions.sunfury+=/arcane_barrage
+
+head=augurs_ephemeral_widebrim,id=237718,bonus_id=1808,ilevel=723,gem_id=213743
+neck=chrysalis_of_sundered_souls,id=237568,ilevel=723,gem_id=213494/213455
+shoulders=augurs_ephemeral_orbs_of_power,id=237716,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12399,ilevel=730,gem_id=238042
+chest=augurs_ephemeral_habiliments,id=237721,ilevel=723,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=11109/8960/1808,ilevel=720,gem_id=213473,enchant_id=7397,crafted_stats=32/36
+hands=codebreakers_cunning_handwraps,id=246275,ilevel=723
+waist=singularity_cincture,id=237559,bonus_id=1808,ilevel=723,gem_id=213494
+legs=augurs_ephemeral_trousers,id=237717,ilevel=723,enchant_id=7531
+feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723,enchant_id=7424
+finger1=high_nerubian_signet,id=221141,ilevel=723,gem_id=213485/213485,enchant_id=7352
+finger2=band_of_the_shattered_soul,id=242405,ilevel=723,gem_id=213485/213485,enchant_id=7352
+trinket1=astral_antenna,id=242395,ilevel=723
+trinket2=diamantine_voidcore,id=242392,ilevel=723
+main_hand=voidglass_sovereigns_blade,id=237735,ilevel=723,enchant_id=7448
+off_hand=vagabonds_torch,id=222566,bonus_id=11300/8960,ilevel=720,crafted_stats=36/40
+
+# Gear Summary
+# gear_ilvl=723.06
+# gear_stamina=664039
+# gear_intellect=105617
+# gear_crit_rating=6211
+# gear_haste_rating=19287
+# gear_mastery_rating=12479
+# gear_versatility_rating=18688
+# gear_speed_rating=1000
+# gear_armor=25542
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=sunfury,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=sunfury,enable=1
+# set_bonus=shards_of_the_void_2pc=1

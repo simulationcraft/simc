@@ -34,9 +34,26 @@ struct monk_td_t;
 
 namespace pets
 {
+struct monk_pet_t : public pet_t
+{
+  monk_pet_t( monk_t *owner, std::string_view name, pet_e pet_type, bool guardian, bool dynamic );
+  monk_t *o();
+  const monk_t *o() const;
+  void init_assessors() override;
+};
 struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
-struct niuzao_pet_t;
+namespace niuzao  // niuzao
+{
+struct niuzao_pet_t : public monk_pet_t
+{
+  action_t *stomp;
+  niuzao_pet_t( std::string_view name, monk_t *player );
+  void init_action_list() override;
+  action_t *create_action( std::string_view name, std::string_view options_str ) override;
+  void init_spells() override;
+};
+}  // namespace niuzao
 struct call_to_arms_niuzao_pet_t;
 struct chiji_pet_t;
 struct yulon_pet_t;
@@ -164,18 +181,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
 };
 
-struct monk_buff_t : public buff_t
-{
-  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
-               const item_t *item = nullptr );
-  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
-               const item_t *item = nullptr );
-  monk_td_t &get_td( player_t *target );
-  const monk_td_t *find_td( player_t *target ) const;
-  monk_t &p();
-  const monk_t &p() const;
-};
-
 struct summon_pet_t : public monk_spell_t
 {
   timespan_t summoning_duration;
@@ -205,8 +210,6 @@ struct brews_t
   void adjust( timespan_t reduction );
 };
 
-namespace attacks
-{
 struct conduit_of_the_celestials_container_t
 {
   action_t *base;
@@ -220,12 +223,26 @@ struct conduit_of_the_celestials_container_t
   {
   }
 };
-}  // namespace attacks
 }  // namespace actions
 
 namespace buffs
 {
-struct shuffle_t : actions::monk_buff_t
+template <typename Base = buff_t>
+struct monk_buff_t : public Base
+{
+  using base_t = Base;
+
+  monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
+               const item_t *item = nullptr );
+  monk_td_t &get_td( player_t *target );
+  const monk_td_t *find_td( player_t *target ) const;
+  monk_t &p();
+  const monk_t &p() const;
+};
+
+struct shuffle_t : monk_buff_t<>
 {
   timespan_t accumulator;
   const timespan_t max_duration;
@@ -235,7 +252,7 @@ struct shuffle_t : actions::monk_buff_t
   void trigger( timespan_t duration );
 };
 
-struct gift_of_the_ox_t : actions::monk_buff_t
+struct gift_of_the_ox_t : monk_buff_t<>
 {
   /*
    * TODO:
@@ -294,14 +311,14 @@ private:
 
   bool fallback;
 
-  struct accumulator_t : actions::monk_buff_t
+  struct accumulator_t : monk_buff_t<>
   {
     aspect_of_harmony_t *aspect_of_harmony;
     accumulator_t( monk_t *player, aspect_of_harmony_t *aspect_of_harmony );
     void trigger_with_state( action_state_t *state );
   };
 
-  struct spender_t : actions::monk_buff_t
+  struct spender_t : monk_buff_t<>
   {
     template <class base_action_t>
     struct purified_spirit_t : base_action_t
@@ -340,6 +357,16 @@ public:
   void trigger_path_of_resurgence();
 
   bool heal_ticking();
+};
+
+struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
+{
+  double absorb_fraction;
+
+  fractional_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data );
+
+  double consume( double amount, action_state_t *state = nullptr ) override;
+  absorb_buff_t *set_absorb_fraction( double fraction );
 };
 }  // namespace buffs
 
@@ -391,6 +418,32 @@ public:
 
   monk_t &monk;
   monk_td_t( player_t *target, monk_t *p );
+};
+
+struct monk_effect_callback_t : dbc_proc_callback_t
+{
+  monk_t *player;
+
+  monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
+  void trigger( action_t *action, action_state_t *state ) override;
+  void execute( action_t *action, action_state_t *state ) override;
+
+  monk_effect_callback_t *register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type t,
+                                                              const dbc_proc_callback_t::trigger_fn_t &fn );
+  monk_effect_callback_t *register_callback_execute_function( const dbc_proc_callback_t::execute_fn_t &fn );
+};
+
+struct monk_callback_init_t
+{
+  const spell_data_t *effect_driver;
+  proc_flag pf_override;
+  proc_flag2 pf2_override;
+  action_t *action_override;
+  double ppm;
+
+  monk_callback_init_t( const spell_data_t *sd = nullptr, proc_flag pf = static_cast<proc_flag>( 0ull ),
+                        proc_flag2 pf2 = static_cast<proc_flag2>( 0ull ), action_t *ac = nullptr, double ppm = 0.0 )
+    : effect_driver( sd ), pf_override( pf ), pf2_override( pf2 ), action_override( ac ), ppm( ppm ) {};
 };
 
 // utility to create target_effect_t compatible functions from monk_td_t member references
@@ -450,12 +503,12 @@ public:
     propagate_const<action_t *> chi_wave;
 
     // Conduit of the Celestials
-    actions::attacks::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
-    actions::attacks::conduit_of_the_celestials_container_t flight_of_the_red_crane;
-    actions::attacks::conduit_of_the_celestials_container_t strength_of_the_black_ox;
+    actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
+    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
+    actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
 
     // Shado-Pan
-    propagate_const<action_t *> flurry_strikes;
+    action_t *flurry_strikes;
 
     // Brewmaster
     propagate_const<action_t *> special_delivery;
@@ -464,6 +517,8 @@ public:
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
     propagate_const<action_t *> chi_surge;
+    propagate_const<action_t *> walk_with_the_ox;
+    propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
     // Mistweaver
     propagate_const<action_t *> lesson_of_anger_damage;
@@ -958,13 +1013,15 @@ public:
       player_talent_t shuffle;
       const spell_data_t *shuffle_buff;
       // row 3
-      player_talent_t staggering_strikes;
+      player_talent_t august_blessing;
       player_talent_t gift_of_the_ox;
-      player_talent_t spirit_of_the_ox;
       const spell_data_t *gift_of_the_ox_buff;
       const spell_data_t *gift_of_the_ox_heal_trigger;
       const spell_data_t *gift_of_the_ox_heal_expire;
+      player_talent_t staggering_strikes;
       player_talent_t quick_sip;
+      player_talent_t spirit_of_the_ox;
+      player_talent_t strike_at_dawn;
       // row 4
       player_talent_t hit_scheme;
       player_talent_t elixir_of_determination;
@@ -975,10 +1032,13 @@ public:
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
       const spell_data_t *purified_chi;
+      player_talent_t celestial_infusion;
+      player_talent_t niuzaos_resolve;
       player_talent_t autumn_blessing;
       player_talent_t one_with_the_wind;
       player_talent_t zen_meditation;
-      player_talent_t strike_at_dawn;
+      player_talent_t shadowboxing_treads;
+      player_talent_t fluidity_of_motion;
       // row 6
       player_talent_t breath_of_fire;
       const spell_data_t *breath_of_fire_dot;
@@ -987,8 +1047,7 @@ public:
       player_talent_t invoke_niuzao_the_black_ox;
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       player_talent_t tranquil_spirit;
-      player_talent_t shadowboxing_treads;
-      player_talent_t fluidity_of_motion;
+      player_talent_t pretense_of_instability;
       // row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
@@ -996,9 +1055,10 @@ public:
       player_talent_t bob_and_weave;
       player_talent_t black_ox_brew;
       player_talent_t walk_with_the_ox;
+      const spell_data_t *walk_with_the_ox_stomp;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
-      player_talent_t pretense_of_instability;
+      player_talent_t zen_state;
       player_talent_t counterstrike;
       // row 8
       player_talent_t dragonfire_brew;
@@ -1314,18 +1374,41 @@ public:
       propagate_const<buff_t *> luck_of_the_draw;
       propagate_const<buff_t *> opportunistic_strike;
     } tww2;
+
+    struct
+    {
+      const spell_data_t *coc_2pc;
+      const spell_data_t *coc_2pc_heart_of_the_jade_serpent_data;
+      propagate_const<buff_t *> coc_2pc_heart_of_the_jade_serpent;
+      const spell_data_t *coc_4pc;
+      const spell_data_t *coc_4pc_jade_serpents_blessing_data;
+      propagate_const<buff_t *> coc_4pc_jade_serpents_blessing;
+      const spell_data_t *moh_2pc;
+      const spell_data_t *moh_2pc_harmonic_surge_buff_data;
+      const spell_data_t *moh_2pc_harmonic_surge_damage;
+      const spell_data_t *moh_2pc_harmonic_surge_heal;
+      propagate_const<buff_t *> moh_2pc_harmonic_surge_buff;
+      accumulated_rng_t *moh_2pc_rng;
+      std::map<unsigned, cooldown_t *> moh_2pc_icd;
+      const spell_data_t *moh_4pc;
+      const spell_data_t *spm_2pc;
+      const spell_data_t *spm_2pc_flurry_charge_data;
+      propagate_const<buff_t *> spm_2pc_flurry_charge;
+      action_t *spm_2pc_flurry_strikes;
+      const spell_data_t *spm_4pc;
+    } tww3;
   } tier;
 
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
-    spawner::pet_spawner_t<pet_t, monk_t> niuzao;
+    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> call_to_arms_niuzao;
 
     pet_t *bron;
 
@@ -1403,10 +1486,10 @@ public:
   void parse_assisted_combat_step( const assisted_combat_step_data_t &step,
                                    action_priority_list_t *assisted_combat ) override;
   std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const override;
-  bool validate_actor() override;
-  bool validate_fight_style( fight_style_e style ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t &rule,
                                                             const assisted_combat_step_data_t &step ) const override;
+  bool validate_actor() override;
+  bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
   void create_pets() override;
@@ -1448,6 +1531,8 @@ public:
   double resource_regen_per_second( resource_e ) const override;
 
   // Other
+  bool wowv_l( wowv_t value ) const;
+  bool wowv_ge( wowv_t value ) const;
   const monk_td_t *find_target_data( const player_t *target ) const override
   {
     return target_data[ target ];
@@ -1462,18 +1547,7 @@ public:
     return td;
   }
   void parse_player_effects();
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             proc_flag2 PF2_OVERRIDE, action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ),
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag PF_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
-  void create_proc_callback( const spell_data_t *effect_driver,
-                             bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
-                             action_t *proc_action_override = nullptr );
+  monk_effect_callback_t *create_proc_callback( monk_callback_init_t params );
 
   // Actions
   void trigger_celestial_fortune( action_state_t * );

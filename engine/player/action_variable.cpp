@@ -17,9 +17,9 @@ action_variable_t::action_variable_t( std::string name, double default_value )
   : current_value_( default_value ),
     default_value_( default_value ),
     constant_value_( std::numeric_limits<double>::lowest() ),
-    name_( std::move(name) )
-{
-}
+    name_( std::move( name ) ),
+    report( false )
+{}
 
 bool action_variable_t::is_constant() const
 {
@@ -40,7 +40,7 @@ void action_variable_t::optimize()
   }
 
   // Do nothing if the variable is already constant
-  if (constant_value_ != std::numeric_limits<double>::lowest())
+  if ( constant_value_ != std::numeric_limits<double>::lowest() )
   {
     return;
   }

@@ -137,7 +137,6 @@ ol.float li {
 }
 .mono {
     font-family: "Lucida Console", Monaco, monospace;
-    font-size: 0.9em;
 }
 .toggle,
 .toggle-details {
@@ -330,9 +329,10 @@ span.open {
     -webkit-border-radius: 6px;
     border-radius: 6px;
     font-size: 12px;
+    margin: 6px 0 6px 0;
 }
 .subsection-small {
-    width: 500px;
+    width: 575px;
 }
 .subsection h4 {
     margin: 0 0 10px 0;
@@ -577,6 +577,12 @@ table.stripebody tbody:nth-of-type(even) tr:first-of-type + tr.childrow {
 .asc-sorted:after {
     bottom: 0.8em;
     border-bottom-color: inherit;
+}
+table.sc tr.details td.details {
+    padding: 0;
+    text-align: left;
+    background-color: #333;
+    font-size: 11px;
 }
 table.sc tr.details td {
     padding: 5px 15px 15px 15px;

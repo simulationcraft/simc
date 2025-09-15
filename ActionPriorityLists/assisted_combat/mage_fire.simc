@@ -26,7 +26,7 @@ actions.assisted_combat+=/phoenix_flames,if=charges>=108853
 actions.assisted_combat+=/phoenix_flames,if=charges>=0
 actions.assisted_combat+=/scorch,if=target.health.pct<=30,cooldown_allow_casting_success=1
 actions.assisted_combat+=/scorch,if=buff.combustion.up,cooldown_allow_casting_success=1
-actions.assisted_combat+=/frostbolt,if=talent.frostfire_bolt,cooldown_allow_casting_success=1
+actions.assisted_combat+=/frostfire_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball
 

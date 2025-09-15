@@ -10,15 +10,15 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=raise_dead,can_have_one_button_penalty=1,if=!pet.any.active
-actions.assisted_combat+=/dark_transformation,can_have_one_button_penalty=1,if=pet.any.active
+actions.assisted_combat+=/death_and_decay,can_have_one_button_penalty=1,if=buff.desecrate.up
 actions.assisted_combat+=/outbreak,can_have_one_button_penalty=1,if=!dot.virulent_plague.ticking
-actions.assisted_combat+=/scourge_strike,can_have_one_button_penalty=1,if=buff.plaguebringer.down&talent.plaguebringer
 actions.assisted_combat+=/unholy_assault,can_have_one_button_penalty=1
-actions.assisted_combat+=/festering_strike,can_have_one_button_penalty=1,if=debuff.festering_wound.stack<=4&talent.vile_contagion&cooldown.vile_contagion.ready&active_enemies>3
-actions.assisted_combat+=/festering_strike,can_have_one_button_penalty=1,if=debuff.festering_wound.stack<=3&talent.apocalypse&cooldown.apocalypse.ready
-actions.assisted_combat+=/vile_contagion,can_have_one_button_penalty=1,if=debuff.festering_wound.stack>=5&active_enemies>3
 actions.assisted_combat+=/apocalypse,can_have_one_button_penalty=1,if=debuff.festering_wound.stack>=4
-actions.assisted_combat+=/death_and_decay,can_have_one_button_penalty=1,if=target.distance<=10&active_enemies>3&buff.death_and_decay.down
+actions.assisted_combat+=/death_and_decay,can_have_one_button_penalty=1,if=target.distance<=30&active_enemies>2&buff.death_and_decay.down
+actions.assisted_combat+=/dark_transformation,can_have_one_button_penalty=1,if=pet.any.active&!talent.apocalypse
+actions.assisted_combat+=/festering_strike,can_have_one_button_penalty=1,if=buff.festering_scythe.up&debuff.festering_wound.stack<=4
+actions.assisted_combat+=/scourge_strike,can_have_one_button_penalty=1,if=buff.plaguebringer.down&talent.plaguebringer
+actions.assisted_combat+=/festering_strike,can_have_one_button_penalty=1,if=debuff.festering_wound.stack<=3&talent.apocalypse&cooldown.apocalypse.ready
 actions.assisted_combat+=/clawing_shadows,can_have_one_button_penalty=1,if=talent.clawing_shadows&debuff.festering_wound.up&active_enemies>3
 actions.assisted_combat+=/scourge_strike,can_have_one_button_penalty=1,if=debuff.festering_wound.up&active_enemies>3
 actions.assisted_combat+=/death_coil,can_have_one_button_penalty=1,if=buff.sudden_doom.up&active_enemies<=3
@@ -41,4 +41,4 @@ actions.cooldowns+=/ancestral_call
 actions.cooldowns+=/raise_abomination
 actions.cooldowns+=/army_of_the_dead
 actions.cooldowns+=/summon_gargoyle,if=runic_power>30
-actions.cooldowns+=/abomination_limb
+actions.cooldowns+=/legion_of_souls

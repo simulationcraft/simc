@@ -80,6 +80,7 @@ public:
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
+  mutable std::vector<buff_t*> buff_list;
 
   bool action_disabled, buff_disabled;
   bool has_use_buff_override, has_use_damage_override;

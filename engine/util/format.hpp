@@ -7,7 +7,7 @@
 
 #include <type_traits>
 
-#include "fmt/core.h"
+#include "fmt/format.h"
 
 namespace util::fmt_detail {
 template <typename T, typename = void> struct has_format_to : std::false_type {};
@@ -27,7 +27,7 @@ namespace fmt {
 template <typename T>
 struct formatter<T, char, std::enable_if_t<::util::fmt_detail::has_format_to<T>::value>> {
   constexpr auto parse( format_parse_context& ctx ) { return ctx.begin(); }
-  format_context::iterator format( const T& v, format_context& ctx ) {
+  format_context::iterator format( const T& v, format_context& ctx ) const {
     auto out = ctx.out();
     sc_format_to( v, out );
     return out;

@@ -70,7 +70,8 @@ enum rppm_modifier_type_e
   RPPM_MODIFIER_SPEC,
   RPPM_MODIFIER_RACE,
   RPPM_MODIFIER_ILEVEL,
-  RPPM_MODIFIER_UNK_ADJUST
+  RPPM_MODIFIER_UNK_ADJUST,
+  RPPM_MODIFIER_AURA
 };
 
 enum item_bonus_type
@@ -488,6 +489,7 @@ enum item_socket_color
   SOCKET_COLOR_THUNDER_CITRINE      = 0x08000000,
   SOCKET_COLOR_SEA_CITRINE          = 0x10000000,
   SOCKET_COLOR_WIND_CITRINE         = 0x20000000,
+  SOCKET_COLOR_RESHII_FIBER         = 0x40000000,
   SOCKET_COLOR_MAX,
   SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
                                       SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
@@ -862,6 +864,7 @@ enum effect_type_t : unsigned {
     E_255 = 255,
     E_256 = 256,
     E_REDUCE_REMAINING_COOLDOWN = 290,
+    E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE = 293,
     E_MAX
 };
 
@@ -1373,6 +1376,69 @@ enum spell_attribute : unsigned
   SX_REFRESH_EXTENDS_DURATION       = 436u,
 };
 
+// spell aura/channel interrupt flags, indicates bit position
+enum aura_interrupt : unsigned
+{
+  IX_HOSTILE_ACTION_RECEIVED     = 1u,
+  IX_DAMAGE                      = 2u,
+  IX_ACTION                      = 3u,
+  IX_MOVING                      = 4u,
+  IX_TURNING                     = 5u,
+  IX_ANIMATION                   = 6u,
+  IX_DISMOUNT                    = 7u,
+  IX_UNDER_WATER                 = 8u,
+  IX_ABOVE_WATER                 = 9u,
+  IX_SHEATHING                   = 10u,
+  IX_INTERACTIHNG                = 11u,
+  IX_LOOTING                     = 12u,
+  IX_ATTACKING                   = 13u,
+  IX_USE_ITEM                    = 14u,
+  IX_DAMAGE_CHANNEL_DURATION     = 15u,
+  IX_SHAPESHIFTING               = 16u,
+  IX_ACTION_DELAYED              = 17u,
+  IX_MOUNT                       = 18u,
+  IX_STANDING                    = 19u,
+  IX_LEAVE_WORLD                 = 20u,
+  IX_STEALTH_OR_INVISIBLE        = 21u,
+  IX_INVULNERABILITY             = 22u,
+  IX_ENTER_WORLD                 = 23u,
+  IX_PVP_ACTIVE                  = 24u,
+  IX_DIRECT_DAMAGE               = 25u,
+  IX_LANDING                     = 26u,
+  IX_RELEASE                     = 27u,
+  IX_DAMAGE_SCRIPT               = 28u,
+  IX_ENTER_COMBAT                = 29u,
+  IX_LOGIN                       = 30u,
+  IX_SUMMON                      = 31u,
+  IX_LEAVE_COMBAT                = 32u,
+  IX_FALLING                     = 33u,
+  IX_SWIMMING                    = 34u,
+  IX_NOT_MOVING                  = 35u,
+  IX_GROUND                      = 36u,
+  IX_TRANSFORM                   = 37u,
+  IX_JUMP                        = 38u,
+  IX_CHANGE_SPECIALIZATION       = 39u,
+  IX_EXIT_VEHICLE                = 40u,
+  IX_RAID_ENCOUNTER_START        = 41u,
+  IX_RAID_ENCOUNTER_END          = 42u,
+  IX_DISCONNECT                  = 43u,
+  IX_ENTER_INSTANCE              = 44u,
+  IX_DUEL_END                    = 45u,
+  IX_LEAVE_ARENA_OR_BATTLEGROUND = 46u,
+  IX_CHANGE_TALENT               = 47u,
+  IX_CHANGE_GLYPH                = 48u,
+  IX_SEAMLESS_TRANSFER           = 49u,
+  IX_LEAVE_WAR_MODE              = 50u,
+  IX_TOUCH_GROUND                = 51u,
+  IX_CHROMIE_TIME                = 52u,
+  IX_SPLINE_OR_FREE_FLIGHT       = 53u,
+  IX_PROC_OR_PERIODIC_ATTACK     = 54u,
+  IX_CHALLENGE_MODE_START        = 55u,
+  IX_ENCOUNTER_START             = 56u,
+  IX_ENCOUNTER_END               = 57u,
+  IX_RELEASE_EMPOWER             = 58u
+};
+
 // spelleffect attributes, indicates bit position
 enum spelleffect_attribute : unsigned
 {
@@ -1394,6 +1460,7 @@ enum spelleffect_attribute : unsigned
 
 enum spell_label : unsigned
 {
+  LABEL_HEALING_SPELLS             = 741u,
   LABEL_COVENANT                   = 976u,
   LABEL_SHARD_OF_DOMINATION_BLOOD  = 1305u,
   LABEL_SHARD_OF_DOMINATION_FROST  = 1306u,

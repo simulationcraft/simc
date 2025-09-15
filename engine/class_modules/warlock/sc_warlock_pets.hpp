@@ -38,7 +38,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> reign_of_tyranny;
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
@@ -209,7 +208,7 @@ public:
   {
     double m = ab::composite_target_multiplier( target );
 
-    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs_wicked_maw->check() )
+    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
       m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
 
     return m;
@@ -434,6 +433,7 @@ struct vilefiend_t : public warlock_simple_pet_t
   void init_base_stats() override;
   void create_buffs() override;
   void arise() override;
+  void demise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   double composite_player_multiplier( school_e ) const override;
 };
@@ -480,6 +480,11 @@ struct infernal_t : public warlock_pet_t
   void arise() override;
   void demise() override;
   double composite_player_multiplier( school_e ) const override;
+};
+
+struct infernal_roc_t : public destruction::infernal_t
+{
+  infernal_roc_t( warlock_t*, util::string_view = "infernal_roc" );
 };
 
 struct shadowy_tear_t : public warlock_pet_t
@@ -572,6 +577,18 @@ namespace diabolist
     action_t* create_action( util::string_view, util::string_view ) override;
   };
 }  // namespace diabolist
+
+namespace soul_harvester
+{
+  struct rampaging_demonic_soul_t : public warlock_pet_t
+  {
+    const spell_data_t* summon_spell;
+
+    rampaging_demonic_soul_t( warlock_t*, util::string_view = "demonic_soul" );
+    void arise() override;
+    action_t* create_action( util::string_view, util::string_view ) override;
+  };
+}  // namespace soul_harvester
 }  // namespace pets
 }  // namespace warlock
 

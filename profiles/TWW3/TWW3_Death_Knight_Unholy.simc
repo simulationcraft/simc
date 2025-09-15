@@ -1,0 +1,244 @@
+deathknight="TWW3_Death_Knight_Unholy_Rider"
+source=default
+spec=unholy
+level=80
+race=troll
+role=attack
+position=back
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAgZGzYMzwMmZmZaGDzMzMGAAAAAAAAmZmZhZGzAAmtZMzY2mZmBzAsZWMMkBmFGasAAzAYA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=chippy_tea
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/raise_dead
+actions.precombat+=/army_of_the_dead,precombat_time=2
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.treacherous_transmitter|trinket.1.is.unyielding_netherprism
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.treacherous_transmitter|trinket.2.is.unyielding_netherprism
+actions.precombat+=/variable,name=trinket_1_duration,op=setif,value=trinket.1.is.treacherous_transmitter*15+trinket.1.is.funhouse_lens*15+trinket.1.is.signet_of_the_priory*20+trinket.1.is.unyielding_netherprism*20+trinket.1.is.cursed_stone_idol*16,value_else=trinket.1.proc.any_dps.duration,condition=trinket.1.is.treacherous_transmitter|trinket.1.is.funhouse_lens|trinket.1.is.signet_of_the_priory|trinket.1.is.unyielding_netherprism|trinket.1.is.cursed_stone_idol
+actions.precombat+=/variable,name=trinket_2_duration,op=setif,value=trinket.2.is.treacherous_transmitter*15+trinket.2.is.funhouse_lens*15+trinket.2.is.signet_of_the_priory*20+trinket.2.is.unyielding_netherprism*20+trinket.2.is.cursed_stone_idol*16,value_else=trinket.2.proc.any_dps.duration,condition=trinket.2.is.treacherous_transmitter|trinket.2.is.funhouse_lens|trinket.2.is.signet_of_the_priory|trinket.2.is.unyielding_netherprism|trinket.2.is.cursed_stone_idol
+actions.precombat+=/variable,name=trinket_1_high_value,op=setif,value=2,value_else=1,condition=trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_high_value,op=setif,value=2,value_else=1,condition=trinket.2.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(talent.apocalypse&trinket.1.cooldown.duration%%cooldown.apocalypse.duration=0|talent.dark_transformation&trinket.1.cooldown.duration%%cooldown.dark_transformation.duration=0)|trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(talent.apocalypse&trinket.2.cooldown.duration%%cooldown.apocalypse.duration=0|talent.dark_transformation&trinket.2.cooldown.duration%%cooldown.dark_transformation.duration=0)|trinket.2.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync)*(variable.trinket_2_high_value)*(1+((trinket.2.ilvl-trinket.1.ilvl)%100)))>((trinket.1.cooldown.duration%variable.trinket_1_duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(variable.trinket_1_high_value)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
+
+# Executed every time the actor is available.
+actions=auto_attack
+# Call Action Lists
+actions+=/call_action_list,name=variables
+actions+=/call_action_list,name=san_trinkets,if=talent.vampiric_strike
+actions+=/call_action_list,name=trinkets,if=!talent.vampiric_strike
+actions+=/call_action_list,name=racials
+actions+=/call_action_list,name=cds_shared
+actions+=/call_action_list,name=cds_aoe_san,if=talent.vampiric_strike&active_enemies>=3
+actions+=/call_action_list,name=cds_aoe,if=!talent.vampiric_strike&active_enemies>=2
+actions+=/call_action_list,name=cds_cleave_san,if=talent.vampiric_strike&active_enemies=2
+actions+=/call_action_list,name=cds_san,if=talent.vampiric_strike&active_enemies=1
+actions+=/call_action_list,name=cds,if=!talent.vampiric_strike&active_enemies=1
+actions+=/call_action_list,name=cleave,if=active_enemies=2
+actions+=/call_action_list,name=aoe_setup,if=active_enemies>=3&cooldown.any_dnd.remains<7&!buff.legion_of_souls.up&(buff.death_and_decay.remains<3|death_knight.fwounded_targets<(active_enemies*0.5))
+actions+=/call_action_list,name=aoe_burst,if=active_enemies>=3&(death_and_decay.ticking|buff.death_and_decay.up&(death_knight.fwounded_targets>=(active_enemies*0.5)|talent.vampiric_strike&active_enemies<16|talent.desecrate&death_knight.fwounded_targets=active_enemies&talent.bursting_sores))
+actions+=/call_action_list,name=aoe,if=active_enemies>=3&!buff.death_and_decay.up
+actions+=/run_action_list,name=san_fishing,if=active_enemies=1&talent.gift_of_the_sanlayn&!cooldown.dark_transformation.ready&!buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.remains<cooldown.dark_transformation.remains+3
+actions+=/call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike
+actions+=/call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike
+
+# AoE
+actions.aoe=festering_strike,if=buff.festering_scythe.react
+actions.aoe+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=rune<4&active_enemies<variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
+actions.aoe+=/epidemic,if=rune<4&active_enemies>variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
+actions.aoe+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&buff.death_and_decay.up&talent.bursting_sores&cooldown.apocalypse.remains>variable.apoc_timing
+actions.aoe+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!variable.pooling_runic_power&active_enemies<variable.epidemic_targets
+actions.aoe+=/epidemic,if=!variable.pooling_runic_power
+actions.aoe+=/wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up
+actions.aoe+=/festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing|buff.festering_scythe.react
+actions.aoe+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<2
+actions.aoe+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>gcd|buff.vampiric_strike.react&dot.virulent_plague.ticking
+
+# AoE Burst
+actions.aoe_burst=festering_strike,if=buff.festering_scythe.react
+actions.aoe_burst+=/death_and_decay,if=death_knight.fwounded_targets=active_enemies&talent.desecrate&(talent.festering_scythe&death_knight.fwounded_targets=0&buff.festering_scythe_stacks.stack<10&!buff.festering_scythe.up|!talent.festering_scythe)&(raid_event.adds.exists&raid_event.adds.remains>6&(raid_event.adds.remains<10|!buff.death_and_decay.up)|!raid_event.adds.exists|fight_remains>6&fight_remains<10)
+actions.aoe_burst+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!buff.vampiric_strike.react&active_enemies<variable.epidemic_targets&(!talent.bursting_sores|talent.bursting_sores&buff.sudden_doom.react&death_knight.fwounded_targets<active_enemies*0.4|buff.sudden_doom.react&(talent.doomed_bidding&talent.menacing_magus|talent.rotten_touch|debuff.death_rot.remains<gcd)|rune<2)|(rune<4|active_enemies<4|raid_event.pull.has_boss)&active_enemies<variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
+actions.aoe_burst+=/epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&buff.sudden_doom.react&death_knight.fwounded_targets<active_enemies*0.4|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10)|rune<2)|(rune<4|raid_event.pull.has_boss)&active_enemies>=variable.epidemic_targets&buff.gift_of_the_sanlayn.up&gcd<=1.0&(!raid_event.adds.exists&fight_remains>buff.dark_transformation.remains*2|raid_event.adds.exists&raid_event.adds.remains>buff.dark_transformation.remains*2)
+actions.aoe_burst+=/wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up
+actions.aoe_burst+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1|buff.vampiric_strike.react|buff.death_and_decay.up
+actions.aoe_burst+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=active_enemies<variable.epidemic_targets
+actions.aoe_burst+=/epidemic,if=variable.epidemic_targets<=active_enemies
+actions.aoe_burst+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2
+actions.aoe_burst+=/wound_spender,target_if=max:debuff.festering_wound.stack
+
+# AoE Setup
+actions.aoe_setup=festering_strike,if=buff.festering_scythe.react
+actions.aoe_setup+=/any_dnd,if=!death_and_decay.ticking&(death_knight.fwounded_targets=active_enemies&(rune>3|runic_power<30)|talent.desecrate&(talent.festering_scythe&death_knight.fwounded_targets=0&buff.festering_scythe_stacks.stack<10&!buff.festering_scythe.up|!talent.festering_scythe))
+actions.aoe_setup+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=death_knight.fwounded_targets=0&cooldown.apocalypse.remains<gcd&(cooldown.dark_transformation.remains&cooldown.unholy_assault.remains|cooldown.unholy_assault.remains|!talent.unholy_assault)
+actions.aoe_setup+=/wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up
+actions.aoe_setup+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!variable.pooling_runic_power&active_enemies<variable.epidemic_targets&rune<4
+actions.aoe_setup+=/epidemic,if=!variable.pooling_runic_power&variable.epidemic_targets<=active_enemies&rune<4
+actions.aoe_setup+=/any_dnd,if=!buff.death_and_decay.up&(!talent.bursting_sores|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|!buff.death_and_decay.up&talent.defile)
+actions.aoe_setup+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!variable.pooling_runic_power&active_enemies<variable.epidemic_targets&(buff.sudden_doom.react|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8)
+actions.aoe_setup+=/epidemic,if=!variable.pooling_runic_power&variable.epidemic_targets<=active_enemies&(buff.sudden_doom.react|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8)
+actions.aoe_setup+=/death_coil,target_if=min:debuff.rotten_touch.remains*(buff.sudden_doom.react&talent.rotten_touch),if=!variable.pooling_runic_power&active_enemies<variable.epidemic_targets
+actions.aoe_setup+=/epidemic,if=!variable.pooling_runic_power
+actions.aoe_setup+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=death_knight.fwounded_targets<8&!death_knight.fwounded_targets=active_enemies
+actions.aoe_setup+=/wound_spender,target_if=max:debuff.festering_wound.stack,if=buff.vampiric_strike.react
+
+# Non-Sanlayn CDs
+actions.cds=dark_transformation,if=variable.st_planning|fight_remains<20
+actions.cds+=/unholy_assault,if=variable.st_planning&(cooldown.apocalypse.remains<gcd*1.5|!talent.apocalypse|active_enemies>=2&buff.dark_transformation.up)|fight_remains<20
+actions.cds+=/apocalypse,if=variable.st_planning|fight_remains<20
+actions.cds+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.plaguebringer)&(!talent.raise_abomination|!pet.abomination.active&talent.raise_abomination&cooldown.raise_abomination.remains>dot.virulent_plague.ticks_remain*3)
+
+# Non-Sanlayn CDs AoE
+actions.cds_aoe=unholy_assault,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain
+actions.cds_aoe+=/dark_transformation,if=variable.adds_remain&(death_and_decay.ticking|cooldown.death_and_decay.remains<3)
+actions.cds_aoe+=/apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&(death_and_decay.ticking|cooldown.death_and_decay.remains<3|rune<3|set_bonus.tww3_rider_of_the_apocalypse_2pc)
+actions.cds_aoe+=/outbreak,if=dot.virulent_plague.ticks_remain<5&dot.virulent_plague.refreshable&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains)
+
+# Sanlayn CDs AoE
+actions.cds_aoe_san=dark_transformation,if=variable.adds_remain&(buff.death_and_decay.up|active_enemies<=3)
+actions.cds_aoe_san+=/unholy_assault,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain&buff.dark_transformation.up&buff.dark_transformation.remains<12
+actions.cds_aoe_san+=/apocalypse,target_if=min:debuff.festering_wound.stack,if=variable.adds_remain&(buff.death_and_decay.up|active_enemies<=3|rune<3)
+actions.cds_aoe_san+=/outbreak,if=(dot.virulent_plague.ticks_remain<5|set_bonus.tww2_4pc&talent.superstrain&dot.frost_fever.ticks_remain<5&!pet.abomination.active)&(talent.unholy_blight&!cooldown.dark_transformation.ready|!talent.unholy_blight)&(dot.virulent_plague.refreshable|talent.morbidity&!buff.gift_of_the_sanlayn.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!dot.virulent_plague.ticking&variable.epidemic_targets<active_enemies|(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>5)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>5))|buff.visceral_strength_unholy.up
+
+# Sanlayn CDs Cleave
+actions.cds_cleave_san=dark_transformation
+actions.cds_cleave_san+=/apocalypse,target_if=max:debuff.festering_wound.stack
+actions.cds_cleave_san+=/unholy_assault,target_if=min:debuff.festering_wound.stack,if=buff.dark_transformation.up&buff.dark_transformation.remains<12|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20
+actions.cds_cleave_san+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>6)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>6)|buff.visceral_strength_unholy.up
+
+# Sanlayn CDs ST
+actions.cds_san=dark_transformation,if=variable.st_planning|fight_remains<20
+actions.cds_san+=/apocalypse,if=variable.st_planning|fight_remains<20
+actions.cds_san+=/unholy_assault,if=variable.st_planning&(buff.dark_transformation.up&buff.dark_transformation.remains<12)|fight_remains<20
+actions.cds_san+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>6)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>6)|buff.visceral_strength_unholy.up
+actions.cds_san+=/outbreak,target_if=target.time_to_die>dot.frost_fever.remains&dot.frost_fever.ticks_remain<5,if=talent.superstrain&set_bonus.tww2_4pc&dot.frost_fever.refreshable&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>6)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>6)
+
+# Shared CDs
+actions.cds_shared=potion,if=(variable.st_planning|variable.adds_remain)&(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|!talent.vampiric_strike&pet.army_ghoul.active&pet.army_ghoul.remains<=30|!talent.vampiric_strike&pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30|!talent.vampiric_strike&pet.abomination.active&pet.abomination.remains<=30)|fight_remains<=30
+actions.cds_shared+=/invoke_external_buff,name=power_infusion,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&(talent.raise_abomination&pet.abomination.active&pet.abomination.remains<18|!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains<=18)|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff_power_infusion.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))
+actions.cds_shared+=/army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<35
+actions.cds_shared+=/raise_abomination,if=(variable.st_planning|variable.adds_remain)&(!talent.vampiric_strike|(pet.apoc_ghoul.active|!talent.apocalypse))|fight_remains<30
+actions.cds_shared+=/legion_of_souls,if=(variable.st_planning|variable.adds_remain)&(death_knight.fwounded_targets<active_enemies|(cooldown.apocalypse.remains<3|cooldown.dark_transformation.remains<3))
+actions.cds_shared+=/summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<25
+actions.cds_shared+=/antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2
+actions.cds_shared+=/desecrate,if=active_enemies>=2&((!raid_event.adds.exists&fight_remains<6|raid_event.adds.exists&raid_event.adds.remains<6)|(!talent.festering_scythe|buff.festering_scythe_stacks.stack<active_enemies&!buff.festering_scythe.up)&(active_enemies>1&death_knight.fwounded_targets<active_enemies|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=0&talent.festering_scythe&!buff.festering_scythe.up&buff.festering_scythe_stacks.stack<10))
+
+# Cleave
+actions.cleave=any_dnd,if=!death_and_decay.ticking&variable.adds_remain|talent.gift_of_the_sanlayn
+actions.cleave+=/death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil
+actions.cleave+=/wound_spender,if=buff.vampiric_strike.react
+actions.cleave+=/death_coil,if=!variable.pooling_runic_power&!talent.improved_death_coil
+actions.cleave+=/festering_strike,target_if=min:debuff.festering_wound.stack,if=!buff.vampiric_strike.react&!variable.pop_wounds&debuff.festering_wound.stack<2|buff.festering_scythe.react
+actions.cleave+=/festering_strike,target_if=max:debuff.festering_wound.stack,if=!buff.vampiric_strike.react&cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<1
+actions.cleave+=/wound_spender,if=variable.pop_wounds
+
+# Racials
+actions.racials=arcane_torrent,if=runic_power<20&rune<2
+actions.racials+=/blood_fury,if=(buff.blood_fury.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.blood_fury.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.blood_fury.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.blood_fury.duration+3
+actions.racials+=/berserking,if=(buff.berserking.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.berserking.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.berserking.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.berserking.duration+3
+actions.racials+=/lights_judgment,if=buff.unholy_strength.up&(!talent.festermight|buff.festermight.remains<target.time_to_die|buff.unholy_strength.remains<target.time_to_die)
+actions.racials+=/ancestral_call,if=(18>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=18|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=18|active_enemies>=2&death_and_decay.ticking)|fight_remains<=18
+actions.racials+=/arcane_pulse,if=active_enemies>=2|(rune.deficit>=5&runic_power.deficit>=60)
+actions.racials+=/fireblood,if=(buff.fireblood.duration+3>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.fireblood.duration+3|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.fireblood.duration+3|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.fireblood.duration+3
+actions.racials+=/bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)
+
+# San'layn Fishing
+actions.san_fishing=antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<40
+actions.san_fishing+=/wound_spender,if=buff.infliction_of_sorrow.up
+actions.san_fishing+=/any_dnd,if=!buff.death_and_decay.up&!buff.vampiric_strike.react
+actions.san_fishing+=/death_coil,if=buff.sudden_doom.react&talent.doomed_bidding|set_bonus.tww2_4pc&buff.essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&!buff.vampiric_strike.react
+actions.san_fishing+=/soul_reaper,if=target.health.pct<=35&fight_remains>5
+actions.san_fishing+=/death_coil,if=!buff.vampiric_strike.react
+actions.san_fishing+=/wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react
+actions.san_fishing+=/festering_strike,if=debuff.festering_wound.stack<3-pet.abomination.active
+
+# San'layn Single Target
+actions.san_st=wound_spender,if=buff.infliction_of_sorrow.up
+actions.san_st+=/festering_strike,if=buff.festering_scythe.react&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>11|raid_event.pull.has_boss&raid_event.adds.in>11)
+actions.san_st+=/death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<3&!buff.runic_corruption.up|set_bonus.tww2_4pc&runic_power>80|buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&set_bonus.tww2_4pc&buff.winning_streak_unholy.at_max_stacks&rune<=3&buff.essence_of_the_blood_queen.remains>3
+actions.san_st+=/wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1|buff.gift_of_the_sanlayn.up|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd
+actions.san_st+=/soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5
+actions.san_st+=/festering_strike,if=(debuff.festering_wound.stack=0&cooldown.apocalypse.remains<variable.apoc_timing)|!buff.dark_transformation.up&cooldown.dark_transformation.remains<10&debuff.festering_wound.stack<=3&(rune>4|runic_power<80)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&debuff.festering_wound.stack<=1
+actions.san_st+=/wound_spender,if=(!talent.apocalypse|cooldown.apocalypse.remains>variable.apoc_timing)&(cooldown.dark_transformation.remains>5&debuff.festering_wound.stack>=3-pet.abomination.active|buff.vampiric_strike.react)
+actions.san_st+=/death_coil,if=!variable.pooling_runic_power&debuff.death_rot.remains<gcd|(buff.sudden_doom.react&debuff.festering_wound.stack>=1|rune<2)
+actions.san_st+=/wound_spender,if=debuff.festering_wound.stack>4
+actions.san_st+=/death_coil,if=!variable.pooling_runic_power
+actions.san_st+=/wound_spender,if=(!talent.apocalypse|cooldown.apocalypse.remains>variable.apoc_timing)&rune>=4
+
+# San'layn Trinkets
+actions.san_trinkets=do_treacherous_transmitter_task,use_off_gcd=1,if=buff.errant_manaforge_emission.up&buff.dark_transformation.up&buff.errant_manaforge_emission.remains<2|buff.cryptic_instructions.up&buff.dark_transformation.up&buff.cryptic_instructions.remains<2|buff.realigning_nexus_convergence_divergence.up&buff.dark_transformation.up&buff.realigning_nexus_convergence_divergence.remains<2
+actions.san_trinkets+=/use_item,name=treacherous_transmitter,if=(variable.adds_remain|variable.st_planning)&cooldown.dark_transformation.remains<10
+actions.san_trinkets+=/use_item,name=cursed_stone_idol,if=pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up|cooldown.apocalypse.ready
+actions.san_trinkets+=/use_item,slot=trinket1,if=(buff.latent_energy.stack>=8|!trinket.1.is.unyielding_netherprism)&variable.trinket_1_buffs&(buff.dark_transformation.up&buff.dark_transformation.remains<variable.trinket_1_duration*0.73&(variable.trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown))|variable.trinket_1_duration>=fight_remains
+actions.san_trinkets+=/use_item,slot=trinket2,if=(buff.latent_energy.stack>=8|!trinket.2.is.unyielding_netherprism)&variable.trinket_2_buffs&(buff.dark_transformation.up&buff.dark_transformation.remains<variable.trinket_2_duration*0.73&(variable.trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown))|variable.trinket_2_duration>=fight_remains
+actions.san_trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.1.cast_time>0&!buff.gift_of_the_sanlayn.up|!trinket.1.cast_time>0)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
+actions.san_trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.2.cast_time>0&!buff.gift_of_the_sanlayn.up|!trinket.2.cast_time>0)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
+actions.san_trinkets+=/use_item,slot=main_hand,if=(!variable.trinket_1_buffs&!variable.trinket_2_buffs|trinket.1.cooldown.remains>20&!variable.trinket_2_buffs|trinket.2.cooldown.remains>20&!variable.trinket_1_buffs|trinket.1.cooldown.remains>20&trinket.2.cooldown.remains>20)&(buff.dark_transformation.up&buff.dark_transformation.remains>10)&(!talent.raise_abomination&!talent.army_of_the_dead|!talent.raise_abomination&talent.army_of_the_dead&pet.army_ghoul.active|talent.raise_abomination&pet.abomination.active|(variable.trinket_1_buffs|variable.trinket_2_buffs|fight_remains<15))
+
+# Non-San'layn Single Target
+actions.st=soul_reaper,if=target.health.pct<=35&fight_remains>5
+actions.st+=/wound_spender,if=debuff.chains_of_ice_trollbane_slow.up
+actions.st+=/death_coil,if=!variable.pooling_runic_power&variable.spend_rp|fight_remains<10
+actions.st+=/festering_strike,if=debuff.festering_wound.stack<4&(!variable.pop_wounds|buff.festering_scythe.react)
+actions.st+=/wound_spender,if=variable.pop_wounds
+actions.st+=/death_coil,if=!variable.pooling_runic_power
+actions.st+=/wound_spender,if=!variable.pop_wounds&debuff.festering_wound.stack>=4
+
+# Non-San'layn Trinkets
+actions.trinkets=do_treacherous_transmitter_task,use_off_gcd=1,if=buff.errant_manaforge_emission.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)|buff.cryptic_instructions.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)|buff.realigning_nexus_convergence_divergence.up&(pet.apoc_ghoul.active|!talent.apocalypse&buff.dark_transformation.up)
+actions.trinkets+=/use_item,name=treacherous_transmitter,if=(variable.adds_remain|variable.st_planning)&cooldown.dark_transformation.remains<10
+actions.trinkets+=/use_item,slot=trinket1,if=(buff.latent_energy.stack>=8|!trinket.1.is.unyielding_netherprism)&variable.trinket_1_buffs&(variable.trinket_priority=1|!trinket.2.has_cooldown|trinket.2.cooldown.remains>20)&(!talent.apocalypse&buff.dark_transformation.up|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=variable.trinket_1_duration&pet.apoc_ghoul.remains>5)&(talent.army_of_the_dead&!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains>10|talent.raise_abomination&pet.abomination.active&pet.abomination.remains>10|talent.legion_of_souls|!talent.raise_abomination&!talent.apocalypse&buff.dark_transformation.up|variable.trinket_2_buffs&trinket.2.cooldown.remains)|fight_remains<=variable.trinket_1_duration
+actions.trinkets+=/use_item,slot=trinket2,if=(buff.latent_energy.stack>=8|!trinket.2.is.unyielding_netherprism)&variable.trinket_2_buffs&(variable.trinket_priority=2|!trinket.1.has_cooldown|trinket.1.cooldown.remains>20)&(!talent.apocalypse&buff.dark_transformation.up|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=variable.trinket_2_duration&pet.apoc_ghoul.remains>5)&(talent.army_of_the_dead&!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains>10|talent.raise_abomination&pet.abomination.active&pet.abomination.remains>10|talent.legion_of_souls|!talent.raise_abomination&!talent.apocalypse&buff.dark_transformation.up|variable.trinket_1_buffs&trinket.1.cooldown.remains)|fight_remains<=variable.trinket_2_duration
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
+actions.trinkets+=/use_item,slot=main_hand,if=(!variable.trinket_1_buffs&!variable.trinket_2_buffs|trinket.1.cooldown.remains&!variable.trinket_2_buffs|trinket.2.cooldown.remains&!variable.trinket_1_buffs|trinket.1.cooldown.remains&trinket.2.cooldown.remains)&(pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=18|!talent.apocalypse&buff.dark_transformation.up)&((trinket.1.cooldown.duration=90|trinket.2.cooldown.duration=90)|!talent.raise_abomination&!talent.army_of_the_dead|!talent.raise_abomination&talent.army_of_the_dead&pet.army_ghoul.active|talent.raise_abomination&pet.abomination.active)
+
+# Variables
+actions.variables=variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|raid_event.pull.has_boss&raid_event.adds.in>15)
+actions.variables+=/variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists&fight_remains>6|raid_event.adds.exists&raid_event.adds.remains>6)
+actions.variables+=/variable,name=apoc_timing,op=setif,value=5,value_else=2,condition=cooldown.apocalypse.remains<5&debuff.festering_wound.stack<4&cooldown.unholy_assault.remains>5
+actions.variables+=/variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>=4-pet.abomination.active)|fight_remains<5&debuff.festering_wound.stack>=1
+actions.variables+=/variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=cooldown.summon_gargoyle.remains>5&runic_power<40
+actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))
+actions.variables+=/variable,name=san_coil_mult,op=setif,value=2,value_else=1,condition=buff.essence_of_the_blood_queen.stack>=4
+actions.variables+=/variable,name=epidemic_targets,value=3+talent.improved_death_coil+(talent.frenzied_bloodthirst*variable.san_coil_mult)+(talent.hungering_thirst&talent.harbinger_of_doom&buff.sudden_doom.up)
+
+head=hollow_sentinels_stonemask,id=237628,bonus_id=6935,ilevel=723,gem_id=213743
+neck=salhadaars_folly,id=242406,bonus_id=7187/1520/8781,ilevel=723,gem_id=213491/213491
+shoulders=hollow_sentinels_perches,id=237626,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12399/9893,gem_id=238045
+chest=hollow_sentinels_breastplate,id=237631,ilevel=723,enchant=crystalline_radiance_3,enchant_id=7364
+wrists=everforged_vambraces,id=222435,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+hands=breached_containment_guards,id=237526,bonus_id=7187/1520,ilevel=723
+waist=everforged_greatbelt,id=222431,bonus_id=12053/12050/11307/9627/11303,gem_id=213491,crafted_stats=32/49
+legs=hollow_sentinels_stonekilt,id=237627,ilevel=723,enchant=stormbound_armor_kit_3,enchant_id=7601
+feet=interlopers_plated_sabatons,id=243307,bonus_id=13504,ilevel=723,enchant=defenders_march_3
+finger1=ring_of_the_panoply,id=246281,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
+finger2=whispers_of_karesh,id=242491,bonus_id=1611/8781,ilevel=723,gem_id=213491/213491,enchant_id=7334
+trinket1=cursed_stone_idol,id=246344,ilevel=723
+trinket2=astral_antenna,id=242395,bonus_id=7187/1520,ilevel=723
+main_hand=fatebound_crusader,id=242487,bonus_id=1611,ilevel=723,enchant=rune_of_the_fallen_crusader,enchant_id=3368
+
+# Gear Summary
+# gear_ilvl=723.07
+# gear_strength=85087
+# gear_stamina=664468
+# gear_crit_rating=14942
+# gear_haste_rating=20873
+# gear_mastery_rating=18850
+# gear_armor=97070
+# set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=rider_of_the_apocalypse,enable=1
+# set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=rider_of_the_apocalypse,enable=1

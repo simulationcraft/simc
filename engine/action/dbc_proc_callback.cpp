@@ -360,10 +360,8 @@ void dbc_proc_callback_t::initialize()
 
   if ( proc_action && &proc_action->data() == spell_data_t::not_found() )
   {
-    listener->sim->error(
-      "Effect {} for Player {} attempting to use action {} without the required talent, spec, class, race, or level; "
-      "ignoring.\n",
-      listener->name(), effect.name(), proc_action->name() );
+    listener->sim->error( "{} for {} attempting to use {} without meeting requirements, ignoring.", effect.name(),
+                          *listener, *proc_action );
 
     proc_action = nullptr;
   }

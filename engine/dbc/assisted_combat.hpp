@@ -33,7 +33,7 @@ struct assisted_combat_rule_data_t
   unsigned condition_value_3;
 
   static util::span<const assisted_combat_rule_data_t> data( bool ptr );
-  static util::span<const assisted_combat_rule_data_t> data( unsigned assiasted_combat_step_id, bool ptr );
+  static util::span<const assisted_combat_rule_data_t> data( unsigned assisted_combat_step_id, bool ptr );
 };
 
 #endif /* ASSISTED_COMBAT_DATA_HPP */

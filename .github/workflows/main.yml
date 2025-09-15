@@ -174,6 +174,7 @@ jobs:
 
     steps:
       - uses: actions/cache@v4
+        id: cache
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -189,6 +190,7 @@ jobs:
         run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Generate APL Modules
+        if: steps.cache.outputs.cache-hit == 'true'
         env:
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace }}/generate_apl_modules_ci.sh
@@ -201,11 +203,14 @@ jobs:
           merge-multiple: true
 
       - name: Generate Profiles
+        if: steps.cache.outputs.cache-hit == 'true'
+        continue-on-error: true
         env:
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Dump Spell Data
+        if: steps.cache.outputs.cache-hit == 'true'
         env:
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
@@ -234,49 +239,10 @@ jobs:
           name: apl-${{ github.sha }}-*
 
   ubuntu-run:
-    name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
-    runs-on: ${{ matrix.os }}
     needs: [ubuntu-clang-build, ubuntu-gcc-build]
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cppVersion: [17, 20]
-        compiler: [clang++-15, clang++-18, gcc-12, gcc-14]
-        type: [spell_query, log_debug, patchwerk, dungeon_slice]
-        include:
-          - type: spell_query
-            simc_flags: spell_query=spell > /dev/null
-          - type: log_debug
-            simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
-          - type: patchwerk
-            simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
-          - type: dungeon_slice
-            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
-          - compiler: clang++-15
-            os: ubuntu-22.04
-          - compiler: clang++-18
-            os: ubuntu-24.04
-          - compiler: gcc-14
-            os: ubuntu-24.04
-          - compiler: gcc-12
-            os: ubuntu-22.04
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-      - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+    uses: ./.github/workflows/ubuntu_run.yml
+    with:
+      cache-sha: ${{ github.sha }}
 
   build-osx:
     name: macos-latest

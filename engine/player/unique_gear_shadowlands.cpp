@@ -2173,6 +2173,7 @@ void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
+      base_multiplier = role_mult( e );
     }
   };
 
@@ -2685,6 +2686,9 @@ void ticking_sack_of_terror( special_effect_t& effect )
         damage( create_proc_action<volatile_detonation_t>( "volatile_detonation", effect ) )
     {
       target_debuff = effect.player->find_spell( effect.spell_id == 351679 ? 351682 : 367902 );
+
+      // found on the debuff spell description, not the driver
+      damage->base_multiplier *= role_mult( effect.player, target_debuff );
     }
 
     buff_t* create_debuff( player_t* t ) override
@@ -2733,7 +2737,7 @@ void soleahs_secret_technique( special_effect_t& effect )
 
   std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   // Override with player option if defined
-  if ( !effect.player->shadowlands_opts.soleahs_secret_technique_type.is_default() )
+  if ( !effect.player->shadowlands_opts.soleahs_secret_technique_type.current_value.empty() )
   {
     opt_str = effect.player->shadowlands_opts.soleahs_secret_technique_type;
   }
@@ -2757,7 +2761,8 @@ void soleahs_secret_technique( special_effect_t& effect )
     {
       buff =
           make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", buff_spell )
-              ->add_stat( STAT_HASTE_RATING, val );
+              ->add_stat( STAT_HASTE_RATING, val )
+              ->set_name_reporting( "Haste" );
     }
   }
   else if ( util::str_compare_ci( opt_str, "crit" ) )
@@ -2766,7 +2771,8 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", buff_spell )
-              ->add_stat( STAT_CRIT_RATING, val );
+              ->add_stat( STAT_CRIT_RATING, val )
+              ->set_name_reporting( "Crit" );
     }
   }
   else if ( util::str_compare_ci( opt_str, "versatility" ) )
@@ -2775,7 +2781,8 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", buff_spell )
-              ->add_stat( STAT_VERSATILITY_RATING, val );
+              ->add_stat( STAT_VERSATILITY_RATING, val )
+              ->set_name_reporting( "Versatility" );
     }
   }
   else if ( util::str_compare_ci( opt_str, "mastery" ) )
@@ -2784,7 +2791,8 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", buff_spell )
-              ->add_stat( STAT_MASTERY_RATING, val );
+              ->add_stat( STAT_MASTERY_RATING, val )
+              ->set_name_reporting( "Mastery" );
     }
   }
   else
@@ -4197,7 +4205,7 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
     preternatural_charge_t( const special_effect_t& effect )
       : proc_spell_t( "preternatural_charge", effect.player, effect.player->find_spell( 351561 ), effect.item )
     {
-      base_dd_min = base_dd_max = effect.trigger()->effectN( 1 ).average( effect.item );
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
     }
   };
 
@@ -5150,7 +5158,7 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
 
       const auto& gem = item.player->dbc->item( gem_id );
       if ( gem.id == 0 )
-        throw std::invalid_argument( fmt::format( "No gem data for id {}.", gem_id ) );
+        throw sc_invalid_apl_argument( fmt::format( "No gem data for id '{}'.", gem_id ) );
 
       const gem_property_data_t& gem_prop = item.player->dbc->gem_property( gem.gem_properties );
       if ( !gem_prop.id )
@@ -5324,7 +5332,7 @@ std::unique_ptr<expr_t> create_expression( const player_t& player, util::string_
   }
   else
   {
-    throw std::invalid_argument( fmt::format( "Invalid Rune Word type {}", splits[ 1 ] ) );
+    throw sc_invalid_apl_argument( fmt::format( "Invalid Rune Word type '{}'.", splits[ 1 ] ) );
   }
 
   if ( splits.size() == 2 || splits[ 2 ] == "enabled" )

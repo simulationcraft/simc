@@ -12,13 +12,17 @@
 #include "active_spells.hpp"
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
+#include "trait_data.hpp"
 
 #include "generated/sc_spec_list.inc"
 #include "generated/sc_scale_data.inc"
+#include "generated/trait_data.inc"
 #include "sc_extra_data.inc"
 
 #if SC_USE_PTR
+#include "generated/sc_spec_list_ptr.inc"
 #include "generated/sc_scale_data_ptr.inc"
+#include "generated/trait_data_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #endif
 
@@ -271,6 +275,7 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_THUNDER_CITRINE:
     case SOCKET_COLOR_SEA_CITRINE:
     case SOCKET_COLOR_WIND_CITRINE:
+    case SOCKET_COLOR_RESHII_FIBER:
       return true;
     default:
       return false;
@@ -763,31 +768,15 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
   return v;
 }
 
-unsigned dbc::specialization_max_per_class()
-{
-  return MAX_SPECS_PER_CLASS;
-}
-
-specialization_e dbc::spec_by_idx( const player_e c, unsigned idx )
-{
-  int cid = util::class_id( c );
-
-  if ( ( cid <= 0 ) || ( cid >= static_cast<int>( MAX_SPEC_CLASS ) ) || ( idx >= MAX_SPECS_PER_CLASS ) )
-  {
-    return SPEC_NONE;
-  }
-  return __class_spec_id[ cid ][ idx ];
-}
-
 namespace {
 
 // Generate a spec -> index map from the __class_spec_id table at compile time
 // Ideally we'd use an std::array instead of a custom struct, but sadly it is
 // not fully constexpr even in C++17...
-constexpr int max_spec_index()
+[[maybe_unused]] constexpr int max_spec_index()
 {
   int max = -1;
-  for ( size_t i = 0; i < std::size( __class_spec_id ); i++ ) // NOLINT(modernize-loop-convert)
+  for ( size_t i = 0; i < std::size( __class_spec_id ); i++ )  // NOLINT(modernize-loop-convert)
   {
     for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
     {
@@ -797,22 +786,40 @@ constexpr int max_spec_index()
   }
   return max;
 }
-struct spec_index_map_t {
-  constexpr spec_index_map_t() : data_{}
+#if SC_USE_PTR
+constexpr int max_spec_index_ptr()
+{
+  int max = -1;
+  for ( size_t i = 0; i < std::size( __ptr_class_spec_id ); i++ )  // NOLINT(modernize-loop-convert)
+  {
+    for ( size_t index = 0; index < std::size( __ptr_class_spec_id[ i ] ); index++ )
+    {
+      specialization_e spec = __ptr_class_spec_id[ i ][ index ];
+      max = static_cast<int>( spec ) > max ? static_cast<int>( spec ) : max;
+    }
+  }
+  return max;
+}
+#endif
+struct spec_index_map_t
+{
+  constexpr spec_index_map_t( bool ptr = false ) : data_{}
   {
     for ( int8_t& index : data_ )
       index = -1;
 
-    // Keep index based lookup since Visual Studio causes problems otherwise with constexpr evaluation
-    for ( size_t i = 0; i < std::size( __class_spec_id ); i++ )  // NOLINT(modernize-loop-convert)
-    {
-      for ( size_t index = 0; index < std::size( __class_spec_id[ i ] ); index++ )
-      {
-        specialization_e spec = __class_spec_id[ i ][ index ];
-        if ( spec != SPEC_NONE )
-          data_[ spec ] = static_cast<int8_t>( index );
-      }
-    }
+      // Keep index based lookup since Visual Studio causes problems otherwise with constexpr evaluation
+#if SC_USE_PTR
+    for ( size_t i = 0; i < ( ptr ? PTR_MAX_SPEC_CLASS : MAX_SPEC_CLASS ); i++ )  // NOLINT(modernize-loop-convert)
+      for ( size_t j = 0; j < ( ptr ? PTR_MAX_SPECS_PER_CLASS : MAX_SPECS_PER_CLASS ); j++ )
+        if ( auto spec = ( ptr ? __ptr_class_spec_id[ i ][ j ] : __class_spec_id[ i ][ j ] ); spec != SPEC_NONE )
+          data_[ spec ] = static_cast<int8_t>( j );
+#else
+    for ( size_t i = 0; i < ( MAX_SPEC_CLASS ); i++ )  // NOLINT(modernize-loop-convert)
+      for ( size_t j = 0; j < ( MAX_SPECS_PER_CLASS ); j++ )
+        if ( auto spec = ( __class_spec_id[ i ][ j ] ); spec != SPEC_NONE )
+          data_[ spec ] = static_cast<int8_t>( j );
+#endif
   }
 
   constexpr int8_t operator[]( specialization_e spec ) const
@@ -820,16 +827,90 @@ struct spec_index_map_t {
     assert( spec < std::size( data_ ) );
     return data_[ spec ];
   }
-
+#if SC_USE_PTR
+  std::array<int8_t, max_spec_index_ptr() + 1> data_;
+#else
   std::array<int8_t, max_spec_index() + 1> data_;
+#endif
 };
-
 } // anon namespace
 
-int dbc::spec_idx( specialization_e spec )
+int dbc::spec_idx( specialization_e spec, bool ptr )
 {
+#if SC_USE_PTR
+  static constexpr spec_index_map_t spec_index_map;
+  static constexpr spec_index_map_t spec_index_map_ptr = spec_index_map_t( true );
+  return ptr ? spec_index_map_ptr[ spec ] : spec_index_map[ spec ];
+#else
   static constexpr spec_index_map_t spec_index_map;
   return spec_index_map[ spec ];
+#endif
+}
+
+namespace
+{
+struct hero_tree_index_map_t
+{
+  std::array<int8_t, hero_tree_e::HERO_MAX> data;
+
+private:
+  std::array<int8_t, MAX_SPEC_CLASS> classes;
+
+public:
+  constexpr hero_tree_index_map_t( bool ptr = false ) : data{}, classes{}
+  {
+    for ( int8_t& value : data )
+      value = -1;
+#if SC_USE_PTR
+    auto __data = ptr ? __ptr_trait_sub_tree_data : __trait_sub_tree_data;
+#else
+    auto __data = __trait_sub_tree_data;
+#endif
+    for ( size_t hero = 0; hero < __data.size(); hero++ )
+    {
+      size_t hero_index  = std::get<0>( __data[ hero ] );
+      size_t class_index = std::get<2>( __data[ hero ] );
+      data[ hero_index ] = classes[ class_index ];
+      classes[ class_index ]++;
+    }
+  }
+
+  constexpr int8_t operator[]( hero_tree_e hero_tree ) const
+  {
+    assert( hero_tree < std::size( data ) );
+    return data[ hero_tree ];
+  }
+};
+}  // namespace
+
+int dbc::hero_idx( hero_tree_e hero_talent, bool ptr )
+{
+#if SC_USE_PTR
+  static constexpr hero_tree_index_map_t hero_tree_index_map;
+  static constexpr hero_tree_index_map_t hero_tree_index_map_ptr = hero_tree_index_map_t( true );
+  return ptr ? hero_tree_index_map_ptr[ hero_talent ] : hero_tree_index_map[ hero_talent ];
+#else
+  static constexpr hero_tree_index_map_t hero_tree_index_map;
+  return hero_tree_index_map[ hero_talent ];
+#endif
+}
+
+int dbc::composite_idx( specialization_e spec, hero_tree_e hero, bool ptr )
+{
+  assert( ( spec != SPEC_NONE ) != ( hero != HERO_NONE ) );
+  int index = 0;
+
+  if ( spec == SPEC_NONE )
+    index += 4;
+  else
+    index += spec_idx( spec, ptr );
+
+  if ( hero == HERO_NONE )
+    index += 0;
+  else
+    index += hero_idx( hero, ptr );
+
+  return index;
 }
 
 uint32_t dbc::get_school_mask( school_e s )
@@ -1249,12 +1330,15 @@ double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 #endif
 }
 
-double dbc_t::health_base( player_e t, unsigned level ) const
+double dbc_t::health_base( player_e t, [[maybe_unused]] unsigned level ) const
 {
-  uint32_t class_id = util::class_id( t );
-  ( void ) class_id; ( void ) level;
+  [[maybe_unused]] auto class_id = util::class_id( t );
 
+  #if SC_USE_PTR
+  assert( class_id < ( ptr ? PTR_MAX_CLASS : MAX_CLASS ) && level > 0 && level <= MAX_SCALING_LEVEL );
+#else
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
+#endif
   /*
 #if SC_USE_PTR
   return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
@@ -1268,13 +1352,14 @@ double dbc_t::health_base( player_e t, unsigned level ) const
 
 double dbc_t::resource_base( player_e t, unsigned level ) const
 {
-  uint32_t class_id = util::class_id( t );
+  auto class_id = util::class_id( t );
 
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
+  assert( class_id < ( ptr ? PTR_MAX_CLASS : MAX_CLASS ) && level > 0 && level <= MAX_SCALING_LEVEL );
   return ptr ? _ptr__base_mp[ class_id ][ level - 1 ]
              : __base_mp[ class_id ][ level - 1 ];
 #else
+  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
   return __base_mp[ class_id ][ level - 1 ];
 #endif
 }
@@ -1373,13 +1458,17 @@ util::span<const azerite_power_entry_t> dbc_t::azerite_powers() const
 
 unsigned dbc_t::class_max_size() const
 {
+#if SC_USE_PTR
+  return ptr ? PTR_MAX_CLASS : MAX_CLASS;
+#else
   return MAX_CLASS;
+#endif
 }
 
 unsigned dbc_t::specialization_max_per_class() const
 {
 #if SC_USE_PTR
-  return ptr ? MAX_SPECS_PER_CLASS : MAX_SPECS_PER_CLASS;
+  return ptr ? PTR_MAX_SPECS_PER_CLASS : MAX_SPECS_PER_CLASS;
 #else
   return MAX_SPECS_PER_CLASS;
 #endif
@@ -1388,9 +1477,18 @@ unsigned dbc_t::specialization_max_per_class() const
 unsigned dbc_t::specialization_max_class() const
 {
 #if SC_USE_PTR
-  return ptr ? MAX_SPEC_CLASS : MAX_SPEC_CLASS;
+  return ptr ? PTR_MAX_SPEC_CLASS : MAX_SPEC_CLASS;
 #else
   return MAX_SPEC_CLASS;
+#endif
+}
+
+unsigned dbc_t::hero_trees_max_per_class() const
+{
+#if SC_USE_PTR
+  return ptr ? PTR_MAX_HERO_TREES_PER_CLASS : MAX_HERO_TREES_PER_CLASS;
+#else
+  return MAX_HERO_TREES_PER_CLASS;
 #endif
 }
 
@@ -1414,7 +1512,7 @@ unsigned dbc_t::real_ppm_scale( unsigned spell_id ) const
   return scale;
 }
 
-double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level ) const
+double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level, unsigned aura_id ) const
 {
   auto rppm_modifiers = rppm_modifier_t::find( spell_id, ptr );
 
@@ -1446,6 +1544,10 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     }
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_RACE &&
         util::race_mask( player->race ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
+    }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_AURA && aura_id == rppm_modifier.type )
     {
       modifier *= 1.0 + rppm_modifier.coefficient;
     }
@@ -2014,13 +2116,18 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
   {
     for ( unsigned int j = 0; j < specialization_max_per_class(); j++ )
     {
-      if ( __class_spec_id[ i ][ j ] == spec_id )
+#if SC_USE_PTR
+      auto __spec = ptr ? __ptr_class_spec_id[ i ][ j ] : __class_spec_id[ i ][ j ];
+#else
+      auto __spec = __class_spec_id[ i ][ j ];
+#endif
+      if ( __spec == spec_id )
       {
         class_idx = i;
         spec_index = j;
         return true;
       }
-      if ( __class_spec_id[ i ][ j ] == SPEC_NONE )
+      if ( __spec == SPEC_NONE )
       {
         break;
       }
@@ -2030,7 +2137,23 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
 }
 
 specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
-{ return dbc::spec_by_idx( c, idx ); }
+{
+  unsigned cid = util::class_id( c );
+#if SC_USE_PTR
+  if ( !cid || cid >= static_cast<unsigned>( ptr ? PTR_MAX_SPEC_CLASS : MAX_SPEC_CLASS ) ||
+       idx >= static_cast<unsigned>( ptr ? PTR_MAX_SPECS_PER_CLASS : MAX_SPECS_PER_CLASS ) )
+  {
+    return SPEC_NONE;
+  }
+  return ptr ? __ptr_class_spec_id[ cid ][ idx ] : __class_spec_id[ cid ][ idx ];
+#else
+  if ( !cid || cid >= MAX_SPEC_CLASS || idx >= MAX_SPECS_PER_CLASS )
+  {
+    return SPEC_NONE;
+  }
+  return __class_spec_id[ cid ][ idx ];
+#endif
+}
 
 // DBC
 

@@ -207,7 +207,9 @@ bool event_manager_t::execute()
   unsigned n_events = 0U;
   std::vector<std::string> debug_list;
   static const unsigned MAX_EVENTS =
-      750U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) );
+      75U * ( sim->single_actor_batch ? 1U : as<unsigned>( sim->player_no_pet_list.size() ) ) *
+      // Increase max event count for AOE sims slightly (10% per defined enemy)
+      ( 10U + as<unsigned>( sim->target_list.size() ) );
 
   while ( event_t* e = next_event() )
   {
@@ -449,7 +451,7 @@ void event_manager_t::cancel_stuck( std::vector<std::string>& debug_list )
     player_str = sim->player_no_pet_list[ sim->current_index ]->name();
   }
 
-  fmt::print( stderr, "Simulator likely stuck on thread={}, iteration={}, seed={}, player={}, canceling ...\n",
+  fmt::print( stderr, "Simulator likely stuck on thread={}, iteration={}, seed={}, player={}\n",
               sim->thread_index, sim->current_iteration, sim->seed, player_str );
 #ifndef NDEBUG
   std::unordered_map<std::string, unsigned> event_list;
@@ -470,10 +472,6 @@ void event_manager_t::cancel_stuck( std::vector<std::string>& debug_list )
   // Parent (thread 0) processing
   else
   {
-    sim->cancel();
-    range::for_each( sim->relatives, []( sim_t* relative ) {
-      relative->cancel_iteration();
-    } );
-    sim->cancel_iteration();
+    throw sc_simulation_stuck( "Simulation stuck" );
   }
 }
