@@ -1146,7 +1146,8 @@ buff_t* buff_t::set_period( timespan_t period )
   set_tick_behavior( tick_behavior );
 
   // Tick behavior can affect refresh behavior, recheck refresh behavior once tick behavior has been set
-  set_refresh_behavior( buff_refresh_behavior::NONE );
+  if ( buff_duration() > timespan_t::zero() )
+    set_refresh_behavior( buff_refresh_behavior::NONE );
 
   return this;
 }
@@ -1359,7 +1360,7 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
   if ( b == buff_refresh_behavior::NONE )
   {
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
-    if ( buff_period > timespan_t::zero() &&
+    if ( buff_period > timespan_t::zero() && buff_duration() > timespan_t::zero() &&
          ( tick_behavior == buff_tick_behavior::CLIP || tick_behavior == buff_tick_behavior::REFRESH ) )
     {
       if ( data().flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
