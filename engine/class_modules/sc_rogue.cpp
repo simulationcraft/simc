@@ -8400,7 +8400,7 @@ struct roll_the_bones_t : public buff_t
     rogue( r )
   {
     set_cooldown( timespan_t::zero() );
-    set_period( timespan_t::zero() ); // Disable ticking
+    disable_ticking( true ); // Disable ticking
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
     buffs = {
@@ -9931,7 +9931,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.flagellation = make_buff( *this, "flagellation", source->spec.flagellation_buff )
     ->set_initial_stack( 1 )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_period( timespan_t::zero() )
+    ->disable_ticking( true )
     ->set_cooldown( timespan_t::zero() );
 
   debuffs.corrupt_the_blood = make_buff( *this, "corrupt_the_blood", source->spell.corrupt_the_blood_damage )
@@ -12070,7 +12070,7 @@ void rogue_t::create_buffs()
   buffs.envenom = make_buff( this, "envenom", spec.envenom )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE )
     ->set_duration( timespan_t::min() )
-    ->set_period( timespan_t::zero() )
+    ->disable_ticking( true )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   if ( talent.assassination.twist_the_knife->ok() )
   {
@@ -12446,7 +12446,7 @@ void rogue_t::create_buffs()
   buffs.flagellation = make_buff( this, "flagellation_buff", spec.flagellation_buff )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_cooldown( timespan_t::zero() )
-    ->set_period( timespan_t::zero() )
+    ->disable_ticking( true )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_stack_change_callback( [this]( buff_t*, int old_, int new_ ) {

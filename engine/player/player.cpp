@@ -4871,7 +4871,7 @@ void player_t::create_buffs()
     // Dragonflight Raid Damage Modifier Debuffs
     auto buff_spell      = find_spell( 428402 );
     debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
-        ->set_period( 0_s )
+        ->disable_ticking( true )
         ->set_default_value( buff_spell->effectN( 1 ).percent() )
         ->set_schools( buff_spell->effectN( 1 ).affected_schools() );
   }

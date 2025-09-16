@@ -3484,7 +3484,7 @@ void bells_of_the_endless_feast( special_effect_t& effect )
     {
       // the debuff spell id seems to also be a driver of some kind giving extra stacks
       return dbc_proc_callback_t::create_debuff( t )
-        ->set_period( 0_ms )
+        ->disable_ticking( true )
         ->set_cooldown( 0_ms );
     }
 
@@ -4057,7 +4057,7 @@ void chains_of_domination( special_effect_t& effect )
     buff_t* create_debuff( player_t* t ) override
     {
       return proc_spell_t::create_debuff( t )
-        ->set_period( 0_ms )
+        ->disable_ticking( true )
         ->set_cooldown( 0_ms )
         ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
           if ( old_ == 0 && new_ > 0 )

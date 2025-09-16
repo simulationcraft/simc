@@ -193,23 +193,27 @@ struct tick_t : public buff_event_t
     buff->sim->print_debug( "{} {} ticks ({} of {}).",
         *buff->player, *buff, buff->current_tick, total_ticks );
 
-    // Tick callback is called before the aura stack count is altered to ensure
-    // that the buff is always up during the "tick". Last tick detection can be
-    // made through the int arguments passed to the function call.
-    if ( buff->tick_callback )
-    {
-      buff->tick_callback( buff, total_ticks, tick_time );
-    }
 
-    if ( !buff->freeze_stacks )
+    if ( !buff->disable_tick_effects )
     {
-      if ( !buff->reverse )
+      // Tick callback is called before the aura stack count is altered to ensure
+      // that the buff is always up during the "tick". Last tick detection can be
+      // made through the int arguments passed to the function call.
+      if ( buff->tick_callback )
       {
-        buff->bump( current_stacks, current_value );
+        buff->tick_callback( buff, total_ticks, tick_time );
       }
-      else
+
+      if ( !buff->freeze_stacks )
       {
-        buff->decrement( current_stacks, current_value );
+        if ( !buff->reverse )
+        {
+          buff->bump( current_stacks, current_value );
+        }
+        else
+        {
+          buff->decrement( current_stacks, current_value );
+        }
       }
     }
 
@@ -644,6 +648,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     base_time_duration_multiplier( 1.0 ),
     dynamic_time_duration_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
+    refresh_behavior_overridden( false ),
     allow_precombat( true ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
@@ -654,6 +659,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     tick_on_application( false ),
     partial_tick( false ),
     freeze_stacks( false ),
+    disable_tick_effects( false ),
     last_start(),
     last_trigger(),
     last_expire(),
@@ -681,8 +687,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false ),
-    refresh_behavior_overridden( false )
+    change_regen_rate( false )
 {
   if ( source )  // Player Buffs
   {
@@ -1135,6 +1140,13 @@ buff_t* buff_t::set_period( timespan_t period )
         case A_PERIODIC_TRIGGER_SPELL:
         {
           buff_period = e.period();
+          if ( !refresh_behavior_overridden && buff_duration() > timespan_t::zero() )
+          {
+            if ( data().flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+              set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+            else
+              set_refresh_behavior( buff_refresh_behavior::TICK );
+          }
           break;
         }
         default:
@@ -1152,6 +1164,12 @@ buff_t* buff_t::set_period( timespan_t period )
 buff_t* buff_t::modify_period( timespan_t duration )
 {
   set_period( buff_period + duration );
+  return this;
+}
+
+buff_t* buff_t::disable_ticking( bool v )
+{
+  disable_tick_effects = v;
   return this;
 }
 

@@ -132,6 +132,7 @@ public:
   bool tick_on_application; // Immediately tick when the buff first goes up, but not on refreshes
   bool partial_tick; // Allow non-full duration ticks at the end of the buff period
   bool freeze_stacks; // Do not increment/decrement stack on each tick
+  bool disable_tick_effects;
 
   // tmp data collection
 protected:
@@ -378,6 +379,7 @@ public:
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
   buff_t* modify_period( timespan_t );
+  buff_t* disable_ticking( bool v );
   //virtual buff_t* set_chance( double chance );
   buff_t* set_quiet( bool quiet );
   buff_t* add_invalidate( cache_e );

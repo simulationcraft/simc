@@ -9510,7 +9510,7 @@ void warrior_t::create_buffs()
 
   buff.bladestorm =
       make_buff( this, "bladestorm", specialization() == WARRIOR_FURY ? find_spell( 46924 ) : talents.arms.bladestorm )
-      ->set_period( timespan_t::zero() )
+      ->disable_ticking( true )
       ->set_cooldown( timespan_t::zero() );
 
   buff.battle_stance = make_buff( this, "battle_stance", talents.warrior.battle_stance )

@@ -11027,7 +11027,7 @@ void brilliance( special_effect_t& effect )
       set_default_value_from_effect( 1 );
       set_duration( 0_s );
       set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
-      set_period( 0_s );
+      disable_ticking( true );
 
       regen_buff = buff_t::find( player, "brilliance" );
 

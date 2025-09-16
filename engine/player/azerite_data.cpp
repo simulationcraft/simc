@@ -2508,7 +2508,7 @@ void wandering_soul( special_effect_t& effect )
     }
     else
     {
-      buff -> set_period( timespan_t::zero() ); // disable ticking
+      buff -> disable_ticking( true ); // disable ticking
     }
   }
 

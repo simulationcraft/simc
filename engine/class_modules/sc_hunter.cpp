@@ -7899,7 +7899,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
-    -> set_period( 0_s );
+    -> disable_ticking( true );
 
   debuffs.kill_zone = make_buff( *this, "kill_zone", p->talents.kill_zone_debuff )
     -> set_default_value_from_effect( 2 )
@@ -8773,7 +8773,7 @@ void hunter_t::create_buffs()
   buffs.volley =
     make_buff( this, "volley", talents.volley_data )
       -> set_cooldown( 0_ms )
-      -> set_period( 0_ms ) // disable ticks as an optimization
+      -> disable_ticking( true ) // disable ticks as an optimization
       -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Beast Mastery Tree

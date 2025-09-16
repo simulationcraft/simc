@@ -8470,7 +8470,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                                          evoker->find_spell( 403275 ), evoker->naszuro ? evoker->naszuro->item : nullptr );
   if ( make_unbound_surge )
   {
-    buffs.unbound_surge->set_period( 0_s );
+    buffs.unbound_surge->disable_ticking( true );
 
     switch ( evoker->specialization() )
     {
@@ -8569,7 +8569,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     debug_cast<stat_buff_t*>( buffs.ebon_might )->set_stat_from_effect( 2, 0 );
 
     buffs.ebon_might->set_cooldown( 0_ms )
-        ->set_period( 0_ms )
+        ->disable_ticking( true )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->add_invalidate( CACHE_STR_AGI_INT )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {

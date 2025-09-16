@@ -11674,7 +11674,7 @@ void druid_t::create_buffs()
       ->set_cooldown( 0_ms );
   if ( specialization() == DRUID_FERAL )
   {
-    buff.heart_of_the_wild->set_period( 0_ms );
+    buff.heart_of_the_wild->disable_ticking( true );
   }
   else
   {
@@ -12319,7 +12319,7 @@ void druid_t::create_buffs()
 
   buff.root_network = make_fallback( talent.root_network.ok(), this, "root_network", find_spell( 439887 ) )
     // TODO: confirm updating behavior where all stacks are decreased at once then recalibrated on tick
-    ->set_period( 0_ms );
+    ->disable_ticking( true );
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
     this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )

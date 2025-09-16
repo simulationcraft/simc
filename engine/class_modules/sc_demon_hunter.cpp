@@ -7745,7 +7745,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                             ->set_default_value_from_effect( 1 )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                            ->set_period( 0_ms )
+                            ->disable_ticking( true )
                             ->apply_affecting_aura( p.talent.vengeance.soulcrush );
       break;
     default:
@@ -8087,7 +8087,7 @@ void demon_hunter_t::create_buffs()
                          ->set_default_value( talent.vengeance.painbringer->effectN( 1 ).percent() )
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                         ->set_period( 0_ms );
+                         ->disable_ticking( true );
 
   buff.soul_furnace_damage_amp =
       make_buff( this, "soul_furnace_damage_amp", spec.soul_furnace_damage_amp )->set_default_value_from_effect( 1 );

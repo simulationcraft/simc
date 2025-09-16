@@ -650,7 +650,7 @@ void thrill_seeker( special_effect_t& effect )
   if ( !counter_buff )
   {
     counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) )
-                       ->set_period( 0_ms )
+                       ->disable_ticking( true )
                        ->set_tick_behavior( buff_tick_behavior::NONE )
                        ->set_expire_at_max_stack( true );
   }
@@ -923,7 +923,7 @@ void battlefield_presence( special_effect_t& effect )
     buff = make_buff( effect.player, "battlefield_presence", effect.player->find_spell( 352858 ) )
                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-               ->set_period( 0_ms );
+               ->disable_ticking( true );
   }
 
   // If the option is not set, adjust stacks every time the target_non_sleeping_list changes
@@ -1172,7 +1172,7 @@ void pointed_courage( special_effect_t& effect )
                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                // TODO: add better handling of allies/enemies nearby mechanic which is checked every tick. tick is
                // disabled for now
-               ->set_period( 0_ms );
+               ->disable_ticking( true );
   }
 
   effect.player->register_combat_begin(
@@ -1925,7 +1925,7 @@ void gnashing_chompers( special_effect_t& effect )
     buff = make_buff( effect.player, "gnashing_chompers", effect.player->find_spell( 324242 ) )
                ->set_default_value_from_effect_type( A_HASTE_ALL )
                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-               ->set_period( 0_ms )
+               ->disable_ticking( true )
                ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 

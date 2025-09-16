@@ -14751,7 +14751,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   debuff.razorice = buff_t::find( &target, "razorice", &p );
   if ( debuff.razorice )
   {
-    debuff.razorice->set_default_value_from_effect( 1 )->set_period( 0_ms )->apply_affecting_aura(
+    debuff.razorice->set_default_value_from_effect( 1 )->disable_ticking( true )->apply_affecting_aura(
         p.talent.unholy_bond );
   }
   if ( !debuff.razorice )
@@ -14760,7 +14760,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                                        p.talent.frost.arctic_assault->ok(),
                                    *this, "razorice", p.spell.razorice_debuff )
                           ->set_default_value_from_effect( 1 )
-                          ->set_period( 0_ms )
+                          ->disable_ticking( true )
                           ->apply_affecting_aura( p.talent.unholy_bond );
   }
 
@@ -15404,7 +15404,7 @@ void death_knight_t::create_buffs()
 
   buffs.legion_of_souls =
       make_fallback( talent.unholy.legion_of_souls.ok(), this, "legion_of_souls", talent.unholy.legion_of_souls )
-          ->set_period( 0_ms )
+          ->disable_ticking( true )
           ->set_cooldown( 0_ms );
 
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
