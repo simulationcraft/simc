@@ -648,6 +648,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     base_time_duration_multiplier( 1.0 ),
     dynamic_time_duration_multiplier( 1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
+    refresh_behavior( buff_refresh_behavior::NONE ),
     refresh_behavior_overridden( false ),
     allow_precombat( true ),
     current_tick( 0 ),
@@ -729,7 +730,9 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     set_tick_time_behavior( buff_tick_time_behavior::HASTED );
   }
 
-  set_refresh_behavior( buff_refresh_behavior::NONE );
+  // Refresh behavior can be set during the `set_tick_behavior` call above. If it wasn't, set it now.
+  if( refresh_behavior == buff_refresh_behavior::NONE )
+    set_refresh_behavior( buff_refresh_behavior::NONE );
 
   set_stack_behavior( buff_stack_behavior::DEFAULT );
 
