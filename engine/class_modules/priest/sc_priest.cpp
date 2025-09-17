@@ -36,7 +36,7 @@ struct power_word_shield_buff_t : public priest_buff_t<absorb_buff_t>
     set_absorb_source( player->get_stats( "power_word_shield" ) );
     set_cooldown( 0_s );
     initial_size = 0;
-    buff_period = 0_s;  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes
+    disable_ticking( true );  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes
                         // them to full value.
   }
 

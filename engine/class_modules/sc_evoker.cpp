@@ -8202,7 +8202,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   temporal_wound_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
     : evoker_buff_t<buff_t>( td, name, s ), eon_actions{ false }
   {
-    buff_period = 0_s;
+    disable_ticking( true );
 
     auto temporal_wound_effect      = new special_effect_t( p() );
     temporal_wound_effect->name_str = "temporal_wound_" + p()->name_str;
@@ -8332,7 +8332,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
              std::max( p()->option.simulate_bombardments_time_between_procs_stddev / 2, 0.033_s ) ),
       bombardments_external_chance( p()->specialization() == EVOKER_DEVASTATION ? 0.875 : 0.925 )
   {
-    buff_period = 0_s;
+    disable_ticking( true );
 
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
     set_tick_behavior( buff_tick_behavior::REFRESH );

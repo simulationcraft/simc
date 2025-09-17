@@ -7236,7 +7236,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
     apply_affecting_aura( p->spec.immolation_aura_3 );
     apply_affecting_aura( p->talent.vengeance.agonizing_flames );
     set_tick_behavior( buff_tick_behavior::NONE );
-    buff_period = 0_ms;
+    disable_ticking( true );
 
     set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
 
