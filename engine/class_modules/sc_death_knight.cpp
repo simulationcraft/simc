@@ -3828,6 +3828,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.vampiric_strike )
     {
       attack_power_mod.direct = data().effectN( 5 ).ap_coeff();
+      aoe = 1;
     }
   };
 
@@ -4206,7 +4207,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1_s;
     npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
-    owner_coeff.ap_from_ap      = 0.5565;
+    owner_coeff.ap_from_ap      = 0.775;
     resource_regeneration       = regen_type::DISABLED;
     blood_beast_mod             = dk()->specialization() == DEATH_KNIGHT_BLOOD
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
