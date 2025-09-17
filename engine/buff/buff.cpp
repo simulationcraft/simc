@@ -730,7 +730,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     set_tick_time_behavior( buff_tick_time_behavior::HASTED );
   }
 
-  // Refresh behavior can be set during the `set_tick_behavior` call above. If it wasn't, set it now.
+  // Refresh behavior can be set during the `set_period` call above. If it wasn't, set it now.
   if( refresh_behavior == buff_refresh_behavior::NONE )
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
