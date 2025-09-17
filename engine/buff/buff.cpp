@@ -178,24 +178,21 @@ struct tick_t : public buff_event_t
   void execute() override
   {
     buff->tick_event = nullptr;
-    buff->current_tick++;
-
-    int total_ticks = buff->expiration.empty()
-      ? -1
-      : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
-
-    if ( buff->partial_tick &&
-         ( buff->buff_duration().total_millis() % buff->tick_time().total_millis() ) != 0 )
-    {
-      total_ticks++;
-    }
-
-    buff->sim->print_debug( "{} {} ticks ({} of {}).",
-        *buff->player, *buff, buff->current_tick, total_ticks );
-
 
     if ( !buff->disable_tick_effects )
     {
+      buff->current_tick++;
+
+      int total_ticks =
+          buff->expiration.empty() ? -1 : buff->current_tick + static_cast<int>( buff->remains() / buff->tick_time() );
+
+      if ( buff->partial_tick && ( buff->buff_duration().total_millis() % buff->tick_time().total_millis() ) != 0 )
+      {
+        total_ticks++;
+      }
+
+      buff->sim->print_debug( "{} {} ticks ({} of {}).", *buff->player, *buff, buff->current_tick, total_ticks );
+
       // Tick callback is called before the aura stack count is altered to ensure
       // that the buff is always up during the "tick". Last tick detection can be
       // made through the int arguments passed to the function call.
@@ -260,7 +257,7 @@ struct expiration_t : public buff_event_t
       actual_tick_time = sim().current_time() - tick_event->start_time;
     }
 
-    bool can_tick = tick_event &&
+    bool can_tick = tick_event && !buff->disable_tick_effects &&
       ( ( buff->partial_tick && actual_tick_time > 0_ms ) ||
         ( !buff->partial_tick && tick_event->tick_time == actual_tick_time ) );
 
@@ -2450,7 +2447,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
       tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
     }
 
-    if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback )
+    if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback && !disable_tick_effects )
     {
       tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), 0_ms );
     }
@@ -2522,7 +2519,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
       tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
     }
 
-    if ( tick_zero && tick_callback )
+    if ( tick_zero && tick_callback && !disable_tick_effects )
     {
       tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / tick_time() ), timespan_t::zero() );
     }
