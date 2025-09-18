@@ -1520,17 +1520,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   }
 
-  auto apply_flat_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
-    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
-    // Fetch the default multiplier from the current effect to multiply the flat value before applying
-    // Ensures the flat modifier is 'calibrated' to the multiplier used in the default value correctly
-    auto prev = default_value;
-    modify_default_value( effect.base_value() * default_value_effect_multiplier );
-    sim->print_debug( "{} default effect modified by {} to {} (was {})",
-                      *this, effect.base_value() * default_value_effect_multiplier, default_value, prev );
-  };
-
-  auto apply_flat_modifier = [ this, apply_flat_effect_modifier ]( const spelleffect_data_t& effect ) {
+  auto apply_flat_modifier = [ this ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
       case P_DURATION:
@@ -1570,42 +1560,9 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         sim->print_debug( "{} tick period modified by {} to {}", *this, effect.time_value(), buff_period );
         break;
 
-      case P_EFFECT_1:
-        if ( default_value_effect_idx == 1 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_2:
-        if ( default_value_effect_idx == 2 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_3:
-        if ( default_value_effect_idx == 3 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_4:
-        if ( default_value_effect_idx == 4 )
-          apply_flat_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_5:
-        if ( default_value_effect_idx == 5 )
-          apply_flat_effect_modifier( effect );
-        break;
-
       default:
         break;
     }
-  };
-
-  auto apply_percent_effect_modifier = [ this ]( const spelleffect_data_t& effect ) {
-    assert( default_value_effect_idx > 0 && default_value_effect_idx <= s_data->effect_count() );
-    auto prev = default_value;
-    set_default_value( default_value * ( 1.0 + effect.percent() ), default_value_effect_idx );
-    sim->print_debug( "{} default effect modified by {}% to {} (was {})",
-                      *this, effect.percent(), default_value, prev );
   };
 
   // Applies a modifier from -99 to infinity that controls how fast the buff functions.
@@ -1630,7 +1587,7 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
     return this;
   };
 
-  auto apply_percent_modifier = [ this, apply_percent_effect_modifier ]( const spelleffect_data_t& effect ) {
+  auto apply_percent_modifier = [ this ]( const spelleffect_data_t& effect ) {
     switch ( effect.misc_value1() )
     {
       case P_DURATION:
@@ -1649,31 +1606,6 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_TICK_TIME:
         set_period( buff_period * ( 1.0 + effect.percent() ) );
         sim->print_debug ( "{} tick time modified by {}%", *this, effect.base_value() );
-        break;
-
-      case P_EFFECT_1:
-        if ( default_value_effect_idx == 1 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_2:
-        if ( default_value_effect_idx == 2 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_3:
-        if ( default_value_effect_idx == 3 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_4:
-        if ( default_value_effect_idx == 4 )
-          apply_percent_effect_modifier( effect );
-        break;
-
-      case P_EFFECT_5:
-        if ( default_value_effect_idx == 5 )
-          apply_percent_effect_modifier( effect );
         break;
 
       default:

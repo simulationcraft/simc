@@ -6847,13 +6847,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     double ctm = base_t::composite_target_multiplier( t );
 
     if ( t == player && p()->talent.harmonious_constitution.ok() )
-    {
-      auto hc_mul = p()->talent.harmonious_constitution->effectN( 1 ).percent();
-      if ( p()->specialization() == DRUID_FERAL )
-        hc_mul += p()->spec_spell->effectN( 16 ).percent();
-
-      ctm *= 1.0 + hc_mul;
-    }
+      ctm *= 1.0 + p()->talent.harmonious_constitution->effectN( 1 ).percent();
 
     return ctm;
   }
@@ -11469,6 +11463,15 @@ void druid_t::init_spells()
   mastery.astral_invocation   = find_mastery_spell( DRUID_BALANCE );
 
   eclipse_handler.init();  // initialize this here since we need talent info to properly init
+
+  register_passive_effect_modifier( spec_spell );
+  register_passive_effect_modifier( talent.berserk_unchecked_aggression );
+  register_passive_effect_modifier( talent.boundless_moonlight );
+  register_passive_effect_modifier( talent.master_shapeshifter );
+  register_passive_effect_modifier( talent.oakskin );
+  register_passive_effect_modifier( talent.potent_enchantments );
+  register_passive_effect_modifier( talent.reinforced_fur );
+  register_passive_effect_modifier( talent.the_eternal_moon );
 }
 
 // druid_t::init_items ======================================================
@@ -11756,8 +11759,7 @@ void druid_t::create_buffs()
     make_fallback( talent.survival_instincts.ok() || sets->has_set_bonus( DRUID_GUARDIAN, TWW2, B2 ),
       this, "survival_instincts", find_spell( 61336 ) )
         ->set_cooldown( 0_ms )
-        ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() +
-                             find_effect( talent.oakskin, find_spell( 50322 ), A_ADD_FLAT_MODIFIER ).percent() );
+        ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() );
 
   // Balance buffs
   buff.astral_communion = make_fallback( talent.astral_communion.ok(), this, "astral_communion", find_spell( 450599 ) );
@@ -15254,7 +15256,7 @@ void druid_t::apply_affecting_auras( action_t& a )
   a.apply_affecting_aura( talent.radiant_moonlight );
   a.apply_affecting_aura( talent.rattle_the_stars );
   a.apply_affecting_aura( talent.twin_moons );
-  a.apply_affecting_aura( talent.whirling_stars, talent.potent_enchantments );
+  a.apply_affecting_aura( talent.whirling_stars );
   a.apply_affecting_aura( talent.wild_surges );
   a.apply_affecting_aura( sets->set( DRUID_BALANCE, TWW1, B2 ) );
 
@@ -15304,11 +15306,11 @@ void druid_t::apply_affecting_auras( action_t& a )
   a.apply_affecting_aura( talent.astral_insight );
   a.apply_affecting_aura( talent.bestial_strength );
   a.apply_affecting_aura( talent.early_spring );
-  a.apply_affecting_aura( talent.empowered_shapeshifting, spec_spell );
+  a.apply_affecting_aura( talent.empowered_shapeshifting );
   a.apply_affecting_aura( talent.groves_inspiration );
   a.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   a.apply_affecting_aura( talent.lunar_calling );
-  a.apply_affecting_aura( talent.lunar_insight, spec_spell );
+  a.apply_affecting_aura( talent.lunar_insight );
   a.apply_affecting_aura( talent.potent_enchantments );
   a.apply_affecting_aura( talent.resilient_flourishing );
   a.apply_affecting_aura( talent.stellar_command );
@@ -15321,10 +15323,8 @@ void druid_t::apply_affecting_auras( action_t& a )
 void druid_t::apply_affecting_auras( buff_t& b )
 {
   // Class
-  b.apply_affecting_aura( spec_spell );
   b.apply_affecting_aura( talent.forestwalk );
   b.apply_affecting_aura( talent.improved_barkskin );
-  b.apply_affecting_aura( talent.oakskin );
 
   // Balance
   b.apply_affecting_aura( talent.cosmic_rapidity );
@@ -15337,18 +15337,13 @@ void druid_t::apply_affecting_auras( buff_t& b )
 
   // Guardian
   b.apply_affecting_aura( spec.ursine_adept );
-  b.apply_affecting_aura( talent.berserk_unchecked_aggression );
   b.apply_affecting_aura( talent.circle_of_life_and_death_bear );
-  b.apply_affecting_aura( talent.reinforced_fur );
   b.apply_affecting_aura( talent.ursocs_endurance );
 
   // Restoration
-  b.apply_affecting_aura( talent.master_shapeshifter );
   b.apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() );
 
   // Hero talents
-  b.apply_affecting_aura( talent.boundless_moonlight );
-  b.apply_affecting_aura( talent.potent_enchantments );
   b.apply_affecting_aura( talent.the_eternal_moon );
 }
 
@@ -15472,10 +15467,8 @@ void druid_t::parse_action_effects( action_t* action )
       bear_mask.enable( 16, 17 );
   }
 
-  _a->parse_effects( buff.berserk_bear, bear_mask, talent.berserk_ravage,
-                     talent.berserk_unchecked_aggression );
-  _a->parse_effects( buff.incarnation_bear, bear_mask, talent.berserk_ravage,
-                     talent.berserk_unchecked_aggression );
+  _a->parse_effects( buff.berserk_bear, bear_mask, talent.berserk_ravage );
+  _a->parse_effects( buff.incarnation_bear, bear_mask, talent.berserk_ravage );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
@@ -15586,7 +15579,7 @@ void druid_t::parse_action_target_effects( action_t* action )
   }
 
   _a->parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                            spec.adaptive_swarm_damage, spec_spell, affect_list_t( 2 ).add_spell( 285381 ) );
+                            spec.adaptive_swarm_damage, affect_list_t( 2 ).add_spell( 285381 ) );
 
   _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
                             spec.sabertooth, talent.sabertooth->effectN( 2 ).percent() );

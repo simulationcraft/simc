@@ -12889,6 +12889,11 @@ void shaman_t::init_spells()
   constant.mul_lightning_rod += spec.enhancement_shaman2->effectN( 8 ).percent();
 
   parse_player_effects_t::init_spells();
+
+  // Passive spells that modify effects
+  register_passive_effect_modifier( spec.elemental_shaman );
+  register_passive_effect_modifier( talent.earthshatter );
+  register_passive_effect_modifier( talent.preeminence );
 }
 
 // shaman_t::init_base ======================================================
@@ -14412,22 +14417,16 @@ void shaman_t::create_buffs()
 
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
     ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
-    ->apply_affecting_aura(spec.elemental_shaman)
-    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
     ->set_default_value_from_effect_type(A_HASTE_ALL)
-    ->apply_affecting_aura(spec.elemental_shaman)
-    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
-    ->apply_affecting_aura(spec.elemental_shaman)
-    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
@@ -15116,12 +15115,7 @@ void shaman_t::apply_player_effects()
     .add_affecting_spell( talent.elemental_equilibrium )
     .set_effect_mask( effect_mask_t( true ).disable( 2 ) )
     .build( this );
-  eff::source_eff_builder_t( buff.ascendance )
-    // Elemental spec aura applies -5 penalty to preeminence, thus ascendance only gets 20%
-    // This is a temporary fix until register_passive_effect_modifier() is implemented
-    // .add_affecting_spell( talent.preeminence )
-    .set_value( talent.preeminence->effectN( 2 ).percent() + spec.elemental_shaman->effectN( 26 ).percent() )
-    .build( this );
+  eff::source_eff_builder_t( buff.ascendance ).build( this );
 }
 
 void shaman_t::apply_action_effects( parse_effects_t* a )
@@ -15129,7 +15123,7 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   // Shared
   eff::source_eff_builder_t( talent.voltaic_surge )
     .add_affecting_spell( spec.enhancement_shaman2 )
-    .add_affecting_spell( spec.elemental_shaman ).build( a );
+    .build( a );
 
   // Enhancement
   eff::source_eff_builder_t( mastery.enhanced_elements )

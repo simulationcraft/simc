@@ -1885,7 +1885,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( tier_tww2_opportunistic_strike )
       cooldown->adjust( -p()->tier.tww2.brm_4pc_opportunistic_strike->effectN( 1 ).time_value() );
 
-    p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+    p()->buff.shuffle->trigger(
+      timespan_t::from_seconds( p()->baseline.brewmaster.blackout_kick->effectN( 2 ).base_value() ) );
 
     p()->buff.blackout_combo->trigger();
     p()->buff.flow_of_battle_damage->trigger();
@@ -7540,6 +7541,9 @@ void monk_t::init_spells()
     shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
+
+  // Passives that modify effects
+  register_passive_effect_modifier( talent.brewmaster.high_tolerance );
 }
 
 void monk_t::init_background_actions()
@@ -7730,7 +7734,6 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
   {
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    apply_affecting_aura( player->talent.brewmaster.high_tolerance );
     set_stack_change_callback( [ player ]( buff_t *, int old_, int new_ ) {
       if ( old_ )
         player->buff.training_of_niuzao->expire();

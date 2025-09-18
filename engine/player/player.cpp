@@ -7574,7 +7574,6 @@ void player_t::regen( timespan_t periodicity )
   }
 }
 
-
 double player_t::get_stat_value(stat_e stat)
 {
   switch (stat)
@@ -15023,5 +15022,121 @@ void sc_format_to( const player_t& player, fmt::format_context::iterator out )
 
 bool player_t::is_ptr() const
 {
-  return maybe_ptr(dbc->ptr);
+  return maybe_ptr( dbc->ptr );
+}
+
+void player_t::register_passive_effect_modifier( const spell_data_t* modifying_spell, bool allow_non_passive )
+{
+  if ( !modifying_spell->ok() )
+    return;
+
+  // passive spells are not allowed unless allow_non_passive == true
+  if ( !allow_non_passive && !modifying_spell->flags( SX_PASSIVE ) )
+  {
+    sim->error( "{} cannot register passive effect modifiers from non-passive spell {} ({}), ignoring.",
+                *this, modifying_spell->name_cstr(), modifying_spell->id() );
+    return;
+  }
+
+  // go thru all the effects on the modifying spell
+  for ( const auto& modifying_eff : modifying_spell->effects() )
+  {
+    // filter out zero value
+    if ( modifying_eff.base_value() == 0.0 )
+      continue;
+
+    // filter out non-effect-modifying effects
+    if ( modifying_eff.type() != E_APPLY_AURA )
+      continue;
+
+    auto sub_type = modifying_eff.subtype();
+
+    if ( sub_type != A_ADD_FLAT_MODIFIER && sub_type != A_ADD_FLAT_LABEL_MODIFIER &&
+         sub_type != A_ADD_PCT_MODIFIER && sub_type != A_ADD_PCT_LABEL_MODIFIER )
+    {
+      continue;
+    }
+
+    // determine effect idx (or all)
+    int idx = 0;
+    switch ( modifying_eff.misc_value1() )
+    {
+      case P_EFFECT_1: idx =  1; break;
+      case P_EFFECT_2: idx =  2; break;
+      case P_EFFECT_3: idx =  3; break;
+      case P_EFFECT_4: idx =  4; break;
+      case P_EFFECT_5: idx =  5; break;
+      case P_EFFECTS:  idx = -1; break;
+      default:         continue;
+    }
+
+    // find all affected spells
+    std::vector<const spell_data_t*> affected_spells;
+
+    if ( sub_type == A_ADD_FLAT_MODIFIER || sub_type == A_ADD_PCT_MODIFIER )
+    {
+      affected_spells = dbc->effect_affects_spells( modifying_spell->class_family(), &modifying_eff );
+    }
+    else if ( sub_type == A_ADD_FLAT_LABEL_MODIFIER || sub_type == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      auto span_ = dbc->spells_by_label( modifying_eff.misc_value2() );
+      affected_spells.assign( span_.begin(), span_.end() );
+    }
+
+    for ( auto spell : affected_spells )
+    {
+      if ( spell->effect_count() < idx )
+      {
+        sim->print_debug( "{} spell {} ({}) only has {} effects, but {} ({}) is trying to modify effect#{}, ignoring.",
+                          *this, spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
+                          modifying_spell->id(), idx );
+        continue;
+      }
+
+      // grab the override/hotfix variant
+      spell = dbc::find_spell( this, spell );
+
+      // populate all effects in case of P_EFFECTS
+      std::vector<const spelleffect_data_t*> eff_list;
+      if ( idx == -1 )
+        range::for_each( spell->effects(), [ & ]( const auto& e ) { eff_list.push_back( &e ); } );
+      else
+        eff_list.push_back( &spell->effectN( idx ) );
+
+      for ( auto eff : eff_list )
+      {
+        auto eff_id = eff->id();
+        auto [ it, new_ ] = passive_effect_modifers_.insert( { eff_id, { 0, 0, 1.0 } } );
+
+        // cache original value if this is the first modification
+        if ( new_ )
+          it->second.orig = eff->base_value();
+
+        if ( sub_type == A_ADD_FLAT_MODIFIER || sub_type == A_ADD_FLAT_LABEL_MODIFIER )
+          it->second.flat += modifying_eff.base_value();
+        else if ( sub_type == A_ADD_PCT_MODIFIER || sub_type == A_ADD_PCT_LABEL_MODIFIER )
+          it->second.mult *= 1.0 + modifying_eff.percent();
+
+        // recalculate value
+        auto final_value = ( it->second.orig + it->second.flat ) * it->second.mult;
+
+        sim->print_debug( "{} spell {} ({}) eff#{} modifying {} ({}) eff#{} (orig={} flat_add={} pct_mult={} final={})",
+                          *this, modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                          spell->name_cstr(), spell->id(), idx, it->second.orig, it->second.flat, it->second.mult,
+                          final_value );
+
+        dbc_override_->register_effect( *dbc, eff_id, "base_value", final_value );
+      }
+    }
+  }
+}
+
+void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value )
+{
+  dbc_override_->register_effect( *dbc, effect.id(), "base_value", value );
+}
+
+const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )
+{
+  return p->dbc_override_->clone_spell( s, p->dbc->ptr );
 }

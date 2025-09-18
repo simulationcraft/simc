@@ -1195,3 +1195,13 @@ std::unique_ptr<spell_data_expr_t> spell_data_expr_t::parse( sim_t* sim, util::s
 
   throw std::invalid_argument( "Unable to build expression tree." );
 }
+
+int dbc::get_class_spell_family( player_e type )
+{
+  auto id = util::class_id( type );
+
+  if ( id <= 0 || id >= MAX_CLASS )
+    return -1;
+
+  return _class_info[ id - 1 ].spell_family;
+}

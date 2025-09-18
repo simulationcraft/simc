@@ -564,12 +564,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
-      // ret spec aura applies +20% to second sunrise effectiveness
-      // temporary fix until register_passive_effect_modifier() is implemented
-      auto effectiveness = p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() +
-                           p->spec.retribution_paladin_2->effectN( 26 ).percent();
-
-      sunrise_echo = new divine_storm_echo_t( p, effectiveness );
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() );
       add_child( sunrise_echo );
     }
   }
@@ -597,12 +592,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
     {
-      // ret spec aura applies +20% to second sunrise effectiveness
-      // temporary fix until register_passive_effect_modifier() is implemented
-      auto effectiveness = p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() +
-                           p->spec.retribution_paladin_2->effectN( 26 ).percent();
-
-      sunrise_echo = new divine_storm_echo_t( p, effectiveness * mul );
+      sunrise_echo = new divine_storm_echo_t( p, p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() * mul );
       add_child( sunrise_echo );
     }
   }
@@ -635,12 +625,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
     {
-      // ret spec aura applies +5% to second sunrise chance
-      // temporary fix until register_passive_effect_modifier() is implemented
-      auto sunrise_chance = p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() +
-                            p()->spec.retribution_paladin_2->effectN( 25 ).percent();
-
-      if ( rng().roll( sunrise_chance ) )
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
       {
         p()->cooldowns.second_sunrise_icd->start();
         // TODO(mserrano): validate the correct delay here

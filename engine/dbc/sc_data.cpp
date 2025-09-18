@@ -961,5 +961,11 @@ const spellpower_data_t* dbc_override_t::find_power( unsigned power_id, bool ptr
 }
 
 const std::vector<dbc_override_t::override_entry_t>& dbc_override_t::override_entries( bool ptr ) const
-{ return override_entries_[ ptr ]; }
+{
+  return override_entries_[ ptr ];
+}
 
+const spell_data_t* dbc_override_t::clone_spell( const spell_data_t* spell, bool ptr )
+{
+  return override_db_[ ptr ].clone_spell( spell );
+}

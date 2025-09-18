@@ -967,8 +967,18 @@ private:
 
   /// Per-player custom dbc data
   std::unique_ptr<dbc_override_t> dbc_override_;
+  struct effect_modifier_t { double orig, flat, mult; };
+  std::unordered_map<unsigned, effect_modifier_t> passive_effect_modifers_;
+
+protected:
+  // pass spell_data_t* to apply all P_EFFECT_# effects to indicated effect in affected spells
+  void register_passive_effect_modifier( const spell_data_t*, bool allow_non_passive = false );
+  // directly override the base_value of effects
+  void register_passive_effect_override( const spelleffect_data_t&, double value );
 
 public:
+  static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
+
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
@@ -1041,7 +1051,6 @@ public:
   timespan_t cooldown_tolerance() const;
   position_e position() const
   { return current.position; }
-
 
   pet_t* cast_pet();
   const pet_t* cast_pet() const;
@@ -1137,7 +1146,6 @@ public:
   int get_action_id( util::string_view name );
   int get_dot_id( util::string_view name );
   cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
-
 
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
@@ -1357,7 +1365,6 @@ public:
   virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
-
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,

@@ -8325,7 +8325,6 @@ struct slice_and_dice_t : public rogue_buff_t
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     add_invalidate( CACHE_AUTO_ATTACK_SPEED );
     set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    apply_affecting_aura( p->talent.trickster.thousand_cuts );
 
     if ( p->talent.rogue.recuperator->ok() )
     {
@@ -11860,6 +11859,12 @@ void rogue_t::init_spells()
   {
     active.tww1.ethereal_rampage = get_background_action<actions::ethereal_rampage_t>( "ethereal_rampage" );
   }
+
+  // Passives that modify effects
+  register_passive_effect_modifier( talent.rogue.featherfoot );
+  register_passive_effect_modifier( talent.outlaw.quick_draw );
+  register_passive_effect_modifier( talent.outlaw.take_em_by_surprise );
+  register_passive_effect_modifier( talent.trickster.thousand_cuts );
 }
 
 // rogue_t::init_talents ====================================================
@@ -12096,19 +12101,17 @@ void rogue_t::create_buffs()
 
   buffs.opportunity = make_buff( this, "opportunity", spec.opportunity_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->apply_affecting_aura( talent.outlaw.quick_draw )
     ->apply_affecting_aura( talent.outlaw.fan_the_hammer );
 
   buffs.take_em_by_surprise = make_buff( this, "take_em_by_surprise", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_duration( timespan_t::from_seconds( talent.outlaw.take_em_by_surprise->effectN( 1 ).base_value() ) )
-    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
+    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Duration Modifier
     ->apply_affecting_aura( talent.rogue.subterfuge ); // Duration Modifer
   buffs.take_em_by_surprise_aura = make_buff( this, "take_em_by_surprise_aura", spec.take_em_by_surprise_buff )
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-    ->apply_affecting_aura( talent.outlaw.take_em_by_surprise ) // Label modifier on talent
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [this]( buff_t*, int, int new_ ) {

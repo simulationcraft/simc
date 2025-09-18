@@ -11888,8 +11888,6 @@ void runeforge::fallen_crusader( special_effect_t& effect )
       target     = p;
       harmful = callbacks = may_crit  = false;
       base_pct_heal                   = data->effectN( 2 ).percent();
-      const spell_data_t* unholy_bond = p->find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
-      base_pct_heal *= 1.0 + unholy_bond->effectN( 2 ).percent();
 
       if ( p->thewarwithin_opts.attuned_to_the_aether )
         base_pct_heal *= 1.0 + p->find_spell( 1242344 )->effectN( 3 ).percent();
@@ -12041,8 +12039,6 @@ void runeforge::sanguination( special_effect_t& effect )
       background                      = true;
       harmful                         = false;
       tick_pct_heal                   = data().effectN( 1 ).percent();
-      const spell_data_t* unholy_bond = p->find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
-      tick_pct_heal *= 1.0 + unholy_bond->effectN( 1 ).percent();
 
       if ( p->thewarwithin_opts.attuned_to_the_aether )
         tick_pct_heal *= 1.0 + p->find_spell( 1242344 )->effectN( 2 ).percent();
@@ -14264,6 +14260,11 @@ void death_knight_t::init_spells()
 
   spell_lookups();
   set_icds();
+
+  // Passives that modify effects
+  register_passive_effect_modifier( talent.unholy_bond );
+  register_passive_effect_modifier( talent.blood.reinforced_bones );
+
   apply_effect_modifying_effects();
 }
 
@@ -14752,8 +14753,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   debuff.razorice = buff_t::find( &target, "razorice", &p );
   if ( debuff.razorice )
   {
-    debuff.razorice->set_default_value_from_effect( 1 )->set_period( 0_ms )->apply_affecting_aura(
-        p.talent.unholy_bond );
+    debuff.razorice->set_default_value_from_effect( 1 )->set_period( 0_ms );
   }
   if ( !debuff.razorice )
   {
@@ -14761,8 +14761,7 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                                        p.talent.frost.arctic_assault->ok(),
                                    *this, "razorice", p.spell.razorice_debuff )
                           ->set_default_value_from_effect( 1 )
-                          ->set_period( 0_ms )
-                          ->apply_affecting_aura( p.talent.unholy_bond );
+                          ->set_period( 0_ms );
   }
 
   debuff.everfrost =
@@ -14805,16 +14804,13 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death = make_debuff( true, *this, "death",
-                                         p.spell.apocalypse_death_debuff )  // Effect not implemented
-                                ->apply_affecting_aura( p.talent.unholy_bond );
+                                         p.spell.apocalypse_death_debuff );  // Effect not implemented
 
   debuff.apocalypse_famine = make_debuff( true, *this, "famine", p.spell.apocalypse_famine_debuff )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->apply_affecting_aura( p.talent.unholy_bond );
+                                 ->set_default_value_from_effect( 1 );
 
   debuff.apocalypse_war = make_debuff( true, *this, "war", p.spell.apocalypse_war_debuff )
-                              ->set_default_value_from_effect( 1 )
-                              ->apply_affecting_aura( p.talent.unholy_bond );
+                              ->set_default_value_from_effect( 1 );
 
   if (p.thewarwithin_opts.attuned_to_the_aether)
   {
@@ -16342,9 +16338,9 @@ void death_knight_action_t<Base>::apply_target_effects()
   parse_target_effects( d_fn( &death_knight_td_t::dots_t::unholy_blight, false ), p()->spell.unholy_blight_dot,
                         p()->talent.unholy.morbidity );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), p()->spell.apocalypse_war_debuff,
-                        p()->talent.unholy_bond, p()->spell.attuned_to_the_aether );
+                        p()->spell.attuned_to_the_aether );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::razorice ), p()->spell.razorice_debuff,
-                        p()->talent.unholy_bond, p()->spell.attuned_to_the_aether );
+                        p()->spell.attuned_to_the_aether );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), p()->spell.brittle_debuff );
 
   // Blood
@@ -16386,7 +16382,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.antimagic_shell, talent.osmosis );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff,
-                        talent.unholy_bond, spell.attuned_to_the_aether );
+                        spell.attuned_to_the_aether );
 
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -16402,7 +16398,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.vampiric_blood, effect_mask_t( true ).disable( 2, 4 ), talent.blood.vampiric_blood,
                    talent.blood.improved_vampiric_blood );
     parse_effects( buffs.sanguine_ground, talent.blood.sanguine_ground );
-    parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield, talent.blood.reinforced_bones );
+    parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield );
     parse_effects( buffs.perseverance_of_the_ebon_blade );
 
     // Tier Sets
@@ -16489,12 +16485,10 @@ void death_knight_t::apply_affecting_auras( buff_t& buff )
   // Shared
   buff.apply_affecting_aura( talent.antimagic_barrier );
   buff.apply_affecting_aura( talent.osmosis );
-  buff.apply_affecting_aura( talent.unholy_bond );
   if( thewarwithin_opts.attuned_to_the_aether )
     buff.apply_affecting_aura( spell.attuned_to_the_aether );
 
   // Blood
-  buff.apply_affecting_aura( talent.blood.reinforced_bones );
   buff.apply_affecting_aura( talent.blood.improved_vampiric_blood );
   buff.apply_affecting_aura( sets->set( DEATH_KNIGHT_BLOOD, TWW2, B4 ) );
 
