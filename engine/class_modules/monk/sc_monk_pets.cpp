@@ -1294,11 +1294,9 @@ struct melee_t : public pet_melee_t
 
 struct stomp_t : public pet_melee_attack_t
 {
-  stomp_t( niuzao_pet_t *pet, std::string_view options_str )
+  stomp_t( niuzao_pet_t *pet )
     : pet_melee_attack_t( "stomp", pet, pet->o()->talent.brewmaster.invoke_niuzao_the_black_ox_stomp )
   {
-    if ( o()->wowv_l( { 11, 2, 0 } ) )
-      parse_options( options_str );
     aoe      = -1;
     may_crit = true;
   }
@@ -1307,14 +1305,7 @@ struct stomp_t : public pet_melee_attack_t
   {
     double am = pet_melee_attack_t::action_multiplier();
     am *= 1.0 + o()->talent.brewmaster.walk_with_the_ox->effectN( 1 ).percent();
-    am *= 1.0 + o()->buff.recent_purifies->check_value();
     return am;
-  }
-
-  void execute() override
-  {
-    pet_melee_attack_t::execute();
-    o()->buff.recent_purifies->cancel();
   }
 
   void impact( action_state_t *state ) override
@@ -1351,14 +1342,12 @@ void niuzao_pet_t::init_spells()
 {
   monk_pet_t::init_spells();
 
-  stomp = new stomp_t( this, "" );
+  stomp = new stomp_t( this );
 }
 
 void niuzao_pet_t::init_action_list()
 {
   action_list_str = "auto_attack";
-  if ( o()->wowv_l( { 11, 2, 0 } ) )
-    action_list_str += "/stomp";
 
   monk_pet_t::init_action_list();
 }
@@ -1367,9 +1356,6 @@ action_t *niuzao_pet_t::create_action( std::string_view name, std::string_view o
 {
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
-
-  if ( name == "stomp" && o()->wowv_l( { 11, 2, 0 } ) )
-    return new stomp_t( this, options_str );
 
   return monk_pet_t::create_action( name, options_str );
 }

@@ -379,7 +379,6 @@ public:
     propagate_const<dot_t *> crackling_jade_lightning_aoe;
     propagate_const<dot_t *> crackling_jade_lightning_sef;
     propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
-    propagate_const<dot_t *> touch_of_karma;
 
     // Master of Harmony
     propagate_const<dot_t *> aspect_of_harmony;
@@ -390,16 +389,14 @@ public:
     // Brewmaster
     propagate_const<buff_t *> keg_smash;
     propagate_const<buff_t *> exploding_keg;
+    propagate_const<buff_t *> weapons_of_order;
 
     // Windwalker
     propagate_const<buff_t *> acclamation;
-    propagate_const<buff_t *> flying_serpent_kick;
     propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> empowered_tiger_lightning;
     propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
-    propagate_const<buff_t *> mark_of_the_crane;
-    propagate_const<buff_t *> storm_earth_and_fire;
-    propagate_const<buff_t *> touch_of_karma;
+    propagate_const<buff_t *> jadefire_brand;
 
     // Mistweaver
     propagate_const<buff_t *> lesson_of_anger;
@@ -407,13 +404,6 @@ public:
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
     propagate_const<buff_t *> veterans_eye;
-
-    // Covenant Abilities
-    propagate_const<buff_t *> jadefire_stomp;
-    propagate_const<buff_t *> weapons_of_order;
-
-    // Shadowland Legendaries
-    propagate_const<buff_t *> jadefire_brand;
   } debuff;
 
   monk_t &monk;
@@ -651,7 +641,6 @@ public:
     propagate_const<buff_t *> blackout_combo;
     propagate_const<buff_t *> call_to_arms_invoke_niuzao;
     propagate_const<absorb_buff_t *> celestial_brew;
-    propagate_const<buff_t *> celestial_flames;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elusive_brawler;
@@ -667,9 +656,7 @@ public:
     propagate_const<buffs::shuffle_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> weapons_of_order;
-    propagate_const<buff_t *> zen_meditation;
     // niuzao r2 recent purifies fake buff
-    propagate_const<buff_t *> recent_purifies;
     propagate_const<buff_t *> ox_stance;
 
     // Mistweaver
@@ -1029,14 +1016,12 @@ public:
       const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
       // row 5
-      player_talent_t celestial_flames;
       player_talent_t celestial_brew;
       const spell_data_t *purified_chi;
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
       player_talent_t autumn_blessing;
       player_talent_t one_with_the_wind;
-      player_talent_t zen_meditation;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
       // row 6
@@ -1231,6 +1216,7 @@ public:
       player_talent_t transfer_the_power;
       player_talent_t jadefire_fists;
       player_talent_t jadefire_stomp;
+      const spell_data_t *jadefire_stomp_debuff;
       const spell_data_t *jadefire_stomp_damage;
       const spell_data_t *jadefire_stomp_ww_damage;
       player_talent_t communion_with_wind;
