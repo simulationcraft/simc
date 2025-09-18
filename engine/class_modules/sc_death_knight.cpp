@@ -16243,6 +16243,16 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
   auto action = dynamic_cast<parse_action_base_t*>( a );
   assert( action );
 
+  /* NOTE NOTE NOTE NOTE NOTE
+  As of 2024 Aug 18th, while testing for TWW we observed that if the pet applies the debuff, like DRW does for blood
+  plague they are considered the caster, and as such, they get the benefit of the casters amps (aura 271).  If the
+  player applies the debuff the pet does not gain the benefit of the caster debuff, but does gain the benefit for
+  pet/guardian auras (aura 380/381) if they exist.
+
+  Auras 380 and 381 get applied in parse_player_effects of the DK.
+
+  Below we should only have debuffs that are cast by pets and guardians, that apply aura 271.
+  */
   if ( pet )
   {
     action->parse_target_effects( pets::d_fn( &pets::death_knight_pet_td_t::dots_t::blood_plague ), spell.blood_plague,
