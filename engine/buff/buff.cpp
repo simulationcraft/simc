@@ -1117,10 +1117,13 @@ buff_t* buff_t::modify_cooldown( timespan_t duration )
 
 buff_t* buff_t::set_period( timespan_t period )
 {
-  if ( period >= timespan_t::zero() )
-  {
+  if ( period == timespan_t::zero() && data().ok() )
+    throw sc_initialization_error( fmt::format(
+        "Buff:{} period was set to 0. To disable tick effects use `disable_ticking( true )`", name_str ) );
+
+  if ( period > timespan_t::zero() )
     buff_period = period;
-  }
+
   else
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
