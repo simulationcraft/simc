@@ -968,15 +968,15 @@ private:
   /// Per-player custom dbc data
   std::unique_ptr<dbc_override_t> dbc_override_;
   struct effect_modifier_t { double orig, flat, mult; };
-  std::unordered_map<unsigned, effect_modifier_t> passive_effect_modifers_;
-
-protected:
-  // pass spell_data_t* to apply all P_EFFECT_# effects to indicated effect in affected spells
-  void register_passive_effect_modifier( const spell_data_t*, bool allow_non_passive = false );
-  // directly override the base_value of effects
-  void register_passive_effect_override( const spelleffect_data_t&, double value );
+  mutable std::unordered_map<unsigned, effect_modifier_t> passive_effect_modifers_;
+  mutable std::vector<unsigned> passive_effect_modifying_spells_;
 
 public:
+  // pass spell_data_t* to apply all P_EFFECT_# effects to indicated effect in affected spells
+  void register_passive_effect_modifier( const spell_data_t*, bool allow_non_passive = false ) const;
+  // directly override the base_value of effects
+  void register_passive_effect_override( const spelleffect_data_t&, double value ) const;
+
   static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
 
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );

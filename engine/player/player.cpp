@@ -15025,9 +15025,9 @@ bool player_t::is_ptr() const
   return maybe_ptr( dbc->ptr );
 }
 
-void player_t::register_passive_effect_modifier( const spell_data_t* modifying_spell, bool allow_non_passive )
+void player_t::register_passive_effect_modifier( const spell_data_t* modifying_spell, bool allow_non_passive ) const
 {
-  if ( !modifying_spell->ok() )
+  if ( !modifying_spell->ok() || range::contains( passive_effect_modifying_spells_, modifying_spell->id() ) )
     return;
 
   // passive spells are not allowed unless allow_non_passive == true
@@ -15037,6 +15037,8 @@ void player_t::register_passive_effect_modifier( const spell_data_t* modifying_s
                 *this, modifying_spell->name_cstr(), modifying_spell->id() );
     return;
   }
+
+  bool success = false;
 
   // go thru all the effects on the modifying spell
   for ( const auto& modifying_eff : modifying_spell->effects() )
@@ -15126,12 +15128,16 @@ void player_t::register_passive_effect_modifier( const spell_data_t* modifying_s
                           final_value );
 
         dbc_override_->register_effect( *dbc, eff_id, "base_value", final_value );
+        success = true;
       }
     }
   }
+
+  if ( success )
+    passive_effect_modifying_spells_.push_back( modifying_spell->id() );
 }
 
-void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value )
+void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value ) const
 {
   dbc_override_->register_effect( *dbc, effect.id(), "base_value", value );
 }
