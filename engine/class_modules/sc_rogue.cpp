@@ -2423,7 +2423,7 @@ public:
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
   void trigger_restless_blades( const action_state_t* );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, bool inevitable = false );
-  void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result );
+  void execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
   void trigger_fate_intertwined( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
@@ -9206,41 +9206,39 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   execute_fatebound_coinflip( state, result );
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
   {
-    p()->buffs.double_jeopardy->expire();
-    execute_fatebound_coinflip( state, result );
+    p()->buffs.double_jeopardy->expire( p()->bugs ? 1_ms : 0_ms );
+    execute_fatebound_coinflip( state, result, 200_ms ); 
   }
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result )
+void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
-  if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
-  {
-    p()->buffs.fatebound_coin_heads->increment();
-    if ( result != fatebound_t::coinflip_e::EDGE )
+  make_event( *p()->sim, delay, [ this, state, result ] {
+    if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
     {
-      p()->buffs.fatebound_coin_tails->expire();
+      p()->buffs.fatebound_coin_heads->increment();
+      if ( result != fatebound_t::coinflip_e::EDGE )
+      {
+        p()->buffs.fatebound_coin_tails->expire();
+      }
     }
-  }
-  if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
-  {
-    // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
-    if ( !ab::is_precombat )
+    if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
     {
-      auto coin_target = state->target->is_enemy() ? state->target : p()->target;
-      p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
+      // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
+      if ( !ab::is_precombat )
+      {
+        auto coin_target = state->target->is_enemy() ? state->target : p()->target;
+        p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
+      }
+      // Force an event so Tails buff is always incremented after the damage instance. Heads does not mimic this behavior.
+      make_event( *p()->sim, 0_ms, [ this ] { p()->buffs.fatebound_coin_tails->increment(); } );
+      if ( result != fatebound_t::coinflip_e::EDGE )
+      {
+        p()->buffs.fatebound_coin_heads->expire();
+      }
     }
-    p()->buffs.fatebound_coin_tails->increment();
-    if ( result != fatebound_t::coinflip_e::EDGE )
-    {
-      p()->buffs.fatebound_coin_heads->expire();
-    }
-  }
-  // If the result is not an edge case, cancel Double Jeopardy if it has been artificially extended from the bug below.
-  if ( p()->bugs && p()->buffs.double_jeopardy->expiration_delay && result != fatebound_t::coinflip_e::EDGE )
-  {
-    p()->buffs.double_jeopardy->cancel();
-  }
+  } );
 }
 
 template <typename Base>
@@ -9249,21 +9247,26 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
   if ( !p()->talent.fatebound.edge_case->ok() )
     return;
 
+  bool is_after_jeopardy = false;
   execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
   
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
   {
-    // 2025-08-12 -- Double Jeopardy does not expire instantly, so multiple edge cases at the same moment can benefit from it.
-    //               It seems multiple edge cases at the same time will always successfully benefit from Double Jeopardy, but mixing
-    //               an edge case with a normal coinflip produces unreliable or unusual results. This mixing of edge cases and 
-    //               normal coinflips is currently not modeled.
+    // 2025-08-12 -- Double Jeopardy does not expire instantly, so multiple coin flips at the same time can benefit from it.
+    //               Multiple Edge Cases at the same time will always successfully benefit from Double Jeopardy, however
+    //               triggering a normal coinflip at the same time as an Edge Case during Double Jeopardy is both difficult
+    //               to pull off in-game and produces unusual results so it can be prevented from the APL side.
     p()->buffs.double_jeopardy->expire( p()->bugs ? 1_ms : 0_ms );
-    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE, 200_ms );
+    is_after_jeopardy = true;
   }
 
   if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
   {
-    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+    timespan_t delay = 200_ms;
+    if ( is_after_jeopardy )
+      delay = 400_ms;
+    execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE, delay );
   }
 }
 
