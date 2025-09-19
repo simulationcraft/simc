@@ -9263,9 +9263,7 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
 
   if ( p()->set_bonuses.tww3_fatebound_2pc->ok() )
   {
-    timespan_t delay = 200_ms;
-    if ( is_after_jeopardy )
-      delay = 400_ms;
+    timespan_t delay = is_after_jeopardy ? 400_ms : 200_ms;
     execute_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE, delay );
   }
 }
