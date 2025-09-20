@@ -1930,23 +1930,22 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     }
 
     // the `->up()` invocation is redundant logically, but incurs benefit tracking
-    if ( int totm_stacks = p()->buff.teachings_of_the_monastery->current_stack;
-         totm_stacks && p()->buff.teachings_of_the_monastery->up() )
+    if ( p()->buff.teachings_of_the_monastery->check() )
     {
+      int stacks = p()->buff.teachings_of_the_monastery->stack();
+
       if ( p()->bugs )
         p()->buff.memory_of_the_monastery->expire();
+      p()->buff.teachings_of_the_monastery->expire();
 
-      for ( int i = 0; i < totm_stacks; ++i )
-
-        p()->buff.teachings_of_the_monastery->expire();
-
-      for ( int i = 0; i < totm_stacks; ++i )
+      for ( int i = 0; i < stacks; ++i )
       {
         // quick estimate for delay between totm activations, not rigorously tested for
         make_event<events::delayed_execute_event_t>( *sim, p(), bok_totm_proc, p()->target, i * 100_ms );
         if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
           p()->buff.teachings_of_the_monastery->trigger();
       }
+
     }
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->buff.strength_of_the_black_ox->check() )
