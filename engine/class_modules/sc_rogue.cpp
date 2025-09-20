@@ -7268,6 +7268,13 @@ struct fatebound_coin_tails_t : public rogue_attack_t
     return m;
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    // Tail buffs is always incremented after its damage instance
+    p()->buffs.fatebound_coin_tails->increment();
+  }
+
   bool procs_blade_flurry() const override
   { return true; }
 
@@ -9214,7 +9221,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
 template <typename Base>
 void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
-  make_event( *p()->sim, delay, [ this, state, result ] {
+  auto coin_target = state->target->is_enemy() ? state->target : p()->target;
+  make_event( *p()->sim, delay, [ this, coin_target, result ] {
     if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
     {
       p()->buffs.fatebound_coin_heads->increment();
@@ -9228,11 +9236,8 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
       // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
       if ( !ab::is_precombat )
       {
-        auto coin_target = state->target->is_enemy() ? state->target : p()->target;
         p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
       }
-      // Force an event so Tails buff is always incremented after the damage instance. Heads does not mimic this behavior.
-      make_event( *p()->sim, 0_ms, [ this ] { p()->buffs.fatebound_coin_tails->increment(); } );
       if ( result != fatebound_t::coinflip_e::EDGE )
       {
         p()->buffs.fatebound_coin_heads->expire();
