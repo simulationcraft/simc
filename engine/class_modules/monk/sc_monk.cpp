@@ -1435,8 +1435,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->talent.windwalker.acclamation.ok() )
-      get_td( s->target )->debuff.acclamation->trigger();
+    get_td( s->target )->debuff.acclamation->trigger();
 
     if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
     {
@@ -1606,8 +1605,7 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( p()->baseline.windwalker.combat_conditioning->ok() )
       s->target->debuffs.mortal_wounds->trigger();
 
-    if ( p()->talent.windwalker.acclamation.ok() )
-      get_td( s->target )->debuff.acclamation->trigger();
+    get_td( s->target )->debuff.acclamation->trigger();
   }
 };
 
