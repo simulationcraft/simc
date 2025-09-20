@@ -281,9 +281,7 @@ void live_apl( monk_t* player )
   def->add_action( "flying_serpent_kick,if=movement.distance>5" );
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
 
-  def->add_action(
-      "potion,if=talent.invoke_xuen_the_white_tiger&buff.invoke_xuen_the_white_tiger.up&buff.storm_earth_and_fire.up",
-      "Potion" );
+  def->add_action( "potion,if=buff.invoke_xuen_the_white_tiger.up&buff.storm_earth_and_fire.up", "Potion" );
   def->add_action( "potion,if=!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up" );
   def->add_action( "potion,if=fight_remains<=30" );
 
@@ -292,8 +290,11 @@ void live_apl( monk_t* player )
                    "Enable PI if available" );
 
   // Define special trinket situation S3 TWW
-  def->add_action( "variable,name=special_case_trinket,value=talent.flurry_strikes&(trinket.1.cooldown.duration=120&trinket.1.has_use_buff|trinket.2.cooldown.duration=120&trinket.2.has_use_buff)&equipped.unyielding_netherprism&!talent.xuens_bond" );
-    
+  def->add_action(
+      "variable,name=special_case_trinket,value=talent.flurry_strikes&(trinket.1.cooldown.duration=120&trinket.1.has_"
+      "use_buff|trinket.2.cooldown.duration=120&trinket.2.has_use_buff)&equipped.unyielding_netherprism&!talent.xuens_"
+      "bond" );
+
   // Combine small HotJS into one condition
   def->add_action(
       "variable,name=small_hotjs_active,value=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_"
@@ -385,10 +386,12 @@ void live_apl( monk_t* player )
       "variable.invoke_xuen_count%%2|fight_remains<20",
       "Double on Use Stats" );
   trinkets->add_action(
-      "use_item,slot=trinket2,if=trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
+      "use_item,slot=trinket2,if=trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|"
+      "fight_"
       "remains<20" );
   trinkets->add_action(
-      "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
+      "use_item,slot=trinket1,if=trinket.1.has_use_buff&!trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|"
+      "fight_"
       "remains<20",
       "Trinket 1 On use Stats" );
   trinkets->add_action(
@@ -399,21 +402,29 @@ void live_apl( monk_t* player )
       "remains>30|fight_remains<20",
       "Trinket 2 On use Stats" );
   trinkets->add_action(
-      "use_item,slot=trinket2,if=!trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|fight_"
+      "use_item,slot=trinket2,if=!trinket.1.has_use_buff&trinket.2.has_use_buff&buff.invoke_xuen_the_white_tiger.up|"
+      "fight_"
       "remains<20" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff", "No Stat on Use" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff" );
   trinkets->add_action( "use_item,slot=main_hand", "Use Weapon" );
 
   // Special Case Trinkets
-  special_trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.cooldown.duration=120&buff.invoke_xuen_the_white_tiger.up|fight_remains<30", "Prism + 2 Min on use without XB talented" );
-  special_trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.cooldown.duration=120&buff.invoke_xuen_the_white_tiger.up|fight_remains<30" );
-  special_trinkets->add_action( "use_item,name=unyielding_netherprism,if=cooldown.invoke_xuen_the_white_tiger.remains&buff.storm_earth_and_fire.remains>10&buff.latent_energy.stack>2" );
+  special_trinkets->add_action(
+      "use_item,slot=trinket1,if=trinket.1.cooldown.duration=120&buff.invoke_xuen_the_white_tiger.up|fight_remains<30",
+      "Prism + 2 Min on use without XB talented" );
+  special_trinkets->add_action(
+      "use_item,slot=trinket2,if=trinket.2.cooldown.duration=120&buff.invoke_xuen_the_white_tiger.up|fight_remains<"
+      "30" );
+  special_trinkets->add_action(
+      "use_item,name=unyielding_netherprism,if=cooldown.invoke_xuen_the_white_tiger.remains&buff.storm_earth_and_fire."
+      "remains>10&buff.latent_energy.stack>2" );
   special_trinkets->add_action( "use_item,slot=main_hand", "Use Weapon" );
 
   // Cooldowns
   cooldowns->add_action(
-      "invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff.bloodlust."
+      "invoke_external_buff,name=power_infusion,if=buff.invoke_xuen_the_white_tiger.up&(!buff.bloodlust.up|buff."
+      "bloodlust."
       "up&cooldown.strike_of_the_windlord.remains)",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a "
       "href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is "
@@ -426,8 +437,15 @@ void live_apl( monk_t* player )
       "target.time_to_die>22)&!cooldown.invoke_xuen_the_white_tiger.remains&(chi<5&!talent.ordered_elements|chi<3)&("
       "combo_strike|!talent.hit_combo)" );
   cooldowns->add_action(
-      "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=!fight_style.dungeonroute&(target.time_to_die>12|!talent.xuens_bond&target.time_to_die>8)&set_bonus.tww3_2pc&talent.celestial_conduit&cooldown.strike_of_the_windlord.remains<3&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<20" );
-  cooldowns->add_action( "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(!set_bonus.tww3_2pc|!talent.celestial_conduit|!fight_style.patchwerk)&(variable.xuen_condition&!fight_style.dungeonslice&!fight_style.dungeonroute|variable.xuen_dungeonslice_condition&fight_style.Dungeonslice|variable.xuen_dungeonroute_condition&fight_style.dungeonroute)" );
+      "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=!fight_style.dungeonroute&(target.time_to_die>"
+      "12|!talent.xuens_bond&target.time_to_die>8)&set_bonus.tww3_2pc&talent.celestial_conduit&cooldown.strike_of_the_"
+      "windlord.remains<3&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_"
+      "palm&!talent.ordered_elements&time<5)|fight_remains<20" );
+  cooldowns->add_action(
+      "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(!set_bonus.tww3_2pc|!talent.celestial_conduit|!"
+      "fight_style.patchwerk)&(variable.xuen_condition&!fight_style.dungeonslice&!fight_style.dungeonroute|variable."
+      "xuen_dungeonslice_condition&fight_style.Dungeonslice|variable.xuen_dungeonroute_condition&fight_style."
+      "dungeonroute)" );
   cooldowns->add_action(
       "storm_earth_and_fire,target_if=max:target.time_to_die,if=talent.flurry_strikes&cooldown.invoke_xuen_the_white_"
       "tiger.remains&buff.bloodlust.up&cooldown.rising_sun_kick.remains|variable.sef_condition&!fight_style."
@@ -467,20 +485,26 @@ void live_apl( monk_t* player )
       "strike",
       ">=5 Targets" );
   default_aoe->add_action(
-      "touch_of_death,target_if=min:target.time_to_die,if=!variable.small_hotjs_active&!buff.heart_of_the_jade_serpent_cdr_celestial.up|fight_remains<10" );
+      "touch_of_death,target_if=min:target.time_to_die,if=!variable.small_hotjs_active&!buff.heart_of_the_jade_serpent_"
+      "cdr_celestial.up|fight_remains<10" );
   default_aoe->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack<2" );
-  default_aoe->add_action( "strike_of_the_windlord,target_if=max:target.time_to_die,if=talent.gale_force&cooldown.invoke_xuen_the_white_tiger.remains>10&set_bonus.tww3_2pc&!talent.flurry_strikes" );
+  default_aoe->add_action(
+      "strike_of_the_windlord,target_if=max:target.time_to_die,if=talent.gale_force&cooldown.invoke_xuen_the_white_"
+      "tiger.remains>10&set_bonus.tww3_2pc&!talent.flurry_strikes" );
   default_aoe->add_action(
       "slicing_winds,if=set_bonus.tww3_2pc&talent.celestial_conduit&variable.small_hotjs_active&!talent.flurry_"
       "strikes" );
-  default_aoe->add_action( "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&energy.time_to_max<=gcd.max*3&set_bonus.tww3_4pc" );
+  default_aoe->add_action(
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&energy.time_to_max<=gcd.max*3&set_bonus.tww3_4pc" );
   default_aoe->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack=2&combo_strike" );
   default_aoe->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.chi_energy.stack>29&cooldown.fists_of_"
       "fury.remains<5" );
   default_aoe->add_action(
-      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&energy.time_to_max<=gcd."
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&energy.time_to_max<=gcd."
       "max*3&cooldown.fists_of_fury.remains&(!talent.xuens_battlegear|chi<6)&set_bonus.tww3_4pc" );
   default_aoe->add_action(
       "slicing_winds,if=variable.small_hotjs_active|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
@@ -496,7 +520,8 @@ void live_apl( monk_t* player )
       "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_"
       "fury.remains>1&buff.dance_of_chiji.stack<2|!buff.storm_earth_and_fire.up&buff.pressure_point.up" );
   default_aoe->add_action(
-      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&energy.time_to_max<=gcd."
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&energy.time_to_max<=gcd."
       "max*3&set_bonus.tww3_4pc" );
   default_aoe->add_action(
       "whirling_dragon_punch,target_if=max:target.time_to_die,if=!talent.revolving_whirl|talent.revolving_whirl&buff."
@@ -530,7 +555,8 @@ void live_apl( monk_t* player )
       "rising_sun_kick,if=buff.pressure_point.up&cooldown.fists_of_fury."
       "remains>2" );
   default_aoe->add_action(
-      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&active_enemies>5&set_bonus."
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&active_enemies>5&set_bonus."
       "tww3_4pc" );
   default_aoe->add_action(
       "blackout_kick,target_if=max:target.time_to_die,if=talent.shadowboxing_treads&talent.courageous_"
@@ -578,18 +604,30 @@ void live_apl( monk_t* player )
   default_aoe->add_action(
       "blackout_kick,target_if=max:target.time_to_die,if=buff.ordered_elements.up&!talent.hit_combo&"
       "cooldown.fists_of_fury.remains" );
-  default_aoe->add_action( "tiger_palm,target_if=max:target.time_to_die,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
+  default_aoe->add_action(
+      "tiger_palm,target_if=max:target.time_to_die,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
 
   // 3-4 targets
   default_cleave->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=buff.storm_earth_and_fire.remains>13&combo_strike&talent.glory_of_the_dawn",
+      "rising_sun_kick,target_if=max:target.time_to_die,if=buff.storm_earth_and_fire.remains>13&combo_strike&talent."
+      "glory_of_the_dawn",
       "2-4 targets" );
-  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&!cooldown.whirling_dragon_punch.remains&(cooldown.fists_of_fury.remains>1&!talent.xuens_battlegear|cooldown.fists_of_fury.remains>4)&!buff.invokers_delight.up&!talent.flurry_strikes&buff.dance_of_chiji.stack<2&!talent.glory_of_the_dawn" );
-  default_cleave->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=variable.small_hotjs_active&buff.dance_of_chiji.stack<2&prev.rising_sun_kick" );
-  default_cleave->add_action( "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&energy.time_to_max<=gcd.max*3&set_bonus.tww3_4pc" );
-  default_cleave->add_action( "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&!talent.xuens_battlegear&set_bonus.tww3_4pc" );
   default_cleave->add_action(
-      "strike_of_the_windlord,target_if=max:target.time_to_die,if=talent.gale_force&cooldown.invoke_xuen_the_white_tiger.remains>10&set_bonus.tww3_2pc&!"
+      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&!cooldown.whirling_dragon_punch.remains&("
+      "cooldown.fists_of_fury.remains>1&!talent.xuens_battlegear|cooldown.fists_of_fury.remains>4)&!buff.invokers_"
+      "delight.up&!talent.flurry_strikes&buff.dance_of_chiji.stack<2&!talent.glory_of_the_dawn" );
+  default_cleave->add_action(
+      "whirling_dragon_punch,target_if=max:target.time_to_die,if=variable.small_hotjs_active&buff.dance_of_chiji.stack<"
+      "2&prev.rising_sun_kick" );
+  default_cleave->add_action(
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&energy.time_to_max<=gcd.max*3&set_bonus.tww3_4pc" );
+  default_cleave->add_action(
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&!talent.xuens_battlegear&set_bonus.tww3_4pc" );
+  default_cleave->add_action(
+      "strike_of_the_windlord,target_if=max:target.time_to_die,if=talent.gale_force&cooldown.invoke_xuen_the_white_"
+      "tiger.remains>10&set_bonus.tww3_2pc&!"
       "talent.flurry_strikes" );
   default_cleave->add_action(
       "slicing_winds,if=set_bonus.tww3_2pc&talent.celestial_conduit&variable.small_hotjs_active&!talent.flurry_"
@@ -601,11 +639,18 @@ void live_apl( monk_t* player )
   default_cleave->add_action(
       "rising_sun_kick,target_if=max:target.time_to_die,if=buff.pressure_point.up&active_enemies<4&cooldown.fists_of_"
       "fury.remains>4" );
-  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_fury.remains<3&buff.dance_of_chiji.stack<2&cooldown.fists_of_fury.remains" );
+  default_cleave->add_action(
+      "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_"
+      "fury.remains<3&buff.dance_of_chiji.stack<2&cooldown.fists_of_fury.remains" );
   default_cleave->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.stack=2&active_enemies>"
       "3" );
-  default_cleave->add_action( "celestial_conduit,target_if=max:target.time_to_die,if=buff.storm_earth_and_fire.up&debuff.gale_force.remains<5&cooldown.strike_of_the_windlord.remains&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force.remains<5)&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15|fight_style.dungeonroute&buff.invokers_delight.up&cooldown.strike_of_the_windlord.remains&buff.storm_earth_and_fire.remains<8|fight_remains<10" );
+  default_cleave->add_action(
+      "celestial_conduit,target_if=max:target.time_to_die,if=buff.storm_earth_and_fire.up&debuff.gale_force.remains<5&"
+      "cooldown.strike_of_the_windlord.remains&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force.remains<5)&("
+      "talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15|fight_style.dungeonroute&buff."
+      "invokers_delight.up&cooldown.strike_of_the_windlord.remains&buff.storm_earth_and_fire.remains<8|fight_remains<"
+      "10" );
   default_cleave->add_action(
       "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&(energy>55&talent.inner_peace|energy>60&!talent."
       "inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery."
@@ -615,16 +660,21 @@ void live_apl( monk_t* player )
       "ordered_elements.up&chi<5&combo_strike|(!variable.small_hotjs_active|!buff.heart_of_the_jade_serpent_"
       "cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up" );
   default_cleave->add_action(
-      "touch_of_death,target_if=max:target.time_to_die,if=!variable.small_hotjs_active&!buff.heart_of_the_jade_serpent_cdr_celestial.up|fight_remains<10" );
+      "touch_of_death,target_if=max:target.time_to_die,if=!variable.small_hotjs_active&!buff.heart_of_the_jade_serpent_"
+      "cdr_celestial.up|fight_remains<10" );
   default_cleave->add_action(
       "whirling_dragon_punch,target_if=max:target.time_to_die,if=variable.small_hotjs_active&buff.dance_of_"
       "chiji.stack<2" );
   default_cleave->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=buff.dance_of_chiji.stack<2" );
   default_cleave->add_action(
       "slicing_winds,if=variable.small_hotjs_active|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
-  default_cleave->add_action( "blackout_kick,if=combo_strike&talent.courageous_impulse&talent.shadowboxing_treads&buff.bok_proc.stack=2&cooldown.fists_of_fury.remains&active_enemies=3" );
   default_cleave->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=buff.invoke_xuen_the_white_tiger.down&prev.tiger_palm&time<5&talent.ordered_elements&(talent.glory_of_the_dawn|active_enemies<3)|variable.small_hotjs_active&buff.pressure_point.up&cooldown.fists_of_fury.remains&(talent.glory_of_the_dawn|active_enemies<3)" );
+      "blackout_kick,if=combo_strike&talent.courageous_impulse&talent.shadowboxing_treads&buff.bok_proc.stack=2&"
+      "cooldown.fists_of_fury.remains&active_enemies=3" );
+  default_cleave->add_action(
+      "rising_sun_kick,target_if=max:target.time_to_die,if=buff.invoke_xuen_the_white_tiger.down&prev.tiger_palm&time<"
+      "5&talent.ordered_elements&(talent.glory_of_the_dawn|active_enemies<3)|variable.small_hotjs_active&buff.pressure_"
+      "point.up&cooldown.fists_of_fury.remains&(talent.glory_of_the_dawn|active_enemies<3)" );
   default_cleave->add_action(
       "fists_of_fury,target_if=max:target.time_to_die,if=combo_strike&buff.heart_of_the_jade_serpent_cdr_celestial.up|"
       "variable.small_hotjs_active" );
@@ -641,7 +691,8 @@ void live_apl( monk_t* player )
       "blackout_kick,target_if=max:target.time_to_die,if=buff.teachings_of_the_monastery.stack=8&(active_"
       "enemies<3|talent.shadowboxing_treads)" );
   default_cleave->add_action(
-      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_strikes&!talent.xuens_battlegear&"
+      "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&buff.storm_earth_and_fire.remains>2&talent.flurry_"
+      "strikes&!talent.xuens_battlegear&"
       "set_bonus.tww3_4pc" );
   default_cleave->add_action(
       "whirling_dragon_punch,target_if=max:target.time_to_die,if=!talent.revolving_whirl|talent.revolving_whirl&buff."
@@ -724,14 +775,19 @@ void live_apl( monk_t* player )
   default_cleave->add_action( "tiger_palm,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
 
   // 1-2 Target priority
-  default_st->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&buff.pressure_point.up&variable.small_hotjs_active",
-                          "1 target" );
+  default_st->add_action(
+      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&buff.pressure_point.up&variable.small_hotjs_"
+      "active",
+      "1 target" );
   default_st->add_action( "slicing_winds,if=set_bonus.tww3_2pc&talent.celestial_conduit&variable.small_hotjs_active" );
   default_st->add_action(
       "tiger_palm,if=combo_strike&!cooldown.celestial_conduit.remains&buff.pressure_point.up&chi<5&time<10" );
-  default_st->add_action( "fists_of_fury,target_if=max:debuff.acclamation.stack,if=active_enemies>1&(combo_strike&buff.heart_of_the_jade_serpent_cdr_celestial.up|variable.small_hotjs_active)" );
   default_st->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(buff.pressure_point.up&!variable.small_hotjs_active&buff.heart_of_the_jade_"
+      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=active_enemies>1&(combo_strike&buff.heart_of_the_jade_"
+      "serpent_cdr_celestial.up|variable.small_hotjs_active)" );
+  default_st->add_action(
+      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(buff.pressure_point.up&!variable.small_hotjs_"
+      "active&buff.heart_of_the_jade_"
       "serpent_cdr_celestial.up|buff.invokers_delight.up|buff.bloodlust.up|buff.pressure_point.up&cooldown.fists_of_"
       "fury.remains|talent.flurry_strikes)" );
   default_st->add_action(
@@ -743,7 +799,9 @@ void live_apl( monk_t* player )
       "tiger_palm,if=combo_strike&buff.storm_earth_and_fire.remains&talent.flurry_strikes&set_bonus.tww3_4pc&!buff."
       "bloodlust.up" );
   default_st->add_action(
-      "whirling_dragon_punch,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2&!set_bonus.tww3_2pc|active_enemies>1&buff.dance_of_chiji.stack<2&cooldown.celestial_conduit.remains" );
+      "whirling_dragon_punch,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial."
+      "up&!buff.dance_of_chiji.stack=2&!set_bonus.tww3_2pc|active_enemies>1&buff.dance_of_chiji.stack<2&cooldown."
+      "celestial_conduit.remains" );
   default_st->add_action(
       "celestial_conduit,if=buff.storm_earth_and_fire.up&(!buff.heart_of_the_jade_serpent_cdr.up|debuff.gale_force."
       "remains<5)&cooldown.strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight."
@@ -753,10 +811,12 @@ void live_apl( monk_t* player )
       "tiger_palm,if=chi<5&combo_strike&variable.small_hotjs_active&!"
       "buff.heart_of_the_jade_serpent_cdr_celestial.up&energy.time_to_max<=gcd.max*3&!buff.invokers_delight.up&!buff."
       "bloodlust.up&!buff.storm_earth_and_fire.up" );
-  default_st->add_action( "tiger_palm,if=chi<2&combo_strike&cooldown.strike_of_the_windlord.remains<5&talent.celestial_conduit" );
+  default_st->add_action(
+      "tiger_palm,if=chi<2&combo_strike&cooldown.strike_of_the_windlord.remains<5&talent.celestial_conduit" );
   default_st->add_action( "tiger_palm,if=chi<2&combo_strike&talent.celestial_conduit" );
   default_st->add_action(
-      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=combo_strike&buff.heart_of_the_jade_serpent_cdr_celestial.up|variable.small_hotjs_active" );
+      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=combo_strike&buff.heart_of_the_jade_serpent_cdr_"
+      "celestial.up|variable.small_hotjs_active" );
   default_st->add_action(
       "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike&(!set_bonus.tww3_2pc|!buff.bloodlust.up)&!"
       "talent.flurry_strikes" );
@@ -769,18 +829,23 @@ void live_apl( monk_t* player )
       "ordered_elements.up" );
   default_st->add_action( "touch_of_death,target_if=min:target.time_to_die" );
   default_st->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(buff.invoke_xuen_the_white_tiger.down&prev.tiger_palm&time<5|buff.storm_earth_and_"
+      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(buff.invoke_xuen_the_white_tiger.down&prev."
+      "tiger_palm&time<5|buff.storm_earth_and_"
       "fire.up&talent.ordered_elements)" );
   default_st->add_action(
-      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&talent.celestial_conduit&!buff."
+      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial."
+      "up&talent.celestial_conduit&!buff."
       "invokers_delight.up&!buff.heart_of_the_jade_serpent_cdr_celestial.up&cooldown.fists_of_fury.remains<5&cooldown."
       "invoke_xuen_the_white_tiger.remains>15&(cooldown.slicing_winds.remains<23|!set_bonus.tww3_2pc)|fight_remains<"
       "12" );
   default_st->add_action(
-      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=talent.gale_force&cooldown.invoke_xuen_the_white_tiger.remains>13|fight_remains<cooldown.invoke_xuen_the_white_tiger.remains" );
-  default_st->add_action( "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=time>5&talent.flurry_strikes" );
+      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=talent.gale_force&cooldown.invoke_xuen_the_"
+      "white_tiger.remains>13|fight_remains<cooldown.invoke_xuen_the_white_tiger.remains" );
   default_st->add_action(
-      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=time>15&set_bonus.tww3_2pc&cooldown.invoke_xuen_the_white_tiger.remains>15&(cooldown."
+      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=time>5&talent.flurry_strikes" );
+  default_st->add_action(
+      "strike_of_the_windlord,target_if=max:debuff.acclamation.stack,if=time>15&set_bonus.tww3_2pc&cooldown.invoke_"
+      "xuen_the_white_tiger.remains>15&(cooldown."
       "slicing_winds.remains<23|!set_bonus.tww3_2pc)" );
   default_st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike&!talent.flurry_strikes" );
   default_st->add_action(
@@ -791,10 +856,12 @@ void live_apl( monk_t* player )
       "cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2&!set_bonus.tww3_2pc" );
   default_st->add_action( "whirling_dragon_punch,target_if=max:debuff.acclamation.stack,if=set_bonus.tww3_2pc" );
   default_st->add_action(
-      "whirling_dragon_punch,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2|buff."
+      "whirling_dragon_punch,target_if=max:debuff.acclamation.stack,if=!buff.heart_of_the_jade_serpent_cdr_celestial."
+      "up&!buff.dance_of_chiji.stack=2|buff."
       "ordered_elements.up|talent.knowledge_of_the_broken_temple" );
   default_st->add_action(
-      "crackling_jade_lightning,target_if=max:debuff.acclamation.stack,if=buff.the_emperors_capacitor.stack>19&!variable.small_hotjs_active&!buff.heart_of_"
+      "crackling_jade_lightning,target_if=max:debuff.acclamation.stack,if=buff.the_emperors_capacitor.stack>19&!"
+      "variable.small_hotjs_active&!buff.heart_of_"
       "the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target.time_to_die>20)&cooldown."
       "invoke_xuen_the_white_tiger.remains>15|buff.the_emperors_capacitor.stack>20&!variable.small_hotjs_active&!buff."
       "heart_of_the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target.time_to_die>20)&"
@@ -802,20 +869,26 @@ void live_apl( monk_t* player )
       "emperors_capacitor.stack>10&fight_remains<5|buff.storm_earth_and_fire.remains<2&buff.the_emperors_capacitor."
       "stack>15&buff.storm_earth_and_fire.up" );
   default_st->add_action( "slicing_winds,if=target.time_to_die>10&!set_bonus.tww3_4pc|talent.flurry_strikes" );
-  default_st->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(chi>4|chi>2&energy>50|cooldown.fists_of_fury.remains>2)" );
   default_st->add_action(
-      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=(talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_the_windlord.remains>1|"
+      "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike&(chi>4|chi>2&energy>50|cooldown.fists_of_fury."
+      "remains>2)" );
+  default_st->add_action(
+      "fists_of_fury,target_if=max:debuff.acclamation.stack,if=(talent.xuens_battlegear|!talent.xuens_battlegear&("
+      "cooldown.strike_of_the_windlord.remains>1|"
       "variable.small_hotjs_active|buff.heart_of_the_jade_serpent_cdr_celestial.up))&(talent.xuens_battlegear&cooldown."
       "invoke_xuen_the_white_tiger.remains>5|cooldown.invoke_xuen_the_white_tiger.remains>10)&(!buff.invokers_delight."
       "up|buff.invokers_delight.up&cooldown.strike_of_the_windlord.remains>4&cooldown.celestial_conduit.remains)|fight_"
       "remains<5|talent.flurry_strikes" );
   default_st->add_action(
-      "tiger_palm,target_if=max:debuff.acclamation.stack,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.wisdom_of_the_wall_flurry."
+      "tiger_palm,target_if=max:debuff.acclamation.stack,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_"
+      "strikes&buff.wisdom_of_the_wall_flurry."
       "up" );
-  default_st->add_action( "tiger_palm,target_if=max:debuff.acclamation.stack,if=combo_strike&chi<5&set_bonus.tww3_2pc" );
+  default_st->add_action(
+      "tiger_palm,target_if=max:debuff.acclamation.stack,if=combo_strike&chi<5&set_bonus.tww3_2pc" );
   default_st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike" );
   default_st->add_action(
-      "blackout_kick,target_if=max:debuff.acclamation.stack,if=combo_strike&talent.energy_burst&buff.bok_proc.up&chi<5&(variable.small_hotjs_active|buff."
+      "blackout_kick,target_if=max:debuff.acclamation.stack,if=combo_strike&talent.energy_burst&buff.bok_proc.up&chi<5&"
+      "(variable.small_hotjs_active|buff."
       "heart_of_the_jade_serpent_cdr_celestial.up)" );
   default_st->add_action(
       "spinning_crane_kick,if=combo_strike&buff.bloodlust.up&variable.small_hotjs_active&buff.dance_of_chiji."
