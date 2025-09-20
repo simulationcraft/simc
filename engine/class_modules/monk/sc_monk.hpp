@@ -632,7 +632,7 @@ public:
     propagate_const<buff_t *> rushing_jade_wind;
     propagate_const<buff_t *> spinning_crane_kick;
     propagate_const<buff_t *> windwalking_driver;
-    propagate_const<absorb_buff_t *> yulons_grace;
+    propagate_const<buff_t *> yulons_grace;
     propagate_const<buff_t *> windwalking_movement_aura;
     propagate_const<buff_t *> chi_burst;
 
@@ -640,7 +640,6 @@ public:
     propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
     propagate_const<buff_t *> call_to_arms_invoke_niuzao;
-    propagate_const<absorb_buff_t *> celestial_brew;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elusive_brawler;
@@ -653,14 +652,13 @@ public:
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> purified_chi;
-    propagate_const<buffs::shuffle_t *> shuffle;
+    propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> weapons_of_order;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> ox_stance;
 
     // Mistweaver
-    propagate_const<absorb_buff_t *> life_cocoon;
     propagate_const<buff_t *> dance_of_chiji_mw;
     propagate_const<buff_t *> jade_empowerment;
     propagate_const<buff_t *> jadefire_stomp_reset;

@@ -5406,6 +5406,7 @@ struct celestial_infusion_t : public absorb_brew_t
       return debug_cast<buffs::fractional_absorb_t *>( b );
 
     auto buff = make_buff<buffs::fractional_absorb_t>( p(), name_str, &data() );
+    buff->set_absorb_fraction( data().effectN( 2 ).percent() );
     buff->set_absorb_source( stats );
 
     return buff;
@@ -5647,6 +5648,9 @@ shuffle_t::shuffle_t( monk_t *player )
 
 void shuffle_t::trigger( timespan_t duration )
 {
+  if ( !p().talent.brewmaster.shuffle->ok() )
+    return;
+
   accumulator += duration;
 
   duration = std::min( duration + remains(), max_duration );
@@ -7833,7 +7837,8 @@ void monk_t::create_buffs()
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( this, "windwalking_aura_driver", find_spell( 365080 ) );
 
-  buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
+  buff.yulons_grace =
+      make_buff_fallback<absorb_buff_t>( talent.monk.yulons_grace->ok(), this, "yulons_grace", find_spell( 414143 ) );
 
   // Brewmaster
   buff.training_of_niuzao = make_buff_fallback<training_of_niuzao_buff>( talent.brewmaster.training_of_niuzao->ok(),
@@ -7846,9 +7851,6 @@ void monk_t::create_buffs()
 
   buff.call_to_arms_invoke_niuzao = make_buff_fallback(
       talent.brewmaster.call_to_arms->ok(), this, "call_to_arms_invoke_niuzao", talent.brewmaster.call_to_arms_buff );
-
-  buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
-  buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
 
   buff.purified_chi =
       make_buff_fallback( talent.brewmaster.celestial_brew->ok(), this, "purified_chi", talent.brewmaster.purified_chi )
@@ -7905,6 +7907,7 @@ void monk_t::create_buffs()
           ->set_trigger_spell( talent.brewmaster.pretense_of_instability )
           ->add_invalidate( CACHE_DODGE );
 
+  // the override is a little weird, we'll just let this always init
   buff.shuffle = make_buff<buffs::shuffle_t>( this );
 
   buff.tiger_strikes =
@@ -7939,11 +7942,6 @@ void monk_t::create_buffs()
   buff.jadefire_stomp_reset =
       make_buff_fallback( talent.mistweaver.jadefire_stomp->ok(), this, "jadefire_stomp_reset", find_spell( 388193 ) )
           ->set_trigger_spell( shared.jadefire_stomp );
-
-  buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", talent.mistweaver.life_cocoon );
-  buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )
-      ->set_trigger_spell( talent.mistweaver.life_cocoon )
-      ->set_cooldown( timespan_t::zero() );
 
   const auto make_secret_infusion_buff = [ this ]( std::string_view name, const spell_data_t *spell_data ) {
     return make_buff_fallback( talent.mistweaver.secret_infusion->ok(), this, name, spell_data )
@@ -8079,8 +8077,9 @@ void monk_t::create_buffs()
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_freeze_stacks( true );
 
-  buff.invoke_xuen = make_buff<buffs::invoke_xuen_the_white_tiger_buff_t>(
-      this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
+  buff.invoke_xuen = make_buff_fallback<buffs::invoke_xuen_the_white_tiger_buff_t>(
+      talent.windwalker.invoke_xuen_the_white_tiger->ok(), this, "invoke_xuen_the_white_tiger",
+      talent.windwalker.invoke_xuen_the_white_tiger );
 
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
