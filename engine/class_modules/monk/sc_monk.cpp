@@ -740,6 +740,8 @@ monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
   special    = true;
   may_glance = false;
   // Monk melee attacks do not have hasted GCD by default. Exceptions should be explicitly made.
+  // While action_t sets attacks with 1s gcd to be non-hasted, monks use spec auras to lower ability gcds by 500ms which
+  // is applied in init_finished, thus currently we cannot rely on action_t spell data parsing.
   gcd_type = gcd_haste_type::NONE;
 }
 
@@ -3514,7 +3516,6 @@ struct chi_burst_t : monk_spell_t
     parse_options( options_str );
     may_combo_strike       = true;
     trigger_jadefire_stomp = true;
-    gcd_type               = gcd_haste_type::NONE;
 
     stats = damage->stats;
     add_child( heal );
@@ -3912,7 +3913,6 @@ public:
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
     parse_options( options_str );
-    gcd_type = gcd_haste_type::NONE;
 
     aoe                 = -1;
     reduced_aoe_targets = 1.0;
@@ -4047,7 +4047,6 @@ struct exploding_keg_t : public monk_spell_t
   {
     parse_options( options_str );
     cast_during_sck = true;
-    gcd_type        = gcd_haste_type::NONE;
     aoe             = -1;
     add_child( p->active_actions.exploding_keg );
   }
@@ -4348,7 +4347,6 @@ struct xuen_spell_t : public monk_spell_t
     cast_during_sck = true;
     // Specifically set for 10.1 class trinket
     harmful  = true;
-    gcd_type = gcd_haste_type::NONE;
   }
 
   void execute() override
@@ -4580,7 +4578,6 @@ struct niuzao_spell_t : public monk_spell_t
     harmful = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
 
     apply_affecting_aura( p->talent.brewmaster.walk_with_the_ox );
   }
@@ -4634,7 +4631,6 @@ struct chiji_spell_t : public monk_spell_t
     harmful = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
   void execute() override
@@ -4664,7 +4660,6 @@ struct yulon_spell_t : public monk_spell_t
     harmful = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
   }
 
   void execute() override
@@ -4952,7 +4947,6 @@ struct jadefire_stomp_t : public monk_spell_t
     parse_options( options_str );
     may_combo_strike = true;
     cast_during_sck  = true;
-    gcd_type         = gcd_haste_type::NONE;  // Need to define this manually for some reason
 
     damage = new jadefire_stomp_damage_t( p );
     heal   = new jadefire_stomp_heal_t( p );

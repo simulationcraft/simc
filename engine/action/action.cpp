@@ -633,9 +633,22 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
 
-  // generic (type==none) and spells (type==magic) have hasted gcd by default
-  if ( spell_data.dmg_class() == SPELL_TYPE_NONE || spell_data.dmg_class() == SPELL_TYPE_MAGIC )
-    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
+  // non-abilities have hasted gcd by default
+  if ( !spell_data.flags( spell_attribute::SX_ABILITY ) && !spell_data.flags( spell_attribute::SX_RANGED_ABILITY ) )
+  {
+    if ( spell_data.dmg_class() == SPELL_TYPE_MELEE || spell_data.dmg_class() == SPELL_TYPE_RANGED )
+    {
+      // 1s gcd melee class abilities don't get hasted
+      if ( spell_data.affected_by_label( 16 ) && trigger_gcd == 1_s )
+        gcd_type = gcd_haste_type::NONE;
+      else
+        gcd_type = gcd_haste_type::ATTACK_HASTE;
+    }
+    else
+    {
+      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
+    }
+  }
 
   // parse attributes
   suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );

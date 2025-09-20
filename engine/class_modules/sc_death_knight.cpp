@@ -4304,7 +4304,6 @@ struct horseman_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       trigger_gcd = 1_s;
-      gcd_type    = gcd_haste_type::ATTACK_HASTE;  // spell is type melee
       harmful     = false;
     }
 
@@ -5018,7 +5017,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   using base_t        = death_knight_action_t<Base>;
 
   propagate_const<gain_t*> gain;
-  bool hasted_gcd;
   double rp_per_tick;
   std::vector<player_effect_t> runic_power_multiplier_effects;
   std::vector<player_effect_t> runic_power_flat_effects;
@@ -5034,7 +5032,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   death_knight_action_t( std::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() )
     : action_base_t( n, p, s ),
       gain( nullptr ),
-      hasted_gcd( false ),
       rp_per_tick( 0 ),
       runic_power_multiplier_effects(),
       runic_power_flat_effects(),
@@ -5353,11 +5350,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     if ( base_gcd == 0_ms )
     {
       return 0_ms;
-    }
-
-    if ( hasted_gcd )
-    {
-      base_gcd *= this->composite_haste();
     }
 
     if ( base_gcd < this->min_gcd )
