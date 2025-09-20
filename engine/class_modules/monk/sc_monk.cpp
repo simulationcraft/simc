@@ -1945,7 +1945,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
         if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
           p()->buff.teachings_of_the_monastery->trigger();
       }
-
     }
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->buff.strength_of_the_black_ox->check() )
@@ -2282,12 +2281,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
 struct fists_of_fury_tick_t : public monk_melee_attack_t
 {
-  fists_of_fury_tick_t( monk_t *p, util::string_view name )
-    : monk_melee_attack_t( p, name, p->passives.fists_of_fury_tick )
+  fists_of_fury_tick_t( monk_t *player, util::string_view name )
+    : monk_melee_attack_t( player, name, player->passives.fists_of_fury_tick )
   {
     background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = p->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
+    reduced_aoe_targets = player->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
     full_amount_targets = 1;
     ww_mastery          = true;
 
@@ -2295,10 +2294,22 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
 
-    parse_effects( p->buff.momentum_boost_damage );
-    if ( const auto &effect = p->tier.tww2.ww_4pc_cashout->effectN( 1 ); effect.ok() && p->tier.tww2.ww_4pc->ok() )
+    parse_effects( player->buff.momentum_boost_damage );
+    if ( const auto &effect = player->tier.tww2.ww_4pc_cashout->effectN( 1 );
+         effect.ok() && player->tier.tww2.ww_4pc->ok() )
       add_parse_entry( da_multiplier_effects )
-          .set_buff( p->tier.tww2.cashout )
+          .set_buff( player->tier.tww2.cashout )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+
+    if ( const auto &effect = player->talent.windwalker.momentum_boost->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_value_func( [ & ]( double ) { return ( 1.0 / p()->composite_melee_haste() - 1.0 ) * effect.percent(); } )
+          .set_eff( &effect );
+
+    if ( const auto &effect = player->talent.windwalker.transfer_the_power->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_buff( player->buff.transfer_the_power )
           .set_value( effect.percent() )
           .set_eff( &effect );
   }
@@ -2311,19 +2322,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
       m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
 
     return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->buff.transfer_the_power->check_stack_value();
-
-    if ( p()->talent.windwalker.momentum_boost.ok() )
-      am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
-                  p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
-
-    return am;
   }
 
   void impact( action_state_t *s ) override
