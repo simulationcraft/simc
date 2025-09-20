@@ -8031,7 +8031,7 @@ void monk_t::create_buffs()
                                                talent.mistweaver.dance_of_chiji->effectN( 1 ).trigger() )
                                ->set_trigger_spell( talent.mistweaver.dance_of_chiji );
 
-  buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
+  buff.dance_of_chiji_hidden = make_buff_fallback( specialization() != MONK_BREWMASTER, this, "dance_of_chiji_hidden" )
                                    ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true );
