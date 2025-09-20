@@ -7271,7 +7271,7 @@ struct fatebound_coin_tails_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    // Tail buffs is always incremented after its damage instance
+    // Tail buff is always incremented after its damage instance
     p()->buffs.fatebound_coin_tails->increment();
   }
 
