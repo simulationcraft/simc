@@ -1885,7 +1885,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( tier_tww2_opportunistic_strike )
       cooldown->adjust( -p()->tier.tww2.brm_4pc_opportunistic_strike->effectN( 1 ).time_value() );
 
-    p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+    p()->buff.shuffle->trigger(
+        timespan_t::from_seconds( p()->baseline.brewmaster.blackout_kick->effectN( 2 ).base_value() ) );
 
     p()->buff.blackout_combo->trigger();
     p()->buff.flow_of_battle_damage->trigger();
