@@ -388,6 +388,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::
   { 115, "Furthest Enemy in Area" },
   { 118, "Friendly or Raid"       },
   { 119, "Self and Summons"       },
+  { 120, "At Summons in Area"     },
   { 131, "At Summoner"            },
   { 132, "At Friendly"            },
   { 133, "Line to Friendly"       },
