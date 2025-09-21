@@ -1278,7 +1278,7 @@ enum effect_subtype_t : unsigned {
     A_423 = 423,
     A_424 = 424,
     A_426 = 426,
-    A_428 = 428,
+    A_TRIGGER_SUMMON_WITH_DURATION_OVERRIDE = 428,
     A_MOD_PET_DAMAGE_DONE = 429,
     A_430 = 430,
     A_440 = 440,
