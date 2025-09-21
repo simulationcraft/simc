@@ -3778,11 +3778,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=280739)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.666667 | Target: At Summons in Area (120)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.666667 | Target: Self and Summons in Area (120)
                    Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Winged Agility (264360), Primal Rage (264667), Primal Rage (272678), Spore Cloud (344347), Sonic Screech (344348), Nether Energy (344349), Spirit Pulse (344351), Serenity Dust (344353), Primal Rage (357650), Fortitude of the Bear (388035), Fortitude of the Bear (392956), Harrier's Cry (466904)
                    Family Flags: 19, 60
 #2 (id=725119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.666667 | Misc Value: 22 | Target: At Summons in Area (120)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.666667 | Misc Value: 22 | Target: Self and Summons in Area (120)
                    Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Winged Agility (264360), Primal Rage (264667), Primal Rage (272678), Spore Cloud (344347), Sonic Screech (344348), Nether Energy (344349), Spirit Pulse (344351), Serenity Dust (344353), Primal Rage (357650), Fortitude of the Bear (388035), Fortitude of the Bear (392956), Harrier's Cry (466904)
                    Family Flags: 19, 60
 #3 (id=725122)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
@@ -4562,7 +4562,7 @@ Triggered By     : Bloodworms (195679)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290210)   : Unknown(203)
-                   Base Value: 198494 | Scaled Value: 198494 | Trigger Spell: 198494 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 198494 | Scaled Value: 198494 | Trigger Spell: 198494 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc195679
 
 Name             : Bloodworms (id=198494) [Hidden] 
@@ -12239,7 +12239,7 @@ Triggered By     : Commander of the Dead (390259)
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1026943)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 #2 (id=1051086)  : Apply Party Aura (35) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 28179 | Target: Self (1)
 #3 (id=1255736)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -12260,10 +12260,10 @@ Labels           : 16: Class Spells
 Attributes       : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value: 0x7f | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 25 yards | Target: At Summons in Area (120)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 25 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
 
@@ -13410,7 +13410,7 @@ Effects          :
 #1 (id=1098451)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1102261)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Misc Value 2: 2915 (Label) | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Misc Value 2: 2915 (Label) | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells (Label): Shadow Bolt (317791)
 Description      : Apocalypse summons an additional Magus of the Dead. Your Magus of the Dead Shadow Bolt now fires a volley of Shadow Bolts at up to $s2 nearby enemies.
 
@@ -16590,7 +16590,7 @@ Effects          :
 #1 (id=1158350)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1158351)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 17 | Misc Value 2: 2915 (Label) | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 17 | Misc Value 2: 2915 (Label) | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells (Label): Shadow Bolt (317791)
 Description      : Your Magus of the Dead Shadow Bolt now fires a volley of Shadow Bolts at up to $s2 nearby enemies.
 

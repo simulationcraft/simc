@@ -2260,19 +2260,19 @@ Effects          :
 #11 (id=338097)  : Apply Aura (6) | Unknown(403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196408 | Misc Value 2: 0x217f9 | Target: Self (1)
 #12 (id=338098)  : Apply Aura (6) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: Self and Summons in Area (120)
 #13 (id=338099)  : Apply Aura Pet (174) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: Self and Summons in Area (120)
 #14 (id=338100)  : Apply Aura (6) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: Self and Summons in Area (120)
 #15 (id=338101)  : Apply Aura Pet (174) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: Self and Summons in Area (120)
 #16 (id=338102)  : Apply Aura (6) | Unknown(403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119905 | Misc Value 2: 0x217db | Target: Self (1)
 #17 (id=338103)  : Apply Aura (6) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: Self and Summons in Area (120)
 #18 (id=338104)  : Apply Aura Pet (174) | Unknown(403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Self and Summons in Area (120)
 #19 (id=338105)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 112921 | Misc Value 2: 0x225db | Target: Self (1)
 #20 (id=756159)  : Apply Aura (6) | Unknown(403)
@@ -4181,7 +4181,7 @@ Effects          :
 #1 (id=288083)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy (6)
 #2 (id=302944)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : Demonic forces suck all of your Wild Imps toward the target, and then cause them to violently explode, dealing $196278s2 Shadowflame damage to all enemies within $196278A3 yards.
 
 Name             : Implosion (id=196278) [Spell Family (5)] 
@@ -4895,7 +4895,7 @@ Effects          :
 #1 (id=313705)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy (6)
 #2 (id=343470)   : Damage Taken Max Health% (165)
-                   Base Value: 8 | Scaled Value: 8 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 8 | Scaled Value: 8 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : |cFFFFCC99Thal'kiel|r drains $s2% of the life from your demon servants and unleashes a blast of Shadow damage at your current target equal to the life he stole. 
 
 Name             : Thal'kiel's Consumption (id=211715) [Spell Family (5)] 
@@ -5838,7 +5838,7 @@ Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707327)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: At Summons in Area (120)
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self and Summons in Area (120)
 Description      : Instantly sacrifice up to $s1 Wild Imps, generating $s1 charges of Demonic Core that cause Demonbolt to deal $334581s1% additional damage.
 
 Name             : Demonic Core (id=264173) [Spell Family (5)] 
@@ -6506,7 +6506,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=714981)   : Damage Taken Max Health% (165)
-                   Base Value: 12 | Scaled Value: 12 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 12 | Scaled Value: 12 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : Your Demon Commander now drains $s2% of the life from your demon servants to empower himself.
 
 Name             : Demonic Consumption (id=267972) [Spell Family (5)] 
@@ -6522,7 +6522,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=714982)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 36 | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 36 | Target: Self and Summons in Area (120)
 Description      : $@spelldesc267215
 Tooltip          : Damage dealt increased by $w1.
 
@@ -7183,7 +7183,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=737879)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc264178
 
 Name             : Channel Demonfire (id=281362) [Spell Family (5), Hidden] 
@@ -8025,7 +8025,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not Shapeshifted (16), Do Not Display Range (126), Only In Spellbook Until Learned (240), Allow Class Ability Procs (416), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=830607)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: At Summons in Area (120)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self and Summons in Area (120)
                    Affected Spells: Fel Firebolt (104318), Diabolic Bolt (438823)
                    Family Flags: 12
 Description      : Teaches your Wild Imps how to spend $s1% less energy when casting Fel Firebolt.
@@ -9556,7 +9556,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 11 | Misc Value 2: 1826 (Label) | Target: Self (1)
                    Affected Spells (Label): Devour Magic (19505)
 #4 (id=1021267)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 1827 (Label) | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 1827 (Label) | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells (Label): Seduction (6358), Seduction (119909)
 #5 (id=1021271)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 1827 (Label) | Target: Self (1)
@@ -10606,7 +10606,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1021956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 70 | Scaled Value: 70 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 70 | Scaled Value: 70 | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells: Eye Beam (205231)
                    Family Flags: 90
 Description      : Increases the damage of your Darkglare by $s1%. When Darkglare extends damage over time effects it also sears affected targets for $453233s1 Shadow damage.
@@ -11209,7 +11209,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Log (8), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), No Initial Threat (86), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Can Target Untargetable (216), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022497)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
 Description      : $@spelldesc387600
 Tooltip          : Damage done increased by $s1%.
@@ -12289,7 +12289,7 @@ Effects          :
                    Affected Spells: Agony (980)
                    Family Flags: 10
 #2 (id=1054514)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells: Fel Firebolt (104318), Diabolic Bolt (438823)
                    Family Flags: 12
 #3 (id=1054530)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -12324,7 +12324,7 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #2 (id=1054551)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected Spells: Incinerate (29722), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38
 #3 (id=1054552)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -15575,7 +15575,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1156060)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7f | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
 Description      : Critical strikes from your spells and your demons deal $s1% increased damage.
 

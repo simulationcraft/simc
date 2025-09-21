@@ -44161,7 +44161,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=164684)   : Apply Aura Pet (174) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 12635.6 (coefficient=3.3) | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 12635.6 (coefficient=3.3) | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : Your pet's attacks have a chance to deal an additional 50% damage as Nature, but no more than $s1.
 
 Name             : Swarmkeeper's Speed (id=128882) 
@@ -77321,7 +77321,7 @@ Labels           : 129
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=318195)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc214225
 
 Name             : Kingsbane (id=214320) [Spell Family (8), Passive] 
@@ -78508,7 +78508,7 @@ Triggered By     : Tak'theritrix's Command (215068)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=319467)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc215068
 
 Name             : Shadow Wave (id=215089) [Passive] 
@@ -101962,7 +101962,7 @@ Triggered By     : AI Cast - Give Bandages (256176)
 Attributes       : Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=478594)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 
 Name             : AI Cast - Give Bandages (id=256176) [Hidden] 
 School           : Physical
@@ -101982,7 +101982,7 @@ Triggered By     : AI Cast - Give Food (256178)
 Attributes       : Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=478596)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 
 Name             : AI Cast - Give Food (id=256178) [Hidden] 
 School           : Physical
@@ -102002,7 +102002,7 @@ Triggered By     : AI Cast - Offer Bed (256180)
 Attributes       : Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=478598)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
 
 Name             : AI Cast - Offer Bed (id=256180) [Hidden] 
 School           : Physical
@@ -110327,7 +110327,7 @@ Effects          :
 #1 (id=722222)   : Unknown(169)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=726101)   : Unknown(90)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140017 | Target: At Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140017 | Target: Self and Summons in Area (120)
 Description      : Smelt 20 Unsanctified Storm Silver Ore into Unsanctified Storm Silver Ingots at a forge.
 
 Name             : Blessed Portents (id=271818) [Hidden] 
@@ -161806,7 +161806,7 @@ Effects          :
 #1 (id=827760)   : Apply Aura (6) | Increase Mount Speed% (Stacking) (130)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=827813)   : Apply Aura (6) | Modify Health Regeneration% (88)
-                   Base Value: 100 | Scaled Value: 100 | Radius: 100 yards | Target: At Summons in Area (120)
+                   Base Value: 100 | Scaled Value: 100 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc332756
 Tooltip          : Mounted speed increased by $w1%.
 Out-of-combat health regeneration increased by $w3%.
@@ -185078,7 +185078,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is
 Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Use Item (13), Enter Combat (28)
 Effects          :
 #1 (id=981808)   : Apply Aura (6) | Invisibility (18)
-                   Base Value: 500 | Scaled Value: 500 | Radius: 300 yards | Target: At Summons in Area (120)
+                   Base Value: 500 | Scaled Value: 500 | Radius: 300 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc368241
 Tooltip          : Concealed from sight.
 
@@ -229550,7 +229550,7 @@ Effects          :
 #1 (id=1135972)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
 #2 (id=1135973)  : Apply Aura (6) | Stealth (16)
-                   Base Value: 1000 | Scaled Value: 1000 | Radius: 50 yards | Target: At Summons in Area (120)
+                   Base Value: 1000 | Scaled Value: 1000 | Radius: 50 yards | Target: Self and Summons in Area (120)
 Description      : $@spelldesc441479
 Tooltip          : Improved stealth.
 
