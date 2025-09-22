@@ -963,7 +963,7 @@ struct lfr_harmful_spell_t : public spell_t
   const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
   stat_e stat = STAT_NONE;
   // Sanity check for stat-giving aura, either stats or aura type 465 ("bonus armor")
-  if ( spell -> effectN( 1 ).subtype() != A_MOD_STAT || spell -> effectN( 1 ).subtype() == A_465 )
+  if ( spell -> effectN( 1 ).subtype() != A_MOD_STAT || spell -> effectN( 1 ).subtype() == A_MOD_BONUS_ARMOR )
   {
     effect.type = SPECIAL_EFFECT_NONE;
     return;
