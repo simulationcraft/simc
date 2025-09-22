@@ -225,7 +225,7 @@ jobs:
         continue-on-error: true
         uses: EndBug/add-and-commit@v9
         with:
-          message: "Update Generated Files ${{ env.SHORT_SHAT }}"
+          message: "Update Generated Files ${{ env.SHORT_SHA }}"
           default_author: github_actions
           fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: |

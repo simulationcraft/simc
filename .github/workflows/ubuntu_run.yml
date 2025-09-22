@@ -16,6 +16,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      env:
+        CACHE_KEY: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
@@ -32,6 +34,7 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice allow_experimental_specializations=1 cleanup_threads=1
           - compiler: clang++-15
             os: ubuntu-22.04
+            save_cache: true
           - compiler: clang++-18
             os: ubuntu-24.04
           - compiler: gcc-14
@@ -48,9 +51,13 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
+          key: ${{ env.CACHE_KEY }}
 
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+
+      - name: Clear Cache
+        if: !matrix.save_cache
+        run: gh cache delete ${{ env.CACHE_KEY }}
