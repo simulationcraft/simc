@@ -1948,8 +1948,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       case A_TRIGGER_SPELL_BY_HEALTH_PCT:
       case A_TRIGGER_SPELL_ON_POWER_PCT:
       case A_TRIGGER_SPELL_ON_POWER_AMOUNT:
+      case A_TRIGGER_SPELL_ON_STACK_AMOUNT:
       case A_LINKED:
       case A_LINKED_2:
+      case A_OVERRIDE_AUTO_ATTACK_WITH_SPELL:
+      case A_OVERRIDE_AUTO_ATTACK_WITH_ABILITY:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -1978,6 +1981,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( " until cancelled" );
         break;
       case A_OVERRIDE_ACTION_SPELL:
+      case A_OVERRIDE_ACTION_SPELL_TRIGGERED:
         if ( e->misc_value1() && e->base_value() )
         {
           if ( dbc.spell( e->misc_value1() ) != spell_data_t::nil() &&
@@ -2090,13 +2094,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
   if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT ||
-       ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
-                                        e->subtype() == A_MOD_POWER_REGEN_PERCENT ) ) )
+       ( e->type() == E_APPLY_AURA && 
+                                  ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
+                                    e->subtype() == A_MOD_POWER_REGEN_PERCENT || e->subtype() == A_TRIGGER_SPELL_ON_POWER_AMOUNT || 
+                                    e->subtype() == A_TRIGGER_SPELL_ON_POWER_PCT ) ) )
   {
     tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );
   }
-  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ) )
+  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ||
+            e->subtype() == A_MOD_STAT_BONUS_PCT ) )
   {
     auto misc1 = e->misc_value1();
     if ( misc1 < -2 || misc1 >= STAT_MAX )
