@@ -7961,6 +7961,27 @@ void hunter_td_t::target_demise()
  */
 std::unique_ptr<expr_t> hunter_t::create_action_expression ( action_t& action, util::string_view expression_str )
 {
+  auto splits = util::string_split<util::string_view>( expression_str, "." );
+
+  if ( splits.size() == 1 && splits[ 0 ] == "ba_range" )
+  {
+    const bool talented   = talents.black_arrow_spell.ok();
+    const double low_pct  = talents.black_arrow_spell->effectN( 2 ).base_value();
+    const double high_pct = talents.black_arrow_spell->effectN( 3 ).base_value();
+    return make_fn_expr( splits[ 0 ], [ &action, talented, low_pct, high_pct ] 
+    {
+      if ( !talented )
+      {
+        return false;
+      }
+      else
+      {
+        double target_pct = action.get_expression_target()->health_percentage();
+        return target_pct < low_pct || target_pct > high_pct;
+      }
+    } );
+  }
+
   return player_t::create_action_expression( action, expression_str );
 }
 
