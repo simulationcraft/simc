@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.63092 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63286 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -22195,14 +22195,14 @@ Tooltip          : Physical damage taken reduced by $s1%.
 Name             : Well Fed (id=65410) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
+Max Scaling Level: 80
 Duration         : 3600 seconds
 Labels           : 73
 Triggered By     : Food (65418)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=59713)    : Apply Aura (6) | Modify Rating (189) | Scaling Class: -3
-                   Base Value: 0 | Scaled Value: 24.29904 (coefficient=1.75) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 385 (coefficient=1.75) | Rating: Haste | Target: Self (1)
 Description      : Haste increased for $d.
 Tooltip          : Haste increased by $w1.
 
@@ -59590,28 +59590,28 @@ Tooltip          : Restores ${$w1/5} health per second.
 Name             : Well Fed (id=175784) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
+Max Scaling Level: 80
 Duration         : 3600 seconds
 Labels           : 73
 Triggered By     : Food (65419)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=251320)   : Apply Aura (6) | Attribute (29) | Scaling Class: -3
-                   Base Value: 0 | Scaled Value: 52.06937 (coefficient=3.75) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 385 (coefficient=1.75) | Stat: Sta | Target: Self (1)
 Description      : Stamina increased for $d.
 Tooltip          : Stamina increased by $w1.
 
 Name             : Well Fed (id=175785) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
+Max Scaling Level: 80
 Duration         : 3600 seconds
 Labels           : 73
 Triggered By     : Food (65421)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=251321)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -3
-                   Base Value: 0 | Scaled Value: 24.29904 (coefficient=1.75) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 385 (coefficient=1.75) | Rating: Crit | Target: Self (1)
 Description      : Critical strike increased for $d.
 Tooltip          : Critical strike increased by $w1.
 
@@ -85556,14 +85556,14 @@ Description      : Restores you to full health and mana over $d. Must remain sea
 Name             : Well Fed (id=226805) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
+Max Scaling Level: 80
 Duration         : 3600 seconds
 Labels           : 73
 Triggered By     : Food (226803)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=340519)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -3
-                   Base Value: 0 | Scaled Value: 24.29904 (coefficient=1.75) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 385 (coefficient=1.75) | Rating: Mastery | Target: Self (1)
 Description      : Mastery increased for $d.
 Tooltip          : Mastery increased by $w1.
 
@@ -85585,14 +85585,14 @@ Description      : Restores you to full health and mana over $d. Must remain sea
 Name             : Well Fed (id=226807) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 45
+Max Scaling Level: 80
 Duration         : 3600 seconds
 Labels           : 73
 Triggered By     : Food (226806)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=340523)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -3
-                   Base Value: 0 | Scaled Value: 24.29904 (coefficient=1.75) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 385 (coefficient=1.75) | Rating: Vers | Target: Self (1)
 Description      : Versatility increased for $d.
 Tooltip          : Versatility increased by $w1.
 
@@ -235677,6 +235677,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235695,6 +235696,7 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3405
+                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3411
                  : 3412
 Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
@@ -235712,7 +235714,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
@@ -235739,7 +235740,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
@@ -235766,7 +235766,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -235838,7 +235837,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -235865,7 +235863,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Council's Guile (449088)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -235939,7 +235936,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -235966,7 +235962,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stormrider's Fury (449099)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -235985,7 +235980,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Stonebound Artistry (449111)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236003,7 +235997,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -236086,7 +236079,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Triggered By     : Oathsworn's Tenacity (449116)
 Attributes       : Can Proc From Procs (122), Aura Is Buff (140), Aura Points On Client (268)
@@ -236104,7 +236096,6 @@ Labels           : 969
                  : 2855
                  : 3232
                  : 3406
-                 : 3409: Attuned to the Aether (1242344 effect#1)
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
@@ -252665,10 +252656,10 @@ Description      : Absorbs $s2% of the damage you take up to $s1 total damage. F
 Tooltip          : Absorbs up to $w1 damage. Blasts nearby enemies with $s3  Fire damage each time ${$s1/$s4} damage is absorbed.
 
 Name             : Furnace Blast (id=469815) 
-School           : Physical
+School           : Fire
 Spell Type       : Magic
 Effects          :
-#1 (id=1184392)  : School Damage (2): physical
+#1 (id=1184392)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Deals $469813s4 Fire damage split amongst enemies within $ryrds.
 
@@ -264912,7 +264903,7 @@ Spell Type       : None
 Attributes       : Passive (6), Allow While Stealthed (37), No Threat (42), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Aura Unique Per Caster (189), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1225684)  : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1232707 | Target: Self (1)
+                   Base Value: 1.2 | Scaled Value: 1.2 | Trigger Spell: 1232707 | Target: Self (1)
 Description      : While moving backward, you channel |5$@spellname1232720, absorbing up to |CFFffffff$<damageValue>|R damage but reducing your movement speed by $1232711s2%. While not channeling $@spellname1232720, it regenerates at $1232707s1% per second. If the $@spellname1232720 is shattered, it becomes unusable for $1243705d.
 Variables        : $damageValue=${($max($AP,$SP)*($1250003w12/100))}
 
@@ -265450,16 +265441,17 @@ Variables        : $damageValue=${($max($AP,$SP)*($1250003w7/100))}
 $shieldValue=${($max($AP,$SP)*($1250003w15/100))}
 
 Name             : Terror From Below (id=1233592) [Passive] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Passive (6), Not In Spellbook (143), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
+Attributes       : Passive (6), Not In Spellbook (143), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1227143)  : Apply Aura (6) | Proc Trigger Spell (42): Terror From Below
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1261118 | Target: Self (1)
-Description      : Your abilities periodically draw the attention of a behemoth from the deep that seeks your enemy, inflicting |CFFffffff$<damageValue>|R Nature damage split evenly between all enemies nearby. 
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1261118 | Target: Self (1)
+Description      : Your abilities periodically draw the attention of a behemoth from the deep that seeks your enemy, inflicting |CFFffffff$<damageValue>|R Nature damage split evenly between all enemies nearby.
 
 When $@spellname1233592 strikes a $@spellname1231982 enemy it causes $@spellname1234771, damaging all nearby enemies for |CFFffffff$<damageValue>|R nature damage.
 Variables        : $damageValue=${$1233592s1*($max($AP,$SP)*($1250003w5/100))}
@@ -267128,12 +267120,13 @@ Effects          :
 Description      : |cnLEGION_REMIX_FACTION_NAGA:Naga|R Stunning a Fel Branded enemy bursts it, inflicting $1234783s1 damage to nearby enemies. If Deepsurge Crash damages a Fel Branded enemy, they also burst.
 
 Name             : Volatile Magics (id=1234774) [Passive] 
+Hotfixed         : Attributes
 School           : Magic
 Spell Type       : None
 Labels           : 5016: Volatile Magics (1234774 effect#2)
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
+Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1229270)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1234775 | Target: Self (1)
@@ -267308,12 +267301,13 @@ Description      : Your spells have a chance to conjure voidglass shards, slicin
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Souls of the Caw (id=1235159) [Passive] 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Suppress Caster Procs (112), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
+Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Suppress Caster Procs (112), Do Not Display Range (126), Not In Spellbook (143), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Update Passives on Apply/Remove (344), Recompute Aura On Level Scale (446), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1230009)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1242102 | Target: Self (1)
@@ -268306,7 +268300,7 @@ Tooltip          : You have subjugated an infernal dreadlord who periodically st
 Name             : Reign of Chaos (id=1237721) 
 School           : Magic
 Spell Type       : Magic
-Range            : 20 yards
+Range            : 40 yards
 Cast Time        : 2 seconds
 Duration         : 8 seconds
 Attributes       : Do Not Sheath (18), Is Channelled (34), Track Target in Channel (46), Extra Initial Period (169), Aura Points On Client (268), Visible only to caster (conversations only) (343), Unbreakable Channel (358)
@@ -269095,6 +269089,7 @@ Description      : $@spelldesc1235159
 Name             : I Am My Scars! (id=1241996) [Passive] 
 School           : Physical
 Spell Type       : None
+Range            : 100 yards
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Allow While Sitting (27), Allow While Stealthed (37), Not a Proc (105), Can Proc From Procs (122), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Don't close loot window (379), Recompute Aura On Level Scale (446)
@@ -269119,7 +269114,7 @@ Duration         : 10 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : I Am My Scars! (1241996)
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Riding Vehicle (204), Periodic Can Crit (265), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Active Passive (393), Allow While Feared By Fear Mechanic (417), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Not a Proc (105), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Riding Vehicle (204), Periodic Can Crit (265), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Active Passive (393), Allow While Feared By Fear Mechanic (417), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441), Unknown (452)
 Effects          :
 #1 (id=1241339)  : Apply Aura (6) | Periodic Damage (3): chaos every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -269225,6 +269220,7 @@ $@spellicon1242122 $@spellname1242122:
 $@spelldesc1242122
 
 Name             : Waking Frenzy (id=1242122) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -269232,7 +269228,7 @@ Duration         : 10 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Only Proc From Class Abilities (415)
+Attributes       : No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1241504)  : Apply Aura (6) | Proc Trigger Spell (42): Waking Frenzy
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1242125 | Target: Self (1)
@@ -269266,7 +269262,7 @@ Spell Type       : None
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Extra Initial Period (169), Aura Points On Client (268), Not in Battleground (284), Not In Arena (297), Visible only to caster (conversations only) (343), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1241633)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 1.2 | Scaled Value: 1.2 | Target: Self (1)
 Description      : After standing still in combat for $1242205d you begin channeling an Arcane Ward, absorbing |CFFffffff$<damageValue>|R damage until you move. The time required to activate $@spellname1242209 is halved while $@spellname1234283 is active.
 Variables        : $damageValue=${($max($AP,$SP)*($1250003w13/100))}
 
@@ -269365,18 +269361,18 @@ Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Icon Onl
 Effects          :
 #1 (id=1241805)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8) | Scaling Class: -8
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Misc Value: 8 | Misc Value 2: 3409 (Label) | Target: Self (1)
-                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449022), Authority of Storms (449023), Authority of Storms (449024), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Council's Guile (449088), Keen Prowess (449091), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stormrider's Fury (449099), Storm's Fury (449100), Artisanal Flourish (449108), Stonebound Artistry (449111), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Forged Tenacity (449115), Oathsworn's Tenacity (449116), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
+                   Affected Spells (Label): Stormrider's Fury (445317), Authority of Storms (445336), Oathsworn's Tenacity (445351), Council's Guile (445379), Stonebound Artistry (445385), Authority of Radiant Power (448710), Authority of Radiant Power (448714), Authority of Radiant Power (448716), Authority of Air (448830), Authority of Air (448831), Authority of Air (448832), Authority of Storms (449018), Authority of Storms (449019), Authority of Storms (449020), Council's Guile (449055), Council's Guile (449056), Council's Guile (449059), Stormrider's Fury (449095), Stormrider's Fury (449096), Stormrider's Fury (449097), Stonebound Artistry (449112), Stonebound Artistry (449113), Stonebound Artistry (449114), Oathsworn's Tenacity (449117), Oathsworn's Tenacity (449118), Oathsworn's Tenacity (449120), Authority of Fiery Resolve (449211), Authority of Fiery Resolve (449212), Authority of Fiery Resolve (449213), Authority of the Depths (449221), Authority of the Depths (449222), Authority of the Depths (449223)
 #2 (id=1273011)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
                    Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
 #3 (id=1273027)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
                    Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Spellwarding (326867), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984), Pestilence (327093), War (327096), Rune of Hysteria (333113)
 #4 (id=1273028)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
                    Affected Spells (Label): Rune of Unending Thirst (326984), War (327096)
 #5 (id=1273029)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Manaforge Omega's energy empowers your weapon enchantments, improving their effects by $s1% while inside its walls. Runeforging effects are increased by $s2%.
 Tooltip          : Weapon enchantment effects increased by $w1%. Runeforging effects increased by $w2%.
 
@@ -269397,11 +269393,13 @@ Effects          :
 Description      : $@spelldesc1242344
 
 Name             : Soulgorged Augmentation (id=1242347) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
 Duration         : 3600 seconds
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Not In Arena or Rated Battleground (144), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not In Arena (297), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
+Cooldown         : 3 seconds
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not In Arena (297), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1241808)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 733.2477 (coefficient=0.1915) | Stat: StrAgiInt | Target: Self (1)
@@ -270575,7 +270573,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Infinite Power (id=1250717) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -270586,7 +270583,6 @@ Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte
 Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Critical Strike
 
 Name             : Infinite Power (id=1250750) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -270597,7 +270593,6 @@ Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte
 Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Mastery
 
 Name             : Infinite Power (id=1250751) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -270608,7 +270603,6 @@ Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte
 Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[8][9][10][11][12][13][14][15][16][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][17][18][19][20][21][23][25][27][30]% Haste
 
 Name             : Infinite Power (id=1250753) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -270619,7 +270613,6 @@ Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte
 Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Critical Strike
 
 Name             : Infinite Power (id=1250757) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -270630,7 +270623,6 @@ Description      : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte
 Tooltip          : +$@switch<${($gte($s1,0))+($gte($s1,13))+($gte($s1,23))+($gte($s1,46))+($gte($s1,112))+($gte($s1,296))+($gte($s1,695))+($gte($s1,4322))+($gte($s1,5159))+($gte($s1,6215))}>[4][4][5][5][6][6][7][7][8][]$@switch<${($lt($s1,6215))+($gte($s1,6215))+($gte($s1,6215))+($gte($s1,7419))+($gte($s1,8939))+($gte($s1,10670))+($gte($s1,12856))+($gte($s1,15346))+($gte($s1,18490))+($gte($s1,22071))+($gte($s1,26592))}>[][8][9][9][10][10][11][12][13][15]% Mastery
 
 Name             : Infinite Power (id=1250760) [Passive] 
-Hotfixed         : Description, Tooltip
 School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
