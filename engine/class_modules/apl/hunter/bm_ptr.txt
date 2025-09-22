@@ -5,6 +5,7 @@ actions.precombat+=/variable,name=stronger_trinket_slot,op=setif,value=1,value_e
 
 # Executed every time the actor is available.
 actions=auto_shot
+actions+=/variable,name=poll_black_arrow,value=time-action.black_arrow.last_used>9.5&ba_range|buff.withering_fire.elapsed%%buff.withering_fire.tick_time<0.75&buff.withering_fire.elapsed<buff.withering_fire.duration+0.75
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
@@ -28,28 +29,25 @@ actions.cleave+=/explosive_shot,if=talent.thundering_hooves
 actions.cleave+=/kill_command
 actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3|!talent.multishot
 
-actions.drcleave=bestial_wrath,if=buff.call_of_the_wild.remains
-actions.drcleave+=/kill_shot
+actions.drcleave=kill_shot
 actions.drcleave+=/bestial_wrath,if=cooldown.call_of_the_wild.remains>20|!talent.call_of_the_wild
-actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd
+actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|buff.thrill_of_the_hunt.remains<1.5*gcd
 actions.drcleave+=/bloodshed
 actions.drcleave+=/multishot,if=pet.main.buff.beast_cleave.down&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
 actions.drcleave+=/call_of_the_wild
 actions.drcleave+=/explosive_shot,if=talent.thundering_hooves
-actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=charges_fractional>=cooldown.kill_command.charges_fractional
-actions.drcleave+=/kill_command
-actions.drcleave+=/cobra_shot,if=focus.time_to_max<gcd*2
+actions.drcleave+=/kill_command,if=buff.withering_fire.tick_time_remains>gcd&!variable.poll_black_arrow
+actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.withering_fire.tick_time_remains>0.5&!variable.poll_black_arrow
+actions.drcleave+=/cobra_shot,if=buff.withering_fire.down&focus.time_to_max<gcd*2
 actions.drcleave+=/explosive_shot
 
 actions.drst=kill_shot
 actions.drst+=/bestial_wrath,if=cooldown.call_of_the_wild.remains>30|!talent.call_of_the_wild|time_to_die.remains<cooldown.call_of_the_wild.remains
-actions.drst+=/barbed_shot,if=buff.thrill_of_the_hunt.remains<1.5*gcd
 actions.drst+=/bloodshed
 actions.drst+=/call_of_the_wild
-actions.drst+=/kill_command,if=buff.withering_fire.tick_time_remains>gcd&cooldown.black_arrow.remains>0.5
-actions.drst+=/kill_command,if=buff.withering_fire.down
-actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.withering_fire.tick_time_remains>0.5&cooldown.black_arrow.remains>0.5
-actions.drst+=/cobra_shot,if=buff.withering_fire.tick_time_remains>0.5&cooldown.black_arrow.remains>0.5
+actions.drst+=/kill_command,if=buff.withering_fire.tick_time_remains>gcd&!variable.poll_black_arrow
+actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.withering_fire.tick_time_remains>0.5&!variable.poll_black_arrow
+actions.drst+=/cobra_shot,if=buff.withering_fire.down
 
 actions.st=bestial_wrath,if=buff.howl_of_the_pack_leader_cooldown.remains-buff.lead_from_the_front.duration<buff.lead_from_the_front.duration%gcd*0.5|!set_bonus.tww3_4pc
 actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd
