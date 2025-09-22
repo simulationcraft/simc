@@ -418,7 +418,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::
   { 84,  "Back Left in Area"                     },
   { 85,  "Front Left in Area"                    },
   { 86,  "Random in Area"                        },
-  { 87,  "at Location in Area"                   },
+  { 87,  "at Area"                               },
   { 88,  "at Dynamic Object"                     },
   { 89,  "any in Trajectory"                     },
   { 90,  "Target's Battlepet"                    },
@@ -1090,8 +1090,8 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 24, "Create Item" },
     { 25, "Weapon Type" },
     { 26, "Defense" },
-    { 27, "Persistent Area Aura" },
-    { 28, "Summon" },
+    { 27, "Apply Aura in Area" },
+    { 28, "Summon Guardian" },
     { 29, "Leap" },
     { 30, "Energize Power" },
     { 31, "Weapon Damage%" },
@@ -1128,7 +1128,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 62, "Power Burn" },
     { 63, "Threat" },
     { 64, "Trigger Spell" },
-    { 65, "Apply Raid Aura" },
+    { 65, "Apply Aura Raid" },
     { 66, "Recharge Item" },
     { 67, "Heal Max Health%" },
     { 68, "Interrupt Cast" },
@@ -1181,7 +1181,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 116, "Skin Player Corpse" },
     { 117, "Spirit Heal" },
     { 118, "Skill" },
-    { 119, "Apply Pet Area Aura" },
+    { 119, "Apply Aura Pet in Area" },
     { 120, "Teleport to Graveyard" },
     { 121, "Normalized Weapon Damage" },
     { 123, "Send Taxi" },
@@ -1189,8 +1189,8 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 125, "Modify Threat" },
     { 126, "Steal Beneficial Aura" },
     { 127, "Prospect" },
-    { 128, "Apply Friendly Area Aura" },
-    { 129, "Apply Enemy Area Aura" },
+    { 128, "Apply Aura Friendly in Area" },
+    { 129, "Apply Aura Enemy in Area" },
     { 130, "Redirect Threat" },
     { 131, "Play Sound" },
     { 132, "Play Music" },
@@ -1199,13 +1199,13 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 135, "Call Pet" },
     { 136, "Direct Heal%" },
     { 137, "Energize Power%" },
-    { 138, "Leap Back" },
+    { 138, "Directional Knock" },
     { 139, "Clear Quest" },
     { 140, "Force Cast" },
     { 141, "Force Cast w/ Value" },
     { 142, "Trigger Spell w/ Value" },
-    { 143, "Apply Owner Area Aura" },
-    { 144, "Knockback to Destination" },
+    { 143, "Apply Aura Owner in Area" },
+    { 144, "Directional Knockback" },
     { 145, "Pull to Destination" },
     { 146, "Restore Garrison Troop Vitality" },
     { 147, "Fail Quest" },
@@ -1233,7 +1233,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 169, "Destroy Item" },
     { 170, "Update Zone Auras and Phases" },
     { 171, "Summon Personal Gameobject" },
-    { 172, "Resurrect with Aura" },
+    { 172, "Resurrect with Health%" },
     { 173, "Unlock Guild Vault Tab" },
     { 174, "Apply Aura Pet" },
     { 176, "Sanctuary" },
@@ -1807,6 +1807,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
+    case E_TRIGGER_MISSILE:
+    case E_TRIGGER_MISSILE_SPELL_WITH_VALUE:
+    case E_FORCE_CAST:
+    case E_FORCE_CAST_2:
+    case E_FORCE_CAST_WITH_VALUE:
+    case E_REDUCE_REMAINING_COOLDOWN:
+    case E_MODIFY_AURA_STACKS:
+    case E_REMOVE_AURA_2:
+    case E_CANCEL_AURA:
+    case E_PUSH_ABILITY_TO_ACTION_BAR:
       if ( e->trigger_spell_id() )
       {
         if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -1842,6 +1852,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( ": every {} seconds", e->period().total_seconds() );
         break;
       case A_PROC_TRIGGER_SPELL:
+      case A_TRIGGER_SPELL_BY_HEALTH_PCT:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -2004,7 +2015,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
   else if ( e->misc_value1() != 0 )
   {
-    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) || e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY ||
+         e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
     {
       tokens.emplace_back( fmt::format( "Misc Value: {} (Category)", e->misc_value1() ) );
     }
@@ -2129,7 +2141,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
-  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID )
+  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID ||
+       e->type() == E_APPLY_AREA_AURA_ENEMY || e->type() == E_APPLY_AREA_AURA_FRIEND || e->type() == E_APPLY_AURA_PLAYER_AND_PET ||
+       e->type() == E_APPLY_AREA_AURA_OWNER || e->type() == E_APPLY_AREA_AURA_PARTY_NONRANDOM || e->type() == E_APPLY_AREA_AURA_PET ||
+       e->type() == E_REMOVE_AURA_BY_SPELL_LABEL || e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY || e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
   {
     switch ( e->subtype() )
     {
@@ -2149,7 +2164,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           break;
     }
 
-    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    if ( e->type() == E_REMOVE_AURA_BY_SPELL_LABEL )
+      if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
+        s << "                   " << str << std::endl;
+
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) ||
+         e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY ||
+         e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
     {
       if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
       {
@@ -3240,12 +3261,12 @@ void spell_info::effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, con
   if ( e->chain_multiplier() != 0 && e->chain_multiplier() != 1.0 )
     node->add_parm( "chain_multiplier", e->chain_multiplier() );
 
-  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
+  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT )
   {
     if ( e->subtype() == A_MOD_DAMAGE_DONE || e->subtype() == A_MOD_DAMAGE_TAKEN ||
          e->subtype() == A_MOD_DAMAGE_PERCENT_DONE || e->subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
       node->add_parm( "misc_value_mod_damage", e->misc_value1() );
-    else if ( e->type() == E_ENERGIZE )
+    else if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT )
       node->add_parm(
           "misc_value_energize",
           util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );

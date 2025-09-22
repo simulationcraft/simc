@@ -1432,7 +1432,7 @@ enum effect_subtype_t : unsigned {
     A_465 = 465,
     A_466 = 466,
     A_467 = 467,
-    A_468 = 468,
+    A_TRIGGER_SPELL_BY_HEALTH_PCT = 468,
     A_MOD_TIME_RATE_BY_SPELL_LABEL = 470,
     A_MOD_VERSATILITY_PCT = 471,
     A_478 = 478,
