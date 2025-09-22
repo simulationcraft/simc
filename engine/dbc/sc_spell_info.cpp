@@ -1981,7 +1981,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
-  if ( e->type() == E_ENERGIZE ||
+  if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT ||
        ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
                                         e->subtype() == A_MOD_POWER_REGEN_PERCENT ) ) )
   {
