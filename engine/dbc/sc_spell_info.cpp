@@ -418,7 +418,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::
   { 84,  "Back Left in Area"                     },
   { 85,  "Front Left in Area"                    },
   { 86,  "Random in Area"                        },
-  { 87,  "at Area in Area"                       },
+  { 87,  "at Location in Area"                   },
   { 88,  "at Dynamic Object"                     },
   { 89,  "any in Trajectory"                     },
   { 90,  "Target's Battlepet"                    },
