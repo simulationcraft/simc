@@ -14539,7 +14539,7 @@ Affecting Spells : Dire Frenzy (385810 effect#1)
 Family Flags     : 100
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268)
 Effects          :
-#1 (id=1166761)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1166761)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Fenryr for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 459733 | Target: Self (1)
 #2 (id=1166798)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -14558,7 +14558,7 @@ Affecting Spells : Dire Frenzy (385810 effect#1)
 Family Flags     : 100
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1166771)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1166771)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Hati for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 459739 | Target: Self (1)
 #2 (id=1166782)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -16538,7 +16538,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknow
 Effects          :
 #1 (id=1189801)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1189805)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#2 (id=1189805)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Bear Summon for 12 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 471990 | Target: Self (1)
 
 Name             : Rend Flesh (id=471999) [Spell Family (9)] 

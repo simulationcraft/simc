@@ -17912,7 +17912,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1183614)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1183614)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Feral Spirit for 8 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 469322 | Target: Self (1)
 Description      : $@spelldesc469314
 
@@ -17946,7 +17946,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Can Be Multi Cast (229)
 Effects          :
-#1 (id=1183625)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1183625)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Feral Spirit for 8 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 469328 | Target: Self (1)
 Description      : $@spelldesc469314
 
@@ -17981,7 +17981,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1183629)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1183629)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Feral Spirit for 8 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 469330 | Target: Self (1)
 Description      : $@spelldesc469314
 
@@ -18015,7 +18015,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1183632)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1183632)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Feral Spirit for 8 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 469332 | Target: Self (1)
 Description      : $@spelldesc469314
 

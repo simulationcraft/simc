@@ -16296,7 +16296,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156893)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1156893)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Whitemane for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444251 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16311,7 +16311,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156894)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1156894)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Trollbane for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444254 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16328,7 +16328,7 @@ Proc Chance      : 101%
 Proc Flags       : Killing Blow, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156896)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1156896)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Nazgrim for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444252 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16343,7 +16343,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156897)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
+#1 (id=1156897)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Mograine for 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444248 | Target: Self (1)
 Description      : $@spelldesc444005
 
