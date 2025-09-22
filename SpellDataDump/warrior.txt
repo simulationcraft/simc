@@ -600,9 +600,9 @@ Family Flags     : 61
 Attributes       : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Jump Pathing (208), Cheap Missile AOI (374), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2307)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Location in Area (87)
 #2 (id=475719)   : Unknown(254)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: at Location in Area (87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?c3[ and resetting the remaining cooldown on Taunt][].
 Variables        : $base=${1+0.5*$AP}
 $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
@@ -2961,9 +2961,9 @@ Family Flags     : 9, 107
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.19517 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.19517 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=818180)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | Target: at Area in Area (87)
+                   Base Value: 8 | Scaled Value: 8 | Target: at Location in Area (87)
 Description      : $@spelldesc152277
 
 Name             : Riposte (id=161798) [Spell Family (4), Passive] 
@@ -5405,7 +5405,7 @@ Family Flags     : 9
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=734223)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 #2 (id=734224)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277639
 Description      : $@spelldesc277639
@@ -5423,7 +5423,7 @@ Labels           : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Suppress Caster Procs (112), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=734246)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc277639
 
 Name             : Iron Fortress (id=278765) [Passive] 
@@ -5885,9 +5885,9 @@ Family Flags     : 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Lock Caster Movement and Facing While Casting (352)
 Effects          :
 #1 (id=786704)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307871 | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307871 | Radius: 5 yards | Target: at Location in Area (87)
 #2 (id=786849)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307954 | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307954 | Radius: 5 yards | Target: at Location in Area (87)
 Description      : Throw a Kyrian spear at the target location, dealing $307871s1 Arcane damage instantly and an additional $307871o4 damage over $307954d. Deals reduced damage beyond $<cap> targets.
 
 Enemies hit are tethered to Spear of Bastion's location for the duration.
@@ -5937,9 +5937,9 @@ Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not 
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=786852)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17984 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17984 | Target: at Location in Area (87)
 #2 (id=892988)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18314 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18314 | Target: at Location in Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion (desc=Kyrian) (id=307961) 
@@ -5971,7 +5971,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=786863)   : Unknown(42) | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Location in Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion Visual (desc=Kyrian) (id=308062) 
@@ -5986,7 +5986,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=787010)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion (desc=Kyrian) (id=312957) [Hidden] 
@@ -6067,9 +6067,9 @@ Family Flags     : 2, 9
 Attributes       : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.500138 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.500138 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 #2 (id=818173)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Target: at Location in Area (87)
 Description      : $@spelldesc262150
 
 Name             : Dreadnaught (id=315962) [Spell Family (4), Hidden] 
@@ -6084,7 +6084,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Threat (42), Suppress Caster Procs (112), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=800085)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc277639
 
 Name             : Fresh Meat (id=316044) [Spell Family (4), Hidden] 
@@ -8307,7 +8307,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894297)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion Visual (desc=Kyrian) (id=358789) 
@@ -8322,7 +8322,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894301)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 8 yards | Target: at Location in Area (87)
 Description      : $@spelldesc307865
 
 Name             : Chosen Identity (desc=Racial) (id=360022) 
@@ -8702,9 +8702,9 @@ Family Flags     : 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Lock Caster Movement and Facing While Casting (352)
 Effects          :
 #1 (id=1002892)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376080 | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376080 | Radius: 5 yards | Target: at Location in Area (87)
 #2 (id=1002893)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376081 | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376081 | Radius: 5 yards | Target: at Location in Area (87)
 Description      : Throw a spear at the target location, dealing $376080s1 Physical damage instantly and an additional $376080o4 damage over $376081d. Deals reduced damage beyond $<cap> targets.
 
 Enemies hit are chained to the spear's location for the duration.
@@ -8762,9 +8762,9 @@ Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1002898)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25558 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25558 | Target: at Location in Area (87)
 #2 (id=1002899)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25559 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25559 | Target: at Location in Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear (id=376083) [Spell Family (4)] 
@@ -8796,7 +8796,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002902)  : Unknown(42) | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Location in Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear Visual (id=376085) [Spell Family (4)] 
@@ -8811,7 +8811,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002903)  : Dummy (3) | Attributes: Is Harmful (12)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear Visual (id=376086) [Spell Family (4)] 
@@ -8826,7 +8826,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002904)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
 Description      : $@spelldesc376079
 
 Name             : Visage Form (id=379034) 
@@ -13846,7 +13846,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134753)  : Dummy (3) | Attributes: Is Harmful (12)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
 Description      : $@spelldesc376079
 
 Name             : Demolish (id=440884) [Spell Family (4)] 
@@ -14029,7 +14029,7 @@ Range            : 50000 yards
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Not a Proc (105), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137087)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.15) | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.15) | Radius: 8 yards | Target: at Location in Area (87)
 Description      : $@spelldesc6544
 
 Name             : Slayer's Dominance (id=444767) [Spell Family (4), Passive, Hidden] 

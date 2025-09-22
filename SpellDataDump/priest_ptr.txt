@@ -75,7 +75,7 @@ Stance Mask      : 0x08000000
 Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Nameplate Enemy Debuffs (426)
 Effects          :
 #2 (id=1033406)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: at Location in Area (87)
 Description      : Soothes enemies in the target area, reducing the range at which they will attack you by $s1 yards. Only affects Humanoid and Dragonkin targets. Does not cause threat. Lasts $d.
 Tooltip          : Reduced distance at which target will attack.
 
@@ -3571,7 +3571,7 @@ Labels           : 16: Class Spells
 Attributes       : Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=222022)   : Create Area Trigger (179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 337 | Target: at Area in Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 337 | Target: at Location in Area (87)
 Description      : $@spelldesc121536
 
 Name             : Ascension (id=161862) [Spell Family (6)] 
@@ -4779,11 +4779,11 @@ Family Flags     : 31
 Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303253)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=303254)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #3 (id=1028684)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391286 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391286 | Radius: 8 yards | Target: at Location in Area (87)
 Description      : Aims a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds.
 
 Applies Vampiric Touch to up to $391286s1 enemies, prioritizing ones without Vampiric Touch.
@@ -4808,7 +4808,7 @@ Family Flags     : 31, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303255)   : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.687926 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.687926 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -6738,9 +6738,9 @@ Family Flags     : 72, 114
 Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330), Nameplate Personal Buffs/Debuffs (423), Unknown (450)
 Effects          :
 #1 (id=815346)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56 | Radius: 0 - 15 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.56 | Radius: 0 - 15 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=815347)   : Apply Aura (6) | Proc Trigger Spell (42): Unholy Transfusion
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 325118 | Radius: 0 - 15 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 325118 | Radius: 0 - 15 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : Deals up to $o1 Shadow damage based on number of targets over $d. Allies who damage this target are healed for ${$325118s1*$<mult>}.
 Tooltip          : Suffering $w1 damage every $t1 sec. When damaged, the attacker is healed for $325118m1.
 Variables        : $mult=$?s337979[${$337979m1/100+1}][${1}]
@@ -8048,7 +8048,7 @@ Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=875387)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 15 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 15 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc324724
 
 Name             : Visage (desc=Racial) (id=351239) 
@@ -8226,7 +8226,7 @@ Family Flags     : 0, 14
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1110334)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc205385
 
 Name             : Living Shadow (id=363469) [Spell Family (6), Passive, Hidden] 
@@ -8882,13 +8882,13 @@ Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), All
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=997597)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=997598)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25138 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25138 | Target: at Location in Area (87)
 #3 (id=1033050)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1189370)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35546 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35546 | Target: at Location in Area (87)
 Description      : Blesses the target area, healing up to $372760s2 allies for ${$372787s1*($d/$t3)} over $d.
 
 Name             : Divine Word: Sanctuary (id=372787) [Spell Family (6)] 
@@ -8906,7 +8906,7 @@ Family Flags     : 126
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=997601)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.365156 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.365156 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 #2 (id=1033056)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc372784
@@ -8960,7 +8960,7 @@ Family Flags     : 91
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=997676)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 189820 | Misc Value 2: 0x475 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 189820 | Misc Value 2: 0x475 | Target: at Location in Area (87)
 #2 (id=997853)   : None (0)
                    Base Value: 75 | Scaled Value: 75
 #3 (id=1132947)  : Dummy (3)
@@ -11286,7 +11286,7 @@ Triggered By     : Shadow Crash (205385)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028683)  : Dummy (3) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc205385
 
 Name             : Empowered Renew (id=391339) [Spell Family (6), Passive, Hidden] 
@@ -11910,7 +11910,7 @@ Labels           : 16: Class Spells
 Attributes       : Can't Crit (93), Do Not Display Range (126), Always Line of Sight (185), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1045316)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1045338)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc372307
@@ -13758,7 +13758,7 @@ Family Flags     : 30, 72
 Attributes       : Ignore Line of Sight (66), Active Threat (94), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1146867)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4 | Radius: 0 - 15 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4 | Radius: 0 - 15 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc448403
 
 Name             : Divine Halo (id=449806) [Spell Family (6), Passive, Hidden] 

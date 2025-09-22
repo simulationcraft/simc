@@ -195,13 +195,13 @@ Family Flags     : 5
 Attributes       : Aura Is Debuff (26), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), No Caster Aura Icon (187), Always Show Ground Texture (190), No Aura Log (202), Show Mechanic as Combat Text (213), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=34958)    : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=105194)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87) -> at Dynamic Enemy in Area (28)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87) -> at Dynamic Enemy in Area (28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=274827)   : Create Area Trigger (179)
-                   Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Area in Area (87)
+                   Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Location in Area (87)
 Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.$?!c2[
 
 While you remain within the area, your ][]$?s223829&!c2[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311&!c2[Clawing Shadows will hit up to ${$55090s4-1} enemies near the target.]?!c2[Scourge Strike will hit up to ${$55090s4-1} enemies near the target.][]
@@ -1343,7 +1343,7 @@ Family Flags     : 43, 67, 78
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=44653)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.036036 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.036036 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=312640)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
@@ -2895,15 +2895,15 @@ Family Flags     : 43, 78, 93
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Extra Initial Period (169), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=130553)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03976 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03976 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=803192)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
 #3 (id=844463)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #4 (id=1038123)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc460448
 Tooltip          : Suffering $s1 Shadow damage every $t1 sec.
 
@@ -3425,9 +3425,9 @@ Family Flags     : 5
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=210838)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=215541)   : Create Area Trigger (179)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 1713 | Target: at Area in Area (87)
+                   Base Value: 250 | Scaled Value: 250 | Misc Value: 1713 | Target: at Location in Area (87)
 #3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
@@ -3624,7 +3624,7 @@ Family Flags     : 5
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=239495)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 82521 | Misc Value 2: 0x3d | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 82521 | Misc Value 2: 0x3d | Target: at Location in Area (87)
 Description      : $@spelldesc152280
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -3898,7 +3898,7 @@ Family Flags     : 40, 43, 78
 Attributes       : Allow While Sitting (27), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.952 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.952 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc191587
 
 Name             : Runic Empowerment (id=193486) 
@@ -6243,7 +6243,7 @@ Family Flags     : 33, 43, 120
 Attributes       : No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Display Range (126), No Aura Log (202), Do Not Auto Select Target with Initiates Combat (220), Missile Speed is Delay (in sec) (292), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=360154)   : School Damage (2): frost | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.093615 | PvP Coefficient: 1.3 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.093615 | PvP Coefficient: 1.3 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc49184
 
 Name             : Death Grip (id=243487) [Spell Family (15), Hidden] 
@@ -6527,7 +6527,7 @@ Family Flags     : 43, 78
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=724427)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=724428)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273095
 Description      : $@spelldesc273095
@@ -7268,7 +7268,7 @@ Family Flags     : 43
 Attributes       : Do Not Display Range (126), Not On AOE Immune (127), Treat as Area Effect (175), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=749627)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 #2 (id=749628)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 286832
 Description      : $@spelldesc286832
@@ -7498,9 +7498,9 @@ Family Flags     : 11, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=752829)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Location in Area (87)
 #2 (id=754920)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 0x11d7 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 0x11d7 | Target: at Location in Area (87)
 Description      : Raises an Abomination for $d which wanders and attacks enemies near where it was summoned, applying Festering Wound when it melees targets, and affecting all those nearby with Virulent Plague.
 
 Name             : Disease Cloud (id=290577) 
@@ -8297,7 +8297,7 @@ Family Flags     : 43, 78
 Attributes       : No Reflection (39), Do Not Display Range (126), Not On AOE Immune (127), Treat as Area Effect (175), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=805563)   : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17), Always Hit (22)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.149625 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.149625 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Shadow damage.
 
@@ -8505,13 +8505,13 @@ Family Flags     : 5
 Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), No Caster Aura Icon (187), Always Show Ground Texture (190), No Aura Log (202), Show Mechanic as Combat Text (213), Aura Points On Client (268), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Caster Death Cancels Persistent Area Auras (347), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=813510)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=813511)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87) -> at Dynamic Enemy in Area (28)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87) -> at Dynamic Enemy in Area (28)
 #3 (id=813512)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=813513)   : Create Area Trigger (179)
-                   Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Area in Area (87)
+                   Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Location in Area (87)
 Description      : Corrupts the targeted ground, causing ${$341340m1*11} Shadow damage over $d to targets within the area.$?!c2[
 
 While you remain within the area, your ][]$?s223829&!c2[Necrotic Strike and ][]$?c1[Heart Strike will hit up to $188290m3 additional targets and inflict Death's Due for $324164d.]?s207311&!c2[Clawing Shadows will hit up to ${$55090s4-1} enemies near the target and inflict Death's Due for $324164d.]?!c2[Scourge Strike will hit up to ${$55090s4-1} enemies near the target and inflict Death's Due for $324164d.][
@@ -9066,7 +9066,7 @@ Family Flags     : 43, 78, 124
 Attributes       : Is Ability (4), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819176)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.75 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.75 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=819634)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc327574
@@ -9966,7 +9966,7 @@ Family Flags     : 43, 67, 78
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=841677)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.054054 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.054054 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=841678)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.
@@ -10103,7 +10103,7 @@ Family Flags     : 43, 78
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869780)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4473 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4473 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=869781)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc63560
@@ -12839,7 +12839,7 @@ Range            : 100 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1111463)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.25 | Radius: 0 - 2.5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.25 | Radius: 0 - 2.5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc194913
 
 Name             : Vigorous Lifeblood (id=394559) [Spell Family (15), Hidden] 
@@ -14048,7 +14048,7 @@ Labels           : 16: Class Spells
 Attributes       : Can't Crit (93), Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1124142)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc434260
 
 Name             : The Blood is Life (id=434260) [Spell Family (15), Passive] 
@@ -14664,7 +14664,7 @@ Labels           : 16: Class Spells
 Attributes       : Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134297)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 32520 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 32520 | Target: at Location in Area (87)
 Description      : $@spelldesc437122
 
 Name             : Death's Messenger (id=440447) [Spell Family (15)] 
@@ -15006,9 +15006,9 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138025)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=1138026)  : Create Area Trigger (179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32776 | Target: at Area in Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32776 | Target: at Location in Area (87)
 Description      : $@spelldesc439851
 
 Name             : Wave of Souls (id=443404) [Spell Family (15)] 
@@ -16299,7 +16299,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156893)  : Apply Aura (6) | Unknown(428)
+#1 (id=1156893)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444251 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16314,7 +16314,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156894)  : Apply Aura (6) | Unknown(428)
+#1 (id=1156894)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444254 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16331,7 +16331,7 @@ Proc Chance      : 101%
 Proc Flags       : Killing Blow, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156896)  : Apply Aura (6) | Unknown(428)
+#1 (id=1156896)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444252 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16346,7 +16346,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1156897)  : Apply Aura (6) | Unknown(428)
+#1 (id=1156897)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444248 | Target: Self (1)
 Description      : $@spelldesc444005
 
@@ -16630,7 +16630,7 @@ Effects          :
 #1 (id=1158788)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 3 yards | Target: Right of Self (49)
 #2 (id=1158789)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 0x11d7 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 0x11d7 | Target: at Location in Area (87)
 Description      : Raises an Abomination for $d which wanders and attacks enemies, applying Festering Wound when it melees targets, and affecting all those nearby with Virulent Plague.
 
 Name             : Foul Infections (id=455396) [Spell Family (15), Passive, Hidden] 
@@ -16711,7 +16711,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1159507)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc439851
 
 Name             : Wave of Souls (id=455857) [Spell Family (15), Hidden] 
@@ -18361,7 +18361,7 @@ Family Flags     : 43, 67, 78
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1224974)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.036036 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.036036 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1234698
 
 Name             : Remorseless Winter (id=1233152) [Spell Family (15)] 
@@ -19248,7 +19248,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1256863)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.054054 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.054054 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1256864)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
 Description      : Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.

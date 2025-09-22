@@ -239,7 +239,7 @@ Family Flags     : 1, 121
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Immunity Purges Effect (47), No AutoCast (AI) (49), No Initial Threat (86), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=491)      : Trigger Missiles (32)
-                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 132950 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 20 | Scaled Value: 20 | Trigger Spell: 132950 | Radius: 10 yards | Target: at Location in Area (87)
 Description      : Exposes all hidden and invisible enemies within the targeted area for $m1 sec.
 
 Name             : Dismiss Pet (id=2641) [Spell Family (9)] 
@@ -452,7 +452,7 @@ Labels           : 16: Class Spells
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=6175)     : Create Area Trigger (179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 621 | Target: at Area in Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 621 | Target: at Location in Area (87)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
 Name             : Claw (desc=Basic Attack) (id=16827) [Spell Family (9)] 
@@ -1943,7 +1943,7 @@ Effects          :
 #1 (id=120669)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1524 | Target: in Area of Ground Area (138)
 #2 (id=133047)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 5 yards | Target: at Location in Area (87)
 Description      : Fires a magical projectile, tethering the enemy and any other enemies within $s2 yds for $d, stunning them for $117526d if they move more than $s2 yds from the arrow.$?s321468[
 
 Targets stunned by Binding Shot deal $321469s1% less damage to you for $321469d after the effect ends.][]
@@ -2345,9 +2345,9 @@ Triggered By     : Flare (1543)
 Attributes       : No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), No Initial Threat (86), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=172844)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 510 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 510 | Target: at Location in Area (87)
 #2 (id=1197541)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35958 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35958 | Target: at Location in Area (87)
 
 Name             : Flare (id=132951) [Spell Family (9)] 
 Class            : Hunter
@@ -3050,7 +3050,7 @@ Family Flags     : 1, 7, 68
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=228154)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162496 | Radius: 3 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162496 | Radius: 3 yards | Target: at Location in Area (87)
 Description      : Hurls a Steel Trap to the target location that snaps shut on the first enemy that approaches, immobilizing them for $162480d and causing them to bleed for $162487o1 damage over $162487d. 
 
 Damage other than Steel Trap may break the immobilization effect. Trap will exist for $162496d. Limit 1.
@@ -3069,7 +3069,7 @@ Triggered By     : Steel Trap (162488)
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Ignore Line of Sight (66), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=228163)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2392 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2392 | Target: at Location in Area (87)
 Description      : $@spelldesc162488
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3489,7 +3489,7 @@ Family Flags     : 1, 7, 90
 Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No AutoCast (AI) (49), Ignore Weaponskill (91), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273670)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187651 | Radius: 3 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187651 | Radius: 3 yards | Target: at Location in Area (87)
 Description      : Hurls a frost trap to the target location that incapacitates the first enemy that approaches for $3355d. Damage may break the effect. Limit 1. Trap will exist for $3355d.
 
 Name             : Freezing Trap (id=187651) [Spell Family (9)] 
@@ -3508,7 +3508,7 @@ Triggered By     : Freezing Trap (187650)
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=273671)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4424 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4424 | Target: at Location in Area (87)
 Description      : $@spelldesc187650
 
 Name             : Tar Trap (id=187698) [Spell Family (9)] 
@@ -3529,7 +3529,7 @@ Family Flags     : 1, 7, 92
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Not an Attack (194), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273748)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 3 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 3 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1168718)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Hurls a tar trap to the target location that creates a $187699s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Limit $s2. Trap will exist for $13809d.
@@ -3550,7 +3550,7 @@ Triggered By     : Tar Trap (187698)
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Not an Action (92), Allow Cast While Casting (135), Ignore Combat Timer (156), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=273749)   : Create Area Trigger (179)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 4435 | Target: at Area in Area (87)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 4435 | Target: at Location in Area (87)
 #2 (id=344394)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc187698
@@ -3569,7 +3569,7 @@ Labels           : 16: Class Spells
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Can Proc From Procs (122), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273750)   : Create Area Trigger (179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4436 | Target: at Area in Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 4436 | Target: at Location in Area (87)
 Description      : $@spelldesc187698
 
 Name             : Muzzle (id=187707) [Spell Family (9)] 
@@ -4657,7 +4657,7 @@ Family Flags     : 55, 73, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315406)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.91 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.91 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc212431
 
 Name             : Scatter Shot (id=213691) [Spell Family (9)] 
@@ -4909,7 +4909,7 @@ Triggered By     : High Explosive Trap (236776)
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=358187)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9810 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9810 | Target: at Location in Area (87)
 Description      : $@spelldesc236776
 
 Name             : High Explosive Trap (id=236776) [Spell Family (9)] 
@@ -4929,7 +4929,7 @@ Family Flags     : 1, 7
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=358188)   : Trigger Missiles (32) | Attributes: Position is facing relative (1)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 236775 | Radius: 3 - 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 236775 | Radius: 3 - 5 yards | Target: at Location in Area (87)
 #2 (id=1168716)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Hurls a fire trap to the target location that explodes when an enemy approaches, causing $236777s2 Fire damage and knocking all enemies away. Limit $s2. Trap will exist for $236775d.$?s321468[
@@ -4953,11 +4953,11 @@ Family Flags     : 36
 Attributes       : No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Avoidance (102), DoT Stacking Rule (103), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Aura Log (202), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Caster Death Cancels Persistent Area Auras (347), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=358189)   : Unknown(144) | Attributes: Is Harmful (12)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 5 yards | Mechanic: Knockback | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 5 yards | Mechanic: Knockback | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=358190)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5733 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5733 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #3 (id=743671)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc236776
 
 Name             : Spitting Cobra (desc=Passive) (id=237838) 
@@ -5932,7 +5932,7 @@ Family Flags     : 1, 34, 121
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485310)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=809257)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Rain a volley of arrows down over $d, dealing up to ${$260247s1*12} Physical damage to any enemy in the area, and gain the effects of Trick Shots for as long as Volley is active.
@@ -7069,7 +7069,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=714906)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc259391
 
 Name             : Viper's Venom (id=268501) [Spell Family (9), Passive] 
@@ -7924,7 +7924,7 @@ Labels           : 292
 Attributes       : Missile Speed is Delay (in sec) (292)
 Effects          :
 #1 (id=723856)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272745 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 272745 | Target: at Location in Area (87)
 Description      : $@spelldesc272742
 
 Name             : Frenzy (id=272790) [Spell Family (9)] 
@@ -8314,9 +8314,9 @@ Family Flags     : 74, 106
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=787673)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2 | Radius: 0 - 15 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2 | Radius: 0 - 15 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=787858)   : Create Area Trigger (179)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18036 | Target: at Area in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18036 | Target: at Location in Area (87)
 #3 (id=871241)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 Description      : $@spelldesc308491
@@ -8434,7 +8434,7 @@ Category Cooldown: 30 seconds
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=808672)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 164986 | Misc Value 2: 0x1264 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 164986 | Misc Value 2: 0x1264 | Target: at Location in Area (87)
 Description      : $@spelldesc187650
 
 Name             : Freezing Trap (id=321177) [Spell Family (9)] 
@@ -8845,11 +8845,11 @@ Family Flags     : 1, 74, 106
 Attributes       : No Aura Cancel (31), Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=821610)   : Create Area Trigger (179)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 20410 | Target: at Area in Area (87)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 20410 | Target: at Location in Area (87)
 #2 (id=821611)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=871320)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25 | Radius: 0 - 12 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25 | Radius: 0 - 12 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc328231
 
 Name             : Death Chakram (desc=Necrolord) (id=335932) 
@@ -10441,7 +10441,7 @@ Family Flags     : 1
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1110188)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23872 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23872 | Target: at Location in Area (87)
 Description      : $@spelldesc187650
 
 Name             : Call of the Wild (id=361582) 
@@ -12098,7 +12098,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1032450)  : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc393344
 Tooltip          : Rooted.
 
@@ -13239,7 +13239,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137566)  : Dummy (3) | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc430712
 
 
@@ -13602,7 +13602,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Not In Spellbook (143)
 Effects          :
 #1 (id=1151258)  : Create Area Trigger (179)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 33500 | Target: at Area in Area (87)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 33500 | Target: at Location in Area (87)
 #2 (id=1151291)  : Apply Aura (6) | Periodic Dummy (226): every 0.4 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc450385
@@ -14539,7 +14539,7 @@ Affecting Spells : Dire Frenzy (385810 effect#1)
 Family Flags     : 100
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268)
 Effects          :
-#1 (id=1166761)  : Apply Aura (6) | Unknown(428)
+#1 (id=1166761)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 459733 | Target: Self (1)
 #2 (id=1166798)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -14558,7 +14558,7 @@ Affecting Spells : Dire Frenzy (385810 effect#1)
 Family Flags     : 100
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
-#1 (id=1166771)  : Apply Aura (6) | Unknown(428)
+#1 (id=1166771)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 459739 | Target: Self (1)
 #2 (id=1166782)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -15218,7 +15218,7 @@ Family Flags     : 1, 7
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Weaponskill (91), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171245)  : Trigger Missiles (32) | Attributes: Position is facing relative (1)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 462032 | Radius: 3 - 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 462032 | Radius: 3 - 5 yards | Target: at Location in Area (87)
 #2 (id=1171246)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Hurls a fire trap to the target location that explodes when an enemy approaches, causing $236777s2 Fire damage and knocking all enemies up. Limit $s2. Trap will exist for $236775d.$?s321468[
@@ -15239,7 +15239,7 @@ Triggered By     : Implosive Trap (462031)
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171247)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34378 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34378 | Target: at Location in Area (87)
 Description      : $@spelldesc462031
 
 Name             : Implosive Trap (id=462033) [Spell Family (9)] 
@@ -15259,11 +15259,11 @@ Family Flags     : 36
 Attributes       : No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Avoidance (102), DoT Stacking Rule (103), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Aura Log (202), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Caster Death Cancels Persistent Area Auras (347), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1171248)  : Unknown(144)
-                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards | Mechanic: Knockback | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards | Mechanic: Knockback | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1171249)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5733 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5733 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #3 (id=1171250)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc462031
 
 Name             : Blackrock Munitions (id=462036) [Spell Family (9), Passive, Hidden] 
@@ -15361,7 +15361,7 @@ Range            : 100 yards
 Attributes       : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1175984)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 3.5 | Scaled Value: 3.5 (delta=0.05) | AP Coefficient: 2.91 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 3.5 | Scaled Value: 3.5 (delta=0.05) | AP Coefficient: 2.91 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc212431
 
 Name             : Avian Specialization (id=466867) [Spell Family (9), Passive] 
@@ -16021,7 +16021,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Not In Spellbook (143)
 Effects          :
 #1 (id=1184423)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233188 | Misc Value 2: 0x40 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233188 | Misc Value 2: 0x40 | Target: at Location in Area (87)
 Description      : $@spelldesc450385
 
 Name             : Lunar Storm (id=469843) [Spell Family (9), Hidden] 
@@ -16538,7 +16538,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknow
 Effects          :
 #1 (id=1189801)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1189805)  : Apply Aura (6) | Unknown(428)
+#2 (id=1189805)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 471990 | Target: Self (1)
 
 Name             : Rend Flesh (id=471999) [Spell Family (9)] 

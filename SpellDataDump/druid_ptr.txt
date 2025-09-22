@@ -1865,7 +1865,7 @@ Family Flags     : 55
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42450)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc191034
 
 Name             : Survival Instincts (id=50322) [Spell Family (7), Hidden] 
@@ -2516,7 +2516,7 @@ Family Flags     : 65, 118
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68693)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.233 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.233 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
@@ -2691,7 +2691,7 @@ Family Flags     : 18, 88
 Attributes       : Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91242)    : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.544 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.544 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1031624)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc88747
@@ -3267,9 +3267,9 @@ Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=111705)   : Dummy (3)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Snare | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Snare | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=154620)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 314 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 314 | Target: at Location in Area (87)
 Description      : Conjures a vortex of wind for $d at the destination, reducing the movement speed of all enemies within $A1 yards by $s1%. The first time an enemy attempts to leave the vortex, winds will pull that enemy back to its center. Usable in all shapeshift forms.
 Tooltip          : Movement speed slowed by $s1% and winds impeding movement.
 
@@ -4657,7 +4657,7 @@ Stance Mask      : 0x80000000
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=195370)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc158504
 
 Name             : Efflorescence (id=145205) [Spell Family (7)] 
@@ -4680,11 +4680,11 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Always Show Groun
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=195464)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 10 yards | Target: at Location in Area (87)
 #2 (id=195465)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47649 | Misc Value 2: 0xd80 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47649 | Misc Value 2: 0xd80 | Target: at Location in Area (87)
 #3 (id=195466)   : Create Area Trigger (179)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 9049 | Target: at Area in Area (87)
+                   Base Value: 6 | Scaled Value: 6 | Misc Value: 9049 | Target: at Location in Area (87)
 #4 (id=1108291)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t1 sec for $81262d. Limit 1.
@@ -6918,13 +6918,13 @@ Family Flags     : 41
 Attributes       : No Aura Icon (60), Suppress Target Procs (113), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303838)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=303839)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 248280 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 248280 | Target: at Location in Area (87)
 #3 (id=465061)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 155 | Trigger Spell: 248280 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 155 | Trigger Spell: 248280 | Target: at Location in Area (87)
 #4 (id=465062)   : Trigger Spell (64): Force of Nature
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 248280 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 248280 | Target: at Location in Area (87)
 #5 (id=736032)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: astral_power | Target: Self (1)
 Description      : Summons a stand of $s1 Treants for $248280d which immediately taunt and attack enemies in the targeted area.
@@ -7331,7 +7331,7 @@ Family Flags     : 18, 23
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=313366)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.193 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.193 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=906695)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc202770
@@ -7349,7 +7349,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=313368)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 3 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 3 yards | Target: at Location in Area (87)
 Description      : $@spelldesc202770
 
 Name             : Revitalize (id=212040) [Spell Family (7)] 
@@ -7887,7 +7887,7 @@ Family Flags     : 41
 Attributes       : No Aura Icon (60), Suppress Target Procs (113), No Aura Log (202), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=465060)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103822 | Misc Value 2: 0xc19 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Radius in Area (91)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 103822 | Misc Value 2: 0xc19 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Radius in Area (91)
 Description      : Summons a stand of $s2 Treants for $d which immediately taunt and attack enemies in the targeted area.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
@@ -8618,7 +8618,7 @@ Family Flags     : 18, 23
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=741104)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc202770
 
 Name             : Primal Wrath (id=285381) [Spell Family (7)] 
@@ -11293,7 +11293,7 @@ Triggered By     : Star Burst (356468), Star Burst (405389)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Show Ground Texture (190), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=890286)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23362 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23362 | Target: at Location in Area (87)
 Description      : $@spelldesc356517
 
 
@@ -11364,7 +11364,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=890449)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 180178 | Misc Value 2: 0x3d | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 180178 | Misc Value 2: 0x3d | Target: at Location in Area (87)
 Description      : $@spelldesc356517
 
 
@@ -11887,7 +11887,7 @@ Family Flags     : 18, 23
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=906701)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.165 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.165 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc202770
 
 Name             : Ephemeral Profusion (id=367330) [Spell Family (7)] 
@@ -15054,7 +15054,7 @@ Family Flags     : 18, 23
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1033506)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.193 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.193 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc202770
 
 Name             : Radiant Moonlight (id=394121) [Spell Family (7), Passive] 
@@ -16347,7 +16347,7 @@ Family Flags     : 77, 109
 Attributes       : Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1083866)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | Radius: 0 - 5 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | Radius: 0 - 5 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc204066
 
 Name             : Initial Druid (id=417382) [Spell Family (7), Passive, Hidden] 
@@ -17056,7 +17056,7 @@ Labels           : 16: Class Spells
 Attributes       : Suppress Target Procs (113)
 Effects          :
 #1 (id=1109466)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc428544
 
 Name             : The Light of Elune (id=428655) [Spell Family (7), Passive, Hidden] 
@@ -18449,7 +18449,7 @@ Family Flags     : 118
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1133809)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.345 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.345 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 #2 (id=1134176)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : $@spelldesc440120
@@ -18468,7 +18468,7 @@ Family Flags     : 98
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1133810)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc440120
 
 Name             : Ravage (id=441583) [Spell Family (7), Passive] 
@@ -21510,7 +21510,7 @@ Family Flags     : 55
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1232692)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1236607
 
 Name             : Starfall (id=1236613) [Spell Family (7)] 

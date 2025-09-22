@@ -626,7 +626,7 @@ Effects          :
 #1 (id=301465)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=16533)    : Create Area Trigger (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4488 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4488 | Target: at Location in Area (87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: at Self (18)
 Description      : Consecrates the land beneath you, causing $?s405289[${$<dmg>*1.05} Radiant][${$<dmg>*1.05} Holy] damage over $d to enemies who enter the area$?s204054[ and reducing their movement speed by $204054s2%.][.] Limit $s2.
@@ -1469,7 +1469,7 @@ Family Flags     : 5, 27, 65
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), PvP Enabling (96), Treat As Periodic (121), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=81788)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.05 | PvP Coefficient: 1.5 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.05 | PvP Coefficient: 1.5 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : Deals $s1 Holy damage every $26573t1 sec to enemies within $A1 yards.
 
 Name             : Parry (id=82242) [Passive] 
@@ -1787,9 +1787,9 @@ Family Flags     : 65, 83
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Dead Target (64), Not a Proc (105), Always Hit (114), Do Not Display Range (126), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=90535)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.1356 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.1356 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=171313)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc53595
 
 Name             : Beacon of Light (id=88852) [Spell Family (10)] 
@@ -1955,7 +1955,7 @@ Attributes       : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: at Location in Area (87)
 #2 (id=1080484)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
@@ -2097,7 +2097,7 @@ Family Flags     : 65, 67
 Attributes       : Allow While Sitting (27), Exclude Caster (51), Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128470)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.205 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.205 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc114158
 
 Name             : Boundless Conviction (id=115675) [Spell Family (10), Passive] 
@@ -2165,7 +2165,7 @@ Family Flags     : 46, 101
 Attributes       : Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Not On Player Controlled NPC (168), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.48 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.48 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc114158
 
 Name             : Gift of the Naaru (desc=Racial) (id=121093) 
@@ -2220,7 +2220,7 @@ Triggered By     : Light's Hammer (114158)
 Attributes       : Is Ability (4), No Aura Icon (60), Ignore Line of Sight (66), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), No Summon Log (326), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=154587)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59738 | Misc Value 2: 0xdb5 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59738 | Misc Value 2: 0xdb5 | Target: at Location in Area (87)
 #2 (id=1074247)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 
@@ -5481,7 +5481,7 @@ Family Flags     : 5, 58
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Always Show Ground Texture (190), No Aura Log (202), Bypass Visibility Check (320)
 Effects          :
 #1 (id=370240)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: at Location in Area (87)
 Description      : $@spelldesc26573
 
 Name             : Awakening (id=248033) [Spell Family (10), Passive] 
@@ -8522,15 +8522,15 @@ Family Flags     : 27, 31, 65
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=845753)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=845754)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.05312 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.05312 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #3 (id=845757)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
                    Affected Spells: Ancient Fury (86704), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Hammer of Light (427453), Hammer of Light (429826), Hammer of Light (1235934)
                    Family Flags: 29, 44, 88, 111, 112
 #4 (id=1144778)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Divine Hammer (198137), Shield of the Righteous (415091)
                    Family Flags: 25, 49, 52
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the area and causing them to take $s3% increased damage from your single target Holy Power abilities, and $s4% increased damage from other Holy Power abilities for $d.
@@ -9321,7 +9321,7 @@ Family Flags     : 41, 46
 Attributes       : Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1004790)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc377128
 
 Name             : Gift of the Golden Val'kyr (id=378279) [Spell Family (10), Passive] 
@@ -11157,7 +11157,7 @@ Family Flags     : 5, 58
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), Always Show Ground Texture (190), No Aura Log (202), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1022985)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4488 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 4488 | Target: at Location in Area (87)
 Description      : $@spelldesc26573
 
 Name             : Divine Resonance (id=387895) 
@@ -15054,7 +15054,7 @@ Family Flags     : 5, 58
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Always Show Ground Texture (190), No Aura Log (202), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1093004)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8455 | Target: at Location in Area (87)
 Description      : $@spelldesc26573
 
 Name             : Consecration (id=420378) 
@@ -16346,7 +16346,7 @@ Family Flags     : 27, 65
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120108)  : School Damage (2): holyfire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.216 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.216 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=431939) [Spell Family (10)] 
@@ -16365,7 +16365,7 @@ Family Flags     : 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120157)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 40 yards | Target: at Area in Area (87) -> Line to Ally (133)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 40 yards | Target: at Location in Area (87) -> Line to Ally (133)
 Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
@@ -19565,7 +19565,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Suppress Weapon Procs (151), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1219472)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at any in Area (8)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at any in Area (8)
 Description      : $@spelldesc433106
 
 Name             : Single-Button Assistant (id=1229376) 

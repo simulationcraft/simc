@@ -366,11 +366,11 @@ Family Flags     : 50, 105
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=402)      : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: at Location in Area (87)
 #2 (id=403)      : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards | Target: at Location in Area (87)
 #3 (id=268271)   : Unknown(148)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 111685 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 111685 | Target: at Location in Area (87)
 Description      : Summons an Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.
 
 The Infernal will serve you for $111685d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
@@ -528,9 +528,9 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Effects          :
 #1 (id=2039)     : Persistent Area Aura (27) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Area in Area (87) -> at Dynamic Enemy in Area (28)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Location in Area (87) -> at Dynamic Enemy in Area (28)
 #2 (id=2040)     : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: at Location in Area (87)
 #3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Calls down a rain of hellfire the target location, dealing ${$42223m1*8} Fire damage over $d to enemies in the area.
@@ -1079,9 +1079,9 @@ Family Flags     : 50
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=12912)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Mechanic: Stun | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Mechanic: Stun | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -2657,7 +2657,7 @@ Family Flags     : 105
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=124148)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x2c7 | Target: at Location in Area (87)
 Description      : $@spelldesc1122
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
@@ -2680,7 +2680,7 @@ Family Flags     : 57
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), No Summon Log (326), Cheap Missile AOI (374), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=124273)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47319 | Misc Value 2: 0x137f | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47319 | Misc Value 2: 0x137f | Target: at Location in Area (87)
 #2 (id=126943)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 Description      : Creates a demonic gateway between two locations. Activating the gateway transports the user to the other gateway. Each player can use a Demonic Gateway only once per $<GatewayCooldown> sec.
@@ -2946,7 +2946,7 @@ Effects          :
 #2 (id=126958)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 893 | Target: Self (1)
 #3 (id=127006)   : Unknown(42)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 6 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 6 | Target: at Location in Area (87)
 #4 (id=171511)   : Trigger Spell (64): Demonic Gateway
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 113942 | Target: Self (1)
 #5 (id=172344)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -3213,7 +3213,7 @@ Effects          :
 #2 (id=140623)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 893 | Target: Self (1)
 #3 (id=140624)   : Unknown(42)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 6 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 6 | Target: at Location in Area (87)
 #4 (id=171512)   : Trigger Spell (64): Demonic Gateway
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 113942 | Target: Self (1)
 #5 (id=172362)   : Apply Aura (6) | Mechanic Immunity (77)
@@ -4197,7 +4197,7 @@ Family Flags     : 46, 49
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=288084)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.545531 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.545531 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc196277
 
 Name             : Call Dreadstalkers (id=196281) [Spell Family (5)] 
@@ -4551,9 +4551,9 @@ Family Flags     : 20
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Bypass Visibility Check (320), No Summon Log (326), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295242)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Location in Area (87)
 #2 (id=329489)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5650 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5650 | Target: at Location in Area (87)
 #3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Cooldown (38)
                    Base Value: 12900 | Scaled Value: 12900 | Misc Value: 38 | Misc Value 2: 2335 (Label) | Target: Self (1)
                    Affected Spells (Label): Mayhem (387506), Mayhem (394087)
@@ -5255,7 +5255,7 @@ Attributes       : No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Al
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=340518)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108452 | Misc Value 2: 0xf77 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 108452 | Misc Value 2: 0xf77 | Target: at Location in Area (87)
 Description      : $@spelldesc224103
 
 Name             : Immolate (id=228312) [Spell Family (5), Hidden] 
@@ -6341,7 +6341,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Cast While Casting (135), Extra Initial Period (169), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=713714)   : Trigger Missiles (32) | Attributes: Position is facing relative (1)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 267213 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 267213 | Target: at Location in Area (87)
 Description      : $@spelldesc267211
 
 Name             : Bilescourge Bombers (id=267213) [Spell Family (5)] 
@@ -6359,7 +6359,7 @@ Family Flags     : 49, 89
 Attributes       : Not Shapeshifted (16), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=713715)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.276 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.276 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive] 
@@ -6538,7 +6538,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715011)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136397 | Misc Value 2: 0x10b1 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136397 | Misc Value 2: 0x10b1 | Target: at Location in Area (87)
 Description      : Summon Prince Malchezaar to fight for you for the next $d.
 
 Name             : Summon Illidari Satyr (id=267987) [Spell Family (5)] 
@@ -6554,7 +6554,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715012)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136398 | Misc Value 2: 0x10b2 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136398 | Misc Value 2: 0x10b2 | Target: at Location in Area (87)
 Description      : Summon an Illidari Satyr to fight for you for the next $d.
 
 Name             : Summon Vicious Hellhound (id=267988) [Spell Family (5)] 
@@ -6570,7 +6570,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715013)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136399 | Misc Value 2: 0x10b3 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136399 | Misc Value 2: 0x10b3 | Target: at Location in Area (87)
 Description      : Summon a Vicious Hellhound to fight for you for the next $d.
 
 Name             : Summon Eyes of Gul'dan (id=267989) [Spell Family (5)] 
@@ -6586,7 +6586,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715014)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136401 | Misc Value 2: 0x10b4 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136401 | Misc Value 2: 0x10b4 | Target: at Location in Area (87)
 Description      : Summon Eyes of Gul'dan to fight for you for the next $d.
 
 Name             : Summon Void Terror (id=267991) [Spell Family (5)] 
@@ -6602,7 +6602,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715016)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136403 | Misc Value 2: 0x10b6 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136403 | Misc Value 2: 0x10b6 | Target: at Location in Area (87)
 Description      : Summon a Void Terror to fight for you for the next $d.
 
 Name             : Summon Bilescourge (id=267992) [Spell Family (5)] 
@@ -6618,7 +6618,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715017)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136404 | Misc Value 2: 0x10b7 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136404 | Misc Value 2: 0x10b7 | Target: at Location in Area (87)
 Description      : Summon a Bilescourge to fight for you for the next $d.
 
 Name             : Summon Shivarra (id=267994) [Spell Family (5)] 
@@ -6634,7 +6634,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715019)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136406 | Misc Value 2: 0x10b9 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136406 | Misc Value 2: 0x10b9 | Target: at Location in Area (87)
 Description      : Summon a Shivarra to fight for you for the next $d.
 
 Name             : Summon Wrathguard (id=267995) [Spell Family (5)] 
@@ -6650,7 +6650,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715020)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136407 | Misc Value 2: 0x10ba | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136407 | Misc Value 2: 0x10ba | Target: at Location in Area (87)
 Description      : Summon a Wrathguard to fight for you for the next $d.
 
 Name             : Summon Darkhound (id=267996) [Spell Family (5)] 
@@ -6721,7 +6721,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=715031)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136402 | Misc Value 2: 0x10b5 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136402 | Misc Value 2: 0x10b5 | Target: at Location in Area (87)
 Description      : Summon an Ur'zul to fight for you for the next $d.
 
 Name             : Demonic Circle (id=268358) [Spell Family (5), Passive] 
@@ -6808,7 +6808,7 @@ Family Flags     : 14
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=718983)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Target: at Location in Area (87)
 Description      : $@spelldesc105174
 
 Name             : Demonfire (id=270481) [Spell Family (5)] 
@@ -7268,7 +7268,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Allow Cast While Casting (135), Extra Initial Period (169), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=741787)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15141 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15141 | Target: at Location in Area (87)
 Description      : $@spelldesc267211
 
 Name             : Shadow Embrace (id=285229) 
@@ -7469,7 +7469,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=794071)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 312379 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 312379 | Target: at Location in Area (87)
 Description      : $@spelldesc312321
 
 Name             : Scouring Tithe (desc=Kyrian) (id=312956) [Hidden] 
@@ -7593,7 +7593,7 @@ Family Flags     : 49
 Attributes       : Allow Cast While Dead (23), Do Not Display Range (126), Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=810357)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc321792
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -8062,7 +8062,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831709)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x13f0 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 89 | Misc Value 2: 0x13f0 | Target: at Location in Area (87)
 Description      : $@spelldesc1122
 
 Name             : Decimating Bolt (desc=Necrolord) (id=335942) 
@@ -9352,9 +9352,9 @@ Labels           : 16: Class Spells
 Attributes       : No AutoCast (AI) (49), No Aura Icon (60), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=911563)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: at Location in Area (87)
 #2 (id=911564)   : Unknown(148)
-                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 367680 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 367680 | Target: at Location in Area (87)
 Description      : Summons a Blasphemy from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.
 
 The Blasphemy will serve you for $363950s1 sec, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
@@ -9372,11 +9372,11 @@ Triggered By     : Summon Blasphemy (367679)
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=911565)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 185584 | Misc Value 2: 0x13f0 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | Misc Value: 185584 | Misc Value 2: 0x13f0 | Target: at Location in Area (87)
 #2 (id=911582)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=913443)   : Trigger Spell (64): Infernal Awakening
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Target: at Location in Area (87)
 Description      : $@spelldesc367679
 Tooltip          : $@spelldesc367679
 
@@ -9394,7 +9394,7 @@ Family Flags     : 50
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=911790)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : The Blasphemy ignites, dealing $s1 Shadowflame damage to all targets.
 Tooltip          : Stunned.
 
@@ -14938,7 +14938,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Allow Dead Target (64), Suppress Target Procs (113)
 Effects          :
 #1 (id=1150654)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: at Area in Area (87) -> at any in Area (8)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: at Location in Area (87) -> at any in Area (8)
 Description      : $@spelldesc449704
 
 Name             : Feast of Souls (id=450752) [Spell Family (5)] 
@@ -16586,7 +16586,7 @@ Range            : 50000 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), PvP Enabling (96), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Owner Power Scaling (153), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1176455)  : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0.3713 | Scaled Value: 0.3713 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0.3713 | Scaled Value: 0.3713 (delta=0.05) | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc105174
 
 Name             : Wild Imp (id=464894) 
@@ -16622,7 +16622,7 @@ Range            : 100 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1176480)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0.4744 | Scaled Value: 0.4744 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0.4744 | Scaled Value: 0.4744 (delta=0.05) | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc196277
 
 Name             : Implosion (id=464908) 
@@ -16711,7 +16711,7 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Effects          :
 #1 (id=1196681)  : Persistent Area Aura (27) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Area in Area (87) -> at Dynamic Enemy in Area (28)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Location in Area (87) -> at Dynamic Enemy in Area (28)
 #2 (id=1196682)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: At Enemy (53)
 #3 (id=1196683)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds

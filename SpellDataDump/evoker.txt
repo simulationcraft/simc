@@ -961,7 +961,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Always Line of Si
 Aura Interrupt   : Disconnect (42)
 Effects          :
 #1 (id=891598)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Location in Area (87)
 #2 (id=891599)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=894957)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -1015,7 +1015,7 @@ Family Flags     : 0, 5, 38
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.508 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.508 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc357211
 
 Name             : Hover (id=357302) [Spell Family (224)] 
@@ -1230,7 +1230,7 @@ Family Flags     : 40
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Initial Threat (86), Always Show Ground Texture (190), Allow Class Ability Procs (416), Unknown (458)
 Effects          :
 #1 (id=893650)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Location in Area (87)
 Description      : Conjure a path of shifting stone towards the target location, rooting enemies for $355689d. Damage may cancel the effect.
 
 Name             : Eternity Surge (desc=Blue) (id=359073) [Spell Family (224)] 
@@ -1379,7 +1379,7 @@ Family Flags     : 37
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Unknown (458)
 Effects          :
 #1 (id=896508)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Location in Area (87)
 #2 (id=896509)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #3 (id=896510)   : Apply Aura (6) | Disable Abilities (263)
@@ -1762,7 +1762,7 @@ Triggered By     : Deep Breath (362019)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Extra Initial Period (169), Allow While Riding Vehicle (204), No Jump Pathing (208), No PvP Battle Fatigue (387), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=900359)   : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 581 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 581 | Target: at Location in Area (87)
 #2 (id=900360)   : Apply Aura (6) | Periodic Trigger Spell (23): Deep Breath every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 353759 | Target: Self (1)
 #3 (id=997966)   : Apply Aura (6) | Periodic Trigger Spell (23): Igneous Crucible every 0.2 seconds
@@ -1772,7 +1772,7 @@ Effects          :
 #5 (id=1050848)  : Apply Aura (6) | Periodic Trigger Spell (23): Divide and Conquer every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403727 | Target: Self (1)
 #6 (id=1143069)  : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1043 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1043 | Target: at Location in Area (87)
 Description      : $@spelldesc357210
 
 Name             : Deep Breath (desc=Black) (id=362019) [Spell Family (224), Hidden] 
@@ -1814,11 +1814,11 @@ Triggered By     : Dream Flight (362362)
 Attributes       : No Aura Icon (60), Extra Initial Period (169), Allow While Riding Vehicle (204), No Jump Pathing (208), No PvP Battle Fatigue (387), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=900969)   : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 625 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 625 | Target: at Location in Area (87)
 #2 (id=900970)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1163777)  : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1116 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1116 | Target: at Location in Area (87)
 Description      : $@spelldesc359816
 
 Name             : Dream Flight (id=362362) [Spell Family (224), Hidden] 
@@ -2543,7 +2543,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=912789)   : Summon (28)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 185800 | Misc Value 2: 0x14bc | Target: at Area in Area (87)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 185800 | Misc Value 2: 0x14bc | Target: at Location in Area (87)
 Description      : $@spelldesc368412
 
 Name             : Unravel (desc=Blue) (id=368432) [Spell Family (224)] 
@@ -2616,7 +2616,7 @@ Family Flags     : 2, 32
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=913562)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 369372 | Radius: 10 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 369372 | Radius: 10 yards | Target: at Location in Area (87)
 Description      : An explosion bombards the target area with white-hot embers, dealing $456657o1 Fire damage to enemies over $369372d.
 Variables        : $damage=${$369374s1*(1+$369372d/2)}
 
@@ -2749,7 +2749,7 @@ Triggered By     : Firestorm (368847)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=914649)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24713 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24713 | Target: at Location in Area (87)
 Description      : $@spelldesc368847
 
 Name             : Firestorm (desc=Red) (id=369374) [Spell Family (224)] 
@@ -2766,7 +2766,7 @@ Family Flags     : 0, 64
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=914653)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.44 | Radius: 0 - 10 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.44 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc368847
 
 Name             : Living Flame (id=369398) 
@@ -3173,7 +3173,7 @@ Effects          :
 #1 (id=982113)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -90 | Scaled Value: -90 | Target: Targeted Raid Member (57)
 #2 (id=982114)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : Swoop to an ally and fly with them to the target location. Clears movement impairing effects from you and your ally.
 Tooltip          : About to be picked up!
 
@@ -3775,7 +3775,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=984919)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 189161 | Misc Value 2: 0x155d | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 189161 | Misc Value 2: 0x155d | Target: at Location in Area (87)
 Description      : $@spelldesc371832
 
 Name             : Cycle of Life (id=371877) [Spell Family (224)] 
@@ -3809,7 +3809,7 @@ Labels           : 16: Class Spells
 Attributes       : Can't Crit (93), Not On Player Controlled NPC (168), Ignore Healing Modifiers (219), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=985054)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc371832
 
 Name             : Visage (desc=Racial) (id=372014) 
@@ -6282,7 +6282,7 @@ Triggered By     : Deep Breath (362010), Breath of Eons (403755), Aerial Bombard
 Attributes       : Ignore Line of Sight (66), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1017459)  : Create Area Trigger (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28166 | Radius: 0 - 7 yards | Target: at Area in Area (87) -> Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28166 | Radius: 0 - 7 yards | Target: at Location in Area (87) -> Right of Self (49)
 Description      : Deep Breath forms a wall of fire for 8 sec, preventing line of sight through the wall. Enemies who cross through the wall are damaged for $s2.
 
 Name             : Flow State (id=385696) [Spell Family (224), Passive] 
@@ -7696,7 +7696,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Always Line of Si
 Aura Interrupt   : Leave World (19), Disconnect (42)
 Effects          :
 #1 (id=1050694)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Location in Area (87)
 #2 (id=1050695)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1050696)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -7730,7 +7730,7 @@ Triggered By     : Deep Breath (362010), Breath of Eons (403755), Aerial Bombard
 Attributes       : Ignore Line of Sight (66), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1050847)  : Create Area Trigger (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28166 | Radius: 0 - 7 yards | Target: at Area in Area (87) -> Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28166 | Radius: 0 - 7 yards | Target: at Location in Area (87) -> Left of Self (50)
 Description      : Deep Breath forms a wall of fire for 8 sec, preventing line of sight through the wall. Enemies who cross through the wall are damaged for $s2.
 
 Name             : Breath of Eons (desc=Bronze) (id=403755) [Spell Family (224), Hidden] 
@@ -7747,7 +7747,7 @@ Triggered By     : Breath of Eons (403758)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Extra Initial Period (169), Allow While Riding Vehicle (204), No Jump Pathing (208), No PvP Battle Fatigue (387), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=1050899)  : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 779 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 779 | Target: at Location in Area (87)
 #2 (id=1050900)  : Apply Aura (6) | Periodic Trigger Spell (23): Temporal Wound every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409560 | Target: Self (1)
 #3 (id=1082942)  : Apply Aura (6) | Periodic Trigger Spell (23): Igneous Crucible every 0.2 seconds
@@ -9130,7 +9130,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1075815)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=410296) [Spell Family (224), Hidden] 
@@ -9144,7 +9144,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1075816)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=410297) [Spell Family (224), Hidden] 
@@ -9158,7 +9158,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1075817)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=410298) [Spell Family (224), Hidden] 
@@ -9172,7 +9172,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1075818)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Bestow Weyrnstone (id=410318) [Spell Family (224)] 
@@ -9778,7 +9778,7 @@ Effects          :
 #1 (id=1083143)  : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Enemy in Area (16)
 #2 (id=1083144)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25144 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25144 | Target: at Location in Area (87)
 Description      : $@spelldesc414253
 Tooltip          : Rooted.
 
@@ -9964,7 +9964,7 @@ Labels           : 16: Class Spells
 Triggered By     : Motes of Possibility (409274)
 Effects          :
 #1 (id=1093207)  : Create Area Trigger (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28777 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 28777 | Target: at Location in Area (87)
 Description      : $@spelldesc409267
 
 Name             : Motes of Possibility (id=419954) [Spell Family (224)] 
@@ -10349,7 +10349,7 @@ Range            : 100 yards
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118730)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
-                   Base Value: 1.2075 | Scaled Value: 1.2075 (delta=0.05) | PvP Coefficient: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 1.2075 | Scaled Value: 1.2075 (delta=0.05) | PvP Coefficient: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc357211
 
 Name             : Pyre (id=431152) [Hidden] 
@@ -11336,7 +11336,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Extra Initial Period (169), Allow While Riding Vehicle (204), No Jump Pathing (208), No PvP Battle Fatigue (387), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=1134032)  : Unknown(254)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1011 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1011 | Target: at Location in Area (87)
 #2 (id=1134033)  : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 353759 | Target: Self (1)
 #3 (id=1134034)  : Apply Aura (6) | Periodic Trigger Spell (23): Igneous Crucible every 0.2 seconds
@@ -11995,7 +11995,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1140381)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc444088
 
 Name             : Flame Siphon (desc=Red) (id=444140) [Spell Family (224), Passive, Hidden] 
@@ -12172,7 +12172,7 @@ Labels           : 16: Class Spells
                  : 3022
 Effects          :
 #1 (id=1142384)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc444088
 
 Name             : Titanic Precision (desc=Red) (id=445625) [Spell Family (224), Passive, Hidden] 
@@ -12915,7 +12915,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1204879)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=1219254) [Spell Family (224), Hidden] 
@@ -12929,7 +12929,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1204880)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=1219255) [Spell Family (224), Hidden] 
@@ -12943,7 +12943,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1204881)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Upheaval (id=1219257) [Spell Family (224), Hidden] 
@@ -12957,7 +12957,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1204884)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc396286
 
 Name             : Azure Celerity (id=1219723) [Spell Family (224), Passive] 

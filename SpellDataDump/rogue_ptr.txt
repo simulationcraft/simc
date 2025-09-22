@@ -3694,7 +3694,7 @@ Family Flags     : 102
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Allow While Stealthed (37), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not an Attack (194), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Cheap Missile AOI (374), Allow Class Ability Procs (416), Always Require PvP Target Match (430)
 Effects          :
 #1 (id=286908)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : Launch a grappling hook and pull yourself to the target location.
 
 Name             : Opportunity (id=195627) [Spell Family (8)] 
@@ -4553,7 +4553,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=341340)   : Unknown(254)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 541 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 541 | Target: at Location in Area (87)
 Description      : $@spelldesc195457
 Tooltip          : Stunned.
 
@@ -4943,7 +4943,7 @@ Family Flags     : 54, 86
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Do Not Display Range (126), No Cast Log (128), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=477505)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.383328 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.383328 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc255544
 
 Name             : Light's Judgment (desc=Racial) (id=255647) 
@@ -5664,7 +5664,7 @@ Triggered By     : Secret Technique (282438), Secret Technique (282439)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742067)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 144961 | Misc Value 2: 0xe8e | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 144961 | Misc Value 2: 0xe8e | Target: at Location in Area (87)
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282448) [Spell Family (8), Hidden] 
@@ -6188,7 +6188,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=806308)   : Unknown(254)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 374 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 374 | Target: at Location in Area (87)
 Description      : $@spelldesc195457
 Tooltip          : Stunned.
 
@@ -12569,7 +12569,7 @@ Family Flags     : 54, 97
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1105178)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc422906
 
 Name             : Stunning Secret (id=426588) [Spell Family (8), Passive] 
@@ -13505,7 +13505,7 @@ Triggered By     : Fatebound Coin (452559)
 Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153788)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452555) [Spell Family (8)] 
@@ -13539,7 +13539,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153835)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452558) [Spell Family (8)] 
@@ -13555,7 +13555,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153837)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452559) [Spell Family (8)] 
@@ -13627,7 +13627,7 @@ Effects          :
 #1 (id=1154108)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1154109)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452741) [Spell Family (8)] 
@@ -13645,7 +13645,7 @@ Effects          :
 #1 (id=1154110)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1154111)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452742) [Spell Family (8)] 
@@ -13663,7 +13663,7 @@ Effects          :
 #1 (id=1154112)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1154113)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452562 | Target: at Location in Area (87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (Tails) (id=452917) [Spell Family (8)] 

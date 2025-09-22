@@ -588,9 +588,9 @@ Family Flags     : 1
 Attributes       : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Jump Pathing (208), Cheap Missile AOI (374), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=276571)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Location in Area (87)
 #2 (id=476592)   : Unknown(254)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: at Location in Area (87)
 Description      : Leap through the air toward a targeted location, dealing $189112s1 Fire damage to all enemies within $189112a1 yards.
 
 Name             : Infernal Strike (id=189112) [Spell Family (107)] 
@@ -641,11 +641,11 @@ Family Flags     : 15, 32
 Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), No Jump Pathing (208), Aura Points On Client (268), Bypass Visibility Check (320), Cheap Missile AOI (374), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=280801)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 5 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 5 yards | Target: at Location in Area (87)
 #2 (id=475699)   : Trigger Spell (64): Metamorphosis
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162264 | Target: Self (1)
 #3 (id=475700)   : Unknown(254)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: at Location in Area (87)
 #4 (id=475701)   : Trigger Spell (64): Metamorphosis
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201453 | Target: Self (1)
 Description      : Leap into the air and land with explosive force, dealing $200166s2 Chaos damage to enemies within 8 yds, and stunning them for $200166d. Players are Dazed for $247121d instead.
@@ -665,9 +665,9 @@ Family Flags     : 16, 18, 43
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=282602)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.434673 | Radius: 0 - 23 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.434673 | Radius: 0 - 23 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 #2 (id=1042646)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 0 - 23 yards | Target: at Area in Area (87) -> Line to Enemy (134)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 0 - 23 yards | Target: at Location in Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc195072
 
 Name             : Chaos Strike (id=193840) [Spell Family (107)] 
@@ -1187,9 +1187,9 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=297082)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=297083)   : Weapon Damage% (31)
-                   Base Value: 38 | Scaled Value: 0.38 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 38 | Scaled Value: 0.38 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc201467
 
 Name             : Fury of the Illidari (id=201789) [Spell Family (107)] 
@@ -1203,9 +1203,9 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Requires Off-Hand Weapon (120), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=297377)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=297378)   : Weapon Damage% (31)
-                   Base Value: 38 | Scaled Value: 0.38 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 38 | Scaled Value: 0.38 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
@@ -1227,9 +1227,9 @@ Family Flags     : 24, 32, 75
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297902)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=301812)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6027 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6027 | Target: at Location in Area (87)
 Description      : Place a Sigil of Silence at the target location that activates after $d.
 
 Silences all enemies affected by the sigil for $204490d.
@@ -1252,9 +1252,9 @@ Family Flags     : 24, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297903)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=301844)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6031 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6031 | Target: at Location in Area (87)
 Description      : Place a Sigil of Chains at the target location that activates after $d.
 
 All enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.
@@ -1377,7 +1377,7 @@ Range            : 100 yards
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Allow Cast While Channeling (308), Defend Against Friendly Cast (336)
 Effects          :
 #1 (id=299041)   : Weapon Damage% (31)
-                   Base Value: 50 | Scaled Value: 0.5 | Radius: 0 - 4 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 50 | Scaled Value: 0.5 | Radius: 0 - 4 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc201467
 
 Name             : Blur (id=202818) 
@@ -1678,7 +1678,7 @@ Family Flags     : 81
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=300650)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710 | Target: at Location in Area (87)
 #2 (id=301006)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=339174)   : Trigger Spell (64): Shattered Souls
@@ -1798,7 +1798,7 @@ Family Flags     : 81
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=301141)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6711 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6711 | Target: at Location in Area (87)
 #2 (id=301142)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=339178)   : Trigger Spell (64): Shattered Souls
@@ -1860,7 +1860,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=301463)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5977 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5977 | Target: at Location in Area (87)
 #2 (id=301484)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=339173)   : Trigger Spell (64): Shattered Souls
@@ -1880,7 +1880,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=301466)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6007 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6007 | Target: at Location in Area (87)
 #2 (id=301486)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=339179)   : Trigger Spell (64): Shattered Souls
@@ -1981,9 +1981,9 @@ Family Flags     : 24, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301965)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=301966)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6039 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6039 | Target: at Location in Area (87)
 Description      : Place a Sigil of Flame at the target location that activates after $d.
 
 Deals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.
@@ -2391,9 +2391,9 @@ Family Flags     : 24, 32, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=307158)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=307159)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6351 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6351 | Target: at Location in Area (87)
 Description      : Place a Sigil of Misery at the target location that activates after $d.
 
 Causes all enemies affected by the sigil to cower in fear, disorienting them for $207685d.
@@ -2776,7 +2776,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=310345)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3680 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3680 | Target: at Location in Area (87)
 #2 (id=339176)   : Trigger Spell (64): Shattered Souls
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -2793,7 +2793,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=310510)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6659 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6659 | Target: at Location in Area (87)
 #2 (id=339175)   : Trigger Spell (64): Shattered Souls
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -3431,7 +3431,7 @@ Labels           : 16: Class Spells
 Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=323006)   : School Damage (2): chaos
-                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc201472
 
 Name             : Imprison (id=217832) [Spell Family (107)] 
@@ -3527,7 +3527,7 @@ Family Flags     : 81
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=327380)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc210042
 Tooltip          : Consume to heal for $210042s1% of your maximum health.
 
@@ -3542,7 +3542,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=327395)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc203794
 Tooltip          : Consume to heal for $203794s2% of your maximum health.
 
@@ -3574,7 +3574,7 @@ Family Flags     : 81
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=327430)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc210042
 Tooltip          : Consume to heal for $210042s1% of your maximum health.
 
@@ -3589,7 +3589,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=327432)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 Description      : $@spelldesc203794
 Tooltip          : Consume to heal for $203794s2% of your maximum health.
 
@@ -3773,7 +3773,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can't Crit (93), Ignore Caster Damage Modifiers (221), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=340793)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | Target: at Area in Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Target: at Location in Area (87)
 Description      : $@spelldesc201472
 
 Name             : Fallout (id=227174) [Spell Family (107), Passive, Hidden] 
@@ -3911,7 +3911,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344143)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8867 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8867 | Target: at Location in Area (87)
 #2 (id=344144)   : Trigger Spell (64): Shattered Souls
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -3928,7 +3928,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344147)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=344148)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 178963 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -3945,7 +3945,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344151)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=344152)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228532 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -3962,7 +3962,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344172)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=344173)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202644 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -4666,7 +4666,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=727999)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 13972 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 13972 | Target: at Location in Area (87)
 Description      : $@spelldesc275144
 
 Name             : Unbound Chaos (id=275148) [Spell Family (107)] 
@@ -4683,7 +4683,7 @@ Family Flags     : 16, 43
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=728000)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.85268 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.85268 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=728001)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275144
 Description      : $@spelldesc275144
@@ -4749,11 +4749,11 @@ Family Flags     : 24, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=785015)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=795437)   : Create Area Trigger (179)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 18264 | Target: at Area in Area (87)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 18264 | Target: at Location in Area (87)
 #3 (id=819493)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: at Area in Area (87)
+                   Base Value: 3 | Scaled Value: 3 | Target: at Location in Area (87)
 Description      : Place a Kyrian Sigil at the target location that activates after $d.
 
 Detonates to deal $307046s1 $@spelldesc395039 damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.
@@ -4775,7 +4775,7 @@ Effects          :
 #1 (id=785367)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.78 | Radius: 8 yards | Target: at Enemy in Area (16)
 #2 (id=839432)   : Trigger Spell (64): Elysian Decree
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 339893 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 339893 | Target: at Location in Area (87)
 Description      : $@spelldesc306830
 
 Name             : Elysian Decree (desc=Kyrian) (id=312941) [Hidden] 
@@ -5562,7 +5562,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=821796)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20460 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20460 | Target: at Location in Area (87)
 #2 (id=821797)   : Trigger Spell (64): Shattered Souls
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -5579,7 +5579,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=821798)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=821799)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 328953 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -5619,7 +5619,7 @@ Family Flags     : 81
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=821808)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20462 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20462 | Target: at Location in Area (87)
 #2 (id=821809)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=821810)   : Trigger Spell (64): Shattered Souls
@@ -6406,9 +6406,9 @@ Family Flags     : 16, 33, 42, 70
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=839430)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=839434)   : Trigger Spell (64): Elysian Decree
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 339894 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 339894 | Target: at Location in Area (87)
 Description      : $@spelldesc306830
 
 Name             : Elysian Decree (desc=Kyrian) (id=339894) [Spell Family (107)] 
@@ -8432,7 +8432,7 @@ Effects          :
 #1 (id=1026374)  : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.613 | Radius: 8 yards | Target: at Enemy in Area (16)
 #2 (id=1026375)  : Trigger Spell (64): Elysian Decree
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 339893 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 339893 | Target: at Location in Area (87)
 Description      : $@spelldesc306830
 
 Name             : Tactical Retreat (id=389890) [Spell Family (107)] 
@@ -8565,7 +8565,7 @@ Family Flags     : 16, 43
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026750)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.13 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.13 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc389693
 
 Name             : Inner Demon (id=390139) [Spell Family (107)] 
@@ -8699,11 +8699,11 @@ Family Flags     : 24, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026781)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=1026782)  : Create Area Trigger (179)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 26752 | Target: at Area in Area (87)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 26752 | Target: at Location in Area (87)
 #3 (id=1026783)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: at Area in Area (87)
+                   Base Value: 3 | Scaled Value: 3 | Target: at Location in Area (87)
 Description      : Place a demonic sigil at the target location that activates after $d.
 
 Detonates to deal $389860s1 Chaos damage and shatter up to $s3 Lesser Soul Fragments from enemies affected by the sigil. Deals reduced damage beyond $s1 targets.
@@ -9790,7 +9790,7 @@ Duration         : 20 seconds
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1073137)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6710 | Target: at Location in Area (87)
 #2 (id=1073138)  : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210788 | Target: Self (1)
 #3 (id=1073139)  : Trigger Spell (64): Shattered Souls
@@ -12035,9 +12035,9 @@ Family Flags     : 24, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1153683)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=1153684)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34377 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 34377 | Target: at Location in Area (87)
 Description      : Place a Sigil of Flame at the target location that activates after $d.
 
 Deals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.
@@ -13171,7 +13171,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1235985)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38093 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38093 | Target: at Location in Area (87)
 #2 (id=1235986)  : Trigger Spell (64): Shattered Souls
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 221461 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -13188,7 +13188,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1236006)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
 #2 (id=1236007)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1238743 | Target: Self (1)
 Description      : $@spelldesc178940

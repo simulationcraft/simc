@@ -1190,7 +1190,7 @@ Attributes       : No Aura Cancel (31), No AutoCast (AI) (49), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129077)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90 | Target: at Location in Area (87)
 Description      : Summons a Jade Serpent Statue at the target location. When you channel Soothing Mist, the statue will also begin to channel Soothing Mist on your target, healing for $198533o1 over $198533d.
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
@@ -1210,7 +1210,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49),
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129080)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 0xc97 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 0xc97 | Target: at Location in Area (87)
 #2 (id=129081)   : None (0)
                    Base Value: 30 | Scaled Value: 30
 Description      : Summons a Black Ox Statue at the target location for $d, pulsing threat to all enemies within $163178A1 yards.
@@ -1698,9 +1698,9 @@ Family Flags     : 99
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Always Show Ground Texture (190), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132054)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: at Location in Area (87)
 #2 (id=358752)   : Create Area Trigger (179)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 718 | Target: at Area in Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 718 | Target: at Location in Area (87)
 Description      : Form a Ring of Peace at the target location for $d. Enemies that enter will be ejected from the Ring.
 Tooltip          : Nearby enemies will be knocked out of the Ring of Peace.
 
@@ -3118,7 +3118,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Charge/JumpCharge - Use Absolute Speed (329)
 Effects          :
 #1 (id=164671)   : Unknown(149)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Target: at Location in Area (87)
 Description      : $@spelldesc128845
 
 Name             : Clash (id=128844) [Spell Family (53)] 
@@ -3130,7 +3130,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Attack on Charge to Unit (242), Charge/JumpCharge - Use Absolute Speed (329)
 Effects          :
 #1 (id=164672)   : Unknown(149)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 128846 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 128846 | Target: at Location in Area (87)
 Description      : $@spelldesc128845
 
 Name             : Clash (id=128845) 
@@ -4207,7 +4207,7 @@ Family Flags     : 42, 94, 101
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=229534)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9656 | Radius: 0 - 12 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9656 | Radius: 0 - 12 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc116092
 
 Name             : Chi Sphere (id=163272) [Spell Family (53)] 
@@ -4293,7 +4293,7 @@ Family Flags     : 121
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=255483)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.3 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.3 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc124502
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -4598,11 +4598,11 @@ Family Flags     : 103
 Attributes       : Is Ability (4), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288833)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.727272 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.727272 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Snare | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Snare | Target: at Location in Area (87) -> at Enemy in Area (16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc196730
 Tooltip          : $?$w2!=0[Movement speed reduced by $w2%.
 ][]Drenched in brew, vulnerable to Breath of Fire.
@@ -5242,7 +5242,7 @@ Range            : 50000 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=317299)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 15 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 15 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc124502
 
 Name             : Gift of the Ox (id=214416) [Spell Family (53)] 
@@ -5264,7 +5264,7 @@ Range            : 50000 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=318398)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 15 | Radius: 0 - 6 yards | Target: at Area in Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 15 | Radius: 0 - 6 yards | Target: at Location in Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc124502
 
 Name             : Shuffle (id=215479) [Spell Family (53)] 
@@ -6996,7 +6996,7 @@ Range            : 100 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Attack on Charge to Unit (242), Charge/JumpCharge - Use Absolute Speed (329)
 Effects          :
 #1 (id=813917)   : Unknown(149)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 324382 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 324382 | Target: at Location in Area (87)
 Description      : $@spelldesc128845
 
 Name             : Clash (id=324384) 
@@ -7007,7 +7007,7 @@ Range            : 25 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Attack on Charge to Unit (242), Charge/JumpCharge - Use Absolute Speed (329)
 Effects          :
 #1 (id=813918)   : Unknown(149)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 324382 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Trigger Spell: 324382 | Target: at Location in Area (87)
 Description      : $@spelldesc128845
 
 Name             : Clash (id=324385) [Spell Family (53)] 
@@ -7022,7 +7022,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Charge/JumpCharge - Use Absolute Speed (329)
 Effects          :
 #1 (id=813919)   : Unknown(149)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 28 | Target: at Location in Area (87)
 Description      : $@spelldesc128845
 
 Name             : Stagger (id=324393) [Spell Family (53)] 
@@ -7396,7 +7396,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818301)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168033 | Misc Value 2: 0x132b | Radius: 0 - 8 yards | Target: at Area in Area (87) -> Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168033 | Misc Value 2: 0x132b | Radius: 0 - 8 yards | Target: at Location in Area (87) -> Random in Area (86)
 #2 (id=905418)   : Trigger Spell w/ Value (142): Windwalking
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 364944 | Target: Self (1)
 Description      : $@spelldesc326860
@@ -7414,7 +7414,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818302)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168073 | Misc Value 2: 0x132b | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168073 | Misc Value 2: 0x132b | Target: at Location in Area (87)
 Description      : $@spelldesc326860
 
 Name             : Fallen Order (id=327006) [Spell Family (53)] 
@@ -7430,7 +7430,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818303)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168074 | Misc Value 2: 0x139c | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168074 | Misc Value 2: 0x139c | Target: at Location in Area (87)
 Description      : $@spelldesc326860
 
 Name             : Faeline Stomp (desc=Night Fae) (id=327104) [Spell Family (53)] 
@@ -7481,7 +7481,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Use Facing From Spell (159), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Ignore Phase Shift (205), Allow While Charmed (261), Ignore Sanctuary (263), Not In Spellbook Until Learned (269), Ignore School Lockout (306), Allow Cast While Channeling (308), Ignore Feign Death (346)
 Effects          :
 #1 (id=818578)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20281 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20281 | Target: at Location in Area (87)
 Description      : $@spelldesc327104
 
 Name             : Faeline Stomp (desc=Night Fae) (id=327257) [Spell Family (53)] 
@@ -9299,7 +9299,7 @@ Triggered By     : Tea of the Grand Upwelling (363733)
 Attributes       : Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=904152)   : Create Area Trigger (179)
-                   Base Value: 450 | Scaled Value: 450 | Misc Value: 24269 | Target: at Area in Area (87) -> at Ground (62)
+                   Base Value: 450 | Scaled Value: 450 | Misc Value: 24269 | Target: at Location in Area (87) -> at Ground (62)
 Description      : $@spelldesc363733
 Tooltip          : Increases healing dealt by Mistweaver spells by $s1.
 
@@ -10444,7 +10444,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Use Facing From Spell (159), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Ignore Phase Shift (205), Allow While Charmed (261), Ignore Sanctuary (263), Not In Spellbook Until Learned (269), Ignore School Lockout (306), Allow Cast While Channeling (308), Ignore Feign Death (346)
 Effects          :
 #1 (id=1023719)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20281 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 20281 | Target: at Location in Area (87)
 Description      : $@spelldesc388193
 
 Name             : Jadefire Stomp (id=388196) [Hidden] 
@@ -12623,7 +12623,7 @@ Family Flags     : 103
 Attributes       : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Suppress Caster Procs (112), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1032926)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.999 | Radius: 0 - 12 yards | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.999 | Radius: 0 - 12 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
 #2 (id=1032927)  : Dummy (3)
                    Base Value: 45 | Scaled Value: 45
 Description      : $@spelldesc393400
@@ -16063,7 +16063,7 @@ Mechanic         : Snare
 Attributes       : Aura Never Bounces (148), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150601)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards | Mechanic: Snare | Target: at Area in Area (87) -> at Enemy in Area (16)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards | Mechanic: Snare | Target: at Location in Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
@@ -17785,7 +17785,7 @@ Labels           : 16: Class Spells
                  : 292
 Effects          :
 #1 (id=1153338)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33599 | Target: at Area in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33599 | Target: at Location in Area (87)
 Description      : $@spelldesc451024
 
 Name             : Overwhelming Force (id=452333) [Spell Family (53)] 
