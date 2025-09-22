@@ -1661,6 +1661,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         if ( e->period() != timespan_t::zero() )
           tmp_str += fmt::format( " every {} seconds", e->period().total_seconds() );
         break;
+      case A_TRIGGER_SUMMON_WITH_DURATION_OVERRIDE:
+        if ( e->trigger_spell_id() && dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
+          tmp_str += fmt::format( ": {}", dbc.spell( e->trigger_spell_id() )->name_cstr() );
+        else
+          tmp_str += fmt::format( ": Unknown({})", e->trigger_spell_id() );
+        if ( dbc.spell( e->spell_id() )->duration().total_seconds() > 0 )
+          tmp_str += fmt::format( " for {} seconds", dbc.spell( e->spell_id() )->duration().total_seconds() );
+        if ( dbc.spell( e->spell_id() )->duration().total_seconds() < 0 )
+          tmp_str += fmt::format( " until cancelled" );
+        break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
