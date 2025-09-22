@@ -5224,8 +5224,6 @@ struct lunar_inspiration_t final : public cp_generator_t
                  p->talent.lunar_inspiration.ok() ? p->find_spell( 155625 ) : spell_data_t::not_found() )
   {
     may_dodge = may_parry = may_block = false;
-    // LI is a spell, but we parent to cp_generator_t to get all the proper cat attack methods.
-    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
     s_data_reporting = p->talent.lunar_inspiration;
     dot_name = "lunar_inspiration";
@@ -5861,7 +5859,6 @@ struct bristling_fur_t final : public bear_attack_t
   DRUID_ABILITY( bristling_fur_t, bear_attack_t, "bristling_fur", p->talent.bristling_fur )
   {
     harmful = false;
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void execute() override

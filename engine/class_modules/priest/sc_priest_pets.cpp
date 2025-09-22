@@ -550,7 +550,6 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    gcd_type    = gcd_haste_type::SPELL_HASTE;
     trigger_gcd = 1.5_s;
 
     damage_mul           = data().effectN( 2 ).percent();
@@ -1141,8 +1140,6 @@ struct void_spike_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
   {
     parse_options( options );
-
-    gcd_type = gcd_haste_type::SPELL_HASTE;
 
     aoe                        = -1;
     reduced_aoe_targets        = data().effectN( 3 ).base_value();

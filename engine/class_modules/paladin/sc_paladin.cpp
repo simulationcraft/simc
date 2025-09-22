@@ -2001,8 +2001,6 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 
     harmful = false;
 
-    hasted_gcd  = true;
-
     cooldown           = p->cooldowns.blessing_of_the_seasons;
   }
 
@@ -2216,7 +2214,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light        = true;
     cleave_hammer             = new hammer_of_light_cleave_t( p, options_str );
     background                = !p->talents.templar.lights_guidance->ok();
-    hasted_gcd                = true;
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
@@ -2715,7 +2712,6 @@ struct holy_armaments_t : public paladin_spell_t
   {
     parse_options( options_str );
     harmful            = false;
-    hasted_gcd         = true;
     name_str_reporting = "Holy Armaments";
     if ( p->talents.lightsmith.forewarning->ok() )
       apply_affecting_aura( p->talents.lightsmith.forewarning );

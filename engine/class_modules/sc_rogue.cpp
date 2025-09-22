@@ -1761,10 +1761,9 @@ public:
     ab::parse_options( options );
     parse_spell_data( s );
 
-    // rogue_t sets base and min GCD to 1s by default but let's also enforce non-hasted GCDs.
-    // Even for rogue abilities that can be considered spells, hasted GCDs seem to be an exception rather than rule.
-    // Those should be set explicitly. (see Vendetta, Shadow Blades, Detection)
-    ab::gcd_type = gcd_haste_type::NONE;
+    // rogue_t sets base and min GCD to 1s by default and action_t sets 1s gcd attacks to non-hasted regardless of
+    // ability flags. There should no longer be a need to explicitly enforced non-hasted GCDs.
+    // ab::gcd_type = gcd_haste_type::NONE;
 
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
@@ -4460,7 +4459,6 @@ struct detection_t : public rogue_spell_t
   detection_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_spell_t( name, p, p->spell.detection, options_str )
   {
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = 750_ms; // Force 750ms min gcd because rogue player base has a 1s min.
     harmful = false;
     set_target( p );
