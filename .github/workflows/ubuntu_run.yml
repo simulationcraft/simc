@@ -58,7 +58,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE iterations=10 fight_style=DungeonSlice allow_experimental_specializations=1 cleanup_threads=1
 
       - name: Clear Cache
-        if: matrix.compiler != 'clang++-15' && matrix.cppVersion != '17'
+        if: matrix.compiler != 'clang++-15' || matrix.cppVersion != '17'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh cache delete ${{ env.CACHE_KEY }}
