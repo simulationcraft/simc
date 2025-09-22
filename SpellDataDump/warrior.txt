@@ -81,7 +81,7 @@ Affecting Spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect
 Family Flags     : 11, 15
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No School Immunities (90), Suppress Caster Procs (112), Always Hit (114), No Partial Immunity (139), Suppress Weapon Procs (151), Taps immediately (215), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
-#1 (id=147)      : Unknown(114)
+#1 (id=147)      : Attack Me (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Target: Targeted Enemy (6)
 #2 (id=148)      : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Targeted Enemy (6)
@@ -234,7 +234,7 @@ Affecting Spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bl
 Family Flags     : 11, 70, 75
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No School Immunities (90), Always Hit (114), No Partial Immunity (139), Suppress Weapon Procs (151), Taps immediately (215), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=424)      : Unknown(114)
+#1 (id=424)      : Attack Me (114)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=801602)   : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -360,9 +360,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Shockwave (46968), Shockwave (132168), Odyn's Fury (385059), Shockwave (441668)
                    Family Flags: 17, 47, 103
-#10 (id=1193952) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#10 (id=1193952) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Crushing Blow overrides Raging Blow
                    Base Value: 335097 | Scaled Value: 335097 | Misc Value: 85288 | Target: Self (1)
-#11 (id=1193953) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#11 (id=1193953) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bloodbath overrides Bloodthirst
                    Base Value: 335096 | Scaled Value: 335096 | Misc Value: 23881 | Target: Self (1)
 #12 (id=1201495) : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
@@ -600,9 +600,9 @@ Family Flags     : 61
 Attributes       : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Jump Pathing (208), Cheap Missile AOI (374), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2307)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Location in Area (87)
-#2 (id=475719)   : Unknown(254)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=1) | Radius: 3 - 8 yards | Target: at Area (87)
+#2 (id=475719)   : Jump Charge (254)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: at Area (87)
 Description      : Leap through the air toward a target location, slamming down with destructive force to deal $52174s1 Physical damage to all enemies within $52174a1 yards$?c3[ and resetting the remaining cooldown on Taunt][].
 Variables        : $base=${1+0.5*$AP}
 $damage=$?a2457[${1+0.5*$AP*1.1}][${$<base>}]
@@ -1319,7 +1319,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=51617)    : Unknown(74)
+#1 (id=51617)    : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 486
 Description      : $@spelldesc58099
 
@@ -1333,7 +1333,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=51619)    : Unknown(74)
+#1 (id=51619)    : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 488
 Description      : $@spelldesc58104
 
@@ -1470,7 +1470,7 @@ Labels           : 16: Class Spells
 Triggered By     : Shattering Throw (64382)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), No School Immunities (90), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143)
 Effects          :
-#1 (id=58624)    : Unknown(108)
+#1 (id=58624)    : Dispel Mechanic (108)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 29 | Target: Targeted Enemy (6)
 Description      : $@spelldesc64382
 
@@ -1492,9 +1492,9 @@ Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect
 Family Flags     : 8, 9, 73
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Can't Crit (93), Requires Main-Hand Weapon (106), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=58626)    : Trigger Missiles (32)
+#1 (id=58626)    : Trigger Missiles (32): Shattering Throw
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 64380 | Target: Targeted Enemy (6)
-#2 (id=801036)   : Trigger Missiles (32) | Attributes: No Immunity (0)
+#2 (id=801036)   : Trigger Missiles (32): Shattering Throw | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 394352 | Target: Targeted Enemy (6)
 Description      : Hurl your weapon at the enemy,  removing any magical immunities and causing $394352s2 Physical damage, ignoring armor. Deals up to $394352s3% increased damage to absorb shields.
 Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
@@ -1509,7 +1509,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=62364)    : Unknown(74)
+#1 (id=62364)    : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 851
 Description      : $@spelldesc68164
 
@@ -2062,7 +2062,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=125404)   : Unknown(74)
+#1 (id=125404)   : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 990
 Description      : $@spelldesc115943
 
@@ -2076,7 +2076,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=125405)   : Unknown(74)
+#1 (id=125405)   : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 991
 Description      : $@spelldesc115946
 
@@ -2364,7 +2364,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=156292)   : Unknown(74)
+#1 (id=156292)   : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1020
 Description      : $@spelldesc123779
 
@@ -2908,7 +2908,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=201261)   : Unknown(74)
+#1 (id=201261)   : Apply Glyph (74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1101
 Description      : $@spelldesc146974
 
@@ -2961,9 +2961,9 @@ Family Flags     : 9, 107
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.19517 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: at Location in Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.19517 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 #2 (id=818180)   : Dummy (3)
-                   Base Value: 8 | Scaled Value: 8 | Target: at Location in Area (87)
+                   Base Value: 8 | Scaled Value: 8 | Target: at Area (87)
 Description      : $@spelldesc152277
 
 Name             : Riposte (id=161798) [Spell Family (4), Passive] 
@@ -3607,7 +3607,7 @@ Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
-#3 (id=802247)   : Unknown(90)
+#3 (id=802247)   : Kill Credit (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 163033 | Target: Self (1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
@@ -4079,13 +4079,13 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=305084)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=305084)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Execute overrides Execute
                    Base Value: 280735 | Scaled Value: 280735 | Misc Value: 5308 | Target: Self (1)
 #2 (id=738457)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=800237)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | Target: Self (1)
-#4 (id=835424)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#4 (id=835424)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Condemn
                    Base Value: 330325 | Scaled Value: 330325 | Misc Value: 317485 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health and its cooldown is reduced by ${$s3/1000}.1 sec.
 
@@ -4912,9 +4912,9 @@ Spell Type       : None
 Triggered By     : Activating Specialization (200749)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=477479)   : Unknown(81)
+#1 (id=477479)   : Push Ability to Action Bar (81): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 251463 | Target: Self (1)
-#2 (id=477480)   : Unknown(170)
+#2 (id=477480)   : Update Zone Auras and Phases (170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
@@ -4930,7 +4930,7 @@ Cooldown         : 150 seconds
 Labels           : 1224
 Attributes       : Missile Speed is Delay (in sec) (292), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=477694)   : Trigger Missiles (32)
+#1 (id=477694)   : Trigger Missiles (32): Light's Judgment
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 256893 | Radius: 0 - 10 yards | Target: Targeted Enemy (6)
 #2 (id=1192214)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -5331,7 +5331,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=728325)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=728325)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Intimidating Shout overrides Intimidating Shout
                    Base Value: 316593 | Scaled Value: 316593 | Misc Value: 5246 | Target: Self (1)
 Description      : Intimidating Shout will knock back all nearby enemies except your primary target and cause them all to cower in fear for $316595d instead of fleeing.
 
@@ -5405,7 +5405,7 @@ Family Flags     : 9
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=734223)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area (87) -> Line to Enemy (134)
 #2 (id=734224)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277639
 Description      : $@spelldesc277639
@@ -5423,7 +5423,7 @@ Labels           : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Suppress Caster Procs (112), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=734246)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
 Description      : $@spelldesc277639
 
 Name             : Iron Fortress (id=278765) [Passive] 
@@ -5735,11 +5735,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=738985)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=738985)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Execute overrides Execute
                    Base Value: 281000 | Scaled Value: 281000 | Misc Value: 163201 | Target: Self (1)
 #2 (id=738986)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-#3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Condemn
                    Base Value: 330334 | Scaled Value: 330334 | Misc Value: 317349 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is usable on targets below $s2% health.
 
@@ -5884,10 +5884,10 @@ Affecting Spells : Warrior (137047 effect#2)
 Family Flags     : 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Lock Caster Movement and Facing While Casting (352)
 Effects          :
-#1 (id=786704)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307871 | Radius: 5 yards | Target: at Location in Area (87)
-#2 (id=786849)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307954 | Radius: 5 yards | Target: at Location in Area (87)
+#1 (id=786704)   : Trigger Missiles (32): Spear of Bastion
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307871 | Radius: 5 yards | Target: at Area (87)
+#2 (id=786849)   : Trigger Missiles (32): Spear of Bastion
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307954 | Radius: 5 yards | Target: at Area (87)
 Description      : Throw a Kyrian spear at the target location, dealing $307871s1 Arcane damage instantly and an additional $307871o4 damage over $307954d. Deals reduced damage beyond $<cap> targets.
 
 Enemies hit are tethered to Spear of Bastion's location for the duration.
@@ -5937,9 +5937,9 @@ Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not 
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=786852)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17984 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17984 | Target: at Area (87)
 #2 (id=892988)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18314 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 18314 | Target: at Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion (desc=Kyrian) (id=307961) 
@@ -5970,8 +5970,8 @@ Labels           : 16: Class Spells
 Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=786863)   : Unknown(42) | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Location in Area (87)
+#1 (id=786863)   : Jump Dest (42) | Attributes: Is Harmful (12)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion Visual (desc=Kyrian) (id=308062) 
@@ -5986,7 +5986,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=787010)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion (desc=Kyrian) (id=312957) [Hidden] 
@@ -6067,9 +6067,9 @@ Family Flags     : 2, 9
 Attributes       : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.500138 | Radius: 0 - 10 yards | Target: at Location in Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.500138 | Radius: 0 - 10 yards | Target: at Area (87) -> Line to Enemy (134)
 #2 (id=818173)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: at Location in Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Target: at Area (87)
 Description      : $@spelldesc262150
 
 Name             : Dreadnaught (id=315962) [Spell Family (4), Hidden] 
@@ -6084,7 +6084,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Threat (42), Suppress Caster Procs (112), Suppress Weapon Procs (151)
 Effects          :
 #1 (id=800085)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
 Description      : $@spelldesc277639
 
 Name             : Fresh Meat (id=316044) [Spell Family (4), Hidden] 
@@ -6299,15 +6299,15 @@ Labels           : 16: Class Spells
                  : 1379
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Aura While Dead (116), Allow Cast While Casting (135), Not In Spellbook (143), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Required by Client (262), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=802431)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=802431)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
                    Base Value: 317349 | Scaled Value: 317349 | Misc Value: 163201 | Misc Value 2: 0x3 | Target: Self (1)
-#2 (id=802684)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#2 (id=802684)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
                    Base Value: 317485 | Scaled Value: 317485 | Misc Value: 5308 | Misc Value 2: 0x3 | Target: Self (1)
 #3 (id=802685)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-#4 (id=836243)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#4 (id=836243)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
                    Base Value: 330325 | Scaled Value: 330325 | Misc Value: 280735 | Misc Value 2: 0x3 | Target: Self (1)
-#5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
                    Base Value: 330334 | Scaled Value: 330334 | Misc Value: 281000 | Misc Value 2: 0x3 | Target: Self (1)
 #6 (id=872286)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -14 | Scaled Value: -14 | Misc Value: 3 | Misc Value 2: 1138 (Label) | Target: Self (1)
@@ -8040,7 +8040,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aur
 Effects          :
 #1 (id=845743)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=845744)   : Cancel Aura (164)
+#2 (id=845744)   : Cancel Aura (164): Raise Banner
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 343666 | Target: Self (1)
 Description      : $@spelldesc343672
 
@@ -8188,8 +8188,9 @@ Labels           : 16: Class Spells
 Triggered By     : Visage Form (379034)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Immunity to Hostile & Friendly Effects (48), Include In Advanced Combat Log (72), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=881391)   : Unknown(212)
+#1 (id=881391)   : Remove Aura (Label) (212)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1251 | Target: Self (1)
+                   Affected Spells (Label): Hover (358267)
 Description      : Switch between your Dracthyr and Visage forms.
 
 Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
@@ -8307,7 +8308,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894297)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc307865
 
 Name             : Spear of Bastion Visual (desc=Kyrian) (id=358789) 
@@ -8322,7 +8323,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894301)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 8 yards | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 8 yards | Target: at Area (87)
 Description      : $@spelldesc307865
 
 Name             : Chosen Identity (desc=Racial) (id=360022) 
@@ -8336,7 +8337,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -8679,7 +8680,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
+#1 (id=996412)   : Apply Aura Party (Non-Random) (271) | Periodic Heal% (20): every 2 seconds
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
 Description      : $@spelldesc351239
 Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
@@ -8701,10 +8702,10 @@ Affecting Spells : Warrior (137047 effect#2)
 Family Flags     : 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Lock Caster Movement and Facing While Casting (352)
 Effects          :
-#1 (id=1002892)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376080 | Radius: 5 yards | Target: at Location in Area (87)
-#2 (id=1002893)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376081 | Radius: 5 yards | Target: at Location in Area (87)
+#1 (id=1002892)  : Trigger Missiles (32): Champion's Spear
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376080 | Radius: 5 yards | Target: at Area (87)
+#2 (id=1002893)  : Trigger Missiles (32): Champion's Spear
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376081 | Radius: 5 yards | Target: at Area (87)
 Description      : Throw a spear at the target location, dealing $376080s1 Physical damage instantly and an additional $376080o4 damage over $376081d. Deals reduced damage beyond $<cap> targets.
 
 Enemies hit are chained to the spear's location for the duration.
@@ -8762,9 +8763,9 @@ Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1002898)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25558 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25558 | Target: at Area (87)
 #2 (id=1002899)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25559 | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25559 | Target: at Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear (id=376083) [Spell Family (4)] 
@@ -8795,8 +8796,8 @@ Labels           : 16: Class Spells
 Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Aura Log (202), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002902)  : Unknown(42) | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Location in Area (87)
+#1 (id=1002902)  : Jump Dest (42) | Attributes: Is Harmful (12)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | Misc Value 2: 0xa | Mechanic: Knockback | Target: at Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear Visual (id=376085) [Spell Family (4)] 
@@ -8811,7 +8812,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002903)  : Dummy (3) | Attributes: Is Harmful (12)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc376079
 
 Name             : Champion's Spear Visual (id=376086) [Spell Family (4)] 
@@ -8826,7 +8827,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002904)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc376079
 
 Name             : Visage Form (id=379034) 
@@ -8838,13 +8839,13 @@ Cast Time        : 3 seconds
 Triggered By     : Visage Form (382916)
 Attributes       : No Immunities (29), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
 Effects          :
-#1 (id=1007597)  : Unknown(160)
+#1 (id=1007597)  : Force Cast (160): Visage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
-#2 (id=1007598)  : Unknown(140)
+#2 (id=1007598)  : Force Cast (140): (367996)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
-#3 (id=1007599)  : Unknown(90)
+#3 (id=1007599)  : Kill Credit (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
-#4 (id=1012188)  : Unknown(170)
+#4 (id=1012188)  : Update Zone Auras and Phases (170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock your visage form.
 
@@ -9063,7 +9064,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1014506)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: Source (22) -> any in Area (7)
-#2 (id=1014519)  : Unknown(160)
+#2 (id=1014519)  : Force Cast (160): Visage Form
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 379034 | Target: Self (1)
 Description      : $@spelldesc351239
 
@@ -9401,7 +9402,7 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Not a Proc (105), Supp
 Effects          :
 #1 (id=1015002)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1015062)  : Reduce Remaining Cooldown (290)
+#2 (id=1015062)  : Reduce Remaining Cooldown (290): Mortal Strike
                    Base Value: -6000 | Scaled Value: -6000 | Trigger Spell: 12294 | Target: Self (1)
 Description      : Mortal Strike and Cleave have a $383219h% chance to instantly reset their own cooldowns.
 
@@ -9810,7 +9811,8 @@ Effects          :
 #1 (id=1016059)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1016060)  : Immediate Cooldown Recharge (Category) (293)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 (Category) | Target: Self (1)
+                   Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 Description      : $@spelldesc383877
 
 Name             : Hack and Slash (id=383877) [Spell Family (4), Passive] 
@@ -10097,7 +10099,7 @@ Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect
 Family Flags     : 8, 9, 73
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Can't Crit (93), Requires Main-Hand Weapon (106), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1016479)  : Trigger Missiles (32)
+#1 (id=1016479)  : Trigger Missiles (32): Wrecking Throw
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Trigger Spell: 394354 | Target: Targeted Enemy (6)
 Description      : Hurl your weapon at the enemy, causing $394354s2 Physical damage, ignoring armor. Deals up to $394354s3% increased damage to absorb shields.
 
@@ -10220,9 +10222,9 @@ GCD              : 1.5 seconds
 Labels           : 292
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1017286)  : Cancel Aura (164)
+#1 (id=1017286)  : Cancel Aura (164): Chosen Identity
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360022 | Target: Self (1)
-#2 (id=1050665)  : Cancel Aura (164)
+#2 (id=1050665)  : Cancel Aura (164): Chosen Identity
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403617 | Target: Self (1)
 Description      : While active, you automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -10792,7 +10794,7 @@ Affecting Spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Bl
 Family Flags     : 11, 70, 75
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No School Immunities (90), Always Hit (114), Suppress Weapon Procs (151), Taps immediately (215), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1019880)  : Unknown(114)
+#1 (id=1019880)  : Attack Me (114)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 14 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1019881)  : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Radius: 0 - 14 yards | Target: Source (22) -> Enemy in Area (15)
@@ -12090,7 +12092,7 @@ Family Flags     : 50
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1038334)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1038334)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Crushing Blow overrides Raging Blow
                    Base Value: 335097 | Scaled Value: 335097 | Misc Value: 85288 | Target: Self (1)
 Description      : $@spelldesc396749
 Tooltip          : Your next Raging Blow is greatly empowered.
@@ -12414,7 +12416,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -12427,9 +12429,9 @@ GCD              : 1.5 seconds
 Labels           : 292
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1054763)  : Cancel Aura (164)
+#1 (id=1054763)  : Cancel Aura (164): Calm the Wolf
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 406087 | Target: Self (1)
-#2 (id=1054764)  : Cancel Aura (164)
+#2 (id=1054764)  : Cancel Aura (164): Calm the Wolf
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 406090 | Target: Self (1)
 Description      : While active, you automatically assume your human form when you leave combat.
 
@@ -12842,9 +12844,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66)
 Effects          :
-#1 (id=1102104)  : Unknown(108)
+#1 (id=1102104)  : Dispel Mechanic (108)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 11 | Target: Targeted Ally (21)
-#2 (id=1102105)  : Unknown(108)
+#2 (id=1102105)  : Dispel Mechanic (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Targeted Ally (21)
 Description      : $@spelldesc424742
 Tooltip          : $@spelldesc424742
@@ -13846,7 +13848,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Aura Is Debuff (26), No Threat (42), No Aura Icon (60), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Display Duration (170), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134753)  : Dummy (3) | Attributes: Is Harmful (12)
-                   Base Value: 15 | Scaled Value: 15 | Target: at Location in Area (87)
+                   Base Value: 15 | Scaled Value: 15 | Target: at Area (87)
 Description      : $@spelldesc376079
 
 Name             : Demolish (id=440884) [Spell Family (4)] 
@@ -14029,7 +14031,7 @@ Range            : 50000 yards
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Not a Proc (105), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137087)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.15) | Radius: 8 yards | Target: at Location in Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.15) | Radius: 8 yards | Target: at Area (87)
 Description      : $@spelldesc6544
 
 Name             : Slayer's Dominance (id=444767) [Spell Family (4), Passive, Hidden] 
@@ -14252,7 +14254,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1147804)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bladestorm overrides Bladestorm
                    Base Value: 446035 | Scaled Value: 446035 | Misc Value: 227847 | Target: Self (1)
 Description      : When you Execute a target that you've Marked for Execution, you both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stacks of Overwhelmed to the target per stack of Marked for Execution consumed.
 
@@ -15131,7 +15133,7 @@ Family Flags     : 50
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1169628)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1169628)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bloodbath overrides Bloodthirst
                    Base Value: 335096 | Scaled Value: 335096 | Misc Value: 23881 | Target: Self (1)
 Description      : $@spelldesc396749
 Tooltip          : Your next Bloodthirst is greatly empowered.
@@ -15262,7 +15264,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1192695)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.235 | Radius: 8 yards | Target: at Enemy in Area (16)
-#2 (id=1192696)  : Unknown(114)
+#2 (id=1192696)  : Attack Me (114)
                    Base Value: 10000 | Scaled Value: 10000 (delta=0.05) | Radius: 8 yards | Target: at Enemy in Area (16)
 #3 (id=1198712)  : Threat (63)
                    Base Value: 10000 | Scaled Value: 10000 | Radius: 8 yards | Target: at Enemy in Area (16)
