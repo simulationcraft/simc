@@ -2134,6 +2134,14 @@ public:
     {
       const spelleffect_data_t& effect = s->effectN( i );
 
+      /*
+      Effect Type 80 no longer appears to be used for Combo Point regeneration
+      Instead it appears to use Effect Type 30 (Energize Power)
+      Misc Value 1 equaling 4 (power_e POWER_COMBO_POINT)
+
+      No spells remain in our data that use Effect Type 80,
+      commenting out to prevent potential future issues.
+
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
@@ -2146,7 +2154,7 @@ public:
           break;
         default:
           break;
-      }
+      } */
 
       if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
       {
