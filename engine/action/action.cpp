@@ -900,7 +900,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
       break;
-    case E_179: // Spawn Area Triggers
+    case E_CREATE_AREA_TRIGGER: // Spawn Area Triggers
       ground_aoe_duration = spelleffect_data.spell()->duration();
       break;
 

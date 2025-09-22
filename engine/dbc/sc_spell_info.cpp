@@ -418,7 +418,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::
   { 84,  "Back Left in Area"                     },
   { 85,  "Front Left in Area"                    },
   { 86,  "Random in Area"                        },
-  { 87,  "at Location in Area"                   },
+  { 87,  "at Area"                               },
   { 88,  "at Dynamic Object"                     },
   { 89,  "any in Trajectory"                     },
   { 90,  "Target's Battlepet"                    },
@@ -1064,103 +1064,301 @@ static constexpr auto _property_type_strings = util::make_static_map<int, std::s
 } );
 
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std::string_view>( {
-  {   0, "None"                     },
-  {   1, "Instant Kill"             },
-  {   2, "School Damage"            },
-  {   3, "Dummy"                    },
-  {   4, "Portal Teleport"          },
-  {   5, "Teleport Units"           },
-  {   6, "Apply Aura"               },
-  {   7, "Environmental Damage"     },
-  {   8, "Power Drain"              },
-  {   9, "Health Leech"             },
-  {  10, "Direct Heal"              },
-  {  11, "Bind"                     },
-  {  12, "Portal"                   },
-  {  13, "Ritual Base"              },
-  {  14, "Ritual Specialize"        },
-  {  15, "Ritual Activate"          },
-  {  16, "Quest Complete"           },
-  {  17, "Weapon Damage"            },
-  {  18, "Resurrect"                },
-  {  19, "Extra Attacks"            },
-  {  20, "Dodge"                    },
-  {  21, "Evade"                    },
-  {  22, "Parry"                    },
-  {  23, "Block"                    },
-  {  24, "Create Item"              },
-  {  25, "Weapon Type"              },
-  {  26, "Defense"                  },
-  {  27, "Persistent Area Aura"     },
-  {  28, "Summon"                   },
-  {  29, "Leap"                     },
-  {  30, "Energize Power"           },
-  {  31, "Weapon Damage%"           },
-  {  32, "Trigger Missiles"         },
-  {  33, "Open Lock"                },
-  {  34, "Summon Item"              },
-  {  35, "Apply Party Aura"         },
-  {  36, "Learn Spell"              },
-  {  37, "Spell Defense"            },
-  {  38, "Dispel"                   },
-  {  39, "Language"                 },
-  {  40, "Dual Wield"               },
-  {  48, "Stealth"                  },
-  {  49, "Detect"                   },
-  {  52, "Guaranteed Hit"           },
-  {  53, "Enchant Item"             },
-  {  56, "Summon Pet"               },
-  {  58, "Weapon Damage"            },
-  {  62, "Power Burn"               },
-  {  63, "Threat"                   },
-  {  64, "Trigger Spell"            },
-  {  65, "Apply Raid Aura"          },
-  {  68, "Interrupt Cast"           },
-  {  69, "Distract"                 },
-  {  70, "Pull"                     },
-  {  71, "Pick Pocket"              },
-  {  77, "Server Side Script"       },
-  {  78, "Attack"                   },
-  {  80, "Add Combo Points"         },
-  {  85, "Summon Player"            },
-  {  91, "Threat All"               },
-  {  94, "Self Resurrect"           },
-  {  96, "Charge"                   },
-  {  97, "Summon All Totems"        },
-  {  98, "Knock Back"               },
-  { 101, "Feed Pet"                 },
-  { 102, "Dismiss Pet"              },
-  { 109, "Summon Dead Pet"          },
-  { 110, "Destroy All Totems"       },
-  { 113, "Resurrect"                },
-  { 119, "Apply Pet Area Aura"      },
-  { 121, "Normalized Weapon Damage" },
-  { 124, "Pull Player"              },
-  { 125, "Modify Threat"            },
-  { 126, "Steal Beneficial Aura"    },
-  { 128, "Apply Friendly Area Aura" },
-  { 129, "Apply Enemy Area Aura"    },
-  { 130, "Redirect Threat"          },
-  { 135, "Call Pet"                 },
-  { 136, "Direct Heal%"             },
-  { 137, "Energize Power%"          },
-  { 138, "Leap Back"                },
-  { 142, "Trigger Spell w/ Value"   },
-  { 143, "Apply Owner Area Aura"    },
-  { 146, "Activate Rune"            },
-  { 151, "Trigger Spell"            },
-  { 155, "Titan Grip"               },
-  { 156, "Add Socket"               },
-  { 157, "Create Item"              },
-  { 164, "Cancel Aura"              },
-  { 165, "Damage Taken Max Health%" },
-  { 174, "Apply Aura Pet"           },
-  { 179, "Create Area Trigger"      },
-  { 188, "Summon Multiple Hunter Pets" },
-  { 202, "Apply Player/Pet Aura"    },
-  { 260, "Summon Stabled Pet"       },
-  { 290, "Reduce Remaining Cooldown"},
-  { 293, "Immediate Cooldown Recharge (Category)"},
+    { 0, "None" },
+    { 1, "Instant Kill" },
+    { 2, "School Damage" },
+    { 3, "Dummy" },
+    { 4, "Portal Teleport" },
+    { 6, "Apply Aura" },
+    { 7, "Environmental Damage" },
+    { 8, "Power Drain" },
+    { 9, "Health Leech" },
+    { 10, "Direct Heal" },
+    { 11, "Bind" },
+    { 12, "Portal" },
+    { 13, "Teleport to Return Point" },
+    { 14, "Increase Currency Cap" },
+    { 15, "Teleport w/ Loading Screen" },
+    { 16, "Quest Complete" },
+    { 17, "Weapon Damage" },
+    { 18, "Resurrect" },
+    { 19, "Extra Attacks" },
+    { 20, "Dodge" },
+    { 21, "Evade" },
+    { 22, "Parry" },
+    { 23, "Block" },
+    { 24, "Create Item" },
+    { 25, "Weapon Type" },
+    { 26, "Defense" },
+    { 27, "Apply Aura in Area" },
+    { 28, "Summon Guardian" },
+    { 29, "Leap" },
+    { 30, "Energize Power" },
+    { 31, "Weapon Damage%" },
+    { 32, "Trigger Missiles" },
+    { 33, "Open Lock" },
+    { 34, "Summon Item" },
+    { 35, "Apply Party Aura" },
+    { 36, "Learn Spell" },
+    { 37, "Spell Defense" },
+    { 38, "Dispel" },
+    { 39, "Language" },
+    { 40, "Dual Wield" },
+    { 41, "Jump" },
+    { 42, "Jump Dest" },
+    { 43, "Teleport Unit Facing Caster" },
+    { 44, "Skill Step" },
+    { 45, "Play Movie" },
+    { 46, "Spawn" },
+    { 47, "Trade Skill" },
+    { 48, "Stealth" },
+    { 49, "Detect" },
+    { 50, "Transition through Door" },
+    { 51, "Force Crit" },
+    { 52, "Guaranteed Hit" },
+    { 53, "Enchant Item" },
+    { 54, "Enchant Item Temporary" },
+    { 55, "Tame Creature" },
+    { 56, "Summon Pet" },
+    { 57, "Learn Pet Spell" },
+    { 58, "Weapon Damage" },
+    { 59, "Create Random Item" },
+    { 60, "Proficiency" },
+    { 61, "Send Event" },
+    { 62, "Power Burn" },
+    { 63, "Threat" },
+    { 64, "Trigger Spell" },
+    { 65, "Apply Aura Raid" },
+    { 66, "Recharge Item" },
+    { 67, "Heal Max Health%" },
+    { 68, "Interrupt Cast" },
+    { 69, "Distract" },
+    { 70, "Complete World Quest" },
+    { 71, "Pick Pocket" },
+    { 72, "Add Farsight" },
+    { 73, "Unlearn Talent" },
+    { 74, "Apply Glyph" },
+    { 75, "Heal Mechanical" },
+    { 76, "Summon Object - Wild" },
+    { 77, "Server Side Script" },
+    { 78, "Attack" },
+    { 79, "Sanctuary" },
+    { 80, "Modify Follower Item Level" },
+    { 81, "Push Ability to Action Bar" },
+    { 82, "Bind Sight" },
+    { 83, "Duel" },
+    { 84, "Stuck" },
+    { 85, "Summon Player" },
+    { 86, "Activate Object" },
+    { 87, "Damage Gameobject" },
+    { 88, "Repair Gameobject" },
+    { 89, "Set Gameobject Destruction State" },
+    { 90, "Kill Credit" },
+    { 91, "Threat All" },
+    { 92, "Enchant Held Item" },
+    { 93, "Force Untarget" },
+    { 94, "Self Resurrect" },
+    { 95, "Skinning" },
+    { 96, "Charge" },
+    { 97, "Summon All Totems" },
+    { 98, "Knock Back" },
+    { 99, "Disenchant" },
+    { 100, "Inebriate" },
+    { 101, "Feed Pet" },
+    { 102, "Dismiss Pet" },
+    { 103, "Reputation" },
+    { 104, "Summon Object" },
+    { 105, "Survey" },
+    { 106, "Change Raid Marker" },
+    { 107, "Show Corpse Loot" },
+    { 108, "Dispel Mechanic" },
+    { 109, "Summon Dead Pet" },
+    { 110, "Destroy All Totems" },
+    { 111, "Durability Damage" },
+    { 113, "Cancel Conversation" },
+    { 114, "Attack Me" },
+    { 115, "Durability Damage%" },
+    { 116, "Skin Player Corpse" },
+    { 117, "Spirit Heal" },
+    { 118, "Skill" },
+    { 119, "Apply Aura Pet in Area" },
+    { 120, "Teleport to Graveyard" },
+    { 121, "Normalized Weapon Damage" },
+    { 123, "Send Taxi" },
+    { 124, "Pull Player" },
+    { 125, "Modify Threat" },
+    { 126, "Steal Beneficial Aura" },
+    { 127, "Prospect" },
+    { 128, "Apply Aura Friendly in Area" },
+    { 129, "Apply Aura Enemy in Area" },
+    { 130, "Redirect Threat" },
+    { 131, "Play Sound" },
+    { 132, "Play Music" },
+    { 133, "Unlearn Profession Spec" },
+    { 134, "Kill Credit" },
+    { 135, "Call Pet" },
+    { 136, "Direct Heal%" },
+    { 137, "Energize Power%" },
+    { 138, "Directional Knock" },
+    { 139, "Clear Quest" },
+    { 140, "Force Cast" },
+    { 141, "Force Cast w/ Value" },
+    { 142, "Trigger Spell w/ Value" },
+    { 143, "Apply Aura Owner in Area" },
+    { 144, "Directional Knockback" },
+    { 145, "Pull to Destination" },
+    { 146, "Restore Garrison Troop Vitality" },
+    { 147, "Fail Quest" },
+    { 148, "Trigger Missile Spell w/ Value" },
+    { 149, "Charge to Destination" },
+    { 150, "Start Quest" },
+    { 151, "Trigger Spell" },
+    { 152, "Summon Refer a Friend" },
+    { 153, "Create Tamed Pet" },
+    { 154, "Discover Taxi Location" },
+    { 155, "Titan Grip" },
+    { 156, "Add Prismatic Socket" },
+    { 157, "Create Item" },
+    { 158, "Mill" },
+    { 159, "Allow Rename Pet" },
+    { 160, "Force Cast" },
+    { 161, "Learn/Unlearn Secondary Spec" },
+    { 162, "Activate Specialization" },
+    { 163, "Obliterate Item" },
+    { 164, "Cancel Aura" },
+    { 165, "Take Max Health% Damage" },
+    { 166, "Give Currency" },
+    { 167, "Update Player Phase" },
+    { 168, "Allow Control Pet" },
+    { 169, "Destroy Item" },
+    { 170, "Update Zone Auras and Phases" },
+    { 171, "Summon Personal Gameobject" },
+    { 172, "Resurrect with Health%" },
+    { 173, "Unlock Guild Vault Tab" },
+    { 174, "Apply Aura Pet" },
+    { 176, "Sanctuary" },
+    { 177, "Despawn Persistent Area Aura" },
+    { 179, "Create Area Trigger" },
+    { 180, "Update Area Trigger" },
+    { 181, "Remove Talent" },
+    { 182, "Despawn Area Trigger" },
+    { 184, "Reputation" },
+    { 187, "Randomize Archaeology Digsite" },
+    { 188, "Summon Multiple Hunter Pets" },
+    { 189, "Loot" },
+    { 190, "Change Party Member" },
+    { 191, "Teleport to Digsite" },
+    { 192, "Uncage Battlepet" },
+    { 193, "Start Pet Battlle" },
+    { 195, "Play Scene Script Package" },
+    { 196, "Create Scene Object" },
+    { 197, "Create Personal Scene Object" },
+    { 198, "Play Scene" },
+    { 199, "Despawn Summon" },
+    { 200, "Battlepet Heal%" },
+    { 201, "Enable Pet Battles" },
+    { 202, "Apply Player/Pet Aura" },
+    { 203, "Remove Aura" },
+    { 204, "Change Battlepet Quality" },
+    { 205, "Launch Quest Choice" },
+    { 206, "Alter Item" },
+    { 207, "Launch Quest Task" },
+    { 208, "Set Reputation" },
+    { 210, "Learn Garrison Building" },
+    { 211, "Learn Garrison Specialization" },
+    { 212, "Remove Aura (Label)" },
+    { 213, "Jump to Destiantion" },
+    { 214, "Create Garrison" },
+    { 215, "Upgrade Character Spells" },
+    { 216, "Create Shipment" },
+    { 217, "Upgrade Garrison" },
+    { 219, "Create Conversation" },
+    { 220, "Add Garrison Follower" },
+    { 221, "Add Garrison Mission" },
+    { 222, "Create Heirloom Item" },
+    { 223, "Change Item Bonuses" },
+    { 224, "Activate Garrison Building" },
+    { 225, "Grant Battlepet Level" },
+    { 226, "Trigger Action Set" },
+    { 227, "Teleport to LFG Dungeon" },
+    { 229, "Set Follower Quality" },
+    { 231, "Increase Follower Experience" },
+    { 232, "Remove Phase" },
+    { 233, "Randomize Follower Abilities" },
+    { 236, "Give Experience" },
+    { 237, "Give Rested Experience Bonus" },
+    { 238, "Increase Skill" },
+    { 239, "Finish Garrison Building Construction" },
+    { 240, "Give Artifact Power" },
+    { 242, "Give Artifact Power (No Bonus)" },
+    { 243, "Apply Enchant Illusion" },
+    { 244, "Learn Follower Ability" },
+    { 245, "Upgrade Heirloom" },
+    { 246, "Finish Garrison Mission" },
+    { 247, "Add Garrison Mission Set" },
+    { 248, "Finish Shipment" },
+    { 249, "Force Equip Item" },
+    { 250, "Take Screenshot" },
+    { 251, "Set Garrison Cache Size" },
+    { 252, "Teleport Units" },
+    { 253, "Give Honor" },
+    { 254, "Jump Charge" },
+    { 255, "Learn Transmog Set" },
+    { 258, "Modify Keystone" },
+    { 259, "Respect Azerite Item" },
+    { 260, "Summon Stabled Pet" },
+    { 261, "Scrap Item" },
+    { 263, "Repair Item" },
+    { 264, "Remove Gem" },
+    { 265, "Learn Azerite Essence Power" },
+    { 266, "Set Item Bonus List Group Entry" },
+    { 267, "Create Private Conversation" },
+    { 268, "Apply Mount Equipment" },
+    { 269, "Increase Item Bonus List Group Step" },
+    { 271, "Apply Aura Party (Non-Random)" },
+    { 272, "Set Covenant" },
+    { 273, "Craft Runeforge Legendary" },
+    { 276, "Learn Transmog Illusion" },
+    { 277, "Set Chromie Time" },
+    { 279, "Learn Garrison Talent" },
+    { 281, "Learn Soulbind Conduit" },
+    { 282, "Convert Items to Currency" },
+    { 283, "Complete Campaign" },
+    { 284, "Send Chat Message" },
+    { 285, "Modify Keystone" },
+    { 286, "Grant Battlepet Experience" },
+    { 287, "Set Garrison Follower Level" },
+    { 288, "Craft Item" },
+    { 289, "Modify Aura Stacks" },
+    { 290, "Reduce Remaining Cooldown" },
+    { 291, "Modify Cooldown" },
+    { 292, "Modify Cooldown (Category)" },
+    { 293, "Immediate Cooldown Recharge (Category)" },
+    { 294, "Craft Loot" },
+    { 295, "Salvage Item" },
+    { 296, "Craft Salvage Item" },
+    { 297, "Recraft Item" },
+    { 298, "Cancel All Private Conversations" },
+    { 301, "Craft Enchantment" },
+    { 302, "Gather" },
+    { 303, "Create Trait Tree Config" },
+    { 304, "Change Active Combat Triat Config" },
+    { 306, "Update Interactions" },
+    { 308, "Cancel World Preload" },
+    { 309, "Preload World" },
+    { 311, "Check World Loaded" },
+    { 313, "Change Item Bonuses" },
+    { 314, "Add Socket Bonus" },
+    { 315, "Learn Transmog Appearance from Item mod Appearance Group" },
+    { 316, "Kill Credit (Label)" },
+    { 317, "Kill Credit (Label)" },
+    { 335, "Set Player Data Element (Account)" },
+    { 336, "Set Player Data Element (Character)" },
+    { 337, "Set Player Data Flag (Account)" },
+    { 338, "Set Player Data Flag (Character)" },
+    { 339, "UI Action" },
+    { 341, "Learn Warband Scene" },
+    { 345, "Assist Action" },
 } );
 
 static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, std::string_view>( {
@@ -1609,6 +1807,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
+    case E_TRIGGER_MISSILE:
+    case E_TRIGGER_MISSILE_SPELL_WITH_VALUE:
+    case E_FORCE_CAST:
+    case E_FORCE_CAST_2:
+    case E_FORCE_CAST_WITH_VALUE:
+    case E_REDUCE_REMAINING_COOLDOWN:
+    case E_MODIFY_AURA_STACKS:
+    case E_REMOVE_AURA_2:
+    case E_CANCEL_AURA:
+    case E_PUSH_ABILITY_TO_ACTION_BAR:
       if ( e->trigger_spell_id() )
       {
         if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -1644,6 +1852,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( ": every {} seconds", e->period().total_seconds() );
         break;
       case A_PROC_TRIGGER_SPELL:
+      case A_TRIGGER_SPELL_BY_HEALTH_PCT:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -1670,6 +1879,17 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( " for {} seconds", dbc.spell( e->spell_id() )->duration().total_seconds() );
         if ( dbc.spell( e->spell_id() )->duration().total_seconds() < 0 )
           tmp_str += fmt::format( " until cancelled" );
+        break;
+      case A_OVERRIDE_ACTION_SPELL:
+        if ( e->misc_value1() && e->base_value() )
+        {
+          if ( dbc.spell( e->misc_value1() ) != spell_data_t::nil() &&
+               dbc.spell( e->base_value() ) != spell_data_t::nil() )
+            tmp_str += fmt::format( ": {} overrides {}", dbc.spell( as<unsigned>( e->base_value() ) )->name_cstr(),
+                                    dbc.spell( as<unsigned>( e->misc_value1() ) )->name_cstr() );
+          else
+            tmp_str += fmt::format( ": ({}) overrides ({})", e->base_value(), e->misc_value1() );
+        }
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
@@ -1772,7 +1992,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->chain_target() != 0 )
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
-  if ( e->type() == E_ENERGIZE ||
+  if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT ||
        ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
                                         e->subtype() == A_MOD_POWER_REGEN_PERCENT ) ) )
   {
@@ -1806,7 +2026,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
   else if ( e->misc_value1() != 0 )
   {
-    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) || e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY ||
+         e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
     {
       tokens.emplace_back( fmt::format( "Misc Value: {} (Category)", e->misc_value1() ) );
     }
@@ -1818,6 +2039,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
               e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
     {
       tokens.emplace_back( fmt::format( "Misc Value: {} (Label)", e->misc_value1() ) );
+    }
+    else if ( e->subtype() == A_MODIFY_SCHOOL )
+    {
+      tokens.emplace_back(
+          fmt::format( "School: {}", util::school_type_string( dbc::get_school_type( e->misc_value1() ) ) ) );
     }
     else
     {
@@ -1931,7 +2157,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
-  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID )
+  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID ||
+       e->type() == E_APPLY_AREA_AURA_ENEMY || e->type() == E_APPLY_AREA_AURA_FRIEND || e->type() == E_APPLY_AURA_PLAYER_AND_PET ||
+       e->type() == E_APPLY_AREA_AURA_OWNER || e->type() == E_APPLY_AREA_AURA_PARTY_NONRANDOM || e->type() == E_APPLY_AREA_AURA_PET ||
+       e->type() == E_REMOVE_AURA_BY_SPELL_LABEL || e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY || e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
   {
     switch ( e->subtype() )
     {
@@ -1951,7 +2180,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           break;
     }
 
-    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    if ( e->type() == E_REMOVE_AURA_BY_SPELL_LABEL )
+      if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
+        s << "                   " << str << std::endl;
+
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) ||
+         e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY ||
+         e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
     {
       if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
       {
@@ -3042,12 +3277,12 @@ void spell_info::effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, con
   if ( e->chain_multiplier() != 0 && e->chain_multiplier() != 1.0 )
     node->add_parm( "chain_multiplier", e->chain_multiplier() );
 
-  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
+  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT )
   {
     if ( e->subtype() == A_MOD_DAMAGE_DONE || e->subtype() == A_MOD_DAMAGE_TAKEN ||
          e->subtype() == A_MOD_DAMAGE_PERCENT_DONE || e->subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
       node->add_parm( "misc_value_mod_damage", e->misc_value1() );
-    else if ( e->type() == E_ENERGIZE )
+    else if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT )
       node->add_parm(
           "misc_value_energize",
           util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
