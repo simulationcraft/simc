@@ -1226,7 +1226,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 162, "Activate Specialization" },
     { 163, "Obliterate Item" },
     { 164, "Cancel Aura" },
-    { 165, "Damage Taken Max Health%" },
+    { 165, "Take Max Health% Damage" },
     { 166, "Give Currency" },
     { 167, "Update Player Phase" },
     { 168, "Allow Control Pet" },
@@ -1880,6 +1880,17 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         if ( dbc.spell( e->spell_id() )->duration().total_seconds() < 0 )
           tmp_str += fmt::format( " until cancelled" );
         break;
+      case A_OVERRIDE_ACTION_SPELL:
+        if ( e->misc_value1() && e->base_value() )
+        {
+          if ( dbc.spell( e->misc_value1() ) != spell_data_t::nil() &&
+               dbc.spell( e->base_value() ) != spell_data_t::nil() )
+            tmp_str += fmt::format( ": {} overrides {}", dbc.spell( as<unsigned>( e->base_value() ) )->name_cstr(),
+                                    dbc.spell( as<unsigned>( e->misc_value1() ) )->name_cstr() );
+          else
+            tmp_str += fmt::format( ": ({}) overrides ({})", e->base_value(), e->misc_value1() );
+        }
+        break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
@@ -2028,6 +2039,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
               e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
     {
       tokens.emplace_back( fmt::format( "Misc Value: {} (Label)", e->misc_value1() ) );
+    }
+    else if ( e->subtype() == A_MODIFY_SCHOOL )
+    {
+      tokens.emplace_back(
+          fmt::format( "School: {}", util::school_type_string( dbc::get_school_type( e->misc_value1() ) ) ) );
     }
     else
     {
