@@ -1765,15 +1765,16 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
 } );
 
 static constexpr auto _scaling_class_strings = util::make_static_map<int, std::string_view>( {
-  { -1, "Primary Stat" },
-  { -2, "Restore Health/Power - Unknown scaling factors" },
-  { -3, "Food/Gems - Unknown scaling factors" },
-  { -4, "Food/Gems - Unknown scaling factors" },
-  { -5, "Food - Unknown scaling factors" },
-  { -6, "Stamina" },
-  { -7, "Secondary Stat" },
-  { -8, "Damage/Healing - Replace Primary Stat Budget" },
-  { -9, "Damage/Healing - Replace Secondary Stat Budget" },
+  { -1, "Primary Attribute"       },
+  { -2, "Restore Health/Resource" },
+  { -3, "Food/Gems Attribute"     },
+  { -4, "Food/Gems Attribute"     },
+  { -5, "Food/Gems Attribute"     },
+  { -6, "Stamina"                 },
+  { -7, "Secondary Attribute"     },
+  { -8, "Replace Primary"         },
+  { -9, "Replace Secondary"       },
+  { -10, "Consumable"             },
 } );
 
 std::string mechanic_str( unsigned mechanic )
