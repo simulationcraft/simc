@@ -6729,7 +6729,6 @@ struct coordinated_assault_t: public hunter_spell_t
 
     base_teleport_distance = data().max_range();
     movement_directionality = movement_direction_type::OMNI;
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
 
     damage = p->get_background_action<damage_t>( "coordinated_assault_player" );
     add_child( damage );

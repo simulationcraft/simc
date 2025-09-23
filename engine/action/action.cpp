@@ -636,17 +636,18 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   // non-abilities have hasted gcd by default
   if ( !spell_data.flags( spell_attribute::SX_ABILITY ) && !spell_data.flags( spell_attribute::SX_RANGED_ABILITY ) )
   {
-    if ( spell_data.dmg_class() == SPELL_TYPE_MELEE || spell_data.dmg_class() == SPELL_TYPE_RANGED )
+    // use actor's primary stat to determine attack or spell haste
+    if ( player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_INTELLECT )
     {
-      // 1s gcd melee class abilities don't get hasted
-      if ( spell_data.affected_by_label( 16 ) && trigger_gcd == 1_s )
-        gcd_type = gcd_haste_type::NONE;
-      else
-        gcd_type = gcd_haste_type::ATTACK_HASTE;
+      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
     }
     else
     {
-      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
+      // 1s gcd melee class abilities don't get hasted
+      if ( spell_data.dmg_class() == SPELL_TYPE_MELEE && spell_data.affected_by_label( 16 ) && trigger_gcd == 1_s )
+        gcd_type = gcd_haste_type::NONE;
+      else
+        gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
   }
 
@@ -2200,6 +2201,12 @@ void action_t::start_gcd()
   if ( player->action_queued && sim->strict_gcd_queue )
   {
     player->gcd_ready -= sim->queue_gcd_reduction;
+  }
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "{} {} starting {} GCD for {}, ready at {}", *player, *this, gcd_type, current_gcd,
+                      player->gcd_ready );
   }
 }
 
