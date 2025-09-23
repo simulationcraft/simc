@@ -1771,7 +1771,7 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
   { -4, "Food/Gems Attribute"      },
   { -5, "Food/Gems Attribute"      },
   { -6, "Stamina"                  },
-  { -7, "Secondary Attribute"      },
+  { -7, "Secondary Rating"         },
   { -8, "Replace Primary"          },
   { -9, "Replace Secondary"        },
   { -10, "Restore Mana"            },
