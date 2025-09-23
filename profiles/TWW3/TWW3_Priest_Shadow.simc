@@ -142,31 +142,31 @@ actions.trinkets+=/use_item,name=astral_gladiators_badge_of_ferocity,if=(buff.vo
 actions.trinkets+=/use_item,use_off_gcd=1,name=perfidious_projector,if=gcd.remains>0&(!talent.voidheart|buff.voidheart.up|fight_remains<20)
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
-head=dying_stars_veil,id=237709,ilevel=723,gem_id=213743
-neck=chrysalis_of_sundered_souls,id=237568,ilevel=723,gem_id=213482/213458
-shoulders=sinlight_shoulderpads,id=246276,ilevel=723
+head=dying_stars_veil,id=237709,ilevel=730,gem_id=213743
+neck=chrysalis_of_sundered_souls,id=237568,ilevel=730,gem_id=213482/213458
+shoulders=sinlight_shoulderpads,id=246276,ilevel=730
 back=reshii_wraps,id=235499,bonus_id=12256,ilevel=730
-chest=dying_stars_cassock,id=237712,ilevel=723,enchant=crystalline_radiance_3
-wrists=consecrated_cuffs,id=222815,bonus_id=8793/11109,ilevel=720,gem_id=213497
-hands=dying_stars_caress,id=237710,ilevel=723
-waist=singularity_cincture,id=237559,ilevel=723,gem_id=213470
-legs=dying_stars_leggings,id=237708,ilevel=723,enchant=sunset_spellthread_3
-feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=723
-finger1=logic_gate_omega,id=237570,ilevel=723,gem_id=213494/213494,enchant=radiant_mastery_3
-finger2=logic_gate_alpha,id=237567,ilevel=723,gem_id=213494/213494,enchant=radiant_mastery_3
-trinket1=astral_antenna,id=242395,ilevel=723
-trinket2=arazs_ritual_forge,id=242402,ilevel=723
-main_hand=voidglass_kris,id=237728,ilevel=723,enchant=stonebound_artistry_3
-off_hand=vagabonds_torch,id=222566,bonus_id=11300/8793,ilevel=720
+chest=dying_stars_cassock,id=237712,ilevel=730,enchant=crystalline_radiance_3
+wrists=consecrated_cuffs,id=222815,bonus_id=8793/11109,ilevel=726,gem_id=213497
+hands=dying_stars_caress,id=237710,ilevel=730
+waist=singularity_cincture,id=237559,ilevel=730,gem_id=213470
+legs=dying_stars_leggings,id=237708,ilevel=730,enchant=sunset_spellthread_3
+feet=interlopers_silken_striders,id=243305,bonus_id=13504,ilevel=730
+finger1=logic_gate_omega,id=237570,ilevel=730,gem_id=213494/213494,enchant=radiant_mastery_3
+finger2=logic_gate_alpha,id=237567,ilevel=730,gem_id=213494/213494,enchant=radiant_mastery_3
+trinket1=astral_antenna,id=242395,ilevel=730
+trinket2=arazs_ritual_forge,id=242402,ilevel=730
+main_hand=voidglass_kris,id=237728,ilevel=730,enchant=stonebound_artistry_3
+off_hand=vagabonds_torch,id=222566,bonus_id=11300/8793,ilevel=726
 
 # Gear Summary
-# gear_ilvl=723.06
-# gear_stamina=664039
-# gear_intellect=105617
-# gear_crit_rating=14027
-# gear_haste_rating=11016
-# gear_mastery_rating=23617
-# gear_versatility_rating=8007
-# gear_armor=25542
+# gear_ilvl=729.50
+# gear_stamina=705311
+# gear_intellect=112102
+# gear_crit_rating=14400
+# gear_haste_rating=11276
+# gear_mastery_rating=24153
+# gear_versatility_rating=8246
+# gear_armor=26917
 # set_bonus=name=thewarwithin_season_3,pc=2,hero_tree=voidweaver,enable=1
 # set_bonus=name=thewarwithin_season_3,pc=4,hero_tree=voidweaver,enable=1
