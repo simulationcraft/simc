@@ -12342,7 +12342,7 @@ void rogue_t::create_buffs()
     } );
 
   buffs.blindside = make_buff( this, "blindside", spec.blindside_buff )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
 
   buffs.indiscriminate_carnage = make_buff( this, "indiscriminate_carnage", spec.indiscriminate_carnage_buff )
     ->apply_affecting_aura( talent.rogue.subterfuge ); // Duration Modifer
@@ -12501,7 +12501,7 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.goremaws_bite = make_buff( this, "goremaws_bite", spec.goremaws_bite_buff )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
   buffs.goremaws_bite->set_initial_stack( buffs.goremaws_bite->max_stack() );
 
   // Set Bonus Items ========================================================

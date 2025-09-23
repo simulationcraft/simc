@@ -1543,7 +1543,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_CAST_TIME:     str = "cast time";              return &execute_time_effects;
       case P_GCD:           str = "gcd";                    return &gcd_effects;
       case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
-      case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
+      case P_RESOURCE_COST_1: str = "cost percent";           return &cost_effects;
       case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
       case P_CRIT_BONUS:    str = "crit bonus multiplier";  return &crit_bonus_effects;
       case P_COOLDOWN:      str = "cooldown";               return &recharge_multiplier_effects;
@@ -1561,7 +1561,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_TICK_TIME:     val_mul = 1.0;
                             str = "tick time";   return &flat_tick_time_effects;
       case P_CRIT:          str = "crit chance"; return &crit_chance_effects;
-      case P_RESOURCE_COST: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
+      case P_RESOURCE_COST_1: val_mul = spelleffect_data_t::resource_multiplier( _action->current_resource() );
                             str = "flat cost";   return &flat_cost_effects;
       default:              return nullptr;
     }

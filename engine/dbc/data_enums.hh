@@ -626,7 +626,7 @@ enum property_type_t {
   P_COOLDOWN            = 11,
   P_EFFECT_2            = 12,
   P_RESISTANCE          = 13,
-  P_RESOURCE_COST       = 14,
+  P_RESOURCE_COST_1     = 14,
   P_CRIT_BONUS          = 15,
   P_PENETRATION         = 16,
   P_CHAIN_TARGETS       = 17,
@@ -646,12 +646,12 @@ enum property_type_t {
   P_DOSES               = 31,
   P_EFFECT_4            = 32,
   P_EFFECT_5            = 33,
-  P_RESOURCE_COST_1     = 34,
+  P_RESOURCE_COST_2     = 34,
   P_CHAIN_TARGET_RANGE  = 35,
   P_ARENA_MAX_SUMMONS   = 36,
   P_MAX_STACKS          = 37,
   P_PROC_COOLDOWN       = 38,
-  P_RESOURCE_COST_2     = 39,
+  P_RESOURCE_COST_3     = 39,
   P_MAX_TARGETS         = 40,
   P_MAX
 };

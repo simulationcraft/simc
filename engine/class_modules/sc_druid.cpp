@@ -7220,7 +7220,7 @@ struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<
       form_mask |= CAT_FORM;
 
       base_costs[ RESOURCE_ENERGY ] =
-        find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
+        find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_2 )
           .resource( RESOURCE_ENERGY );
     }
 
@@ -11919,7 +11919,7 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat =
     make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
-      ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
+      ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
       ->set_stack_change_callback(
         [ this,
           ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]
