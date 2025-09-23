@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.5.63092 PTR
+SimulationCraft 1120-01 for World of Warcraft 11.2.5.63286 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 15 }, quality={ epic }, ilevel_adjust={ 4 }
