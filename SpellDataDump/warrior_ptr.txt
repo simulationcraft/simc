@@ -587,7 +587,7 @@ Spell Level      : 33
 Range            : 8 - 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1211 (Type 0x9): Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1), Time Spiral (375258 effect#1), Blessing of the Bronze (381758 effect#1)
+Category         : 1211 (Type 0x9): Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1), Time Spiral (375258 effect#1), Time Spiral (375258 effect#2), Blessing of the Bronze (381758 effect#1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 219
@@ -1252,9 +1252,9 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-#4 (id=1243174)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#4 (id=1243174)  : Apply Aura (6) | Set Action Button Spell Count (408): Execute
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 163201 | Target: Self (1)
-#5 (id=1251855)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#5 (id=1251855)  : Apply Aura (6) | Set Action Button Spell Count (408): Execute
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 281000 | Target: Self (1)
 Description      : $@spelldesc29725
 Tooltip          : $?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.
@@ -5669,9 +5669,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-#2 (id=1243175)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1243175)  : Apply Aura (6) | Set Action Button Spell Count (408): Execute
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 5308 | Target: Self (1)
-#3 (id=1251857)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#3 (id=1251857)  : Apply Aura (6) | Set Action Button Spell Count (408): Execute
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 280735 | Target: Self (1)
 Description      : $@spelldesc280721
 Tooltip          : $?a317320[Condemn][Execute] can be used on any target, regardless of their health.
@@ -13263,7 +13263,7 @@ Effects          :
                    Base Value: 435222 | Scaled Value: 435222 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
-#2 (id=1243164)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1243164)  : Apply Aura (6) | Set Action Button Spell Count (408): Thunder Blast
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 435222 | Target: Self (1)
 Description      : $@spelldesc435607
 Tooltip          : Your next Thunder Clap becomes a Thunder Blast that deals Stormstrike damage and generates ${$435222s4/10} Rage.

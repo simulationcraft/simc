@@ -5443,7 +5443,7 @@ Affecting Spells : Mastery: Enhanced Elements (77223 effect#3)
 Family Flags     : 114
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=297457)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=297457)   : Apply Aura (6) | Set Action Button Spell Count (408): Stormstrike
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 17364 | Target: Self (1)
 #2 (id=297909)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
@@ -5459,7 +5459,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
-#6 (id=363023)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#6 (id=363023)   : Apply Aura (6) | Set Action Button Spell Count (408): Windstrike
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self (1)
 #7 (id=1185735)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 (Category) | Target: Self (1)
@@ -8952,7 +8952,7 @@ Effects          :
                    Family Flags: 31
 #2 (id=829982)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#3 (id=1180718)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#3 (id=1180718)  : Apply Aura (6) | Set Action Button Spell Count (408): Frost Shock
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196840 | Target: Self (1)
 Description      : $@spelldesc334195
 Tooltip          : Your next Frost Shock will deal $s1% additional damage, and hit up to ${$334195s1/$s2} additional $Ltarget:targets;.
@@ -12954,7 +12954,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
-#2 (id=1179291)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1179291)  : Apply Aura (6) | Set Action Button Spell Count (408): Lava Lash
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 60103 | Target: Self (1)
 Description      : $@spelldesc390370
 Tooltip          : Damage of your next Lava Lash increased by $s1%.
@@ -17368,9 +17368,9 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1174813)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1174813)  : Apply Aura (6) | Set Action Button Spell Count (408): Healing Wave
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 77472 | Target: Self (1)
-#2 (id=1174814)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1174814)  : Apply Aura (6) | Set Action Button Spell Count (408): Healing Surge
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 8004 | Target: Self (1)
 Description      : $@spelldesc200071
 
@@ -18954,7 +18954,7 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start 
 Effects          :
 #1 (id=1211338)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1211339)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1211339)  : Apply Aura (6) | Set Action Button Spell Count (408): Crash Lightning
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187874 | Target: Self (1)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $1223332w1%.

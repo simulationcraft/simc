@@ -38,7 +38,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
+Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Time Spiral (375252 effect#2), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 219
@@ -183,7 +183,7 @@ Spell Level      : 1
 Duration         : 0.65 seconds
 Cooldown         : 0.5 seconds
 Charges          : 2 (25 seconds cooldown)
-Category         : 1632 (Type 0x9): Flow of Time (336636 effect#2), Time Spiral (375240 effect#3), Blessing of the Bronze (381750 effect#2), Flow of Time (382268 effect#2)
+Category         : 1632 (Type 0x9): Flow of Time (336636 effect#2), Time Spiral (375240 effect#3), Time Spiral (375240 effect#4), Blessing of the Bronze (381750 effect#2), Flow of Time (382268 effect#2)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -1150,7 +1150,7 @@ Spell Type       : None
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (35 seconds cooldown)
-Category         : 1948 (Type 0x1): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
+Category         : 1948 (Type 0x1): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Time Spiral (375234 effect#2), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
@@ -1532,7 +1532,7 @@ Resource         : 10% Base Mana (0) (id=305272) w/ Augmentation Evoker (id=3961
 Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 24 seconds
-Category         : 1948 (Type 0x0): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
+Category         : 1948 (Type 0x0): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Time Spiral (375234 effect#2), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
 Labels           : 16: Class Spells
                  : 219
                  : 292
@@ -3058,7 +3058,7 @@ Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs
 Effects          :
 #1 (id=981818)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
-#2 (id=981819)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=981819)   : Apply Aura (6) | Set Action Button Spell Count (408): Pyre
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 357211 | Target: Self (1)
 Description      : $@spelldesc370455
 Tooltip          : Your next Pyre deals $s1% more damage.
@@ -4471,8 +4471,9 @@ Effects          :
 #1 (id=1001492)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1941 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Death's Advance (48265), Death Charge (444347)
-#2 (id=1001493)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1941 | Target: Targeted Ally (21)
+#2 (id=1001493)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1941 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Death's Advance (48265), Death Charge (444347)
 Description      : $@spelldesc374968
 Tooltip          : May use Death's Advance once, without incurring its cooldown.
 
@@ -4494,13 +4495,15 @@ Effects          :
 #1 (id=1001496)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1545 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Fel Rush (195072), Fel Rush (344865)
-#2 (id=1001497)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1545 | Target: Targeted Ally (21)
+#2 (id=1001497)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1545 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Fel Rush (195072), Fel Rush (344865)
 #3 (id=1001498)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1553 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Infernal Strike (189110)
-#4 (id=1001499)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1553 | Target: Targeted Ally (21)
+#4 (id=1001499)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1553 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Infernal Strike (189110)
 Description      : $@spelldesc374968
 Tooltip          : May use $?c2[Infernal Strike][Fel Rush] once, without incurring its cooldown.
 
@@ -4550,8 +4553,9 @@ Effects          :
 #1 (id=1001510)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1948 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Hover (358267), Verdant Embrace (360995), Spatial Paradox (406732)
-#2 (id=1001511)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1948 | Target: Targeted Ally (21)
+#2 (id=1001511)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1948 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Hover (358267), Verdant Embrace (360995), Spatial Paradox (406732)
 Description      : $@spelldesc374968
 Tooltip          : May use Hover once, without incurring its cooldown.
 
@@ -4595,13 +4599,15 @@ Effects          :
 #1 (id=1001521)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1446 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Blink (1953)
-#2 (id=1001522)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1446 | Target: Targeted Ally (21)
+#2 (id=1001522)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1446 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Blink (1953)
 #3 (id=1001523)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1632 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Shimmer (212653)
-#4 (id=1001524)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1632 | Target: Targeted Ally (21)
+#4 (id=1001524)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1632 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Shimmer (212653)
 Description      : $@spelldesc374968
 Tooltip          : May use $?s212653[Shimmer][Blink] once, without incurring its cooldown.
 
@@ -4623,8 +4629,9 @@ Effects          :
 #1 (id=1001540)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Roll (109132), Chi Torpedo (115008), Roll (361138)
-#2 (id=1001541)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1365 | Target: Targeted Ally (21)
+#2 (id=1001541)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1365 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Roll (109132), Chi Torpedo (115008), Roll (361138)
 Description      : $@spelldesc374968
 Tooltip          : May use $?s115008[Chi Torpedo][Roll] once, without incurring its cooldown.
 
@@ -4646,8 +4653,9 @@ Effects          :
 #1 (id=1001542)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1662 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Divine Steed (190784)
-#2 (id=1001543)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1662 | Target: Targeted Ally (21)
+#2 (id=1001543)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1662 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Divine Steed (190784)
 Description      : $@spelldesc374968
 Tooltip          : May use Divine Steed once, without incurring its cooldown.
 
@@ -4669,8 +4677,9 @@ Effects          :
 #1 (id=1001544)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2308 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
-#2 (id=1164779)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2308 | Target: Targeted Ally (21)
+#2 (id=1164779)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2308 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
 Description      : $@spelldesc374968
 Tooltip          : May use Leap of Faith once, without incurring its cooldown.
 
@@ -4757,8 +4766,9 @@ Effects          :
 #1 (id=1001548)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1211 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Heroic Leap (6544)
-#2 (id=1001549)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1211 | Target: Targeted Ally (21)
+#2 (id=1001549)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1211 (Category) | Target: Targeted Ally (21)
+                   Affected Spells (Category): Heroic Leap (6544)
 Description      : $@spelldesc374968
 Tooltip          : May use Heroic Leap once, without incurring its cooldown.
 
@@ -6458,7 +6468,7 @@ Triggered By     : Surge Forward (376743)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=1020533)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1020533)  : Apply Aura (6) | Set Action Button Spell Count (408): Surge Forward
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376743 | Target: Self (1)
 Description      : $@spelldesc376743
 
@@ -6475,7 +6485,7 @@ Triggered By     : Skyward Ascent (376744)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=1020536)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1020536)  : Apply Aura (6) | Set Action Button Spell Count (408): Skyward Ascent
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376744 | Target: Self (1)
 Description      : $@spelldesc376744
 
@@ -6838,7 +6848,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1024982)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1024982)  : Apply Aura (6) | Set Action Button Spell Count (408): Cycle of Life
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 371832 | Target: Self (1)
 Description      : $@spelldesc371832
 
@@ -8163,7 +8173,7 @@ Spell Type       : None
 Range            : 60 yards
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Category         : 1948 (Type 0x0): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
+Category         : 1948 (Type 0x0): Aerial Mastery (365933 effect#1), Time Spiral (375234 effect#1), Time Spiral (375234 effect#2), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3), Time Skip (404977 effect#2), Interwoven Threads (412713 effect#2), Warp (429483 effect#1), Temporal Burst (431698 effect#4), Temporal Cycle (1237269 effect#4)
 Labels           : 16: Class Spells
                  : 219
                  : 292

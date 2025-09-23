@@ -1901,7 +1901,7 @@ Range            : 40 yards
 Duration         : 4 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2484,7 +2484,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#6 (id=1155847)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#6 (id=1155847)  : Apply Aura (6) | Set Action Button Spell Count (408): Flash Heal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 2061 | Target: Self (1)
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant$?$w5>0[, heals for $w5% more,][] and costs $s2% less mana.
@@ -10966,9 +10966,9 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596), Heal (2060)
                    Family Flags: 9, 12
-#3 (id=1178521)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#3 (id=1178521)  : Apply Aura (6) | Set Action Button Spell Count (408): Heal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 2060 | Target: Self (1)
-#4 (id=1189635)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#4 (id=1189635)  : Apply Aura (6) | Set Action Button Spell Count (408): Prayer of Healing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 596 | Target: Self (1)
 Description      : $@spelldesc390992
 Tooltip          : The cast time of your next Heal or Prayer of Healing is reduced by $w2% and its healing is increased by $w1%.
@@ -11388,7 +11388,7 @@ Effects          :
                    Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
-#2 (id=1074850)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=1074850)  : Apply Aura (6) | Set Action Button Spell Count (408): Mind Flay: Insanity
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391403 | Target: Self (1)
 Description      : $@spelldesc391399
 Tooltip          : Mind Flay is temporarily empowered.
@@ -14990,8 +14990,9 @@ Effects          :
 #1 (id=1164771)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2308 (Category) | Target: Self (1)
                    Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
-#2 (id=1164772)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2308 | Target: Self (1)
+#2 (id=1164772)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2308 (Category) | Target: Self (1)
+                   Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
 #3 (id=1164775)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
 Description      : $@spelldesc440669

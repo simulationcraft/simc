@@ -78618,7 +78618,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=319660)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=335886)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=335886)   : Apply Aura (6) | Set Action Button Spell Count (408): Fetid Regurgitation
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215127 | Target: Self (1)
 Description      : $@spelldesc215120
 Tooltip          : Can be consumed to vomit on enemies in front of you for $215127d, inflicting $215127o1 Nature damage per Goo consumed.
@@ -78934,7 +78934,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=319920)   : Apply Aura (6) | Dummy (4) | Scaling Class: -6
                    Base Value: 0 | Scaled Value: 4938674 (coefficient=1.41699) | Target: Self (1)
-#2 (id=320478)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=320478)   : Apply Aura (6) | Set Action Button Spell Count (408): Raging Storm
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215296 | Target: Self (1)
 Description      : $@spelldesc215293
 Tooltip          : Can be consumed to heal friendly targets at a location for $w1 health every 1 sec for $215296d.
@@ -163935,7 +163935,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Time Spiral (375254 effect#2), Move with Grace (390620 effect#1), Save the Day (458650 effect#1), Save the Day (458650 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -178909,7 +178909,7 @@ Spell Type       : None
 GCD              : 0.75 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
+Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Time Spiral (375252 effect#2), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
 Family Flags     : 3, 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Stealthed (37), No Threat (42), Immunity Purges Effect (47), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416)
 Effects          :

@@ -3477,7 +3477,7 @@ School           : Holy
 Spell Type       : None
 Cooldown         : 0.75 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1662 (Type 0x9): Cavalier (230332 effect#1), Gallant Steed (280189 effect#2), Divine Steed (317911 effect#1), Time Spiral (375253 effect#1), Blessing of the Bronze (381752 effect#1), Divine Spurs (469409 effect#1)
+Category         : 1662 (Type 0x9): Cavalier (230332 effect#1), Gallant Steed (280189 effect#2), Divine Steed (317911 effect#1), Time Spiral (375253 effect#1), Time Spiral (375253 effect#2), Blessing of the Bronze (381752 effect#1), Divine Spurs (469409 effect#1)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 219
@@ -12396,7 +12396,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408): Holy Light
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 82326 | Target: Self (1)
 Description      : $@spelldesc392907
 

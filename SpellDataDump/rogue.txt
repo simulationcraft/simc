@@ -3684,7 +3684,7 @@ Range            : 40 yards
 Velocity         : 80 yards/sec
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 2303 (Type 0x9): Retractable Hook (256188 effect#1), Quick Decisions (341531 effect#2), Thrill Seeking (394931 effect#2), Death's Arrival (454433 effect#3), Death's Arrival (457343 effect#2)
+Category         : 2303 (Type 0x9): Retractable Hook (256188 effect#1), Quick Decisions (341531 effect#2), Thrill Seeking (394931 effect#2), Death's Arrival (454433 effect#3), Death's Arrival (457343 effect#1), Death's Arrival (457343 effect#2)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -14843,8 +14843,8 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
-#1 (id=1162287)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1206 | Target: Self (1)
+#1 (id=1162287)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1206 (Category) | Target: Self (1)
 #2 (id=1162288)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1206 (Category) | Target: Self (1)
 Description      : $@spelldesc454433
@@ -14860,8 +14860,9 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
-#1 (id=1162308)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2303 | Target: Self (1)
+#1 (id=1162308)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2303 (Category) | Target: Self (1)
+                   Affected Spells (Category): Grappling Hook (195457)
 #2 (id=1162309)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2303 (Category) | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)

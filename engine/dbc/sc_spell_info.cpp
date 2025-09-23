@@ -1660,7 +1660,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 493, "Hunter Animal Companion"                           },
   { 494, "Set Power Point Charge"                            },
   { 495, "Trigger Spell on Aura Expire"                      },
-  { 500, "Ignore Spell Charge Cooldown"                      },
+  { 500, "Ignore Spell Charge Cooldown (Category)"           },
   { 501, "Modify Crit Damage Done% from Caster's Spells"     },
   { 502, "Modify Versatility Damage Benefit%"                },
   { 503, "Modify Versatility Healing Benefit%"               },
@@ -1953,6 +1953,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       case A_LINKED_SPELL_WITH_VALUE:
       case A_OVERRIDE_AUTO_ATTACK_WITH_SPELL:
       case A_OVERRIDE_AUTO_ATTACK_WITH_ABILITY:
+      case A_SET_ACTION_BUTTON_SPELL_COUNT:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )

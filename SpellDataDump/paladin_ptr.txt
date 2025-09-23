@@ -3477,7 +3477,7 @@ School           : Holy
 Spell Type       : None
 Cooldown         : 0.75 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1662 (Type 0x9): Cavalier (230332 effect#1), Gallant Steed (280189 effect#2), Divine Steed (317911 effect#1), Time Spiral (375253 effect#1), Blessing of the Bronze (381752 effect#1), Divine Spurs (469409 effect#1)
+Category         : 1662 (Type 0x9): Cavalier (230332 effect#1), Gallant Steed (280189 effect#2), Divine Steed (317911 effect#1), Time Spiral (375253 effect#1), Time Spiral (375253 effect#2), Blessing of the Bronze (381752 effect#1), Divine Spurs (469409 effect#1)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 219
@@ -12397,7 +12397,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408)
+#1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408): Holy Light
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 82326 | Target: Self (1)
 Description      : $@spelldesc392907
 
@@ -19899,61 +19899,4 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46
-Attributes       : Aura Is Buff (140), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1236427)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5 | PvP Coefficient: 0.33 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-                   Affected School(s): All
-Description      : $@spelldesc432459
-Tooltip          : Absorbing $w1 damage.
-
-Name             : Lesser Weapon (id=1239091) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Range            : 100 yards
-Velocity         : 30 yards/sec
-Duration         : 30 seconds
-Labels           : 16: Class Spells
-                 : 292
-Internal Cooldown: 0.75 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
-Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
-Effects          :
-#1 (id=1236560)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Description      : $@spelldesc1236390
-Tooltip          : Your next $s1 $Lability:abilities; will deal additional Holy damage or healing.
-
-Name             : Lesser Weapon (id=1239276) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 46
-Effects          :
-#1 (id=1236909)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | PvP Coefficient: 0.33 | Target: Targeted Ally (21)
-Description      : $@spelldesc1236390
-
-Name             : Lesser Weapon (id=1239282) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Type       : Magic
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
-Family Flags     : 65
-Effects          :
-#1 (id=1236923)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2 | PvP Coefficient: 0.33 | Target: Targeted Enemy (6)
-Description      : $@spelldesc1236390
-
+Attributes       : Aura Is Buff (140), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ab

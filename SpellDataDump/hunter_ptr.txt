@@ -4705,7 +4705,7 @@ Velocity         : 80 yards/sec
 Duration         : 12 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (18 seconds cooldown)
-Category         : 1675 (Type 0x1): Hunter (137014 effect#9), Bloodletting (341440 effect#2)
+Category         : 1675 (Type 0x1): Hunter (137014 effect#9), Bloodletting (341440 effect#2), Call of the Wild (362754 effect#3)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -10585,8 +10585,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (217207), Frenzy (272790), Frenzy (272795)
                    Family Flags: 78
-#3 (id=901681)   : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 | Target: Self (1)
+#3 (id=901681)   : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 (Category) | Target: Self (1)
+                   Affected Spells (Category): Barbed Shot (217200)
 Description      : $@spelldesc359844
 Tooltip          : Your next Barbed Shot is free.
 

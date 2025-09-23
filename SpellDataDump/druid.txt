@@ -9268,9 +9268,9 @@ Aura Interrupt   : Enter World (22), Change Specialization (38), Change Talent (
 Effects          :
 #1 (id=816896)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=823338)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=823338)   : Apply Aura (6) | Set Action Button Spell Count (408): Starfire
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 194153 | Target: Self (1)
-#3 (id=823339)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#3 (id=823339)   : Apply Aura (6) | Set Action Button Spell Count (408): Starfire
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 197628 | Target: Self (1)
 Description      : $@spelldesc79577
 
@@ -9289,9 +9289,9 @@ Aura Interrupt   : Enter World (22), Change Specialization (38), Change Talent (
 Effects          :
 #1 (id=816898)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=823340)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#2 (id=823340)   : Apply Aura (6) | Set Action Button Spell Count (408): Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5176 | Target: Self (1)
-#3 (id=823341)   : Apply Aura (6) | Set Action Button Spell Count (408)
+#3 (id=823341)   : Apply Aura (6) | Set Action Button Spell Count (408): Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 190984 | Target: Self (1)
 Description      : $@spelldesc79577
 

@@ -1107,6 +1107,7 @@ util::span<const effect_subtype_t> dbc::effect_category_subtypes()
     A_MOD_RECHARGE_TIME_PCT_CATEGORY,
     A_MOD_MAX_CHARGES,
     A_HASTED_CATEGORY,
+    A_IGNORE_SPELL_CHARGE_COOLDOWN_CATEGORY,
   };
   return util::make_span( subtypes );
 }
