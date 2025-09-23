@@ -6403,12 +6403,6 @@ struct rampage_attack_t : public warrior_attack_t
     else if ( first_attack )
       p()->first_rampage_attack_missed = false;
 
-    if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
-    {
-      p()->cooldown.raging_blow->reset( true );
-      p()->cooldown.crushing_blow->reset( true );
-    }
-
     // Expire buffs after the fourth attack triggers
     if ( p()->talents.fury.rampage->effectN( 5 ).trigger()->id() == data().id() )
     {
@@ -6430,6 +6424,12 @@ struct rampage_attack_t : public warrior_attack_t
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
+
+      if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+      {
+        p()->cooldown.raging_blow->reset( true );
+        p()->cooldown.crushing_blow->reset( true );
+      }
     }
   }
 
