@@ -1542,7 +1542,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 276, "Modify Damage Taken from Mechanic"                 },
   { 283, "Modify Healing Taken% from Caster's Spells"        },
   { 284, "Cast Linked Spell"                                 },
-  { 285, "Cast Linked Spell"                                 },
+  { 285, "Cast Linked Spell w/ Value"                        },
   { 286, "Modify Cooldown Recharge Rate%"                    },
   { 290, "Modify Critical Strike%"                           },
   { 291, "Modify Experience Gained from Quests"              },
@@ -1949,8 +1949,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       case A_TRIGGER_SPELL_ON_POWER_PCT:
       case A_TRIGGER_SPELL_ON_POWER_AMOUNT:
       case A_TRIGGER_SPELL_ON_STACK_AMOUNT:
-      case A_LINKED:
-      case A_LINKED_2:
+      case A_LINKED_SPELL:
+      case A_LINKED_SPELL_WITH_VALUE:
       case A_OVERRIDE_AUTO_ATTACK_WITH_SPELL:
       case A_OVERRIDE_AUTO_ATTACK_WITH_ABILITY:
         if ( e->trigger_spell_id() )

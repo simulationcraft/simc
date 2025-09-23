@@ -1288,8 +1288,8 @@ enum effect_subtype_t : unsigned {
     A_MOD_HONOR_GAIN = 281,
     A_MOD_BASE_HEALTH_PCT = 282,
     A_MOD_HEALING_RECEIVED_FROM_SPELL = 283, // Possibly only for some spell family class spells
-    A_LINKED = 284,
-    A_LINKED_2 = 285, // Some type of trigger buff, possibly on equip/learn
+    A_LINKED_SPELL = 284,
+    A_LINKED_SPELL_WITH_VALUE = 285, // Some type of trigger buff, possibly on equip/learn
     A_MOD_RECHARGE_RATE = 286,
     A_DEFLECT_SPELLS = 287,
     A_IGNORE_HIT_DIRECTION = 288,
