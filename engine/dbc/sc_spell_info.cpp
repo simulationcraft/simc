@@ -1774,7 +1774,7 @@ static constexpr auto _scaling_class_strings = util::make_static_map<int, std::s
   { -7, "Secondary Attribute"      },
   { -8, "Replace Primary"          },
   { -9, "Replace Secondary"        },
-  { -10, "Restore Health/Resource" },
+  { -10, "Restore Mana"            },
 } );
 
 std::string mechanic_str( unsigned mechanic )
