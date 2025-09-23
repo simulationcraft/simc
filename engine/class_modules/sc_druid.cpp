@@ -490,7 +490,7 @@ static const spelleffect_data_t& find_trigger( T val )
           case A_PROC_TRIGGER_SPELL_WITH_VALUE:
           case A_PERIODIC_TRIGGER_SPELL:
           case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-          case A_285:
+          case A_LINKED_SPELL_WITH_VALUE:
             return eff;
           default:
             break;

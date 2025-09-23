@@ -237,7 +237,7 @@ stat_e special_effect_t::stat_buff_type( const spelleffect_data_t& effect ) cons
       if ( effect.misc_value1() & 0x7E )
         stat_ = STAT_SPELL_POWER;
       break;
-    case A_465:
+    case A_MOD_BONUS_ARMOR:
       stat_ = STAT_BONUS_ARMOR;
       break;
     default:

@@ -1449,6 +1449,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 116, "Combat Health Regen%"                              },
   { 117, "Mechanic Resistance"                               },
   { 118, "Modify Healing Received%"                          },
+  { 119, "Check PVP State"                                   },
   { 123, "Modify Target Resistance"                          },
   { 124, "Modify Ranged Attack Power"                        },
   { 126, "Modify Melee Damage Taken%"                        },
@@ -1473,6 +1474,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 153, "Modify Auto Attack Range"                          },
   { 157, "Modify Absorb% Done"                               },
   { 163, "Modify Crit Damage Done%"                          },
+  { 164, "Force Breath Bar"                                  },
   { 166, "Modify Melee Attack Power%"                        },
   { 167, "Modify Ranged Attack Power%"                       },
   { 168, "Modify Damage Done% vs Race"                       },
@@ -1482,6 +1484,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 177, "Charmed"                                           },
   { 178, "Modify Max Mana%"                                  },
   { 180, "Modify Spell Damage vs Race"                       },
+  { 181, "Modify Spell Reagent Cost%"                        },
   { 184, "Modify Attacker Melee Hit Chance"                  },
   { 185, "Modify Attacker Ranged Hit Chance"                 },
   { 186, "Modify Attacker Spell Hit Chance"                  },
@@ -1495,27 +1498,40 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 200, "Modify Experience Gained from Kills"               },
   { 213, "Modify Rage Generated From Auto Attacks"           },
   { 216, "Modify Casting Speed"                              },
+  { 217, "Modify Melee Haste"                                },
   { 218, "Apply Percent Modifier w/ Label"                   },
   { 219, "Apply Flat Modifier w/ Label"                      },
   { 220, "Modify Spell School"                               },
+  { 221, "Remove Taunt Effects"                              },
+  { 222, "Remove Transmog Cost"                              },
+  { 223, "Remove Barber Cost"                                },
   { 224, "Grant Talent"                                      },
   { 226, "Periodic Dummy"                                    },
   { 228, "Stealth Detection"                                 },
   { 229, "Modify AoE Damage Taken%"                          },
+  { 230, "Modify Max Health"                                 },
   { 231, "Trigger Spell with Value"                          },
   { 232, "Modify Mechanic Duration% (Stacking)"              },
+  { 233, "Change all Humanoid Models"                        },
   { 234, "Modify Mechanic Duration%"                         },
   { 239, "Scale%"                                            },
   { 240, "Modify Expertise%"                                 },
   { 241, "Forced Movement"                                   },
+  { 242, "Modify Spell Damage from Healing"                  },
+  { 243, "Change Faction"                                    },
   { 244, "Comprehend Language"                               },
   { 245, "Modify Debuff Duration%"                           },
   { 247, "Copy Appearance"                                   },
   { 250, "Increase Max Health (Stacking)"                    },
   { 253, "Modify Critical Block Chance"                      },
   { 255, "Modify Damage Taken% from Mechanic"                },
-  { 259, "Modify Periodic Healing Recevied%"                 },
+  { 256, "No Reagent Cost"                                   },
+  { 257, "Modify Damage Taken from Spell School"             },
+  { 258, "Modify Periodic Damage Taken%"                     },
+  { 259, "Modify Periodic Healing Received%"                 },
+  { 262, "Ignore Aura State"                                 },
   { 263, "Disable Abilities"                                 },
+  { 264, "Disable Spells"                                    },
   { 268, "Modify Armor by Primary Stat%"                     },
   { 269, "Modify Damage Done% to Caster"                     },
   { 270, "Modify Damage Taken% from Caster"                  },
@@ -1523,68 +1539,143 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 272, "Modify Block Value%"                               },
   { 274, "Add Block Value"                                   },
   { 275, "Modify Stance Mask"                                },
+  { 276, "Modify Damage Taken from Mechanic"                 },
   { 283, "Modify Healing Taken% from Caster's Spells"        },
+  { 284, "Cast Linked Spell"                                 },
+  { 285, "Cast Linked Spell w/ Value"                        },
   { 286, "Modify Cooldown Recharge Rate%"                    },
   { 290, "Modify Critical Strike%"                           },
   { 291, "Modify Experience Gained from Quests"              },
+  { 293, "Override Spells"                                   },
+  { 294, "Prevent Power Regeneration"                        },
+  { 295, "Modify Periodic Damage Taken"                      },
+  { 296, "Set Vehicle ID"                                    },
+  { 297, "Modify Root Effects - Disable Gravity"             },
+  { 298, "Modify Stun Effects - Disable Gravity"             },
+  { 300, "Share Damage Taken"                                },
   { 301, "Absorb Healing"                                    },
+  { 303, "Modify Damage Done Against Target With Aura"       },
   { 305, "Modify Min Speed%"                                 },
   { 306, "Modify Crit Chance% from Caster"                   },
+  { 307, "Allow Casting while Moving For Spells (Label)"     },
   { 308, "Modify Crit Chance% from Caster's Spells"          },
+  { 309, "Modify Resilience"                                 },
+  { 310, "Modify Creature AoE Damage Avoidance"              },
+  { 311, "Ignore Combat State"                               },
+  { 312, "Replace Animation (Set)"                           },
+  { 313, "Replace Mount Animation (Set)"                     },
+  { 314, "Prevent Resurrection"                              },
+  { 315, "Enable Underwater Walking"                         },
+  { 316, "Absorb Overkill Damage From School"                },
   { 318, "Modify Mastery%"                                   },
   { 319, "Modify Melee Auto Attack Speed%"                   },
+  { 321, "Disable Actions"                                   },
+  { 322, "Disable Targeting"                                 },
+  { 328, "Trigger Spell Based on Resource%"                  },
   { 329, "Modify Resource Generation%"                       },
   { 330, "Cast while Moving (Whitelist)"                     },
-  { 332, "Override Action Spell (Misc /w Base)"              },
+  { 332, "Override Action Spell (Misc w/ Base)"              },
+  { 333, "Override Triggered Action Spell (Misc w/ Base)"    },
   { 334, "Modify Auto Attack Critical Chance"                },
   { 339, "Modify Crit Chance% from Caster's Pets"            },
+  { 340, "Modify Resurrection Health%"                       },
   { 341, "Modify Cooldown Time (Category)"                   },
   { 342, "Modify Ranged and Melee Auto Attack Speed%"        },
   { 343, "Modify Auto Attack Damage Taken% from Caster"      },
   { 344, "Modify Auto Attack Damage Done%"                   },
   { 345, "Ignore Armor%"                                     },
+  { 346, "Enable Secondary Resource Cost"                    },
+  { 347, "Modify Cooldown Duration by Haste%"                },
   { 354, "Modify Healing% Based on Target Health%"           },
   { 360, "Duplicate Ability"                                 },
-  { 361, "Override Auto-Attack with Spell"                   },
+  { 361, "Override Auto-Attack with Ability"                 },
   { 366, "Override Spell Power per Attack Power%"            },
+  { 367, "Override Auto-Attack with Spell"                   },
   { 374, "Reduce Fall Damage%"                               },
   { 377, "Cast while Moving"                                 },
+  { 378, "Possess Pet"                                       },
   { 379, "Modify Mana Regen%"                                },
   { 380, "Modify Damage Taken% from Caster Guardian"         },
   { 381, "Modify Damage Taken% from Caster Pet"              },
   { 382, "Modify Pet Stat"                                   },
   { 383, "Ignore Spell Cooldown"                             },
+  { 393, "Block Spells In Front"                             },
+  { 395, "Area Trigger"                                      },
+  { 396, "Trigger Spell Based on Resource Amount"            },
   { 399, "Modify Time Rate"                                  },
+  { 400, "Modify Skill"                                      },
+  { 402, "Override Resource Display"                         },
+  { 403, "Override Spell Visual"                             },
   { 404, "Override Attack Power per Spell Power%"            },
   { 405, "Modify Combat Rating Multiplier"                   },
+  { 406, "Override Keybind"                                  },
+  { 407, "Modify Fear"                                       },
+  { 408, "Set Action Button Spell Count"                     },
   { 409, "Slow Fall"                                         },
   { 411, "Modify Cooldown Charge (Category)"                 },
+  { 413, "Modify Ranged Attack Deflect Chance"               },
+  { 414, "Modify Ranged Attack Block Chance from Front"      },
   { 416, "Hasted Cooldown Duration"                          },
   { 417, "Hasted Global Cooldown"                            },
   { 418, "Modify Max Resource"                               },
   { 419, "Modify Mana Pool%"                                 },
+  { 420, "Modify Battlepet Experience Gained"                },
   { 421, "Modify Absorb% Done"                               },
   { 422, "Modify Absorb% Received"                           },
+  { 423, "Modify Mana Cost%"                                 },
+  { 424, "Caster Ignores Line of Sight"                      },
+  { 427, "Scale Player Level"                                },
   { 428, "Trigger Summon Spell w/ Duration Override"         },
   { 429, "Modify Pet Damage Done%"                           },
+  { 436, "Modify Environmental Damage Taken"                 },
+  { 437, "Modify Minimum Speed"                             },
+  { 440, "Modify Multistrike Damage"                         },
   { 441, "Modify Multistrike%"                               },
   { 443, "Modify Leech%"                                     },
+  { 446, "Dragonriding"                                      },
   { 453, "Modify Recharge Time (Category)"                   },
   { 454, "Modify Recharge Time% (Category)"                  },
   { 455, "Root"                                              },
   { 457, "Hasted Cooldown Duration (Category)"               },
+  { 458, "Hasted Cooldown Regeneration (Category)"           },
+  { 459, "Dual Wield Hit Chance Penalty"                     },
+  { 462, "Modify Healing and Absorb Recieved from Caster"    },
+  { 463, "Modify Parry Rating with Crit Rating"              },
+  { 464, "Modify Attack Power with Bonus Armor"              },
   { 465, "Increase Armor"                                    },
+  { 466, "Modify Armor%"                                     },
+  { 467, "Modify Stat Bonus%"                                },
   { 468, "Trigger Spell Based on Health%"                    },
   { 470, "Modify Time Rate (Label)"                          },
   { 471, "Modify Versatility%"                               },
+  { 473, "Prevent Durability Loss from Combat"               },
+  { 474, "Replace Item Bonus Tree"                           },
+  { 475, "Allow Interaction while Mounted"                   },
+  { 480, "Modify Artifact Item Level"                        },
+  { 481, "Convert Consumed Rune"                             },
+  { 483, "Supress Transformation"                            },
+  { 484, "Allow Interrupt Spell"                             },
   { 485, "Resist Forced Movement%"                           },
+  { 488, "Disable Gravity"                                   },
   { 493, "Hunter Animal Companion"                           },
+  { 494, "Set Power Point Charge"                            },
+  { 495, "Trigger Spell on Aura Expire"                      },
+  { 500, "Ignore Spell Charge Cooldown"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells"     },
+  { 502, "Modify Versatility Damage Benefit%"                },
+  { 503, "Modify Versatility Healing Benefit%"               },
   { 504, "Modify Healing Taken% from Caster"                 },
   { 507, "Modify Damage Taken% from Spells (Label)"          },
+  { 511, "Enable Profession Effects"                         },
+  { 519, "Modify Cooldown Recovery Rate"                     },
+  { 528, "Allow Blocking Spells"                             },
+  { 529, "Modify Spell Block Chance"                         },
   { 531, "Modify Guardian Damage Done%"                      },
   { 537, "Modify Damage Taken% from Caster's Spells (Label)" },
   { 540, "Modify Stat With Support Triggers"                 },
+  { 542, "Trigger Spell on Aura Stack Count"                 },
+  { 638, "Modify Critical Block Amount"                      },
+  { 643, "Modify Ranged Attack Speed Flat"                   },
 } );
 
 static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned, std::string_view>( {
@@ -1852,7 +1943,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( ": every {} seconds", e->period().total_seconds() );
         break;
       case A_PROC_TRIGGER_SPELL:
+      case A_PROC_TRIGGER_SPELL_COPY:
+      case A_TRIGGER_SPELL_ON_EXPIRE:
       case A_TRIGGER_SPELL_BY_HEALTH_PCT:
+      case A_TRIGGER_SPELL_ON_POWER_PCT:
+      case A_TRIGGER_SPELL_ON_POWER_AMOUNT:
+      case A_TRIGGER_SPELL_ON_STACK_AMOUNT:
+      case A_LINKED_SPELL:
+      case A_LINKED_SPELL_WITH_VALUE:
+      case A_OVERRIDE_AUTO_ATTACK_WITH_SPELL:
+      case A_OVERRIDE_AUTO_ATTACK_WITH_ABILITY:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
@@ -1881,6 +1981,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           tmp_str += fmt::format( " until cancelled" );
         break;
       case A_OVERRIDE_ACTION_SPELL:
+      case A_OVERRIDE_ACTION_SPELL_TRIGGERED:
         if ( e->misc_value1() && e->base_value() )
         {
           if ( dbc.spell( e->misc_value1() ) != spell_data_t::nil() &&
@@ -1993,13 +2094,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
   if ( e->type() == E_ENERGIZE || e->type() == E_ENERGIZE_PCT ||
-       ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
-                                        e->subtype() == A_MOD_POWER_REGEN_PERCENT ) ) )
+       ( e->type() == E_APPLY_AURA && 
+                                  ( e->subtype() == A_MOD_INCREASE_RESOURCE || e->subtype() == A_MOD_MAX_RESOURCE ||
+                                    e->subtype() == A_MOD_POWER_REGEN_PERCENT || e->subtype() == A_TRIGGER_SPELL_ON_POWER_AMOUNT || 
+                                    e->subtype() == A_TRIGGER_SPELL_ON_POWER_PCT ) ) )
   {
     tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );
   }
-  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ) )
+  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ||
+            e->subtype() == A_MOD_STAT_BONUS_PCT ) )
   {
     auto misc1 = e->misc_value1();
     if ( misc1 < -2 || misc1 >= STAT_MAX )
@@ -2168,6 +2272,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         case A_MOD_TIME_RATE_BY_SPELL_LABEL:
         case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+        case A_ENABLE_CAST_WHILE_MOVING_FOR_SPELL_LABEL:
           if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
             s << "                   " << str << std::endl;
           break;

@@ -3351,7 +3351,7 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     {
       s = STAT_MAX_HEALTH;
     }
-    else if ( effect.subtype() == A_465 )
+    else if ( effect.subtype() == A_MOD_BONUS_ARMOR )
     {
       s = STAT_BONUS_ARMOR;
     }
