@@ -1985,6 +1985,7 @@ enum spell_label : unsigned
   LABEL_PALADIN_SPELLS             = 26u,
   LABEL_DEATH_KNIGHT_SPELLS        = 27u,
   LABEL_DEMON_HUNTER_SPELLS        = 66u,
+  LABEL_DIE_ON_FAILURE_SPELLS      = 237u,
   LABEL_AZERITE_ESSENCES           = 640u,
   LABEL_MAJOR_COOLDOWNS            = 690u,
   LABEL_HEALING_SPELLS             = 741u,
