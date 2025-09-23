@@ -1764,6 +1764,18 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { 3959, "Item Effects"      },
 } );
 
+static constexpr auto _scaling_class_strings = util::make_static_map<int, std::string_view>( {
+  { -1, "Primary Stat" },
+  { -2, "Restore Health/Power - Unknown scaling factors" },
+  { -3, "Food/Gems - Unknown scaling factors" },
+  { -4, "Food/Gems - Unknown scaling factors" },
+  { -5, "Food - Unknown scaling factors" },
+  { -6, "Stamina" },
+  { -7, "Secondary Stat" },
+  { -8, "Damage/Healing - Replace Primary Stat Budget" },
+  { -9, "Damage/Healing - Replace Secondary Stat Budget" },
+} );
+
 std::string mechanic_str( unsigned mechanic )
 {
   auto it = _mechanic_strings.find( mechanic );
@@ -1986,7 +1998,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         if ( e->misc_value1() && e->base_value() )
         {
           if ( dbc.spell( e->misc_value1() ) != spell_data_t::nil() &&
-               dbc.spell( e->base_value() ) != spell_data_t::nil() )
+               dbc.spell( as<unsigned>( e->base_value() ) ) != spell_data_t::nil() )
             tmp_str += fmt::format( ": {} overrides {}", dbc.spell( as<unsigned>( e->base_value() ) )->name_cstr(),
                                     dbc.spell( as<unsigned>( e->misc_value1() ) )->name_cstr() );
           else
@@ -2007,7 +2019,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
 
   if ( e->_scaling_type )
-    tokens.emplace_back( fmt::format( "Scaling Class: {}", e->_scaling_type ) );
+    tokens.emplace_back( fmt::format( "Scaling Class: {}", map_string( _scaling_class_strings, e->_scaling_type ) ) );
 
   // TODO: wrap within the attribute list as well?
   if ( e->_attribute )
