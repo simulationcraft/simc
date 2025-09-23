@@ -1591,7 +1591,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_OVERRIDE_AUTO_ATTACK_WITH_ABILITY,     "Override Auto-Attack with Ability"                 },
   { A_OVERRIDE_SP_PER_AP,                    "Override Spell Power per Attack Power%"            },
   { A_OVERRIDE_AUTO_ATTACK_WITH_SPELL,       "Override Auto-Attack with Spell"                   },
-  { 374u,                                    "Reduce Fall Damage%"                               },
+  { A_374,                                   "Reduce Fall Damage%"                               },
   { A_ENABLE_CAST_WHILE_MOVING,              "Cast while Moving"                                 },
   { A_MOD_POSSESS_PET,                       "Possess Pet"                                       },
   { A_MOD_MANA_REGEN_PCT,                    "Modify Mana Regen%"                                },
@@ -1678,7 +1678,6 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { A_MOD_RANGED_ATTACK_SPEED_FLAT,          "Modify Ranged Attack Speed Flat"                   },
 } );
 
-// Reformatted for aligned columns
 static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned, std::string_view>( {
   { EX_NO_IMMUNITY,                           "No Immunity"                                      },
   { EX_POS_RELATIVE_TO_FACING,                "Position is facing relative"                      },
