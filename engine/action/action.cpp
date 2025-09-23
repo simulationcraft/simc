@@ -5663,7 +5663,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_TARGET:
+      case P_CHAIN_TARGETS:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
         if ( aoe > 0 )
         {
@@ -5683,7 +5683,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         value_ = effect.base_value();
         break;
 
-      case P_TARGET_BONUS:
+      case P_CHAIN_MULTIPLIER:
         chain_multiplier += effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
         value_ = effect.percent();
@@ -5802,7 +5802,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_TARGET_BONUS:
+      case P_CHAIN_MULTIPLIER:
         chain_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
         value_ = effect.percent();

@@ -6051,7 +6051,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
     if ( p->talent.incarnation_bear.ok() )
     {
       inc_targets =
-        as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_TARGET ).base_value() );
+        as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_CHAIN_TARGETS ).base_value() );
     }
 
     if ( p->talent.strike_for_the_heart.ok() )
