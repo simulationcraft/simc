@@ -1325,8 +1325,9 @@ Labels           : 16: Class Spells
 Family Flags     : 42
 Attributes       : Is Ability (4), Passive (6), Instant Target Procs (115), Not In Spellbook (143), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=20803)    : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
+#1 (id=20803)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x1e | Target: Self (1)
+                   Affected School(s): All
 #2 (id=789239)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
 Description      : Fatal attacks instead reduce you to $s2% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
@@ -2174,7 +2175,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), No Aura Cancel (31), Not an Action (92), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=119248)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Stealth overrides Stealth
+#1 (id=119248)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Stealth overrides Stealth
                    Base Value: 115191 | Scaled Value: 115191 | Misc Value: 1784 | Trigger Spell: 1784 | Target: Self (1)
                    Affected Spells: Stealth (1784), Stealth (115191)
                    Family Flags: 22
@@ -2486,7 +2487,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
-#3 (id=1114369)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#3 (id=1114369)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 430023 | Scaled Value: 430023 | Target: Self (1)
                    Affected Spells: Mutilate (1329)
                    Family Flags: 53
@@ -2670,11 +2671,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3059,11 +3060,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228478)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228479)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228480)   : Apply Aura (6) | Unknown(466)
+#1 (id=228478)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228479)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228480)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Deadly Poison (id=177918) 
@@ -4272,7 +4273,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Floating Combat Text On Cast (198), No Aura Log (202), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=299119)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=299119)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 202895 | Scaled Value: 202895 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
@@ -5727,7 +5728,7 @@ Azerite Power Id : 124
 Triggered By     : Replicating Shadows (286131)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=748343)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=748343)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Replicating Shadows | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 119194.8 (coefficient=46.60123) | PvP Coefficient: 0.5 | Trigger Spell: 286130 | Target: Self (1)
 #2 (id=748344)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -6284,7 +6285,7 @@ Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=812561)   : Apply Aura (6) | Unknown(494)
+#1 (id=812561)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 Description      : $@spelldesc323547
 Tooltip          : Rogue's second combo point is Animacharged. 
@@ -6309,7 +6310,7 @@ Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=812562)   : Apply Aura (6) | Unknown(494)
+#1 (id=812562)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 Description      : $@spelldesc323547
 Tooltip          : Rogue's third combo point is Animacharged. 
@@ -6334,7 +6335,7 @@ Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=812563)   : Apply Aura (6) | Unknown(494)
+#1 (id=812563)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 Description      : $@spelldesc323547
 Tooltip          : Rogue's fourth combo point is Animacharged. 
@@ -8134,13 +8135,13 @@ Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=887546)   : Apply Aura (6) | Unknown(494)
+#1 (id=887546)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
-#2 (id=887547)   : Apply Aura (6) | Unknown(494)
+#2 (id=887547)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
-#3 (id=887548)   : Apply Aura (6) | Unknown(494)
+#3 (id=887548)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
-#4 (id=887549)   : Apply Aura (6) | Unknown(494)
+#4 (id=887549)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : $@spelldesc323547
 Tooltip          : Rogue's fourth combo point is Animacharged. 
@@ -8179,7 +8180,7 @@ Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29)
 Effects          :
-#1 (id=887552)   : Apply Aura (6) | Unknown(494)
+#1 (id=887552)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : $@spelldesc323547
 Tooltip          : Rogue's fifth combo point is Animacharged. 
@@ -8262,7 +8263,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -8546,7 +8547,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364922)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905380)   : Apply Aura (6) | Unknown(285)
+#1 (id=905380)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Resounding Clarity
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354837 | Target: Self (1)
 Description      : $@spelldesc354837
 
@@ -8560,7 +8561,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364922)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905381)   : Apply Aura (6) | Unknown(285)
+#1 (id=905381)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Deathspike
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354731 | Target: Self (1)
 Description      : $@spelldesc354731
 
@@ -8574,7 +8575,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364922)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905382)   : Apply Aura (6) | Unknown(285)
+#1 (id=905382)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Obedience
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 354703 | Target: Self (1)
 Description      : $@spelldesc354703
 
@@ -8588,7 +8589,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364922)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905383)   : Apply Aura (6) | Unknown(285)
+#1 (id=905383)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Toxic Onslaught
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354473 | Target: Self (1)
 Description      : $@spelldesc354473
 
@@ -8602,7 +8603,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364939)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905397)   : Apply Aura (6) | Unknown(285)
+#1 (id=905397)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Contained Perpetual Explosion
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356259 | Target: Self (1)
 Description      : $@spelldesc356259
 
@@ -9799,7 +9800,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1013890)  : Apply Aura (6) | Unknown(285)
+#1 (id=1013890)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Inevitability
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 411784 | Target: Self (1)
 #2 (id=1013891)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
@@ -10531,7 +10532,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
-#2 (id=1114373)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#2 (id=1114373)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 430023 | Scaled Value: 430023 | Target: Self (1)
                    Affected Spells: Sinister Strike (193315), Sinister Strike (197834), Sinister Strike (341541)
                    Family Flags: 98
@@ -11767,7 +11768,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -13246,7 +13247,7 @@ Effects          :
 #2 (id=1135837)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3594000 | Scaled Value: 3594000 | Misc Value: 1 | Misc Value 2: 3304 (Label) | Target: Self (1)
                    Affected Spells (Label): Tricks of the Trade (59628)
-#3 (id=1212570)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#3 (id=1212570)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 1224098 | Scaled Value: 1224098 | Target: Self (1)
                    Affected Spells: Tricks of the Trade (57934), Tricks of the Trade (1224098)
                    Family Flags: 49
@@ -13307,7 +13308,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1135886)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1135886)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 441587 | Scaled Value: 441587 | Target: Self (1)
                    Affected Spells: Distract (1725), Distract (441587)
                    Family Flags: 12
@@ -14100,7 +14101,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1156969)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Cold Blood overrides Cold Blood
+#1 (id=1156969)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Cold Blood overrides Cold Blood
                    Base Value: 456330 | Scaled Value: 456330 | Misc Value: 382245 | Target: Self (1)
 Description      : Cold Blood now benefits the next two abilities but only applies to $?a137037[Envenom][Dispatch]. Fatebound Coins flipped by these abilities are guaranteed to match the same outcome as the last flip.
 
@@ -14842,7 +14843,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
-#1 (id=1162287)  : Apply Aura (6) | Unknown(500)
+#1 (id=1162287)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1206 | Target: Self (1)
 #2 (id=1162288)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1206 (Category) | Target: Self (1)
@@ -14859,7 +14860,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
-#1 (id=1162308)  : Apply Aura (6) | Unknown(500)
+#1 (id=1162308)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2303 | Target: Self (1)
 #2 (id=1162309)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2303 (Category) | Target: Self (1)
@@ -15186,7 +15187,7 @@ Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
 Effects          :
-#1 (id=1171359)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Coup de Grace overrides Dispatch
+#1 (id=1171359)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Coup de Grace overrides Dispatch
                    Base Value: 441776 | Scaled Value: 441776 | Misc Value: 2098 | Target: Self (1)
 Description      : $@spelldesc441423
 Tooltip          : Able to perform a Coup de Grace.
@@ -15205,7 +15206,7 @@ Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
 Effects          :
-#1 (id=1171360)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Coup de Grace overrides Eviscerate
+#1 (id=1171360)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Coup de Grace overrides Eviscerate
                    Base Value: 441776 | Scaled Value: 441776 | Misc Value: 196819 | Target: Self (1)
 Description      : $@spelldesc441423
 Tooltip          : Able to perform a Coup de Grace.
@@ -15488,8 +15489,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Allow While Stealthed (37), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1184332)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 0x1 | Trigger Spell: 381623 | Target: Self (1)
+#1 (id=1184332)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Thistle Tea
+                   Base Value: 30 | Scaled Value: 30 | Resource: energy | Misc Value 2: 0x1 | Trigger Spell: 381623 | Target: Self (1)
 #2 (id=1184346)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : $@spelldesc381623
@@ -15527,7 +15528,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1185581)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185581)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's first combo point is supercharged. 
@@ -15548,7 +15549,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1185593)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185593)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's second combo point is supercharged. 
@@ -15571,7 +15572,7 @@ Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1185598)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185598)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's third combo point is supercharged. 
@@ -15594,7 +15595,7 @@ Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1185603)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185603)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's fourth combo point is supercharged. 
@@ -15617,7 +15618,7 @@ Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1185605)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185605)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's fifth combo point is supercharged. 
@@ -15640,7 +15641,7 @@ Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1185606)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185606)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's sixth combo point is supercharged. 
@@ -15661,7 +15662,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1185607)  : Apply Aura (6) | Unknown(494)
+#1 (id=1185607)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
 Description      : $@spelldesc470347
 Tooltip          : Rogue's seventh combo point is supercharged. 

@@ -351,7 +351,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78)
 Effects          :
-#1 (id=59543)    : Apply Aura (6) | Unknown(310)
+#1 (id=59543)    : Apply Aura (6) | Modify Creature AoE Damage Avoidance (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
 #2 (id=192584)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
@@ -536,7 +536,7 @@ Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon 
 Effects          :
 #1 (id=110001)   : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-#2 (id=128685)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#2 (id=128685)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 115057 | Scaled Value: 115057 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545), Slicing Winds (1217407), Slicing Winds (1217408), Slicing Winds (1217409), Slicing Winds (1217412), Slicing Winds (1217413)
                    Family Flags: 6
@@ -1348,9 +1348,9 @@ Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter 
 Effects          :
 #1 (id=130020)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 4 | Target: Self (1)
-#2 (id=164983)   : Apply Aura (6) | Unknown(408)
+#2 (id=164983)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115294 | Target: Self (1)
-#3 (id=164984)   : Apply Aura (6) | Unknown(408)
+#3 (id=164984)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123761 | Target: Self (1)
 Description      : $@spelldesc115294
 Tooltip          : Use Mana Tea to consume charges to gain Mana.
@@ -1631,7 +1631,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#2 (id=135586)   : Apply Aura (6) | Unknown(262)
+#2 (id=135586)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
@@ -1766,7 +1766,7 @@ Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.3 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
-#2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
+#2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Received% (259)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 127 | Target: Targeted Ally (21)
 #3 (id=798098)   : Dummy (3)
                    Base Value: 48 | Scaled Value: 48
@@ -2213,7 +2213,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=141408)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (delta=-2) | Target: Self (1)
-#2 (id=1207297)  : Apply Aura (6) | Unknown(395)
+#2 (id=1207297)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36424 | Target: Self (1)
 
 Name             : Keg Smash (id=121253) [Spell Family (53)] 
@@ -2923,7 +2923,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=158657)   : Apply Aura (6) | Unknown(403)
+#1 (id=158657)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 185099 | Misc Value 2: 0x1e8de | Target: Self (1)
 Description      : Your Rising Sun Kick's visual is altered to the color of the White Tiger.
 
@@ -3058,7 +3058,7 @@ Aura Interrupt   : Under Water (7), Interacting (10), Use Item (13), Shapeshifti
 Effects          :
 #1 (id=159835)   : Apply Aura (6) | Unknown(201)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#3 (id=165615)   : Apply Aura (6) | Unknown(321)
+#3 (id=165615)   : Apply Aura (6) | Disable Actions (321)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You fly through the air at a quick speed on a meditative cloud.
 Tooltip          : Flying.
@@ -3072,7 +3072,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=159909)   : Apply Aura Pet (174) | Unknown(403)
+#1 (id=159909)   : Apply Aura Pet (174) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 117952 | Misc Value 2: 0x1ebea | Radius: 100 yards | Target: Self (1)
 Description      : Your Crackling Jade Lightning visual is altered to the color of the White Tiger celestial.
 
@@ -3360,11 +3360,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3432,7 +3432,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725)
                    Family Flags: 76
-#10 (id=260841)  : Apply Aura (6) | Unknown(312)
+#10 (id=260841)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self (1)
 #11 (id=260842)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | Stat: Sta | Target: Self (1)
@@ -3522,7 +3522,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48
-#3 (id=191105)   : Apply Aura (6) | Unknown(312)
+#3 (id=191105)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 117 | Target: Self (1)
 #4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
@@ -3665,7 +3665,7 @@ Effects          :
                    Family Flags: 4
 #10 (id=260821)  : Apply Aura (6) | Increase Resource (35)
                    Base Value: 1 | Scaled Value: 1 | Resource: chi | Target: Self (1)
-#11 (id=733910)  : Apply Aura (6) | Unknown(312)
+#11 (id=733910)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115 | Target: Self (1)
 #12 (id=739335)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
@@ -3797,7 +3797,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#6 (id=1152083)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): (221771) overrides (127)
+#6 (id=1152083)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): (221771) overrides (127)
                    Base Value: 221771 | Scaled Value: 221771 | Misc Value: 127 | Target: Self (1)
                    Affected Spells: Storm, Earth, and Fire (137639), Storm, Earth, and Fire: Fixate (221771)
                    Family Flags: 124
@@ -4054,7 +4054,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=219501)   : Apply Aura (6) | Unknown(395)
+#1 (id=219501)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2763 | Target: Self (1)
 #2 (id=1026787)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -4142,11 +4142,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228478)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228479)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228480)   : Apply Aura (6) | Unknown(466)
+#1 (id=228478)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228479)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228480)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
@@ -4158,10 +4158,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228491)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228492)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
+#1 (id=228491)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228492)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Paladin, Discipline Priest, Holy Priest, Restoration Shaman, Mistweaver Monk, Restoration Druid
@@ -4172,11 +4172,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228494)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228495)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228496)   : Apply Aura (6) | Unknown(466)
+#1 (id=228494)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228495)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228496)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Summon Black Ox Statue (id=163178) [Spell Family (53), Hidden] 
@@ -5412,7 +5412,7 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
-#2 (id=328548)   : Apply Aura (6) | Unknown(408)
+#2 (id=328548)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 101546 | Target: Self (1)
 #3 (id=883154)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -5451,7 +5451,7 @@ Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=336744)   : Apply Aura (6) | Unknown(408)
+#1 (id=336744)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 322101 | Target: Self (1)
 Description      : Summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1.
 Tooltip          : $s1 Healing Spheres active.
@@ -6230,7 +6230,7 @@ Effects          :
 #1 (id=727678)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
                    Family Flags: 107
-#2 (id=740446)   : Apply Aura (6) | Unknown(408)
+#2 (id=740446)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 200 | Scaled Value: 200 | Trigger Spell: 191837 | Target: Self (1)
 Description      : $@spelldesc274963
 
@@ -9360,7 +9360,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364857)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905257)   : Apply Aura (6) | Unknown(285)
+#1 (id=905257)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Call to Arms
                    Base Value: 12000 | Scaled Value: 12000 | Trigger Spell: 356684 | Target: Self (1)
 Description      : $@spelldesc356684
 
@@ -9374,7 +9374,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364857)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905258)   : Apply Aura (6) | Unknown(285)
+#1 (id=905258)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sinister Teachings
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356818 | Target: Self (1)
 Description      : $@spelldesc356818
 
@@ -9388,7 +9388,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364857)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905259)   : Apply Aura (6) | Unknown(285)
+#1 (id=905259)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bountiful Brew
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 356592 | Target: Self (1)
 Description      : $@spelldesc356592
 
@@ -9403,7 +9403,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364857)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905260)   : Apply Aura (6) | Unknown(285)
+#1 (id=905260)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Faeline Harmony
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356705 | Target: Self (1)
 Description      : $@spelldesc356705
 
@@ -9905,7 +9905,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Log (8), No Aura Icon (60), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1021574)  : Apply Aura (6) | Unknown(285)
+#1 (id=1021574)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Elusive Footwork
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 387047 | Target: Self (1)
 #2 (id=1021575)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -10706,7 +10706,7 @@ Labels           : 16: Class Spells
 Triggered By     : Secret Infusion (388497), Secret Infusion (388498), Secret Infusion (388499), Secret Infusion (388500)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1024208)  : Apply Aura (6) | Unknown(285)
+#1 (id=1024208)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Secret Infusion
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 388496 | Target: Self (1)
 #2 (id=1034116)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1.25 | Scaled Value: 1.25 | Target: Self (1)
@@ -10886,7 +10886,7 @@ Labels           : 16: Class Spells
 Triggered By     : Overflowing Mists (388513)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1024240)  : Apply Aura (6) | Unknown(285)
+#1 (id=1024240)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Overflowing Mists
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 388512 | Target: Self (1)
 Description      : Your Enveloping Mists heal the target for ${$s1}.1% of their maximum health each time they take direct damage.
 
@@ -11708,7 +11708,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1025898)  : Apply Aura (6) | Unknown(395)
+#1 (id=1025898)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 26722 | Target: Self (1)
 #2 (id=1026794)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -11725,7 +11725,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1025899)  : Apply Aura (6) | Unknown(395)
+#1 (id=1025899)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 26723 | Target: Self (1)
 #2 (id=1026793)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -13125,7 +13125,7 @@ Proc Chance      : 101%
 Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1043566)  : Apply Aura (6) | Unknown(408)
+#1 (id=1043566)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 399491 | Target: Self (1)
 Description      : $@spelldesc399491
 
@@ -13524,7 +13524,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -15128,7 +15128,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Haste Affects Duration (273), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1139623)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Unity Within overrides Celestial Conduit
+#1 (id=1139623)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Unity Within overrides Celestial Conduit
                    Base Value: 443591 | Scaled Value: 443591 | Misc Value: 443028 | Target: Self (1)
 Description      : Celestial Conduit can be recast once during its duration to call upon all of the August Celestials at once to assist you at $s1% effectiveness.
 
@@ -15414,7 +15414,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Aura Interrupt   : Ground (35)
 Effects          :
-#1 (id=1148865)  : Apply Aura (6) | Unknown(406)
+#1 (id=1148865)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 258 | Target: Self (1)
 Description      : $@spelldesc449582
 Tooltip          : You may jump twice to dash forward a short distance.
@@ -15497,7 +15497,7 @@ Labels           : 16: Class Spells
 Triggered By     : Crashing Momentum (450335)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not an Action (92), Aura Points On Client (268), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1150174)  : Apply Aura (6) | Unknown(395)
+#1 (id=1150174)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33436 | Target: Self (1)
 Description      : $@spelldesc450335
 
@@ -16939,7 +16939,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1159684)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 127 | Target: Self (1)
-#3 (id=1159686)  : Apply Aura (6) | Unknown(310)
+#3 (id=1159686)  : Apply Aura (6) | Modify Creature AoE Damage Avoidance (310)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 Description      : $@spelldesc450991
 Tooltip          : Parry and Avoidance increased by $w1%.
@@ -17606,7 +17606,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1152596)  : Apply Aura (6) | Override Auto-Attack with Spell (361)
+#1 (id=1152596)  : Apply Aura (6) | Override Auto-Attack with Ability (361): Dual Threat
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451839 | Target: Self (1)
 Description      : $@spelldesc451823
 
@@ -17963,7 +17963,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1155624)  : Apply Aura (6) | Proc Trigger Spell (42): Tiger's Ferocity
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Trigger Spell: 454502 | Target: Self (1)
-#2 (id=1162918)  : Apply Aura (6) | Unknown(285)
+#2 (id=1162918)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Monk Windwalker 11.0 Class Set 4pc
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 454505 | Target: Self (1)
 Description      : Your other melee abilities increase the damage of your next Tiger Palm by $454502s1%, stacking up to $454502u times. $454505s1% of Tiger Palm's damage is dealt onto nearby enemies, reduced beyond $454505s2 targets. 
 
@@ -19344,7 +19344,7 @@ Affecting Spells : Flying Serpent Kick (101545 effect#2), Heart of the Jade Serp
 Family Flags     : 6
 Attributes       : Do Not Log (8), No Aura Icon (60), No Jump Pathing (208)
 Effects          :
-#1 (id=1201462)  : Apply Aura (6) | Unknown(395)
+#1 (id=1201462)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36180 | Target: Self (1)
 #2 (id=1201463)  : Jump Charge (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 948 | Radius: 28 yards | Target: Front of Self (47)
@@ -19364,7 +19364,7 @@ Affecting Spells : Flying Serpent Kick (101545 effect#2), Heart of the Jade Serp
 Family Flags     : 6
 Attributes       : Do Not Log (8), No Aura Icon (60), No Jump Pathing (208)
 Effects          :
-#1 (id=1201464)  : Apply Aura (6) | Unknown(395)
+#1 (id=1201464)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36180 | Target: Self (1)
 #2 (id=1201465)  : Jump Charge (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 948 | Radius: 20 yards | Target: Front of Self (47)
@@ -19385,7 +19385,7 @@ Triggered By     : Slicing Winds (1217410)
 Family Flags     : 6
 Attributes       : Do Not Log (8), No Aura Icon (60), No Jump Pathing (208)
 Effects          :
-#1 (id=1201466)  : Apply Aura (6) | Unknown(395)
+#1 (id=1201466)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36180 | Target: Self (1)
 #2 (id=1201467)  : Jump Charge (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 948 | Radius: 6 yards | Target: Front of Self (47)
@@ -19436,7 +19436,7 @@ Affecting Spells : Flying Serpent Kick (101545 effect#2), Heart of the Jade Serp
 Family Flags     : 6
 Attributes       : Do Not Log (8), No Aura Icon (60), No Jump Pathing (208)
 Effects          :
-#1 (id=1201473)  : Apply Aura (6) | Unknown(395)
+#1 (id=1201473)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 36180 | Target: Self (1)
 #2 (id=1201474)  : Jump Charge (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 947 | Radius: 36 yards | Target: Front of Self (47)
@@ -19948,7 +19948,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1241730)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Mighty Stomp overrides Invoke Niuzao, the Black Ox
+#1 (id=1241730)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Mighty Stomp overrides Invoke Niuzao, the Black Ox
                    Base Value: 454523 | Scaled Value: 454523 | Misc Value: 132578 | Target: Self (1)
 Description      : $@spelldesc322740
 

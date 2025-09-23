@@ -949,7 +949,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Targeted Enemy (6)
 #3 (id=43858)    : Apply Aura (6) | Unknown(260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Misc Value 2: 0x7 | Target: Targeted Enemy (6)
-#4 (id=756197)   : Apply Aura (6) | Unknown(321)
+#4 (id=756197)   : Apply Aura (6) | Disable Actions (321)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Transforms the enemy into a frog for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage may cancel the effect. Limit 1. Only works on Humanoids and Beasts.
 Tooltip          : Incapacitated.
@@ -1571,7 +1571,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78)
 Effects          :
-#1 (id=59543)    : Apply Aura (6) | Unknown(310)
+#1 (id=59543)    : Apply Aura (6) | Modify Creature AoE Damage Avoidance (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
 #2 (id=192584)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
@@ -1959,16 +1959,21 @@ Effects          :
                    Family Flags: 0, 1, 7, 8, 11, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=772568)   : Apply Aura (6) | Unknown(307)
+#3 (id=772568)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 640 | Target: Self (1)
-#4 (id=816033)   : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Azerite Essences (640)
+#4 (id=816033)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 888 | Target: Self (1)
-#5 (id=871381)   : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Chain Harvest (320674)
+#5 (id=871381)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 981 | Target: Self (1)
-#6 (id=879143)   : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Fae Transfusion (328923)
+#6 (id=879143)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1089 | Target: Self (1)
-#7 (id=893523)   : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Fleshcraft (324631)
+#7 (id=893523)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 726 | Target: Self (1)
+                   Affected Spells (Label): Door of Shadows (300728)
 #8 (id=1079349)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
@@ -2353,11 +2358,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=375209)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=869021)   : Apply Aura (6) | Unknown(312)
+#6 (id=869021)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1141 | Target: Self (1)
-#7 (id=1180295)  : Apply Aura (6) | Unknown(367)
+#7 (id=1180295)  : Apply Aura (6) | Override Auto-Attack with Spell (367): Windlash
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114093 | Trigger Spell: 114089 | Target: Self (1)
-#8 (id=1180317)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#8 (id=1180317)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 115356 | Scaled Value: 115356 | Target: Self (1)
                    Affected Spells: Stormstrike (17364)
                    Family Flags: 36
@@ -2376,7 +2381,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 0x6 | Target: Self (1)
 #14 (id=1189101) : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 0x6 | Target: Self (1)
-#15 (id=1239481) : Apply Aura (6) | Unknown(285)
+#15 (id=1239481) : Apply Aura (6) | Cast Linked Spell w/ Value (285): Static Accumulation
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
 Description      : Transform into an Air Ascendant for $114051d, immediately dealing $344548s1 Nature damage to any enemy within $344548A1 yds, reducing the cooldown and cost of Stormstrike by $s9%, and transforming your auto attack and Stormstrike into Wind attacks which bypass armor and have a $114089r yd range.$?s384411[
 
@@ -2415,7 +2420,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1172234)  : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=1180292)  : Apply Aura (6) | Unknown(312)
+#6 (id=1180292)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1141 | Target: Self (1)
 #7 (id=1180293)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2869,11 +2874,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3633,7 +3638,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=219624)   : Apply Aura Pet in Area (119) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
-#2 (id=297375)   : Apply Aura Pet in Area (119) | Override Action Spell (Misc /w Base) (332): (201764) overrides (157153)
+#2 (id=297375)   : Apply Aura Pet in Area (119) | Override Action Spell (Misc w/ Base) (332): (201764) overrides (157153)
                    Base Value: 201764 | Scaled Value: 201764 | Misc Value: 157153 | Radius: 100 yards | Target: Self (1)
 #3 (id=1076817)  : Apply Aura Pet in Area (119) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
@@ -3651,11 +3656,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228478)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228479)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228480)   : Apply Aura (6) | Unknown(466)
+#1 (id=228478)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228479)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228480)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
@@ -3667,11 +3672,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228487)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228488)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228489)   : Apply Aura (6) | Unknown(466)
+#1 (id=228487)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228488)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228489)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
@@ -3683,11 +3688,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228494)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228495)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228496)   : Apply Aura (6) | Unknown(466)
+#1 (id=228494)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228495)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228496)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Mastery: Elemental Overload (id=168534) [Spell Family (11), Passive] 
@@ -4203,14 +4208,14 @@ Affecting Spells : Eye of the Storm (381708 effects: #4, #5)
 Family Flags     : 46
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=279176)   : Apply Aura (6) | Unknown(328)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 11 | Trigger Spell: 190494 | Target: Self (1)
-#2 (id=284337)   : Apply Aura (6) | Unknown(328)
-                   Base Value: 89 | Scaled Value: 89 | Misc Value: 11 | Misc Value 2: 0x1 | Trigger Spell: 193777 | Target: Self (1)
-#3 (id=747607)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 11 | Trigger Spell: 285662 | Target: Self (1)
-#4 (id=1020393)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 11 | Trigger Spell: 386374 | Target: Self (1)
+#1 (id=279176)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Fulmination!
+                   Base Value: 90 | Scaled Value: 90 | Resource: maelstrom | Trigger Spell: 190494 | Target: Self (1)
+#2 (id=284337)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Fulmination
+                   Base Value: 89 | Scaled Value: 89 | Resource: maelstrom | Misc Value 2: 0x1 | Trigger Spell: 193777 | Target: Self (1)
+#3 (id=747607)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Fulmination!
+                   Base Value: 60 | Scaled Value: 60 | Resource: maelstrom | Trigger Spell: 285662 | Target: Self (1)
+#4 (id=1020393)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Fulmination!
+                   Base Value: 90 | Scaled Value: 90 | Resource: maelstrom | Trigger Spell: 386374 | Target: Self (1)
 
 Name             : Fulmination (id=190493) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -4469,7 +4474,7 @@ Labels           : 16: Class Spells
 Family Flags     : 53
 Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=281766)   : Apply Aura (6) | Unknown(395)
+#1 (id=281766)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 8537 | Target: Self (1)
 Description      : $@spelldesc192077
 
@@ -5205,7 +5210,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=292309)   : Apply Aura (6) | Unknown(395)
+#1 (id=292309)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5760 | Target: Self (1)
 Description      : $@spelldesc198838
 Tooltip          : When a nearby ally takes damage, a portion is redirected to the Totem.
@@ -5438,7 +5443,7 @@ Affecting Spells : Mastery: Enhanced Elements (77223 effect#3)
 Family Flags     : 114
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=297457)   : Apply Aura (6) | Unknown(408)
+#1 (id=297457)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 17364 | Target: Self (1)
 #2 (id=297909)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
@@ -5454,7 +5459,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 76
-#6 (id=363023)   : Apply Aura (6) | Unknown(408)
+#6 (id=363023)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 115356 | Target: Self (1)
 #7 (id=1185735)  : Immediate Cooldown Recharge (Category) (293)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 (Category) | Target: Self (1)
@@ -5579,7 +5584,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301680)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=301680)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 204406 | Scaled Value: 204406 | Target: Self (1)
                    Affected Spells: Thunderstorm (51490)
                    Family Flags: 45
@@ -5757,7 +5762,7 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306873)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 20 yards
-#2 (id=1176682)  : Apply Aura (6) | Unknown(395)
+#2 (id=1176682)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6336 | Target: Self (1)
 Description      : $@spelldesc207399
 Tooltip          : Granting allies $207498s1% increased health and the possibility of resurrection.
@@ -5776,8 +5781,9 @@ Attributes       : Do Not Log (8), No Aura Cancel (31), Exclude Caster (51), Ign
 Effects          :
 #1 (id=306879)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
-#2 (id=322959)   : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x32 | Target: Targeted Ally (21)
+#2 (id=322959)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x32 | Target: Targeted Ally (21)
+                   Affected School(s): All
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
 
@@ -7080,7 +7086,7 @@ Azerite Power Id : 179
 Triggered By     : Strength of Earth (273466)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=725109)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=725109)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Earth | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 19975.64 (coefficient=7.809816) | PvP Coefficient: 0.5 | Trigger Spell: 273463 | Target: Self (1)
 Description      : Flame Shock causes your next melee ability to deal an additional $s1 Nature damage.
 
@@ -7261,7 +7267,7 @@ Azerite Power Id : 223
 Triggered By     : Lightning Conduit (275394)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=728400)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=728400)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lightning Conduit | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 6778.852 (coefficient=2.650307) | PvP Coefficient: 0.5 | Trigger Spell: 275389 | Target: Self (1)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
@@ -7372,7 +7378,7 @@ Azerite Power Id : 420
 Triggered By     : Roiling Storm (279515)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734600)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=734600)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Roiling Storm | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 23961.36 (coefficient=9.368098) | PvP Coefficient: 0.5 | Trigger Spell: 279513 | Target: Self (1)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -7516,7 +7522,7 @@ Labels           : 292
 Azerite Power Id : 457
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=736419)   : Apply Aura (6) | Unknown(285)
+#1 (id=736419)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Igneous Potential
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279830 | Target: Self (1)
 #2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 19614.73 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
@@ -8410,7 +8416,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Radius: 8 yards | Target: at Area (87)
 #6 (id=814137)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Radius: 8 yards | Target: at Area (87)
-#7 (id=814138)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Vesper Totem overrides Vesper Totem
+#7 (id=814138)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Vesper Totem overrides Vesper Totem
                    Base Value: 324519 | Scaled Value: 324519 | Misc Value: 324386 | Target: Self (1)
 Description      : Summon a totem at the target location for $d. Your next $s2 damage spells or abilities will cause the totem to radiate $324520s1 Arcane damage to up to $324520I enemies near the totem, and your next $s4 healing spells will heal up to $s6 allies near the totem for $324522s1 health.
 
@@ -8677,7 +8683,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=821769)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=821772)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Fae Transfusion overrides Fae Transfusion
+#2 (id=821772)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Fae Transfusion overrides Fae Transfusion
                    Base Value: 328930 | Scaled Value: 328930 | Misc Value: 328923 | Target: Self (1)
 Description      : $@spelldesc328923
 Tooltip          : Fae Transfusion will heal up to $328930s2 nearby allies for $w1.
@@ -8732,7 +8738,7 @@ Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 
 Family Flags     : 83
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), No Initial Threat (86), No Aura Log (202), Aura Points On Client (268), Bypass Visibility Check (320), Caster Death Cancels Persistent Area Auras (347), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=823191)   : Apply Aura (6) | Unknown(395)
+#1 (id=823191)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3691 | Target: Current Target (25)
 Description      : $@spelldesc61882
 Variables        : $mawPower=$?a329580[${1+($329580m5/100)}][${1}]
@@ -8946,7 +8952,7 @@ Effects          :
                    Family Flags: 31
 #2 (id=829982)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#3 (id=1180718)  : Apply Aura (6) | Unknown(408)
+#3 (id=1180718)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196840 | Target: Self (1)
 Description      : $@spelldesc334195
 Tooltip          : Your next Frost Shock will deal $s1% additional damage, and hit up to ${$334195s1/$s2} additional $Ltarget:targets;.
@@ -9422,7 +9428,7 @@ Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 
 Family Flags     : 83
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), No Initial Threat (86), No Aura Log (202), Aura Points On Client (268), Bypass Visibility Check (320), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=834318)   : Apply Aura (6) | Unknown(395)
+#1 (id=834318)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3691 | Target: Current Target (25)
 Description      : $@spelldesc61882
 Variables        : $mawPower=$?a329580[${1+($329580m5/100)}][${1}]
@@ -10458,7 +10464,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=903220)   : Apply Aura (6) | Unknown(285)
+#1 (id=903220)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Heal the Soul
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 366780 | Target: Self (1)
 #2 (id=903221)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -10615,7 +10621,7 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Triggered By     : Unity (364738)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
-#1 (id=904997)   : Apply Aura (6) | Unknown(285)
+#1 (id=904997)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Elemental Conduit
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356250 | Target: Self (1)
 Description      : $@spelldesc356250
 
@@ -10630,7 +10636,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364738)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=904999)   : Apply Aura (6) | Unknown(285)
+#1 (id=904999)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Splintered Elements
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354647 | Target: Self (1)
 Description      : $@spelldesc354647
 
@@ -12948,7 +12954,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
-#2 (id=1179291)  : Apply Aura (6) | Unknown(408)
+#2 (id=1179291)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 60103 | Target: Self (1)
 Description      : $@spelldesc390370
 Tooltip          : Damage of your next Lava Lash increased by $s1%.
@@ -13179,7 +13185,7 @@ Labels           : 16: Class Spells
                  : 1636: Elemental Shaman (137040 effect#7)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
-#1 (id=1033572)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1033572)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 117014 | Scaled Value: 117014 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
@@ -13605,7 +13611,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -15114,7 +15120,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
-#1 (id=1147624)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Ancestral Swiftness overrides Nature's Swiftness
+#1 (id=1147624)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ancestral Swiftness overrides Nature's Swiftness
                    Base Value: 443454 | Scaled Value: 443454 | Misc Value: 378081 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc443454
 
@@ -15417,7 +15423,7 @@ Triggered By     : Shaman Stormbringer 11.2 Class Set 2pc (1236408)
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Tempest overrides Lightning Bolt | Attributes: Suppress Points Stacking (6)
+#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Tempest overrides Lightning Bolt | Attributes: Suppress Points Stacking (6)
                    Base Value: 452201 | Scaled Value: 452201 | Misc Value: 188196 | Target: Self (1)
 Description      : $@spelldesc454009
 Tooltip          : Lightning Bolt replaced by Tempest.
@@ -15923,7 +15929,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1160505)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Surging Totem overrides Healing Rain
+#1 (id=1160505)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Surging Totem overrides Healing Rain
                    Base Value: 444995 | Scaled Value: 444995 | Misc Value: 73920 | Misc Value 2: 0x2 | Target: Self (1)
 
 Name             : Amplification Core (id=456369) [Spell Family (11)] 
@@ -16648,11 +16654,11 @@ Labels           : 16: Class Spells
                  : 3956: Surging Totem (455630 effect#8)
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Only Proc From Class Abilities (415), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1172317)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1172317)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 462603 | Scaled Value: 462603 | Target: Self (1)
                    Affected Spells: Healing Rain (73920)
                    Family Flags: 84
-#2 (id=1172562)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Downpour overrides Surging Totem
+#2 (id=1172562)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Downpour overrides Surging Totem
                    Base Value: 462603 | Scaled Value: 462603 | Misc Value: 444995 | Target: Self (1)
 Description      : $@spelldesc462486
 Tooltip          : Downpour can be cast!
@@ -16916,7 +16922,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1172894)  : Apply Aura (6) | Unknown(395)
+#1 (id=1172894)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34472 | Target: Targeted Enemy (6)
 Description      : $@spelldesc462764
 
@@ -17030,7 +17036,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Spellcast Override In Spellbook (310), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1172999)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Icefury overrides Frost Shock | Attributes: Suppress Points Stacking (6)
+#1 (id=1172999)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Icefury overrides Frost Shock | Attributes: Suppress Points Stacking (6)
                    Base Value: 210714 | Scaled Value: 210714 | Misc Value: 196840 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc462816
 Tooltip          : Able to cast Icefury.
@@ -17362,9 +17368,9 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1174813)  : Apply Aura (6) | Unknown(408)
+#1 (id=1174813)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 77472 | Target: Self (1)
-#2 (id=1174814)  : Apply Aura (6) | Unknown(408)
+#2 (id=1174814)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 8004 | Target: Self (1)
 Description      : $@spelldesc200071
 
@@ -17381,7 +17387,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Imm
 Effects          :
 #1 (id=1176698)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 20 yards
-#2 (id=1176706)  : Apply Aura (6) | Unknown(395)
+#2 (id=1176706)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6336 | Target: Self (1)
 Description      : $@spelldesc207399
 Tooltip          : Granting allies $207498s1% increased health and the possibility of resurrection.
@@ -17399,7 +17405,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Imm
 Effects          :
 #1 (id=1176699)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 20 yards
-#2 (id=1176707)  : Apply Aura (6) | Unknown(395)
+#2 (id=1176707)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6336 | Target: Self (1)
 Description      : $@spelldesc207399
 Tooltip          : Granting allies $207498s1% increased health and the possibility of resurrection.
@@ -17417,7 +17423,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Imm
 Effects          :
 #1 (id=1176700)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 20 yards
-#2 (id=1176708)  : Apply Aura (6) | Unknown(395)
+#2 (id=1176708)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6336 | Target: Self (1)
 Description      : $@spelldesc207399
 Tooltip          : Granting allies $207498s1% increased health and the possibility of resurrection.
@@ -18107,7 +18113,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1184879)  : Apply Aura (6) | Unknown(333)
+#1 (id=1184879)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Voltaic Blaze overrides Flame Shock
                    Base Value: 470057 | Scaled Value: 470057 | Misc Value: 470411 | Target: Self (1)
 #2 (id=1211259)  : Trigger Spell (64): Voltaic Blaze
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 1223366 | Target: Self (1)
@@ -18698,7 +18704,7 @@ Proc Flags       : Cast Successful
 Triggered By     : Primordial Storm (1218047)
 Attributes       : Not In Spellbook (143), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1202759)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Primordial Storm overrides Primordial Wave
+#1 (id=1202759)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Primordial Storm overrides Primordial Wave
                    Base Value: 1218090 | Scaled Value: 1218090 | Misc Value: 375982 | Target: Self (1)
 Description      : $@spelldesc1218047
 Tooltip          : Primordial Wave has been replaced by Primordial Storm.
@@ -18856,7 +18862,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1205235)  : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=1205236)  : Apply Aura (6) | Unknown(312)
+#6 (id=1205236)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1141 | Target: Self (1)
 #7 (id=1205237)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -18948,7 +18954,7 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start 
 Effects          :
 #1 (id=1211338)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1211339)  : Apply Aura (6) | Unknown(408)
+#2 (id=1211339)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187874 | Target: Self (1)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $1223332w1%.
@@ -19134,7 +19140,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #6 (id=1235248)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#7 (id=1242650)  : Apply Aura (6) | Unknown(285)
+#7 (id=1242650)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Shaman Stormbringer 11.2 Class Set 4pc
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1238156 | Target: Self (1)
 Description      : Nature damage increased by $?c2[${$s1}.1][${$s3}.1]%, and Ascendance empowers your next $?c2[$s5][$s6] Tempests to gather a storm above that deals $?c2[$1235840s1][$1235840s2] Nature damage to its primary target and reduced damage to nearby enemies after $1235836d.
 

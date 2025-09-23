@@ -1037,13 +1037,13 @@ Family Flags     : 65, 67
 Attributes       : No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=36475)    : Apply Aura (6) | Unknown(262) | Attributes: Suppress Points Stacking (6)
+#1 (id=36475)    : Apply Aura (6) | Ignore Aura State (262) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 126 | Target: Self (1)
                    Affected Spells: Phoenix Flames (257542), Phoenix Flames (450506)
                    Family Flags: 52
 #2 (id=154771)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=164986)   : Apply Aura (6) | Unknown(408)
+#3 (id=164986)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30455 | Target: Self (1)
 #4 (id=196961)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -1438,7 +1438,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Is Ability (4), Passive (6), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78)
 Effects          :
-#1 (id=59543)    : Apply Aura (6) | Unknown(310)
+#1 (id=59543)    : Apply Aura (6) | Modify Creature AoE Damage Avoidance (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
 #2 (id=192584)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
@@ -1690,8 +1690,9 @@ Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 42
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Instant Target Procs (115), Absorb Cannot Be Ignore (214), Ignore Healing Modifiers (219), Do Not Count For PvP Scoreboard (252), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=88723)    : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
+#1 (id=88723)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x1e | Target: Self (1)
+                   Affected School(s): All
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=302842)   : Trigger Spell (64): Blazing Speed
@@ -1854,21 +1855,27 @@ Effects          :
                    Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 62, 64, 69, 76, 86, 98, 107, 110, 112, 116
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#3 (id=817013)   : Apply Aura (6) | Unknown(307)
+#3 (id=817013)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 928 | Target: Self (1)
-#4 (id=892545)   : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Radiant Spark (307443), Shifting Power (314791), Mirrors of Torment (314793), Deathborne (324220)
+#4 (id=892545)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1327 | Target: Self (1)
-#5 (id=1015385)  : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Ice Wall (352278)
+#5 (id=1015385)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1704 | Target: Self (1)
-#6 (id=1028918)  : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Mass Polymorph (383121)
+#6 (id=1028918)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1961 | Target: Self (1)
-#7 (id=1028921)  : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Greater Pyroblast (450421)
+#7 (id=1028921)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1960 | Target: Self (1)
-#8 (id=1034673)  : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Shifting Power (382440)
+#8 (id=1034673)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2363 | Target: Self (1)
-#9 (id=1056103)  : Apply Aura (6) | Unknown(307)
+#9 (id=1056103)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2574 | Target: Self (1)
-#10 (id=1200952) : Apply Aura (6) | Unknown(307)
+                   Affected Spells (Label): Kleptomania (198100)
+#10 (id=1200952) : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4322 | Target: Self (1)
 Description      : Makes your next Mage spell with a cast time shorter than $s2 sec castable while moving. Unaffected by the global cooldown and castable while casting.
 Tooltip          : Able to move while casting spells.
@@ -1960,7 +1967,7 @@ Triggered By     : Alter Time (108978)
 Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Enter World (22), Change Specialization (38), Exit Vehicle (39), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=123137)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Alter Time overrides Alter Time
+#1 (id=123137)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Alter Time overrides Alter Time
                    Base Value: 127140 | Scaled Value: 127140 | Misc Value: 108978 | Target: Self (1)
 Description      : $@spelldesc108978
 Tooltip          : Altering Time. Returning to past location and health when duration expires.
@@ -2394,11 +2401,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3272,11 +3279,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228487)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228488)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228489)   : Apply Aura (6) | Unknown(466)
+#1 (id=228487)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228488)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228489)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Meteor Burn (id=175396) [Hidden] 
@@ -3506,16 +3513,16 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=279061)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self (1)
-#2 (id=279062)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self (1)
-#3 (id=279063)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self (1)
-#4 (id=279064)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 16 | Trigger Spell: 36032 | Target: Self (1)
-#5 (id=286703)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Misc Value 2: 0x1 | Trigger Spell: 195302 | Target: Self (1)
+#1 (id=279061)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
+                   Base Value: 1 | Scaled Value: 1 | Resource: none | Trigger Spell: 36032 | Target: Self (1)
+#2 (id=279062)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
+                   Base Value: 2 | Scaled Value: 2 | Resource: none | Trigger Spell: 36032 | Target: Self (1)
+#3 (id=279063)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
+                   Base Value: 3 | Scaled Value: 3 | Resource: none | Trigger Spell: 36032 | Target: Self (1)
+#4 (id=279064)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
+                   Base Value: 4 | Scaled Value: 4 | Resource: none | Trigger Spell: 36032 | Target: Self (1)
+#5 (id=286703)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
+                   Base Value: 0 | Scaled Value: 0 | Resource: none | Misc Value 2: 0x1 | Trigger Spell: 195302 | Target: Self (1)
 
 Name             : Brain Freeze (id=190446) [Spell Family (3)] 
 Class            : Mage
@@ -5860,10 +5867,10 @@ Labels           : 292
 Triggered By     : Equipoise (286027)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
-#1 (id=707708)   : Apply Aura (6) | Unknown(328)
-                   Base Value: 70 | Scaled Value: 70 | Trigger Spell: 264352 | Target: Self (1)
-#2 (id=707711)   : Apply Aura (6) | Unknown(328)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value 2: 0x1 | Trigger Spell: 264353 | Target: Self (1)
+#1 (id=707708)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Equipoise
+                   Base Value: 70 | Scaled Value: 70 | Resource: mana | Trigger Spell: 264352 | Target: Self (1)
+#2 (id=707711)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Equipoise
+                   Base Value: 70 | Scaled Value: 70 | Resource: mana | Misc Value 2: 0x1 | Trigger Spell: 264353 | Target: Self (1)
 Description      : $@spelldesc286027
 
 Name             : Equipoise (id=264352) [Spell Family (3)] 
@@ -6213,7 +6220,7 @@ Azerite Power Id : 225
 Triggered By     : Glacial Assault (279856)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=736464)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=736464)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glacial Assault | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 70048.13 (coefficient=27.3865) | PvP Coefficient: 0.5 | Trigger Spell: 279855 | Target: Self (1)
 Description      : Flurry has a $279855h% chance each strike to call down an icy comet, crashing into your target and nearby enemies for $s1 Frost damage.
 
@@ -6295,7 +6302,7 @@ Azerite Power Id : 127
 Triggered By     : Equipoise (264352)
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=748188)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=748188)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Equipoise | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 7061.303 (coefficient=2.760736) | PvP Coefficient: 0.5 | Trigger Spell: 264351 | Target: Self (1)
 Description      : While you are above $264351s1% mana, Arcane Blast deals $s1 additional damage.
 
@@ -7015,7 +7022,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Frostfire Bolt (431044)
                    Family Flags: 57
-#6 (id=843414)   : Apply Aura (6) | Unknown(395)
+#6 (id=843414)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19912 | Target: Self (1)
 #7 (id=844223)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
@@ -8107,7 +8114,7 @@ Triggered By     : Alter Time (342245)
 Attributes       : No Immunities (29), No Threat (42), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Enter World (22), Change Specialization (38), Exit Vehicle (39), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=843171)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Alter Time overrides Alter Time
+#1 (id=843171)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Alter Time overrides Alter Time
                    Base Value: 342247 | Scaled Value: 342247 | Misc Value: 342245 | Target: Self (1)
 Description      : $@spelldesc108978
 Tooltip          : Altering Time. Returning to past location and health when duration expires.
@@ -8473,7 +8480,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow Low Level Buff (67), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Allow Cast While Casting (135), Do Not Log Caster (141), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Defend Against Friendly Cast (336)
 Effects          :
-#1 (id=890153)   : Apply Aura (6) | Unknown(298)
+#1 (id=890153)   : Apply Aura (6) | Modify Stun Effects - Disable Gravity (298)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Frozen in time for $d.
 Tooltip          : Frozen in time for $d.
@@ -8489,8 +8496,9 @@ Proc Flags       : Magic Hostile Spell
 Triggered By     : Heart of the Fae (364856)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=891012)   : Apply Aura (6) | Unknown(307)
+#1 (id=891012)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1093 | Target: Self (1)
+                   Affected Spells (Label): Shifting Power (314791)
 #2 (id=891019)   : Apply Aura (6) | Proc Trigger Spell (42): Heart of the Fae
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 356881 | Target: Self (1)
 Description      : Shifting Power can be channeled while moving. Each enemy hit by Shifting Power grants you $356881s1% Critical Strike and Haste, up to ${$356881s1*$356881u}% for $356881d.
@@ -8522,7 +8530,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -8705,7 +8713,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364852)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905250)   : Apply Aura (6) | Unknown(285)
+#1 (id=905250)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sinful Delight
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354333 | Target: Self (1)
 Description      : $@spelldesc354333
 
@@ -8719,7 +8727,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364852)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905251)   : Apply Aura (6) | Unknown(285)
+#1 (id=905251)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Death's Fathom
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354294 | Target: Self (1)
 Description      : $@spelldesc354294
 
@@ -8733,7 +8741,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364852)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905252)   : Apply Aura (6) | Unknown(285)
+#1 (id=905252)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Heart of the Fae
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 356877 | Target: Self (1)
 Description      : $@spelldesc356877
 
@@ -9030,7 +9038,7 @@ Labels           : 16: Class Spells
 Triggered By     : Glacial Assault (379029)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1007461)  : Apply Aura (6) | Unknown(285)
+#1 (id=1007461)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glacial Assault
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 379024 | Target: Self (1)
 Description      : Your Comet Storm now applies Numbing Blast, increasing the damage enemies take from you by $417490s1% for $417490d.
 
@@ -9117,7 +9125,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1009493)  : Apply Aura (6) | Unknown(285)
+#1 (id=1009493)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Flash Freeze
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 379994 | Target: Self (1)
 #2 (id=1009494)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -9741,7 +9749,7 @@ Labels           : 16: Class Spells
 Triggered By     : Feel the Burn (383395)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1015291)  : Apply Aura (6) | Unknown(285)
+#1 (id=1015291)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Feel the Burn
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 383394 | Target: Self (1)
 Description      : Fire Blast and Phoenix Flames increase your mastery by ${$s1*$mas}% for $383395d. This effect stacks up to $383395u times.
 
@@ -9793,7 +9801,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1015478)  : Apply Aura (6) | Unknown(285)
+#1 (id=1015478)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Wildfire
                    Base Value: 4 | Scaled Value: 4 | Trigger Spell: 383490 | Target: Self (1)
 #2 (id=1015479)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.75 | Misc Value: 15 | Target: Self (1)
@@ -11162,7 +11170,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -11434,7 +11442,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1083954)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Ice Cold overrides Ice Block
+#1 (id=1083954)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ice Cold overrides Ice Block
                    Base Value: 414658 | Scaled Value: 414658 | Misc Value: 45438 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
@@ -15439,7 +15447,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1164569)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Gravity Lapse overrides Supernova
+#1 (id=1164569)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Gravity Lapse overrides Supernova
                    Base Value: 449700 | Scaled Value: 449700 | Misc Value: 157980 | Target: Self (1)
 Description      : Your Supernova becomes Gravity Lapse.
 
@@ -16069,7 +16077,7 @@ Affecting Spells : Mastery: Savant (190740 effect#5), Norgannon's Foresight (236
 Family Flags     : 121
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Always AOE Line of Sight (186), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1192119)  : Apply Aura (6) | Unknown(297)
+#1 (id=1192119)  : Apply Aura (6) | Modify Root Effects - Disable Gravity (297)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc449700
 Tooltip          : Suspended in the air.
@@ -16089,7 +16097,7 @@ Affecting Spells : Mastery: Savant (190740 effect#5), Norgannon's Foresight (236
 Family Flags     : 121
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Always AOE Line of Sight (186), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1192122)  : Apply Aura (6) | Unknown(298)
+#1 (id=1192122)  : Apply Aura (6) | Modify Stun Effects - Disable Gravity (298)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc449700
 Tooltip          : Suspended in the air.

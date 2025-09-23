@@ -585,7 +585,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.1112 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1884 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
-#3 (id=808675)   : Apply Aura (6) | Unknown(395)
+#3 (id=808675)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19526 | Target: Targeted Enemy (6)
 #4 (id=1167235)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -741,8 +741,9 @@ Affecting Spells : Afterlife (196707 effects: #1, #2, #3), Heightened Alteration
 Family Flags     : 73
 Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Can Proc From Suppressed Target Procs (254), Absorb Falling Damage (357), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=11689)    : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x3c | Target: Self (1)
+#1 (id=11689)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x3c | Target: Self (1)
+                   Affected School(s): All
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Power Word: Fortitude (id=21562) [Spell Family (6)] 
@@ -1431,8 +1432,9 @@ Effects          :
                    Affected School(s): All
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
-#3 (id=188025)   : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Targeted Ally (21)
+#3 (id=188025)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x14 | Target: Targeted Ally (21)
+                   Affected School(s): All
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%. If the target would die, the Spirit sacrifices itself and restores the target to $s2% health.
 
 Castable while stunned. Cannot save the target from massive damage.
@@ -1480,7 +1482,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=51292)    : Apply Aura (6) | Unknown(403)
+#1 (id=51292)    : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 127963 | Scaled Value: 127963 | Misc Value: 9484 | Misc Value 2: 0x1f3db | Target: Self (1)
 Description      : Changes the appearance of your Shackle Undead.
 
@@ -2482,7 +2484,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-#6 (id=1155847)  : Apply Aura (6) | Unknown(408)
+#6 (id=1155847)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 2061 | Target: Self (1)
 Description      : $@spelldesc109186
 Tooltip          : Next Flash Heal is instant$?$w5>0[, heals for $w5% more,][] and costs $s2% less mana.
@@ -2571,13 +2573,13 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 658 | Target: at Self (18)
 #2 (id=1156257)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 33742 | Target: at Self (18)
-#3 (id=1156258)  : Apply Aura (6) | Unknown(395)
+#3 (id=1156258)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33742 | Target: Self (1)
 #4 (id=1175935)  : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 34681 | Target: at Self (18)
 #5 (id=1175936)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34682 | Target: at Self (18)
-#6 (id=1175937)  : Apply Aura (6) | Unknown(395)
+#6 (id=1175937)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34682 | Target: Self (1)
 Description      : Creates a ring of Holy energy around you that quickly expands to a $s2 yd radius, healing allies for $120692s1 and dealing $<holyhalodamage> Holy damage to enemies.
 
@@ -2625,13 +2627,13 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 658 | Target: at Self (18)
 #2 (id=1045446)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 33742 | Target: at Self (18)
-#3 (id=1156298)  : Apply Aura (6) | Unknown(395)
+#3 (id=1156298)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33742 | Target: Self (1)
 #4 (id=1156299)  : Create Area Trigger (179)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 34681 | Target: at Self (18)
 #5 (id=1175943)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 34682 | Target: at Self (18)
-#6 (id=1175944)  : Apply Aura (6) | Unknown(395)
+#6 (id=1175944)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34682 | Target: Self (1)
 #7 (id=1175945)  : Energize Power (30)
                    Base Value: 1000 | Scaled Value: 1000 | Resource: insanity | Target: Self (1)
@@ -3033,11 +3035,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3601,11 +3603,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228487)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228488)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228489)   : Apply Aura (6) | Unknown(466)
+#1 (id=228487)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228488)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228489)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
@@ -3617,11 +3619,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228494)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228495)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228496)   : Apply Aura (6) | Unknown(466)
+#1 (id=228494)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228495)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228496)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -3657,8 +3659,8 @@ Labels           : 16: Class Spells
 Family Flags     : 127
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=270241)   : Apply Aura (6) | Unknown(328)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 13 | Misc Value 2: 0x1 | Trigger Spell: 194251 | Target: Self (1)
+#1 (id=270241)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Insanity
+                   Base Value: 200 | Scaled Value: 200 | Resource: insanity | Misc Value 2: 0x1 | Trigger Spell: 194251 | Target: Self (1)
 #2 (id=270242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=285134)   : Apply Aura (6) | Dummy (4)
@@ -3875,11 +3877,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=286264)   : Remove Aura (203): Voidform
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
-#7 (id=290889)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#7 (id=290889)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
                    Affected Spells: Void Eruption (228260), Void Eruption (228360), Void Eruption (228361)
                    Family Flags: 36
-#8 (id=290891)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
+#8 (id=290891)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #9 (id=294246)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -4755,7 +4757,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=303234)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Dominate Mind overrides Mind Control
+#1 (id=303234)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Dominate Mind overrides Mind Control
                    Base Value: 205364 | Scaled Value: 205364 | Misc Value: 605 | Misc Value 2: 0x3 | Target: Self (1)
 Description      : You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.
 
@@ -5633,9 +5635,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
 #10 (id=469753)  : Remove Aura (203): Voidform
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
-#11 (id=469754)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#11 (id=469754)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
-#12 (id=469755)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
+#12 (id=469755)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #13 (id=469756)  : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6196,15 +6198,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
 #10 (id=745677)  : Remove Aura (203): Voidform
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
-#11 (id=745678)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#11 (id=745678)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
-#12 (id=745679)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
+#12 (id=745679)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #13 (id=745680)  : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=745681)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Suppress Points Stacking (6)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1590 (Category) | Target: Self (1)
-#15 (id=745682)  : Apply Aura (6) | Modify Periodic Healing Recevied% (259) | Attributes: No Immunity (0)
+#15 (id=745682)  : Apply Aura (6) | Modify Periodic Healing Received% (259) | Attributes: No Immunity (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc228264
 Tooltip          : Spell damage dealt increased by $w1%.
@@ -6411,15 +6413,15 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Unholy Transfusion (325203), Mind Sear (344754)
                    Family Flags: 15, 65, 114
-#3 (id=843265)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#3 (id=843265)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 122121 | Scaled Value: 122121 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Divine Star (110744), Divine Star (122121)
                    Family Flags: 110
-#4 (id=1000342)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#4 (id=1000342)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 120644 | Scaled Value: 120644 | Target: Self (1)
                    Affected Spells: Halo (120517), Halo (120644)
                    Family Flags: 102
-#5 (id=1044880)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#5 (id=1044880)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 400169 | Scaled Value: 400169 | Target: Self (1)
                    Affected Spells: Penance (47540), Dark Reprimand (400169)
                    Family Flags: 55
@@ -6621,11 +6623,11 @@ Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=814983)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=815010)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Ascended Nova overrides Boon of the Ascended | Attributes: Suppress Points Stacking (6)
+#2 (id=815010)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ascended Nova overrides Boon of the Ascended | Attributes: Suppress Points Stacking (6)
                    Base Value: 325020 | Scaled Value: 325020 | Misc Value: 325013 | Target: Self (1)
 #3 (id=815013)   : Apply Aura (6) | Increase Speed% (31) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#4 (id=815072)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#4 (id=815072)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 325283 | Scaled Value: 325283 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
@@ -6633,7 +6635,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #6 (id=819021)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=819722)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#7 (id=819722)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 325283 | Scaled Value: 325283 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
@@ -7176,7 +7178,7 @@ Spell Type       : None
 Labels           : 931
 Attributes       : Passive (6), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=833937)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Leap of Faith overrides Leap of Faith
+#1 (id=833937)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Leap of Faith overrides Leap of Faith
                    Base Value: 336471 | Scaled Value: 336471 | Misc Value: 73325 | Misc Value 2: 0x3 | Target: Self (1)
 Description      : Leap of Faith instead causes you to leap to your target, and has 2 charges.
 
@@ -8194,7 +8196,7 @@ Proc Flags       : Generic Heal, Magic Heal
 Triggered By     : Bwonsamdi's Pact (356391)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Aura While Dead (116), Allow Cast While Casting (135), Not In Spellbook (143), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Required by Client (262), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=891136)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Direct Mask overrides Fae Guardians
+#1 (id=891136)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Direct Mask overrides Fae Guardians
                    Base Value: 356532 | Scaled Value: 356532 | Misc Value: 327661 | Target: Self (1)
 Description      : Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.
 
@@ -8211,7 +8213,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -8471,7 +8473,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364911)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
-#1 (id=905362)   : Apply Aura (6) | Unknown(285)
+#1 (id=905362)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Spheres' Harmony
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356395 | Target: Self (1)
 Description      : $@spelldesc356395
 
@@ -8485,7 +8487,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364911)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905363)   : Apply Aura (6) | Unknown(285)
+#1 (id=905363)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Shadow Word: Manipulation
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356392 | Target: Self (1)
 Description      : $@spelldesc356392
 
@@ -8499,7 +8501,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364911)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905364)   : Apply Aura (6) | Unknown(285)
+#1 (id=905364)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Bwonsamdi's Pact
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 356391 | Target: Self (1)
 Description      : $@spelldesc356391
 
@@ -8513,7 +8515,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364911)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknown (450)
 Effects          :
-#1 (id=905365)   : Apply Aura (6) | Unknown(285)
+#1 (id=905365)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Pallid Command
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356390 | Target: Self (1)
 Description      : $@spelldesc356390
 
@@ -8857,7 +8859,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=997593)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=997593)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 372784 | Scaled Value: 372784 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Holy Word: Sanctify (34861)
                    Family Flags: 28
@@ -10962,9 +10964,9 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596), Heal (2060)
                    Family Flags: 9, 12
-#3 (id=1178521)  : Apply Aura (6) | Unknown(408)
+#3 (id=1178521)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 2060 | Target: Self (1)
-#4 (id=1189635)  : Apply Aura (6) | Unknown(408)
+#4 (id=1189635)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 596 | Target: Self (1)
 Description      : $@spelldesc390992
 Tooltip          : The cast time of your next Heal or Prayer of Healing is reduced by $w2% and its healing is increased by $w1%.
@@ -11380,11 +11382,11 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1028893)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#1 (id=1028893)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
-#2 (id=1074850)  : Apply Aura (6) | Unknown(408)
+#2 (id=1074850)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391403 | Target: Self (1)
 Description      : $@spelldesc391399
 Tooltip          : Mind Flay is temporarily empowered.
@@ -12109,7 +12111,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -12582,7 +12584,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1095712)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-#4 (id=1095733)  : Apply Aura (6) | Unknown(488)
+#4 (id=1095733)  : Apply Aura (6) | Disable Gravity (488)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #5 (id=1114264)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Self (1)
@@ -13174,7 +13176,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1131495)  : Apply Aura (6) | Unknown(333)
+#1 (id=1131495)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Premonition of Piety overrides Premonition
                    Base Value: 428930 | Scaled Value: 428930 | Misc Value: 428924 | Target: Self (1)
 
 Name             : Premonition of Insight (id=438734) [Spell Family (6), Hidden] 
@@ -13188,7 +13190,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1131496)  : Apply Aura (6) | Unknown(333)
+#1 (id=1131496)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Premonition of Insight overrides Premonition
                    Base Value: 428933 | Scaled Value: 428933 | Misc Value: 428924 | Target: Self (1)
 
 Name             : Premonition of Solace (id=438854) [Spell Family (6), Hidden] 
@@ -13203,7 +13205,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1131724)  : Apply Aura (6) | Unknown(333)
+#1 (id=1131724)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Premonition of Solace overrides Premonition
                    Base Value: 428934 | Scaled Value: 428934 | Misc Value: 428924 | Target: Self (1)
 
 Name             : Premonition of Clairvoyance (id=438855) [Spell Family (6), Hidden] 
@@ -13218,7 +13220,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Spellcast Override In Spellbook (310)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1131725)  : Apply Aura (6) | Unknown(333)
+#1 (id=1131725)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Premonition of Clairvoyance overrides Premonition
                    Base Value: 440725 | Scaled Value: 440725 | Misc Value: 428924 | Target: Self (1)
 
 Name             : Lightwell (id=439820) [Spell Family (6), Hidden] 
@@ -13955,9 +13957,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=1150284)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Void Blast overrides Smite | Attributes: Suppress Points Stacking (6)
+#1 (id=1150284)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Blast overrides Smite | Attributes: Suppress Points Stacking (6)
                    Base Value: 450215 | Scaled Value: 450215 | Misc Value: 585 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=1150381)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Void Blast overrides Mind Blast | Attributes: Suppress Points Stacking (6)
+#2 (id=1150381)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Blast overrides Mind Blast | Attributes: Suppress Points Stacking (6)
                    Base Value: 450983 | Scaled Value: 450983 | Misc Value: 8092 | Target: Self (1)
 #3 (id=1244589)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.5 | Misc Value: 1602 (Category) | Target: Self (1)
@@ -14113,13 +14115,13 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1151694)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidwraith overrides Shadowfiend
+#1 (id=1151694)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Shadowfiend
                    Base Value: 451235 | Scaled Value: 451235 | Misc Value: 34433 | Target: Self (1)
 #2 (id=1152159)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-#3 (id=1152718)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidwraith overrides Mindbender
+#3 (id=1152718)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Mindbender
                    Base Value: 451235 | Scaled Value: 451235 | Misc Value: 200174 | Target: Self (1)
-#4 (id=1152719)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Voidwraith overrides Mindbender
+#4 (id=1152719)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidwraith overrides Mindbender
                    Base Value: 451235 | Scaled Value: 451235 | Misc Value: 123040 | Target: Self (1)
 Description      : Transform your Shadowfiend or Mindbender into a Voidwraith.
 
@@ -14984,7 +14986,7 @@ Effects          :
 #1 (id=1164771)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2308 (Category) | Target: Self (1)
                    Affected Spells (Category): Leap of Faith (73325), Leap of Faith (336471)
-#2 (id=1164772)  : Apply Aura (6) | Unknown(500)
+#2 (id=1164772)  : Apply Aura (6) | Ignore Spell Charge Cooldown (500)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2308 | Target: Self (1)
 #3 (id=1164775)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -16116,7 +16118,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1241579)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1241579)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 1242173 | Scaled Value: 1242173 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Void Torrent (263165), Void Volley (1240401)
                    Family Flags: 51

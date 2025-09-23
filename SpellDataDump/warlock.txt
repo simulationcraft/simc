@@ -1422,7 +1422,7 @@ Labels           : 16: Class Spells
                  : 2357: Demonic Resilience (389590 effect#3)
 Attributes       : Is Ability (4), Passive (6), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=21973)    : Apply Aura (6) | Unknown(310)
+#1 (id=21973)    : Apply Aura (6) | Modify Creature AoE Damage Avoidance (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self (1)
 #2 (id=164155)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
@@ -1835,9 +1835,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=57432)    : Apply Aura (6) | Unknown(403)
+#1 (id=57432)    : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 710 | Misc Value 2: 0x1e47f | Target: Self (1)
-#2 (id=156792)   : Apply Aura (6) | Unknown(403)
+#2 (id=156792)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 104036 | Misc Value 2: 0x1e47f | Target: Self (1)
 Description      : Your Banish spell is now red.
 
@@ -2055,7 +2055,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Requires 
 Effects          :
 #1 (id=92647)    : Apply Aura (6) | Periodic Trigger Spell (23): Felstorm every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 89753 | Target: Self (1)
-#2 (id=92648)    : Apply Aura (6) | Unknown(264)
+#2 (id=92648)    : Apply Aura (6) | Disable Spells (264)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=135904)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2236,49 +2236,49 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), No Aura Icon (60), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=109954)   : Apply Aura (6) | Unknown(403)
+#1 (id=109954)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 348 | Misc Value 2: 0x1e636 | Target: Self (1)
-#2 (id=157555)   : Apply Aura (6) | Unknown(403)
+#2 (id=157555)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 157736 | Misc Value 2: 0x27fe0 | Target: Self (1)
-#3 (id=157556)   : Apply Aura (6) | Unknown(403)
+#3 (id=157556)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 29722 | Misc Value 2: 0x1e638 | Target: Self (1)
-#4 (id=157557)   : Apply Aura (6) | Unknown(403)
+#4 (id=157557)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5740 | Misc Value 2: 0x1e639 | Target: Self (1)
-#5 (id=157558)   : Apply Aura (6) | Unknown(403)
+#5 (id=157558)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 42223 | Misc Value 2: 0x1e63a | Target: Self (1)
-#6 (id=157559)   : Apply Aura (6) | Unknown(403)
+#6 (id=157559)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 152108 | Misc Value 2: 0x26831 | Target: Self (1)
-#7 (id=157560)   : Apply Aura (6) | Unknown(403)
+#7 (id=157560)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17962 | Misc Value 2: 0x1e640 | Target: Self (1)
-#8 (id=157561)   : Apply Aura (6) | Unknown(403)
+#8 (id=157561)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196406 | Misc Value 2: 0x217e4 | Target: Self (1)
-#9 (id=157562)   : Apply Aura (6) | Unknown(403)
+#9 (id=157562)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 117828 | Misc Value 2: 0x217e4 | Target: Self (1)
-#10 (id=157563)  : Apply Aura (6) | Unknown(403)
+#10 (id=157563)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 111400 | Misc Value 2: 0x217f5 | Target: Self (1)
-#11 (id=338097)  : Apply Aura (6) | Unknown(403)
+#11 (id=338097)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196408 | Misc Value 2: 0x217f9 | Target: Self (1)
-#12 (id=338098)  : Apply Aura (6) | Unknown(403)
+#12 (id=338098)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Target: Self and Summons in Area (120)
-#13 (id=338099)  : Apply Aura Pet (174) | Unknown(403)
+#13 (id=338099)  : Apply Aura Pet (174) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3110 | Misc Value 2: 0x217d9 | Radius: 100 yards | Target: Self and Summons in Area (120)
-#14 (id=338100)  : Apply Aura (6) | Unknown(403)
+#14 (id=338100)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Target: Self and Summons in Area (120)
-#15 (id=338101)  : Apply Aura Pet (174) | Unknown(403)
+#15 (id=338101)  : Apply Aura Pet (174) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119899 | Misc Value 2: 0x217db | Radius: 100 yards | Target: Self and Summons in Area (120)
-#16 (id=338102)  : Apply Aura (6) | Unknown(403)
+#16 (id=338102)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 119905 | Misc Value 2: 0x217db | Target: Self (1)
-#17 (id=338103)  : Apply Aura (6) | Unknown(403)
+#17 (id=338103)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Target: Self and Summons in Area (120)
-#18 (id=338104)  : Apply Aura Pet (174) | Unknown(403)
+#18 (id=338104)  : Apply Aura Pet (174) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 89808 | Misc Value 2: 0x217da | Radius: 100 yards | Target: Self and Summons in Area (120)
 #19 (id=338105)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 112921 | Misc Value 2: 0x225db | Target: Self (1)
-#20 (id=756159)  : Apply Aura (6) | Unknown(403)
+#20 (id=756159)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 265931 | Misc Value 2: 0x46f54 | Target: Self (1)
-#21 (id=756162)  : Apply Aura (6) | Unknown(403)
+#21 (id=756162)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6353 | Misc Value 2: 0x46f55 | Target: Self (1)
-#22 (id=1215204) : Apply Aura (6) | Unknown(403)
+#22 (id=1215204) : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1214467 | Misc Value 2: 0x1e639 | Target: Self (1)
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
@@ -2369,7 +2369,7 @@ Effects          :
                    Affected School(s): All
 #4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
-#5 (id=1148809)  : Apply Aura (6) | Unknown(285)
+#5 (id=1148809)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Aura of Enfeeblement
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 449587 | Target: Self (1)
 Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt, silence, and pushback effects for $d.
 Tooltip          : Damage taken reduced by $w3%
@@ -2973,7 +2973,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=126970)   : Apply Aura (6) | Unknown(395)
+#1 (id=126970)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 197 | Target: Self (1)
 Description      : $@spelldesc111771
 
@@ -3504,11 +3504,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=476297)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#13 (id=1145028) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#13 (id=1145028) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 348 | Scaled Value: 348 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
                    Family Flags: 1
-#14 (id=1152556) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#14 (id=1152556) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 29722 | Scaled Value: 29722 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
@@ -3659,11 +3659,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228487)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228488)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228489)   : Apply Aura (6) | Unknown(466)
+#1 (id=228487)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228488)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228489)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Cripple (id=170995) [Spell Family (5)] 
@@ -9041,7 +9041,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -9155,7 +9155,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324536)
                    Family Flags: 127
-#2 (id=904224)   : Apply Aura (6) | Unknown(262)
+#2 (id=904224)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324536)
                    Family Flags: 127
@@ -9310,7 +9310,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364939)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905396)   : Apply Aura (6) | Unknown(285)
+#1 (id=905396)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Languishing Soul Detritus
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 356254 | Target: Self (1)
 Description      : $@spelldesc356254
 
@@ -10251,7 +10251,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Effects          :
-#1 (id=1021630)  : Apply Aura (6) | Unknown(262)
+#1 (id=1021630)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324536)
                    Family Flags: 127
@@ -11460,7 +11460,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Drain Soul overrides Shadow Bolt
+#1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Drain Soul overrides Shadow Bolt
                    Base Value: 198590 | Scaled Value: 198590 | Misc Value: 686 | Misc Value 2: 0x2 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
@@ -12342,7 +12342,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -13703,7 +13703,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1123497)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123497)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 434635 | Scaled Value: 434635 | Target: Self (1)
                    Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858)
                    Family Flags: 21, 45
@@ -13728,7 +13728,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1123506)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123506)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 434506 | Scaled Value: 434506 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 0, 38
@@ -14177,7 +14177,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1133719)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1133719)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 442804 | Scaled Value: 442804 | Target: Self (1)
                    Affected Spells: Curse of Weakness (702), Curse of the Satyr (442804)
                    Family Flags: 109
@@ -14353,7 +14353,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=1142346)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1142346)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 445468 | Scaled Value: 445468 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Corruption (172), Immolate (348), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
                    Family Flags: 1, 2
@@ -14494,16 +14494,16 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
-#1 (id=1148938)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
-#2 (id=1150458)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
-#3 (id=1150459)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
-#4 (id=1150460)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
-#5 (id=1150461)  : Apply Aura (6) | Unknown(396)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 7 | Trigger Spell: 450510 | Target: Self (1)
+#1 (id=1148938)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Demonic Soul
+                   Base Value: 10 | Scaled Value: 10 | Resource: soul_shard | Trigger Spell: 450510 | Target: Self (1)
+#2 (id=1150458)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Demonic Soul
+                   Base Value: 20 | Scaled Value: 20 | Resource: soul_shard | Trigger Spell: 450510 | Target: Self (1)
+#3 (id=1150459)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Demonic Soul
+                   Base Value: 30 | Scaled Value: 30 | Resource: soul_shard | Trigger Spell: 450510 | Target: Self (1)
+#4 (id=1150460)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Demonic Soul
+                   Base Value: 40 | Scaled Value: 40 | Resource: soul_shard | Trigger Spell: 450510 | Target: Self (1)
+#5 (id=1150461)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Demonic Soul
+                   Base Value: 50 | Scaled Value: 50 | Resource: soul_shard | Trigger Spell: 450510 | Target: Self (1)
 Description      : A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. 
 
 A Succulent Soul empowers your next $?s137043[Malefic Rapture, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, increasing its damage by $449793s3%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]
@@ -15647,7 +15647,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1158894)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1158894)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 455465 | Scaled Value: 455465 | Target: Self (1)
                    Affected Spells: Summon Vilefiend (264119), Summon Gloomhound (455465), Summon Charhound (455476)
                    Family Flags: 114
@@ -15666,7 +15666,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1158895)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1158895)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 455476 | Scaled Value: 455476 | Target: Self (1)
                    Affected Spells: Summon Vilefiend (264119), Summon Gloomhound (455465), Summon Charhound (455476)
                    Family Flags: 114
@@ -17349,7 +17349,7 @@ Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Family Flags     : 49
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1237667)  : Apply Aura (6) | Override Auto-Attack with Spell (361)
+#1 (id=1237667)  : Apply Aura (6) | Override Auto-Attack with Ability (361): Soul Swipe
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40402 | PvP Coefficient: 0.33 | Trigger Spell: 1239714 | Target: Self (1)
 Description      : $@spelldesc449631
 

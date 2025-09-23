@@ -132,17 +132,17 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #5 (id=296790)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=296792)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#6 (id=296792)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 201427 | Scaled Value: 201427 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Strike (197125)
                    Family Flags: 52
-#7 (id=297855)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#7 (id=297855)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 210152 | Scaled Value: 210152 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Blade Dance (391374), Blade Dance (391378)
                    Family Flags: 25
 #8 (id=329388)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0
-#9 (id=1031504)  : Apply Aura (6) | Unknown(312)
+#9 (id=1031504)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 567 | Target: Self (1)
 #10 (id=1153645) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
@@ -167,11 +167,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228478)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228479)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228480)   : Apply Aura (6) | Unknown(466)
+#1 (id=228478)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228479)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228480)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
@@ -183,10 +183,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228491)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228492)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
+#1 (id=228491)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228492)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
 
 Name             : Chaos Strike (id=162794) [Spell Family (107)] 
 Replaces         : Chaos Strike (id=344862)
@@ -474,7 +474,7 @@ Effects          :
                    Family Flags: 22
 #5 (id=314452)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=329389)   : Apply Aura (6) | Unknown(312)
+#6 (id=329389)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 536 | Target: Self (1)
 #7 (id=356685)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0
@@ -492,7 +492,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #12 (id=1179663) : Direct Heal% (136)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#13 (id=1189554) : Apply Aura (6) | Unknown(312)
+#13 (id=1189554) : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 692 | Target: Self (1)
 Description      : Transform to demon form for $d, increasing current health by $s2%, healing for that amount, and increasing Armor by $s8%$?s235893[. Versatility increased by $s5%][]$?s321067[. While transformed, Shear and Fracture generate one additional Lesser Soul Fragment][]$?s321068[ and $s4 additional Fury][].
 Tooltip          : Maximum health increased by $w2%.
@@ -529,7 +529,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 199552 | Target: Self (1)
 #5 (id=293659)   : Trigger Spell (64): Blade Dance
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 700 | Trigger Spell: 200685 | Target: Self (1)
-#6 (id=293660)   : Apply Aura (6) | Unknown(483)
+#6 (id=293660)   : Apply Aura (6) | Supress Transformation (483)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Strike $?a206416[your primary target for $<firstbloodDmg> Chaos damage and ][]nearby enemies for $<baseDmg> Physical damage$?s320398[, and increase your chance to dodge by $193311s1% for $193311d.][. Deals reduced damage beyond $199552s1 targets.]
 Tooltip          : Dodge chance increased by $s2%.
@@ -560,7 +560,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215725 | Target: Self (1)
 #4 (id=298879)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
-#5 (id=305109)   : Apply Aura (6) | Unknown(312)
+#5 (id=305109)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 499 | Target: Self (1)
 #6 (id=320783)   : Update Player Phase (167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -848,7 +848,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=289487)   : Apply Aura (6) | Unknown(406)
+#1 (id=289487)   : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34 | Target: Self (1)
 
 Name             : Eye Beam (id=198013) [Spell Family (107)] 
@@ -1744,15 +1744,15 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Change Specialization (38)
 Effects          :
-#1 (id=301003)   : Apply Aura (6) | Unknown(408)
+#1 (id=301003)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228477 | Target: Self (1)
-#2 (id=357811)   : Apply Aura (6) | Unknown(408)
+#2 (id=357811)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 263648 | Target: Self (1)
-#3 (id=464671)   : Apply Aura (6) | Unknown(408)
+#3 (id=464671)   : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 247454 | Target: Self (1)
-#4 (id=1157656)  : Apply Aura (6) | Unknown(408)
+#4 (id=1157656)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452436 | Target: Self (1)
-#5 (id=1157657)  : Apply Aura (6) | Unknown(408)
+#5 (id=1157657)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452437 | Target: Self (1)
 Description      : Consuming a nearby Soul Fragment heals you.
 Tooltip          : Soul Fragments are nearby.
@@ -2203,7 +2203,7 @@ Labels           : 16: Class Spells
 Family Flags     : 96
 Attributes       : Is Ability (4), Passive (6), Aura Required by Client (262), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=306442)   : Apply Aura (6) | Unknown(463)
+#1 (id=306442)   : Apply Aura (6) | Modify Parry Rating with Crit Rating (463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
@@ -2334,21 +2334,21 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Required by Client (262), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307123)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Chains overrides Sigil of Chains
+#1 (id=307123)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Chains overrides Sigil of Chains
                    Base Value: 207665 | Scaled Value: 207665 | Misc Value: 202138 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=307155)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Silence overrides Sigil of Silence
+#2 (id=307155)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Silence overrides Sigil of Silence
                    Base Value: 207682 | Scaled Value: 207682 | Misc Value: 202137 | Misc Value 2: 0x2 | Target: Self (1)
-#3 (id=307157)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Flame overrides Sigil of Flame
+#3 (id=307157)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Flame overrides Sigil of Flame
                    Base Value: 204513 | Scaled Value: 204513 | Misc Value: 204596 | Misc Value 2: 0x2 | Target: Self (1)
-#4 (id=307163)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Misery overrides Sigil of Misery
+#4 (id=307163)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Misery overrides Sigil of Misery
                    Base Value: 202140 | Scaled Value: 202140 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self (1)
 #5 (id=309811)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Sigil of Spite (389860), Sigil of Doom (462030)
                    Family Flags: 33
-#6 (id=819508)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Elysian Decree overrides Elysian Decree
+#6 (id=819508)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Elysian Decree overrides Elysian Decree
                    Base Value: 327839 | Scaled Value: 327839 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
-#7 (id=1034501)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Spite overrides Sigil of Spite
+#7 (id=1034501)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Spite overrides Sigil of Spite
                    Base Value: 389858 | Scaled Value: 389858 | Misc Value: 390163 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : All Sigils are now placed at your location. 
 
@@ -2676,8 +2676,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=309716)   : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x19 | Target: Self (1)
+#1 (id=309716)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x19 | Target: Self (1)
+                   Affected School(s): All
 #2 (id=309745)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Sustaining fatal damage instead transforms you to Metamorphosis form.
@@ -4150,7 +4151,7 @@ Labels           : 16: Class Spells
 Family Flags     : 62
 Attributes       : Is Ability (4), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=464519)   : Apply Aura (6) | Override Auto-Attack with Spell (361)
+#1 (id=464519)   : Apply Aura (6) | Override Auto-Attack with Ability (361): Chaos Blades
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
 #2 (id=464520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -4845,7 +4846,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Icon (60), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=801999)   : Apply Aura (6) | Unknown(217)
+#1 (id=801999)   : Apply Aura (6) | Modify Melee Haste (217)
                    Base Value: -30 | Scaled Value: -30 | Target: Targeted Enemy (6)
 Description      : $@spelldesc317009
 
@@ -6833,7 +6834,7 @@ Triggered By     : The Hunt (323639)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=871236)   : Apply Aura (6) | Unknown(395)
+#1 (id=871236)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22058 | Target: Self (1)
 
 Name             : The Hunt (id=345422) [Spell Family (107), Hidden] 
@@ -7412,7 +7413,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364824)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905206)   : Apply Aura (6) | Unknown(285)
+#1 (id=905206)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blazing Slaughter
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355890 | Target: Self (1)
 Description      : $@spelldesc355890
 
@@ -7426,7 +7427,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364824)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905207)   : Apply Aura (6) | Unknown(285)
+#1 (id=905207)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Demonic Oath
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355996 | Target: Self (1)
 Description      : $@spelldesc355996
 
@@ -7440,7 +7441,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364824)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905208)   : Apply Aura (6) | Unknown(285)
+#1 (id=905208)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Agony Gaze
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355886 | Target: Self (1)
 Description      : $@spelldesc355886
 
@@ -7455,7 +7456,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364824)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=905210)   : Apply Aura (6) | Unknown(285)
+#1 (id=905210)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Blind Faith
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 355893 | Target: Self (1)
 Description      : $@spelldesc355893
 
@@ -7534,7 +7535,7 @@ Triggered By     : The Hunt (370965)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Always Line of Sight (185), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=982583)   : Apply Aura (6) | Unknown(395)
+#1 (id=982583)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 24961 | Target: Self (1)
 
 Name             : The Hunt (id=370968) [Spell Family (107), Hidden] 
@@ -7759,7 +7760,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213241), Felblade (213243), Soul Fragment (219712), Soul Fragment (219739), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Spite (389860), Fodder to the Flame (391430), Fel Devastation (393834), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Sigil of Doom (462030)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
-#5 (id=1114558)  : Apply Aura (6) | Unknown(285)
+#5 (id=1114558)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Any Means Necessary
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 394486 | Target: Self (1)
 #6 (id=1163476)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Misc Value 2: 3594 (Label) | Target: Self (1)
@@ -8174,21 +8175,21 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1026274)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Chains overrides Sigil of Chains
+#1 (id=1026274)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Chains overrides Sigil of Chains
                    Base Value: 389807 | Scaled Value: 389807 | Misc Value: 202138 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=1026284)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Silence overrides Sigil of Silence
+#2 (id=1026284)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Silence overrides Sigil of Silence
                    Base Value: 389809 | Scaled Value: 389809 | Misc Value: 202137 | Misc Value 2: 0x2 | Target: Self (1)
-#3 (id=1026285)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Flame overrides Sigil of Flame
+#3 (id=1026285)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Flame overrides Sigil of Flame
                    Base Value: 389810 | Scaled Value: 389810 | Misc Value: 204596 | Misc Value 2: 0x2 | Target: Self (1)
-#4 (id=1026286)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Misery overrides Sigil of Misery
+#4 (id=1026286)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Misery overrides Sigil of Misery
                    Base Value: 389813 | Scaled Value: 389813 | Misc Value: 207684 | Misc Value 2: 0x2 | Target: Self (1)
 #5 (id=1026287)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Sigil of Spite (389860), Sigil of Doom (462030)
                    Family Flags: 33
-#6 (id=1033914)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Elysian Decree overrides Elysian Decree
+#6 (id=1033914)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Elysian Decree overrides Elysian Decree
                    Base Value: 394985 | Scaled Value: 394985 | Misc Value: 306830 | Misc Value 2: 0x2 | Target: Self (1)
-#7 (id=1034461)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Spite overrides Sigil of Spite
+#7 (id=1034461)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Spite overrides Sigil of Spite
                    Base Value: 389815 | Scaled Value: 389815 | Misc Value: 390163 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : All Sigils are now placed at your target's location.
 
@@ -10061,7 +10062,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | School: chaos | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
-#6 (id=1213095)  : Apply Aura (6) | Unknown(285)
+#6 (id=1213095)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): A Fire Inside
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1224451 | Target: Self (1)
 Description      : Immolation Aura has $m1 additional $Lcharge:charges;, $s3% chance to refund a charge when used, and deals Chaos damage instead of Fire.
 
@@ -10117,7 +10118,7 @@ Proc Flags       : Cast Successful
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1107561)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Fel Rush overrides Fel Rush
+#1 (id=1107561)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Fel Rush overrides Fel Rush
                    Base Value: 427785 | Scaled Value: 427785 | Misc Value: 195072 | Target: Self (1)
 Description      : $@spelldesc427794
 
@@ -10774,7 +10775,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1123224)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123224)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427917 | Scaled Value: 427917 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920)
                    Family Flags: 94
@@ -10791,7 +10792,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1123226)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123226)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427913 | Scaled Value: 427913 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916)
                    Family Flags: 11
@@ -10808,7 +10809,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1123229)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123229)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427914 | Scaled Value: 427914 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916)
                    Family Flags: 11
@@ -10825,7 +10826,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1123255)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1123255)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427915 | Scaled Value: 427915 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916)
                    Family Flags: 11
@@ -11286,7 +11287,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
-#1 (id=1141243)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Reaver's Glaive overrides Throw Glaive
+#1 (id=1141243)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Reaver's Glaive overrides Throw Glaive
                    Base Value: 442294 | Scaled Value: 442294 | Misc Value: 185123 | Misc Value 2: 0x3 | Target: Self (1)
 Description      : $@spelldesc442290
 
@@ -11303,7 +11304,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
-#1 (id=1141362)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Reaver's Glaive overrides Throw Glaive
+#1 (id=1141362)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Reaver's Glaive overrides Throw Glaive
                    Base Value: 442294 | Scaled Value: 442294 | Misc Value: 204157 | Misc Value 2: 0x3 | Target: Self (1)
 Description      : $@spelldesc442290
 
@@ -11775,11 +11776,11 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1153593)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1153593)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 452436 | Scaled Value: 452436 | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
                    Family Flags: 34
-#2 (id=1153594)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Spirit Burst overrides Spirit Bomb
+#2 (id=1153594)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Spirit Burst overrides Spirit Bomb
                    Base Value: 452437 | Scaled Value: 452437 | Misc Value: 247454 | Target: Self (1)
 #3 (id=1158336)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -11996,25 +11997,25 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1153680)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1153680)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 452486 | Scaled Value: 452486 | Target: Self (1)
                    Affected Spells: Fel Devastation (212084), Fel Desolation (452486)
                    Family Flags: 78
-#2 (id=1153681)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#2 (id=1153681)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 452487 | Scaled Value: 452487 | Target: Self (1)
                    Affected Spells: Immolation Aura (258920)
                    Family Flags: 94
-#3 (id=1153682)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Doom overrides Sigil of Flame
+#3 (id=1153682)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Doom overrides Sigil of Flame
                    Base Value: 452490 | Scaled Value: 452490 | Misc Value: 204596 | Target: Self (1)
-#4 (id=1153698)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Abyssal Gaze overrides Eye Beam
+#4 (id=1153698)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Abyssal Gaze overrides Eye Beam
                    Base Value: 452497 | Scaled Value: 452497 | Misc Value: 198013 | Target: Self (1)
 #5 (id=1153723)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Eye Beam (198030), Sigil of Flame (204598), Fel Devastation (212105), Immolation Aura (258921), Immolation Aura (258922), Fel Devastation (333110), Fel Devastation (346503), Eye Beam (391058), Fel Devastation (393834), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Sigil of Doom (462030)
                    Family Flags: 8, 49, 61, 65, 67
-#6 (id=1160967)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Consuming Fire overrides Immolation Aura
+#6 (id=1160967)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Consuming Fire overrides Immolation Aura
                    Base Value: 456640 | Scaled Value: 456640 | Misc Value: 427917 | Target: Self (1)
-#7 (id=1184732)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sigil of Doom overrides Sigil of Flame
+#7 (id=1184732)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sigil of Doom overrides Sigil of Flame
                    Base Value: 469991 | Scaled Value: 469991 | Misc Value: 389810 | Target: Self (1)
 
 Name             : Sigil of Doom (id=452490) [Spell Family (107)] 
@@ -12446,7 +12447,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fel Devastation (212105), Fel Devastation (212106), Fel Devastation (333110), Fel Devastation (333120), Fel Devastation (346503), Fel Devastation (393834)
                    Family Flags: 67, 80
-#3 (id=1157869)  : Apply Aura (6) | Unknown(408)
+#3 (id=1157869)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212084 | Target: Self (1)
 Description      : $@spelldesc453710
 Tooltip          : The damage and healing of your next Fel Devastation is increased by $w1%.

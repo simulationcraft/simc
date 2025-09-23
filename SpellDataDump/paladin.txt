@@ -26,7 +26,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounte
 Effects          :
 #1 (id=195)      : Apply Aura Raid (65) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Radius: 40 yards | Target: Self (1)
-#2 (id=803408)   : Apply Aura (6) | Unknown(285)
+#2 (id=803408)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Devotion Aura
                    Base Value: -3 | Scaled Value: -3 | Trigger Spell: 344218 | Target: Self (1)
 Description      : Party and raid members within $a1 yds are bolstered by their devotion, reducing damage taken by $s1%.
 Tooltip          : Damage taken reduced by $w1%.
@@ -721,8 +721,9 @@ Effects          :
                    Affected School(s): All
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#3 (id=728128)   : Apply Aura (6) | Unknown(316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
+#3 (id=728128)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x14 | Target: Self (1)
+                   Affected School(s): All
 #4 (id=1183798)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -771,7 +772,7 @@ Effects          :
                    Affected Spells (Category): Holy Shock (20473)
 #6 (id=724125)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#7 (id=728847)   : Apply Aura (6) | Unknown(262)
+#7 (id=728847)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -779,7 +780,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Judgment (220637)
                    Family Flags: 98
-#9 (id=1032032)  : Apply Aura (6) | Unknown(285)
+#9 (id=1032032)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
 #10 (id=1034533) : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -846,7 +847,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 40 yards | Target: Self (1)
 #3 (id=762279)   : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 33 | Radius: 40 yards | Target: Self (1)
-#4 (id=803410)   : Apply Aura (6) | Unknown(285)
+#4 (id=803410)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Crusader Aura
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 344219 | Target: Self (1)
 Description      : Increases mounted speed by $s1% for all party and raid members within $a1 yds.
 Tooltip          : Mounted speed increased by $w1%.$?$w5>0[
@@ -1188,15 +1189,15 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=51287)    : Apply Aura (6) | Unknown(403)
+#1 (id=51287)    : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31884 | Misc Value 2: 0x1d94b | Target: Self (1)
-#2 (id=254790)   : Apply Aura (6) | Unknown(403)
+#2 (id=254790)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value: 31842 | Misc Value 2: 0x1d94b | Target: Self (1)
-#3 (id=364395)   : Apply Aura (6) | Unknown(403)
+#3 (id=364395)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
-#4 (id=364396)   : Apply Aura (6) | Unknown(403)
+#4 (id=364396)   : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
-#5 (id=1076305)  : Apply Aura (6) | Unknown(403)
+#5 (id=1076305)  : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 121163 | Scaled Value: 121163 | Misc Value 2: 0x1d94b | Target: Self (1)
 Description      : Your Avenging Wrath depicts 4 wings.
 
@@ -2326,11 +2327,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2719,7 +2720,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 11 | Target: Self (1)
 #2 (id=200490)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 11 | Target: Self (1)
-#3 (id=1184237)  : Apply Aura (6) | Unknown(262)
+#3 (id=1184237)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Divine Shield (642), Protection of the Fallen Dragons (392255)
                    Family Flags: 22
@@ -2827,7 +2828,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=218981)   : Apply Aura (6) | Proc Trigger Spell (42): Holy Shield
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157122 | Target: Self (1)
-#3 (id=232078)   : Apply Aura (6) | Unknown(528)
+#3 (id=232078)   : Apply Aura (6) | Allow Blocking Spells (528)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your block chance is increased by $s1%, you are able to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
@@ -3034,7 +3035,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6)
 Effects          :
-#1 (id=227075)   : Apply Aura (6) | Unknown(463)
+#1 (id=227075)   : Apply Aura (6) | Modify Parry Rating with Crit Rating (463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
@@ -3066,11 +3067,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228482)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228483)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#3 (id=228484)   : Apply Aura (6) | Unknown(466)
+#1 (id=228482)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228483)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#3 (id=228484)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
@@ -3082,11 +3083,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228494)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#2 (id=228495)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#3 (id=228496)   : Apply Aura (6) | Unknown(466)
+#1 (id=228494)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#2 (id=228495)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Str | Target: Self (1)
+#3 (id=228496)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
@@ -3098,10 +3099,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228498)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228499)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
+#1 (id=228498)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228499)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
 
 Name             : Sanctified Wrath (id=171648) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3304,7 +3305,7 @@ Aura Interrupt   : Leave World (19), Login (29)
 Effects          :
 #1 (id=265677)   : Apply Aura Raid (65) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Self (1)
-#2 (id=868379)   : Apply Aura (6) | Unknown(285)
+#2 (id=868379)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Retribution Aura
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 344217 | Target: Self (1)
 #3 (id=1055980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3462,7 +3463,7 @@ Effects          :
 #4 (id=1028881)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#5 (id=1033491)  : Apply Aura (6) | Unknown(285)
+#5 (id=1033491)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Bulwark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 394101 | Target: Self (1)
 Description      : $@spelldesc26573
 Tooltip          : $?c1[Shield of the Righteous damage and Word of Glory healing increased by $w3%.]?c2[Hammer of the Righteous also causes a wave of light that hits all other enemies near the target.]?c3[Shield of the Righteous damage and Word of Glory healing increased by $w3%.][]$?$w2<0[
@@ -3765,7 +3766,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 198137 | Target: Self (1)
 #2 (id=1144706)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Trigger Spell: 198137 | Target: Self (1)
-#3 (id=1233368)  : Apply Aura (6) | Unknown(395)
+#3 (id=1233368)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37932 | Target: Self (1)
 Description      : Divine Hammers spin around you, striking enemies nearby for $?s405289[${$198137sw1*1.05} Radiant][$198137sw1 Holy] damage every $t sec for $d.
 
@@ -4796,7 +4797,7 @@ Effects          :
                    Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.77 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#7 (id=321945)   : Apply Aura (6) | Unknown(262)
+#7 (id=321945)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -4900,7 +4901,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14584 | Target: Self (1)
 #7 (id=766091)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158214)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158214)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -4937,7 +4938,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30501 | Target: Self (1)
 #7 (id=766090)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158218)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158218)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -4974,7 +4975,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19085 | Target: Self (1)
 #7 (id=766089)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158219)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158219)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -5011,7 +5012,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 31368 | Target: Self (1)
 #7 (id=766088)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158220)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158220)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -5318,7 +5319,7 @@ Effects          :
                    Family Flags: 65
 #3 (id=474662)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#4 (id=479842)   : Apply Aura (6) | Unknown(262)
+#4 (id=479842)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -5326,7 +5327,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #6 (id=1034545)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=1038644)  : Apply Aura (6) | Unknown(285)
+#7 (id=1038644)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
 Description      : Call upon the Light and begin a crusade, increasing your haste $?s384376[and damage ][]by ${$s5/10}% for $d.
 
@@ -5557,7 +5558,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74151 | Target: Self (1)
 #7 (id=766087)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158215)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158215)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -5594,7 +5595,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74149 | Target: Self (1)
 #7 (id=766086)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158216)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158216)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -5631,7 +5632,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 74150 | Target: Self (1)
 #7 (id=766085)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158217)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158217)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -6108,7 +6109,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 85395 | Target: Self (1)
 #7 (id=766049)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158222)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158222)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -6145,7 +6146,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 85394 | Target: Self (1)
 #7 (id=766082)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158223)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158223)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -6234,7 +6235,7 @@ Labels           : 292
 Azerite Power Id : 396
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=748526)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=748526)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 12977.11 (coefficient=5.07362) | PvP Coefficient: 0.5 | Trigger Spell: 286231 | Target: Self (1)
 Description      : Spending Holy Power during $?<s231895>[Crusade][Avenging Wrath] causes you to explode with Holy light for $s1 damage per Holy Power spent to nearby enemies. $?<s231895>[Crusade][Avenging Wrath]'s duration is increased by ${$286231s2/1000} sec.
 
@@ -6290,7 +6291,7 @@ Azerite Power Id : 139
 Triggered By     : Glimmer of Light (287285), Glimmer of Light (287286), Glimmer of Light (325983), Glimmer of Light (325984), Glimmer of Light (416618), Glimmer of Light (416619)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=750129)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=750129)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glimmer of Light | Scaling Class: -8
                    Base Value: 6 | Scaled Value: 15377.95 (coefficient=6.01227) | PvP Coefficient: 0.5 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=750167)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 6 | Scaled Value: 16947.13 (coefficient=6.625767) | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
@@ -6474,7 +6475,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 90501 | Target: Self (1)
 #7 (id=766081)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158226)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158226)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -6753,7 +6754,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 26 | Radius: 40 yards | Target: Self (1)
 #2 (id=803398)   : Apply Aura Raid (65) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 9 | Radius: 40 yards | Target: Self (1)
-#3 (id=868382)   : Apply Aura (6) | Unknown(285)
+#3 (id=868382)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Concentration Aura
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344220 | Target: Self (1)
 #4 (id=871959)   : Apply Aura Raid (65) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 5 | Radius: 40 yards | Target: Self (1)
@@ -6785,7 +6786,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=816764)   : Apply Aura (6) | Unknown(285)
+#1 (id=816764)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glimmer of Light
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287269 | Target: Self (1)
 #2 (id=1082651)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -6862,7 +6863,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Do Not Sheath (18), No School Immunities (90)
 Effects          :
-#1 (id=817303)   : Apply Aura (6) | Unknown(395)
+#1 (id=817303)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 20176 | Target: Self (1)
 Description      : $@spelldesc204077
 
@@ -7120,7 +7121,7 @@ Labels           : 16: Class Spells
 Triggered By     : Blessing of Summer (328620)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=820433)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Autumn overrides Blessing of Summer
+#1 (id=820433)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Autumn overrides Blessing of Summer
                    Base Value: 328622 | Scaled Value: 328622 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -7308,7 +7309,7 @@ Labels           : 16: Class Spells
 Triggered By     : Blessing of Winter (328281), Blessing of Spring (328282)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=823062)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Spring overrides Blessing of Summer
+#1 (id=823062)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Spring overrides Blessing of Summer
                    Base Value: 328282 | Scaled Value: 328282 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -7324,7 +7325,7 @@ Labels           : 16: Class Spells
 Triggered By     : Blessing of Autumn (328622)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=823065)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Winter overrides Blessing of Summer
+#1 (id=823065)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Winter overrides Blessing of Summer
                    Base Value: 328281 | Scaled Value: 328281 | Misc Value: 328620 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -7342,7 +7343,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Heal, Magic Hostile Spell
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=824017)   : Apply Aura (6) | Unknown(262)
+#1 (id=824017)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -7410,7 +7411,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=835138)   : Apply Aura (6) | Unknown(262)
+#1 (id=835138)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -7429,7 +7430,7 @@ Labels           : 16: Class Spells
                  : 931
 Attributes       : Passive (6), Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=835172)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=835172)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 336872 | Scaled Value: 336872 | Target: Self (1)
                    Affected Spells: Templar's Verdict (85256), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 77
@@ -7529,10 +7530,10 @@ Spell Type       : None
 Labels           : 931
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=835935)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Trigger Spell: 337747 | Target: Self (1)
-#2 (id=835936)   : Apply Aura (6) | Unknown(396)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Misc Value 2: 0x1 | Trigger Spell: 337757 | Target: Self (1)
+#1 (id=835935)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Blessing of Dawn
+                   Base Value: 5 | Scaled Value: 5 | Resource: holy_power | Trigger Spell: 337747 | Target: Self (1)
+#2 (id=835936)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Blessing of Dusk
+                   Base Value: 0 | Scaled Value: 0 | Resource: holy_power | Misc Value 2: 0x1 | Trigger Spell: 337757 | Target: Self (1)
 Description      : When you reach $s1 Holy Power, you gain Blessing of Dawn. When you reach $s2 Holy Power, you gain Blessing of Dusk.
 
 $@spellicon337747$@spellname337747
@@ -8932,7 +8933,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104864 | Target: Self (1)
 #7 (id=903100)   : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158221)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158221)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -9094,7 +9095,7 @@ School           : Nature
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=904945)   : Apply Aura (6) | Unknown(285)
+#1 (id=904945)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seasons of Plenty
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 355100 | Target: Self (1)
 Description      : $@spelldesc355100
 
@@ -9105,7 +9106,7 @@ Spell Type       : None
 Range            : 30 yards
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=904965)   : Apply Aura (6) | Unknown(285)
+#1 (id=904965)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Resonance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 355098 | Target: Self (1)
 Description      : $@spelldesc355098
 
@@ -9137,7 +9138,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364642)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=911506)   : Apply Aura (6) | Unknown(285)
+#1 (id=911506)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Resonance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 355098 | Target: Self (1)
 Description      : $@spelldesc355098
 
@@ -9151,7 +9152,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364642)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=911507)   : Apply Aura (6) | Unknown(285)
+#1 (id=911507)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Radiant Embers
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355447 | Target: Self (1)
 Description      : $@spelldesc355447
 
@@ -9165,7 +9166,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364642)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=911508)   : Apply Aura (6) | Unknown(285)
+#1 (id=911508)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Duty-Bound Gavel
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355099 | Target: Self (1)
 Description      : $@spelldesc355099
 
@@ -9180,7 +9181,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364642)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=911509)   : Apply Aura (6) | Unknown(285)
+#1 (id=911509)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seasons of Plenty
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 355100 | Target: Self (1)
 Description      : $@spelldesc355100
 
@@ -9866,7 +9867,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1015176)  : Apply Aura (6) | Unknown(262)
+#1 (id=1015176)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -10110,7 +10111,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1016306)  : Apply Aura (6) | Unknown(285)
+#1 (id=1016306)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Resonance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384028 | Target: Self (1)
 Description      : $@spelldesc384028
 
@@ -10181,7 +10182,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Unknown (454)
 Effects          :
-#1 (id=1016352)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1016352)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 383469 | Scaled Value: 383469 | Target: Self (1)
                    Affected Spells: Wake of Ashes (255937), Radiant Decree (383469), Truth's Wake (403695), Wake of Ashes (405345), Wake of Ashes (405350)
                    Family Flags: 68
@@ -10778,7 +10779,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1021024)  : Apply Aura (6) | Unknown(285)
+#1 (id=1021024)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Divine Resonance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 386732 | Target: Self (1)
 Description      : $@spelldesc386732
 
@@ -10985,7 +10986,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1022822)  : Apply Aura (6) | Proc Trigger Spell (42): Empyreal Ward
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 387792 | Target: Self (1)
-#2 (id=1187299)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#2 (id=1187299)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 471195 | Scaled Value: 471195 | Target: Self (1)
                    Affected Spells: Lay on Hands (633), Lay on Hands (471195)
                    Family Flags: 15
@@ -11417,7 +11418,7 @@ Triggered By     : Blessing of Summer (388007)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1023444)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Autumn overrides Blessing of Summer
+#1 (id=1023444)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Autumn overrides Blessing of Summer
                    Base Value: 388010 | Scaled Value: 388010 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -11434,7 +11435,7 @@ Triggered By     : Blessing of Autumn (388010)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1023446)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Winter overrides Blessing of Summer
+#1 (id=1023446)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Winter overrides Blessing of Summer
                    Base Value: 388011 | Scaled Value: 388011 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -11451,7 +11452,7 @@ Triggered By     : Blessing of Winter (388011), Blessing of Spring (388013)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1023448)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Blessing of Spring overrides Blessing of Summer
+#1 (id=1023448)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Spring overrides Blessing of Summer
                    Base Value: 388013 | Scaled Value: 388013 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
 Description      :  
 
@@ -11511,7 +11512,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #6 (id=1033317)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=1033318)  : Apply Aura (6) | Unknown(262)
+#7 (id=1033318)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -11745,7 +11746,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 392939 | Target: Self (1)
 #2 (id=1083386)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#3 (id=1083387)  : Apply Aura (6) | Unknown(285)
+#3 (id=1083387)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Veneration
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 414411 | Target: Self (1)
 Description      : Hammer of Wrath heals up to $s2 injured allies for $414411s2% of the damage done, split evenly among them.
 
@@ -11766,7 +11767,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Veneration (392938)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1031517)  : Apply Aura (6) | Unknown(262)
+#1 (id=1031517)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -11882,7 +11883,7 @@ Labels           : 16: Class Spells
 Triggered By     : Inspiring Vanguard (393019)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1031668)  : Apply Aura (6) | Unknown(285)
+#1 (id=1031668)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Inspiring Vanguard
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 393022 | Target: Self (1)
 #2 (id=1031669)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -11935,7 +11936,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1031684)  : Apply Aura (6) | Unknown(529)
+#1 (id=1031684)  : Apply Aura (6) | Modify Spell Block Chance (529)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Your chance to block spells is increased by $s1%.
 
@@ -12395,7 +12396,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1042461)  : Apply Aura (6) | Unknown(408)
+#1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 82326 | Target: Self (1)
 Description      : $@spelldesc392907
 
@@ -13025,7 +13026,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1052153)  : Apply Aura (6) | Override Auto-Attack with Spell (361)
+#1 (id=1052153)  : Apply Aura (6) | Override Auto-Attack with Ability (361): Crusading Strikes
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 408385 | Target: Self (1)
 #2 (id=1056068)  : Apply Aura (6) | Proc Trigger Spell (42): Crusading Strikes
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 406833 | Target: Self (1)
@@ -13065,7 +13066,7 @@ Attributes       : Passive (6), Spellcast Override In Spellbook (310), Allow Cla
 Effects          :
 #1 (id=1052635)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1052651)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Consecrated Blade overrides Consecration
+#2 (id=1052651)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Consecrated Blade overrides Consecration
                    Base Value: 462970 | Scaled Value: 462970 | Misc Value: 26573 | Target: Self (1)
 Description      : Blade of Justice casts Consecration at the target's location.
 
@@ -13453,7 +13454,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -13691,7 +13692,7 @@ Triggered By     : Templar Strikes (406646)
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1055719)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Templar Slash overrides Templar Strike
+#1 (id=1055719)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Templar Slash overrides Templar Strike
                    Base Value: 406647 | Scaled Value: 406647 | Misc Value: 407480 | Target: Self (1)
 Description      : Crusader Strike becomes a 3 part combo and deals radiant damage.
 
@@ -14651,7 +14652,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook
 Effects          :
 #1 (id=1083490)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-#2 (id=1083502)  : Apply Aura (6) | Unknown(285)
+#2 (id=1083502)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Shining Righteousness
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 414450 | Target: Self (1)
 Description      : $?s2812[Denounce][Shield of the Righteous] deals $414448s1 damage to its first target struck.
 
@@ -14794,7 +14795,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1084475)  : Apply Aura (6) | Unknown(262)
+#1 (id=1084475)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -15408,7 +15409,7 @@ Triggered By     : Light's Guidance (427445)
 Attributes       : Do Not Log (8), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1106887)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#1 (id=1106887)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 427453 | Scaled Value: 427453 | Target: Self (1)
                    Affected Spells: Wake of Ashes (255937), Radiant Decree (383469), Eye of Tyr (387174), Truth's Wake (403695), Wake of Ashes (405345), Wake of Ashes (405350)
                    Family Flags: 59, 68
@@ -16447,7 +16448,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1121198)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Sacred Weapon overrides Holy Bulwark
+#1 (id=1121198)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sacred Weapon overrides Holy Bulwark
                    Base Value: 432472 | Scaled Value: 432472 | Misc Value: 432459 | Target: Self (1)
 Description      : $@spelldesc432472
 
@@ -17381,7 +17382,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#2 (id=1142482)  : Apply Aura (6) | Unknown(262)
+#2 (id=1142482)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -17675,7 +17676,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1153278)  : Apply Aura (6) | Unknown(262)
+#1 (id=1153278)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -17884,7 +17885,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 116418 | Target: Self (1)
 #7 (id=1155858)  : Apply Aura (6) | Unknown(191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1158224)  : Apply Aura (6) | Unknown(312)
+#8 (id=1158224)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
 Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
@@ -17921,7 +17922,7 @@ Effects          :
 #6 (id=1156821)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
-#7 (id=1156822)  : Apply Aura (6) | Unknown(262)
+#7 (id=1156822)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -17929,7 +17930,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Judgment (220637)
                    Family Flags: 98
-#9 (id=1156824)  : Apply Aura (6) | Unknown(285)
+#9 (id=1156824)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
 #10 (id=1156825) : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17984,7 +17985,7 @@ Effects          :
                    Family Flags: 65
 #3 (id=1156862)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#4 (id=1156863)  : Apply Aura (6) | Unknown(262)
+#4 (id=1156863)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -17992,7 +17993,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #6 (id=1156865)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=1156866)  : Apply Aura (6) | Unknown(285)
+#7 (id=1156866)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
 Description      : Call upon the Light and begin a crusade, increasing your haste $?s384376[and damage ][]by ${$s5/10}% for $d.
 
@@ -18160,9 +18161,9 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1164292)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Radiant Glory overrides Crusade
+#1 (id=1164292)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Radiant Glory overrides Crusade
                    Base Value: 454353 | Scaled Value: 454353 | Misc Value: 231895 | Target: Self (1)
-#2 (id=1171273)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Radiant Glory overrides Avenging Wrath
+#2 (id=1171273)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Radiant Glory overrides Avenging Wrath
                    Base Value: 462048 | Scaled Value: 462048 | Misc Value: 31884 | Target: Self (1)
 Description      : $?s231895[Crusade][Avenging Wrath] is replaced with Radiant Glory.
 
@@ -19803,7 +19804,7 @@ Effects          :
 #5 (id=1232942)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 5067 (Label) | Target: Self (1)
                    Affected Spells (Label): Hammer of Light (427441)
-#6 (id=1242657)  : Apply Aura (6) | Unknown(285)
+#6 (id=1242657)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Paladin Templar 11.2 Class Set 4pc Driver
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236748 | Target: Self (1)
 Description      : Hammer of Light deals $?c3[$s1][$s3]% increased damage to its primary target, strikes $?c3[$s2][$s4] additional secondary targets, and can now be cast $s5 more time after $?c3[Wake of Ashes][Eye of Tyr]. 
 

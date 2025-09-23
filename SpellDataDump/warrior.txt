@@ -360,9 +360,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Shockwave (46968), Shockwave (132168), Odyn's Fury (385059), Shockwave (441668)
                    Family Flags: 17, 47, 103
-#10 (id=1193952) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Crushing Blow overrides Raging Blow
+#10 (id=1193952) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Crushing Blow overrides Raging Blow
                    Base Value: 335097 | Scaled Value: 335097 | Misc Value: 85288 | Target: Self (1)
-#11 (id=1193953) : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bloodbath overrides Bloodthirst
+#11 (id=1193953) : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Bloodbath overrides Bloodthirst
                    Base Value: 335096 | Scaled Value: 335096 | Misc Value: 23881 | Target: Self (1)
 #12 (id=1201495) : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
@@ -1240,7 +1240,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Can Proc From Procs (122), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=44921)    : Apply Aura (6) | Unknown(262)
+#1 (id=44921)    : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
@@ -1252,9 +1252,9 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-#4 (id=1243174)  : Apply Aura (6) | Unknown(408)
+#4 (id=1243174)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 163201 | Target: Self (1)
-#5 (id=1251855)  : Apply Aura (6) | Unknown(408)
+#5 (id=1251855)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 281000 | Target: Self (1)
 Description      : $@spelldesc29725
 Tooltip          : $?a317320[Condemn][Execute] costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.
@@ -1290,7 +1290,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=51406)    : Apply Aura (6) | Unknown(403)
+#1 (id=51406)    : Apply Aura (6) | Override Spell Visual (403)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115767 | Misc Value 2: 0x1c4fa | Target: Targeted Enemy (6)
 Description      : Your Deep Wounds are even bloodier than normal.
 
@@ -2516,11 +2516,11 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+#5 (id=255745)   : Apply Aura (6) | Check PVP State (119)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+#7 (id=351564)   : Apply Aura (6) | Modify Resilience (309)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2976,7 +2976,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6)
 Effects          :
-#1 (id=227073)   : Apply Aura (6) | Unknown(463)
+#1 (id=227073)   : Apply Aura (6) | Modify Parry Rating with Crit Rating (463)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
@@ -2989,11 +2989,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228482)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228483)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
-#3 (id=228484)   : Apply Aura (6) | Unknown(466)
+#1 (id=228482)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228483)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
+#3 (id=228484)   : Apply Aura (6) | Modify Armor% (466)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
@@ -3005,10 +3005,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228498)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 3 | Target: Self (1)
-#2 (id=228499)   : Apply Aura (6) | Unknown(467)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
+#1 (id=228498)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Int | Target: Self (1)
+#2 (id=228499)   : Apply Aura (6) | Modify Stat Bonus% (467)
+                   Base Value: -100 | Scaled Value: -100 | Stat: Agi | Target: Self (1)
 
 Name             : Execute (id=163201) [Spell Family (4)] 
 Class            : Warrior
@@ -3154,7 +3154,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042)
                    Family Flags: 9
-#6 (id=1218690)  : Apply Aura (6) | Unknown(458)
+#6 (id=1218690)  : Apply Aura (6) | Hasted Cooldown Regeneration (Category) (458)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc184361
 Tooltip          : Damage done increased by $76856s1%$?s383848[, Haste increased by $m1%,
@@ -4079,13 +4079,13 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=305084)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Execute overrides Execute
+#1 (id=305084)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Execute overrides Execute
                    Base Value: 280735 | Scaled Value: 280735 | Misc Value: 5308 | Target: Self (1)
 #2 (id=738457)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=800237)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | Target: Self (1)
-#4 (id=835424)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Condemn
+#4 (id=835424)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Condemn
                    Base Value: 330325 | Scaled Value: 330325 | Misc Value: 317485 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is now usable on targets below $s2% health and its cooldown is reduced by ${$s3/1000}.1 sec.
 
@@ -5331,7 +5331,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=728325)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Intimidating Shout overrides Intimidating Shout
+#1 (id=728325)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Intimidating Shout overrides Intimidating Shout
                    Base Value: 316593 | Scaled Value: 316593 | Misc Value: 5246 | Target: Self (1)
 Description      : Intimidating Shout will knock back all nearby enemies except your primary target and cause them all to cower in fear for $316595d instead of fleeing.
 
@@ -5367,7 +5367,7 @@ Azerite Power Id : 433
 Triggered By     : Seismic Wave (278497)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=732931)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#1 (id=732931)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seismic Wave | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 24353.65 (coefficient=9.521472) | PvP Coefficient: 0.5 | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
@@ -5437,7 +5437,7 @@ Labels           : 292
 Azerite Power Id : 441
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734717)   : Apply Aura (6) | Unknown(285) | Scaling Class: -1
+#1 (id=734717)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Iron Fortress | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2603.699 (coefficient=0.68) | PvP Coefficient: 0.5 | Trigger Spell: 279141 | Target: Self (1)
 #2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2450.541 (coefficient=0.64) | PvP Coefficient: 0.5 | Target: Self (1)
@@ -5665,13 +5665,13 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Can Proc From Procs (122), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=738539)   : Apply Aura (6) | Unknown(262)
+#1 (id=738539)   : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-#2 (id=1243175)  : Apply Aura (6) | Unknown(408)
+#2 (id=1243175)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 5308 | Target: Self (1)
-#3 (id=1251857)  : Apply Aura (6) | Unknown(408)
+#3 (id=1251857)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 280735 | Target: Self (1)
 Description      : $@spelldesc280721
 Tooltip          : $?a317320[Condemn][Execute] can be used on any target, regardless of their health.
@@ -5735,11 +5735,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=738985)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Execute overrides Execute
+#1 (id=738985)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Execute overrides Execute
                    Base Value: 281000 | Scaled Value: 281000 | Misc Value: 163201 | Target: Self (1)
 #2 (id=738986)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-#3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Condemn
+#3 (id=835434)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Condemn
                    Base Value: 330334 | Scaled Value: 330334 | Misc Value: 317349 | Target: Self (1)
 Description      : $?a317320[Condemn][Execute] is usable on targets below $s2% health.
 
@@ -5756,9 +5756,9 @@ Azerite Power Id : 176
 Triggered By     : Gushing Wound (288091)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=751474)   : Apply Aura (6) | Unknown(285)
+#1 (id=751474)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288084 | Target: Self (1)
-#2 (id=751475)   : Apply Aura (6) | Unknown(285) | Scaling Class: -8
+#2 (id=751475)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 24322.27 (coefficient=9.509202) | PvP Coefficient: 0.5 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
 Variables        : $rage=${$288087s1/10}
@@ -6299,15 +6299,15 @@ Labels           : 16: Class Spells
                  : 1379
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Aura While Dead (116), Allow Cast While Casting (135), Not In Spellbook (143), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Required by Client (262), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=802431)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
+#1 (id=802431)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Execute
                    Base Value: 317349 | Scaled Value: 317349 | Misc Value: 163201 | Misc Value 2: 0x3 | Target: Self (1)
-#2 (id=802684)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
+#2 (id=802684)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Execute
                    Base Value: 317485 | Scaled Value: 317485 | Misc Value: 5308 | Misc Value 2: 0x3 | Target: Self (1)
 #3 (id=802685)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-#4 (id=836243)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
+#4 (id=836243)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Execute
                    Base Value: 330325 | Scaled Value: 330325 | Misc Value: 280735 | Misc Value 2: 0x3 | Target: Self (1)
-#5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Condemn overrides Execute
+#5 (id=836244)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Condemn overrides Execute
                    Base Value: 330334 | Scaled Value: 330334 | Misc Value: 281000 | Misc Value 2: 0x3 | Target: Self (1)
 #6 (id=872286)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -14 | Scaled Value: -14 | Misc Value: 3 | Misc Value 2: 1138 (Label) | Target: Self (1)
@@ -6519,9 +6519,9 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
 #5 (id=880297)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#6 (id=880298)   : Apply Aura (6) | Unknown(285)
+#6 (id=880298)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hateful Fetish
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 333892 | Target: Self (1)
-#7 (id=880299)   : Apply Aura (6) | Unknown(285)
+#7 (id=880299)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Repulsive Pennant
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 350605 | Target: Self (1)
 #8 (id=880300)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
@@ -8016,9 +8016,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=845677)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#4 (id=845678)   : Apply Aura (6) | Unknown(285)
+#4 (id=845678)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hateful Fetish
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 333892 | Target: Self (1)
-#5 (id=845679)   : Apply Aura (6) | Unknown(285)
+#5 (id=845679)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Conqueror's Banner
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 325788 | Target: Self (1)
 #6 (id=868418)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
@@ -8337,7 +8337,7 @@ Labels           : 292
 Triggered By     : Chosen Identity (384590)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Chosen Identity overrides Chosen Identity
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Chosen Identity overrides Chosen Identity
                    Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
 Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
@@ -8580,7 +8580,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364929)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=905388)   : Apply Aura (6) | Unknown(285)
+#1 (id=905388)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Elysian Might
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 357996 | Target: Self (1)
 Description      : $@spelldesc357996
 
@@ -8596,7 +8596,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364929)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=905389)   : Apply Aura (6) | Unknown(285)
+#1 (id=905389)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Nature's Fury
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354161 | Target: Self (1)
 Description      : $@spelldesc354161
 
@@ -8612,7 +8612,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364929)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=905391)   : Apply Aura (6) | Unknown(285)
+#1 (id=905391)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sinful Surge
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 354131 | Target: Self (1)
 Description      : $@spelldesc354131
 
@@ -8628,7 +8628,7 @@ Proc Chance      : 101%
 Triggered By     : Unity (364929)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=905392)   : Apply Aura (6) | Unknown(285)
+#1 (id=905392)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Glory
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 353577 | Target: Self (1)
 Description      : $@spelldesc353577
 
@@ -10256,7 +10256,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1017982)  : Apply Aura (6) | Unknown(285)
+#1 (id=1017982)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Test of Might
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Trigger Spell: 385009 | Target: Self (1)
 #2 (id=1017983)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -12092,7 +12092,7 @@ Family Flags     : 50
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1038334)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Crushing Blow overrides Raging Blow
+#1 (id=1038334)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Crushing Blow overrides Raging Blow
                    Base Value: 335097 | Scaled Value: 335097 | Misc Value: 85288 | Target: Self (1)
 Description      : $@spelldesc396749
 Tooltip          : Your next Raging Blow is greatly empowered.
@@ -12416,7 +12416,7 @@ Labels           : 292
 Triggered By     : Calm the Wolf (406088)
 Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Calm the Wolf overrides Calm the Wolf
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Calm the Wolf overrides Calm the Wolf
                    Base Value: 406088 | Scaled Value: 406088 | Misc Value: 406087 | Target: Self (1)
 Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
 
@@ -13008,7 +13008,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Ionizing Strike (1238042)
                    Family Flags: 9
-#2 (id=1168667)  : Apply Aura (6) | Unknown(638)
+#2 (id=1168667)  : Apply Aura (6) | Modify Critical Block Amount (638)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Critical strike damage of your abilities is increased by $s1% and the amount of damage blocked by your critical blocks is increased by $s2%.
 
@@ -13259,11 +13259,11 @@ Triggered By     : Snap Induction (456270)
 Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1126347)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
+#1 (id=1126347)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 435222 | Scaled Value: 435222 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
-#2 (id=1243164)  : Apply Aura (6) | Unknown(408)
+#2 (id=1243164)  : Apply Aura (6) | Set Action Button Spell Count (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 435222 | Target: Self (1)
 Description      : $@spelldesc435607
 Tooltip          : Your next Thunder Clap becomes a Thunder Blast that deals Stormstrike damage and generates ${$435222s4/10} Rage.
@@ -13407,7 +13407,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 144 | Target: Self (1)
 #10 (id=1207286) : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2142 | Target: Self (1)
-#11 (id=1242820) : Apply Aura (6) | Unknown(312)
+#11 (id=1242820) : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1207 | Target: Self (1)
 #12 (id=1246797) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 5 | Target: Self (1)
@@ -14254,7 +14254,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1147804)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bladestorm overrides Bladestorm
+#3 (id=1160105)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Bladestorm overrides Bladestorm
                    Base Value: 446035 | Scaled Value: 446035 | Misc Value: 227847 | Target: Self (1)
 Description      : When you Execute a target that you've Marked for Execution, you both reduce the cooldown of Bladestorm by $s1 sec and apply $s2 stacks of Overwhelmed to the target per stack of Marked for Execution consumed.
 
@@ -15133,7 +15133,7 @@ Family Flags     : 50
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1169628)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332): Bloodbath overrides Bloodthirst
+#1 (id=1169628)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Bloodbath overrides Bloodthirst
                    Base Value: 335096 | Scaled Value: 335096 | Misc Value: 23881 | Target: Self (1)
 Description      : $@spelldesc396749
 Tooltip          : Your next Bloodthirst is greatly empowered.
