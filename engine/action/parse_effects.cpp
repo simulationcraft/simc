@@ -11,6 +11,7 @@
 #include "report/decorators.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/sim.hpp"
+#include "util/parse_util.hpp"
 
 namespace opt_strings
 {

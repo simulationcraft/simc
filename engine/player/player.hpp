@@ -20,10 +20,11 @@
 #include "rating.hpp"
 #include "sc_enums.hpp"
 #include "sim/proc.hpp"
+#include "sim/proc_rng.hpp"
 #include "talent.hpp"
 #include "util/cache.hpp"
+#include "util/parse_util.hpp"
 #include "util/rng.hpp"
-#include "sim/proc_rng.hpp"
 #include "util/util.hpp"
 #include "weapon.hpp"
 
