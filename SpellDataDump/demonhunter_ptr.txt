@@ -4295,9 +4295,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -4620,7 +4620,7 @@ Azerite Power Id : 159
 Triggered By     : Furious Gaze (273232)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=724687)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+#1 (id=724687)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 9109.069 (coefficient=2.378987) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When Eye Beam finishes fully channeling, your Haste is increased by $s1 for $273232d.
 

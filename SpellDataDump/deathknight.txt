@@ -69,9 +69,9 @@ Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
+#1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.123 (coefficient=1.286279) | Target: Self (1)
-#2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: -1
+#2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.123 (coefficient=1.286279) | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
@@ -6487,9 +6487,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -6506,7 +6506,7 @@ Labels           : 292
 Triggered By     : Horrid Experimentation (273096)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=724426)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
+#1 (id=724426)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 39505.61 (coefficient=10.31756) | Target: Self (1)
 Description      : When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.
 
@@ -6693,7 +6693,7 @@ Azerite Power Id : 199
 Triggered By     : Festermight (274373)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=726196)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
+#1 (id=726196)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 467.6589 (coefficient=0.122137) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
@@ -6833,7 +6833,7 @@ Azerite Power Id : 242
 Triggered By     : Echoing Howl (275918)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=729270)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=729270)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 20399.32 (coefficient=7.97546) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When empowered by Rime, Howling Blast causes a secondary burst of icy wind around you that deals $s1 Frost damage to nearby enemies.
 
@@ -7184,7 +7184,7 @@ Azerite Power Id : 142
 Triggered By     : Helchains (286836), Helchains (286954), Helchains (290814)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=749436)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Helchains | Scaling Class: -8
+#1 (id=749436)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Helchains | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 14122.61 (coefficient=5.521472) | PvP Coefficient: 0.5 | Trigger Spell: 286834 | Target: Self (1)
 #2 (id=749437)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
@@ -7348,9 +7348,9 @@ Azerite Power Id : 198
 Triggered By     : Frostwhelp's Indignation (287320), Frostwhelp's Indignation (287338), Frozen Dominion (377253)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=750152)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Frostwhelp's Indignation | Scaling Class: -1
+#1 (id=750152)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Frostwhelp's Indignation | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 29228.78 (coefficient=7.633588) | PvP Coefficient: 0.5 | Trigger Spell: 287303 | Target: Self (1)
-#2 (id=750153)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+#2 (id=750153)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 584.5764 (coefficient=0.152672) | PvP Coefficient: 0.5 | Rating:  | Target: Self (1)
 #3 (id=750154)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5

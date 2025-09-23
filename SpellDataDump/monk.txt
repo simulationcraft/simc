@@ -177,9 +177,9 @@ Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
+#1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | Target: Self (1)
-#2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
+#2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
@@ -1108,7 +1108,7 @@ Family Flags     : 53, 64
 Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Pushback (207), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Shapeshifting (15), Leave World (19), Enter World (22)
 Effects          :
-#1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: -2
+#1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 3 | Scaled Value: 44625 (coefficient=0.017) | Target: Self (1)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
@@ -5765,7 +5765,7 @@ Labels           : 95
                  : 293
 Attributes       : Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
-#1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
+#1 (id=364982)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 21.18463 (coefficient=0.353149) | Rating: Mastery | Radius: 100 yards | Target: Targeted Ally or Raid (118)
 Description      : $@spelldesc238095
 Tooltip          : Mastery increased by $w1.
@@ -5958,9 +5958,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -6313,7 +6313,7 @@ Azerite Power Id : 117
 Triggered By     : Fury of Xuen (287062), Fury of Xuen (287063), Fury of Xuen (396167)
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=749794)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+#1 (id=749794)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 12799.63 (coefficient=3.342839) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your Combo Strikes grant a stacking ${$287062s3/100}.1% chance for your next Fists of Fury to grant $s1 Haste and invoke Xuen, The White Tiger for $287063d.
 
@@ -6398,7 +6398,7 @@ Azerite Power Id : 388
 Triggered By     : Glory of the Dawn (288636), Glory of the Dawn (392959)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=752477)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=752477)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 180863.5 (coefficient=70.71166) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=752478)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -12041,7 +12041,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 198949.9 (coefficient=77.78283) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1031559)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100

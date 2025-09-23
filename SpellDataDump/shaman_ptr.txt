@@ -737,9 +737,9 @@ Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
+#1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | Target: Self (1)
-#2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: -1
+#2 (id=23582)    : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.127 (coefficient=1.28628) | Stat: Int | Target: Self (1)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
@@ -1060,7 +1060,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
-#2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: -1
+#2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 2015.248 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
 
@@ -6620,9 +6620,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -7086,7 +7086,7 @@ Azerite Power Id : 179
 Triggered By     : Strength of Earth (273466)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=725109)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Earth | Scaling Class: -8
+#1 (id=725109)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Strength of Earth | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 19975.64 (coefficient=7.809816) | PvP Coefficient: 0.5 | Trigger Spell: 273463 | Target: Self (1)
 Description      : Flame Shock causes your next melee ability to deal an additional $s1 Nature damage.
 
@@ -7186,7 +7186,7 @@ Labels           : 292
 Azerite Power Id : 222
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=728385)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=728385)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 42053.99 (coefficient=16.44172) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires, it leaves behind a $?s192249[Spark Elemental][Ember Elemental] to continue attacking your enemies for $275385d.
 
@@ -7267,7 +7267,7 @@ Azerite Power Id : 223
 Triggered By     : Lightning Conduit (275394)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=728400)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lightning Conduit | Scaling Class: -8
+#1 (id=728400)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Lightning Conduit | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 6778.852 (coefficient=2.650307) | PvP Coefficient: 0.5 | Trigger Spell: 275389 | Target: Self (1)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
@@ -7356,11 +7356,11 @@ Labels           : 292
 Triggered By     : Rumbling Tremors (279523), Rumbling Tremors (279553), Rumbling Tremors (279556)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734578)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=734578)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 17260.96 (coefficient=6.748466) | Trigger Spell: 279522 | Target: Self (1)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
-#3 (id=734580)   : Dummy (3) | Scaling Class: -8
+#3 (id=734580)   : Dummy (3) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 20399.32 (coefficient=7.97546)
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -7378,7 +7378,7 @@ Azerite Power Id : 420
 Triggered By     : Roiling Storm (279515)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734600)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Roiling Storm | Scaling Class: -8
+#1 (id=734600)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Roiling Storm | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 23961.36 (coefficient=9.368098) | PvP Coefficient: 0.5 | Trigger Spell: 279513 | Target: Self (1)
 #2 (id=734601)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -7524,7 +7524,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=736419)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Igneous Potential
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279830 | Target: Self (1)
-#2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
+#2 (id=736420)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 19614.73 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
@@ -7719,7 +7719,7 @@ Azerite Power Id : 417
 Triggered By     : Tectonic Thunder (286967)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=749619)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=749619)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 19614.73 (coefficient=7.668712) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=749620)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
@@ -11654,7 +11654,7 @@ Labels           : 16: Class Spells
                  : 2531
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1013071)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1013071)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 1750.875 (coefficient=0.000667) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
@@ -13483,7 +13483,7 @@ Labels           : 16: Class Spells
                  : 2531
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1052177)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1052177)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 2625 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
@@ -13500,7 +13500,7 @@ Labels           : 16: Class Spells
                  : 2531
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1052178)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1052178)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 2625 (coefficient=0.001) | Resource: mana | Target: Targeted Ally (21)
 Description      : $@spelldesc381930
 
@@ -16620,7 +16620,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Ancestral Wisdom (1238279 effects: #1, #2, #3, #4, #7)
 Family Flags     : 41
 Effects          :
-#1 (id=1172306)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1172306)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 5000.625 (coefficient=0.001905) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc462454
 

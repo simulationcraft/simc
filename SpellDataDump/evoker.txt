@@ -352,9 +352,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -3925,7 +3925,7 @@ Labels           : 16: Class Spells
 Triggered By     : Energy Loop (372233)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=996739)   : Energize Power (30) | Scaling Class: -2
+#1 (id=996739)   : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0.5 | Scaled Value: 31500 (coefficient=0.012) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc372233
 

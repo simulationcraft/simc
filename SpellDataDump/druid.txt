@@ -8048,9 +8048,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -8085,7 +8085,7 @@ Azerite Power Id : 122
 Triggered By     : Streaking Star (272873)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=724053)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Streaking Stars | Scaling Class: -8
+#1 (id=724053)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Streaking Stars | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 41834.3 (coefficient=16.35583) | PvP Coefficient: 0.5 | Trigger Spell: 272872 | Target: Self (1)
 Description      : While Celestial Alignment is active, your damaging spells call a Streaking Star, dealing an additional $s1 damage when they are not a repeat of the previous ability.
 Tooltip          : While Celestial Alignment is active, your damaging spells cause an additional $s1 damage when they are not a repeat of the previous ability.
@@ -8329,7 +8329,7 @@ Azerite Power Id : 247
 Triggered By     : Iron Jaws (276026)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=729398)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=729398)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 47593.19 (coefficient=18.60736) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=729399)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -8386,7 +8386,7 @@ Azerite Power Id : 357
 Triggered By     : Lunar Shrapnel (279641)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734247)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
+#1 (id=734247)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 878.7392 (coefficient=0.343558) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Starfall's stars deal an additional $s1 damage to nearby enemies when they damage an enemy afflicted by Moonfire.
 
@@ -8402,7 +8402,7 @@ Azerite Power Id : 112
 Triggered By     : Layered Mane (279555)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=735909)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
+#1 (id=735909)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 861.8245 (coefficient=0.22508) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=735910)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -8545,7 +8545,7 @@ Azerite Power Id : 467
 Triggered By     : Ursoc's Endurance (280165)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=737266)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ursoc's Endurance | Scaling Class: -8
+#1 (id=737266)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ursoc's Endurance | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 354308 (coefficient=138.5227) | PvP Coefficient: 0.2 | Trigger Spell: 280161 | Target: Self (1)
 Description      : When you use Barkskin or Survival Instincts, absorb $s1 damage over $280165d.
 
@@ -8751,7 +8751,7 @@ Azerite Power Id : 251
 Triggered By     : Burst of Savagery (289315)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=753603)   : Apply Aura (6) | Dummy (4) | Scaling Class: -7
+#1 (id=753603)   : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 5119.853 (coefficient=1.337136) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=753606)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -9340,7 +9340,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
 #5 (id=889284)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
-#6 (id=889338)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
+#6 (id=889338)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
 Description      : Form a bond with an ally. Every $327097d, you may empower the bond for $327037d, granting you an effect based on your partner's role, and granting them an effect based on your role.
 
@@ -9471,7 +9471,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Ally (21)
 #5 (id=889249)   : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 5 | Scaled Value: 5 | Target: Current Target (25)
-#6 (id=889250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -1
+#6 (id=889250)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 271.8118 (coefficient=1.052632) | Rating: Mastery | Target: Targeted Ally (21)
 Description      : $@spelldesc326434
 Tooltip          : Bonded with $@auracaster. Every $327097d, you may empower the bond, granting bonuses based on your respective roles.
@@ -16233,7 +16233,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1077504)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1077504)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 175000.9 (coefficient=0.066667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
@@ -16250,7 +16250,7 @@ Labels           : 16: Class Spells
 Triggered By     : Master Shapeshifter (289237)
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1077505)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1077505)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 43750.88 (coefficient=0.016667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 
@@ -16266,7 +16266,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1077507)  : Energize Power (30) | Scaling Class: -2
+#1 (id=1077507)  : Energize Power (30) | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 0 | Scaled Value: 30625.88 (coefficient=0.011667) | Resource: mana | Target: Self (1)
 Description      : $@spelldesc289237
 

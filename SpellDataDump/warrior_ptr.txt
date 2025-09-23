@@ -871,9 +871,9 @@ Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Do Not Reset Combat Timers (81), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: -1
+#1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.123 (coefficient=1.286279) | Target: Self (1)
-#2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: -1
+#2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 4925.123 (coefficient=1.286279) | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
@@ -5000,9 +5000,9 @@ Range            : 40 yards
 Triggered By     : Light's Reckoning (255652)
 Attributes       : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
-#1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
+#1 (id=479676)   : School Damage (2): holy | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | PvP Coefficient: 0.5 | Radius: 0 - 5 yards | Target: at Self (18) -> at Enemy in Area (16)
-#2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
+#2 (id=479677)   : Direct Heal (10) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 901684.3 (coefficient=352.5287) | Radius: 0 - 8 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
@@ -5367,7 +5367,7 @@ Azerite Power Id : 433
 Triggered By     : Seismic Wave (278497)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=732931)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seismic Wave | Scaling Class: -8
+#1 (id=732931)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Seismic Wave | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 24353.65 (coefficient=9.521472) | PvP Coefficient: 0.5 | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
@@ -5437,9 +5437,9 @@ Labels           : 292
 Azerite Power Id : 441
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=734717)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Iron Fortress | Scaling Class: -1
+#1 (id=734717)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Iron Fortress | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 2603.699 (coefficient=0.68) | PvP Coefficient: 0.5 | Trigger Spell: 279141 | Target: Self (1)
-#2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: -1
+#2 (id=734718)   : Apply Aura (6) | Add Block Value (274) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 2450.541 (coefficient=0.64) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
@@ -5758,7 +5758,7 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=751474)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288084 | Target: Self (1)
-#2 (id=751475)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood | Scaling Class: -8
+#2 (id=751475)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Cold Steel, Hot Blood | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 24322.27 (coefficient=9.509202) | PvP Coefficient: 0.5 | Trigger Spell: 288085 | Target: Self (1)
 Description      : Bloodthirst critical strikes generate $<rage> additional Rage, and inflict a Gushing Wound that leeches $<damage> health over $288091d.
 Variables        : $rage=${$288087s1/10}
@@ -6509,7 +6509,7 @@ Family Flags     : 8, 88
 Attributes       : Is Ability (4), Not Shapeshifted (16), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
+#1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Stamina (-6)
                    Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Rating: Mastery | Target: Self (1)
 #2 (id=845745)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -6610,7 +6610,7 @@ Triggered By     : Conqueror's Banner (324143)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Only On Player (104), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
+#1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Stamina (-6)
                    Base Value: 0 | Scaled Value: 1549.781 (coefficient=0.017155) | PvP Coefficient: 0.666667 | Rating: Mastery | Radius: 0 - 30 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=816613)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 30 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -15722,7 +15722,7 @@ Labels           : 4608: Godly Rage (1223161 effect#1)
 Triggered By     : Godly Rage (1223161)
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=1210915)  : School Damage (2): fire | Scaling Class: -8
+#1 (id=1210915)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 255776.1 (coefficient=100) | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=1210928)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
