@@ -1155,7 +1155,7 @@ enum effect_subtype_t : unsigned {
   A_SAFE_FALL = 144,
   A_MOD_PET_TALENT_POINTS = 145,
   A_ALLOW_TAME_PET_TYPE = 146,
-  A_MECHANIC_IMMUNITY_MASK = 147,
+  A_CREATURE_IMMUNITIES = 147,
   A_MOD_CHARGE_RECHARGE_RATE = 148, // recharge rate for all charges of a category
   A_REDUCE_PUSHBACK = 149, // Reduce Pushback
   A_MOD_SHIELD_BLOCKVALUE_PCT = 150,
