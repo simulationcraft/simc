@@ -1153,7 +1153,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
     { 87, "Damage Gameobject" },
     { 88, "Repair Gameobject" },
     { 89, "Set Gameobject Destruction State" },
-    { 90, "Kill Credit" },
+    { 90, "Summon Credit Creature" },
     { 91, "Threat All" },
     { 92, "Enchant Held Item" },
     { 93, "Force Untarget" },

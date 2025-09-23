@@ -743,7 +743,7 @@ enum effect_type_t : unsigned {
     E_WMO_DAMAGE = 87,
     E_WMO_REPAIR = 88,
     E_WMO_CHANGE = 89,
-    E_KILL_CREDIT = 90,
+    E_SUMMON_CREDIT_CREATURE = 90,
     E_THREAT_ALL = 91,
     E_ENCHANT_HELD_ITEM = 92,
     E_BREAK_PLAYER_TARGETING = 93,
