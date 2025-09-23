@@ -21172,7 +21172,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), All
 Effects          :
 #1 (id=55994)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=55995)    : Kill Credit (90)
+#2 (id=55995)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=62045) 
@@ -21187,7 +21187,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), All
 Effects          :
 #1 (id=55996)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=55997)    : Kill Credit (90)
+#2 (id=55997)    : Summon Credit Creature (90)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=62049) 
@@ -21202,7 +21202,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), All
 Effects          :
 #1 (id=56002)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=56003)    : Kill Credit (90)
+#2 (id=56003)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=62050) 
@@ -21217,7 +21217,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), All
 Effects          :
 #1 (id=56004)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=56005)    : Kill Credit (90)
+#2 (id=56005)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34737 | Target: Self (1)
 
 Name             : Candied Sweet Potato (id=62051) 
@@ -21232,7 +21232,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), All
 Effects          :
 #1 (id=56006)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=56007)    : Kill Credit (90)
+#2 (id=56007)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34739 | Target: Self (1)
 
 Name             : Infiltrator's Guile (id=62088) 
@@ -22345,7 +22345,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Hor
 Effects          :
 #1 (id=60207)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=60208)    : Kill Credit (90)
+#2 (id=60208)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34739 | Target: Self (1)
 
 Name             : Cranberry Chutney (id=66035) 
@@ -22360,7 +22360,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Hor
 Effects          :
 #1 (id=60209)    : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Self (1)
-#2 (id=60210)    : Kill Credit (90)
+#2 (id=60210)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34741 | Target: Self (1)
 
 Name             : Pumpkin Pie (id=66036) 
@@ -22375,7 +22375,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Hor
 Effects          :
 #1 (id=60211)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=60212)    : Kill Credit (90)
+#2 (id=60212)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34740 | Target: Self (1)
 
 Name             : Slow-Roasted Turkey (id=66037) 
@@ -22390,7 +22390,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Hor
 Effects          :
 #1 (id=60213)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=60214)    : Kill Credit (90)
+#2 (id=60214)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34738 | Target: Self (1)
 
 Name             : Spice Bread Stuffing (id=66038) 
@@ -22405,7 +22405,7 @@ Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42), Hor
 Effects          :
 #1 (id=60215)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=60216)    : Kill Credit (90)
+#2 (id=60216)    : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34737 | Target: Self (1)
 
 Name             : Drink (id=66041) 
@@ -31802,7 +31802,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204)
 Effects          :
-#1 (id=108747)   : Kill Credit (90)
+#1 (id=108747)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 54138 | Target: Self (1)
 
 Name             : Main Hand Weapon Equipped Credit (id=100707) [Hidden] 
@@ -31810,7 +31810,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=108748)   : Kill Credit (90)
+#1 (id=108748)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 54139 | Target: Self (1)
 #2 (id=164348)   : Cancel Aura (164): Weapon Equip Timed Instruction Aura
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 128680 | Target: Self (1)
@@ -35345,7 +35345,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=120657)   : Kill Credit (90)
+#1 (id=120657)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 57849 | Target: Self (1)
 #2 (id=164349)   : Cancel Aura (164): Weapon Equip Timed Instruction Aura
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 128680 | Target: Self (1)
@@ -62285,7 +62285,7 @@ Cooldown         : 1.5 seconds
 Triggered By     : Retrieving the Ashbringer (225110)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204)
 Effects          :
-#1 (id=260214)   : Kill Credit (90)
+#1 (id=260214)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114505 | Target: Self (1)
 #2 (id=260288)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 47621
@@ -62357,7 +62357,7 @@ Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mount
 Effects          :
 #1 (id=262552)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 91538 | Misc Value 2: 0xcac | Radius: 10 yards | Target: at Random (72)
-#2 (id=270160)   : Kill Credit (90)
+#2 (id=270160)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 93927 | Target: Self (1)
 
 Name             : Bodyguard Miniaturization Device (id=181642) 
@@ -66075,7 +66075,7 @@ Attributes       : No Threat (42), Ignore Line of Sight (66), Allow While Not Sh
 Effects          :
 #1 (id=275975)   : Trigger Spell (64): Treasurefinding
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 188830 | Target: Self (1)
-#2 (id=275977)   : Kill Credit (90)
+#2 (id=275977)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 95197 | Target: Self (1)
 Description      : Drink at Illidari Stand in Azsuna to start tracking treasures.
 Tooltip          : You are seeking treasure.
@@ -66176,7 +66176,7 @@ Duration         : 15 seconds
 Cooldown         : 1.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=277965)   : Kill Credit (90)
+#1 (id=277965)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114515 | Target: Self (1)
 #3 (id=342747)   : Trigger Spell (64): The Twinblades of the Deceiver
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 201012
@@ -69547,7 +69547,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=287695)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=289709)   : Kill Credit (90)
+#3 (id=289709)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100290 | Target: Self (1)
 #4 (id=303176)   : Trigger Spell (64): Send Event - Objective Complete
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196264 | Target: Self (1)
@@ -69932,7 +69932,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=293587)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=293588)   : Kill Credit (90)
+#3 (id=293588)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100952 | Target: Self (1)
 #4 (id=297290)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 47977
@@ -70025,7 +70025,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=294337)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(199960) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199960 | Target: Self (1)
-#2 (id=294338)   : Kill Credit (90)
+#2 (id=294338)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 101334 | Target: Self (1)
 #3 (id=308984)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50171
@@ -70166,7 +70166,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=294634)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=294635)   : Kill Credit (90)
+#3 (id=294635)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 101478 | Target: Self (1)
 #4 (id=303741)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 48184
@@ -70176,7 +70176,7 @@ School           : None
 Spell Type       : None
 Triggered By     : Reaves Module: Snack Distribution Mode (200145)
 Effects          :
-#2 (id=298724)   : Kill Credit (90)
+#2 (id=298724)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 102569 | Target: Self (1)
 
 Name             : Summon Reaves (id=200246) [Hidden] 
@@ -71377,7 +71377,7 @@ Duration         : 2 seconds
 Triggered By     : The Dreadblades (202040)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=297987)   : Kill Credit (90)
+#1 (id=297987)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114513 | Target: Self (1)
 #2 (id=342753)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(202182) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202182 | Target: Self (1)
@@ -71414,7 +71414,7 @@ Range            : 5 yards
 Cooldown         : 1.5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=298431)   : Kill Credit (90)
+#1 (id=298431)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 102479 | Target: Self (1)
 #2 (id=299103)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 48646 | Target: Self (1)
@@ -71429,7 +71429,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=298721)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=298722)   : Kill Credit (90)
+#3 (id=298722)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 102571 | Target: Self (1)
 #4 (id=319017)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 48084 | Target: Self (1)
@@ -72133,7 +72133,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=302325)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=302326)   : Kill Credit (90)
+#3 (id=302326)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 103473 | Target: Self (1)
 #5 (id=319024)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 48084 | Target: Self (1)
@@ -72294,7 +72294,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=303257)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=303258)   : Kill Credit (90)
+#3 (id=303258)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 103748 | Target: Self (1)
 #5 (id=319021)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 48084 | Target: Self (1)
@@ -72689,7 +72689,7 @@ Spell Type       : None
 Duration         : 1 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=305912)   : Kill Credit (90)
+#1 (id=305912)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 113098 | Target: Self (1)
 #2 (id=337100)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(206858) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206858 | Target: Self (1)
@@ -73078,7 +73078,7 @@ Duration         : 2 seconds
 Triggered By     : G'Hanir, the Mother Tree (207560)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=306967)   : Kill Credit (90)
+#1 (id=306967)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114511 | Target: Self (1)
 #2 (id=342754)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(207562) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 207562 | Target: Self (1)
@@ -73532,7 +73532,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=307734)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=307985)   : Kill Credit (90)
+#4 (id=307985)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 105109 | Target: Self (1)
 #5 (id=319009)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 49926 | Target: Self (1)
@@ -74046,7 +74046,7 @@ Cooldown         : 1.5 seconds
 Triggered By     : The Aldrachi Warblades (225107)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=308192)   : Kill Credit (90)
+#1 (id=308192)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114514 | Target: Self (1)
 #3 (id=342749)   : Trigger Spell (64): The Aldrachi Warblades
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 208299
@@ -75256,7 +75256,7 @@ Spell Type       : None
 Range            : 100 yards
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Do Not Log Caster (141), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=309798)   : Kill Credit (90)
+#1 (id=309798)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 105648 | Target: Self (1)
 
 Name             : Delusions of Grandeur (id=209354) [Spell Family (107), Passive] 
@@ -75504,7 +75504,7 @@ Duration         : 2 seconds
 Triggered By     : Fangs of the Devourer (209816)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=310549)   : Kill Credit (90)
+#1 (id=310549)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114510 | Target: Self (1)
 #2 (id=342757)   : Apply Aura (6) | Periodic Trigger Spell (23): Fangs of the Devourer every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209818 | Target: Self (1)
@@ -75711,7 +75711,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=312163)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=312164)   : Kill Credit (90)
+#3 (id=312164)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 106031 | Target: Self (1)
 #4 (id=312165)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50679
@@ -76069,7 +76069,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=314064)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=314066)   : Kill Credit (90)
+#4 (id=314066)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 105109 | Target: Self (1)
 #5 (id=337034)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 49926 | Target: Self (1)
@@ -76123,7 +76123,7 @@ Spell Type       : None
 Triggered By     : Titanstrike (212010)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=314140)   : Kill Credit (90)
+#1 (id=314140)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114509 | Target: Self (1)
 
 Name             : Unison (id=212123) [Spell Family (53), Passive] 
@@ -76432,7 +76432,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 51156
 #2 (id=315949)   : Trigger Spell (64): Retrieving the Fangs of Ashamane
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 214714 | Target: Self (1)
-#3 (id=315950)   : Kill Credit (90)
+#3 (id=315950)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 107750 | Target: Self (1)
 
 Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
@@ -77902,7 +77902,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=319013)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=319015)   : Kill Credit (90)
+#4 (id=319015)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 108026 | Target: Self (1)
 #5 (id=319018)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 51392 | Target: Self (1)
@@ -78586,7 +78586,7 @@ Duration         : 2 seconds
 Triggered By     : The Kingslayers (215112)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=319645)   : Kill Credit (90)
+#1 (id=319645)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 114508 | Target: Self (1)
 #2 (id=342758)   : Apply Aura (6) | Periodic Trigger Spell (23): The Kingslayers every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215113 | Target: Self (1)
@@ -80104,7 +80104,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 52470
 #2 (id=324211)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=324213)   : Kill Credit (90)
+#4 (id=324213)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 109330 | Target: Self (1)
 #5 (id=326043)   : Cancel Aura (164): Scenario - Summon Summerpetal 1a
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 217659 | Target: Self (1)
@@ -80412,7 +80412,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #2 (id=327608)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=327610)   : Kill Credit (90)
+#4 (id=327610)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 110603 | Target: Self (1)
 #5 (id=327611)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 53022 | Target: Self (1)
@@ -83213,7 +83213,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=336763)   : Kill Credit (90)
+#1 (id=336763)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 113001 | Target: Self (1)
 
 Name             : Shadow Satyr's Walk (id=224914) 
@@ -91857,7 +91857,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=363915)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369017)   : Kill Credit (90)
+#2 (id=369017)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -91926,7 +91926,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364323)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369016)   : Kill Credit (90)
+#2 (id=369016)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -91938,7 +91938,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364324)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369018)   : Kill Credit (90)
+#2 (id=369018)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -91950,7 +91950,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364325)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369019)   : Kill Credit (90)
+#2 (id=369019)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -91962,7 +91962,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364326)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369020)   : Kill Credit (90)
+#2 (id=369020)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -91974,7 +91974,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364327)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369021)   : Kill Credit (90)
+#2 (id=369021)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -91986,7 +91986,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364328)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369024)   : Kill Credit (90)
+#2 (id=369024)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -91998,7 +91998,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364329)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369025)   : Kill Credit (90)
+#2 (id=369025)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -92010,7 +92010,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364330)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369026)   : Kill Credit (90)
+#2 (id=369026)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -92022,7 +92022,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364331)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369027)   : Kill Credit (90)
+#2 (id=369027)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -92034,7 +92034,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364332)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369028)   : Kill Credit (90)
+#2 (id=369028)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -92046,7 +92046,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364333)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369029)   : Kill Credit (90)
+#2 (id=369029)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -92058,7 +92058,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364334)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369030)   : Kill Credit (90)
+#2 (id=369030)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -92070,7 +92070,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364335)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369031)   : Kill Credit (90)
+#2 (id=369031)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -92082,7 +92082,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364336)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369032)   : Kill Credit (90)
+#2 (id=369032)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -92094,7 +92094,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364337)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=369033)   : Kill Credit (90)
+#2 (id=369033)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to summon demonic portals in this area.
 
@@ -92106,7 +92106,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364338)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=369034)   : Kill Credit (90)
+#2 (id=369034)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to empower the demonic portals in this area.
 
@@ -92118,7 +92118,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=364339)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=369035)   : Kill Credit (90)
+#2 (id=369035)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Tell the Sentinax to send a powerful demonic lieutenant to this area.
 
@@ -92474,7 +92474,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=365296)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18)
-#2 (id=369036)   : Kill Credit (90)
+#2 (id=369036)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Commands the Sentinax to fire a Petrum beam at your current location, turning everything in the area to felslate.
 Tooltip          : Turned to felslate.
@@ -92510,7 +92510,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=365355)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18)
-#2 (id=369038)   : Kill Credit (90)
+#2 (id=369038)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Commands the Sentinax to fire a Fel Seed at your current location, causing starlight roses to rapidly grow.
 Tooltip          : Rooted.
@@ -92547,7 +92547,7 @@ Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=365375)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18)
-#2 (id=369040)   : Kill Credit (90)
+#2 (id=369040)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 121635 | Target: Self (1)
 Description      : Commands the Sentinax to fire a Bloodstrike at your current location, unearthing Blood of Sargeras.
 
@@ -95420,7 +95420,7 @@ Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Immunities 
 Effects          :
 #1 (id=374778)   : Inebriate (100)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#2 (id=374782)   : Kill Credit (90)
+#2 (id=374782)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 129282 | Target: Self (1)
 #3 (id=374784)   : Send Event (61)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 58777
@@ -108521,7 +108521,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=717302)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 137081 | Misc Value 2: 0x10ca | Radius: 2 yards | Target: Front of Self (47)
-#2 (id=720416)   : Kill Credit (90)
+#2 (id=720416)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 137674 | Target: Self (1)
 Description      : Fan the smoldering leaves, causing smoke to cleanse the area.
 
@@ -109630,7 +109630,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=721297)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 137832 | Misc Value 2: 0x10ca | Radius: 2 yards | Target: Front of Self (47)
-#2 (id=721298)   : Kill Credit (90)
+#2 (id=721298)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 137674 | Target: Self (1)
 Description      : Fan the smoldering leaves, causing smoke to cleanse the area.
 
@@ -110327,7 +110327,7 @@ Cast Time        : 10 seconds
 Effects          :
 #1 (id=722222)   : Destroy Item (169)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=726101)   : Kill Credit (90)
+#2 (id=726101)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140017 | Target: Self and Summons in Area (120)
 Description      : Smelt 20 Unsanctified Storm Silver Ore into Unsanctified Storm Silver Ingots at a forge.
 
@@ -132211,7 +132211,7 @@ Spell Type       : None
 Range            : 60 yards
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#2 (id=758975)   : Kill Credit (90)
+#2 (id=758975)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 149862 | Target: Self (1)
 
 Name             : Blood Contract: Bloodguard (id=292320) 
@@ -132477,7 +132477,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=759296)   : Kill Credit (90)
+#1 (id=759296)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150878 | Target: Self (1)
 
 Name             : Embrace of Pa'ku (desc=Racial) (id=292463) 
@@ -137342,7 +137342,7 @@ Spell Type       : None
 Triggered By     : Forge Unlocked (295726)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=768341)   : Kill Credit (90)
+#1 (id=768341)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 152348 | Target: Self (1)
 
 Name             : Anima of Life and Death (id=297365) 
@@ -139419,7 +139419,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Poin
 Effects          :
 #1 (id=770852)   : Learn Azerite Essence Power (265)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 0x1 | Target: Self (1)
-#2 (id=781723)   : Kill Credit (90)
+#2 (id=781723)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 156195 | Target: Self (1)
 Description      : Infuse your Heart of Azeroth with The Crucible of Flame.
 
@@ -143496,7 +143496,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=775487)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=775702)   : Kill Credit (90)
+#2 (id=775702)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 154942 | Target: Self (1)
 Description      : Use the Heart of Azeroth to claim the Scale of the Blue Aspect.
 Tooltip          : Use the Heart of Azeroth to claim the Scale of the Blue Aspect.
@@ -155857,7 +155857,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=807853)   : Apply Aura (6) | Proc Trigger Spell (42): Stay on the Move
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 321467 | Target: Self (1)
-#2 (id=835513)   : Kill Credit (90)
+#2 (id=835513)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 172708 | Target: Self (1)
 #3 (id=843592)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Misc Value 2: 1100 (Label) | Target: Self (1)
@@ -159565,7 +159565,7 @@ Spell Level      : 60
 Labels           : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=821667)   : Kill Credit (90)
+#1 (id=821667)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 168885 | Target: Self (1)
 Description      : $@spelldesc328257
 
@@ -160724,7 +160724,7 @@ Spell Type       : None
 Velocity         : 5 yards/sec
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Effects          :
-#1 (id=824833)   : Kill Credit (90)
+#1 (id=824833)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 169888 | Target: Self (1)
 Description      : This crystal is capable of absorbing souls and transporting them out of the Maw.
 
@@ -161254,7 +161254,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=826281)   : Kill Credit (90)
+#1 (id=826281)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 169019 | Target: Self (1)
 #2 (id=828194)   : Trigger Spell (64): Ping Ghost
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 324673 | Target: Self (1)
@@ -163475,7 +163475,7 @@ Spell Level      : 60
 Labels           : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=833119)   : Kill Credit (90)
+#1 (id=833119)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 172147 | Target: Self (1)
 Description      : $@spelldesc323074
 
@@ -166202,7 +166202,7 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 Attributes       : Ignore Caster Damage Modifiers (221)
 Effects          :
-#1 (id=839660)   : Kill Credit (90)
+#1 (id=839660)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 173631 | Target: Self (1)
 Description      : Invoke the Cypher of Obfuscation, masking your anima while within Perdition Hold. 
 
@@ -166501,7 +166501,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Effects          :
-#1 (id=840058)   : Kill Credit (90)
+#1 (id=840058)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 173715 | Target: Self (1)
 #2 (id=872506)   : Remove Aura (203): Otherworldly Screeching
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 336972 | Target: Self (1)
@@ -184934,7 +184934,7 @@ Attributes       : Aura Expires Offline (130)
 Effects          :
 #1 (id=914468)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=914517)   : Kill Credit (90)
+#2 (id=914517)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 186255 | Target: Self (1)
 Description      : Places the caster in a state of heightened awareness, granting the ability to see residual spirit elements while in the Ohn'ahran Plains.
 Tooltip          : Able to see residual spirit elements while in the Ohn'ahran Plains.
@@ -185042,7 +185042,7 @@ Spell Type       : None
 Labels           : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Item Spell In PvP (13), Allow Cast While Dead (23), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149)
 Effects          :
-#1 (id=915255)   : Kill Credit (90)
+#1 (id=915255)   : Summon Credit Creature (90)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 186786 | Target: Self (1)
 Description      : $@spelldesc303823
 
@@ -200661,7 +200661,7 @@ Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Si
 Effects          :
 #1 (id=1028784)  : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1028785)  : Kill Credit (90)
+#2 (id=1028785)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 197633 | Target: Self (1)
 #3 (id=1028859)  : Force Cast (140): Create Spark of Ingenuity
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 389432 | Target: Self (1)
@@ -228532,7 +228532,7 @@ School           : Physical
 Spell Type       : None
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Visible only to caster (conversations only) (343), Allow during spell override (404)
 Effects          :
-#1 (id=1131774)  : Kill Credit (90)
+#1 (id=1131774)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 219204 | Target: Self (1)
 
 Name             : Heroic Leap (id=439054) [Hidden] 
@@ -234576,7 +234576,7 @@ Spell Type       : None
 Range            : 100 yards
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
 Effects          :
-#1 (id=1143923)  : Kill Credit (90)
+#1 (id=1143923)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 222610 | Target: Self (1)
 
 Name             : Cinderbrew Stein (id=446648) [Passive] 
@@ -252447,7 +252447,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)
 #6 (id=1180373)  : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#7 (id=1180645)  : Kill Credit (90)
+#7 (id=1180645)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 232272 | Target: Self (1)
 #8 (id=1184375)  : Trigger Spell (64): Experimental Go-Pack
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 469806 | Target: Self (1)
@@ -253938,7 +253938,7 @@ Aura Interrupt   : Mount (17)
 Effects          :
 #2 (id=1189252)  : Force Cast (160): [DNT] Apply Costume
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 471666 | Target: Self (1)
-#3 (id=1189365)  : Kill Credit (90)
+#3 (id=1189365)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 233940 | Target: Self (1)
 #4 (id=1206517)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Target: Self (1)
@@ -256847,7 +256847,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 13 | Target: Self (1)
 #5 (id=1196675)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#6 (id=1196799)  : Kill Credit (90)
+#6 (id=1196799)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 238335 | Target: Self (1)
 #7 (id=1206614)  : Update Player Phase (167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -259375,7 +259375,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1199594)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1205655)  : Kill Credit (90)
+#2 (id=1205655)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 238248 | Target: Self (1)
 
 Name             : Pocket Factory (id=1216210) 
@@ -268640,7 +268640,7 @@ Spell Type       : None
 Range            : 100 yards
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
 Effects          :
-#1 (id=1247609)  : Kill Credit (90)
+#1 (id=1247609)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 248479 | Target: Self (1)
 
 Name             : Delver's Bounty (id=1246363) 

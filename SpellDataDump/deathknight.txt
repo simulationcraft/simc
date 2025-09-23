@@ -1098,7 +1098,7 @@ Family Flags     : 80
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Not In Arena or Rated Battleground (144), Not In Spellbook Until Learned (269), Not in Battleground (284), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#2 (id=296536)   : Kill Credit (90)
+#2 (id=296536)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305 | Target: Self (1)
 Description      : Opens a gate which you can use to return to Ebon Hold.
 
@@ -4606,7 +4606,7 @@ Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
-#3 (id=802247)   : Kill Credit (90)
+#3 (id=802247)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 163033 | Target: Self (1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.

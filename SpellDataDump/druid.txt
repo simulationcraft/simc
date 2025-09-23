@@ -5604,9 +5604,9 @@ Affecting Spells : Starfall (191034 effect#2)
 Family Flags     : 112
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not In Spellbook Until Learned (269), Not in Battleground (284), Allow Class Ability Procs (416)
 Effects          :
-#3 (id=284288)   : Kill Credit (90)
+#3 (id=284288)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305 | Target: Self (1)
-#4 (id=350992)   : Kill Credit (90)
+#4 (id=350992)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104608 | Target: Self (1)
 #5 (id=761960)   : Apply Aura (6) | Unknown(71)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6155,7 +6155,7 @@ Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
-#3 (id=802247)   : Kill Credit (90)
+#3 (id=802247)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 163033 | Target: Self (1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.

@@ -3607,7 +3607,7 @@ Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
-#3 (id=802247)   : Kill Credit (90)
+#3 (id=802247)   : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 163033 | Target: Self (1)
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
@@ -8843,7 +8843,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
 #2 (id=1007598)  : Force Cast (140): (367996)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
-#3 (id=1007599)  : Kill Credit (90)
+#3 (id=1007599)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
 #4 (id=1012188)  : Update Zone Auras and Phases (170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
