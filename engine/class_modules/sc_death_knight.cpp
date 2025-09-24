@@ -15610,7 +15610,7 @@ void death_knight_t::init_finished()
 
   parse_player_effects();
 
-  player_t::init_finished();
+  parse_player_effects_t::init_finished();
 
   if ( deprecated_dnd_expression )
   {

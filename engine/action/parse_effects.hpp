@@ -657,6 +657,28 @@ public:
 
 struct parse_player_effects_t : public player_t, public parse_effects_t
 {
+  struct passive_effect_t
+  {
+    std::vector<player_effect_t> auto_attack_speed_effects;
+    std::vector<player_effect_t> attribute_multiplier_effects;
+    std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
+    std::vector<player_effect_t> versatility_effects;
+    std::vector<player_effect_t> player_multiplier_effects;
+    std::vector<player_effect_t> pet_multiplier_effects;
+    std::vector<player_effect_t> attack_power_multiplier_effects;
+    std::vector<player_effect_t> crit_chance_effects;
+    std::vector<player_effect_t> crit_bonus_effects;
+    std::vector<player_effect_t> spell_crit_chance_effects;
+    std::vector<player_effect_t> leech_effects;
+    std::vector<player_effect_t> expertise_effects;
+    std::vector<player_effect_t> parry_effects;
+    std::vector<player_effect_t> base_armor_multiplier_effects;
+    std::vector<player_effect_t> armor_multiplier_effects;
+    std::vector<player_effect_t> haste_effects;
+    std::vector<player_effect_t> mastery_effects;
+    std::vector<player_effect_t> dodge_effects;
+  } passive;
+
   std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
@@ -735,6 +757,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
                       size_t ) override;
   void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
+
+  void init_finished() override;
 
   void parsed_effects_html( report::sc_html_stream& );
 
