@@ -2034,8 +2034,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   {
     std::vector<std::string> attr_str;
     for ( unsigned flag = 0; flag < 32; flag++ )
-      if ( e->_attribute & ( 1 << flag ) )
-        attr_str.push_back( map_string( _effect_attribute_strings, flag + 1 ) );
+      if (e->_attribute & ( 1 << flag ))
+      {
+        auto it = _effect_attribute_strings.find( flag + 1 );
+        if( it != _effect_attribute_strings.end() )
+          attr_str.push_back( fmt::format( "{} ({})", it->second, flag ) );
+        else
+          attr_str.push_back( fmt::format( "Unknown({})", flag ) );
+      }
 
     tokens.emplace_back( fmt::format( "Attributes: {}", util::string_join( attr_str ) ) );
   }
