@@ -4123,8 +4123,7 @@ using namespace helpers;
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( !p->talents.channel_demonfire->ok() ? "Demonfire Infusion" : "Channel Demonfire",
-      p, !p->talents.channel_demonfire->ok() ? p->talents.demonfire_infusion : p->talents.channel_demonfire, options_str ),
+      : warlock_spell_t( "Channel Demonfire", p, p->talents.channel_demonfire, options_str ),
       channel_demonfire_tick( new channel_demonfire_tick_t( p ) )
     {
       channeled = true;
