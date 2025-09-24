@@ -5126,8 +5126,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     return eff.type() == E_ENERGIZE && eff.misc_value1() == POWER_RUNIC_POWER;
   }
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& tmp, 
-                                                   double& val, double& val_mul,
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& tmp, double& val_mul,
                                                    std::string& str, bool& flat, bool force,
                                                    const pack_t<player_effect_t>& pack ) override
   {
@@ -5223,7 +5222,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       }
     }
 
-    return action_base_t::get_effect_vector( eff, tmp, val, val_mul, str, flat, force, pack );
+    return action_base_t::get_effect_vector( eff, tmp, val_mul, str, flat, force, pack );
   }
 
 

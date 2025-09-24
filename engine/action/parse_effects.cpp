@@ -629,7 +629,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   std::string type_str;
   bool flat = false;
-  std::vector<U>* vec = get_effect_vector( eff, tmp, val, val_mul, type_str, flat, force, pack );
+  std::vector<U>* vec = get_effect_vector( eff, tmp, val_mul, type_str, flat, force, pack );
 
   if ( !vec )
     return false;
@@ -1089,6 +1089,76 @@ void parse_player_effects_t::invalidate_cache( cache_e c )
   }
 }
 
+void parse_player_effects_t::init_finished()
+{
+  for ( const auto& aa : passive.auto_attack_speed_effects )
+    initial.auto_attack_speed_multiplier /= 1.0 + get_effect_value( aa );
+
+  for ( const auto& am : passive.attribute_multiplier_effects )
+    initial.attribute_multiplier[ am.opt_enum ] *= 1.0 + get_effect_value( am );
+
+  for ( const auto& mam : passive.matching_armor_attribute_multiplier_effects )
+    initial.attribute_multiplier[ mam.opt_enum ] *= 1.0 + get_effect_value( mam );
+
+  for ( const auto& v : passive.versatility_effects )
+    initial.versatility += get_effect_value( v );
+
+  for (const auto& h : passive.haste_effects)
+  {
+    initial.spell_haste /= 1.0 + get_effect_value( h );
+    initial.melee_haste /= 1.0 + get_effect_value( h );
+  }
+
+  for ( const auto& m : passive.mastery_effects )
+    initial.mastery += get_effect_value( m );
+
+  for ( const auto& cc : passive.crit_chance_effects )
+  {
+    initial.attack_crit_chance += get_effect_value( cc );
+    initial.spell_crit_chance += get_effect_value( cc );
+  }
+
+  for ( const auto& scc : passive.spell_crit_chance_effects )
+    initial.spell_crit_chance += get_effect_value( scc );
+
+  for ( const auto& cb : passive.crit_bonus_effects )
+    initial.crit_damage_multiplier *= 1.0 + get_effect_value( cb );
+
+  for ( const auto& pm : passive.player_multiplier_effects )
+    initial.player_damage_multiplier[ pm.opt_enum ] *= 1.0 + get_effect_value( pm );
+
+  for (const auto& petm : passive.pet_multiplier_effects)
+  {
+    if( petm.opt_enum == 0 )
+      initial.pet_damage_multiplier *= 1.0 + get_effect_value( petm );
+    else
+      initial.guardian_damage_multiplier *= 1.0 + get_effect_value( petm );
+  }
+
+  for ( const auto& apm : passive.attack_power_multiplier_effects )
+    initial.attack_power_multiplier *= 1.0 + get_effect_value( apm );
+
+  for ( const auto& l : passive.leech_effects )
+    initial.leech += get_effect_value( l );
+
+  for ( const auto& e : passive.expertise_effects )
+    initial.expertise += get_effect_value( e );
+
+  for ( const auto& p : passive.parry_effects )
+    initial.parry += get_effect_value( p );
+
+  for ( const auto& bam : passive.base_armor_multiplier_effects )
+    initial.base_armor_multiplier *= 1.0 + get_effect_value( bam );
+
+  for ( const auto& am : passive.armor_multiplier_effects )
+    initial.armor_multiplier *= 1.0 + get_effect_value( am );
+
+  for ( const auto& d : passive.dodge_effects )
+    initial.dodge += get_effect_value( d );
+
+  player_t::init_finished();
+}
+
 bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) const
 {
   switch ( eff.type() )
@@ -1111,7 +1181,7 @@ bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) cons
 }
 
 std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                         player_effect_t& tmp, double& val, double& val_mul,
+                                                                         player_effect_t& tmp, double& val_mul,
                                                                          std::string& str, bool& /* flat */,
                                                                          bool /* force */,
                                                                          const pack_t<player_effect_t>& pack )
@@ -1130,10 +1200,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "auto attack speed";
 
       if ( is_passive )
-      {
-        initial.auto_attack_speed_multiplier /= 1.0 + val * val_mul;
-        return nullptr;
-      }
+        return &passive.auto_attack_speed_effects;
 
       invalidate( CACHE_AUTO_ATTACK_SPEED );
       return &auto_attack_speed_effects;
@@ -1149,21 +1216,15 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
         {
           str += "|with matching armor";
 
-          if ( is_passive )
-          {
-            initial.attribute_multiplier[ eff.misc_value2() ] *= 1.0 + val * val_mul;
-            return nullptr;
-          }
+          if( is_passive )
+            return &passive.matching_armor_attribute_multiplier_effects;
 
           return &matching_armor_attribute_multiplier_effects;
         }
       }
 
       if ( is_passive )
-      {
-        initial.attribute_multiplier[ eff.misc_value2() ] *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+        return &passive.attribute_multiplier_effects;
 
       return &attribute_multiplier_effects;
 
@@ -1176,10 +1237,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "versatility";
 
       if ( is_passive )
-      {
-        initial.versatility += val * val_mul;
-        return nullptr;
-      }
+        return &passive.versatility_effects;
 
       invalidate( CACHE_VERSATILITY );
       return &versatility_effects;
@@ -1187,12 +1245,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_HASTE_ALL:
       str = "haste";
 
-      if ( is_passive )
-      {
-        initial.spell_haste /= 1.0 + val * val_mul;
-        initial.melee_haste /= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.haste_effects;
 
       invalidate( CACHE_HASTE );
       return &haste_effects;
@@ -1201,11 +1255,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "mastery";
       val_mul = 1.0;
 
-      if ( is_passive )
-      {
-        initial.mastery += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.mastery_effects;
 
       invalidate( CACHE_MASTERY );
       return &mastery_effects;
@@ -1213,12 +1264,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_ALL_CRIT_CHANCE:
       str = "all crit chance";
 
-      if ( is_passive )
-      {
-        initial.attack_crit_chance += val * val_mul;
-        initial.spell_crit_chance += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.crit_chance_effects;
 
       invalidate( CACHE_CRIT_CHANCE );
       return &crit_chance_effects;
@@ -1226,11 +1273,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_SPELL_CRIT_CHANCE:
       str = "spell crit chance";
 
-      if ( is_passive )
-      {
-        initial.spell_crit_chance += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.spell_crit_chance_effects;
 
       invalidate( CACHE_CRIT_CHANCE );
       return &spell_crit_chance_effects;
@@ -1238,11 +1282,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_CRIT_DAMAGE_BONUS:
       str = "crit damage bonus";
 
-      if (is_passive)
-      {
-        initial.crit_damage_multiplier *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.crit_bonus_effects;
 
       return &crit_bonus_effects;
 
@@ -1251,11 +1292,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = opt_strings::school( tmp.opt_enum );
       str += " damage";
 
-      if ( is_passive )
-      {
-        initial.player_damage_multiplier[ eff.misc_value1() ] *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.player_multiplier_effects;
 
       invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       return &player_multiplier_effects;
@@ -1264,11 +1302,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       tmp.opt_enum = 0;
       str = "pet damage";
 
-      if ( is_passive )
-      {
-        initial.pet_damage_multiplier *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.pet_multiplier_effects;
 
       return &pet_multiplier_effects;
 
@@ -1276,22 +1311,16 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       tmp.opt_enum = 1;
       str = "guardian damage";
 
-      if ( is_passive )
-      {
-        initial.guardian_damage_multiplier *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.pet_multiplier_effects;
 
       return &pet_multiplier_effects;
 
     case A_MOD_ATTACK_POWER_PCT:
       str = "attack power";
 
-      if ( is_passive )
-      {
-        initial.attack_power_multiplier *= 1.0 + val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.attack_power_multiplier_effects;
 
       invalidate( CACHE_ATTACK_POWER );
       return &attack_power_multiplier_effects;
@@ -1299,11 +1328,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_LEECH_PERCENT:
       str = "leech";
 
-      if ( is_passive )
-      {
-        initial.leech += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.leech_effects;
 
       invalidate( CACHE_LEECH );
       return &leech_effects;
@@ -1311,11 +1337,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_EXPERTISE:
       str = "expertise";
 
-      if ( is_passive )
-      {
-        initial.expertise += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.expertise_effects;
 
       invalidate( CACHE_EXP );
       return &expertise_effects;
@@ -1328,11 +1351,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_PARRY_PERCENT:
       str = "parry";
 
-      if ( is_passive )
-      {
-        initial.parry += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.parry_effects;
 
       invalidate( CACHE_PARRY );
       return &parry_effects;
@@ -1342,11 +1362,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       {
         str = "base armor multiplier";
 
-        if ( is_passive )
-        {
-          initial.base_armor_multiplier *= 1.0 + val * val_mul;
-          return nullptr;
-        }
+        if( is_passive )
+          return &passive.base_armor_multiplier_effects;
 
         invalidate( CACHE_ARMOR );
         return &base_armor_multiplier_effects;
@@ -1358,11 +1375,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       {
         str = "armor multiplier";
 
-        if ( is_passive )
-        {
-          initial.armor_multiplier *= 1.0 + val * val_mul;
-          return nullptr;
-        }
+        if( is_passive )
+          return &passive.armor_multiplier_effects;
 
         invalidate( CACHE_ARMOR );
         return &armor_multiplier_effects;
@@ -1377,11 +1391,8 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_DODGE_PERCENT:
       str = "dodge";
 
-      if ( is_passive )
-      {
-        initial.dodge += val * val_mul;
-        return nullptr;
-      }
+      if( is_passive )
+        return &passive.dodge_effects;
 
       invalidate( CACHE_DODGE );
       return &dodge_effects;
@@ -1447,8 +1458,7 @@ bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff
 }
 
 std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                         target_effect_t& tmp, 
-                                                                         double& /*val */, double& /* val_mul */,
+                                                                         target_effect_t& tmp, double& /* val_mul */,
                                                                          std::string& str, bool& /* flat */,
                                                                          bool /* force */,
                                                                          const pack_t<target_effect_t>& /* pack */ )
@@ -1536,12 +1546,49 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
 
     os << "</table>\n"
        << "</div>\n";
+
+    os << "<h3 class=\"toggle\">Passive Player Effects</h3>"
+      << "<div class=\"toggle-content hide\">"
+      << "<table class=\"sc left even\">\n";
+
+    os << "<thead><tr>"
+      << "<th>Type</th>"
+      << "<th>Spell</th>"
+      << "<th>ID</th>"
+      << "<th>#</th>"
+      << "<th>Value</th>"
+      << "<th>Source</th>"
+      << "<th>Notes</th>"
+      << "</tr></thead>\n";
+
+    print_parsed_type( os, passive.auto_attack_speed_effects, "Auto Attack Speed" );
+    print_parsed_type( os, passive.attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
+    print_parsed_type( os, passive.matching_armor_attribute_multiplier_effects, "Matching Armor",
+                       &opt_strings::attributes );
+    print_parsed_type( os, passive.versatility_effects, "Versatility" );
+    print_parsed_type( os, passive.haste_effects, "Haste" );
+    print_parsed_type( os, passive.mastery_effects, "Mastery", nullptr, mastery_val );
+    print_parsed_type( os, passive.crit_chance_effects, "Crit Chance" );
+    print_parsed_type( os, passive.spell_crit_chance_effects, "Spell Crit Chance" );
+    print_parsed_type( os, passive.crit_bonus_effects, "Crit Damage Bonus" );
+    print_parsed_type( os, passive.player_multiplier_effects, "Player Multiplier", &opt_strings::school );
+    print_parsed_type( os, passive.pet_multiplier_effects, "Pet Multiplier", &opt_strings::pet_type );
+    print_parsed_type( os, passive.attack_power_multiplier_effects, "Attack Power Multiplier" );
+    print_parsed_type( os, passive.leech_effects, "Leech" );
+    print_parsed_type( os, passive.expertise_effects, "Expertise" );
+    print_parsed_type( os, passive.parry_effects, "Parry" );
+    print_parsed_type( os, passive.base_armor_multiplier_effects, "Base Armor Multiplier" );
+    print_parsed_type( os, passive.armor_multiplier_effects, "Armor Multiplier" );
+    print_parsed_type( os, passive.dodge_effects, "Dodge" );
+
+    os << "</table>\n"
+      << "</div>\n";
   }
 }
 
 size_t parse_player_effects_t::total_effects_count()
 {
-  return auto_attack_speed_effects.size() +
+  size_t dynamic_effects_count = auto_attack_speed_effects.size() +
     attribute_multiplier_effects.size() +
     matching_armor_attribute_multiplier_effects.size() +
     rating_multiplier_effects.size() +
@@ -1567,6 +1614,27 @@ size_t parse_player_effects_t::total_effects_count()
     absorb_received_mult_effects.size() +
     target_multiplier_effects.size() +
     target_pet_multiplier_effects.size();
+
+  size_t passive_effects_count = passive.auto_attack_speed_effects.size() +
+    passive.attribute_multiplier_effects.size() +
+    passive.matching_armor_attribute_multiplier_effects.size() +
+    passive.versatility_effects.size() +
+    passive.haste_effects.size() +
+    passive.mastery_effects.size() +
+    passive.crit_chance_effects.size() +
+    passive.spell_crit_chance_effects.size() +
+    passive.crit_bonus_effects.size() +
+    passive.player_multiplier_effects.size() +
+    passive.pet_multiplier_effects.size() +
+    passive.attack_power_multiplier_effects.size() +
+    passive.leech_effects.size() +
+    passive.expertise_effects.size() +
+    passive.parry_effects.size() +
+    passive.base_armor_multiplier_effects.size() +
+    passive.armor_multiplier_effects.size() + 
+    passive.dodge_effects.size();
+
+  return dynamic_effects_count + passive_effects_count;
 }
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_cb_t cb )
@@ -1644,7 +1712,7 @@ bool parse_action_base_t::is_valid_aura( const spelleffect_data_t& eff ) const
 
 // non-templated implementation of parse_action_effects_t::get_effect_vector()
 std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                      player_effect_t& tmp, double& /*val*/, double& val_mul,
+                                                                      player_effect_t& tmp, double& val_mul,
                                                                       std::string& str, bool& flat, bool force,
                                                                       const pack_t<player_effect_t>& pack )
 {
@@ -1796,8 +1864,7 @@ bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) 
 }
 
 std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spelleffect_data_t& eff,
-                                                                      target_effect_t& tmp,
-                                                                      double& /*val*/, double& /* val_mul */,
+                                                                      target_effect_t& tmp, double& /* val_mul */,
                                                                       std::string& str, bool& flat, bool force,
                                                                       const pack_t<target_effect_t>& pack )
 {

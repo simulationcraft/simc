@@ -635,11 +635,11 @@ public:
   virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
 
   virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& tmp,
-                                                           double& val, double& val_mul, std::string& str, bool& flat, 
-                                                           bool force, const pack_t<player_effect_t>& pack ) = 0;
+                                                           double& val_mul, std::string& str, bool& flat, bool force,
+                                                           const pack_t<player_effect_t>& pack ) = 0;
   virtual std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t& eff, target_effect_t& tmp,
-                                                           double& val, double& val_mul, std::string& str, bool& flat, 
-                                                           bool force, const pack_t<target_effect_t>& pack ) = 0;
+                                                           double& val_mul, std::string& str, bool& flat, bool force,
+                                                           const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
                               bool mastery, const spell_data_t* s_data, size_t i ) = 0;
@@ -657,6 +657,28 @@ public:
 
 struct parse_player_effects_t : public player_t, public parse_effects_t
 {
+  struct passive_effect_t
+  {
+    std::vector<player_effect_t> auto_attack_speed_effects;
+    std::vector<player_effect_t> attribute_multiplier_effects;
+    std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
+    std::vector<player_effect_t> versatility_effects;
+    std::vector<player_effect_t> player_multiplier_effects;
+    std::vector<player_effect_t> pet_multiplier_effects;
+    std::vector<player_effect_t> attack_power_multiplier_effects;
+    std::vector<player_effect_t> crit_chance_effects;
+    std::vector<player_effect_t> crit_bonus_effects;
+    std::vector<player_effect_t> spell_crit_chance_effects;
+    std::vector<player_effect_t> leech_effects;
+    std::vector<player_effect_t> expertise_effects;
+    std::vector<player_effect_t> parry_effects;
+    std::vector<player_effect_t> base_armor_multiplier_effects;
+    std::vector<player_effect_t> armor_multiplier_effects;
+    std::vector<player_effect_t> haste_effects;
+    std::vector<player_effect_t> mastery_effects;
+    std::vector<player_effect_t> dodge_effects;
+  } passive;
+
   std::vector<player_effect_t> auto_attack_speed_effects;
   std::vector<player_effect_t> attribute_multiplier_effects;
   std::vector<player_effect_t> matching_armor_attribute_multiplier_effects;
@@ -726,15 +748,17 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   bool is_valid_aura( const spelleffect_data_t& ) const override;
   bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, double&, 
-                                                   std::string&, bool&, bool, const pack_t<player_effect_t>& ) override;
-  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, double&,
-                                                   std::string&, bool&, bool, const pack_t<target_effect_t>& ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<player_effect_t>& ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<target_effect_t>& ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
   void debug_message( const target_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
+
+  void init_finished() override;
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -804,10 +828,10 @@ public:
   bool is_valid_aura( const spelleffect_data_t& ) const override;
   bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, double&, 
-                                                   std::string&, bool&, bool, const pack_t<player_effect_t>& ) override;
-  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, double&, 
-                                                   std::string&, bool&, bool, const pack_t<target_effect_t>& ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<player_effect_t>& ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<target_effect_t>& ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
