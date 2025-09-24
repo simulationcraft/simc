@@ -846,10 +846,6 @@ void warlock_t::parse_player_effects()
     parse_effects( warlock_base.affliction_warlock ); // 137043
     parse_effects( warlock_base.potent_afflictions ); // 77215
 
-    // Affliction Buffs
-    parse_effects( buffs.dark_harvest ); // 387018
-    parse_effects( buffs.jackpot_affliction ); // 1219034 // TWW2
-
     // Affliction Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::shadow_embrace ), talents.drain_soul.ok() ? talents.shadow_embrace_debuff_ds : talents.shadow_embrace_debuff_sb ); // 32390 / 453206
@@ -877,11 +873,7 @@ void warlock_t::parse_player_effects()
     parse_effects( talents.backlash ); // 387384
 
     // Destruction Buffs
-    parse_effects( buffs.reverse_entropy ); // 266030
     parse_effects( buffs.rolling_havoc, talents.rolling_havoc ); // 387570 (m: 387569)
-    parse_effects( buffs.flashpoint, talents.flashpoint ); // 387263 (m: 387259)
-    parse_effects( buffs.power_overwhelming, talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 ); // 387283
-    parse_effects( buffs.jackpot_destruction ); // 1217798
 
     // Destruction Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::eradication ), talents.eradication_debuff, talents.eradication ); // 196414 (m: 196412)
@@ -895,7 +887,6 @@ void warlock_t::parse_player_effects()
 
     // Diabolist Buffs
     parse_effects( buffs.abyssal_dominion ); // 456323
-    parse_effects( buffs.demonic_intelligence ); // 1239569 // TWW3 Diabolist 4pc buff
 
     // Diabolist Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::cloven_soul ), hero.cloven_soul_debuff ); // 434424
@@ -915,9 +906,6 @@ void warlock_t::parse_player_effects()
       parse_effects( hero.xalans_cruelty ); // 440040
     }
     parse_effects( hero.illhoofs_design ); // 440070
-
-    // Hellcaller Buffs
-    parse_effects( buffs.malevolence ); // 442726
   }
 
   // Soul Harvester

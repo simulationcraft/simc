@@ -706,13 +706,17 @@ namespace warlock
     buffs.malign_omen = make_buff( this, "malign_omen", talents.malign_omen_buff )
                             ->set_default_value( talents.malign_omen_buff->effectN( 1 ).percent() );
 
-    buffs.dark_harvest = make_buff( this, "dark_harvest", talents.dark_harvest_buff );
+    buffs.dark_harvest = make_buff( this, "dark_harvest", talents.dark_harvest_buff )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                             ->set_default_value_from_effect( 1 );  // NOTE: 2025-09-24 Effect #1 is for haste and effect #2 is for crit, but the current amount is the same.
 
     buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
                                ->set_chance( rng_settings.umbral_lattice.setting_value );
 
     buffs.jackpot_affliction = make_buff( this, "jackpot_affliction", tier.spliced_aff_jackpot )
                                    ->set_default_value_from_effect( 1 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_rppm( RPPM_HASTE, tier.spliced_aff_2pc->real_ppm() );
   }
 
@@ -761,6 +765,7 @@ namespace warlock
 
     buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy_buff )
                                 ->set_default_value_from_effect( 1 )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                 ->set_trigger_spell( talents.reverse_entropy )
                                 ->set_rppm( RPPM_NONE, talents.reverse_entropy->real_ppm() );
 
@@ -788,6 +793,7 @@ namespace warlock
                                           ->set_default_value_from_effect( 1 );
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_default_value_from_effect( 1 );
 
     buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
@@ -796,6 +802,8 @@ namespace warlock
 
     // 2024-07-19 - Power Overwhelming appears to grant double the listed value per stack
     buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                   ->set_default_value( talents.power_overwhelming->effectN( 2 ).base_value() / 10.0 )
                                    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
     buffs.burn_to_ashes = make_buff( this, "burn_to_ashes", talents.burn_to_ashes_buff );
@@ -849,6 +857,7 @@ namespace warlock
     //buffs.demonfire_flurry_trigger->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
 
     buffs.jackpot_destruction = make_buff( this, "jackpot_destruction", tier.spliced_destro_jackpot )
+                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                     ->set_default_value_from_effect( 1 );
   }
 
@@ -944,13 +953,16 @@ namespace warlock
 
     buffs.demonic_oculus = make_buff( this, "demonic_oculus", tier.demonic_oculus );
 
-    buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence );
+    buffs.demonic_intelligence = make_buff( this, "demonic_intelligence", tier.demonic_intelligence )
+                                     ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );;
   }
 
   void warlock_t::create_buffs_hellcaller()
   {
     buffs.malevolence = make_buff( this, "malevolence", hero.malevolence_buff )
                             ->set_cooldown( hero.malevolence_buff->cooldown() - 1_s )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                             ->set_default_value_from_effect( 1 );
 
     buffs.maintained_withering = make_buff( this, "maintained_withering", tier.maintained_withering );
