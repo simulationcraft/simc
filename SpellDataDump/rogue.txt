@@ -51,7 +51,7 @@ Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Rushed Setup (341534 effect#1), Rushed Setup (378803 effect#1), Tight Spender (381621 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2)
 Family Flags     : 21
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Enter World (22)
+Aura Interrupt   : Invulnerability (23)
 Effects          :
 #1 (id=152)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -178,7 +178,7 @@ Mechanic         : Distract
 Affecting Spells : Rushed Setup (341534 effect#1), Rushed Setup (378803 effect#1), Cloud Cover (441429 effect#1)
 Family Flags     : 12
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
-Aura Interrupt   : Hostile Action Received (0), Damage (1)
+Aura Interrupt   : Unknown (1), Hostile Action Received (2)
 Effects          :
 #1 (id=527)      : Distract (69)
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: at Enemy in Area (16)
@@ -253,7 +253,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Broadside (193356 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Fazed (441224 effect#4)
 Family Flags     : 3
 Attributes       : Is Ability (4), Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), No Proc Equip Requirement (97), Completely Blocked (99), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Suppress Weapon Procs (151), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Damage (Script) (27)
+Aura Interrupt   : Release (28)
 Effects          :
 #1 (id=538)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -283,7 +283,7 @@ Affecting Spells : Subterfuge (108208 effect#1), Shadowrunner (378807 effect#1),
 Triggered By     : Subterfuge (108208), Underhanded Upper Hand (424044)
 Family Flags     : 22
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Cooldown On Event (25), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Skill Increase (36), No Threat (42), Use Shapeshift Bar (68), Fail on all targets immune (85), Can Proc From Procs (122), Allow Proc While Sitting (147), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
+Aura Interrupt   : Damage (3), Sheathing (11), Interacting (12), Looting (13), Attacking (14), Action (Delayed) (18), Release (28)
 Effects          :
 #1 (id=541)      : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
@@ -364,7 +364,7 @@ Labels           : 16: Class Spells
                  : 1387
 Family Flags     : 11
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No shapeshift UI (65), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Not an Attack (194), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
-Aura Interrupt   : Hostile Action Received (0), Looting (11), Use Item (13)
+Aura Interrupt   : Unknown (1), Interacting (12), Attacking (14)
 Effects          :
 #1 (id=574)      : Sanctuary (176)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -372,7 +372,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 18461 | Target: Self (1)
 #3 (id=271221)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
-#4 (id=354085)   : Force Untarget (93) | Attributes: Exclude Own Party (4)
+#4 (id=354085)   : Force Untarget (93) | Attributes: Exclude Own Party (5)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Allows you to vanish from sight, entering stealth while in combat. For the first $11327d after vanishing, damage and harmful effects received will not break stealth. Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
@@ -487,7 +487,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
 Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
 Effects          :
 #1 (id=616)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | Target: Targeted Enemy (6)
@@ -563,7 +563,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #5, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1), Vile Tincture (458475 effects: #1, #2)
 Family Flags     : 16, 64
 Attributes       : Is Ability (4), Allow While Stealthed (37), No AutoCast (AI) (49), Instant Target Procs (115), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=855)      : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 2818 | Target: Self (1)
@@ -681,7 +681,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -856,7 +856,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Dirty Tricks (108216 effect#1), Shadow Dance (185313 effect#6), Rushed Setup (341534 effect#1), Sepsis (347037 effect#1), Rushed Setup (378803 effect#1), Don't Be Suspicious (441415 effect#2)
 Family Flags     : 7
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
 Effects          :
 #1 (id=2442)     : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.15) | Target: Targeted Enemy (6)
@@ -908,7 +908,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Envenom (32645 effects: #2, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Master Poisoner (196864 effects: #1, #4), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Master Poisoner (378436 effect#2), Virulent Poisons (381543 effect#1), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effect#1), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1), Vile Tincture (458475 effects: #1, #2)
 Family Flags     : 28, 64
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No AutoCast (AI) (49), Instant Target Procs (115), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=3616)     : Apply Aura (6) | Proc Trigger Spell (42): Wound Poison
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 8680 | Target: Self (1)
@@ -961,7 +961,7 @@ Affecting Spells : Subterfuge (108208 effect#3), Shadowrunner (378807 effect#1),
 Triggered By     : Unbreaking Grasp (370718)
 Family Flags     : 11, 96
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Cooldown On Event (25), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), No shapeshift UI (65), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Interacting (10), Looting (11), Use Item (13), Mount (17), Damage (Script) (27)
+Aura Interrupt   : Sheathing (11), Interacting (12), Attacking (14), Action (Delayed) (18), Release (28)
 Effects          :
 #1 (id=4766)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
@@ -998,7 +998,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Celerity (340087 effect#1), Lucky Coin (452562 effect#2)
 Family Flags     : 39
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=6149)     : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 50 | Scaled Value: 50 | Resource: energy | Target: Self (1)
@@ -1041,7 +1041,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Adrenaline Rush (13750 effect#3), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 43
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=6243)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -1342,7 +1342,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1387
 Attributes       : Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -1481,7 +1481,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Remove Entering Arena (162), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42), Duel End (46)
 Effects          :
 #1 (id=37131)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -1554,7 +1554,7 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell
 Affecting Spells : Nightstalker (130493 effect#1), Marked for Death (137619 effect#1), Deeper Stratagem (193531 effects: #1, #4), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Devious Stratagem (394321 effects: #1, #4), Fazed (441224 effect#5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4)
 Family Flags     : 55
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), Name in Channel Bar (61), PvP Enabling (96), Requires Main-Hand Weapon (106), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Channel Interrupt: Action (2)
+Channel Interrupt: Damage (2)
 Effects          :
 #1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -1673,7 +1673,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Affecting Spells : So Tricky (441403 effect#3)
 Family Flags     : 49
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=51254)    : Redirect Threat (130)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 36000 | Target: Targeted Raid Member (57)
@@ -1833,7 +1833,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3304: So Tricky (441403 effect#2)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Allow Low Level Buff (67), Limit N (165), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=53201)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
@@ -2232,7 +2232,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=119258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=119258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Gouge (1776), Cheap Shot (1833), Sap (6770), Quaking Palm (107079)
                    Family Flags: 3, 7, 10, 52
@@ -2370,7 +2370,7 @@ Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Ta
 Affecting Spells : Subterfuge (108208 effect#1), Shadowrunner (378807 effect#1), Shadowheart (455131 effect#1)
 Family Flags     : 22
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), Allow Proc While Sitting (147), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
+Aura Interrupt   : Damage (3), Sheathing (11), Interacting (12), Looting (13), Attacking (14), Action (Delayed) (18), Release (28)
 Effects          :
 #1 (id=128890)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
@@ -2436,7 +2436,7 @@ Labels           : 16: Class Spells
                  : 2360: Shrouded in Darkness (382507 effect#1)
 Triggered By     : Shroud of Concealment (114018)
 Attributes       : Do Not Log Immune Misses (3), Allow While Stealthed (37), Exclude Caster (51), Ignore Line of Sight (66), Allow Low Level Buff (67), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Damage (1), Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Aura Interrupt   : Hostile Action Received (2), Damage (3), Sheathing (11), Interacting (12), Looting (13), Attacking (14)
 Effects          :
 #1 (id=129946)   : Apply Aura (6) | Stealth (16)
                    Base Value: 400 | Scaled Value: 800 | Points Per Level: 5 | Radius: 30 yards | Target: At Ally in Area (31)
@@ -2483,7 +2483,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
-#2 (id=165707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=165707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9
@@ -2504,7 +2504,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), No Cast Log (128), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Not an Attack (194), Allow While Charmed (261), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter Combat (28)
+Aura Interrupt   : Damage (Script) (29)
 Effects          :
 #1 (id=150198)   : Apply Aura (6) | Copy Appearance (247)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8 | Target: Current Target (25)
@@ -2661,7 +2661,7 @@ Proc Chance      : 100%
 Proc Flags       : Death
 Triggered By     : Battle Fatigue (134732)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3196,7 +3196,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Shadowrunner (378807 effect#1), Improved Shadow Dance (393972 effects: #1, #2), Shadowheart (455131 effect#1), The First Dance (470678 effects: #1, #2)
 Family Flags     : 57
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), No Cast Log (128), Allow Proc While Sitting (147), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=269222)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
@@ -3314,7 +3314,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Celerity (340087 effect#1), Lucky Coin (452562 effect#2)
 Family Flags     : 39
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=271233)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Resource: energy | Target: Self (1)
@@ -3405,7 +3405,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=283680)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
@@ -3444,7 +3444,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
@@ -3467,7 +3467,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -3498,7 +3498,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
@@ -3714,15 +3714,15 @@ Affecting Spells : Nightstalker (130493 effect#1), Quick Draw (196938 effects: #
 Family Flags     : 108
 Attributes       : Is Ability (4), Do Not Sheath (18), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=287160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
+#1 (id=287160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
-#2 (id=294100)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
+#2 (id=294100)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
-#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#3 (id=294101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
@@ -3823,13 +3823,13 @@ Proc Flags       : Cast Successful
 Affecting Spells : Improved Shadow Techniques (394023 effect#1)
 Family Flags     : 107
 Attributes       : Is Ability (4), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=289127)   : Energize Power (30) | Attributes: Suppress Points Stacking (6)
+#1 (id=289127)   : Energize Power (30) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
-#2 (id=368528)   : Energize Power (30) | Attributes: Suppress Points Stacking (6)
+#2 (id=368528)   : Energize Power (30) | Attributes: Suppress Points Stacking (7)
                    Base Value: 4 | Scaled Value: 4 | Resource: energy | Target: Self (1)
-#3 (id=1105230)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=1105230)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc196912
 Tooltip          : Combo points stored.
@@ -4101,7 +4101,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
@@ -4118,7 +4118,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
@@ -4185,7 +4185,7 @@ Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Combat (Only Peaceful) (28), Is Channelled (34), No Redirection (35), No Skill Increase (36), No Reflection (39), No AutoCast (AI) (49), Ignore Caster Modifiers (125), Not In Spellbook (143)
-Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (3), Attacking (12), Use Item (13), Shapeshifting (15), Mount (17), Standing (18), Leave World (19), Stealth or Invisible (20)
+Channel Interrupt: Unknown (0), Hostile Action Received (1), Damage (2), Action (3), Looting (12), Attacking (13), Damage Channel Duration (15), Action (Delayed) (17), Mount (18), Standing (19), Leave World (20)
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
@@ -4211,7 +4211,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), Gloomblade (246332 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), Perforate (277720 effect#1), Inevitability (278683 effect#3), Improved Backstab (319949 effect#2), Master Assassin's Mark (340094 effect#1), The Rotten (341134 effects: #1, #3), Deathly Shadows (341202 effects: #1, #2), Deeper Daggers (341550 effect#1), Perforated Veins (341572 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Dark Brew (382504 effects: #2, #3), Deeper Daggers (383405 effects: #1, #2), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #1, #3, #4), Perforated Veins (394254 effect#1), Honed Blades (394894 effects: #1, #2), Perforated Veins (426602 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1), Winning Streak! (1218143 effects: #2, #3)
 Family Flags     : 54, 109
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=295616)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.790759 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
@@ -4531,7 +4531,7 @@ Proc Flags       : Yellow Melee
 Affecting Spells : Shadow Dance (185313 effect#6), Planned Execution (341556 effect#1), Planned Execution (382508 effect#1), Warning Signs (426555 effect#1), Death Perception (469642 effects: #2, #3, #4), Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#1)
 Family Flags     : 69, 117
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=341220)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
@@ -4551,7 +4551,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Cheap Missile AOI (374), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter World (22)
+Aura Interrupt   : Invulnerability (23)
 Effects          :
 #1 (id=341340)   : Jump Charge (254)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 541 | Target: at Area (87)
@@ -4783,7 +4783,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=373909)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self (1)
@@ -4806,7 +4806,7 @@ Proc Flags       : Yellow Melee
 Affecting Spells : Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Marked for Death (137619 effect#1), Shadow Dance (185313 effect#6), Deeper Stratagem (193531 effects: #1, #4, #5), Finality: Black Powder (340603 effect#1), Planned Execution (341556 effect#1), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Planned Execution (382508 effect#1), Finality: Black Powder (385948 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Masterful Finish (395003 effect#2), Symbolic Victory (409987 effect#1), Warning Signs (426555 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effect#5), Flawless Form (441326 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Momentum of Despair (457115 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4, #5), Death Perception (469642 effects: #2, #3, #4), Winning Streak! (1218143 effect#1), Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#1)
 Family Flags     : 44, 117
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=373911)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 7 | Target: Self (1)
@@ -4855,7 +4855,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=375127)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self (1)
@@ -5103,7 +5103,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Triggered By     : Loaded Dice (256170)
 Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=478589)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self (1)
@@ -5217,9 +5217,9 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Include In Advanced Combat Log (72), Do Not Log Aura Refresh (291)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=480744)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=480744)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Cheap Shot (1833)
                    Family Flags: 10
@@ -5251,7 +5251,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Ended
 Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=718785)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -5354,7 +5354,7 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Blade Flurry (13877), Blade Flurry (319606)
                    Family Flags: 43
-#3 (id=722598)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#3 (id=722598)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Blade Flurry (22482)
                    Family Flags: 93
@@ -5507,7 +5507,7 @@ Labels           : 292
                  : 413
 Attributes       : Can Proc From Procs (122), Do Not Display Duration (170), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=735068)   : Apply Aura (6) | Modify Rating (189) | Attributes: Suppress Points Stacking (6)
+#1 (id=735068)   : Apply Aura (6) | Modify Rating (189) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #2 (id=735070)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278681
@@ -5616,7 +5616,7 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executio
 Family Flags     : 32, 54
 Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=738432)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=738432)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.19 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc280719
 
@@ -5793,7 +5793,7 @@ School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Exit Vehicle (41)
 Effects          :
 #1 (id=767733)   : Apply Aura (6) | Trigger Spell Based on Health% (468): Conductive Ink
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Trigger Spell: 302597 | Target: Targeted Enemy (6)
@@ -5823,11 +5823,11 @@ Stacks           : 999 maximum
 Proc Chance      : 101%
 Triggered By     : Conductive Ink (296963), Conductive Ink (302491), Conductive Ink (302597), Fatal Intent (461984)
 Attributes       : DoT Stacking Rule (103), Scales with Casting Item's Level (354)
-Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Exit Vehicle (41)
 Effects          :
 #1 (id=777495)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=810018)   : Apply Aura (6) | Trigger Spell Based on Health% (468): Conductive Ink | Attributes: Suppress Points Stacking (6)
+#2 (id=810018)   : Apply Aura (6) | Trigger Spell Based on Health% (468): Conductive Ink | Attributes: Suppress Points Stacking (7)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Trigger Spell: 302597 | Target: Targeted Enemy (6)
 Description      : $@spelldesc296963
 Tooltip          : Falling below $296964M~1% health will cause Conductive Ink to inflict ${$296963s1*(1+$@versadmg)} Nature damage.
@@ -5905,7 +5905,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -5959,7 +5959,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Venomous Totem (23726 effect#2), Envenom (32645 effects: #2, #5, #7), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effects: #1, #2), Master Poisoner (196864 effects: #1, #2), Toxic Blade (245389 effect#1), Shiv (319504 effect#1), Lethal Poisons (341539 effect#1), Grudge Match (364668 effect#1), Virulent Poisons (381543 effects: #1, #2), Improved Poisons (381624 effect#1), Dragon-Tempered Blades (381801 effect#2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effect#1), Fatal Concoction (392384 effects: #1, #2), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Destiny Defined (454435 effect#1), Vile Tincture (458475 effects: #1, #2)
 Family Flags     : 16, 64
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No AutoCast (AI) (49), Instant Target Procs (115), Allow Aura While Dead (116), Allow Entering Arena (149), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=799407)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 315585 | Target: Self (1)
@@ -6160,7 +6160,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Adrenaline Rush (13750 effect#3), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 30, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=806204)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -6186,7 +6186,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Cheap Missile AOI (374), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter World (22)
+Aura Interrupt   : Invulnerability (23)
 Effects          :
 #1 (id=806308)   : Jump Charge (254)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 374 | Target: at Area (87)
@@ -6283,7 +6283,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29)
+Aura Interrupt   : Enter Combat (30)
 Effects          :
 #1 (id=812561)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
@@ -6308,7 +6308,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29)
+Aura Interrupt   : Enter Combat (30)
 Effects          :
 #1 (id=812562)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -6333,7 +6333,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29)
+Aura Interrupt   : Enter Combat (30)
 Effects          :
 #1 (id=812563)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
@@ -6364,9 +6364,9 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Blades (12
 Family Flags     : 54, 124
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=812721)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
+#1 (id=812721)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
-#2 (id=812722)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=812722)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #3 (id=812729)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -6412,7 +6412,7 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent A
 Triggered By     : Serrated Bone Spike (328547)
 Family Flags     : 54, 115
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Melee Haste Affects Periodic (278), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Duel End (46)
 Effects          :
 #1 (id=813416)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -6560,7 +6560,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 115
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Aura Icon (60), Requires Main-Hand Weapon (106), Allow Aura While Dead (116), No Helpful Threat (131), Do Not Chain To Crowd-Controlled Targets (200), No Aura Log (202), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Duel End (46)
 Effects          :
 #1 (id=821129)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.32 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -6680,7 +6680,7 @@ Effects          :
                    Base Value: 500 | Scaled Value: 500 | Target: Self (1)
                    Affected Spells: Shiv (5938)
                    Family Flags: 29
-#2 (id=872825)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#2 (id=872825)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Shiv (5938)
                    Family Flags: 29
@@ -6974,7 +6974,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Attributes       : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
 Effects          :
-#1 (id=840291)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=840291)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -7312,7 +7312,7 @@ Labels           : 16: Class Spells
 Conduit Id       : 230 (values=-5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=841637)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#1 (id=841637)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Feint (1966), Crimson Vial (185311), Crimson Vial (212198), Crimson Vial (354494)
                    Family Flags: 27, 99
@@ -7437,7 +7437,7 @@ Labels           : 16: Class Spells
 Conduit Id       : 235 (values=-20, -22, -24, -26, -28, -30, -32, -34, -36, -38, -40, -42, -44, -46, -48)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=841998)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=841998)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Distract (1725), Cheap Shot (1833), Sap (6770), Kidney Shot (426589), Distract (441587)
                    Family Flags: 7, 10, 12, 21
@@ -7831,7 +7831,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38)
+Aura Interrupt   : Standing (20), Jump (39)
 Effects          :
 #1 (id=844787)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -7904,7 +7904,7 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Nightstalker (130
 Family Flags     : 15, 54
 Attributes       : No Active Defense (21), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=871056)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
+#1 (id=871056)   : School Damage (2): shadow | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc323654
 
@@ -8005,7 +8005,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#11), Flow State (390148 effect#13), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1), Temporal Cycle (1237269 effect#3)
+                 : 1216: Evoker Spells
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
@@ -8113,7 +8113,7 @@ Effects          :
 #1 (id=887362)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1889 (Category) | Target: Self (1)
                    Affected Spells (Category): Serrated Bone Spike (328547)
-#2 (id=887363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#2 (id=887363)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Serrated Bone Spike (385424), Serrated Bone Spike (394036)
                    Family Flags: 115
@@ -8133,7 +8133,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29)
+Aura Interrupt   : Enter Combat (30)
 Effects          :
 #1 (id=887546)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
@@ -8178,7 +8178,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29)
+Aura Interrupt   : Enter Combat (30)
 Effects          :
 #1 (id=887552)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
@@ -8285,7 +8285,7 @@ Mechanic         : Bleed
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Lucky Coin (452562 effect#3), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 59
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Spell Haste Affects Periodic (173), Taps immediately (215), No Attack Parry (248), Periodic Can Crit (265), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=897169)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.4 | Mechanic: Bleed | Target: Targeted Enemy (6)
@@ -8408,7 +8408,7 @@ Labels           : 292
 Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
 Effects          :
 #1 (id=904093)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -8426,7 +8426,7 @@ Labels           : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
 Effects          :
 #1 (id=904094)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -8457,7 +8457,7 @@ Labels           : 292
                  : 295
                  : 1375
 Attributes       : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
 Effects          :
 #1 (id=904640)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -8635,7 +8635,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=996412)   : Apply Aura Party (Non-Random) (271) | Periodic Heal% (20): every 2 seconds
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
@@ -8652,7 +8652,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1006824)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#1 (id=1006824)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Feint (1966), Crimson Vial (185311), Crimson Vial (212198), Crimson Vial (354494)
                    Family Flags: 27, 99
@@ -8690,7 +8690,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1007256)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=1007256)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Distract (1725), Cheap Shot (1833), Sap (6770), Kidney Shot (426589), Distract (441587)
                    Family Flags: 7, 10, 12, 21
@@ -8858,7 +8858,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1012575)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=1012575)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Dispatch (2098), Slice and Dice (5171), Envenom (32645), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Crimson Tempest (121411), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556), Kidney Shot (426589), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 17, 18, 20, 21, 32, 35, 44, 55, 81, 89, 92, 111, 112
@@ -8879,7 +8879,7 @@ Affecting Spells : Rogue Trickster 11.2 Class Set 2pc (1236404 effect#1)
 Triggered By     : Thistle Tea (469779)
 Family Flags     : 125
 Attributes       : Allow While Stealthed (37), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=1012585)  : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Resource: energy | Target: Self (1)
@@ -9048,7 +9048,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1012602)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-#2 (id=1099478)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#2 (id=1099478)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Mutilate (1329), Ambush (8676), Ambush (385897), Ambush (430023)
                    Family Flags: 9, 53
@@ -9125,7 +9125,7 @@ Affecting Spells : Envenom (32645 effects: #2, #5, #7), Mastery: Potent Assassin
 Triggered By     : Master Poisoner (378436)
 Family Flags     : 64, 68
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No AutoCast (AI) (49), Instant Target Procs (115), Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1012644)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
@@ -9171,7 +9171,7 @@ Labels           : 20: Rogue Spells
 Mechanic         : Bleed
 Attributes       : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
 Effects          :
-#1 (id=1012663)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=1012663)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -9259,7 +9259,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Shiv (5938)
                    Family Flags: 29
-#2 (id=1012879)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#2 (id=1012879)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Shiv (5938)
                    Family Flags: 29
@@ -9639,7 +9639,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Family Flags     : 38
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), Can Proc From Procs (122), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1013535)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
@@ -9734,7 +9734,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Proc cooldown on a per t
 Effects          :
 #1 (id=1013875)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#2 (id=1013876)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
+#2 (id=1013876)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Targets (17)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 17 | Misc Value 2: 2350 (Label) | Target: Self (1)
                    Affected Spells (Label): Rupture (1943)
 #3 (id=1033367)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
@@ -10097,9 +10097,9 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Shadow Blades (12
 Family Flags     : 54, 124
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1017353)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
+#1 (id=1017353)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | Target: Targeted Enemy (6)
-#2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -10124,7 +10124,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #14, #15), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 115
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Aura While Dead (116), No Helpful Threat (131), Do Not Chain To Crowd-Controlled Targets (200), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Duel End (46)
 Effects          :
 #1 (id=1018633)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.7424 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -10222,7 +10222,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1019191)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
@@ -10242,7 +10242,7 @@ Labels           : 16: Class Spells
                  : 2890: Subterfuge (108208 effect#2)
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1019223)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
+#1 (id=1019223)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Targets (17)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
 #2 (id=1019224)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
@@ -10261,7 +10261,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1019232)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
+#1 (id=1019232)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Targets (17)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 17 | Misc Value 2: 2865 (Label) | Target: Self (1)
                    Affected Spells (Label): Garrote (703), Rupture (1943)
 #2 (id=1019233)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Target Range (35)
@@ -10383,7 +10383,7 @@ Labels           : 16: Class Spells
                  : 1387
                  : 2338: Take 'em by Surprise (382742 effect#2), Take 'em by Surprise (382742 effect#3)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39)
 Effects          :
 #1 (id=1019483)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10401,7 +10401,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1019542)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -10421,7 +10421,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1019543)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -10439,7 +10439,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1019545)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -10571,7 +10571,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
                    Family Flags: 112
-#2 (id=1021253)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Aura Points Stack (9)
+#2 (id=1021253)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Aura Points Stack (10)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
                    Family Flags: 112
@@ -10844,7 +10844,7 @@ Affecting Spells : Shiv (319504 effect#3), Grudge Match (364668 effect#1), Dark 
 Family Flags     : 126
 Attributes       : No Active Defense (21), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), No Attack Parry (248), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1033344)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=1033344)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc340082
 Tooltip          : Bleeding for $w1 damage every $t sec.
@@ -10914,7 +10914,7 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent A
 Triggered By     : Serrated Bone Spike (385424)
 Family Flags     : 54, 115
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Melee Haste Affects Periodic (278), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Duel End (46)
 Effects          :
 #1 (id=1033371)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17424 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -10942,7 +10942,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1033443)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 1 | Scaled Value: 1 | Stat: Agi | Target: Self (1)
@@ -11039,19 +11039,19 @@ Proc Flags       : Yellow Melee
 Triggered By     : The Rotten (382015)
 Attributes       : Include In Advanced Combat Log (72), Aura Points On Client (268), Do Not Log Aura Refresh (291)
 Effects          :
-#1 (id=1033679)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
+#1 (id=1033679)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121)
                    Family Flags: 104, 109
-#2 (id=1033680)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
+#2 (id=1033680)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Backstab (53)
                    Family Flags: 2
-#3 (id=1033681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#3 (id=1033681)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Goremaw's Bite (426591), Goremaw's Bite (426592), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
-#4 (id=1035123)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
+#4 (id=1035123)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Goremaw's Bite (426591), Goremaw's Bite (426592), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -11071,9 +11071,9 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Triggered By     : Perforated Veins (382518)
 Attributes       : Allow While Sitting (27), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1033744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=1033744)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Goremaw's Bite (426591), Goremaw's Bite (426592), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -11275,7 +11275,7 @@ Affecting Spells : Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalke
 Triggered By     : Deathmark (360194)
 Family Flags     : 59
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1033883)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2352 (Label) | Target: Self (1)
@@ -11318,7 +11318,7 @@ Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Nightstalker (130
 Family Flags     : 15, 54
 Attributes       : No Active Defense (21), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1034706)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (6)
+#1 (id=1034706)  : School Damage (2): shadow | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.121 | Target: Targeted Enemy (6)
 Description      : $@spelldesc384631
 
@@ -11583,7 +11583,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shiv (319504), Shiv (400789)
                    Family Flags: 91
-#2 (id=1046109)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#2 (id=1046109)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Shiv (5938)
                    Family Flags: 29
@@ -11841,7 +11841,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2557
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Exit Vehicle (41)
 Effects          :
 #1 (id=1074557)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12032,7 +12032,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1097661)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
-#3 (id=1224076)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
+#3 (id=1224076)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 0.01 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #4 (id=1224077)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 12 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -12588,7 +12588,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Kidney Shot (426589)
                    Family Flags: 21
-#2 (id=1105216)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=1105216)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Kidney Shot (426589)
                    Family Flags: 21
@@ -12610,7 +12610,7 @@ Mechanic         : Stun
 Affecting Spells : Rogue Tier 6 Trinket (40460 effect#1), Rushed Setup (341534 effect#1), Rushed Setup (378803 effect#1), Tight Spender (381621 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Stunning Secret (426588 effects: #1, #2), Goremaw's Bite (426593 effect#2)
 Family Flags     : 21
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Prevents Anim (50), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), No Partial Immunity (139), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Enter World (22)
+Aura Interrupt   : Invulnerability (23)
 Effects          :
 #1 (id=1105204)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Source (22) -> Enemy in Area (15)
@@ -12673,9 +12673,9 @@ Proc Flags       : Yellow Melee, Generic Heal
 Triggered By     : Goremaw's Bite (426591)
 Attributes       : Is Ability (4), Do Not Sheath (18), Requires Off-Hand Weapon (120), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1105226)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
+#1 (id=1105226)  : Energize Power (30) | Attributes: Suppress Points Stacking (7)
                    Base Value: 3 | Scaled Value: 3 | Resource: combo_points | Target: Self (1)
-#2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
+#2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Slice and Dice (5171), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 18, 20, 21, 32, 44, 92
@@ -12726,9 +12726,9 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Do Not Display Range (126), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1105249)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=1105249)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Goremaw's Bite (426591), Goremaw's Bite (426592), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 29, 67, 75, 82, 104, 109, 127
@@ -12746,7 +12746,7 @@ Labels           : 16: Class Spells
                  : 2945: Recuperator (378996 effect#1)
 Triggered By     : Slice and Dice (315496)
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Not an Attack (194), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1105254)  : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12770,7 +12770,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Airborne Irritant (200733 effects: #1, #2), Blinding Powder (256165 effects: #1, #2), Don't Be Suspicious (441415 effect#1)
 Family Flags     : 24
 Attributes       : Is Ability (4), Not Shapeshifted (16), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Aura Never Bounces (148), Taps immediately (215), No Attack Dodge (247), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
 Effects          :
 #1 (id=1107522)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -12945,7 +12945,7 @@ Labels           : 16: Class Spells
                  : 2338: Take 'em by Surprise (382742 effect#2), Take 'em by Surprise (382742 effect#3)
                  : 2890: Subterfuge (108208 effect#2)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39)
 Effects          :
 #1 (id=1114721)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13147,7 +13147,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Dispatch (2098), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 17, 20, 32, 44, 55, 92, 111, 112
-#3 (id=1172534)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#3 (id=1172534)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2941 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (331850), Blade Flurry (429951)
 Description      : $@spelldesc441321
@@ -13371,7 +13371,7 @@ Labels           : 16: Class Spells
                  : 292
 Mechanic         : Distract
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Heartbeat Resist (30), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
-Aura Interrupt   : Hostile Action Received (0), Damage (1)
+Aura Interrupt   : Unknown (1), Hostile Action Received (2)
 Effects          :
 #1 (id=1136273)  : Distract (69)
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: at Enemy in Area (16)
@@ -13409,9 +13409,9 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
+Aura Interrupt   : Standing (20), Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Touch Ground (52)
 Effects          :
-#1 (id=1136489)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1136489)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : $@spelldesc441423
 Tooltip          : Building to a Coup de Grace.
@@ -13591,7 +13591,7 @@ Labels           : 16: Class Spells
                  : 5212: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#1), Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#2), Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#3), Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#4)
 Triggered By     : Fatebound Coin (452740), Fatebound Coin (452741), Fatebound Coin (452742)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1153844)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 7 | Scaled Value: 7 | Stat: Agi | Target: Self (1)
@@ -13680,7 +13680,7 @@ Labels           : 16: Class Spells
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1154405)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -13688,7 +13688,7 @@ Effects          :
                    Family Flags: 25
 #2 (id=1156762)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=1160700)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (6)
+#3 (id=1160700)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc452536
 Tooltip          : Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]
@@ -13707,7 +13707,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Family Flags     : 56
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1154414)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -13719,7 +13719,7 @@ Effects          :
                    Family Flags: 54
 #3 (id=1156709)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=1156710)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (6)
+#4 (id=1156710)  : Apply Aura (6) | Modify Min Speed% (305) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1170663)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -14191,7 +14191,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1158369)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14232,7 +14232,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1158739)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14313,9 +14313,9 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Family Flags     : 38
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), Can Proc From Procs (122), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1160461)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
+#1 (id=1160461)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Envenom (32645), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
                    Family Flags: 35, 112
@@ -14333,7 +14333,7 @@ Labels           : 16: Class Spells
                  : 1387
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Do Not Display Duration (170), Aura Points On Client (268), Update Passives on Apply/Remove (344)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1160701)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -14596,7 +14596,7 @@ Labels           : 16: Class Spells
                  : 5176: Death's Study (1239231 effect#3), Death's Study (1239231 effect#4), Death's Study (1239232 effect#3), Death's Study (1239232 effect#4)
 Triggered By     : Momentum of Despair (457067)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1161811)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
@@ -14706,7 +14706,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Symbolic Victory (457062)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1161964)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.56 | Target: Self (1)
@@ -14820,7 +14820,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 5176: Death's Study (1239231 effect#3), Death's Study (1239231 effect#4), Death's Study (1239232 effect#3), Death's Study (1239232 effect#4)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Raid Encounter End or M+ Start (43), Disconnect (44), Duel End (46), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1162176)  : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Resource: energy | Target: Self (1)
@@ -14911,13 +14911,13 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Do Not Display Cast Time (441)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Raid Encounter End or M+ Start (43), Disconnect (44), Duel End (46)
 Effects          :
-#1 (id=1164498)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Aura Points Stack (9)
+#1 (id=1164498)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Aura Points Stack (10)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Leeching Poison (108211), Deadly Poison (113780), Crippling Poison (115196), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Dreadblades (343142), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Kingsbane (385627), Atrophic Poison (392388), Kingsbane (394095), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
                    Family Flags: 14, 16, 25, 28, 35, 45, 51, 68, 73, 74, 83, 85, 86, 97, 119, 120
-#2 (id=1164499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Aura Points Stack (9)
+#2 (id=1164499)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Aura Points Stack (10)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Leeching Poison (108211), Deadly Poison (113780), Crippling Poison (115196), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Dreadblades (343142), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Kingsbane (385627), Atrophic Poison (392388), Kingsbane (394095), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
                    Family Flags: 14, 16, 25, 28, 35, 45, 51, 68, 73, 74, 83, 85, 86, 97, 119, 120
@@ -14940,7 +14940,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3617
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Allow Entering Arena (149), Do Not Display Duration (170), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Do Not Display Cast Time (441)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Raid Encounter End or M+ Start (43), Disconnect (44), Duel End (46)
 Effects          :
 #1 (id=1164500)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -14966,7 +14966,7 @@ Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Do Not Display Duration (170), No Cooldown On Tooltip (192), Aura Points On Client (268), Do Not Display Power Cost (303), Can Proc from Suppressed Caster Procs (385), Do Not Display Cast Time (441)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44), Duel End (46)
 Effects          :
 #1 (id=1165082)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15083,11 +15083,11 @@ Stacks           : 999 maximum
 Proc Chance      : 101%
 Triggered By     : Fatal Intent (461980), Fatal Intent (461982)
 Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
-Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Exit Vehicle (41)
 Effects          :
 #1 (id=1171146)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1171147)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Fatal Intent | Attributes: Suppress Points Stacking (6)
+#2 (id=1171147)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Fatal Intent | Attributes: Suppress Points Stacking (7)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Trigger Spell: 461982 | Target: Targeted Enemy (6)
 Description      : $@spelldesc461980
 Tooltip          : Falling below $461980M~3% health will cause Fatal Intent to inflict ${$461984s1*(1+$@versadmg)} Plague damage.
@@ -15186,7 +15186,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
+Aura Interrupt   : Standing (20), Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Touch Ground (52)
 Effects          :
 #1 (id=1171359)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Coup de Grace overrides Dispatch
                    Base Value: 441776 | Scaled Value: 441776 | Misc Value: 2098 | Target: Self (1)
@@ -15205,7 +15205,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
+Aura Interrupt   : Standing (20), Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Touch Ground (52)
 Effects          :
 #1 (id=1171360)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Coup de Grace overrides Eviscerate
                    Base Value: 441776 | Scaled Value: 441776 | Misc Value: 196819 | Target: Self (1)
@@ -15442,7 +15442,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Do Not Log Immune Misses (3), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Active Defense (21), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Suppress Weapon Procs (151), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Can Target Untargetable (216), Do Not Log PvP Kill (241), Can Hit AOE Untargetable (260), Allow While Charmed (261), Ignore Sanctuary (263), Do Not Log Aura Refresh (291), Do Not Display Power Cost (303), Allow Cast While Channeling (308), Do Not Log Full Overheal (323), Ignore Feign Death (346), Do Not Log Absorb (348), Do Not Log on Learn (355), Do Not Log Spell Miss (397), Do Not Display Cast Time (441), Hide Passive From Tooltip (451)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Raid Encounter Start or M+ Start (42), Raid Encounter End or M+ Start (43), Disconnect (44), Duel End (46), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1184103)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
@@ -15488,7 +15488,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
 Attributes       : Passive (6), Allow While Stealthed (37), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=1184332)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Thistle Tea
                    Base Value: 30 | Scaled Value: 30 | Resource: energy | Misc Value 2: 0x1 | Trigger Spell: 381623 | Target: Self (1)
@@ -15527,7 +15527,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185581)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
@@ -15548,7 +15548,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185593)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
@@ -15571,7 +15571,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185598)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
@@ -15594,7 +15594,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185603)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
@@ -15617,7 +15617,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185605)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
@@ -15640,7 +15640,7 @@ Proc Chance      : 101%
 Affecting Spells : Adrenaline Rush (13750 effect#3), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Broadside (193356 effects: #3, #4), Symbols of Death (227151 effect#1), Reverberation (341264 effect#1), Deadly Precision (381542 effect#1), Heavy Hitter (381885 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), The Rotten (394203 effects: #3, #4), Perforated Veins (394254 effect#1), Perforated Veins (426602 effect#1), Fazed (441224 effect#4)
 Family Flags     : 82
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185606)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
@@ -15661,7 +15661,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Enter Combat (30), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1185607)  : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
@@ -15763,7 +15763,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter Combat (28), Change Talent (46)
+Aura Interrupt   : Damage (Script) (29), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1186207)  : Apply Aura (6) | Periodic Trigger Spell (23): The First Dance every 6 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 470678 | Target: Self (1)
@@ -15780,7 +15780,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : The First Dance (470677)
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1186208)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.666667 | Misc Value: 1 | Target: Self (1)
@@ -15872,11 +15872,11 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged
 Attributes       : Is Ability (4), Do Not Sheath (18), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1191954)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
+#1 (id=1191954)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
-#2 (id=1191955)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
+#2 (id=1191955)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
-#3 (id=1191956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#3 (id=1191956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : $@spelldesc193315
 Tooltip          : Your next Pistol Shot costs $s1% less Energy and deals $s3% increased damage.
@@ -16014,7 +16014,7 @@ Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Triggered By     : Rogue Outlaw 11.1 Class Set 2pc (1215720)
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1200852)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -16040,7 +16040,7 @@ Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Rogue Subtlety 11.1 Class Set 2pc (1215721)
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1202800)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -16085,7 +16085,7 @@ Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Periodic
 Triggered By     : Rogue Assassination 11.1 Class Set 2pc (1215719)
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1203309)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -16110,7 +16110,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1204892)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Misc Value: 8 | Misc Value 2: 4380 (Label) | Target: Self (1)
@@ -16136,7 +16136,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Affecting Spells : So Tricky (441403 effect#3)
 Family Flags     : 49
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1212565)  : Redirect Threat (130)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3600000 | Target: Targeted Raid Member (57)
@@ -16388,7 +16388,7 @@ Labels           : 16: Class Spells
                  : 5061
                  : 5178: Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#2)
 Attributes       : No Aura Cancel (31), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1236769)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.33 | Misc Value 2: 3936 (Label) | Target: Self (1)
@@ -16417,7 +16417,7 @@ Labels           : 16: Class Spells
                  : 5061
                  : 5178: Rogue Deathstalker 11.2 Class Set 4pc (1236401 effect#2)
 Attributes       : No Aura Cancel (31), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1236770)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.34 | Misc Value 2: 3936 (Label) | Target: Self (1)

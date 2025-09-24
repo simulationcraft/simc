@@ -77,13 +77,13 @@ Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 e
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
+#1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (7)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Stone Bulwark (114893), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Stone Bulwark (462844), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
-#2 (id=756953)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=756953)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#3 (id=1052535)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
+#3 (id=1052535)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : Protects the target with an earthen shield, increasing your healing on them by $s1% and healing them for ${$379s1*(1+$s1/100)} when they take damage. This heal can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. $?a1217622[Lasts $d][Maximum $u charges].
@@ -195,7 +195,7 @@ Labels           : 16: Class Spells
                  : 615
 Family Flags     : 38
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Horde Specific Spell (232), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=856)      : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Radius: 50000 yards | Target: Raid in Area (56)
@@ -318,7 +318,7 @@ Labels           : 16: Class Spells
                  : 292
 Family Flags     : 115
 Attributes       : Not Shapeshifted (16), Is Channelled (34), No Threat (42), Toggle Far Sight (45), No AutoCast (AI) (49), Name in Channel Bar (61), Ignore Line of Sight (66), Not In Arena or Rated Battleground (144), Not In Arena (297), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Moving (3), Turning (4), Animation (5), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
+Channel Interrupt: Damage (2), Action (3), Moving (4), Turning (5), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=2125)     : Add Farsight (72)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards
@@ -717,7 +717,7 @@ Labels           : 16: Class Spells
                  : 615
 Family Flags     : 38
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Alliance Specific Spell (233), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=21919)    : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Radius: 50000 yards | Target: Raid in Area (56)
@@ -794,7 +794,7 @@ Labels           : 16: Class Spells
 Mechanic         : Heal
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No School Immunities (90), No Partial Immunity (139), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=26531)    : Attack Me (114)
+#1 (id=26531)    : Taunt (114)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 15 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Taunts all enemies within $A1 yards.
 
@@ -852,7 +852,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 15, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=120544)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87)
@@ -941,7 +941,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Voodoo Mastery (204268 effect#1)
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Release (28)
 Effects          :
 #1 (id=43856)    : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 70495 | Misc Value 2: 0x9 | Target: Targeted Enemy (6)
@@ -975,7 +975,7 @@ Affecting Spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=43877)    : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
+#1 (id=43877)    : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Summons two $?s262624[Elemental ][]Spirit $?s147783[Raptors][Wolves] that aid you in battle for $228562d. They are immune to movement-impairing effects, and each $?s262624[Elemental ][]Feral Spirit summoned grants you $?s262624[$224125s1%][$392375s1%] increased Physical$?s262624[ and $224125s1% increased Fire, Frost, or Nature][] damage dealt by your abilities.
 
@@ -1056,7 +1056,7 @@ Proc Flags       : White Melee Taken
 Affecting Spells : Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #4, #5, #6, #7)
 Family Flags     : 37
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
@@ -1098,23 +1098,23 @@ Affecting Spells : Turn of the Tide (287300 effect#1), Turn of the Tide (287302 
 Family Flags     : 105
 Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=46044)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=46044)    : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
-#2 (id=46045)    : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
+#2 (id=46045)    : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (7)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-#3 (id=750213)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#3 (id=750213)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 80
-#4 (id=1159361)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#4 (id=1159361)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 8, 80
-#5 (id=1159484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
+#5 (id=1159484)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 8, 80
@@ -1132,7 +1132,7 @@ Duration         : 600 seconds
 Labels           : 292
                  : 933
 Attributes       : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=51004)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -1149,7 +1149,7 @@ Duration         : 600 seconds
 Labels           : 292
                  : 933
 Attributes       : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=51005)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -1558,7 +1558,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Triggered By     : Earthgrab (116943)
 Family Flags     : 78
 Attributes       : No Redirection (35), No Reflection (39), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Always Line of Sight (185), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=58971)    : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -1662,7 +1662,7 @@ Effects          :
                    Family Flags: 7, 80
 #3 (id=90747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
-#4 (id=1014225)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#4 (id=1014225)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -1722,7 +1722,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Maelstrom Weapon (187881 effect#1), Overflowing Shores (278077 effect#2), Flash Flood (280615 effect#1), Nature's Swiftness (378081 effects: #1, #2), Overflowing Shores (383222 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Downpour (462488 effect#1)
 Family Flags     : 84
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Low Level Buff (67), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Aura Log (202), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=67013)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Target: at Area (87) -> At Ally in Area (31)
@@ -1951,7 +1951,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Graceful Spirit (192088 effects: #1, #2), Time Spiral (375256 effect#1)
 Family Flags     : 93
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Cast While Casting (135), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=68406)    : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
@@ -2161,7 +2161,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 29
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=119325)   : Summon Guardian (28)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 59712 | Misc Value 2: 0x17af | Target: Front Right of Self (41)
@@ -2210,7 +2210,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Praetorian's Tidecallers (210604 effect#1), Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1), Current Control (404015 effect#1), Ancestral Wisdom (1238279 effects: #2, #3, #4)
 Family Flags     : 29, 113
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=119337)   : Summon Guardian (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 59764 | Misc Value 2: 0x1454 | Target: Back Right of Self (42)
@@ -2322,7 +2322,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=127153)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
@@ -2346,7 +2346,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=127154)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 59347 | Misc Value 2: 0x6 | Target: Self (1)
@@ -2369,7 +2369,7 @@ Effects          :
 #9 (id=1180318)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 1254 (Category) | Target: Self (1)
                    Affected Spells (Category): Stormstrike (17364), Windstrike (115356)
-#10 (id=1180319) : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#10 (id=1180319) : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
                    Family Flags: 36, 112
@@ -2408,7 +2408,7 @@ Proc Flags       : Magic Heal, Helpful Periodic
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=127155)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 232187 | Misc Value 2: 0x6 | Target: Self (1)
@@ -2785,7 +2785,7 @@ Labels           : 16: Class Spells
 Mechanic         : Stun
 Family Flags     : 74
 Attributes       : Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=135646)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
@@ -2864,7 +2864,7 @@ Proc Chance      : 100%
 Proc Flags       : Death
 Triggered By     : Battle Fatigue (134732)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3072,7 +3072,7 @@ Effects          :
                    Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Elemental Blast (344645)
                    Family Flags: 98, 108
-#10 (id=1012733) : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#10 (id=1012733) : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Chain Lightning (188443)
                    Family Flags: 1, 63
@@ -3461,7 +3461,7 @@ Proc Flags       : Magic Hostile Spell
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Call of Flame (338303 effect#1), Everlasting Elements (462867 effect#1)
 Family Flags     : 15, 124
 Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=219277)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 0xda1 | Radius: 5 yards | Target: Back Left of Self (43)
@@ -3493,7 +3493,7 @@ Proc Flags       : Magic Hostile Spell
 Affecting Spells : Call of Flame (338303 effect#1), Everlasting Elements (462867 effect#1)
 Family Flags     : 124
 Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=219302)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 77942 | Misc Value 2: 0xda2 | Radius: 5 yards | Target: Front Left of Self (44)
@@ -3575,7 +3575,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4)
 Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Moving (3)
+Channel Interrupt: Damage (2), Action (3)
 Effects          :
 #1 (id=219451)   : Apply Aura (6) | Periodic Trigger Spell (23): Stormfury every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.1 | Trigger Spell: 269005 | Target: Targeted Enemy (6)
@@ -3875,7 +3875,7 @@ Triggered By     : Electrostatic Wager (1223410)
 Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=274038)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=274038)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9108 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=739957)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -3918,7 +3918,7 @@ Proc Flags       : White Melee, Yellow Melee
 Affecting Spells : Witch Doctor's Wolf Bones (335897 effect#1), Overflowing Maelstrom (384149 effect#2), Witch Doctor's Ancestry (384447 effect#1)
 Family Flags     : 73
 Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=274047)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -3942,7 +3942,7 @@ Proc Chance      : 101%
 Affecting Spells : Focused Lightning (338322 effects: #1, #2), Improved Maelstrom Weapon (383303 effects: #1, #2, #3), Raging Maelstrom (384143 effects: #2, #3, #4)
 Family Flags     : 100
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=274048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
@@ -3974,7 +3974,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=274068)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -4275,7 +4275,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
-#2 (id=747303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=747303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.2 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
@@ -4537,13 +4537,13 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No
 Effects          :
 #1 (id=281802)   : Apply Aura (6) | Proc Trigger Spell (42): Lightning Shield
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 192109 | Target: Self (1)
-#2 (id=722312)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=722312)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#3 (id=830114)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=830114)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#4 (id=830115)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#4 (id=830115)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#5 (id=868289)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#5 (id=868289)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Surround yourself with a shield of lightning for $d.
 
@@ -4567,7 +4567,7 @@ Triggered By     : Lightning Shield (192106)
 Family Flags     : 10, 39, 56, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Proc While Sitting (147), Disable Aura While Dead (226), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=281806)   : School Damage (2): nature | Attributes: Suppress Points Stacking (6)
+#1 (id=281806)   : School Damage (2): nature | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2175 | Target: Targeted Enemy (6)
 Description      : $@spelldesc192106
 
@@ -4688,7 +4688,7 @@ Affecting Spells : Call of Flame (338303 effect#1), Everlasting Elements (462867
 Family Flags     : 124
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No Aura Icon (60), No Category Cooldown Mods (223), Can Be Multi Cast (229), Ignore Totem Requirements for Casting (293), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=282046)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
+#1 (id=282046)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1018767)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -4766,7 +4766,7 @@ Triggered By     : Crash Lightning (187878)
 Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=287112)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=287112)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.276 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc187874
 
@@ -4876,15 +4876,15 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Molten Weapon (224125 effects: #1, #2, #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Molten Thunder (469344 effects: #1, #5), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 16, 39, 56, 58, 103, 122
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Show Ground Texture (190), Allow Class Ability Procs (416)
-Aura Interrupt   : Damage (1)
+Aura Interrupt   : Hostile Action Received (2)
 Effects          :
-#1 (id=289629)   : School Damage (2): flamestrike | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=289629)   : School Damage (2): flamestrike | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.116 | Radius: 11 yards | Target: Target Reticule: Enemy (129)
 #2 (id=290614)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Target: Target Reticule: Enemy (129)
-#3 (id=290630)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#3 (id=290630)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Front of Self (47) -> At Nearby (107)
-#4 (id=623637)   : Apply Aura (6) | Stun (12) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#4 (id=623637)   : Apply Aura (6) | Stun (12) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Incapacitate | Target: Target Reticule: Enemy (129)
 Description      : Shatters a line of earth in front of you with your main hand weapon, causing $s1 Flamestrike damage and Incapacitating any enemy hit for $d.
 Tooltip          : Incapacitated.
@@ -4962,7 +4962,7 @@ Affecting Spells : Call of Flame (338303 effect#1), Everlasting Elements (462867
 Family Flags     : 55
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=291096)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
+#1 (id=291096)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=811561)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
@@ -4990,7 +4990,7 @@ Affecting Spells : Everlasting Elements (462867 effect#1)
 Family Flags     : 54
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=291153)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
+#1 (id=291153)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1018748)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -5011,7 +5011,7 @@ Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=291440)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Target: Self (1)
@@ -5368,7 +5368,7 @@ Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Combat (Only Peaceful) (28), Is Channelled (34), No Redirection (35), No Skill Increase (36), No Reflection (39), No AutoCast (AI) (49), Ignore Caster Modifiers (125), Not In Spellbook (143)
-Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (3), Attacking (12), Use Item (13), Shapeshifting (15), Mount (17), Standing (18), Leave World (19), Stealth or Invisible (20)
+Channel Interrupt: Unknown (0), Hostile Action Received (1), Damage (2), Action (3), Looting (12), Attacking (13), Damage Channel Duration (15), Action (Delayed) (17), Mount (18), Standing (19), Leave World (20)
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
@@ -5654,13 +5654,13 @@ Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=303466)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=303466)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
 #2 (id=303467)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-#3 (id=353619)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#3 (id=353619)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
@@ -5939,17 +5939,17 @@ Proc Flags       : Cast Successful
 Affecting Spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effect#1), Icy Edge (224126 effects: #1, #2), Maelstrom (343725 effect#8), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Primal Fracture (410018 effect#6), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 24, 39, 119
 Attributes       : Not Shapeshifted (16), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Talent (46)
+Aura Interrupt   : Leave Arena or Battleground (47)
 Effects          :
 #1 (id=312134)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.28695 | PvP Coefficient: 0.89 | Target: Targeted Enemy (6)
-#2 (id=312135)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=312135)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
 #3 (id=845774)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
-#4 (id=1173035)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#4 (id=1173035)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next Frost Shock to deal $s2% increased damage, damage $s4 additional $Ltarget:targets;, and generate $343725s7 additional Maelstrom.
 
@@ -6109,7 +6109,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
-#2 (id=811659)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286) | Attributes: Unknown(23)
+#2 (id=811659)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
@@ -6456,11 +6456,11 @@ Triggered By     : Tidebringer (236501)
 Family Flags     : 41
 Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Do Not Consume if Gained During Cast (79), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=357712)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=357712)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-#2 (id=376491)   : Apply Aura (6) | Add Percent Modifier (108): Spell Chain Target Range (35) | Attributes: Suppress Points Stacking (6)
+#2 (id=376491)   : Apply Aura (6) | Add Percent Modifier (108): Spell Chain Target Range (35) | Attributes: Suppress Points Stacking (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 35 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -6642,9 +6642,9 @@ Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Fulmination (190493)
 Attributes       : No Aura Cancel (31), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
 Effects          :
-#1 (id=485109)   : Apply Aura (6) | Proc Trigger Spell (42): (260113) | Attributes: Suppress Points Stacking (6)
+#1 (id=485109)   : Apply Aura (6) | Proc Trigger Spell (42): (260113) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 260113 | Target: Self (1)
 #2 (id=843162)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
@@ -6669,7 +6669,7 @@ Labels           : 16: Class Spells
                  : 1681: Master of the Elements (16166 effect#2)
 Triggered By     : Master of the Elements (16166)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cannot Be Stolen (134), Allow Cast While Casting (135), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=486101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6993,7 +6993,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=722417)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=722417)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0.0025 | Scaled Value: 0.0025 | Target: Targeted Enemy (6)
 Description      : $@spelldesc262624
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
@@ -7424,7 +7424,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=735832)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278719
-#3 (id=735833)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#3 (id=735833)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Stormstrike (17364), Windstrike (115356)
                    Family Flags: 36, 112
@@ -7643,7 +7643,7 @@ Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Fl
 Effects          :
 #1 (id=747359)   : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
-#2 (id=1024258)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#2 (id=1024258)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
@@ -7686,9 +7686,9 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=747464)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=747464)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#2 (id=747473)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=747473)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Freeze | Target: Self (1)
 Description      : $@spelldesc262303
 Tooltip          : Your next $s2 Lightning Bolts will cause an additional Elemental Overload.
@@ -7796,13 +7796,13 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Attributes       : Floating Combat Text On Cast (198), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=752547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=752547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-#2 (id=752548)   : Apply Aura (6) | Add Flat Modifier (107): Spell Target Bonus (20)
+#2 (id=752548)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Multiplier (20)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 20 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -7927,7 +7927,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Fury (60188 effect#1), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4)
 Family Flags     : 82, 121, 126
 Attributes       : Not Shapeshifted (16), Track Target in Channel (46), No Aura Icon (60), Active Threat (94), AI Doesn't Face Target (179), No Aura Log (202), Taps immediately (215), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Use Item (13)
+Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782724)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -7947,7 +7947,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4)
 Family Flags     : 56, 82, 121, 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Use Item (13)
+Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782727)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
@@ -7969,7 +7969,7 @@ Mechanic         : Stun
 Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Shaman Stormbringer 11.2 Class Set 4pc (1236409 effects: #1, #2, #3, #4)
 Family Flags     : 56, 82, 121, 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Bar (61), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Channel Interrupt: Action (2), Use Item (13)
+Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782730)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
@@ -8075,7 +8075,7 @@ Proc Flags       : White Melee, Yellow Melee
 Affecting Spells : Mastery: Enhanced Elements (77223 effect#4), Thunderaan's Fury (287802 effect#2), Doom Winds (335903 effect#1), Imbuement Mastery (445028 effect#1), Doom Winds (466772 effect#1)
 Family Flags     : 72
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Extra Initial Period (169), Allow Aura On Level Scale (444)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=806482)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8177,7 +8177,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
-#2 (id=807048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=807048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.766667 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
@@ -8402,7 +8402,7 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal
 Affecting Spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 29
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Aura Points On Client (268), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=813920)   : Summon Guardian (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 166523 | Misc Value 2: 0x126b | Target: at Area (87)
@@ -8612,7 +8612,7 @@ Labels           : 16: Class Spells
                  : 976: Covenant Spells
                  : 981
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333)
-Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=821748)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Radius: 8 yards | Target: at Area (87)
@@ -8679,7 +8679,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Fae Transfusion (328923)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=821769)   : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8944,7 +8944,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=829981)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -8971,7 +8971,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Crash Lightning (187874), Crash Lightning (195592)
                    Family Flags: 85
-#2 (id=1027008)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#2 (id=1027008)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
@@ -9036,7 +9036,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
-#2 (id=832807)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=832807)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
                    Family Flags: 8, 80
@@ -9096,7 +9096,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Primal Lava Actuators (335895)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=832811)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
@@ -9378,7 +9378,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
-#2 (id=873590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=873590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -10063,7 +10063,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Affecting Spells : Raging Maelstrom (384143 effect#1)
 Family Flags     : 49
 Attributes       : No Threat (42), Not an Action (92), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=868298)   : Apply Aura (6) | Dummy (4)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
@@ -10653,7 +10653,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Heal the Soul (364470)
 Attributes       : Aura Points On Client (268), Only Proc From Class Abilities (415)
-Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40), Encounter Start (55)
+Aura Interrupt   : Standing (20), Exit Vehicle (41), Challenge Mode Start (56)
 Effects          :
 #1 (id=910033)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 7 | Target: Self (1)
@@ -10955,9 +10955,9 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Family Flags     : 65
 Attributes       : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
-#1 (id=1006346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=1006346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Wellspring (197995), Wellspring (197997), Downpour (207778), Tempest (452201), Downpour (462603)
                    Family Flags: 7, 8, 33, 51, 80, 84, 98, 107
@@ -10965,7 +10965,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Wellspring (197995), Wellspring (197997), Downpour (207778), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201), Downpour (462603)
                    Family Flags: 0, 1, 7, 8, 33, 51, 80, 84, 98, 107
-#3 (id=1038703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#3 (id=1038703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
@@ -11410,11 +11410,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1012713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#1 (id=1012713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Earth Shock Overload (381725)
                    Family Flags: 20
-#2 (id=1012714)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#2 (id=1012714)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Earthquake (61882), Earthquake (77478), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740), Earthquake (462620)
                    Family Flags: 83
@@ -11686,7 +11686,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
 Effects          :
 #1 (id=1013073)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11765,7 +11765,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1013211)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11783,7 +11783,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1013212)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11837,7 +11837,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3931: Enhanced Imbues (462796 effect#1), Enhanced Imbues (462796 effect#4), Enhanced Imbues (462796 effect#5)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1013218)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -11929,7 +11929,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013239)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=1050531)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#2 (id=1050531)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -12103,7 +12103,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1737: Winds of Al'Akir (382215 effect#2)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
+Aura Interrupt   : Standing (20), Duel End (46)
 Effects          :
 #1 (id=1013483)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12191,7 +12191,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1014221)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=1014221)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -12461,7 +12461,7 @@ Labels           : 16: Class Spells
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), No Threat (42), Allow Cast While Casting (135), Not In Spellbook (143), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1015012)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12550,13 +12550,13 @@ Affecting Spells : Embrace of Earth (338329 effect#1), Earthen Harmony (382020 e
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1015698)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
+#1 (id=1015698)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (7)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Stone Bulwark (114893), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Stone Bulwark (462844), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
-#2 (id=1015699)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1015699)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#3 (id=1052536)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
+#3 (id=1052536)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : $@spelldesc974
@@ -12948,7 +12948,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Ashen Catalyst (390370)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Aura Interrupt   : Standing (20), Invulnerability (23)
 Effects          :
 #1 (id=1027132)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -13265,7 +13265,7 @@ Labels           : 292
                  : 2317
 Triggered By     : Shaman Restoration Class Set 2pc (393695)
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Enter Combat (30), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1034667)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -13334,7 +13334,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Allow Cast While Casting (135), Floating Combat Text On Cast (198), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1035956)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=1035956)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297)
                    Family Flags: 63
@@ -13457,13 +13457,13 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Triggered By     : Spiritwalker's Tidal Totem (404522)
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1052127)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=1052127)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-#2 (id=1052128)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
+#2 (id=1052128)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
@@ -13783,11 +13783,11 @@ Proc Chance      : 101%
 Effects          :
 #1 (id=1074988)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1074989)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=1074989)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
-#3 (id=1075115)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=1075115)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc405568
 Tooltip          : Your next $s1 Chain Lightning spells will deal $s2% increased damage and refund $s3% of Maelstrom Weapon consumed.
@@ -13861,11 +13861,11 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1076561)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=1076561)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
-#2 (id=1076562)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=1076562)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004)
                    Family Flags: 7, 8
@@ -13881,7 +13881,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1080288)  : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -14198,9 +14198,9 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1105169)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1105169)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#2 (id=1105170)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1105170)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.4 | Target: Self (1)
 Description      : $@spelldesc422912
 Tooltip          : Your next Lava Burst will hit up to $s1 additional targets affected by your Flame Shock for $s2% of normal damage.
@@ -14217,7 +14217,7 @@ Labels           : 16: Class Spells
                  : 2848
 Attributes       : Can't Crit (93), Allow Aura While Dead (116), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Disable Aura While Dead (226), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
-#1 (id=1107428)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=1107428)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc422912
 Tooltip          : Burning for $w1 damage every $t1 sec.
@@ -14378,7 +14378,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
-#3 (id=1142731)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=1142731)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #4 (id=1201824)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 12 | Misc Value 2: 4331 (Label) | Target: Self (1)
@@ -14593,9 +14593,9 @@ Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Family Flags     : 65
 Attributes       : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1139375)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=1139375)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Wellspring (197995), Wellspring (197997), Downpour (207778), Lava Burst (285452), Downpour (462603)
                    Family Flags: 7, 8, 33, 44, 51, 80, 84, 98
@@ -14603,7 +14603,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Wellspring (197995), Wellspring (197997), Downpour (207778), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452), Downpour (462603)
                    Family Flags: 0, 1, 7, 8, 33, 44, 51, 80, 84, 98
-#3 (id=1144547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#3 (id=1144547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
@@ -14978,7 +14978,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3447: Heed My Call (443444 effect#1)
 Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1142587)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 221177 | Misc Value 2: 0x1716 | Radius: 3 yards | Target: Left of Self (50)
@@ -15034,9 +15034,9 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1145116)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1145116)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc443450
 Tooltip          : An Ancestor is at your side. Whenever you cast a spell, the Ancestor will cast a similar spell.
@@ -15421,9 +15421,9 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Shaman Stormbringer 11.2 Class Set 2pc (1236408)
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
-#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Tempest overrides Lightning Bolt | Attributes: Suppress Points Stacking (6)
+#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Tempest overrides Lightning Bolt | Attributes: Suppress Points Stacking (7)
                    Base Value: 452201 | Scaled Value: 452201 | Misc Value: 188196 | Target: Self (1)
 Description      : $@spelldesc454009
 Tooltip          : Lightning Bolt replaced by Tempest.
@@ -15729,15 +15729,15 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1158281)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=1158281)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
-#2 (id=1158282)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=1158282)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1, 63, 96
-#3 (id=1169722)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=1169722)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc455096
 Tooltip          : Your next $s3 Chain Lightning or Lightning Bolt spells are instant cast and will deal $s2% increased damage.
@@ -15999,7 +15999,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1162702)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16379,7 +16379,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Challenge Mode Start (54)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Proc or Periodic Attack (55)
 Effects          :
 #1 (id=1171364)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -16453,7 +16453,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Triggered By     : Master of the Elements (462375)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cannot Be Stolen (134), Allow Cast While Casting (135), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=1172079)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -16779,11 +16779,11 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Not In Spellbook (143), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1172813)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+#1 (id=1172813)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
-#2 (id=1182449)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
+#2 (id=1182449)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (7)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
@@ -17036,7 +17036,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Spellcast Override In Spellbook (310), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1172999)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Icefury overrides Frost Shock | Attributes: Suppress Points Stacking (6)
+#1 (id=1172999)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Icefury overrides Frost Shock | Attributes: Suppress Points Stacking (7)
                    Base Value: 210714 | Scaled Value: 210714 | Misc Value: 196840 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc462816
 Tooltip          : Able to cast Icefury.
@@ -17086,7 +17086,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Fusion of Elements (462840)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1173039)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -17106,7 +17106,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Fusion of Elements (462840)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1173041)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -17175,7 +17175,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Wind Gust (157331), Call Lightning (157348), Stormfury (157375), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Stormfury (269005), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Echoing Shock (320125), Fae Transfusion (328928), Ascendance (344548), Primordial Wave (375984), Acid Rain (378597), Earth Shock Overload (381725), Stormblast (390287), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Ascendance (467263), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Lightning (1218118), Storm's Eye (1235840)
                    Family Flags: 126
-#3 (id=1173274)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#3 (id=1173274)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : While Lightning Shield is active, your Nature damage dealt is increased by $s3%.
 
@@ -17246,7 +17246,7 @@ Proc Flags       : Magic Hostile Spell
 Affecting Spells : Call of Flame (338303 effect#1), Everlasting Elements (462867 effect#1)
 Family Flags     : 124
 Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1173282)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 229798 | Misc Value 2: 0x17a9 | Target: at Area (87)
@@ -17315,7 +17315,7 @@ Proc Flags       : Magic Hostile Spell
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Call of Flame (338303 effect#1), Everlasting Elements (462867 effect#1)
 Family Flags     : 15, 124
 Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1173302)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 229801 | Misc Value 2: 0x17a8 | Target: at Area (87)
@@ -17366,7 +17366,7 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Exit Vehicle (41)
 Effects          :
 #1 (id=1174813)  : Apply Aura (6) | Set Action Button Spell Count (408): Healing Wave
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 77472 | Target: Self (1)
@@ -17613,13 +17613,13 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Fire Elemental (188592 effects: #4, #5), Molten Weapon (224125 effects: #1, #2, #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Fire and Ice (382886 effect#1), Legacy of the Frost Witch (384451 effects: #1, #2), Earthen Weapon (392375 effects: #1, #2), Maelstrom of Elements (394677 effects: #1, #3), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Fire Elemental (462992 effects: #4, #5), Molten Thunder (469344 effects: #1, #5), Ancestral Wisdom (1238279 effects: #1, #7)
 Family Flags     : 16, 39, 56, 58, 103, 122
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Always Show Ground Texture (190), Allow Class Ability Procs (416)
-Aura Interrupt   : Damage (1)
+Aura Interrupt   : Hostile Action Received (2)
 Effects          :
-#1 (id=1180339)  : School Damage (2): flamestrike | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=1180339)  : School Damage (2): flamestrike | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.116 | Radius: 11 yards | Target: Target Reticule: Enemy (129)
 #2 (id=1180340)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Target: Target Reticule: Enemy (129)
-#3 (id=1180341)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#3 (id=1180341)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Front of Self (47) -> At Nearby (107)
 Description      : Shatters a line of earth in front of you with your main hand weapon, causing ${$s1/$467274s1*100} Flamestrike damage.
 Tooltip          : Incapacitated.
@@ -17691,7 +17691,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1180606)  : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -17710,7 +17710,7 @@ Labels           : 16: Class Spells
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1180944)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Target: Self (1)
@@ -18130,7 +18130,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
-#1 (id=1184909)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#1 (id=1184909)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
                    Family Flags: 8
@@ -18226,7 +18226,7 @@ Proc Chance      : 101%
 Triggered By     : Stormblast (319930)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1185751)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1185751)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : $@spelldesc319930
 Tooltip          : Your next Stormstrike deals $s1% additional damage as Nature damage.
@@ -18266,7 +18266,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
-#2 (id=1185919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#2 (id=1185919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 1
@@ -18383,7 +18383,7 @@ Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 eff
 Triggered By     : Shaman Restoration 11.1 Class Set 2pc (1215538)
 Family Flags     : 41
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1198560)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.496 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
@@ -18739,7 +18739,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1203591)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
@@ -18764,13 +18764,13 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Can Proc From Procs (122)
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
 Effects          :
-#1 (id=1204999)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=1204999)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 8, 80
-#2 (id=1205001)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1205001)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215611
 Tooltip          : Increases the healing of your next Healing Wave, Healing Surge, or Chain Heal will heal by $s1%
@@ -18818,7 +18818,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1205174)  : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -18836,7 +18836,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
 Effects          :
 #1 (id=1205204)  : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -18856,7 +18856,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #3 (id=1205233)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18910,7 +18910,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Shaman Enhancement 11.1 Class Set 4pc (1215712)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1211182)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.6 | Misc Value 2: 1183 (Label) | Target: Self (1)
@@ -18950,7 +18950,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1211338)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -19195,7 +19195,7 @@ Labels           : 16: Class Spells
 Stacks           : 12 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Challenge Mode Start (54)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Proc or Periodic Attack (55)
 Effects          :
 #1 (id=1235187)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -19232,7 +19232,7 @@ Labels           : 16: Class Spells
                  : 3447: Heed My Call (443444 effect#1)
 Triggered By     : Shaman Farseer 11.2 Class Set 2pc (1236406)
 Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1235406)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 245543 | Misc Value 2: 0x1716 | Radius: 3 yards | Target: Left of Self (50)
@@ -19256,7 +19256,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Stone Bulwark (114893), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Wellspring (197997), Downpour (207778), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Tidebringer (236502), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake Overload (298765), Echoing Shock (320125), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Vesper Totem (356791), Primordial Wave (375985), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Thunderstrike (462763), Stone Bulwark (462844), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Ice Strike (470194), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840)
                    Family Flags: 39, 41
-#2 (id=1235421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=1235421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.33 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream Totem (5394), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide Totem (108280), Stone Bulwark (114893), Healing Tide (114942), Wellspring (197995), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024), Overflowing Shores (383223), Healing Stream Totem (392915), Healing Stream Totem (392916), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Stone Bulwark (462844), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 6, 41, 51, 94, 113
@@ -19323,7 +19323,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1236671)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1236671)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : $@spelldesc1236411
 Tooltip          : $?c2[Your next Lava Lash or Fire Nova][Chain Heal, Healing Wave, or Healing Surge] casts again at $w1% effectiveness.
@@ -19343,7 +19343,7 @@ Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Not In Spellbook (143)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Change Talent (46), Challenge Mode Start (54)
+Aura Interrupt   : Exit Vehicle (41), Leave Arena or Battleground (47), Proc or Periodic Attack (55)
 Effects          :
 #1 (id=1236976)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

@@ -69,7 +69,7 @@ Labels           : 16: Class Spells
                  : 292
 Family Flags     : 79
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), No Aura Log (202), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Action (2), Under Water (7), Mount (17), Swimming (33), Ground (35)
+Aura Interrupt   : Damage (3), Dismount (8), Action (Delayed) (18), Falling (34), Not Moving (36)
 Effects          :
 #2 (id=288193)   : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -122,7 +122,7 @@ Affecting Spells : Soul Rending (204909 effect#2), First of the Illidari (235893
 Triggered By     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #2 (id=227769)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -421,7 +421,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Family Flags     : 27
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No School Immunities (90), Suppress Caster Procs (112), Always Hit (114), No Partial Immunity (139), Suppress Weapon Procs (151), Taps immediately (215), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=268789)   : Attack Me (114)
+#1 (id=268789)   : Taunt (114)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Target: Targeted Enemy (6)
 #2 (id=268790)   : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Targeted Enemy (6)
@@ -460,7 +460,7 @@ Category Cooldown: 20 seconds
 Affecting Spells : Soul Rending (204909 effect#2), Soul Rending (217996 effect#2), First of the Illidari (235893 effect#1), Rush of Chaos (320421 effect#1), Metamorphosis (321068 effect#1)
 Family Flags     : 28
 Attributes       : Is Ability (4), Do Not Sheath (18), No Aura Cancel (31), No AutoCast (AI) (49), Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Prevent Jumping During Precast (448)
-Aura Interrupt   : Enter World (22), Enter Instance (43)
+Aura Interrupt   : Invulnerability (23), Disconnect (44)
 Effects          :
 #1 (id=273949)   : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
@@ -552,7 +552,7 @@ Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spel
 Affecting Spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Spectral Sight (320379 effect#1), Lost in Darkness (389849 effects: #1, #2), Fodder to the Flame (391429 effect#2)
 Family Flags     : 32, 74
 Attributes       : Is Ability (4), Not Shapeshifted (16), Cooldown On Event (25), Allow Class Ability Procs (416)
-Aura Interrupt   : Mount (17), Leave World (19)
+Aura Interrupt   : Action (Delayed) (18), Standing (20)
 Effects          :
 #1 (id=275305)   : Trigger Spell (64): Spectral Sight
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202688 | Target: Self (1)
@@ -702,7 +702,7 @@ Category Cooldown: 0.5 seconds
 Triggered By     : Fel Rush (344865)
 Family Flags     : 2
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), No Jump While Cast Pending (82), Allow Client Targeting (133), Allow Class Ability Procs (416)
-Aura Interrupt   : Interacting (10)
+Aura Interrupt   : Sheathing (11)
 Effects          :
 #1 (id=286340)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -871,7 +871,7 @@ Category Cooldown: 40 seconds
 Affecting Spells : Blind Fury (203550 effects: #1, #2), Soul Flame of Insight (226334 effect#2)
 Family Flags     : 10
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Delay Combat Timer During Cast (211), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=291023)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -902,7 +902,7 @@ Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presenc
 Family Flags     : 8, 10, 16, 43
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=291051)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=291051)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.366 | Radius: 20 yards | Target: Target Reticule: Enemy (129)
 Description      : $@spelldesc198013
 
@@ -1030,7 +1030,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Source (22) -> Enemy in Area (15)
 #2 (id=294659)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.44 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#3 (id=376438)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Players Only (14)
+#3 (id=376438)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Players Only (15)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare
 Description      : $@spelldesc191427
 Tooltip          : Stunned.
@@ -1062,7 +1062,7 @@ Spell Type       : None
 Range            : 50000 yards
 Cast Time        : 5 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Combat (Only Peaceful) (28), Is Channelled (34), No Redirection (35), No Skill Increase (36), No Reflection (39), No AutoCast (AI) (49), Ignore Caster Modifiers (125), Not In Spellbook (143)
-Channel Interrupt: Hostile Action Received (0), Damage (1), Action (2), Moving (3), Attacking (12), Use Item (13), Shapeshifting (15), Mount (17), Standing (18), Leave World (19), Stealth or Invisible (20)
+Channel Interrupt: Unknown (0), Hostile Action Received (1), Damage (2), Action (3), Looting (12), Attacking (13), Damage Channel Duration (15), Action (Delayed) (17), Mount (18), Standing (19), Leave World (20)
 Effects          :
 #2 (id=477483)   : Trigger Spell (64): Vindicaar Matrix Crystal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255529
@@ -1345,7 +1345,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Spectral Sight (188501)
 Attributes       : Do Not Log (8), No Aura Icon (60), Allow Class Ability Procs (416)
-Aura Interrupt   : Damage (1), Attacking (12), Mount (17), Leave World (19)
+Aura Interrupt   : Hostile Action Received (2), Looting (13), Action (Delayed) (18), Standing (20)
 Effects          :
 #1 (id=298834)   : Apply Aura (6) | Invisibility Detection (19)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
@@ -1721,7 +1721,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Fel Blood (203747 effect#2), Extended Spikes (389721 effect#1)
 Family Flags     : 7
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Enter World (22)
+Aura Interrupt   : Invulnerability (23)
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -1742,7 +1742,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Not an Action (92), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Change Specialization (38)
+Aura Interrupt   : Standing (20), Invulnerability (23), Enter Combat (30), Jump (39)
 Effects          :
 #1 (id=301003)   : Apply Aura (6) | Set Action Button Spell Count (408): Soul Cleave
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228477 | Target: Self (1)
@@ -1775,7 +1775,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Fiery Demise (212818 effect#1), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2), Demon Soul (1238675 effects: #1, #2)
 Family Flags     : 32, 36, 70, 72
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Always Hit (114), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=301059)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
@@ -2010,9 +2010,9 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=301971)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.532827 | Radius: 8 yards | Target: at Enemy in Area (16)
-#2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.333462 | Radius: 8 yards | Target: at Enemy in Area (16)
-#3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.333462
 #4 (id=1113254)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -2168,7 +2168,7 @@ Effects          :
                    Base Value: -12000 | Scaled Value: -12000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Chaos Nova (179057), Chaos Nova (344867)
                    Family Flags: 17
-#2 (id=314009)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=314009)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chaos Nova (179057), Chaos Nova (344867)
                    Family Flags: 17
@@ -2413,7 +2413,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Concentrated Sigils (207666 effect#5), Any Means Necessary (388114 effects: #1, #3, #4), Chains of Anger (389715 effects: #1, #2), Precise Sigils (389799 effect#5)
 Family Flags     : 33
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
 Effects          :
 #2 (id=307162)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -2432,7 +2432,7 @@ Labels           : 16: Class Spells
                  : 2794
 Attributes       : Do Not Sheath (18), No Threat (42), Extra Initial Period (169), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45 | Target: Self (1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t1 sec.
@@ -2604,7 +2604,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Attributes       : Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=308737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -2628,7 +2628,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales w/ Creature Level (19), Aura Is Debuff (26), Initiates Combat (Enables Auto-Attack) (41), Aura Unique (43), Only On Player (104)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=309699)   : School Damage (2): fire
                    Base Value: 100 | Scaled Value: 100 (delta=0.1) | Target: Targeted Enemy (6)
@@ -2695,7 +2695,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Remove Entering Arena (162), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=309719)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2994,7 +2994,7 @@ Affecting Spells : Fel Defender (338671 effect#1), Demonsurge (452489 effect#1)
 Triggered By     : Soulfuse (454774)
 Family Flags     : 78
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Defense While Channeling (338), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=314393)   : Apply Aura (6) | Periodic Trigger Spell (23): Fel Devastation every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212105 | Target: Self (1)
@@ -3402,7 +3402,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Spectral Sight (188501)
 Attributes       : Do Not Log (8), No Aura Icon (60), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=320782)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
@@ -3417,7 +3417,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=322990)   : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
+#1 (id=322990)   : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 126 | Target: Self (1)
 Description      : $@spelldesc201472
 
@@ -3456,7 +3456,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 48
 Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Can Proc From Suppressed Target Procs (254), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
+Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
@@ -3633,7 +3633,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Soul Fragment (203795), Soul Fragment (204062), Soul Fragment (204255), Soul Fragment (204256), Shattered Souls (209693), Shattered Souls (209788), Shattered Souls (228537), Shattered Souls (328951), Soul Fragment (328957), Tip the Scales (408795), Shattered Souls (1238733)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Moving (3)
+Aura Interrupt   : Action (4)
 Effects          :
 #1 (id=330402)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3873,7 +3873,7 @@ Triggered By     : Soul Cleave (228477), Soul Sunder (452436)
 Family Flags     : 31, 34, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Active Threat (94), Not a Proc (105), No Cast Log (128), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=344032)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=344032)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.54 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
@@ -4319,7 +4319,7 @@ Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presenc
 Family Flags     : 16, 32, 43, 71
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=483076)   : School Damage (2): chaos | Attributes: Area Effects Use Target Radius (17)
+#1 (id=483076)   : School Damage (2): chaos | Attributes: Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.825 | Radius: 10 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
@@ -4419,7 +4419,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken
 Affecting Spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Immolation Aura (433719 effect#1), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Demonsurge (452489 effect#2)
 Family Flags     : 11, 32, 85, 94
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=483167)   : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 258922 | Target: Self (1)
@@ -4576,7 +4576,7 @@ Labels           : 16: Class Spells
 Triggered By     : Soul Fragments (203981)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=706547)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
+#1 (id=706547)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (10)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
@@ -5072,7 +5072,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=807428)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=807428)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Throw Glaive (185123), Throw Glaive (204157), Throw Glaive (337819), Throw Glaive (346665), Throw Glaive (393035), Reaver's Glaive (442294)
                    Family Flags: 5
@@ -5443,7 +5443,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Le
 Effects          :
 #1 (id=812977)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.55 | Target: Targeted Enemy (6)
-#2 (id=812978)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
+#2 (id=812978)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (23)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=813286)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 323996 | Target: Targeted Enemy (6)
@@ -5774,7 +5774,7 @@ Labels           : 627
                  : 630
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=828518)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=828518)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1125 | Radius: 20 yards | Target: Target Reticule: Enemy (129)
 Description      : Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.
 
@@ -5861,7 +5861,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
 Effects          :
 #1 (id=835272)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6353,7 +6353,7 @@ Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=838694)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=872057)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=872057)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Tooltip          : $?$w1=10[The damage of your next Soul Cleave is increased by $w2%.][$w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $w2%.]
 
@@ -6494,7 +6494,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Fodder to the Flame (329554), Fodder to the Flame (391430)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Remove Entering Arena (162), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (42)
 Effects          :
 #1 (id=843394)   : Apply Aura (6) | Unknown(139)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1369 | Target: Self (1)
@@ -6995,7 +6995,7 @@ Labels           : 16: Class Spells
                  : 1052
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=873129)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=873129)   : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1125 | Radius: 20 yards | Target: Target Reticule: Enemy (129)
 Description      : Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.
 
@@ -7046,7 +7046,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Do Not Log Aura Refresh (291)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=874736)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Target: Self (1)
@@ -7288,7 +7288,7 @@ Range            : 50000 yards
 Family Flags     : 0, 16
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1110339)  : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=1110339)  : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3 | Radius: 20 yards | Target: Target Reticule: Enemy (129)
 Description      : $@spelldesc198013
 
@@ -7509,7 +7509,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Le
 Effects          :
 #1 (id=982578)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 6.041 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
-#2 (id=982579)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
+#2 (id=982579)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (23)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 370970 | Target: Targeted Enemy (6)
@@ -8579,7 +8579,7 @@ Labels           : 16: Class Spells
 Triggered By     : Inner Demon (390145)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Cast While Casting (135), No Aura Log (202), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1026753)  : Create Area Trigger (179) | Attributes: Position is facing relative (1)
+#1 (id=1026753)  : Create Area Trigger (179) | Attributes: Position is facing relative (2)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 26749 | Radius: 10 yards | Target: Back of Self (48)
 Description      : $@spelldesc389693
 
@@ -8736,7 +8736,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1026831)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8866,7 +8866,7 @@ Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presenc
 Family Flags     : 8, 10, 43, 70
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1028336)  : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
+#1 (id=1028336)  : School Damage (2): chromatic | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.117 | Radius: 20 yards | Target: Target Reticule: Enemy (129)
 Description      : Blasts all enemies in front of you, dealing guaranteed critical strikes for up to ${$s1*10*2} Chaos damage over $d. Deals reduced damage to secondary targets.
 
@@ -8881,7 +8881,7 @@ Labels           : 16: Class Spells
 Triggered By     : Frailty (247456)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1028423)  : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bomb every 1 seconds | Attributes: Suppress Points Stacking (6)
+#1 (id=1028423)  : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bomb every 1 seconds | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 227255 | Target: Self (1)
 
 Name             : Demon Spikes (id=391159) [Spell Family (107)] 
@@ -8934,7 +8934,7 @@ Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=1028490)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1028491)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1028491)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc391165
 Tooltip          : $w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $391172s1%.
@@ -8970,7 +8970,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=1028501)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+#1 (id=1028501)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Soul Cleave (228478), Spirit Bomb (247455)
                    Family Flags: 31, 68
@@ -9079,7 +9079,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1028665)  : Apply Aura (6) | Add Percent Modifier (108): Spell Target Bonus (20)
+#1 (id=1028665)  : Apply Aura (6) | Add Percent Modifier (108): Spell Chain Multiplier (20)
                    Base Value: -19 | Scaled Value: -19 | Misc Value: 20 | Target: Self (1)
                    Affected Spells: Throw Glaive (185123), Throw Glaive (204157), Throw Glaive (337819), Throw Glaive (346665), Throw Glaive (393035), Reaver's Glaive (442294)
                    Family Flags: 5
@@ -9761,7 +9761,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
 Effects          :
 #1 (id=1073074)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -10099,7 +10099,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 1 seconds
 Family Flags     : 2
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), No Jump While Cast Pending (82), Allow Client Targeting (133), Allow Class Ability Procs (416)
-Aura Interrupt   : Interacting (10)
+Aura Interrupt   : Sheathing (11)
 Effects          :
 #1 (id=1107547)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10116,7 +10116,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1107561)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Fel Rush overrides Fel Rush
                    Base Value: 427785 | Scaled Value: 427785 | Misc Value: 195072 | Target: Self (1)
@@ -10304,7 +10304,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken
 Affecting Spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1107775)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 427910 | Target: Self (1)
@@ -10351,7 +10351,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken
 Affecting Spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1107781)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 427911 | Target: Self (1)
@@ -10398,7 +10398,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken
 Affecting Spells : Agonizing Flames (207548 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Any Means Necessary (388114 effect#1), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1)
 Family Flags     : 11, 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1107787)  : Apply Aura (6) | Periodic Trigger Spell (23): Immolation Aura every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 427916 | Target: Self (1)
@@ -10468,7 +10468,7 @@ Category Cooldown: 1.5 seconds
 Affecting Spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4)
 Family Flags     : 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1107797)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10506,7 +10506,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 1 seconds
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Do Not Display Range (126), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1108258)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -10560,7 +10560,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1108611)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10576,7 +10576,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1108612)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10592,7 +10592,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1108613)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10608,7 +10608,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1108614)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10773,7 +10773,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1123224)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427917 | Scaled Value: 427917 | Target: Self (1)
@@ -10790,7 +10790,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1123226)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427913 | Scaled Value: 427913 | Target: Self (1)
@@ -10807,7 +10807,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1123229)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427914 | Scaled Value: 427914 | Target: Self (1)
@@ -10824,7 +10824,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1123255)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 427915 | Scaled Value: 427915 | Target: Self (1)
@@ -10895,7 +10895,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Labels           : 3348
 Attributes       : Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1137640)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10912,7 +10912,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3348
 Attributes       : Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1137648)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11097,7 +11097,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Havoc Demon Hunter (212612 effect#20), Havoc Demon Hunter (212612 effect#21), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1138072)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -11265,11 +11265,11 @@ Stacks           : 80 maximum
 Proc Chance      : 101%
 Triggered By     : Art of the Glaive (442290)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1141205)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=1141206)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#2 (id=1141206)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc442290
 Tooltip          : $s1 Soul $LFragment:Fragments; consumed. At $?a212612[$442290s1~][$442290s2~], Reaver's Glaive is available to cast.
@@ -11285,7 +11285,7 @@ Labels           : 16: Class Spells
                  : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5)
                  : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Havoc Demon Hunter (212612 effect#20), Havoc Demon Hunter (212612 effect#21), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1141243)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Reaver's Glaive overrides Throw Glaive
                    Base Value: 442294 | Scaled Value: 442294 | Misc Value: 185123 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11302,7 +11302,7 @@ Labels           : 16: Class Spells
                  : 3349: Keen Engagement (442497 effect#1), Demon Hunter Aldrachi Reaver 11.2 Class Set 2pc (1236358 effect#5)
                  : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Havoc Demon Hunter (212612 effect#20), Havoc Demon Hunter (212612 effect#21), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : No Aura Icon (60), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
+Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1141362)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Reaver's Glaive overrides Throw Glaive
                    Base Value: 442294 | Scaled Value: 442294 | Misc Value: 204157 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11774,7 +11774,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1153593)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 452436 | Scaled Value: 452436 | Target: Self (1)
@@ -11941,7 +11941,7 @@ Category Cooldown: 40 seconds
 Affecting Spells : Fel Defender (338671 effect#1), Demonsurge (452489 effect#1)
 Family Flags     : 78
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Defense While Channeling (338), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=1153669)  : Apply Aura (6) | Periodic Trigger Spell (23): Fel Devastation every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212105 | Target: Self (1)
@@ -11970,7 +11970,7 @@ Category Cooldown: 1.5 seconds
 Affecting Spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4)
 Family Flags     : 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1153673)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11995,7 +11995,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Jump (39)
 Effects          :
 #1 (id=1153680)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 452486 | Scaled Value: 452486 | Target: Self (1)
@@ -12113,7 +12113,7 @@ Category Cooldown: 40 seconds
 Affecting Spells : Blind Fury (203550 effects: #1, #2), Soul Flame of Insight (226334 effect#2)
 Family Flags     : 10
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Delay Combat Timer During Cast (211), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416)
-Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=1153692)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12208,7 +12208,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Not In Spellbook (143), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1154926)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -12267,7 +12267,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1155057)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -12397,7 +12397,7 @@ Effects          :
 #1 (id=1157329)  : Modify Cooldown (Category) (292)
                    Base Value: -20000 | Scaled Value: -20000 | Misc Value: 1640 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade Dance (188499), Death Sweep (210152)
-#2 (id=1157330)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#2 (id=1157330)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 25, 37
@@ -12468,7 +12468,7 @@ Category Cooldown: 1.5 seconds
 Affecting Spells : Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4)
 Family Flags     : 32, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19)
+Aura Interrupt   : Standing (20)
 Effects          :
 #1 (id=1160966)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12511,9 +12511,9 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1171241)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.493358 | Radius: 8 yards | Target: at Enemy in Area (16)
-#2 (id=1171242)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#2 (id=1171242)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.308761 | Radius: 8 yards | Target: at Enemy in Area (16)
-#3 (id=1171243)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
+#3 (id=1171243)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.308761
 #4 (id=1171244)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -12700,7 +12700,7 @@ Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
 Effects          :
-#1 (id=1197411)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+#1 (id=1197411)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc258887
 Tooltip          : Eye Beam will reduce the cooldown of your next Eye Beam by ${$258887s1*$w1/1000}.1 sec.
@@ -12732,7 +12732,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Do Not Log Aura Refresh (291)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1197915)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
@@ -12821,7 +12821,7 @@ Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Demon Hunter Havoc 11.1 Class Set 2pc (1215731)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1200773)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12842,7 +12842,7 @@ Labels           : 16: Class Spells
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1200828)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12905,7 +12905,7 @@ Stacks           : 10 maximum
 Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1206806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12947,7 +12947,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3367: Havoc Demon Hunter (212612 effect#16), Havoc Demon Hunter (212612 effect#17), Havoc Demon Hunter (212612 effect#20), Havoc Demon Hunter (212612 effect#21), Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
 Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
 Effects          :
 #1 (id=1217251)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
