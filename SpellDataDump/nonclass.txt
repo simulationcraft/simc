@@ -1,4 +1,4 @@
-SimulationCraft 1120-01 for World of Warcraft 11.2.0.63305 Live
+SimulationCraft 1120-01 for World of Warcraft 11.2.0.63163 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -267672,7 +267672,6 @@ Effects          :
 Description      : $@spelldesc1233553
 
 Name             : Latent Energy (id=1239675) 
-Hotfixed         : Aura Interrupt
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
@@ -267682,7 +267681,7 @@ Labels           : 292
 Stacks           : 18 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1237612)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
