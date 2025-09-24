@@ -364,7 +364,7 @@ void warlock_t::init_finished()
 
   parse_player_effects();
 
-  parse_player_effects_t ::init_finished();
+  player_t::init_finished();
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan

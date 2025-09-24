@@ -9293,7 +9293,7 @@ void demon_hunter_t::init_blizzard_action_list()
 
 void demon_hunter_t::init_finished()
 {
-  base_t::init_finished();
+  player_t::init_finished();
 
   parse_player_effects();
 }
