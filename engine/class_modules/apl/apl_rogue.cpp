@@ -233,8 +233,8 @@ void outlaw( player_t* p )
   build->add_action( "ambush,if=talent.hidden_opportunity" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(cooldown.vanish.charges=0|buff.double_jeopardy.up|!set_bonus.tww3_fatebound_2pc)|fight_remains<2", "Cooldowns  Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active. With TWW3 Fatebound, attempt to send AR alongside Vanish if there is a Vanish charge available." );
-  cds->add_action( "ghostly_strike,if=hero_tree.fatebound&(buff.double_jeopardy.up|fight_remains<2|cooldown.vanish.charges=0|!set_bonus.tww3_fatebound_2pc)|hero_tree.trickster&(combo_points<cp_max_spend|talent.fan_the_hammer.rank>1)", "High priority Ghostly Strike as it is off-gcd. Trickster builds with 1 point in Fan the Hammer prefer not to use it at max CPs." );
+  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(cooldown.vanish.charges=0|buff.double_jeopardy.up|!set_bonus.tww3_fatebound_2pc)|fight_remains<2", "Cooldowns  Maintain Adrenaline Rush. With Improved AR, recast at low CPs even if already active. TWW3 Fatebound attempts to send AR alongside Vanish if there is a charge available." );
+  cds->add_action( "ghostly_strike,if=hero_tree.fatebound&(buff.double_jeopardy.up|fight_remains<2|cooldown.vanish.charges=0|!set_bonus.tww3_fatebound_2pc)|hero_tree.trickster&(combo_points<cp_max_spend|talent.fan_the_hammer.rank>1)", "High priority Ghostly Strike as it is off-gcd. Trickster 1FTH builds don't use at max CPs. TWW3 Fatebound attempts to send alongside Vanish if there is a charge available." );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Use Sprint to further benefit from the Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2|rtb_buffs.normal>=5&rtb_buffs=6", "Use Keep it Rolling immediately with any 4 RTB buffs. If a natural 5 buff is rolled, then wait until the final 6th buff is obtained from Count the Odds." );
@@ -281,7 +281,7 @@ void outlaw( player_t* p )
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
   vanish->add_action( "vanish,if=set_bonus.tww3_fatebound_2pc&cooldown.ghostly_strike.ready&talent.ghostly_strike", "Vanish usage for standard builds  TWW3 Fatebound always attempts to align Vanish with Ghostly Strike." );
-  vanish->add_action( "vanish,if=(hero_tree.fatebound|!talent.killing_spree)&(!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4|buff.supercharge_1.up)&(!set_bonus.tww3_fatebound_2pc|!talent.ghostly_strike)", "Fatebound without TWW3, or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active." );
+  vanish->add_action( "vanish,if=(hero_tree.fatebound|!talent.killing_spree)&(!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4|buff.supercharge_1.up)&(!set_bonus.tww3_fatebound_2pc|!talent.ghostly_strike)", "Fatebound without TWW3, or builds without Killing Spree attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active, or Supercharger becomes active." );
   vanish->add_action( "vanish,if=hero_tree.trickster&talent.killing_spree&cooldown.killing_spree.remains>30&(time-action.coup_de_grace.last_used<=10|!set_bonus.tww3_trickster_4pc)", "Trickster builds with Killing Spree should Vanish if Killing Spree is not up soon. With TWW3 Trickster, attempt to align Vanish with a recently used Coup de Grace." );
   vanish->add_action( "vanish,if=cooldown.vanish.full_recharge_time<15&(!set_bonus.tww3_fatebound_2pc|!talent.ghostly_strike)|fight_remains<charges*8", "Vanish if about to cap charges or sim duration is ending soon. TWW3 Fatebound will sit on max charges for an upcoming Ghostly Strike." );
 }
@@ -310,7 +310,7 @@ void subtlety( player_t* p )
   default_->add_action( "stealth" );
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up", "Variables" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
-  default_->add_action( "variable,name=skip_rupture,value=buff.shadow_dance.up|buff.darkest_night.up|variable.targets>=4&(!talent.replicating_shadows&talent.unseen_blade|raid_event.adds.up)" );
+  default_->add_action( "variable,name=skip_rupture,value=buff.shadow_dance.up|buff.darkest_night.up|variable.targets>=4&(!talent.replicating_shadows&talent.unseen_blade|raid_event.adds.up|buff.flagellation_buff.up&(fight_remains%%90<30|!talent.shuriken_tornado))" );
   default_->add_action( "variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)&(buff.slice_and_dice.up|variable.targets<=2)" );
   default_->add_action( "variable,name=secret,value=buff.shadow_dance.up&!buff.darkest_night.up|(cooldown.flagellation.remains<60&cooldown.flagellation.remains>30&talent.death_perception&talent.unseen_blade)" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20" );
@@ -323,8 +323,8 @@ void subtlety( player_t* p )
   default_->add_action( "call_action_list,name=build", "Combo Point Builder" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth", "Filler, Spells used if you can use nothing else." );
 
-  cds->add_action( "cold_blood,if=cooldown.secret_technique.up&buff.shadow_dance.up&combo_points>=6&variable.secret&(buff.flagellation_persist.up|buff.flagellation_buff.remains<=3)", "Cooldowns" );
-  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.flagellation_buff.up" );
+  cds->add_action( "cold_blood,if=cooldown.secret_technique.up&buff.shadow_dance.up&combo_points>=6&variable.secret&(buff.flagellation_persist.up|buff.flagellation_buff.remains<=3|!talent.flagellation)", "Cooldowns" );
+  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.shadow_blades.up" );
   cds->add_action( "symbols_of_death,if=(buff.symbols_of_death.remains<=3.5&variable.maintenance&(variable.targets>1|raid_event.adds.up|!buff.flagellation_buff.up|dot.rupture.remains>=30)&(!talent.flagellation|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<8|!talent.death_perception)|fight_remains<=15)" );
   cds->add_action( "shadow_blades,if=variable.maintenance&variable.shd_cp&buff.shadow_dance.up&!buff.premeditation.up" );
   cds->add_action( "thistle_tea,if=buff.shadow_dance.remains>4&!buff.thistle_tea.up" );
@@ -339,33 +339,33 @@ void subtlety( player_t* p )
   item->add_action( "use_item,name=treacherous_transmitter,if=cooldown.flagellation.remains<=2|fight_remains<=15", "Trinket and Items" );
   item->add_action( "do_treacherous_transmitter_task,if=buff.shadow_dance.up|fight_remains<=15" );
   item->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=dot.rupture.ticking&buff.flagellation_buff.up" );
-  item->add_action( "use_item,name=cursed_stone_idol,use_off_gcd=1,if=dot.rupture.remains>=25&buff.flagellation_buff.up|fight_remains<=20" );
-  item->add_action( "use_item,name=unyielding_netherprism,use_off_gcd=1,if=buff.shadow_blades.up&(buff.latent_energy.stack>=8+8*(trinket.arazs_ritual_forge.cooldown.ready|!equipped.arazs_ritual_forge)|!equipped.arazs_ritual_forge&fight_remains<=90)|fight_remains<=20" );
   item->add_action( "use_item,name=mad_queens_mandate,if=(!talent.lingering_darkness|buff.lingering_darkness.up|equipped.treacherous_transmitter)&(!equipped.treacherous_transmitter|trinket.treacherous_transmitter.cooldown.remains>20)|fight_remains<=15" );
-  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
-  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_item,name=cursed_stone_idol,use_off_gcd=1,if=dot.rupture.remains>=30&(buff.flagellation_buff.up|!talent.flagellation)&buff.latent_energy.stack<=16|fight_remains<=20" );
+  item->add_action( "use_item,name=unyielding_netherprism,use_off_gcd=1,if=buff.shadow_blades.up&(buff.latent_energy.stack>=8+8*(trinket.arazs_ritual_forge.cooldown.ready|!equipped.arazs_ritual_forge)|!equipped.arazs_ritual_forge&fight_remains<=90)|fight_remains<=20" );
+  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20+equipped.unyielding_netherprism*20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
   stealth_cds->add_action( "shadow_dance,if=(variable.shd_cp|!talent.premeditation)&variable.maintenance&(cooldown.secret_technique.remains<=24|talent.the_first_dance&buff.shadow_blades.up)&(buff.symbols_of_death.remains>=6|buff.shadow_blades.remains>=6)|fight_remains<=10", "Shadow Dance, Vanish, Shadowmeld" );
   stealth_cds->add_action( "vanish,if=energy>=40&!buff.subterfuge.up&effective_combo_points<=3" );
   stealth_cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>=3" );
 
   finish->add_action( "secret_technique,if=variable.secret" );
-  finish->add_action( "rupture,if=!variable.skip_rupture&(!dot.rupture.ticking|refreshable|buff.flagellation_buff.up&!buff.symbols_of_death.up&variable.targets<=2)&target.time_to_die-remains>6&cooldown.flagellation.remains>=10", "Maintenance Finisher" );
+  finish->add_action( "rupture,if=!variable.skip_rupture&(!dot.rupture.ticking|refreshable&cooldown.shadow_blades.remains>=12|buff.flagellation_buff.up&!buff.symbols_of_death.up&variable.targets<=2)&target.time_to_die-remains>6", "Maintenance Finisher" );
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&target.time_to_die>=(2*combo_points)&refreshable&variable.targets>=2" );
-  finish->add_action( "coup_de_grace,if=debuff.fazed.up&cooldown.flagellation.remains>=20|fight_remains<=10", "Direct Damage Finisher" );
+  finish->add_action( "coup_de_grace,if=debuff.fazed.up&(cooldown.flagellation.remains>=20|!talent.flagellation)|fight_remains<=10", "Direct Damage Finisher" );
   finish->add_action( "black_powder,if=!variable.priority_rotation&variable.maintenance&(((variable.targets>=2&talent.deathstalkers_mark&(!buff.darkest_night.up|buff.shadow_dance.up&variable.targets>=5))|talent.unseen_blade&variable.targets>=4)|action.coup_de_grace.ready&variable.targets>=3)" );
-  finish->add_action( "eviscerate,if=cooldown.flagellation.remains>=10|variable.targets>=3" );
+  finish->add_action( "eviscerate,if=cooldown.flagellation.remains>=10|!talent.flagellation|variable.targets>=3" );
 
-  build->add_action( "backstab,if=(talent.unseen_blade|variable.targets<=2)&(buff.shadow_dance.up&(buff.premeditation.up|buff.shadow_blades.up)&!used_for_danse|!variable.stealth&buff.shadow_blades.up)" );
-  build->add_action( "gloomblade,if=buff.shadow_dance.up&!used_for_danse|!variable.stealth&buff.shadow_blades.up" );
-  build->add_action( "shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&!talent.premeditation" );
+  build->add_action( "shuriken_tornado,if=(buff.tww3_trickster_4pc.up|buff.escalating_blade.stack=4)&(variable.targets>=4|!buff.shadow_blades.up)" );
+  build->add_action( "shuriken_storm,if=(buff.tww3_trickster_4pc.up|buff.escalating_blade.stack=4)&!used_for_danse&(buff.shadow_blades.up|variable.targets>=4)" );
+  build->add_action( "backstab,if=(talent.unseen_blade|variable.targets<=2)&(buff.shadow_dance.remains>7&(buff.premeditation.up|buff.shadow_blades.up)&!used_for_danse|!variable.stealth&buff.shadow_blades.up)" );
+  build->add_action( "gloomblade,if=(talent.unseen_blade|variable.targets<=2)&(buff.shadow_dance.remains>7&(buff.premeditation.up|buff.shadow_blades.up)&!used_for_danse|!variable.stealth&buff.shadow_blades.up)" );
   build->add_action( "shuriken_tornado,if=buff.lingering_darkness.up|talent.deathstalkers_mark&cooldown.shadow_blades.remains>=32&variable.targets>=3" );
-  build->add_action( "shuriken_tornado,if=talent.unseen_blade&!buff.stealth.up&((buff.shadow_dance.up&!talent.shadowcraft&variable.targets>=3)|(talent.shadowcraft&variable.targets>=3)|!variable.stealth&variable.targets<=2)&(buff.symbols_of_death.up|!raid_event.adds.up)" );
   build->add_action( "shuriken_storm,if=buff.clear_the_witnesses.up&(variable.targets>=2|!buff.symbols_of_death.up)" );
+  build->add_action( "shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets>=2&talent.unseen_blade&!variable.priority_rotation" );
   build->add_action( "shadowstrike,cycle_targets=1,if=talent.deathstalkers_mark&!debuff.deathstalkers_mark.up&variable.targets>=3&(buff.shadow_blades.up|buff.premeditation.up|talent.the_rotten)" );
   build->add_action( "shuriken_storm,if=talent.deathstalkers_mark&variable.targets>=(2+3*buff.shadow_dance.up)" );
-  build->add_action( "shuriken_storm,if=talent.unseen_blade&(buff.flawless_form.up&variable.targets>=3&!variable.stealth|buff.silent_storm.up&variable.targets>=5&buff.shadow_dance.up)" );
-  build->add_action( "shuriken_storm,if=(buff.tww3_trickster_4pc.up|buff.escalating_blade.stack=4)&!used_for_danse&(buff.shadow_blades.up|variable.targets>=4)" );
+  build->add_action( "shuriken_storm,if=talent.unseen_blade&buff.flawless_form.up&variable.targets>=3&!variable.stealth" );
   build->add_action( "shadowstrike" );
   build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
   build->add_action( "gloomblade" );

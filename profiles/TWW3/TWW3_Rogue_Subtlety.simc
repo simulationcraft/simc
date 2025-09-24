@@ -126,7 +126,7 @@ legs=pants_of_the_sudden_eclipse,id=237663,bonus_id=12676/1533/12361,enchant=sto
 feet=interlopers_reinforced_sandals,id=243306,bonus_id=1533/12361/12239/13504
 finger1=high_nerubian_signet,id=221141,bonus_id=3215/12361/12239/8781,gem_id=213497/213497,enchant=radiant_versatility_3
 finger2=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,gem_id=213497/213497,enchant=radiant_versatility_3
-trinket1=astral_antenna,id=242395,bonus_id=1533/12361/12239
+trinket1=arazs_ritual_forge,id=242402,bonus_id=1533/12361/12239
 trinket2=unyielding_netherprism,id=242396,bonus_id=1533/12361/12239
 main_hand=vengeful_netherspike,id=237740,bonus_id=1533/12361/12239,enchant=stonebound_artistry_3
 off_hand=prodigious_gene_splicer,id=237729,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3

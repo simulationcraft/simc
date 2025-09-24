@@ -104,7 +104,7 @@ legs=,id=237663,bonus_id=12676/1533/12361,enchant=stormbound_armor_kit_3
 feet=,id=243306,bonus_id=1533/12361/12239/13504
 finger1=,id=221141,bonus_id=3215/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
 finger2=,id=237567,bonus_id=1533/12361/12239/8781,enchant=radiant_versatility_3,gem_id=213497/213497
-trinket1=,id=242395,bonus_id=1533/12361/12239
+trinket1=,id=242402,bonus_id=1533/12361/12239
 trinket2=,id=242396,bonus_id=1533/12361/12239
 main_hand=,id=237740,bonus_id=1533/12361/12239,enchant=stonebound_artistry_3
 off_hand=,id=237729,bonus_id=1533/12361/12239,enchant=oathsworns_tenacity_3
