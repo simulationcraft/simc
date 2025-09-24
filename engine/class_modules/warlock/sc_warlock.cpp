@@ -317,7 +317,7 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
     if ( talents.haunt.ok() )
       m *= 1.0 + td->debuffs.haunt->check_value();
 
-    if ( talents.shadow_embrace.ok() )
+    if ( talents.shadow_embrace.ok() || talents.improved_haunt.ok() )
       m *= 1.0 + td->debuffs.shadow_embrace->check_stack_value();
   }
 
@@ -424,7 +424,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.haunt.ok() && td->debuffs.haunt->check() )
       m *= 1.0 + td->debuffs.haunt->data().effectN( guardian ? 4 : 3 ).percent();
 
-    if ( talents.shadow_embrace.ok() )
+    if ( talents.shadow_embrace.ok() || talents.improved_haunt.ok() )
       m *= 1.0 + td->debuffs.shadow_embrace->check_stack_value();
 
     if ( talents.infirmity.ok() && !guardian )

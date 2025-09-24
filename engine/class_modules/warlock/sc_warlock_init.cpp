@@ -25,7 +25,6 @@ namespace warlock
     // Affliction
     warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
     warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
-    warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
     warlock_base.malefic_rapture = find_specialization_spell( "Malefic Rapture", WARLOCK_AFFLICTION ); // Should be ID 324536
     warlock_base.malefic_rapture_dmg = find_spell( 324540 );
     warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
@@ -320,12 +319,6 @@ namespace warlock
     talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
     talents.immutable_hatred_proc = find_spell( 405681 );
 
-    talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
-    talents.guillotine_pet = find_spell( 386542 );
-    talents.fiendish_wrath_buff = find_spell( 386601 );
-    talents.fiendish_wrath_dmg = find_spell( 386702 );
-    talents.fel_explosion = find_spell( 386609 );
-
     talents.master_summoner = find_talent_spell( talent_tree::SPECIALIZATION, "Master Summoner" );  // Should be ID 1240189
 
     // Additional Tier Set spell data
@@ -379,8 +372,6 @@ namespace warlock
 
     talents.pyrogenics = find_talent_spell( talent_tree::SPECIALIZATION, "Pyrogenics" ); // Should be ID 387095
     talents.pyrogenics_debuff = find_spell( 387096 );
-
-    talents.inferno = find_talent_spell(talent_tree::SPECIALIZATION, "Inferno"); // Should be ID 270545
 
     talents.cataclysm = find_talent_spell( talent_tree::SPECIALIZATION, "Cataclysm" ); // Should be ID 152108
 
@@ -443,6 +434,7 @@ namespace warlock
     talents.reverse_entropy_buff = find_spell( 266030 );
 
     talents.internal_combustion = find_talent_spell( talent_tree::SPECIALIZATION, "Internal Combustion" ); // Should be ID 266134
+    talents.internal_combustion_dmg = find_spell( 266136 );
 
     talents.demonfire_mastery = find_talent_spell( talent_tree::SPECIALIZATION, "Demonfire Mastery" ); // Should be ID 456946
 
