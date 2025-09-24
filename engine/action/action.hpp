@@ -13,6 +13,7 @@
 #include "sim/cooldown_waste_data.hpp"
 #include "util/format.hpp"
 #include "util/generic.hpp"
+#include "util/parse_util.hpp"
 #include "util/rng.hpp"
 #include "util/string_view.hpp"
 #include "util/timespan.hpp"
@@ -50,87 +51,6 @@ namespace report {
 }
 
 // Action ===================================================================
-
-// Container to hold base value and all permanent/passive modifiers for values that are automatically parsed from spell
-// data. We need to hold these separate because flat modifiers, including those from dynamic sources, are calculated
-// before percent multipliers. The final value should be properly reconstituted in the relevant method. Also includes
-// operator overloads for ease of use/compatibility with operations to type previously used to store the value.
-
-template <typename T>
-struct parsed_value_t
-{
-  T base;
-  T flat_add;
-  double pct_mul;
-
-  parsed_value_t( T value = T() ) : base( value ), flat_add(), pct_mul( 1.0 ) {}
-
-  T value() const
-  {
-    if constexpr( std::is_same_v<T, timespan_t> )
-    {
-      // timespan_t truncates to the nearest second, but in-game testing suggests aura periods & durations are rounded instead.
-      // if this holds for all time values, timespan_t should be adjusted instead.
-      return timespan_t::from_native( std::round( timespan_t::to_native( base + flat_add ) * pct_mul ) );
-    }
-    else
-    {
-      return ( base + flat_add ) * pct_mul;
-    }
-  }
-
-  operator T() const
-  { return value(); }
-
-  parsed_value_t& operator=( T v )
-  { base = v; flat_add = T(); pct_mul = 1.0; return *this; }
-
-  parsed_value_t& operator+=( T v )
-  { flat_add += v; return *this; }
-
-  parsed_value_t& operator-=( T v )
-  { flat_add -= v; return *this; }
-
-  template <typename U>
-  parsed_value_t& operator*=( U v )
-  { pct_mul *= v; return *this; }
-
-  template <typename U>
-  parsed_value_t& operator/=( U v )
-  { pct_mul /= v; return *this; }
-
-  friend void sc_format_to( const parsed_value_t<T>& v, fmt::format_context::iterator out )
-  { fmt::format_to( out, "{}", v.value() ); }
-
-  // additional operator overrides for timespan_t, as it is used quite often. these are unnecessary for POD
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  bool operator==( const timespan_t& t ) const
-  { return value() == t; }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  bool operator<( const timespan_t& t ) const
-  { return value() < t; }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  bool operator>( const timespan_t& t ) const
-  { return value() > t; }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  bool operator<=( const timespan_t& t ) const
-  { return value() <= t; }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  bool operator>=( const timespan_t& t ) const
-  { return value() >= t; }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  double total_seconds() const
-  { return value().total_seconds(); }
-
-  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, timespan_t>>>
-  time_t total_millis() const
-  { return value().total_millis(); }
-};
 
 struct action_t : private noncopyable
 {

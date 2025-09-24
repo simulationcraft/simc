@@ -1248,7 +1248,6 @@ public:
 
   // haste scaling bools
   bool hasted_cd;
-  bool hasted_gcd;
 
   bool searing_light_disabled;
   bool always_do_capstones;
@@ -1261,7 +1260,6 @@ public:
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
-      hasted_gcd( false ),
       searing_light_disabled( false ),
       always_do_capstones(false),
       clears_judgment( false ),
@@ -1380,17 +1378,6 @@ public:
     if ( hasted_cd )
     {
       ab::cooldown->hasted = hasted_cd;
-    }
-    if ( hasted_gcd )
-    {
-      if ( p()->specialization() == PALADIN_HOLY )
-      {
-        ab::gcd_type = gcd_haste_type::SPELL_HASTE;
-      }
-      else
-      {
-        ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
-      }
     }
   }
 

@@ -283,9 +283,6 @@ struct execution_sentence_t : public paladin_melee_attack_t
     if ( ! ( p->talents.execution_sentence->ok() ) )
       background = true;
 
-    // Spelldata doesn't seem to have this
-    hasted_gcd = true;
-
     // ... this appears to be true for the base damage only,
     // and is not automatically obtained from spell data.
     affected_by.highlords_judgment = true;
@@ -1023,9 +1020,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
     holy_power_consumer_t( "justicars_vengeance", p, p->talents.justicars_vengeance )
   {
     parse_options( options_str );
-
-    // Spelldata doesn't have this
-    hasted_gcd = true;
 
     weapon_multiplier = 0; // why is this needed?
 

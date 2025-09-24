@@ -183,6 +183,7 @@ HEADERS += engine/util/format.hpp
 HEADERS += engine/util/generic.hpp
 HEADERS += engine/util/git_info.hpp
 HEADERS += engine/util/io.hpp
+HEADERS += engine/util/parse_util.hpp
 HEADERS += engine/util/plot_data.hpp
 HEADERS += engine/util/resourcepaths.hpp
 HEADERS += engine/util/rng.hpp

@@ -255,8 +255,8 @@ void marksmanship( player_t* p )
   trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.is.unyielding_netherprism&buff.trueshot.remains>14&buff.latent_energy.stack>3&(buff.latent_energy.stack+floor((fight_remains-20)%cooldown.trueshot.duration)*(cooldown.trueshot.duration%10))>17", "Netherprism lower priority; use with Trueshot if using it now will still allow stacking it back up for the final Trueshot of the fight." );
   trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20", "A damage trinket; use when Trueshot has at least 20 seconds remaining on its cooldown." );
 
-  drst->add_action( "explosive_shot,if=talent.precision_detonation&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down", "1 target" );
-  drst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)" );
+  drst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)", "1 target" );
+  drst->add_action( "explosive_shot,if=talent.precision_detonation&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down" );
   drst->add_action( "steady_shot,if=variable.buffer_deathblow&buff.trueshot.down&cooldown.trueshot.remains", "Queue Steady Shot after Aimed Shot if a Deathblow hasn't already been up long enough to be reacted to." );
   drst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&!action.black_arrow.ready&(!talent.bulletstorm|buff.bulletstorm.up)" );
   drst->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot" );
@@ -268,8 +268,8 @@ void marksmanship( player_t* p )
   drst->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down" );
   drst->add_action( "steady_shot" );
 
+  sentst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)" );
   sentst->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1&buff.trueshot.down" );
-  sentst->add_action( "volley,if=buff.double_tap.down&(!raid_event.adds.exists|raid_event.adds.in>cooldown)" );
   sentst->add_action( "rapid_fire,if=talent.lunar_storm&buff.lunar_storm_cooldown.down" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down&(!talent.bulletstorm|buff.bulletstorm.up)" );
   sentst->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|!talent.headshot&buff.razor_fragments.up" );
@@ -311,8 +311,8 @@ void marksmanship( player_t* p )
   sentcleave->add_action( "explosive_shot,if=talent.precision_detonation|buff.trueshot.down" );
   sentcleave->add_action( "steady_shot" );
 
-  drtrickshots->add_action( "explosive_shot,if=talent.precision_detonation&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down&(cooldown.aimed_shot.charges_fractional<=1.1|talent.focused_aim))", "3+ targets (with Trick Shots)" );
-  drtrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down)" );
+  drtrickshots->add_action( "volley,if=buff.double_tap.down&(!talent.shrapnel_shot|!talent.salvo|buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1)", "3+ targets (with Trick Shots)" );
+  drtrickshots->add_action( "explosive_shot,if=talent.precision_detonation&buff.trueshot.down&(!talent.shrapnel_shot|buff.lock_and_load.down&(cooldown.aimed_shot.charges_fractional<=1.1|talent.focused_aim))" );
   drtrickshots->add_action( "black_arrow,if=buff.trick_shots.down|!talent.headshot|buff.precise_shots.up" );
   drtrickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&talent.bulletstorm&buff.bulletstorm.down" );
   drtrickshots->add_action( "trueshot,if=variable.trueshot_ready&buff.double_tap.down" );

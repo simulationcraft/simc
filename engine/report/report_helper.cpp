@@ -386,7 +386,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
   else if ( p.report_information.save_str.find( "TWW3" ) != std::string::npos )
   {
     tier_name          = "TWW3";
-    max_ilevel_allowed = 730; // TODO: Reshi wraps are 730, everything else is 723
+    max_ilevel_allowed = 730;
   }
   else
   {

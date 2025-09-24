@@ -187,6 +187,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\git_info.hpp" />
 		<ClInclude Include="..\engine\util\io.hpp" />
+		<ClInclude Include="..\engine\util\parse_util.hpp" />
 		<ClInclude Include="..\engine\util\plot_data.hpp" />
 		<ClInclude Include="..\engine\util\resourcepaths.hpp" />
 		<ClInclude Include="..\engine\util\rng.hpp" />

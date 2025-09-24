@@ -1761,10 +1761,9 @@ public:
     ab::parse_options( options );
     parse_spell_data( s );
 
-    // rogue_t sets base and min GCD to 1s by default but let's also enforce non-hasted GCDs.
-    // Even for rogue abilities that can be considered spells, hasted GCDs seem to be an exception rather than rule.
-    // Those should be set explicitly. (see Vendetta, Shadow Blades, Detection)
-    ab::gcd_type = gcd_haste_type::NONE;
+    // rogue_t sets base and min GCD to 1s by default and action_t sets 1s gcd attacks to non-hasted regardless of
+    // ability flags. There should no longer be a need to explicitly enforced non-hasted GCDs.
+    // ab::gcd_type = gcd_haste_type::NONE;
 
     // Affecting Passive Auras
     // Put ability specific ones here; class/spec wide ones with labels that can effect things like trinkets in rogue_t::apply_affecting_auras.
@@ -2134,6 +2133,14 @@ public:
     {
       const spelleffect_data_t& effect = s->effectN( i );
 
+      /*
+      Effect Type 80 no longer appears to be used for Combo Point regeneration
+      Instead it appears to use Effect Type 30 (Energize Power)
+      Misc Value 1 equaling 4 (power_e POWER_COMBO_POINT)
+
+      No spells remain in our data that use Effect Type 80,
+      commenting out to prevent potential future issues.
+
       switch ( effect.type() )
       {
         case E_ADD_COMBO_POINTS:
@@ -2146,7 +2153,7 @@ public:
           break;
         default:
           break;
-      }
+      } */
 
       if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
       {
@@ -4452,7 +4459,6 @@ struct detection_t : public rogue_spell_t
   detection_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_spell_t( name, p, p->spell.detection, options_str )
   {
-    gcd_type = gcd_haste_type::ATTACK_HASTE;
     min_gcd = 750_ms; // Force 750ms min gcd because rogue player base has a 1s min.
     harmful = false;
     set_target( p );
@@ -12336,7 +12342,7 @@ void rogue_t::create_buffs()
     } );
 
   buffs.blindside = make_buff( this, "blindside", spec.blindside_buff )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
 
   buffs.indiscriminate_carnage = make_buff( this, "indiscriminate_carnage", spec.indiscriminate_carnage_buff )
     ->apply_affecting_aura( talent.rogue.subterfuge ); // Duration Modifer
@@ -12495,7 +12501,7 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.goremaws_bite = make_buff( this, "goremaws_bite", spec.goremaws_bite_buff )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
   buffs.goremaws_bite->set_initial_stack( buffs.goremaws_bite->max_stack() );
 
   // Set Bonus Items ========================================================

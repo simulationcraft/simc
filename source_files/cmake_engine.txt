@@ -181,6 +181,7 @@ util/format.hpp
 util/generic.hpp
 util/git_info.hpp
 util/io.hpp
+util/parse_util.hpp
 util/plot_data.hpp
 util/resourcepaths.hpp
 util/rng.hpp
