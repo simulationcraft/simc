@@ -1323,7 +1323,7 @@ enum power_e
   // Not yet used?
   POWER_FURY          = 17,
   POWER_PAIN          = 18,
-  POWER_ESSENSE       = 19,
+  POWER_ESSENCE       = 19,
   // Helpers
   POWER_MAX,
   POWER_NONE          = 0xFFFFFFFF,  // None.

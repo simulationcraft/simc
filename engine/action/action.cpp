@@ -5630,14 +5630,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         }
         break;
 
-      case P_RESOURCE_COST:
+      case P_RESOURCE_COST_1:
         base_costs[ resource_current ] += effect.resource( current_resource() );
         sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
                           effect.resource( current_resource() ) );
         value_ = effect.resource( current_resource() );
         break;
 
-      case P_RESOURCE_COST_1:
+      case P_RESOURCE_COST_2:
       {
         if ( data().powers().size() < 2 )
           break;
@@ -5650,7 +5650,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_RESOURCE_COST_2:
+      case P_RESOURCE_COST_3:
       {
         if ( data().powers().size() < 3 )
           break;
@@ -5663,7 +5663,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_TARGET:
+      case P_CHAIN_TARGETS:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
         if ( aoe > 0 )
         {
@@ -5683,7 +5683,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         value_ = effect.base_value();
         break;
 
-      case P_TARGET_BONUS:
+      case P_CHAIN_MULTIPLIER:
         chain_multiplier += effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
         value_ = effect.percent();
@@ -5769,14 +5769,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         }
         break;
 
-      case P_RESOURCE_COST:
+      case P_RESOURCE_COST_1:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
         sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this, resource_current,
                           effect.base_value() );
         value_ = effect.percent();
         break;
 
-      case P_RESOURCE_COST_1:
+      case P_RESOURCE_COST_2:
       {
         if ( data().powers().size() < 2 )
           break;
@@ -5789,7 +5789,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_RESOURCE_COST_2:
+      case P_RESOURCE_COST_3:
       {
         if ( data().powers().size() < 3 )
           break;
@@ -5802,7 +5802,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_TARGET_BONUS:
+      case P_CHAIN_MULTIPLIER:
         chain_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
         value_ = effect.percent();

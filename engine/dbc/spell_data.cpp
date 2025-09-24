@@ -468,9 +468,9 @@ double spelleffect_data_t::default_multiplier() const
             case P_PROC_CHANCE:
               return 0.01;  // percent
 
-            case P_RESOURCE_COST:
             case P_RESOURCE_COST_1:
             case P_RESOURCE_COST_2:
+            case P_RESOURCE_COST_3:
               return resource_multiplier( resource_gain_type() );
 
             default:
