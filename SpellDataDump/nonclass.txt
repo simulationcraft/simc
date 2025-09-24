@@ -79998,7 +79998,7 @@ Triggered By     : Retrieving Fu Zan (217814)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=323966)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Scenario - Summon Summerpetal 2 until cancelled
+#1 (id=323966)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 217666 | Target: Self (1)
 
 Name             : Scenario - Summon Summerpetal 2 (id=217666) [Hidden] 
@@ -80020,7 +80020,7 @@ Triggered By     : Retrieving Fu Zan (217814)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=323975)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Scenario - Summon Monkey King 2 until cancelled
+#1 (id=323975)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 217669 | Target: Self (1)
 
 Name             : Request the Master Call on You (id=217668) 
@@ -116670,7 +116670,7 @@ Duration         : Aura (infinite)
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=732586)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Personal Anchor until cancelled
+#1 (id=732586)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277406 | Target: Self (1)
 Tooltip          : Drag an anchor around the Whale's Belly.
 
@@ -121852,7 +121852,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=736248)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=736276)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Elemental Guardian for 600 seconds
+#2 (id=736276)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279730 | Target: Self (1)
 Description      : Calls forth an ally to aid you in battle for $d. Requires Arathi Highlands.
 Tooltip          : Leading allies in battle.
@@ -121954,7 +121954,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=736280)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=736281)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Elemental Guardian for 600 seconds
+#2 (id=736281)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279755 | Target: Self (1)
 Description      : Calls forth an ally to aid you in battle for $d. Requires Arathi Highlands.
 Tooltip          : Leading allies in battle.
@@ -121968,7 +121968,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=736289)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=736290)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Elemental Guardian for 600 seconds
+#2 (id=736290)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279757 | Target: Self (1)
 Description      : Calls forth an ally to aid you in battle for $d. Requires Arathi Highlands.
 Tooltip          : Leading allies in battle.
@@ -122038,7 +122038,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=736349)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=736350)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Elemental Guardian for 600 seconds
+#2 (id=736350)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279756 | Target: Self (1)
 Description      : Calls forth an ally to aid you in battle for $d. Requires Arathi Highlands.
 Tooltip          : Leading allies in battle.
@@ -127425,7 +127425,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=749835)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Citizens Brigade Member for 600 seconds
+#1 (id=749835)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287079 | Target: Self (1)
 Description      : Summons a member of the Citizens Brigade.
 Tooltip          : You have called forth a member of the Citizens Brigade.
@@ -136364,7 +136364,7 @@ Attributes       : Can Proc From Procs (122), Do Not Display Duration (170), Aur
 Effects          :
 #1 (id=765966)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=770417)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): The Well of Existence until cancelled
+#2 (id=770417)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 298305 | Target: Self (1)
 Description      : $@spelldesc296136
 Tooltip          : $w1 stored healing will be released into severely injured targets that you heal.
@@ -136767,7 +136767,7 @@ Duration         : Aura (infinite)
 Triggered By     : Blood Contract: Sacrifice (259665), Blood Contract: Bloodshed (292012), Blood Contract: Bloodguard (292320), Blood Contract: Oblivion (292322)
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Aura Is Buff (140), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Not an Attack (194), Not In Raid Instances (203), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Not in Battleground (284), Not In Arena (297), Allow Cast While Channeling (308), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
-#1 (id=766307)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Guardian - Avatar of Sacrifice until cancelled
+#1 (id=766307)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Trigger Spell: 259663 | Target: Self (1)
 #2 (id=766308)   : Unknown(167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -136783,7 +136783,7 @@ Duration         : Aura (infinite)
 Triggered By     : Blood Contract: Sacrifice (259665), Blood Contract: Bloodshed (292012), Blood Contract: Bloodguard (292320), Blood Contract: Oblivion (292322)
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Aura Is Buff (140), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Not an Attack (194), Not In Raid Instances (203), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Not in Battleground (284), Not In Arena (297), Allow Cast While Channeling (308), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
-#1 (id=766331)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Guardian - Avatar of Oblivion until cancelled
+#1 (id=766331)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Trigger Spell: 294630 | Target: Self (1)
 #2 (id=766332)   : Unknown(167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -136799,7 +136799,7 @@ Duration         : Aura (infinite)
 Triggered By     : Blood Contract: Sacrifice (259665), Blood Contract: Bloodshed (292012), Blood Contract: Bloodguard (292320), Blood Contract: Oblivion (292322)
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Aura Is Buff (140), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Not an Attack (194), Not In Raid Instances (203), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Not in Battleground (284), Not In Arena (297), Allow Cast While Channeling (308), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
-#1 (id=766335)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Guardian - Avatar of Bloodshed until cancelled
+#1 (id=766335)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Trigger Spell: 294628 | Target: Self (1)
 #2 (id=766336)   : Unknown(167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -136815,7 +136815,7 @@ Duration         : Aura (infinite)
 Triggered By     : Blood Contract: Sacrifice (259665), Blood Contract: Bloodshed (292012), Blood Contract: Bloodguard (292320), Blood Contract: Oblivion (292322)
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Aura Is Buff (140), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Not an Attack (194), Not In Raid Instances (203), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Not in Battleground (284), Not In Arena (297), Allow Cast While Channeling (308), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
-#1 (id=766338)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Guardian - Avatar of the Bloodguard until cancelled
+#1 (id=766338)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Trigger Spell: 294629 | Target: Self (1)
 #2 (id=766339)   : Unknown(167)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -143427,7 +143427,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=774794)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Judgment of Mechagon for 300 seconds
+#1 (id=774794)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 301014 | Target: Self (1)
 Description      : Create hologram of King Mechagon.
 Tooltip          : You have created a hologram of King Mechagon.
@@ -153046,11 +153046,11 @@ Triggered By     : Make Camp (312370)
 Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Aura Interrupt   : Leave World (19), Enter World (22), Login (29)
 Effects          :
-#2 (id=798997)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Camping for 300 seconds
+#2 (id=798997)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315327 | Target: Self (1)
-#3 (id=799013)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Campfire for 300 seconds
+#3 (id=799013)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315335 | Target: Self (1)
-#4 (id=799051)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Mount Changer for 300 seconds
+#4 (id=799051)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 315357 | Target: Self (1)
 Description      : Create a campfire where you can cook and rest.
 Tooltip          : Resting.
@@ -158832,7 +158832,7 @@ Labels           : 38
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308)
 Aura Interrupt   : Interacting (10), Looting (11), Enter World (22)
 Effects          :
-#2 (id=818499)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon for 10 seconds
+#2 (id=818499)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 327656 | Target: Self (1)
 #3 (id=818500)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
@@ -167292,7 +167292,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=843605)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Platter Master Stue for 300 seconds
+#1 (id=843605)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 342490 | Target: Self (1)
 Description      : Summon Platter Master Stue to your location.
 Tooltip          : Summon Platter Master Stue to your location.
@@ -168992,7 +168992,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Do Not Display Range (126), Aura Is Buff (140)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=870347)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Tribute to Krexus for 300 seconds
+#1 (id=870347)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 345257 | Target: Self (1)
 Description      : Conjure a spectral visage of Margrave Krexus.
 Tooltip          : You have conjured a spectral visage of Margrave Krexus.
@@ -171261,7 +171261,7 @@ Labels           : 38
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Cast While Channeling (308)
 Aura Interrupt   : Interacting (10), Looting (11), Enter World (22)
 Effects          :
-#2 (id=876315)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon for 10 seconds
+#2 (id=876315)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 327656 | Target: Self (1)
 #3 (id=876316)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
@@ -175081,7 +175081,7 @@ Labels           : 2399
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Enter Combat (28)
 Effects          :
-#1 (id=889473)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Personal Ball and Chain for 300 seconds
+#1 (id=889473)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 355954 | Target: Self (1)
 Description      : Create your own Personal Ball and Chain to drag around.
 Tooltip          : Your very own burden to bare.
@@ -176697,7 +176697,7 @@ Attributes       : Not In Combat (Only Peaceful) (28), Is Channelled (34), Not I
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Disconnect (42)
 Channel Interrupt: Damage (1), Attacking (12), Mount (17), Enter World (22), Enter Combat (28), Exit Vehicle (39), Raid Encounter Start or M+ Start (40), Enter Instance (43), Spline or Free Flight (52), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
-#1 (id=891872)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Jailer's Cage for 300 seconds
+#1 (id=891872)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 357358 | Target: Self (1)
 #2 (id=891957)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1002 | Target: Self (1)
@@ -176712,7 +176712,7 @@ Attributes       : Not In Combat (Only Peaceful) (28), Is Channelled (34), Not I
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Disconnect (42)
 Channel Interrupt: Damage (1), Attacking (12), Mount (17), Enter World (22), Enter Combat (28), Exit Vehicle (39), Raid Encounter Start or M+ Start (40), Enter Instance (43), Spline or Free Flight (52), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
-#1 (id=891909)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Jailer's Deluxe Cell for 300 seconds
+#1 (id=891909)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 357383 | Target: Self (1)
 Description      : Enter the Jailer's Deluxe cell.
 Tooltip          : The Jailer's finest accommodations just for you.
@@ -176747,7 +176747,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=892043)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Miniature Shadow Realm for 600 seconds
+#1 (id=892043)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 357460 | Target: Self (1)
 Description      : Summons a miniature shadow realm.
 Tooltip          : You have created a miniature shadow realm.
@@ -178240,7 +178240,7 @@ Proc Chance      : 101%
 Attributes       : Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Immunities (29), Ignore Line of Sight (66), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Ignore Target Requirements (181), Not In Raid Instances (203), Allow While Riding Vehicle (204), AI Face Target (283), Target Must Be Grounded (298), Not in Mythic+ Mode (Challenge Mode) (368)
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Enter Combat (28), Leave Combat (31), Raid Encounter End or M+ Start (41)
 Effects          :
-#1 (id=896295)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Containment Trap for 300 seconds
+#1 (id=896295)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360395 | Target: Self (1)
 Description      : Imprison yourself for $d in your own personal containment trap.
 Tooltip          : Trapped $d for examination.
@@ -181960,7 +181960,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=910714)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=997097)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Jiro Musical Circle for 60 seconds
+#2 (id=997097)   : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367203 | Target: Self (1)
 Description      : Summon a circle of Jiro to serenade you.
 Tooltip          : You have summoned a circle of Jiro.
@@ -201074,7 +201074,7 @@ Proc Chance      : 101%
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43)
 Effects          :
-#1 (id=1029473)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Armoire of Endless Cloaks for 300 seconds
+#1 (id=1029473)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391777 | Target: Self (1)
 Description      : You have access to Wrathion's personal cloak collection.
 Tooltip          : You have access to Wrathion's personal cloak collection.
@@ -201718,7 +201718,7 @@ Duration         : 900 seconds
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Visible only to caster (conversations only) (343), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Enter Combat (28)
 Effects          :
-#1 (id=1031311)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Super Shellkhan Gang for 900 seconds
+#1 (id=1031311)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 392827 | Target: Self (1)
 Description      : Summon the Super Shellkhan Gang to follow you as they charge up their Super Spinning Attack! 
 Tooltip          : They're not just the Super Shellkhan Gang, they're the Super Ultra Mighty Shellkhan Gang!!
@@ -210947,7 +210947,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1050826)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): The Scarlet Queen for 300 seconds
+#1 (id=1050826)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403712 | Target: Self (1)
 Description      : Create a holographic tribute of Alexstrasza.
 Tooltip          : You have created a hologram of Alexstrasza.
@@ -210999,7 +210999,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1050860)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): The Lady of Dreams for 360 seconds
+#1 (id=1050860)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403732 | Target: Self (1)
 Description      : Create a holographic tribute of Ysera.
 Tooltip          : You have created a hologram of Ysera.
@@ -211013,7 +211013,7 @@ Cooldown         : 3600 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Re-apply Area Aura if it Persists Through Update (391)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1050927)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): The Timeless One for 300 seconds
+#1 (id=1050927)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403773 | Target: Self (1)
 Description      : Create a holographic tribute of Nozdormu.
 Tooltip          : You have created a hologram of Nozdormu.
@@ -239372,7 +239372,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 180 seconds
 Effects          :
-#1 (id=1153032)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Summon Clone for 180 seconds
+#1 (id=1153032)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452115 | Target: Self (1)
 Description      : Release a memory of yourself.
 Tooltip          : A memory of yourself.
@@ -260935,7 +260935,7 @@ Labels           : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1207834)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Three Dimensional Bioprinter until cancelled
+#1 (id=1207834)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1215248 | Target: Targeted Ally (21)
 Description      : $@spelldesc1215258
 Tooltip          : A bioprinted companion is following you.
@@ -260950,7 +260950,7 @@ Labels           : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1207982)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Three Dimensional Bioprinter until cancelled
+#1 (id=1207982)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1215247 | Target: Targeted Ally (21)
 Description      : $@spelldesc1215256
 Tooltip          : A bioprinted companion is following you.
@@ -260965,7 +260965,7 @@ Labels           : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1207983)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Three Dimensional Bioprinter until cancelled
+#1 (id=1207983)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1214836 | Target: Targeted Ally (21)
 Description      : $@spelldesc1214852
 Tooltip          : A bioprinted companion is following you.
@@ -260980,7 +260980,7 @@ Labels           : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1207984)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Three Dimensional Bioprinter until cancelled
+#1 (id=1207984)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1215248 | Target: Targeted Ally (21)
 Description      : $@spelldesc1215258
 Tooltip          : A bioprinted companion is following you.
@@ -260995,7 +260995,7 @@ Labels           : 292
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Aura Unique (43), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1207985)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Three Dimensional Bioprinter until cancelled
+#1 (id=1207985)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1215247 | Target: Targeted Ally (21)
 Description      : $@spelldesc1215256
 Tooltip          : A bioprinted companion is following you.
@@ -264505,7 +264505,7 @@ Labels           : 292
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Client Targeting (133), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Dark Simulacrum (307), Allow Cast While Channeling (308), Force Corpse Target (315), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31)
 Effects          :
-#1 (id=1223122)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428): Nether Overlay Matrix for 20 seconds
+#1 (id=1223122)  : Apply Aura (6) | Trigger Summon Spell w/ Duration Override (428)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Trigger Spell: 1231219 | Target: Targeted Ally (21)
 Description      : $@spelldesc1214852
 Tooltip          : Beard Bronzebrann is following you.
