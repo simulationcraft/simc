@@ -9293,9 +9293,9 @@ void demon_hunter_t::init_blizzard_action_list()
 
 void demon_hunter_t::init_finished()
 {
-  parse_player_effects();
-
   base_t::init_finished();
+
+  parse_player_effects();
 }
 
 // demon_hunter_t::validate_fight_style =====================================
@@ -10491,7 +10491,6 @@ public:
       os << "\t\t\t\t\t</div>\n";
       os << "<div class=\"clear\"></div>\n";
     }
-    p.parsed_effects_html( os );
     os << "\t\t\t\t\t</div>\n";
   }
 
