@@ -1095,8 +1095,7 @@ bool parse_player_effects_t::is_valid_aura( const spelleffect_data_t& eff ) cons
     case E_APPLY_AURA:
     case E_APPLY_AURA_PET:
       // TODO: more robust logic around 'party' buffs with radius
-      // Effect targeting type 120 is "Apply to Summons in Area", so we should allow that.
-      if ( eff.radius() && eff.target_1() != 120 )
+      if ( eff.radius() )
         return false;
       break;
     case E_APPLY_AREA_AURA_PARTY:
