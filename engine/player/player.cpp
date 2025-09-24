@@ -1284,6 +1284,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   block_reduction(),
   mastery(),
   versatility( 0 ),
+  spell_haste( 1.0 ),
+  melee_haste( 1.0 ),
   skill( 1.0 ),
   skill_debuff( 0.0 ),
   distance( 0 ),
@@ -1300,9 +1302,14 @@ player_t::base_initial_current_t::base_initial_current_t() :
   armor_multiplier( 1.0 ),
   crit_damage_multiplier( 1.0 ),
   crit_healing_multiplier( 1.0 ),
+  player_damage_multiplier(),
+  pet_damage_multiplier( 1.0 ),
+  guardian_damage_multiplier( 1.0 ),
+  auto_attack_speed_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
+  range::fill( player_damage_multiplier, 1.0 );
 }
 
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
@@ -1328,6 +1335,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block_reduction={}", s.block_reduction );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
+  fmt::format_to( out, " spell_haste={}", s.spell_haste );
+  fmt::format_to( out, " melee_haste={}", s.melee_haste );
   fmt::format_to( out, " leech={}", s.leech );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
@@ -1340,7 +1349,15 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
   fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
+  // Other
   fmt::format_to( out, " position={}", s.position );
+  // Other Mults
+  fmt::format_to( out, " auto_attack_speed_multiplier={}", s.auto_attack_speed_multiplier );
+  for( auto school = SCHOOL_ARCANE; school < SCHOOL_MAX; school++ )
+    if ( s.player_damage_multiplier[ school ] != 1.0 )
+      fmt::format_to( out, " player_{}_damage_multiplier={}", school, s.player_damage_multiplier[ school ] );
+  fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
+  fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
 }
 
 void player_t::init()
@@ -1474,6 +1491,10 @@ void player_t::init_base_stats()
     base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
     base.versatility              = racials.mountaineer->effectN( 1 ).percent() +
                                     racials.brush_it_off->effectN( 1 ).percent();
+    base.spell_haste              = 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() ) / 
+                                    ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
+    base.melee_haste              = 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() ) /
+                                    ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
@@ -4984,7 +5005,7 @@ double player_t::composite_melee_haste() const
   h = std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste;
   h = apply_combat_rating_dr( RATING_MELEE_HASTE, h );
 
-  h = 1.0 / ( 1.0 + h );
+  h = current.melee_haste / ( 1.0 + h );
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -4996,9 +5017,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5013,6 +5031,8 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
+
+  h *= current.auto_attack_speed_multiplier;
 
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
@@ -5342,7 +5362,7 @@ double player_t::composite_spell_haste() const
   h = std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste;
   h = apply_combat_rating_dr( RATING_SPELL_HASTE, h );
 
-  h = 1.0 / ( 1.0 + h );
+  h = current.spell_haste / ( 1.0 + h );
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
@@ -5354,9 +5374,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5587,18 +5604,19 @@ double player_t::composite_total_corruption() const
 
 double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
-  double m = 1.0;
+  double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
 
-  m *= 1.0 + racials.command->effectN(1).percent();
+  m *= 1.0 + racials.command->effectN( 1 ).percent();
 
-  if (!guardian)
+  if ( !guardian )
   {
-    if (buffs.coldhearted && buffs.coldhearted->check())
+    if ( buffs.coldhearted && buffs.coldhearted->check() )
       m *= 1.0 + buffs.coldhearted->check_value();
 
     // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
-      m *= 1.0 + (buffs.battlefield_presence->data().effectN(2).percent() * buffs.battlefield_presence->current_stack);
+    if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+      m *= 1.0 +
+           ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
   }
 
   return m;
@@ -5611,7 +5629,7 @@ double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool 
 
 double player_t::composite_player_multiplier( school_e school ) const
 {
-  double m = 1.0;
+  double m = current.player_damage_multiplier[ school ];
 
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
     m *= 1.0 + buffs.legendary_aoe_ring->default_value;

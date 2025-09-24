@@ -264,7 +264,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
     double hit, expertise, leech, avoidance;
-    double spell_crit_chance, attack_crit_chance, block_reduction, mastery, versatility;
+    double spell_crit_chance, attack_crit_chance, block_reduction, mastery, versatility, spell_haste, melee_haste;
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
@@ -276,6 +276,11 @@ struct player_t : public actor_t
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     double crit_damage_multiplier, crit_healing_multiplier;
+    std::array<double, SCHOOL_MAX> player_damage_multiplier;
+    double pet_damage_multiplier, guardian_damage_multiplier;
+
+    double auto_attack_speed_multiplier;
+
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );

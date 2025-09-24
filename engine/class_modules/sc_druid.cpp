@@ -11582,7 +11582,7 @@ void druid_t::init_finished()
     }
   }
 
-  player_t::init_finished();
+  parse_player_effects_t::init_finished();
 
   if ( ready_type == READY_TRIGGER && resource_thresholds.empty() )
     resource_thresholds.push_back( 0 );
