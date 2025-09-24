@@ -956,13 +956,12 @@ using namespace helpers;
       impact_action = periodic;
       add_child( periodic );
 
-      spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
+      triggers.jackpot_affliction = true;
 
-      if ( !seed_action && p->warlock_base.xavian_teachings->ok() )
+      if ( seed_action )
       {
-        spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
-        base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
-        triggers.jackpot_affliction = true;
+        spell_power_mod.direct = 0; // Corruption does not deal instant damage when applied from SoC
+        triggers.jackpot_affliction = false; // Corruption does not trigger jackpot (tww2 tier) when applied from SoC
       }
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
@@ -3236,7 +3235,7 @@ using namespace helpers;
         background = dual = true;
         callbacks = false;
 
-        base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
+        base_dd_multiplier *= 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
       double action_multiplier() const override
@@ -3741,45 +3740,6 @@ using namespace helpers;
     }
   };
 
-  struct guillotine_t : public warlock_spell_t
-  {
-    guillotine_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Guillotine", p, p->talents.guillotine, options_str )
-    {
-      may_crit = false;
-      internal_cooldown = p->get_cooldown( "felstorm_icd" );
-    }
-
-    bool ready() override
-    {
-      auto active_pet = p()->warlock_pet_list.active;
-
-      if ( !active_pet )
-        return false;
-
-      if ( active_pet->pet_type != PET_FELGUARD )
-        return false;
-
-      return warlock_spell_t::ready();
-    }
-
-    void execute() override
-    {
-      auto active_pet = p()->warlock_pet_list.active;
-
-      warlock_spell_t::execute();
-
-      if ( active_pet->pet_type == PET_FELGUARD )
-      {
-        active_pet->buffs.fiendish_wrath->trigger();
-
-        debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
-
-        internal_cooldown->start( 6_s );
-      }
-    }
-  };
-
   struct doom_t : public warlock_spell_t
   {
     doom_t( warlock_t* p )
@@ -3877,7 +3837,7 @@ using namespace helpers;
         double c = warlock_spell_t::composite_crit_chance();
 
         if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
-          c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+          c += p()->talents.indiscriminate_flames->effectN( 2 ).percent() * p()->buffs.backdraft->check();
 
         return c;
       }
@@ -3992,7 +3952,7 @@ using namespace helpers;
       double c = warlock_spell_t::composite_crit_chance();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
-        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent() * p()->buffs.backdraft->check();
 
       return c;
     }
@@ -4074,7 +4034,7 @@ using namespace helpers;
   struct internal_combustion_t : public warlock_spell_t
   {
     internal_combustion_t( warlock_t* p )
-      : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion )
+      : warlock_spell_t( "Internal Combustion", p, p->talents.internal_combustion_dmg )
     {
       background = dual = true;
 
@@ -4229,7 +4189,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.crashing_chaos->effectN( 1 ).percent();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
-        m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent();
+        m *= 1.0 + p()->talents.indiscriminate_flames->effectN( 1 ).percent() * p()->buffs.backdraft->check();
 
       return m;
     }
@@ -4428,8 +4388,6 @@ using namespace helpers;
         affected_by.chaos_incarnate = p->talents.chaos_incarnate.ok();
         affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
-        base_multiplier *= 1.0 + p->talents.inferno->effectN( 2 ).percent();
-
         triggers.decimation = false;
       }
       
@@ -4463,8 +4421,6 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
-
-      base_costs[ RESOURCE_SOUL_SHARD ] += p->talents.inferno->effectN( 1 ).base_value() / 10.0;
 
       if ( !p->proc_actions.rain_of_fire_tick )
       {
@@ -4952,7 +4908,7 @@ using namespace helpers;
       double c = warlock_spell_t::composite_crit_chance();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
-        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent() * p()->buffs.backdraft->check();
 
       return c;
     }
@@ -5047,7 +5003,7 @@ using namespace helpers;
       double c = warlock_spell_t::composite_crit_chance();
 
       if ( p()->talents.indiscriminate_flames.ok() && p()->buffs.backdraft->check() )
-        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent();
+        c += p()->talents.indiscriminate_flames->effectN( 2 ).percent() * p()->buffs.backdraft->check();
 
       return c;
     }
@@ -5086,7 +5042,6 @@ using namespace helpers;
         reduced_aoe_targets = p->hero.ruination_cast->effectN( 2 ).base_value();
 
         affected_by.chaotic_energies = true;
-        affected_by.backdraft = true;
 
         if ( demonology() )
         {
@@ -5554,8 +5509,6 @@ using namespace helpers;
       return new summon_vilefiend_t( this, options_str );
     if ( action_name == "grimoire_felguard" )
       return new grimoire_felguard_t( this, options_str );
-    if ( action_name == "guillotine" )
-      return new guillotine_t( this, options_str );
 
     return nullptr;
   }

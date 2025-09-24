@@ -79,7 +79,6 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
     propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> demonic_power;
@@ -98,6 +97,7 @@ struct warlock_pet_t : public pet_t
   void schedule_ready( timespan_t = 0_ms, bool = false ) override;
   double composite_player_multiplier( school_e ) const override;
   double composite_spell_haste() const override;
+  double composite_melee_haste() const override;
   double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
@@ -415,7 +415,6 @@ namespace demonology
 struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
-  action_t* felguard_guillotine;
   action_t* hatred_proc;
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
@@ -432,7 +431,6 @@ struct felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
   void arise() override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_melee_auto_attack_speed() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
 
@@ -455,7 +453,6 @@ struct grimoire_felguard_pet_t : public warlock_pet_t
   timespan_t available() const override;
   void arise() override;
   void demise() override;
-  double composite_player_multiplier( school_e ) const override;
 };
 
 struct wild_imp_pet_t : public warlock_pet_t
@@ -615,6 +612,7 @@ namespace diabolist
     overlord_t( warlock_t*, util::string_view = "overlord" );
     void arise() override;
     action_t* create_action( util::string_view, util::string_view ) override;
+    double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   };
 
   struct mother_of_chaos_t : public warlock_pet_t

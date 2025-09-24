@@ -159,7 +159,6 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
-    const spell_data_t* xavian_teachings; // Passive granted only to Affliction. Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
     const spell_data_t* malefic_rapture; // This contains an old sp_coeff value, but it is most likely no longer in use
     const spell_data_t* malefic_rapture_dmg;
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
@@ -402,11 +401,6 @@ public:
     player_talent_t flametouched;
     player_talent_t immutable_hatred;
     const spell_data_t* immutable_hatred_proc;
-    player_talent_t guillotine;
-    const spell_data_t* guillotine_pet;
-    const spell_data_t* fiendish_wrath_buff;
-    const spell_data_t* fiendish_wrath_dmg; // TODO: Multiplier fixes for this
-    const spell_data_t* fel_explosion;
 
     player_talent_t master_summoner;
 
@@ -428,7 +422,6 @@ public:
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
-    player_talent_t inferno;
     player_talent_t cataclysm;
 
     player_talent_t indiscriminate_flames;
@@ -475,6 +468,7 @@ public:
     player_talent_t reverse_entropy;
     const spell_data_t* reverse_entropy_buff;
     player_talent_t internal_combustion;
+    const spell_data_t* internal_combustion_dmg;
     player_talent_t demonfire_mastery;
 
     player_talent_t devastation;
@@ -554,9 +548,9 @@ public:
     player_talent_t ruination; // TODO: Check damage and buff values closer to release, affected_by lists may be on cast spell not damage in data and could be changed later by Blizzard
     const spell_data_t* ruination_buff;
     const spell_data_t* ruination_cast;
-    const spell_data_t* ruination_impact; // TODO: Demonology version appears to include a Hand of Gul'dan when summoning imps. Not currently implemented
+    const spell_data_t* ruination_impact;
     const spell_data_t* diabolic_imp;
-    const spell_data_t* diabolic_bolt; // TODO: Socrethar's Guile?
+    const spell_data_t* diabolic_bolt;
 
     // Hellcaller
     player_talent_t wither;
