@@ -20,11 +20,11 @@ struct warlock_pet_td_t : public actor_target_data_t
   struct debuffs_t
   {
     propagate_const<buff_t*> whiplash;
-  } debuff;
+  } debuffs;
 
   struct dots_t
   {
-  } dot;
+  } dots;
 
   warlock_pet_t& pet;
   warlock_pet_td_t( player_t*, warlock_pet_t& );
@@ -38,22 +38,22 @@ static std::function<int( actor_target_data_t* )> pet_d_fn( T d, bool stack = tr
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuff )->check();
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuffs )->check();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuff )->check() > 0;
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->debuffs )->check() > 0;
       };
   }
   else if constexpr ( std::is_invocable_v<T, warlock_pet_td_t::dots_t> )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dot )->current_stack();
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dots )->current_stack();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dot )->is_ticking();
+        return std::invoke( d, static_cast<warlock_pet_td_t*>( t )->dots )->is_ticking();
       };
   }
   else
@@ -78,9 +78,8 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> dread_calling;
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> antoran_armaments; // Permanent aura when talented, 20% increased damage to all abilities plus Soul Strike cleave
+    propagate_const<buff_t*> ferocity_of_fharg;
     propagate_const<buff_t*> the_expendables;
-    propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
-    propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> empowered_legion_strike; // TWW1 Demonology 4pc buff
     propagate_const<buff_t*> demonic_hunger; // TWW2 Demonology 2pc buff
@@ -100,7 +99,6 @@ struct warlock_pet_t : public pet_t
   double composite_melee_haste() const override;
   double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   void apply_affecting_auras( action_t& action ) override;
   void arise() override;
   void demise() override;
@@ -233,11 +231,10 @@ public:
   }
 
   void apply_pet_action_effects()
-  {
-  }
+  { }
+
   void apply_pet_target_effects()
-  {
-  }
+  { }
 
   template <typename... Ts>
   void parse_effects( Ts&&... args )
@@ -512,7 +509,6 @@ struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
   action_t* create_action( util::string_view, util::string_view ) override;
-  double composite_player_multiplier( school_e ) const override;
 };
 
 struct doomguard_t : public warlock_simple_pet_t

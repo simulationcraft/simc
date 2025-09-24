@@ -37,7 +37,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_default_value_from_effect( 1 );
 
   debuffs.infirmity = make_buff( *this, "infirmity", p.talents.infirmity_debuff )
-                          ->set_default_value( p.talents.infirmity_debuff->effectN( 1 ).percent() )
                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Demonology
@@ -64,15 +63,12 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   // Destruction
   dots.immolate = target->get_dot( "immolate", &p );
 
-  debuffs.eradication = make_buff( *this, "eradication", p.talents.eradication_debuff )
-                            ->set_default_value( p.talents.eradication->effectN( 2 ).percent() );
+  debuffs.eradication = make_buff( *this, "eradication", p.talents.eradication_debuff );
 
   debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
   debuffs.pyrogenics = make_buff( *this, "pyrogenics", p.talents.pyrogenics_debuff )
-                           ->set_default_value( p.talents.pyrogenics->effectN( 1 ).percent() )
-                           ->set_schools_from_effect( 1 )
                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   debuffs.conflagrate = make_buff( *this, "conflagrate", p.talents.conflagrate_debuff )
@@ -121,10 +117,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                  {
                                    // TOCHECK: 2025-08-16 Currently Hellcaller TWW3 B4 (Maintained Withering) tier bonus
                                    // of doing Blackened Soul damage faster is bugged for destruction and does not work
-                                   if ( !p.bugs || p.specialization() != WARLOCK_DESTRUCTION )
+                                   if ( !p.bugs || !p.destruction() )
                                    {
                                      period *= 1.0 + p.buffs.maintained_withering->data()
-                                                         .effectN( p.specialization() == WARLOCK_AFFLICTION ? 2 : 3 )
+                                                         .effectN( p.affliction() ? 2 : 3 )
                                                          .percent();
                                    }
                                  }
@@ -193,9 +189,9 @@ void warlock_td_t::target_demise()
   if ( warlock.hero.demonic_soul.ok() && warlock.hero.feast_of_souls.ok() )
   {
     double chance = 0.0;
-    if ( warlock.specialization() == WARLOCK_AFFLICTION )
+    if ( warlock.affliction() )
       chance = warlock.rng_settings.feast_of_souls_aff.setting_value;
-    if ( warlock.specialization() == WARLOCK_DEMONOLOGY )
+    if ( warlock.demonology() )
       chance = warlock.rng_settings.feast_of_souls_demo.setting_value;
 
     if ( warlock.rng().roll( chance ) )
@@ -291,233 +287,44 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 }
 
-void warlock_t::invalidate_cache( cache_e c )
+const spell_data_t* warlock_t::conditional_spell_lookup( bool fn, int id )
 {
-  parse_player_effects_t::invalidate_cache( c );
+  if ( !fn )
+    return spell_data_t::not_found();
 
-  switch ( c )
-  {
-    case CACHE_MASTERY:
-      if ( warlock_base.master_demonologist->ok() )
-        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-      break;
-    default:
-      break;
-  }
+  return find_spell( id );
 }
 
-double warlock_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
+bool warlock_t::affliction() const
+{ return specialization() == WARLOCK_AFFLICTION; }
 
-  const warlock_td_t* td = get_target_data( target );
+bool warlock_t::demonology() const
+{ return specialization() == WARLOCK_DEMONOLOGY; }
 
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    if ( talents.haunt.ok() )
-      m *= 1.0 + td->debuffs.haunt->check_value();
+bool warlock_t::destruction() const
+{ return specialization() == WARLOCK_DESTRUCTION; }
 
-    if ( talents.shadow_embrace.ok() || talents.improved_haunt.ok() )
-      m *= 1.0 + td->debuffs.shadow_embrace->check_stack_value();
-  }
+bool warlock_t::diabolist() const
+{ return has_hero_tree( HERO_DIABOLIST ); }
 
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    if ( talents.eradication.ok() )
-      m *= 1.0 + td->debuffs.eradication->check_value();
+bool warlock_t::hellcaller() const
+{ return has_hero_tree( HERO_HELLCALLER ); }
 
-    if ( talents.pyrogenics.ok() && td->debuffs.pyrogenics->has_common_school( school ) )
-      m *= 1.0 + td->debuffs.pyrogenics->check_value();
-  }
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    if ( talents.fel_sunder.ok() )
-      m *= 1.0 + td->debuffs.fel_sunder->check_stack_value();
-  }
-
-  if ( hero.cloven_souls.ok() && td->debuffs.cloven_soul->check() )
-    m *= 1.0 + hero.cloven_soul_debuff->effectN( 1 ).percent();
-
-  return m;
-}
-
-double warlock_t::composite_player_multiplier( school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_multiplier( school );
-
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    m *= 1.0 + buffs.rolling_havoc->check_stack_value();
-  }
-
-  return m;
-}
-
-double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
-{
-  double m = parse_player_effects_t::composite_player_pet_damage_multiplier( s, guardian );
-
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    // 2022-11-27 Rolling Havoc is missing the aura for guardians
-    if ( talents.rolling_havoc.ok() && !guardian )
-      m *= 1.0 + buffs.rolling_havoc->check_stack_value();
-    
-    if ( !guardian && talents.summoners_embrace.ok() )
-      m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
-  
-    if ( hero.xalans_ferocity.ok() )
-      m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent() +
-           warlock_base.destruction_warlock->effectN( guardian ? 19 : 18 ).percent();
-
-    if ( hero.xalans_cruelty.ok() )
-      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent() +
-           warlock_base.destruction_warlock->effectN( guardian ? 22 : 20 ).percent();
-  }
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    // Renormalize to use the guardian effect when appropriate, in case the values are ever different
-    if ( !guardian )
-      m *= 1.0 + cache.mastery_value();
-    else
-      m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
-
-    if ( !guardian && talents.rune_of_shadows.ok() )
-      m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
-
-    if ( !guardian && sets->has_set_bonus( WARLOCK_DEMONOLOGY, TWW1, B2 ) )
-      m *= 1.0 + tier.hexflame_demo_2pc->effectN( 1 ).percent();
-  }
-
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    // 2024-07-06 Summoner's Embrace only affects main pet
-    if ( !guardian && talents.summoners_embrace.ok() )
-      m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
-
-    if ( hero.xalans_ferocity.ok() )
-      m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 5 : 3 ).percent();
-
-    if ( hero.xalans_cruelty.ok() )
-      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 2 : 5 ).percent();
-  }
-
-  if ( hero.flames_of_xoroth.ok() )
-    m *= 1.0 + hero.flames_of_xoroth->effectN( guardian ? 3 : 4 ).percent();
-
-  if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
-    m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
-
-  return m;
-}
+bool warlock_t::soul_harvester() const
+{ return has_hero_tree( HERO_SOUL_HARVESTER ); }
 
 double warlock_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
 {
   double m = parse_player_effects_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
-  const warlock_td_t* td = get_target_data( target );
-
-  if ( specialization() == WARLOCK_AFFLICTION )
+  if ( demonology() )
   {
-    if ( talents.haunt.ok() && td->debuffs.haunt->check() )
-      m *= 1.0 + td->debuffs.haunt->data().effectN( guardian ? 4 : 3 ).percent();
-
-    if ( talents.shadow_embrace.ok() || talents.improved_haunt.ok() )
-      m *= 1.0 + td->debuffs.shadow_embrace->check_stack_value();
-
-    if ( talents.infirmity.ok() && !guardian )
-      m *= 1.0 + td->debuffs.infirmity->check_stack_value(); // Guardian effect is missing from spell data. Last checked 2024-07-07
-  }
-
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    if ( talents.eradication.ok() )
-      m *= 1.0 + td->debuffs.eradication->check_value();
-  }
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
-    if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
-      m *= 1.0 + td->debuffs.fel_sunder->check_stack_value();
-  }
-
-  if ( hero.cloven_souls.ok() && td->debuffs.cloven_soul->check() )
-    m *= 1.0 + hero.cloven_soul_debuff->effectN( guardian ? 3 : 2 ).percent();
-
-  return m;
-}
-
-double warlock_t::composite_spell_crit_chance() const
-{
-  double m = parse_player_effects_t::composite_spell_crit_chance();
-
-  m += talents.demonic_tactics->effectN( 1 ).percent();
-
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
-    m += talents.backlash->effectN( 1 ).percent();
-
-  return m;
-}
-
-double warlock_t::composite_melee_crit_chance() const
-{
-  double m = parse_player_effects_t::composite_melee_crit_chance();
-
-  if ( specialization() == WARLOCK_DESTRUCTION && talents.backlash.ok() )
-    m += talents.backlash->effectN( 1 ).percent();
-
-  return m;
-}
-
-double warlock_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-{
-  double m = parse_player_effects_t::composite_player_critical_damage_multiplier( s );
-
-  if ( specialization() == WARLOCK_DEMONOLOGY && talents.demonic_brutality.ok() )
-    m *= 1.0 + talents.demonic_brutality->effectN( 1 ).percent();
-
-  return m;
-}
-
-double warlock_t::composite_mastery() const
-{
-  double m = parse_player_effects_t::composite_mastery();
-
-  if ( talents.master_summoner.ok() )
-    m += talents.master_summoner->effectN( 3 ).base_value();
-
-  return m;
-}
-
-double warlock_t::composite_rating_multiplier( rating_e r ) const
-{
-  double m = parse_player_effects_t::composite_rating_multiplier( r );
-
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      m *= 1.0 + talents.demonic_tactics->effectN( 2 ).percent();
-      break;
-    default:
-      break;
+    // TOCHECK: Fel Sunder lacks guardian effect, so only player and main pet is benefitting (bug?). Last checked 2025-09-23
+    if ( !bugs && guardian && talents.fel_sunder.ok() )
+      m *= 1.0 + get_target_data( target )->debuffs.fel_sunder->check_stack_value();
   }
 
   return m;
-}
-
-// Note: Level is checked to be >=27 by the function calling this. This is technically wrong for warlocks due to
-// a missing level requirement in data, but correct generally.
-double warlock_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  if ( attr == ATTR_INTELLECT )
-    return warlock_base.nethermancy->effectN( 1 ).percent();
-
-  return 0.0;
 }
 
 static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
@@ -785,7 +592,7 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
     return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
-  if ( pet_name == "felguard" && specialization() == WARLOCK_DEMONOLOGY )
+  if ( pet_name == "felguard" && demonology() )
     return new pets::demonology::felguard_pet_t( this, pet_name );
 
   return nullptr;
@@ -1021,20 +828,88 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 ------------------------------------------------------------- */
 void warlock_t::parse_player_effects()
 {
+  // Shared
+  parse_effects( warlock_base.nethermancy ); // 86091
+  parse_effects( talents.demonic_tactics ); // 452894
+  parse_effects( talents.demonic_embrace ); // 288843
+  parse_effects( talents.wrathful_minion ); // 386864
+  parse_effects( talents.demonic_fortitude ); // 386617
+  if ( !demonology() )
+  {
+    parse_effects( talents.summoners_embrace ); // 453105
+    parse_effects( buffs.grimoire_of_sacrifice ); // 196099
+  }
+
   // Affliction
-  parse_effects( warlock_base.affliction_warlock );
+  if ( affliction() )
+  {
+    parse_effects( warlock_base.affliction_warlock ); // 137043
+    parse_effects( warlock_base.potent_afflictions ); // 77215
+
+    // Affliction Debuffs/DoTs
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::shadow_embrace ), talents.drain_soul.ok() ? talents.shadow_embrace_debuff_ds : talents.shadow_embrace_debuff_sb ); // 32390 / 453206
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::infirmity ), talents.infirmity_debuff ); // 458219
+  }
 
   // Demonology
-  parse_effects( warlock_base.demonology_warlock );
+  if ( demonology() )
+  {
+    parse_effects( warlock_base.demonology_warlock ); // 137044
+    parse_effects( warlock_base.master_demonologist ); // 77219
+    parse_effects( talents.rune_of_shadows ); // 453744
+    parse_effects( talents.master_summoner ); // 1240189
+    parse_effects( talents.demonic_brutality ); // 453908
+    parse_effects( tier.hexflame_demo_2pc ); // 453644 // TWW1
+
+    // Demonology Debuffs/DoTs
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::fel_sunder ), talents.fel_sunder_debuff, talents.fel_sunder ); // 387402 (m: 387399)
+  }
 
   // Destruction
-  parse_effects( warlock_base.destruction_warlock );
+  if ( destruction() )
+  {
+    parse_effects( warlock_base.destruction_warlock ); // 137046
+    parse_effects( talents.backlash ); // 387384
+
+    // Destruction Buffs
+    parse_effects( buffs.rolling_havoc, talents.rolling_havoc ); // 387570 (m: 387569)
+
+    // Destruction Debuffs/DoTs
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::eradication ), talents.eradication_debuff, talents.eradication ); // 196414 (m: 196412)
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::pyrogenics ), talents.pyrogenics_debuff, talents.pyrogenics ); // 387096 (m: 387095)
+  }
 
   // Diabolist
+  if ( diabolist() )
+  {
+    parse_effects( hero.flames_of_xoroth ); // 429657
+
+    // Diabolist Buffs
+    parse_effects( buffs.abyssal_dominion ); // 456323
+
+    // Diabolist Debuffs/DoTs
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::cloven_soul ), hero.cloven_soul_debuff ); // 434424
+  }
 
   // Hellcaller
+  if ( hellcaller() )
+  {
+    if ( destruction() )
+    {
+      parse_effects( hero.xalans_ferocity, warlock_base.destruction_warlock ); // 440044 (m: 137046)
+      parse_effects( hero.xalans_cruelty, warlock_base.destruction_warlock ); // 440040 (m: 137046)
+    }
+    else
+    {
+      parse_effects( hero.xalans_ferocity ); // 440044
+      parse_effects( hero.xalans_cruelty ); // 440040
+    }
+    parse_effects( hero.illhoofs_design ); // 440070
+  }
 
   // Soul Harvester
+
 }
 
 /* ----------------------------------------------------------
@@ -1047,21 +922,113 @@ void warlock_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  // Shared
+  action.apply_affecting_aura( talents.wrathful_minion ); // 386864
+  action.apply_affecting_aura( talents.demonic_inspiration ); // 386858  // The attack speed increase to the main pet is a Dummy effect
+  action.apply_affecting_aura( talents.sargerei_technique ); // 405955  // Sargerei Technique appears to double dip for Infernal Bolt due to Destro/Demo modifier
+  // Only Socrethars Guile effects #1 and #4 are enabled for Affliction, and they are handled directly in agony_t
+  if ( !affliction() )
+    action.apply_affecting_aura( talents.socrethars_guile ); // 405936
+  if ( !demonology() )
+    action.apply_affecting_aura( talents.summoners_embrace ); // 453105
+
   // Affliction
-  action.apply_affecting_aura( warlock_base.affliction_warlock );
+  if ( affliction() )
+  {
+    action.apply_affecting_aura( warlock_base.affliction_warlock ); // 137043
+    action.apply_affecting_aura( warlock_base.agony_2 ); // 231792
+    action.apply_affecting_aura( talents.writhe_in_agony ); // 196102
+    action.apply_affecting_aura( talents.dark_virtuosity ); // 405327
+    action.apply_affecting_aura( talents.absolute_corruption ); // 196103
+    action.apply_affecting_aura( talents.siphon_life ); // 452999
+    action.apply_affecting_aura( talents.kindled_malice ); // 405330  // 2025-09-21 This is still affecting SoC
+    action.apply_affecting_aura( talents.improved_shadow_bolt ); // 453080
+    action.apply_affecting_aura( talents.sacrolashs_dark_strike ); // 386986
+    action.apply_affecting_aura( talents.improved_haunt ); // 458034
+    action.apply_affecting_aura( talents.malediction ); // 453087
+    action.apply_affecting_aura( talents.malevolent_visionary ); // 387273
+    action.apply_affecting_aura( talents.contagion ); // 453096
+    action.apply_affecting_aura( talents.creeping_death ); // 264000
+    action.apply_affecting_aura( talents.xavius_gambit ); // 416615
+    action.apply_affecting_aura( talents.perpetual_unstability ); // 459376
+    action.apply_affecting_aura( talents.improved_malefic_rapture ); // 454378
+    action.apply_affecting_aura( tier.hexflame_aff_2pc ); // 453643 // TWW1
+  }
 
   // Demonology
-  action.apply_affecting_aura( warlock_base.demonology_warlock );
+  if ( demonology() )
+  {
+    action.apply_affecting_aura( warlock_base.demonology_warlock ); // 137044
+    action.apply_affecting_aura( talents.spiteful_reconstitution ); // 428394
+    action.apply_affecting_aura( talents.rune_of_shadows ); // 453744
+    action.apply_affecting_aura( talents.imperator ); // 416230
+    action.apply_affecting_aura( talents.shadow_invocation ); // 422054
+    action.apply_affecting_aura( talents.master_summoner ); // 1240189
+    action.apply_affecting_aura( talents.impending_doom ); // 455587
+    action.apply_affecting_aura( tier.hexflame_demo_2pc ); // 453644 // TWW1
+  }
 
   // Destruction
-  action.apply_affecting_aura( warlock_base.destruction_warlock );
+  if ( destruction() )
+  {
+    action.apply_affecting_aura( warlock_base.destruction_warlock ); // 137046
+    action.apply_affecting_aura( talents.improved_conflagrate ); // 231793
+    action.apply_affecting_aura( talents.scalding_flames ); // 388832
+    action.apply_affecting_aura( talents.explosive_potential ); // 388827
+    action.apply_affecting_aura( talents.blistering_atrophy ); // 456939
+    action.apply_affecting_aura( talents.emberstorm ); // 454744
+    action.apply_affecting_aura( talents.raging_demonfire ); // 387166
+    action.apply_affecting_aura( talents.demonfire_mastery ); // 456946
+    action.apply_affecting_aura( talents.devastation ); // 454735
+    action.apply_affecting_aura( talents.ruin ); // 387103
+    action.apply_affecting_aura( talents.improved_chaos_bolt ); // 456951
+    action.apply_affecting_aura( tier.hexflame_destro_2pc ); // 453647
+  }
 
   // Diabolist
+  if ( diabolist() )
+  {
+    action.apply_affecting_aura( hero.flames_of_xoroth ); // 429657
+    action.apply_affecting_aura( hero.abyssal_dominion ); // 429581
+  }
 
   // Hellcaller
+  if ( hellcaller() )
+  {
+    if ( destruction() )
+    {
+      action.apply_affecting_aura( hero.xalans_ferocity, warlock_base.destruction_warlock ); // 440044 (m: 137046)
+      action.apply_affecting_aura( hero.xalans_cruelty, warlock_base.destruction_warlock ); // 440040 (m: 137046)
+    }
+    else
+    {
+      action.apply_affecting_aura( hero.xalans_ferocity ); // 440044
+      action.apply_affecting_aura( hero.xalans_cruelty ); // 440040
+    }
+    action.apply_affecting_aura( hero.hatefury_rituals ); // 440048
+    action.apply_affecting_aura( hero.bleakheart_tactics ); // 440051
+
+    // Effects #2 and #4 of Mark of Xavius are disabled for Affliction ( and effect #1 is handled in agony_t )
+    if ( destruction() )
+      action.apply_affecting_aura( hero.mark_of_xavius ); // 440046
+
+    // NOTE: There are two effects in 'warlock_base.affliction_warlock' that modify Mark of Perotharn, but they cancel each other out
+    // In any case, currently `action.apply_affecting_aura` can't handle two modifier effects (from the same modifier spell) redirecting onto a single
+    action.apply_affecting_aura( hero.mark_of_perotharn ); // 440045
+    if ( bugs ) // Mark of Perotharn is being applied twice in what appears to be a bug
+      action.apply_affecting_aura( hero.mark_of_perotharn ); // 440045
+
+  }
 
   // Soul Harvester
-  action.apply_affecting_aura( sets->set( HERO_SOUL_HARVESTER, TWW3, B4 ) );
+  if ( soul_harvester() )
+  {
+    action.apply_affecting_aura( hero.necrolyte_teachings ); // 449620
+    action.apply_affecting_aura( hero.wicked_reaping ); // 449631
+    action.apply_affecting_aura( hero.quietus ); // 449634
+    action.apply_affecting_aura( hero.sataiels_volition ); // 449637
+    action.apply_affecting_aura( tier.inquisitor_sh_4pc ); // 1236416
+  }
 }
 
 /* ----------------------------------------------------------
@@ -1072,20 +1039,27 @@ void warlock_t::apply_affecting_auras( action_t& action )
 ------------------------------------------------------------- */
 void warlock_t::apply_affecting_auras( buff_t& buff )
 {
+  // Shared
+
   // Affliction
-  buff.apply_affecting_aura( warlock_base.affliction_warlock );
+  if ( affliction() )
+    buff.apply_affecting_aura( warlock_base.affliction_warlock ); // 137043
 
   // Demonology
-  buff.apply_affecting_aura( warlock_base.demonology_warlock );
+  if ( demonology() )
+    buff.apply_affecting_aura( warlock_base.demonology_warlock ); // 137044
 
   // Destruction
-  buff.apply_affecting_aura( warlock_base.destruction_warlock );
+  if ( destruction() )
+    buff.apply_affecting_aura( warlock_base.destruction_warlock ); // 137046
 
   // Diabolist
 
   // Hellcaller
 
   // Soul Harvester
+  if ( soul_harvester() )
+    buff.apply_affecting_aura( hero.necrolyte_teachings ); // 449620
 }
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
@@ -1099,10 +1073,10 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
     {
       double chance = 0.0;
 
-      if ( specialization() == WARLOCK_AFFLICTION )
+      if ( affliction() )
         chance = rng_settings.succulent_soul_aff.setting_value;
 
-      if ( specialization() == WARLOCK_DEMONOLOGY )
+      if ( demonology() )
         chance = rng_settings.succulent_soul_demo.setting_value;
 
       if ( rng().roll( chance ) )

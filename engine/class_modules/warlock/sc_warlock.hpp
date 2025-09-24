@@ -108,22 +108,22 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast< warlock_td_t*>( t )->debuff )->check();
+        return std::invoke( d, static_cast< warlock_td_t*>( t )->debuffs )->check();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast< warlock_td_t*>( t )->debuff )->check() > 0;
+        return std::invoke( d, static_cast< warlock_td_t*>( t )->debuffs )->check() > 0;
       };
   }
   else if constexpr ( std::is_invocable_v<T, warlock_td_t::dots_t> )
   {
     if ( stack )
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast< warlock_td_t*>( t )->dot )->current_stack();
+        return std::invoke( d, static_cast< warlock_td_t*>( t )->dots )->current_stack();
       };
     else
       return [ d ]( actor_target_data_t* t ) {
-        return std::invoke( d, static_cast< warlock_td_t*>( t )->dot )->is_ticking();
+        return std::invoke( d, static_cast< warlock_td_t*>( t )->dots )->is_ticking();
       };
   }
   else
@@ -227,6 +227,8 @@ public:
     // Class Tree
 
     player_talent_t demonic_inspiration; // Primary pet attack speed increase
+    player_talent_t demonic_embrace;
+    player_talent_t demonic_fortitude;
     player_talent_t wrathful_minion; // Primary pet damage increase
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
@@ -282,7 +284,7 @@ public:
     player_talent_t cunning_cruelty; // Note: Damage formula in the tooltip indicates this is affected by Imp. Shadow Bolt and Sargerei Technique
     const spell_data_t* shadow_bolt_volley; // Proc chance is not listed on spell data. Appears to be 50% regardless of talent. Last checked 2024-07-07
     player_talent_t infirmity; // TOCHECK: Update to Beta on 2024-07-30 changed this to an AoE application, with some weird results (currently implemented)
-    const spell_data_t* infirmity_debuff;
+    const spell_data_t* infirmity_debuff; // Guardian effect is missing from spell data. Last checked 2024-07-07
 
     player_talent_t improved_haunt;
     player_talent_t malediction;
@@ -365,7 +367,7 @@ public:
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
-    const spell_data_t* fel_sunder_debuff;
+    const spell_data_t* fel_sunder_debuff;  // Fel Sunder lacks guardian effect, so only main pet is benefitting (bug?). Last checked 2024-07-14
 
     player_talent_t doom;
     const spell_data_t* doom_debuff;
@@ -399,6 +401,7 @@ public:
     const spell_data_t* infernal_presence;
     const spell_data_t* infernal_presence_dmg;
     player_talent_t flametouched;
+    const spell_data_t* ferocity_of_fharg_buff;
     player_talent_t immutable_hatred;
     const spell_data_t* immutable_hatred_proc;
 
@@ -565,6 +568,7 @@ public:
 
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;
+    player_talent_t illhoofs_design;
 
     player_talent_t mark_of_xavius;
     player_talent_t seeds_of_their_demise;
@@ -645,11 +649,20 @@ public:
 
     // Soul Harvester
     const spell_data_t* rampaging_demonic_soul;
+    const spell_data_t* inquisitor_sh_2pc;
+    const spell_data_t* inquisitor_sh_4pc;
 
     // Diabolist
     const spell_data_t* demonic_oculus;        // TWW3 Diabolist 2pc stacking buff
     const spell_data_t* eye_blast;             // TWW3 Diablist 2pc damage proc
     const spell_data_t* demonic_intelligence;  // TWW3 Diabolist 4pc stacking buff
+    const spell_data_t* inquisitor_db_2pc;
+    const spell_data_t* inquisitor_db_4pc;
+
+    // Hellcaller
+    const spell_data_t* maintained_withering;  // TWW Hellcaller 4pc spell buff
+    const spell_data_t* inquisitor_hc_2pc;
+    const spell_data_t* inquisitor_hc_4pc;
 
   } tier;
 
@@ -677,8 +690,7 @@ public:
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> malign_omen;
-    propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
-    propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
+    propagate_const<buff_t*> dark_harvest;
     propagate_const<buff_t*> umbral_lattice; // TWW1 4pc
     propagate_const<buff_t*> jackpot_affliction;
 
@@ -900,6 +912,7 @@ public:
   void reset() override;
   void create_options() override;
   void parse_player_effects();
+  const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
@@ -921,17 +934,7 @@ public:
   resource_e primary_resource() const override { return RESOURCE_MANA; }
   role_e primary_role() const override { return ROLE_SPELL; }
   stat_e convert_hybrid_stat( stat_e s ) const override;
-  double matching_gear_multiplier( attribute_e attr ) const override;
-  double composite_player_multiplier( school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
-  void invalidate_cache( cache_e ) override;
-  double composite_spell_crit_chance() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double composite_mastery() const override;
-  double composite_rating_multiplier( rating_e ) const override;
   void init_blizzard_action_list() override;
   void combat_begin() override;
   void init_assessors() override;
@@ -946,6 +949,31 @@ public:
   void apply_affecting_auras( buff_t& buff );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void feast_of_souls_gain();
+
+  bool affliction() const;
+  bool demonology() const;
+  bool destruction() const;
+  bool diabolist() const;
+  bool hellcaller() const;
+  bool soul_harvester() const;
+
+  template<set_bonus_type_e Tier, hero_tree_e Hero = HERO_NONE>
+  bool active_2pc() const
+  {
+    if constexpr ( Tier == TWW3 )
+      return sets->has_set_bonus( Hero, Tier, B2 );
+    else
+      return sets->has_set_bonus( specialization(), Tier, B2 );
+  }
+
+  template<set_bonus_type_e Tier, hero_tree_e Hero = HERO_NONE>
+  bool active_4pc() const
+  {
+    if constexpr ( Tier == TWW3 )
+      return sets->has_set_bonus( Hero, Tier, B4 );
+    else
+      return sets->has_set_bonus( specialization(), Tier, B4 );
+  }
 
   target_specific_t<warlock_td_t> target_data;
 
