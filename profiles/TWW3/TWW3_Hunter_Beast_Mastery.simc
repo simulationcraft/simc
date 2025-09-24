@@ -85,21 +85,21 @@ actions.trinkets+=/variable,name=damage_sync_active,value=1
 actions.trinkets+=/variable,name=damage_sync_remains,value=0
 actions.trinkets+=/use_items,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)|!variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot&(variable.buff_sync_remains>this_trinket.cooldown.duration%3&fight_remains>this_trinket.cooldown.duration+20|other_trinket.has_use_buff&other_trinket.cooldown.remains>variable.buff_sync_remains-15&other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains+45>fight_remains)|variable.stronger_trinket_slot!=this_trinket_slot&(other_trinket.cooldown.remains&(other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains>=20|other_trinket.cooldown.remains-5>=variable.buff_sync_remains&(variable.buff_sync_remains>this_trinket.cooldown.duration%3|this_trinket.cooldown.duration<fight_remains&(variable.buff_sync_remains+this_trinket.cooldown.duration>fight_remains)))|other_trinket.cooldown.ready&variable.buff_sync_remains>20&variable.buff_sync_remains<other_trinket.cooldown.duration%3)))|!this_trinket.has_use_buff&(this_trinket.cast_time=0|!variable.buff_sync_active)&(!this_trinket.is.junkmaestros_mega_magnet|buff.junkmaestros_mega_magnet.stack>10)&(!other_trinket.has_cooldown&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)|other_trinket.has_cooldown&(!other_trinket.has_use_buff&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|variable.damage_sync_remains>this_trinket.cooldown.duration%3&!this_trinket.is.junkmaestros_mega_magnet|other_trinket.cooldown.remains-5<variable.damage_sync_remains&variable.damage_sync_remains>=20)|other_trinket.has_use_buff&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)&(other_trinket.cooldown.remains>=20|other_trinket.cooldown.remains-5>variable.buff_sync_remains)))|fight_remains<25&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)
 
-head=,id=237646,bonus_id=1808,gem_id=213743,ilevel=723
-neck=,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213479/213479
-shoulder=,id=237644,ilevel=723
-back=,id=235499,bonus_id=12401/9893,enchant_id=7415,gem_id=238042,ilevel=730
-chest=,id=237649,enchant_id=7364,ilevel=723
-wrist=,id=219342,bonus_id=10421/9633/8902/12053/12050/1485/11303/8960/1808/8790,enchant_id=7385,gem_id=213479,crafted_stats=32/36
-hands=,id=237647,bonus_id=12675/1533/12361
-waist=,id=245965,bonus_id=1489/12352/12239,gem_id=213479,titan_disc_id=1236275
-legs=,id=219340,bonus_id=10421/9633/8902/12053/12050/1485/11304/8960/8792,enchant_id=7601,crafted_stats=32/40
-feet=,id=243308,bonus_id=13504,enchant_id=7424,ilevel=723
-finger1=,id=246281,bonus_id=8781,enchant_id=7340,gem_id=213479/213455,ilevel=723
-finger2=,id=221136,bonus_id=8781,enchant_id=7340,gem_id=213494/213470,ilevel=723
-trinket1=,id=242396,bonus_id=1533/12361/12239
-trinket2=,id=232541,ilevel=723
-main_hand=,id=185783,bonus_id=10035/12361/12239,enchant_id=7448
+head=midnight_heralds_cowl,id=237646,bonus_id=1808,ilevel=723,gem_id=213743
+neck=chrysalis_of_sundered_souls,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213479/213479
+shoulders=midnight_heralds_shadowguards,id=237644,ilevel=723
+back=reshii_wraps,id=235499,bonus_id=12401/9893,ilevel=730,gem_id=238045,enchant_id=7415
+chest=midnight_heralds_hauberk,id=237649,ilevel=723,enchant_id=7364
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/12053/12050/1485/11303/8960/1808/8790,gem_id=213479,enchant_id=7385,crafted_stats=32/36
+hands=glyphetched_gauntlets,id=219341,bonus_id=10421/9633/8902/12053/12050/1485/11303/8960/8790,crafted_stats=32/36
+waist=durable_information_securing_container,id=245965,bonus_id=1489/12352/12239,gem_id=213479,titan_disc_id=1236275
+legs=midnight_heralds_petticoat,id=237645,ilevel=723,enchant_id=7601
+feet=interlopers_chain_boots,id=243308,bonus_id=13504,ilevel=723,enchant_id=7424
+finger1=ring_of_the_panoply,id=246281,bonus_id=8781,ilevel=723,gem_id=213479/213455,enchant_id=7340
+finger2=devout_zealots_ring,id=221136,bonus_id=8781,ilevel=723,gem_id=213494/213470,enchant_id=7340
+trinket1=unyielding_netherprism,id=242396,bonus_id=1533/12361/12239
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=723
+main_hand=yasahm_the_riftbreaker,id=185783,bonus_id=10035/12361/12239,enchant_id=7448
 
 # Gear Summary
 # gear_ilvl=721.60
