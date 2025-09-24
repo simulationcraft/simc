@@ -3169,9 +3169,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     auto bit = flag % 32;
     if ( spell->_aura_interrupt[ byte ] & ( 1 << bit ) )
     {
-      auto it = _aura_interrupt_strings.find( flag + 1 );
+      auto it = _aura_interrupt_strings.find( flag );
       aura_int_str.emplace_back(
-        fmt::format( "{} ({})", it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag ) );
+        fmt::format( "{} ({})", it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag + 1 ) );
     }
   }
   if ( !aura_int_str.empty() )
