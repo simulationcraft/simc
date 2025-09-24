@@ -8778,8 +8778,8 @@ void monk_t::init_special_effect( special_effect_t & /*effect*/ )
 
 void monk_t::init_finished()
 {
-  base_t::init_finished();
   parse_player_effects();
+  base_t::init_finished();
 }
 
 // monk_t::reset ============================================================
