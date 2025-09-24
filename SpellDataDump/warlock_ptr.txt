@@ -201,7 +201,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 60
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Is Channelled (34), No AutoCast (AI) (49), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Not In Arena or Rated Battleground (144), Spell Haste Affects Periodic (173), Do Not Consume Resources (197), No Aura Log (202), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Channel Interrupt: Hostile Action Received (1), Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #2 (id=341456)   : Apply Aura (6) | Dummy (4)
@@ -306,7 +306,7 @@ Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effects: #1, #2), Agony (231792 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Rolling Agony (339481 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Socrethar's Guile (405936 effects: #1, #4), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Xavius (440046 effect#1), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Unstable Affliction (1219045 effect#4)
 Family Flags     : 10, 49
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.030151 | PvP Coefficient: 0.772727 | Target: Targeted Enemy (6)
@@ -336,7 +336,7 @@ Mechanic         : Charm
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 11
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Dismiss Pet First (32), No Threat (42), No AutoCast (AI) (49), Cannot cast on tapped (70), No Partial Immunity (139), Aura Bounce Fails Spell (157), Limit N (165), Allow On Charmed Targets (201), Taps immediately (215), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Glyph (49)
+Aura Interrupt   : Seamless Transfer (48)
 Effects          :
 #2 (id=327741)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -501,7 +501,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Annihilan's Bellow (429072 effects: #1, #2)
 Family Flags     : 35
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Release (28)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=1964)     : Apply Aura (6) | Fear (7)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
@@ -667,7 +667,7 @@ Mechanic         : Sleep
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 25
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Is Channelled (34), No Threat (42), Track Target in Channel (46), No AutoCast (AI) (49), Aura Stays After Combat (57), Name in Channel Bar (61), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
+Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Channel Interrupt: Damage (2), Action (3), Moving (4), Turning (5), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #2 (id=910452)   : Apply Aura (6) | Unknown(191)
@@ -691,7 +691,7 @@ Proc Chance      : 101%
 Family Flags     : 27
 Attributes       : Do Not Sheath (18), Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Allow Client Targeting (133), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (7)
+#1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #2 (id=910502)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -772,7 +772,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Family Flags     : 26
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Unknown (1), Hostile Action Received (2)
+Aura Interrupt   : Hostile Action Received (0), Damage (1)
 Effects          :
 #1 (id=3137)     : Apply Aura (6) | Invisibility (18)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -830,7 +830,7 @@ Labels           : 16: Class Spells
                  : 1825: Teachings of the Black Harvest (385881 effect#2)
 Family Flags     : 22
 Attributes       : Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), No Target Aura Icon (188), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=9364)     : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -1001,7 +1001,7 @@ Labels           : 16: Class Spells
 Triggered By     : Immolation (19483)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=11232)    : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=11232)    : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.55 | Radius: 0 - 12 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -1040,13 +1040,13 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1), Swift Artifice (4529
 Family Flags     : 56
 Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Only On Player (104), Not In Arena or Rated Battleground (144), Remove Entering Arena (162), Limit N (165), Enforce In Combat Ressurection Limit (279), Not In Arena (297), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=11684)    : Apply Aura (6) | Dummy (4) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#1 (id=11684)    : Apply Aura (6) | Dummy (4) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1
-#2 (id=11685)    : Trigger Spell (64): Soulstone | Attributes: Don't Fail Spell On Targeting Failure (21)
+#2 (id=11685)    : Trigger Spell (64): Soulstone | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 6203
-#3 (id=623469)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#3 (id=623469)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally Corpse (121)
-#4 (id=623470)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#4 (id=623470)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : Stores the soul of the target party or raid member, allowing resurrection upon death.$?a231811[ Also castable to resurrect a dead target.][] Targets resurrect with $3026s2% health and at least $3026s1% mana.
 Tooltip          : Soul stored by $@auracaster.
@@ -1121,13 +1121,13 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 36, 49
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Allow Spell Reflection (224), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Login (31)
+Aura Interrupt   : Leave World (19), Summon (30)
 Effects          :
 #1 (id=16910)    : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Targeted Enemy (6)
 #2 (id=16911)    : Apply Aura (6) | Periodic Damage (3): shadow every 12 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#3 (id=154322)   : Apply Aura (6) | Dummy (4) | Attributes: Compute Points Only At Cast Time (16)
+#3 (id=154322)   : Apply Aura (6) | Dummy (4) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Embeds a demon seed in the enemy target that will explode after $d, dealing $27285s1 Shadow damage to all enemies within $27285A1 yards and applying $?a445465[Wither][Corruption] to them.
 
@@ -1224,7 +1224,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Do Not Reset Comba
 Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-#2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.70423 | PvP Coefficient: 0.766667 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -1355,9 +1355,9 @@ Labels           : 16: Class Spells
 Family Flags     : 36
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Aura Never Bounces (148), Treat as Area Effect (175), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=175537)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=175537)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.816 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#2 (id=19796)    : Apply Aura (6) | Modify Healing Received% (118) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=19796)    : Apply Aura (6) | Modify Healing Received% (118) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Affected School(s): All
 #3 (id=319698)   : Dummy (3)
@@ -1388,7 +1388,7 @@ Mechanic         : Stun
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Darkfury (264874 effects: #1, #2)
 Family Flags     : 44
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=19880)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Enemy in Area (16)
@@ -1473,7 +1473,7 @@ Affecting Spells : Reap and Sow (236114 effect#1), Norgannon's Foresight (236431
 Triggered By     : Shadow Embrace (32388)
 Family Flags     : 31
 Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=22181)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -1983,7 +1983,7 @@ Proc Flags       : Magic Hostile Spell Taken
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Duplicitous Havoc (339890 effect#1), Gloom of Nathreza (429899 effect#2)
 Family Flags     : 20
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), Always Hit (114), Aura Never Bounces (148), Limit N (165), Taps immediately (215), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Enter Instance (45)
+Aura Interrupt   : Duel End (44)
 Effects          :
 #1 (id=68521)    : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Targeted Enemy (6)
@@ -2024,7 +2024,7 @@ Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Family Flags     : 49, 86
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), PvP Enabling (96), Not a Proc (105), Do Not Display Range (126), Owner Power Scaling (153), Do Not Display Duration (170), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=87492)    : School Damage (2): shadowflame | Attributes: Is Harmful (13), Area Effects Use Target Radius (18)
+#1 (id=87492)    : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.556876 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc105174
 
@@ -2106,7 +2106,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Felstorm (89751 effect#3)
 Family Flags     : 34
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=92676)    : Trigger Spell (64): Axe Toss
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 347008 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -2359,7 +2359,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Strength of Will (317138 effect#1), Dark Accord (386659 effect#1)
 Family Flags     : 54, 67
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Stunned (163), Allow While Fleeing (177), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Invulnerability (23), Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Enter World (22), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
@@ -2410,7 +2410,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Demon Skin (219272 effect#3), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 13
 Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Can't Crit (93), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=119448)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Current Target (25)
@@ -2632,7 +2632,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Fiendish Stride (386110 effects: #1, #2)
 Family Flags     : 61
 Attributes       : Not Shapeshifted (16), No Threat (42), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Damage Cancels Aura Interrupt (394), Ignore Damage Absorb (400), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Action (Delayed) (18), Standing (20), Falling (34)
+Aura Interrupt   : Mount (17), Leave World (19), Swimming (33)
 Effects          :
 #1 (id=123718)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25 | Target: Self (1)
@@ -2821,7 +2821,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cast When Learned (63), Allow Aura While Dead (116), Obsolete (364), Allow Class Ability Procs (416)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
                    Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
@@ -2849,7 +2849,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 108
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=126897)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self (1)
@@ -2872,7 +2872,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 108
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=126899)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | PvP Coefficient: 0.667 | Misc Value: 15 | Target: Self (1)
@@ -2942,7 +2942,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 126
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow Low Level Buff (67), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow Equip While Casting (209), Allow Spell Reflection (224), Allow While Charmed (261), Ignore Default Rated Battleground Restrictions (302), Allow Class Ability Procs (416)
-Aura Interrupt   : Direct Damage (26)
+Aura Interrupt   : Landing (25)
 Effects          :
 #2 (id=126958)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 893 | Target: Self (1)
@@ -3053,11 +3053,11 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1), Flashover (267115 ef
 Family Flags     : 121
 Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Not In Spellbook (143), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=133885)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#1 (id=133885)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38, 45, 65
-#2 (id=288652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (7)
+#2 (id=288652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38, 45, 65
@@ -3090,7 +3090,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Increased Fear Break Threshold (95677 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Always Hit (114), Can Proc From Procs (122), No Cast Log (128), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Nameplate Enemy Debuffs (426), Update Fall Speed After Aura Removal (447)
-Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
+Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #2 (id=907046)   : Apply Aura (6) | Unknown(191)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
@@ -3209,7 +3209,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 126
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow Low Level Buff (67), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow Equip While Casting (209), Allow Spell Reflection (224), Allow While Charmed (261), Ignore Default Rated Battleground Restrictions (302), Allow Class Ability Procs (416)
-Aura Interrupt   : Direct Damage (26)
+Aura Interrupt   : Landing (25)
 Effects          :
 #2 (id=140623)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 893 | Target: Self (1)
@@ -3267,7 +3267,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Increased Fear Break Threshold (95677 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 42
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Aura Stays After Combat (57), Always Hit (114), Can Proc From Procs (122), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
+Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #2 (id=168012)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -3286,7 +3286,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Family Flags     : 47
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Aura While Dead (116), AutoCast Off By Default (305), Obsolete (364), Allow Class Ability Procs (416)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
                    Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
@@ -3562,7 +3562,7 @@ Triggered By     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Is Harmful (13)
+#1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1625 | Target: Current Target (25)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
@@ -4029,7 +4029,7 @@ Real PPM         : 20 (Haste multiplier)
 Proc Flags       : Magic Hostile Spell, Periodic
 Triggered By     : Grimoire of Sacrifice (108503)
 Attributes       : No Immunities (29), No Threat (42), Require All Targets (58), No School Immunities (90), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Partial Immunity (139), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Can Attack ImmunePC (287), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=287830)   : Apply Aura (6) | Proc Trigger Spell (42): Grimoire of Sacrifice
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196100 | Target: Self (1)
@@ -4055,7 +4055,7 @@ Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Triggered By     : Grimoire of Sacrifice (196099)
 Family Flags     : 49, 116
 Attributes       : No Reflection (39), Do Not Display Range (126), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=287832)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.371875 | Target: Targeted Enemy (6)
@@ -4197,7 +4197,7 @@ Affecting Spells : Mastery: Master Demonologist (77219 effect#2), Affliction War
 Family Flags     : 46, 49
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=288084)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (18)
+#1 (id=288084)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.545531 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc196277
 
@@ -4414,7 +4414,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=288344)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=288344)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Target (63) -> at Enemy in Area (16)
 Description      : $@spelldesc196447
 
@@ -4780,7 +4780,7 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1), Malevolent Visionary
 Family Flags     : 90
 Attributes       : Bouncy Chain Missiles (146), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=302984)   : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=302984)   : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.3529 | PvP Coefficient: 0.740742 | Target: Targeted Enemy (6)
 Description      : Fires an eye beam that deals $s1 Shadow damage.
 
@@ -5099,7 +5099,7 @@ Duration         : 5 seconds
 Labels           : 86
                  : 293
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=322433)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
@@ -5193,7 +5193,7 @@ Max Targets      : 1
 Velocity         : 16 yards/sec
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42)
 Effects          :
-#1 (id=335689)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=335689)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc196447
 
@@ -5208,7 +5208,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Ignore Combat Timer (156), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore Target Requirements (181), Ignore Caster Requirements (184), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Ignore Sanctuary (263), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=338233)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=338233)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc196277
 
@@ -5237,7 +5237,7 @@ Duration         : 600 seconds
 Labels           : 88
                  : 293
 Attributes       : Aura Is Debuff (26), No Immunities (29), Remove Entering Arena (162)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=340514)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -5253,7 +5253,7 @@ Duration         : 25 seconds
 Labels           : 88
                  : 293
 Attributes       : No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=340518)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 108452 | Misc Value 2: 0xf77 | Target: at Area (87)
@@ -5857,9 +5857,9 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Triggered By     : Demonic Core (270171)
 Family Flags     : 82
 Attributes       : No Aura Cancel (31), Do Not Consume if Gained During Cast (79), Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=707410)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#1 (id=707410)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
@@ -5945,13 +5945,13 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
-#2 (id=708163)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=708163)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#3 (id=829801)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (7)
+#3 (id=829801)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
-#4 (id=1035176)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (7)
+#4 (id=1035176)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
@@ -6190,7 +6190,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=710846)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -6239,9 +6239,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), No Aura Cancel (31), Do Not Display Range (126), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=713522)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=713522)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10 | Target: Self (1)
-#2 (id=718907)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=718907)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 10 | Target: Self (1)
 Description      : When your Wild Imps expend all of their energy or are imploded, you have a $s1% chance to absorb their life essence, granting you a stack of Demonic Core. 
 
@@ -6341,7 +6341,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Allow Cast While Casting (135), Extra Initial Period (169), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=713714)   : Trigger Missiles (32): Bilescourge Bombers | Attributes: Position is facing relative (2)
+#1 (id=713714)   : Trigger Missiles (32): Bilescourge Bombers | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 267213 | Target: at Area (87)
 Description      : $@spelldesc267211
 
@@ -6685,7 +6685,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Aura Never Bounces (148), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=715022)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=715022)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.816 | Target: Targeted Enemy (6)
 #2 (id=715023)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24 | Target: Targeted Enemy (6)
@@ -6705,7 +6705,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Aura Never Bounces (148), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=715029)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=715029)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.632 | Target: Targeted Enemy (6)
 Description      : The Vilefiend rams its bladed head into the target, dealing $s1 Physical damage.
 
@@ -6992,7 +6992,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables
 Effects          :
 #1 (id=722785)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.68 | Target: Targeted Enemy (6)
-#2 (id=722786)   : School Damage (2): shadowflame | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=722786)   : School Damage (2): shadowflame | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.68 | Target: Targeted Enemy (6)
 Description      : The Void Terror unleashes a breath of Fire and Shadow at the target, dealing Shadowflame damage.
 
@@ -7026,13 +7026,13 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=722806)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=722806)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.85 | Target: Targeted Enemy (6)
-#2 (id=722807)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=722807)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.85 | Target: Targeted Enemy (6)
-#3 (id=722808)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#3 (id=722808)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.85 | Target: Targeted Enemy (6)
-#4 (id=722809)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#4 (id=722809)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.85 | Target: Targeted Enemy (6)
 Description      : The Shivarra stabs wildly at her target with all weapons at the same time, dealing physical damage.
 
@@ -7249,7 +7249,7 @@ Labels           : 16: Class Spells
                  : 1387
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=741103)   : Dummy (3) | Attributes: Always Hit (23)
+#1 (id=741103)   : Dummy (3) | Attributes: Always Hit (22)
                    Base Value: 15000 | Scaled Value: 15000 | Radius: 0 - 100 yards | Target: Source (22) -> Ally in Area (30)
 #2 (id=1096030)  : None (0)
                    Base Value: 10 | Scaled Value: 10
@@ -7281,7 +7281,7 @@ Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=746873)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -7613,7 +7613,7 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1), Calamitous Crescendo
 Family Flags     : 127
 Attributes       : Not Shapeshifted (16), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), Suppress Target Procs (113), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=814173)   : Dummy (3) | Attributes: Is Harmful (13)
+#1 (id=814173)   : Dummy (3) | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31625 | Radius: 0 - 100 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : Your damaging periodic effects from your spells erupt on all targets, causing $324540s1 Shadowflame damage per effect.
 Variables        : $affMastery=$?s77215[${1+0.01*$77215m1}][${1}]
@@ -7632,7 +7632,7 @@ Affecting Spells : Mastery: Potent Afflictions (77215 effect#2), Affliction Warl
 Family Flags     : 49, 73
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=814182)   : School Damage (2): shadowflame | Attributes: Is Harmful (13)
+#1 (id=814182)   : School Damage (2): shadowflame | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.459196 | Target: Targeted Enemy (6)
 Description      : $@spelldesc324536
 
@@ -7686,17 +7686,17 @@ Stacks           : 3 maximum
 Proc Chance      : 100%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Allow Cast While Casting (135), Do Not Display Duration (170), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=815488)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=815488)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Incinerate (29722), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 0, 38
-#2 (id=815492)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (7)
+#2 (id=815492)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
-#3 (id=872229)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#3 (id=872229)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.7 | Target: Self (1)
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
@@ -7726,7 +7726,7 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Extra Initial
 Effects          :
 #1 (id=816046)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
-#2 (id=816147)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12)
+#2 (id=816147)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=816151)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
@@ -7992,7 +7992,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Icon (60), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=830595)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=830595)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Demonbolt (264178)
                    Family Flags: 70
@@ -8317,7 +8317,7 @@ Duration         : Aura (infinite)
 Labels           : 931
 Triggered By     : Odr, Shawl of the Ymirjar (337163)
 Attributes       : No Aura Cancel (31), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=834996)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
@@ -8809,7 +8809,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Is Channelled (34), Spell Haste Affects Periodic (173), Not In Arena (297)
 Channel Interrupt: Hostile Action Received (1), Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Damage Channel Duration (15)
 Effects          :
-#1 (id=843806)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#1 (id=843806)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Begins a ritual that sacrifices a random participant to summon a doomguard. Requires the caster and 4 additional party members to complete the ritual.
 
@@ -8840,7 +8840,7 @@ Stacks           : 30 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Aura Points On Client (268)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=844505)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -8897,7 +8897,7 @@ Affecting Spells : Felstorm (89751 effect#3)
 Triggered By     : Axe Toss (89766)
 Family Flags     : 34
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=873981)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
@@ -8978,7 +8978,7 @@ Proc Chance      : 101%
 Triggered By     : Shard of Annihilation (364936), Unity (364939)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=890151)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=890151)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Decimating Bolt also increases the critical strike chance by $356342s1% and critical strike damage by $356342s2% for $?s137046[Incinerate]?s198590[Drain Soul]?a137044&!s137046[Demonbolt][Shadow Bolt].
 
@@ -9178,7 +9178,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=904275)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -9193,7 +9193,7 @@ Duration         : 30 seconds
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=904277)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -9229,7 +9229,7 @@ Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=904425)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=904425)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Every $s1 Soul Shards spent grants Ritual of Ruin, making your next Chaos Bolt or Rain of Fire consume no Soul Shards and have no cast time.
 
@@ -9430,7 +9430,7 @@ Affecting Spells : Mastery: Master Demonologist (77219 effect#2), Affliction War
 Family Flags     : 46, 49
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=981679)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (18)
+#1 (id=981679)   : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.264 | Target: Targeted Enemy (6)
 Description      : $@spelldesc196277
 
@@ -9462,7 +9462,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=996412)   : Apply Aura Party (Non-Random) (271) | Periodic Heal% (20): every 2 seconds
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
@@ -9590,7 +9590,7 @@ Cooldown         : 6 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1019464)  : Trigger Spell (64): Soulburn
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 387626 | Target: Self (1)
@@ -10144,7 +10144,7 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Extra Initial
 Effects          :
 #1 (id=1021492)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
-#2 (id=1021493)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12)
+#2 (id=1021493)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.6292 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=1021494)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Enemy (6)
@@ -10294,7 +10294,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1839: Pyrogenics (387095 effect#1)
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Aura Icon Only For Caster (Limit 10) (212)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1021661)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x4 | Target: Targeted Enemy (6)
@@ -10413,7 +10413,7 @@ Proc Flags       : Magic Hostile Spell
 Triggered By     : Burn to Ashes (387153)
 Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=1021756)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1021756)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Incinerate (29722), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38
@@ -10433,7 +10433,7 @@ Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1021761)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1021761)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Every $s1 Soul Shards spent grants Ritual of Ruin, making your next Chaos Bolt or Rain of Fire consume no Soul Shards and have its cast time reduced by $387157s3%.
 
@@ -10448,7 +10448,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1021762)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10456,7 +10456,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
-#3 (id=1021764)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#3 (id=1021764)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
@@ -10480,7 +10480,7 @@ Labels           : 16: Class Spells
                  : 1842: Master Ritualist (387165 effect#2)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1021767)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10659,7 +10659,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1021973)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Aura Points Stack (10)
+#1 (id=1021973)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc387279
 Tooltip          : Mastery increased by ${$W1}.1%.
@@ -10686,7 +10686,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Do Not Display Duration (170)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1022007)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
@@ -10722,7 +10722,7 @@ Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Effects          :
-#1 (id=1022098)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#1 (id=1022098)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rain of Fire (5740), Shadowburn (17877), Chaos Bolt (116858), Rain of Fire (1214467)
                    Family Flags: 7, 45, 124
@@ -10819,7 +10819,7 @@ Stacks           : 30 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Aura Points On Client (268)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1022155)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -11228,7 +11228,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Soulburn (385899)
 Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
-Aura Interrupt   : Standing (20), Jump (39)
+Aura Interrupt   : Leave World (19), Change Specialization (38)
 Effects          :
 #1 (id=1022531)  : Apply Aura (6) | Dummy (4)
                    Base Value: 140 | Scaled Value: 140 | Target: Self (1)
@@ -11925,9 +11925,9 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Sheath (18), No Threat (42), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1033743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1033743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
@@ -11960,7 +11960,7 @@ Labels           : 292
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Sheath (18), No Threat (42), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1034733)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12225,7 +12225,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1054105)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -12403,7 +12403,7 @@ Labels           : 16: Class Spells
 Stacks           : 8 maximum
 Proc Chance      : 101%
 Triggered By     : Warlock Destruction 10.1 Class Set 4pc (405576)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1074663)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12443,7 +12443,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 2557
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1074771)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12643,13 +12643,13 @@ Stacks           : 1 initial, 8 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.2 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
-#2 (id=1088758)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1088758)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.2143 | Target: Self (1)
 Description      : $@spelldesc417234
 Tooltip          : Your next Chaos Bolt deals $w1% increased damage or Rain of Fire deals $w2% increased damage.
@@ -12783,7 +12783,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1098516)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1098516)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1100069)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 423765 | Target: Self (1)
@@ -12904,7 +12904,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Triggered By     : Warlock Demonology 10.2 Class Set 4pc (422920)
-Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Disconnect (44)
+Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Enter Instance (43)
 Effects          :
 #1 (id=1099705)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 210910 | Misc Value 2: 0x1671 | Radius: 10 yards | Target: at Random (72)
@@ -12947,11 +12947,11 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Warlock Affliction 10.2 Class Set 4pc (422918)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1100011)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1100011)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1106415)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1106415)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 Description      : $@spelldesc422918
 Tooltip          : Malefic Rapture deals $w1% increased damage and extends the duration of your damage over time effects by ${$422918s1/1000} sec.
@@ -13225,7 +13225,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1109422)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13458,9 +13458,9 @@ Labels           : 16: Class Spells
                  : 5182: Warlock Hellcaller 11.2 Class Set 2pc (1236413 effect#1)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1114686)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1114686)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-#2 (id=1137633)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1137633)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Dark magic erupts from you and corrupts your soul for $442726d, causing enemies suffering from your Wither to take $446285s1 Shadowflame damage and increase its stack count by $s1.
 
@@ -13476,7 +13476,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4015
 Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1120165)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -13614,7 +13614,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121740)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13638,7 +13638,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121741)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13659,7 +13659,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4015
 Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121772)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -13681,7 +13681,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4015
 Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121774)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -13729,7 +13729,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1123506)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 434506 | Scaled Value: 434506 | Target: Self (1)
@@ -13907,7 +13907,7 @@ Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Triggered By     : Ruination (434635)
 Family Flags     : 49
 Effects          :
-#1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (13), Area Effects Use Target Radius (18)
+#1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.9194 | PvP Coefficient: 0.383333 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc434635
 
@@ -14291,7 +14291,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Threat (42), No Target Aura Icon (188), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1138134)  : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (7)
+#1 (id=1138134)  : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (6)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #2 (id=1143167)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14412,9 +14412,9 @@ Triggered By     : Wither (445468)
 Family Flags     : 1, 4, 49, 118
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1142358)  : Apply Aura (6) | Periodic Damage (3): shadowflame every 2 seconds | Attributes: Suppress Points Stacking (7)
+#1 (id=1142358)  : Apply Aura (6) | Periodic Damage (3): shadowflame every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.329493 | PvP Coefficient: 0.75 | Target: Targeted Enemy (6)
-#2 (id=1142389)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (7)
+#2 (id=1142389)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 7, 38, 45
@@ -14741,17 +14741,17 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Feast of Souls (450752)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Disconnect (44)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
-#1 (id=1149315)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1149315)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1149324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#2 (id=1149324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
                    Family Flags: 73
-#3 (id=1149325)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#3 (id=1149325)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-#4 (id=1149326)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#4 (id=1149326)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc449614
 Tooltip          : $?s137043[Malefic Rapture deals $s2% increased damage.][Hand of Gul'dan deals $s3% increased damage.]
@@ -14811,7 +14811,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1149444)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: soul_shard | Target: Self (1)
@@ -15276,7 +15276,7 @@ Proc Chance      : 101%
 Affecting Spells : Reap and Sow (236114 effect#1), Norgannon's Foresight (236431 effect#1)
 Family Flags     : 31
 Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1154875)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7f | Target: Targeted Enemy (6)
@@ -15339,7 +15339,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Aura Interrupt   : Standing (20), Invulnerability (23), Login (31), Disconnect (44)
+Aura Interrupt   : Leave World (19), Enter World (22), Summon (30), Enter Instance (43)
 Effects          :
 #1 (id=1155564)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 225493 | Misc Value 2: 0x1752 | Radius: 10 yards | Target: at Random (72)
@@ -15939,7 +15939,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Can Proc From Procs (122), Remove Entering Arena (162), Not On Player (167), Can Proc from Suppressed Caster Procs (385)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1159271)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Active Pet (5)
@@ -16207,7 +16207,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1162858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 0.75 | Misc Value: 10 | Target: Self (1)
@@ -16318,11 +16318,11 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Malign Omen (458041)
 Attributes       : Do Not Display Cast Time (441)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1163744)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1163744)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#2 (id=1163933)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1163933)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Your next Malefic Rapture deals $s1% increased damage and extends the duration of your damage over time effects and Haunt by $s2 sec.
 Tooltip          : Your next Malefic Rapture deals $s1% increased damage and extends the duration of your damage over time effects and Haunt by $s2 sec.
@@ -16352,7 +16352,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Ignore Line of Sight (66)
-Aura Interrupt   : Duel End (46)
+Aura Interrupt   : Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1164063)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
@@ -16590,7 +16590,7 @@ Spell Type       : Magic
 Range            : 50000 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), PvP Enabling (96), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Owner Power Scaling (153), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1176455)  : School Damage (2): shadowflame | Attributes: Is Harmful (13), Area Effects Use Target Radius (18)
+#1 (id=1176455)  : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0.3713 | Scaled Value: 0.3713 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc105174
 
@@ -16614,7 +16614,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Ignore Combat Timer (156), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore Target Requirements (181), Ignore Caster Requirements (184), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Ignore Sanctuary (263), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1176479)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1176479)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc196277
 
@@ -16626,7 +16626,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1176480)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1176480)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0.4744 | Scaled Value: 0.4744 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc196277
 
@@ -16638,7 +16638,7 @@ Spell Level      : 1
 Range            : 100 yards
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Can Target Untargetable (216), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=1176481)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1176481)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0.264 | Scaled Value: 0.264 (delta=0.05) | Target: Targeted Enemy (6)
 Description      : $@spelldesc196277
 
@@ -16653,7 +16653,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Remove Entering Arena (162)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1185772)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16924,7 +16924,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1202070)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1202070)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Target (63) -> at Enemy in Area (16)
 Description      : $@spelldesc196447
 
@@ -16973,7 +16973,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1202123)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17029,7 +17029,7 @@ Labels           : 16: Class Spells
                  : 4368: Warlock Affliction 11.1 Class Set 4pc (1215683 effect#1), Warlock Affliction 11.1 Class Set 4pc (1215683 effect#3)
 Proc Chance      : 100%
 Triggered By     : Warlock Affliction 11.1 Class Set 2pc (1215678)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1204434)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17229,7 +17229,7 @@ Labels           : 16: Class Spells
                  : 5061
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1236101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17286,7 +17286,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 5061
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1237461)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.33 | Target: Self (1)
@@ -17309,7 +17309,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1237636)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 245904 | Misc Value 2: 0x18d0 | Target: at Self (18)

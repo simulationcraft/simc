@@ -141,7 +141,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Mechanic         : Stun
 Attributes       : Is Ability (4), Do Not Display Range (126), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=14624)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -338,7 +338,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Allow While Stealthed (37), No Threat (42), Can Cause Silence (236), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=55584)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
@@ -532,9 +532,9 @@ Labels           : 16: Class Spells
 Affecting Spells : Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Wisdom of the Wall (452684 effect#1), Heart of the Jade Serpent (1238904 effect#2)
 Family Flags     : 6
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), No Aura Icon (60), Always Hit (114), No Aura Log (202), Aura Points On Client (268), Can Attack ImmunePC (287), Allow Class Ability Procs (416)
-Aura Interrupt   : Sheathing (11), Standing (20), Invulnerability (23), Login (31), Falling (34)
+Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon (30), Swimming (33)
 Effects          :
-#1 (id=110001)   : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (9)
+#1 (id=110001)   : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=128685)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 115057 | Scaled Value: 115057 | Target: Self (1)
@@ -574,7 +574,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #14, #22), Mistweaver Monk (
 Triggered By     : Cyclone Strikes (220358), Counterstrike (383800)
 Family Flags     : 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Aura Points On Client (268), Haste Affects Duration (273), Don't Cancel When All Effects are Disabled (353), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Damage Channel Duration (16), Ground (37)
+Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
 #1 (id=110004)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 107270 | Target: Self (1)
@@ -793,7 +793,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Bounding Agility (450520 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 7, 33
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), Allow Entering Arena (149), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416)
-Aura Interrupt   : Sheathing (11)
+Aura Interrupt   : Interacting (10)
 Effects          :
 #1 (id=128615)   : Apply Aura (6) | Unknown(373)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
@@ -891,7 +891,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12), Ancient Arts (344359 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 35, 87
 Attributes       : Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Active Defense (21), No Redirection (35), No Reflection (39), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), Completely Blocked (99), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Add Melee Hit Rating (191), Can Proc From Suppressed Target Procs (254), Hide Shapeshift Requirements (356), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
+Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=128740)   : Apply Aura (6) | Stun (12)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
@@ -935,7 +935,7 @@ Affecting Spells : Efficient Training (450989 effects: #1, #2), Wisdom of the Wa
 Family Flags     : 74
 Attributes       : Can't Crit (93), Active Threat (94), Not In Spellbook (143), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Do Not Treat As Area Effect (381), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=128814)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=128814)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc322101
 
@@ -1039,7 +1039,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Mon
 Family Flags     : 19, 67, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=128879)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=128879)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5328 | PvP Coefficient: 1.35 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Deals reduced damage to secondary targets.
 
@@ -1187,7 +1187,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : No Aura Cancel (31), No AutoCast (AI) (49), No Aura Icon (60), Always Line of Sight (185), No Aura Log (202), Doesn't Reset Swing Timer if Instant (217), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129077)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90 | Target: at Area (87)
@@ -1207,7 +1207,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Always Line of Sight (185), Doesn't Reset Swing Timer if Instant (217), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129080)   : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 0xc97 | Target: at Area (87)
@@ -1344,7 +1344,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : Allow While Sitting (27), Allow Aura While Dead (116), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
-Aura Interrupt   : Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=130020)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 4 | Target: Self (1)
@@ -1465,7 +1465,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 8 | Target: Self (1)
@@ -1520,33 +1520,33 @@ Affecting Spells : Focused Thunder (197895 effects: #1, #2), Heart of the Jade S
 Family Flags     : 31, 53
 Attributes       : Not Shapeshifted (16), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=131804)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (7)
+#1 (id=131804)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
                    Base Value: -9000 | Scaled Value: -9000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-#2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-#3 (id=289634)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1) | Attributes: Suppress Points Stacking (7)
+#3 (id=289634)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430), Renewing Mist (1238851)
                    Family Flags: 23
-#4 (id=1023532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (7)
+#4 (id=1023532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1 | Target: Self (1)
                    Family Flags: 107
-#5 (id=1023533)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (7)
+#5 (id=1023533)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Family Flags: 107
-#6 (id=1051316)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#6 (id=1051316)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 79
-#7 (id=1121583)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#7 (id=1121583)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Expel Harm (322101), Expel Harm (451968)
                    Family Flags: 95
-#8 (id=1121715)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#8 (id=1121715)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
 Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
 
@@ -1635,7 +1635,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
@@ -1721,7 +1721,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #6, #9, #14, #16), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #6, #12, #27), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Yu'lon's Knowledge (443625 effect#1), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 5, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell (23): Rushing Jade Wind every 0.75 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 148187 | Target: Self (1)
@@ -1981,9 +1981,9 @@ Mechanic         : Stun
 Affecting Spells : Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#12), Tiger Tail Sweep (264348 effect#1), Ancient Arts (344359 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 41
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=136665)   : Apply Aura (6) | Stun (12) | Attributes: Area Effects Use Target Radius (18)
+#1 (id=136665)   : Apply Aura (6) | Stun (12) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Mechanic: Stun | Target: Source (22) -> Enemy in Area (15)
 Description      : Knocks down all enemies within $A1 yards, stunning them for $d.
 Tooltip          : Stunned.
@@ -2086,7 +2086,7 @@ Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), W
 Triggered By     : Fists of Fury (113656)
 Family Flags     : 55
 Attributes       : Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=139326)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
@@ -2153,7 +2153,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 51
 Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2333,7 +2333,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=153848)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Misc Value 2: -29 | Target: Self (1)
@@ -2360,7 +2360,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Extra Initial Period (169), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=153852)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=153852)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 12 | Target: Self (1)
 #2 (id=1106587)  : Apply Aura (6) | Periodic Dummy (226): every 30 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -2384,7 +2384,7 @@ Affecting Spells : Mistweaver Monk (428200 effects: #11, #12), Wisdom of the Wal
 Family Flags     : 116
 Attributes       : Not Shapeshifted (16), No Threat (42), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=153853)   : Direct Heal% (136) | Attributes: Suppress Points Stacking (7)
+#1 (id=153853)   : Direct Heal% (136) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Drink a healing elixir, healing you for $s1% of your maximum health.
 
@@ -2432,7 +2432,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=154600)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -60 | Scaled Value: -60 | SP Coefficient: 0.25 | Misc Value: 0x7e | Target: Self (1)
@@ -2593,9 +2593,9 @@ Affecting Spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 e
 Family Flags     : 38
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Do Not Reset Combat Timers (81), Always Hit (114), Delay Combat Timer During Cast (211), Bypass Visibility Check (320), Allow Defense While Casting (337), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=156697)   : Create Area Trigger (179) | Attributes: Position is facing relative (2)
+#1 (id=156697)   : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1316 | Target: at Self (18)
-#2 (id=201318)   : Create Area Trigger (179) | Attributes: Position is facing relative (2)
+#2 (id=201318)   : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1315 | Target: at Self (18)
 #3 (id=739870)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -3054,7 +3054,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Only Outdoors (15), Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Not In Spellbook Until Learned (269), Transfer Mount Spell (360), Allow Class Ability Procs (416)
-Aura Interrupt   : Dismount (8), Sheathing (11), Attacking (14), Damage Channel Duration (16), Action (Delayed) (18), Leave World (21), Invulnerability (23), Ground (37), Jump (39), Disconnect (44), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Under Water (7), Interacting (10), Use Item (13), Shapeshifting (15), Mount (17), Stealth or Invisible (20), Enter World (22), Transform (36), Change Specialization (38), Enter Instance (43), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=159835)   : Apply Aura (6) | Unknown(201)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -3191,7 +3191,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : No Aura Cancel (31), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=166762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -3268,7 +3268,7 @@ Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Allow 
 Effects          :
 #1 (id=171558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
-#2 (id=171559)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=171559)   : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: at Target (63) -> at any in Area (8)
 Description      : $@spelldesc115098
 
@@ -3310,7 +3310,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Walk with the Ox (387219 effect#2), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=171856)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 0xd19 | Target: At Enemy (53)
@@ -3350,7 +3350,7 @@ Proc Chance      : 100%
 Proc Flags       : Death
 Triggered By     : Battle Fatigue (134732)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3779,7 +3779,7 @@ Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Gene
 Affecting Spells : Ordered Elements (451463 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 124
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Active Threat (94), Always Hit (114), Can Proc From Procs (122), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -60 | Scaled Value: -60 | Target: Self (1)
@@ -3832,7 +3832,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Allow Class Ability Procs (416)
-Aura Interrupt   : Action (4), Leave Combat (33)
+Aura Interrupt   : Moving (3), Falling (32)
 Effects          :
 #1 (id=181473)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 69792 | Misc Value 2: 0xe88 | Radius: 2 yards | Target: Back Left of Self (43)
@@ -3849,7 +3849,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Allow Class Ability Procs (416)
-Aura Interrupt   : Action (4), Leave Combat (33)
+Aura Interrupt   : Moving (3), Falling (32)
 Effects          :
 #1 (id=181475)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 69791 | Misc Value 2: 0xd3e | Radius: 2 yards | Target: Back Right of Self (42)
@@ -3923,7 +3923,7 @@ Duration         : 18 seconds
 Cooldown         : 15 seconds
 Labels           : 28
 Attributes       : Scales w/ Creature Level (19), Ignore Line of Sight (66), AI Primary Ranged Attack (206), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=193305)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 1000 | Scaled Value: 1000 | Radius: 0 - 50000 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -3936,7 +3936,7 @@ School           : Physical
 Spell Type       : Melee
 GCD              : 1 seconds
 Duration         : Aura (infinite)
-Aura Interrupt   : Action (4), Leave Combat (33)
+Aura Interrupt   : Moving (3), Falling (32)
 Effects          :
 #1 (id=195078)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -4349,7 +4349,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Gust of Mists (117907 effect#3), Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2, #31, #32), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Mending Proliferation (388510 effect#2), Save Them All (390105 effects: #1, #2), Jadefire Brand (395413 effect#1), Lesson of Doubt (400097 effect#1), Chi Harmony (423439 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Wisdom of the Wall (452684 effect#1), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2)
 Family Flags     : 48, 110
 Attributes       : Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=281510)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.001 | Target: Targeted Ally (21)
@@ -4384,7 +4384,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Transfer the Power (195300)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=286727)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -4531,7 +4531,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #9, #14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effects: #12, #27), Weapons of Order (311054 effect#1), Yu'lon's Knowledge (443625 effect#1), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Extra Initial Period (169), Spell Haste Affects Periodic (173), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell (23): Refreshing Jade Wind every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162530 | Target: Self (1)
@@ -4716,7 +4716,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -4928,7 +4928,7 @@ Affecting Spells : Lighter Than Air (449609 effect#3), Wisdom of the Wall (45268
 Family Flags     : 113
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Do Not Reset Combat Timers (81), Always Hit (114), Delay Combat Timer During Cast (211), Bypass Visibility Check (320), Allow Defense While Casting (337), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=292702)   : Create Area Trigger (179) | Attributes: Position is facing relative (2)
+#1 (id=292702)   : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5484 | Target: at Self (18)
 Description      : Conjures a cloud of hypnotic mist that slowly travels forward. Enemies touched by the mist fall asleep, Disoriented for $198909d.
 
@@ -4948,7 +4948,7 @@ Proc Chance      : 100%
 Mechanic         : Disorient
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Bypass Visibility Check (320), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Release (28)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=292723)   : Apply Aura (6) | Stun (12)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
@@ -4985,7 +4985,7 @@ Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=297830)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -5170,7 +5170,7 @@ Spell Type       : Melee
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), Hide Channel Bar (109), Extra Initial Period (169), Aura Points On Client (268), Hide Shapeshift Requirements (356)
-Aura Interrupt   : Damage Channel Duration (16), Ground (37)
+Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
 #1 (id=314485)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212141 | Target: Self (1)
@@ -5282,7 +5282,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Eluding Movements (184906 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 111
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=320348)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 243 | Scaled Value: 243 | Misc Value: 3 | Target: Self (1)
@@ -5406,7 +5406,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=328547)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
@@ -5471,7 +5471,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Family Flags     : 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=341557)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=341557)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
@@ -5528,7 +5528,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=342355)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=342355)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.24) | AP Coefficient: 0.35 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc383994
 
@@ -5659,7 +5659,7 @@ Mechanic         : Stun
 Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1), Heart of the Jade Serpent (1238904 effects: #2, #5, #6)
 Family Flags     : 55
 Attributes       : Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=350134)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
@@ -5694,7 +5694,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : The Emperor's Capacitor (235053)
 Attributes       : Include In Advanced Combat Log (72)
-Aura Interrupt   : Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=355234)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
@@ -6225,7 +6225,7 @@ Labels           : 16: Class Spells
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Leave Arena or Battleground (47)
+Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=727678)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self (1)
@@ -6262,7 +6262,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No AutoCast (AI) (49), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=737590)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self (1)
@@ -6330,9 +6330,9 @@ Labels           : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=749808)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=749808)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=749809)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287055
@@ -6465,7 +6465,7 @@ Proc Flags       : Yellow Melee
 Affecting Spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=790867)   : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -6763,7 +6763,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Eluding Movements (184906 effect#2), Lighter Than Air (449609 effect#3), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 53, 111
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=810261)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 270 | Scaled Value: 270 | Misc Value: 3 | Target: Self (1)
@@ -6885,7 +6885,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Brewmaster Monk (137023 effects: #14, #22), Mistweaver Monk (137024 effects: #6, #7), Windwalker Monk (137025 effect#12), Dance of Chi-Ji (286587 effect#3), Weapons of Order (311054 effect#1), Dance of Chi-Ji (325202 effect#1), Fast Feet (388809 effect#2), Crane Vortex (388848 effects: #1, #2), Leverage (408503 effects: #1, #2), Efficient Training (450989 effect#5), Ordered Elements (451462 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Don't Cancel When All Effects are Disabled (353), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Prevent Jumping During Precast (448)
-Aura Interrupt   : Damage Channel Duration (16), Ground (37)
+Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
 #1 (id=811180)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 107270 | Target: Self (1)
@@ -6983,7 +6983,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Triggered By     : Clash (324383), Clash (324384)
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Can Proc From Procs (122), No Attack Miss (249)
 Effects          :
-#1 (id=813916)   : Apply Aura (6) | Root (455) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=813916)   : Apply Aura (6) | Root (455) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 6 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 Description      : $@spelldesc128845
 Tooltip          : Rooted.
@@ -7117,7 +7117,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.8638 | Radius: 8 yards | Target: at Enemy in Area (16)
 #2 (id=815255)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: at Enemy in Area (16)
-#3 (id=815256)   : Apply Aura (6) | Modify Hit% (54) | Attributes: Players Only (15)
+#3 (id=815256)   : Apply Aura (6) | Modify Hit% (54) | Attributes: Players Only (14)
                    Base Value: -99 | Scaled Value: -99 | Radius: 8 yards | Target: at Enemy in Area (16)
 #4 (id=1024392)  : Apply Aura (6) | Proc Trigger Spell (42): Exploding Keg
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.2 | Trigger Spell: 388867 | Target: Self (1)
@@ -7206,7 +7206,7 @@ Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
-#1 (id=815341)   : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji | Attributes: Suppress Points Stacking (7)
+#1 (id=815341)   : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | Trigger Spell: 325202 | Target: Self (1)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal an additional $s1% damage.
 
@@ -7224,11 +7224,11 @@ Proc Chance      : 101%
 Triggered By     : Dance of Chi-Ji (325201)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
-#1 (id=815343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#1 (id=815343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (322729)
                    Family Flags: 63
-#2 (id=1222826)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1222826)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : $@spelldesc325201
 Tooltip          : Your next Spinning Crane Kick is free and deals an additional $325201s1% damage.
@@ -7368,7 +7368,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 62
 Attributes       : Is Ability (4), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=818073)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -7513,7 +7513,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Family Flags     : 103
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Treat as NPC AoE (250), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), AoE Can Hit Summoned Invis (341), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=818673)   : School Damage (2): nature | Attributes: Area Effects Use Target Radius (18)
+#1 (id=818673)   : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.65 | Target: Targeted Enemy (6)
 Description      : $@spelldesc327104
 
@@ -7775,7 +7775,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Bounce Fails Spell (157), Aura Unique Per Caster (189), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=832832)   : School Damage (2): nature | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=832832)   : School Damage (2): nature | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc323999
 
@@ -8199,7 +8199,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Last Emperor's Capacitor (337292)
 Attributes       : Include In Advanced Combat Log (72)
-Aura Interrupt   : Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=835237)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
@@ -8378,7 +8378,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Family Flags     : 103
 Attributes       : No Threat (42), Do Not Reset Combat Timers (81), Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=835311)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=835311)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.65 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 
 Name             : Clouded Focus (id=337343) [Spell Family (53), Passive] 
@@ -8747,7 +8747,7 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Family Flags     : 48, 112
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Include In Advanced Combat Log (72), Do Not Display Duration (170), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=867512)   : Apply Aura (6) | Periodic Heal (8): every 1.5 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=867512)   : Apply Aura (6) | Periodic Heal (8): every 1.5 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.35 | Radius: 0 - 8 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : $@spelldesc322118
 Tooltip          : Healing for $w1 every $t1 sec.
@@ -8923,9 +8923,9 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Family Flags     : 48, 103
 Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=871830)   : School Damage (2): nature | Attributes: Area Effects Use Target Radius (18)
+#1 (id=871830)   : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4 | Radius: 30 yards | Target: Front of Self (47) -> Line to Enemy (134)
-#2 (id=871831)   : Direct Heal (10) | Attributes: Area Effects Use Target Radius (18)
+#2 (id=871831)   : Direct Heal (10) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.91 | Radius: 30 yards | Target: Front of Self (47) -> Line to Ally (133)
 Description      : $@spelldesc327104
 
@@ -8977,7 +8977,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 61
 Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=874902)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 100 yards | Target: Targeted Ally (21)
@@ -9190,7 +9190,7 @@ Labels           : 16: Class Spells
                  : 931
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can't Crit (93), Ignore Damage Taken Modifiers (136), Aura Bounce Fails Spell (157), No Partial Resists (183), Aura Unique Per Caster (189), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=898194)   : School Damage (2): nature | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=898194)   : School Damage (2): nature | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc323999
 
@@ -9235,7 +9235,7 @@ Labels           : 292
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Only Proc From Class Abilities (415), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=903590)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -9253,13 +9253,13 @@ Labels           : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Only Proc From Class Abilities (415), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=903611)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=903611)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373)
                    Family Flags: 103
-#2 (id=914808)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (7)
+#2 (id=914808)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 22 | Scaled Value: 22 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373)
                    Family Flags: 103
@@ -9421,7 +9421,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Fallen Order (327004)
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=905417)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 20 yards | Target: Source (22) -> Ally in Area (30)
@@ -9440,7 +9440,7 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=905674)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: Source (22) -> Ally in Area (30)
@@ -9492,7 +9492,7 @@ Labels           : 292
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=910063)   : Apply Aura (6) | Unknown(145)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -9512,7 +9512,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=913271)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=913271)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373)
                    Family Flags: 103
@@ -9977,7 +9977,7 @@ Proc Flags       : Yellow Melee
 Affecting Spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#12), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1021812)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -10094,7 +10094,7 @@ Affecting Spells : Brewmaster Monk (137023 effect#16), Blackout Combo (228563 ef
 Family Flags     : 19
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1022525)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1022525)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.2 | PvP Coefficient: 1.35 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc383994
 
@@ -10223,7 +10223,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Wisdom of the Wall (452684 effect#1)
 Family Flags     : 61
 Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1023378)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 100 yards | Target: Targeted Ally (21)
@@ -10500,7 +10500,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Family Flags     : 103
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Treat as NPC AoE (250), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), AoE Can Hit Summoned Invis (341), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1023725)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1023725)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.65 | Target: Targeted Enemy (6)
 Description      : $@spelldesc388193
 
@@ -10563,9 +10563,9 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Family Flags     : 48, 103
 Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1023731)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1023731)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4 | Radius: 30 yards | Target: Front of Self (47) -> Line to Enemy (134)
-#2 (id=1023732)  : Direct Heal (10) | Attributes: Area Effects Use Target Radius (18)
+#2 (id=1023732)  : Direct Heal (10) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.91 | Radius: 30 yards | Target: Front of Self (47) -> Line to Ally (133)
 Description      : $@spelldesc388193
 
@@ -10624,7 +10624,7 @@ Stacks           : 50 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023752)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 10 | Target: Self (1)
@@ -10973,7 +10973,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1024254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#1 (id=1024254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
@@ -10994,7 +10994,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1024255)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1024255)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1051933)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
@@ -11017,7 +11017,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1024256)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1) | Attributes: Suppress Points Stacking (7)
+#1 (id=1024256)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430), Renewing Mist (1238851)
                    Family Flags: 23
@@ -11040,11 +11040,11 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1024264)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#1 (id=1024264)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Expel Harm (322101), Expel Harm (451968)
                    Family Flags: 95, 107
-#2 (id=1024265)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1024265)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : $@spelldesc388517
 Tooltip          : Your next Expel Harm transfers $s1% additional healing into damage and creates a Chi Cocoon absorbing $<newshield> damage.
@@ -11066,7 +11066,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
 Effects          :
-#1 (id=1024266)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (7)
+#1 (id=1024266)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
                    Base Value: -9000 | Scaled Value: -9000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
@@ -11345,7 +11345,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Always Line of Sight (185), Doesn't Reset Swing Timer if Instant (217), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1024526)  : Summon Guardian (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 196581 | Misc Value 2: 0x156d | Target: Self (1)
@@ -11379,7 +11379,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Not In Spellbook (143)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
@@ -11670,7 +11670,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Not an Action (92), No Aura Log (202), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1025622)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -11692,7 +11692,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1025853)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -11794,7 +11794,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1026080)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -11815,7 +11815,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1026081)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Targeted Ally (21)
@@ -11850,7 +11850,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23), Enter Combat (30), Summon (32), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Leave Combat (31), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1026709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -11969,7 +11969,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Triggered By     : Vivacious Vivification (388812)
 Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1031412)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 10 | Target: Self (1)
@@ -12259,7 +12259,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Last Emperor's Capacitor (392989)
 Attributes       : Include In Advanced Combat Log (72)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1031700)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.75 | Misc Value: 22 | Target: Self (1)
@@ -12350,7 +12350,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Family Flags     : 103
 Attributes       : No Threat (42), Do Not Reset Combat Timers (81), Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1031743)  : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1031743)  : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.8 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc392979
 
@@ -12485,9 +12485,9 @@ Duration         : 60 seconds
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1032620)  : Apply Aura (6) | Proc Trigger Spell (42): Thunderfist | Attributes: Suppress Points Stacking (7)
+#1 (id=1032620)  : Apply Aura (6) | Proc Trigger Spell (42): Thunderfist | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 393566 | Target: Self (1)
 Description      : $@spelldesc392985
 Tooltip          : Melee attacks deal an additional $393566s1 Nature damage.
@@ -12503,7 +12503,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Triggered By     : Thunderfist (393565)
 Family Flags     : 103
 Effects          :
-#1 (id=1032621)  : School Damage (2): nature | Attributes: Suppress Points Stacking (7)
+#1 (id=1032621)  : School Damage (2): nature | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.61 | Target: Targeted Enemy (6)
 Description      : $@spelldesc238131
 
@@ -12652,7 +12652,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1033276)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#1 (id=1033276)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 79
@@ -12769,9 +12769,9 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1035012)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1035012)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
@@ -12789,7 +12789,7 @@ Labels           : 292
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1035024)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
@@ -12805,7 +12805,7 @@ Labels           : 292
                  : 295
                  : 2317
 Attributes       : Do Not Sheath (18), No Threat (42), Do Not Display Range (126), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1035028)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12942,9 +12942,9 @@ Labels           : 16: Class Spells
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1037155)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1037155)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Target: Self (1)
 #2 (id=1037156)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287055
@@ -13123,7 +13123,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1043566)  : Apply Aura (6) | Set Action Button Spell Count (408): Sheilun's Gift
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 399491 | Target: Self (1)
@@ -13142,7 +13142,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1043587)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -13298,7 +13298,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Aura Bounce Fails Spell (157), No Partial Resists (183), Aura Unique Per Caster (189), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1044833)  : School Damage (2): nature | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1044833)  : School Damage (2): nature | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc400089
 
@@ -13312,7 +13312,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Aura Bounce Fails Spell (157), No Partial Resists (183), Aura Unique Per Caster (189), No Aura Log (202), Ignore Healing Modifiers (219), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1044836)  : Direct Heal (10) | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1044836)  : Direct Heal (10) | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : $@spelldesc400089
 
@@ -13328,7 +13328,7 @@ Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1045829)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13455,7 +13455,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2561
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1054269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13472,7 +13472,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2561
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1054270)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13489,7 +13489,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2561
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1054271)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13506,7 +13506,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2561
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1054272)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13626,7 +13626,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Monk Brewmaster 10.1 Class Set 4pc (405540)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1072670)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
@@ -13860,7 +13860,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Press the Advantage (418359)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1090593)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14051,7 +14051,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Triggered By     : Monk Windwalker 10.2 Class Set 2pc (422891)
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1101241)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.2 | Target: Self (1)
@@ -14138,7 +14138,7 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1106588)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14260,7 +14260,7 @@ Affecting Spells : Mistweaver Monk (428200 effects: #11, #12), Wisdom of the Wal
 Family Flags     : 116
 Attributes       : Not Shapeshifted (16), No Threat (42), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1109274)  : Direct Heal% (136) | Attributes: Suppress Points Stacking (7)
+#1 (id=1109274)  : Direct Heal% (136) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Drink a healing elixir, healing you for $s1% of your maximum health.
 
@@ -14277,7 +14277,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Triggered By     : Dance of the Wind (432181)
 Attributes       : Can Proc From Procs (122), Do Not Display Duration (170), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1120518)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
@@ -14502,7 +14502,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1138185)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -14542,7 +14542,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Triggered By     : August Dynasty (442818)
 Attributes       : Can Proc From Procs (122)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1138362)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.67 | Target: Self (1)
@@ -14880,7 +14880,7 @@ Labels           : 16: Class Spells
                  : 4586: Windwalker Monk (1222923 effect#1)
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1139298)  : Summon Guardian (28) | Attributes: Position is facing relative (2)
+#1 (id=1139298)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
 #2 (id=1139299)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
@@ -14924,7 +14924,7 @@ Labels           : 16: Class Spells
 Stacks           : 45 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1139306)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14946,7 +14946,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1139468)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -15028,7 +15028,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139585)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15045,7 +15045,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139588)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15062,7 +15062,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139589)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15079,7 +15079,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139590)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15184,7 +15184,7 @@ Labels           : 16: Class Spells
                  : 4586: Windwalker Monk (1222923 effect#1)
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1139673)  : Summon Guardian (28) | Attributes: Position is facing relative (2)
+#1 (id=1139673)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
 #2 (id=1139674)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
@@ -15412,7 +15412,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Not Moving (36)
+Aura Interrupt   : Ground (35)
 Effects          :
 #1 (id=1148865)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 258 | Target: Self (1)
@@ -15482,7 +15482,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Track Target in Cast (Player Only) (22), Attack on Charge to Unit (242), No Attack Dodge (247), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1149962)  : Charge (96) | Attributes: Always Hit (23)
+#1 (id=1149962)  : Charge (96) | Attributes: Always Hit (22)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 3 | Target: Targeted Enemy (6)
 Description      : $@spelldesc450154
 
@@ -15551,7 +15551,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Heal, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1150250)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -15760,7 +15760,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3023
 Attributes       : Aura Is Buff (140), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1150487)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15777,7 +15777,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3023
 Attributes       : Aura Is Buff (140), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1150495)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15816,7 +15816,7 @@ Labels           : 16: Class Spells
                  : 3023
                  : 3536
 Attributes       : Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1150504)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15865,7 +15865,7 @@ Labels           : 16: Class Spells
 Triggered By     : Healing Winds (450560)
 Attributes       : Not Shapeshifted (16), No Threat (42), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=1150547)  : Direct Heal% (136) | Attributes: Suppress Points Stacking (7)
+#1 (id=1150547)  : Direct Heal% (136) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc450560
 
@@ -15942,7 +15942,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Flow of Chi (450584)
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1150564)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
@@ -15963,7 +15963,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Flow of Chi (450586)
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1150567)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Self (1)
@@ -15984,7 +15984,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Flow of Chi (450581)
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1150570)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16691,7 +16691,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1151328)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -17008,7 +17008,7 @@ Labels           : 16: Class Spells
                  : 5669: Brewmaster Monk (137023 effect#8)
 Attributes       : Always Line of Sight (185)
 Effects          :
-#1 (id=1151723)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1151723)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6 | PvP Coefficient: 0.65 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
@@ -17205,7 +17205,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152076)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
@@ -17339,7 +17339,7 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful, Unknown 38
 Attributes       : Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1152143)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Misc Value 2: 3566 (Label) | Target: Self (1)
@@ -17362,7 +17362,7 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1152151)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Misc Value 2: 3567 (Label) | Target: Self (1)
@@ -17604,7 +17604,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152596)  : Apply Aura (6) | Override Auto-Attack with Ability (361): Dual Threat
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451839 | Target: Self (1)
@@ -17622,7 +17622,7 @@ Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (13
 Triggered By     : Dual Threat (451835)
 Family Flags     : 103
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152602)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.242 | Target: Targeted Enemy (6)
@@ -17641,9 +17641,9 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1152636)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#1 (id=1152636)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
@@ -17659,7 +17659,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Not an Action (92), No Aura Log (202)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152760)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -18068,7 +18068,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Monk Windwalker 11.0 Class Set 2pc (453626)
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1157060)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -18107,7 +18107,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Triggered By     : Monk Windwalker 11.0 Class Set 4pc (453625)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1157096)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -18236,7 +18236,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1158229)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18338,7 +18338,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1160525)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -18566,7 +18566,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1166591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18705,7 +18705,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Triggered By     : Chi Burst (460485)
 Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1168213)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18732,9 +18732,9 @@ Affecting Spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 e
 Family Flags     : 38
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Do Not Reset Combat Timers (81), Always Hit (114), Delay Combat Timer During Cast (211), Bypass Visibility Check (320), Allow Defense While Casting (337), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1169823)  : Create Area Trigger (179) | Attributes: Position is facing relative (2)
+#1 (id=1169823)  : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1316 | Target: at Self (18)
-#2 (id=1169824)  : Create Area Trigger (179) | Attributes: Position is facing relative (2)
+#2 (id=1169824)  : Create Area Trigger (179) | Attributes: Position is facing relative (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1315 | Target: at Self (18)
 #3 (id=1169825)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -18858,7 +18858,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1180337)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Ally (21)
@@ -18937,19 +18937,19 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Jade Empowerment (467316)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
-#1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (7)
+#2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.625 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-#3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (7)
+#3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-#4 (id=1200765)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#4 (id=1200765)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Self (1)
 Description      : $@spelldesc467316
 Tooltip          : Crackling Jade Lightning deals $w2% increased damage and cleaves to $m1 $lenemy:enemies; at $w4% effectiveness.
@@ -18983,7 +18983,7 @@ Triggered By     : Rushing Wind Kick (467307)
 Family Flags     : 39, 103
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | PvP Coefficient: 1.2 | Radius: 25 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc467307
 
@@ -19030,7 +19030,7 @@ Labels           : 16: Class Spells
 Stacks           : 300 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1186195)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -19106,7 +19106,7 @@ Affecting Spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing I
 Triggered By     : Druid Restoration 11.1 Class Set 2pc (1215502)
 Family Flags     : 118
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1198516)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.6 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
@@ -19168,7 +19168,7 @@ Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effe
 Triggered By     : Monk Mistweaver 11.1 Class Set 2pc (1215543)
 Family Flags     : 48
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1198567)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55223 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
@@ -19298,7 +19298,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Monk Windwalker 11.1 Class Set 2pc (1215717)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1199561)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -19323,7 +19323,7 @@ Labels           : 16: Class Spells
 Stacks           : 8 maximum
 Proc Chance      : 101%
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1199977)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -19512,7 +19512,7 @@ Attributes       : Can Proc From Procs (122), Only Proc From Class Abilities (41
 Effects          :
 #1 (id=1202484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1204822)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#2 (id=1204822)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
@@ -19704,7 +19704,7 @@ Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1233827)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -19769,7 +19769,7 @@ Labels           : 16: Class Spells
                  : 4586: Windwalker Monk (1222923 effect#1)
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1236270)  : Summon Guardian (28) | Attributes: Position is facing relative (2)
+#1 (id=1236270)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
 #2 (id=1236271)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
@@ -19852,7 +19852,7 @@ Stacks           : 6 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Attributes       : Can Proc From Procs (122)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1237292)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -19897,7 +19897,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Passive (6)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239880)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
@@ -19916,7 +19916,7 @@ Proc Chance      : 101%
 Affecting Spells : Celestial Brew (322507 effect#2), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Wisdom of the Wall (452684 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 42
 Attributes       : Periodic Can Crit (265), Aura Points On Client (268)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239912)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.66 | Target: Self (1)
@@ -19932,7 +19932,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Passive (6)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239954)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -19982,7 +19982,7 @@ Triggered By     : Stomp (1242352)
 Family Flags     : 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1241846)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1241846)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Stomps the ground, dealing $s1 Physical damage to your target. Deals reduced damage to secondary targets.
 

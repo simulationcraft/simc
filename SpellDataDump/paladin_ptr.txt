@@ -47,7 +47,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1), Retribution Paladin (412314 effects: #5, #6), Inspired Guard (469439 effect#2)
 Family Flags     : 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.75 | Misc Value: 0x7f | Target: Self (1)
@@ -104,7 +104,7 @@ Mechanic         : Invulnerable
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Light's Revocation (146956 effect#3), Uther's Counsel (378425 effect#1)
 Family Flags     : 22
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Remove Entering Arena (162), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=254)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -142,7 +142,7 @@ Mechanic         : Stun
 Affecting Spells : Improved Hammer of Justice (24188 effect#1), Fist of Justice (234299 effect#1)
 Family Flags     : 11
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Prevents Anim (50), Show Mechanic as Combat Text (213), Taps immediately (215), Can Cause Interrupt (235), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=362)      : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -173,7 +173,7 @@ Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4), Blessed Calling (469770 effect#3)
 Family Flags     : 7
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=378)      : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Targeted Raid Member (57)
@@ -299,7 +299,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#5), Sacrifice of the Just (384820 effect#1), Echoing Blessings (387801 effect#5), Blessed Calling (469770 effect#1)
 Family Flags     : 13
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Exclude Caster (51), Include In Advanced Combat Log (72), No Caster Aura Icon (187), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=2515)     : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 127 | Target: Targeted Raid Member (57)
@@ -349,7 +349,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Wrench Evil (339292 effects: #1, #2), Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#2)
 Family Flags     : 96
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Can Proc From Procs (122), Limit N (165), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Release (28)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #2 (id=200198)   : Apply Aura (6) | Unknown(191)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
@@ -404,7 +404,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Light's Countenance (469325 effect#1)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Prevents Anim (50), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Release (28), Exit Vehicle (41)
+Aura Interrupt   : Damage (Script) (27), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Targeted Enemy (6)
@@ -435,11 +435,11 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 23, 27, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=11347)    : School Damage (2): holy | Attributes: Chain from Initial Target (8), Enforce Line of Sight To Chain Targets (17)
+#1 (id=11347)    : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.671596 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #2 (id=1052464)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#3 (id=1124674)  : School Damage (2): holy | Attributes: Chain from Initial Target (8), Enforce Line of Sight To Chain Targets (17)
+#3 (id=1124674)  : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.503698 | PvP Coefficient: 1.2 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Judges the target, dealing $s1 $?s403664[Holystrike][Holy] damage$?s231663[, and causing them to take $197277s1% increased damage from your next Holy Power ability.][.]$?s315867[
 
@@ -516,7 +516,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2, #7), Retribution Palad
 Family Flags     : 27, 39, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combat Feedback When Usable (137), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), No Attack Parry (248), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=14488)    : School Damage (2): holy | Attributes: Chain from Initial Target (8), Enforce Line of Sight To Chain Targets (17)
+#1 (id=14488)    : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1067 | Target: Targeted Enemy (6)
 #2 (id=714232)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
@@ -560,7 +560,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Aura While Dead (116), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
                    Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
@@ -753,7 +753,7 @@ Category Cooldown: 120 seconds
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: Secondary Rating (-7)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -878,7 +878,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Improved Crusader Str
 Family Flags     : 47, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=25579)    : School Damage (2): physical | Attributes: Chain from Initial Target (8)
+#1 (id=25579)    : School Damage (2): physical | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.071 | Target: Targeted Enemy (6)
 #2 (id=25580)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
@@ -960,7 +960,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=46231)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Targeted Ally (21)
@@ -1118,29 +1118,29 @@ Triggered By     : Infusion of Light (53576)
 Family Flags     : 116
 Attributes       : No Aura Cancel (31), No Threat (42), Floating Combat Text On Cast (198), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=46860)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=46860)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-#2 (id=288923)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#2 (id=288923)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
-#3 (id=750484)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#3 (id=750484)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-#4 (id=1082791)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#4 (id=1082791)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-#5 (id=1084305)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#5 (id=1084305)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#6 (id=1224051)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#6 (id=1224051)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#7 (id=1224052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#7 (id=1224052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
-#8 (id=1224053)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#8 (id=1224053)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
@@ -1705,7 +1705,7 @@ Resource         : 3% Base Mana (0) (id=4031)
 Range            : 50 yards
 Duration         : 40 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Do Not Sheath (18), Is Channelled (34), No Threat (42), Track Target in Channel (46), Remove Entering Arena (162), Do Not Display Duration (170)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=88337)    : None (0)
                    Base Value: -100 | Scaled Value: -100
@@ -1729,7 +1729,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Royal Decree (340030 effect#1)
 Family Flags     : 81
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=88340)    : Apply Aura (6) | Change Model (56)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 46490 | Misc Value 2: 0x7 | Target: Self (1)
@@ -1912,7 +1912,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=115804)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 9 | Target: Self (1)
@@ -1953,7 +1953,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Rule of Law (214202 effect#1)
 Family Flags     : 67
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32): Light's Hammer
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: at Area (87)
@@ -2000,7 +2000,7 @@ Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered By     : Selfless Healer (85804)
 Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) (62), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave Arena or Battleground (47)
+Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=127449)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 10 | Target: Self (1)
@@ -2033,9 +2033,9 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94)
 Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.48 | Target: Targeted Enemy (6)
-#2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.50368 | PvP Coefficient: 0.899 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Ally in Area (31)
-#3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> at any in Area (8)
 Description      : $@spelldesc114165
 
@@ -2200,7 +2200,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Unknown (1), Action (4), Moving (5), Sheathing (11), Looting (13)
+Aura Interrupt   : Hostile Action Received (0), Moving (3), Turning (4), Interacting (10), Attacking (12)
 Effects          :
 #1 (id=149944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -2284,7 +2284,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenger's Valor (197561 effect#2), Avenger's Valor (290495 effect#2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#2)
 Family Flags     : 107
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171373)   : Apply Aura (6) | Dummy (4)
                    Base Value: 160 | Scaled Value: 160 | Target: Self (1)
@@ -2317,7 +2317,7 @@ Proc Chance      : 100%
 Proc Flags       : Death
 Triggered By     : Battle Fatigue (134732)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2897,7 +2897,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #21, #22), Rule of Law (214202 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=218583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 53651 | Target: Targeted Ally (21)
@@ -2990,7 +2990,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
 Attributes       : Aura Is Debuff (26), No Immunities (29), Ignore Line of Sight (66), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=218994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -3246,7 +3246,7 @@ Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs
 Effects          :
 #1 (id=263301)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self (1)
-#2 (id=873920)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=873920)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $@spelldesc321136
 Tooltip          : After ${$321136s1~-$w1} $?$w1<$w2[Shields][Shield] of the Righteous, your next Word of Glory is free.
@@ -3301,7 +3301,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Retribution Aura (317906 effect#1), Holy Bulwark (432496 effect#1), Sacred Weapon (432502 effect#1), Divine Reach (469476 effect#1)
 Family Flags     : 94
 Attributes       : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Use Shapeshift Bar (68), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
-Aura Interrupt   : Standing (20), Enter Combat (30)
+Aura Interrupt   : Leave World (19), Login (29)
 Effects          :
 #1 (id=265677)   : Apply Aura Raid (65) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Self (1)
@@ -3449,7 +3449,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Divine Bulwark (317907 effect#1), Consecration (344172 effect#1)
 Family Flags     : 20
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=274919)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
@@ -3691,9 +3691,9 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Triggered By     : Paladin Retribution 10.1 Class Set 2pc (405549)
 Family Flags     : 23, 27, 65
 Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (7)
+#1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Shield of the Righteous (415091), Hammer of Light (427453), Hammer of Light (429826), Hammer of Light (1235934)
                    Family Flags: 25, 29, 44, 49, 52, 88, 112
@@ -3983,7 +3983,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 930
 Attributes       : Do Not Sheath (18), Do Not Display Range (126), Spell Haste Affects Periodic (173), Aura Points On Client (268), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=295441)   : Apply Aura (6) | Periodic Trigger Spell (23): Tyr's Deliverance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 200653 | Target: Self (1)
@@ -4154,7 +4154,7 @@ Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effects: #4, #6), Blessed Calling (469770 effect#3)
 Family Flags     : 7, 28
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Invulnerability (23)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=301055)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Raid Member (57)
@@ -4315,7 +4315,7 @@ Mechanic         : Snare
 Affecting Spells : Consecrated Ground (204054 effect#2), Consecration in Flame (379022 effect#1)
 Family Flags     : 43
 Attributes       : Do Not Log Immune Misses (3), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353), Don't close loot window (379), Allow Class Ability Procs (416), Aura Always Shown (438)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=301438)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -4402,13 +4402,13 @@ Labels           : 74
                  : 293
 Attributes       : Do Not Sheath (18), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=303075)   : School Damage (2): holyfire | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=303075)   : School Damage (2): holyfire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.743 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#2 (id=324545)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=324545)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
-#3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.294 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Affected School(s): All
 Description      : Lash out with the |cFFFFCC99Ashbringer|r, dealing $sw1 Radiant damage$?a179546[, and an additional $o3 Radiant damage over $d,][] to all enemies within $a1 yd in front of you, and reducing movement speed by $s2% for $d.
@@ -4569,7 +4569,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Triggered By     : Divine Favor (460422)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Duel End (46), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=311378)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -4694,7 +4694,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 5 | Target: Self (1)
@@ -4779,7 +4779,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Divine Purpose (408458 effect#1)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=321878)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -5184,7 +5184,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=346921)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: -5 | Target: Self (1)
@@ -5307,7 +5307,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostil
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -5325,7 +5325,7 @@ Effects          :
                    Family Flags: 39
 #5 (id=741274)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#6 (id=1034545)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (7)
+#6 (id=1034545)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1038644)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
@@ -5758,7 +5758,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 27, 65, 68
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=478180)   : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=478180)   : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.2186 | PvP Coefficient: 0.727272 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=478181)   : Energize Power (30)
                    Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
@@ -5920,7 +5920,7 @@ Proc Flags       : White Melee
 Triggered By     : Zeal (269569)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=717940)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342) | Attributes: Suppress Points Stacking (7)
+#1 (id=717940)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=718542)   : Apply Aura (6) | Proc Trigger Spell (42): Zeal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 269937 | Target: Self (1)
@@ -6434,7 +6434,7 @@ Range            : 50000 yards
 Duration         : 12 seconds
 Mechanic         : Snare
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=755855)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -6499,7 +6499,7 @@ Affecting Spells : Paladin (137026 effect#8), Holy Paladin (137029 effect#15), F
 Family Flags     : 92
 Attributes       : Is Ability (4), No Threat (42), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=781692)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#1 (id=781692)   : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 5 | Scaled Value: 5 | Target: Current Target (25)
 #2 (id=791008)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 30 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -7703,7 +7703,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Reign of Endless Kings (337850)
 Attributes       : No Aura Cancel (31), No Threat (42), No Aura Icon (60), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=836079)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8426,9 +8426,9 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Triggered By     : Enkindled Spirit (339570)
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=842335)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=842335)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
                    Family Flags: 82
@@ -8767,7 +8767,7 @@ Range            : 50000 yards
 Max Targets      : 5
 Duration         : 10 seconds
 Attributes       : Aura Points On Client (268), Unknown (450)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=888768)   : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Misc Value 2: 0x64 | Target: Current Target (25)
@@ -9221,7 +9221,7 @@ Triggered By     : Quickened Invocation (379391)
 Family Flags     : 27, 46, 65, 92
 Attributes       : Is Ability (4), No Threat (42), Not a Proc (105), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1002104)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#1 (id=1002104)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 5 | Scaled Value: 5 | Target: Current Target (25)
 #2 (id=1002105)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 30 yards | Target: at Self (18) -> at Enemy in Area (16)
@@ -9380,7 +9380,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Triggered By     : Tyr's Enforcer (378285)
 Family Flags     : 65
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1006655)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.080421 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -9420,7 +9420,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 
 Triggered By     : Light of the Titans (378405)
 Family Flags     : 46
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Healing Modifiers (219), Aura Points On Client (268), Heal Prediction (280), Rolling Periodic (334), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1006803)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.6 | Target: Targeted Ally (21)
@@ -9509,7 +9509,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=1007494)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (7)
+#1 (id=1007494)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Judgment (220637)
                    Family Flags: 98
@@ -9577,7 +9577,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Faith in the Light (379043)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1007611)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -9714,9 +9714,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1015003)  : Apply Aura (6) | Unknown(205) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#1 (id=1015003)  : Apply Aura (6) | Unknown(205) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 32 | Target: Self (1)
-#2 (id=1049616)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#2 (id=1049616)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Reduces the cooldown of Judgment by ${$s1/-1000} sec and Crusader Strike by ${$s2/-1000} sec.
@@ -10011,11 +10011,11 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 27, 65, 68, 111, 112
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1015429)  : School Damage (2): holyfire | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1015429)  : School Damage (2): holyfire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.25 | PvP Coefficient: 0.67 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
-#2 (id=1015430)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#2 (id=1015430)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
-#3 (id=1015431)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#3 (id=1015431)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Refining Fire (469882), Hammer of Light (1235934), Lesser Weapon (1239282)
                    Family Flags: 65
@@ -10037,7 +10037,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Crusader's Resolve (380188)
 Attributes       : Aura Is Debuff (26), No Threat (42), Do Not Display Range (126), Cannot Be Stolen (134), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1016015)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
@@ -10592,7 +10592,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2753
 Triggered By     : Barricade of Faith (385726)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1019188)  : Apply Aura (6) | Modify Block% (51)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -10687,7 +10687,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Shield of the Righteous (415091)
                    Family Flags: 52
-#2 (id=1020879)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6) | Attributes: Suppress Points Stacking (7)
+#2 (id=1020879)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Shield of the Righteous (415091)
                    Family Flags: 52
@@ -11238,7 +11238,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Affecting Spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362), Unknown (450)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1023420)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Targeted Ally (21)
@@ -11287,7 +11287,7 @@ Category Cooldown: 45 seconds
 Affecting Spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114, 122
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1023426)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 16 (Label) | Misc Value 2: 0xb90 | Target: Targeted Ally (21)
@@ -11323,7 +11323,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Affecting Spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330), Newest Exclusive Complete (362), Unknown (450)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1023431)  : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Ally (21)
@@ -11388,7 +11388,7 @@ Category Cooldown: 45 seconds
 Affecting Spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Aura Points On Client (268), Not In Spellbook Until Learned (269), Newest Exclusive Complete (362)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1023440)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -11416,7 +11416,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Summer (388007)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023444)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Autumn overrides Blessing of Summer
                    Base Value: 388010 | Scaled Value: 388010 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11433,7 +11433,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Autumn (388010)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023446)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Winter overrides Blessing of Summer
                    Base Value: 388011 | Scaled Value: 388011 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11450,7 +11450,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Winter (388011), Blessing of Spring (388013)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023448)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Blessing of Spring overrides Blessing of Summer
                    Base Value: 388013 | Scaled Value: 388013 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11492,13 +11492,13 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal
 Affecting Spells : Sanctified Wrath (53376 effect#1), Avenging Wrath (384376 effects: #1, #2, #3)
 Family Flags     : 76
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=1025850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1025850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Refining Fire (469882), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282)
                    Family Flags: 46, 65
-#2 (id=1025851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (7)
+#2 (id=1025851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Beacon of Light (53563), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Beacon of Faith (156910), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Refining Fire (469882), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Hammer of Light (1235934), Lesser Bulwark (1239002), Lesser Weapon (1239276), Lesser Weapon (1239282)
                    Family Flags: 46, 65
@@ -11508,7 +11508,7 @@ Effects          :
                    Family Flags: 46, 65
 #4 (id=1033290)  : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=1033316)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344) | Attributes: Suppress Points Stacking (7)
+#5 (id=1033316)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #6 (id=1033317)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11516,7 +11516,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
-#8 (id=1033319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (7)
+#8 (id=1033319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Judgment (220637)
                    Family Flags: 98
@@ -11529,7 +11529,7 @@ Effects          :
 #12 (id=1033323) : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#13 (id=1034562) : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (7)
+#13 (id=1034562) : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Call upon the Light and gain 15 stacks of Divine Resolve, increasing your maximum health by $s11% and reducing your damage taken by $s12% per stack for $d. After ${$d-15} sec, you will begin to lose 1 stack per second, but each 3 Holy Power spent will delay the loss of your next stack by 1 sec.$?s53376&s384376[
 
@@ -11984,7 +11984,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Gift of the Golden Val'kyr (378279)
 Attributes       : No Aura Cancel (31), No Threat (42), No Aura Icon (60), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1031831)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12134,7 +12134,7 @@ Affecting Spells : Royal Decree (340030 effect#1)
 Triggered By     : Guardian of Ancient Kings (393108)
 Family Flags     : 81
 Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Remove Entering Arena (162)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42), Duel End (46)
+Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1033077)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -12257,7 +12257,7 @@ Stacks           : 9 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Is Buff (140), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1034628)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -12395,7 +12395,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1042461)  : Apply Aura (6) | Set Action Button Spell Count (408): Holy Light
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 82326 | Target: Self (1)
@@ -12412,7 +12412,7 @@ Labels           : 16: Class Spells
 Stacks           : 39 maximum
 Proc Chance      : 101%
 Attributes       : Aura Is Buff (140), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Aura Always Shown (438)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1046046)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -12469,7 +12469,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1049648)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#1 (id=1049648)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Blade of Justice (184575), Expurgation (383344), Blade of Justice (404358)
                    Family Flags: 126
@@ -12496,11 +12496,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1049713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (8)
+#1 (id=1049713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (7)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331), Templar Slash (406647), Templar Strike (407480), Crusading Strikes (408385)
                    Family Flags: 47, 63, 70
-#2 (id=1054089)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Targets (17) | Attributes: Chain from Initial Target (8), Enforce Line of Sight To Chain Targets (17)
+#2 (id=1054089)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Chain Targets (17) | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Misc Value 2: 2579 (Label) | Target: Self (1)
 #3 (id=1072496)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -12581,7 +12581,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1050470)  : Apply Aura (6) | Dummy (4) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#1 (id=1050470)  : Apply Aura (6) | Dummy (4) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1054897)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -12695,7 +12695,7 @@ Triggered By     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
 Effects          :
-#1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: -50 | Scaled Value: -50 | Radius: 14 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.6528 | Radius: 14 yards | Target: Enemies in Cone to Targeted Enemy (104)
@@ -12738,11 +12738,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
-#1 (id=1050809)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#1 (id=1050809)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: 6000 | Scaled Value: 6000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-#2 (id=1050810)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10) | Attributes: Ignore During Cooldown Time Rate Calculation (24)
+#2 (id=1050810)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
@@ -12799,7 +12799,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1), Retribution Paladin (412314 effects: #5, #6), Inspired Guard (469439 effect#2)
 Family Flags     : 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1051100)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
@@ -12839,7 +12839,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Triggered By     : Inquisitor's Ire (403975)
 Attributes       : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1051259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
@@ -13084,7 +13084,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2556: Aura Mastery (31821 effect#3)
 Attributes       : Aura Unique (43), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Standing (20), Invulnerability (23), Exit Vehicle (41), Disconnect (44), Duel End (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1052902)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
@@ -13174,7 +13174,7 @@ Triggered By     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
 Effects          :
-#1 (id=1053556)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1053556)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: at Self (18) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc255937
 
@@ -13191,7 +13191,7 @@ Triggered By     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
 Effects          :
-#1 (id=1053566)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (6), Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1053566)  : School Damage (2): holyfire | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.27174 | Radius: 0 - 14 yards | Target: at Self (18) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc255937
 
@@ -13354,7 +13354,7 @@ Effects          :
 #1 (id=1053888)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 2547 (Label) | Target: Self (1)
                    Affected Spells (Label): Judgment (197277)
-#2 (id=1077132)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (8)
+#2 (id=1077132)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (7)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
@@ -13417,7 +13417,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1054567)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1054567)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc392988
 Tooltip          : A Naaru is at your side. Whenever you cast a spell, the Naaru will cast a similar spell.
@@ -13667,7 +13667,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 27, 65, 70, 115
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1055717)  : School Damage (2): holyfire | Attributes: Chain from Initial Target (8)
+#1 (id=1055717)  : School Damage (2): holyfire | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.2501 | Target: Targeted Enemy (6)
 #2 (id=1055718)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
@@ -13691,7 +13691,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Templar Strikes (406646)
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1055719)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Templar Slash overrides Templar Strike
                    Base Value: 406647 | Scaled Value: 406647 | Misc Value: 407480 | Target: Self (1)
@@ -13710,7 +13710,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee
 Triggered By     : Crusading Strikes (404542)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1056069)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13801,7 +13801,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Triggered By     : Divine Arbiter (404306)
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1070150)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13957,7 +13957,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 27, 65, 70, 115
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1070978)  : School Damage (2): holyfire | Attributes: Chain from Initial Target (8)
+#1 (id=1070978)  : School Damage (2): holyfire | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.21993 | Target: Targeted Enemy (6)
 #2 (id=1070979)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
@@ -13982,7 +13982,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Snare
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1072469)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Target: Targeted Enemy (6)
@@ -14007,7 +14007,7 @@ Triggered By     : Crusading Strikes (404542)
 Family Flags     : 63, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Not a Proc (105), No Cooldown On Tooltip (192), No Aura Log (202), Normal Melee Attack (345), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1072474)  : School Damage (2): physical | Attributes: Chain from Initial Target (8)
+#1 (id=1072474)  : School Damage (2): physical | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.62595 | Target: Targeted Enemy (6)
 #2 (id=1078584)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -14371,7 +14371,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Consecrated Ground (204054 effect#2), Consecration in Flame (379022 effect#1)
 Family Flags     : 43
 Attributes       : Do Not Log Immune Misses (3), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Area Effects Use Target Radius (328), Don't close loot window (379), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1081392)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -14390,7 +14390,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1082745)  : Apply Aura Friendly in Area (128) | Absorb Damage (69) | Attributes: Aura Points Stack (10)
+#1 (id=1082745)  : Apply Aura Friendly in Area (128) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Self (1)
 Description      : $@spelldesc231644
 
@@ -14406,7 +14406,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1082748)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
+#1 (id=1082748)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc231644
 Tooltip          : Next $w1 damage dealt will be prevented.
@@ -14457,13 +14457,13 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1083043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1083043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23
-#2 (id=1083044)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (7)
+#2 (id=1083044)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100000 | Scaled Value: 100000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23
@@ -14490,9 +14490,9 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1083047)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1083047)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-#2 (id=1083048)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1083048)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #3 (id=1087935)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14514,9 +14514,9 @@ Labels           : 16: Class Spells
 Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Duel End (46), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
-#1 (id=1083049)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1083049)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc414195
 Tooltip          : Upon reaching $414195w1 stacks, your next Judgment deals $414193s1% increased damage and will critically strike. In addition, it activates Avenging Wrath for $414195s2 sec.
@@ -14546,9 +14546,9 @@ Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Cast While Channeling (308)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
-#1 (id=1083062)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1083062)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $@spelldesc414203
 Tooltip          : Holy Shock casts $s1 additional times.
@@ -14570,7 +14570,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Attributes       : Not Shapeshifted (16)
 Effects          :
-#1 (id=1083170)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1083170)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
@@ -14578,7 +14578,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
-#3 (id=1084966)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (7)
+#3 (id=1084966)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Light (82326)
                    Family Flags: 74
@@ -14673,7 +14673,7 @@ Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs
 Effects          :
 #1 (id=1083491)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self (1)
-#2 (id=1083492)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1083492)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $@spelldesc414443
 Tooltip          : After casting $?s2812[Denounce][Shield of the Righteous] ${$414443s1~-$w1} more $?$w2<$w1[time][times], your next Word of Glory or Light of Dawn is free.
@@ -15068,7 +15068,7 @@ Range            : 50000 yards
 Duration         : 12 seconds
 Mechanic         : Snare
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1093947)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -15290,7 +15290,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 27, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), Allow Dead Target (64), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), No Aura Log (202), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1101687)  : School Damage (2): holy | Attributes: Chain from Initial Target (8), Compute Points Only At Cast Time (16), Enforce Line of Sight To Chain Targets (17)
+#1 (id=1101687)  : School Damage (2): holy | Attributes: Chain from Initial Target (7), Compute Points Only At Cast Time (15), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | PvP Coefficient: 0.5 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Targeted Enemy (6)
 #2 (id=1101693)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15331,7 +15331,7 @@ Stacks           : 10 maximum
 Proc Chance      : 50%
 Proc Flags       : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1101749)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -15408,9 +15408,9 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Light's Guidance (427445)
 Attributes       : Do Not Log (8), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1106887)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (7)
+#1 (id=1106887)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 427453 | Scaled Value: 427453 | Target: Self (1)
                    Affected Spells: Wake of Ashes (255937), Radiant Decree (383469), Eye of Tyr (387174), Truth's Wake (403695), Wake of Ashes (405345), Wake of Ashes (405350)
                    Family Flags: 59, 68
@@ -15943,7 +15943,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Will of the Dawn (431467)
 Attributes       : Include In Advanced Combat Log (72), Do Not Display Duration (170), No Aura Log (202), Aura Points On Client (268)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1119262)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16051,7 +16051,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5151: Retribution Paladin (412314 effect#30)
 Attributes       : Do Not Display Duration (170)
-Aura Interrupt   : Standing (20), Invulnerability (23), Enter Combat (30), Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1119290)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16095,11 +16095,11 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Dawnlight (431460)
 Attributes       : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1119361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1119361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=1133259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1133259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
 Description      : $@spelldesc431460
 Tooltip          : Your next Holy Power spender applies Dawnlight.
@@ -16131,7 +16131,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4197: Retribution Paladin (412314 effect#16)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39)
+Aura Interrupt   : Leave World (19), Change Specialization (38)
 Effects          :
 #1 (id=1119384)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16149,7 +16149,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Log (8), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1119388)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16199,7 +16199,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1119433)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Misc Value 2: 3087 (Label) | Target: Self (1)
@@ -16294,7 +16294,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Will of the Dawn (431406)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1119746)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
@@ -16447,7 +16447,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121198)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sacred Weapon overrides Holy Bulwark
                    Base Value: 432472 | Scaled Value: 432472 | Misc Value: 432459 | Target: Self (1)
@@ -16467,7 +16467,7 @@ Proc Chance      : 101%
 Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Triggered By     : Holy Bulwark (432459)
 Attributes       : No Aura Cancel (31), Ignore Line of Sight (66), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Disconnect (44), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1121230)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 33 | Scaled Value: 33 | Misc Value: 3 | Target: Targeted Ally (21)
@@ -16501,7 +16501,7 @@ Real PPM         : 8 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Sacred Weapon (432472)
 Attributes       : No Aura Cancel (31), Ignore Line of Sight (66), Can Proc From Procs (122), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Disconnect (44), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1121240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 33 | Scaled Value: 33 | Misc Value: 3 | Target: Targeted Ally (21)
@@ -16648,7 +16648,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121750)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16666,7 +16666,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121752)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 2220 (Category) | Target: Self (1)
@@ -16683,7 +16683,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121788)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16699,7 +16699,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121857)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15000 | Scaled Value: 15000 | Target: Self (1)
@@ -16715,7 +16715,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121939)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
@@ -16754,7 +16754,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121992)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16810,7 +16810,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122061)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16828,7 +16828,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122068)  : Apply Aura (6) | Proc Trigger Spell (42): Blessed Assurance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 433019 | Target: Self (1)
@@ -16846,7 +16846,7 @@ Labels           : 16: Class Spells
                  : 4022: Holy Paladin (428076 effect#13)
 Triggered By     : Denounce (2812), Blessed Assurance (433015)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122075)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
@@ -16863,7 +16863,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 4182: Protection Paladin (137028 effect#25)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122231)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -16883,7 +16883,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122925)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 2 | Scaled Value: 2 | Stat: Str | Stat: Int | Target: Self (1)
@@ -16938,7 +16938,7 @@ Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122972)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 3 | Scaled Value: 3 | Stat: Sta | Target: Self (1)
@@ -16956,15 +16956,15 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1123021)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#2 (id=1123043)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1123043)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1123044)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#4 (id=1123045)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#4 (id=1123045)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc432929
 Tooltip          : Your Judgment deals ${$w2*$w4}% increased damage.
@@ -17002,7 +17002,7 @@ Stacks           : 60 maximum
 Proc Chance      : 101%
 Triggered By     : Light's Deliverance (425518), Paladin Templar 11.2 Class Set 2pc (1236391)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Invulnerability (23), Jump (39), Exit Vehicle (41), Raid Encounter Start or M+ Start (42), Disconnect (44), Duel End (46), Leave Arena or Battleground (47)
+Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1123137)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -17055,7 +17055,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Family Flags     : 65
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186)
 Effects          :
-#1 (id=1123220)  : School Damage (2): holy | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1123220)  : School Damage (2): holy | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.5 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc433718
 
@@ -17090,7 +17090,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 
 Family Flags     : 41, 46
 Attributes       : Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
-#1 (id=1123227)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1123227)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | AP Coefficient: 2.4 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Ally in Area (31)
 Description      : $@spelldesc433718
 
@@ -17211,7 +17211,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : Aura Never Bounces (148), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1133373)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -17314,7 +17314,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1137329)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -17537,7 +17537,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Aura Is Debuff (26), No Aura Cancel (31), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39), Disconnect (44), Leave Arena or Battleground (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1146234)  : Apply Aura (6) | Absorb Healing (301)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -17579,7 +17579,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Bestow Light (448040), Bestow Light (448088)
 Attributes       : Do Not Display Duration (170)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1146374)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.2 | Target: Self (1)
@@ -17598,7 +17598,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered By     : Light of the Martyr (447998)
 Attributes       : No Aura Icon (60), Do Not Display Duration (170)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1146376)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 3496 (Label) | Target: Self (1)
@@ -17716,7 +17716,7 @@ Proc Flags       : Cast Successful
 Triggered By     : Judge, Jury and Executioner (405607)
 Attributes       : Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
-#1 (id=1155293)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (8)
+#1 (id=1155293)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Chain from Initial Target (7)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 44, 88
@@ -17738,7 +17738,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1155331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Chain from Initial Target (8)
+#1 (id=1155331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Chain from Initial Target (7)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Enemy (6)
                    Affected Spells: Divine Storm (53385)
                    Family Flags: 49
@@ -17904,7 +17904,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156816)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -17974,7 +17974,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostil
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -17992,7 +17992,7 @@ Effects          :
                    Family Flags: 39
 #5 (id=1156864)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#6 (id=1156865)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (7)
+#6 (id=1156865)  : Apply Aura (6) | Modify Mastery% (318) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1156866)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Light's Decree
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395605 | Target: Self (1)
@@ -18069,7 +18069,7 @@ Labels           : 16: Class Spells
                  : 3617
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1161084)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -18086,7 +18086,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3617
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1161197)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -18218,7 +18218,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Aura Is Buff (140), Remove Entering Arena (162)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1168799)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18406,17 +18406,17 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1169968)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (7)
+#1 (id=1169968)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Light (82326), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23, 74
-#2 (id=1170046)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (7)
+#2 (id=1170046)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 2 (34) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395), Crusader Strike (132331)
                    Family Flags: 47
-#3 (id=1170048)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 3 (39) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (7)
+#3 (id=1170048)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 3 (39) | Scaling Class: Restore Health/Resource (-2) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: -6000.75 (coefficient=-0.002286) | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
@@ -19225,7 +19225,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1184542)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
@@ -19292,7 +19292,7 @@ Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 
 Triggered By     : Paladin Holy 11.1 Class Set 2pc (1215533)
 Family Flags     : 46
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1198549)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.2752 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
@@ -19426,13 +19426,13 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Paladin Retribution 11.1 Class Set 2pc (1215707)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1200474)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Divine Storm (423593)
                    Family Flags: 44, 91
-#2 (id=1200475)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1200475)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spelldesc1215707
 Tooltip          : The damage of Templar's Verdict and Divine Storm is increased by $w1%.
@@ -19455,7 +19455,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Word of Glory (85673), Eternal Flame (156322), Divine Hammer (198034), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Divine Storm (423593), Hammer of Light (427453), Eternal Flame (461432)
                    Family Flags: 29, 44, 78, 89, 91, 108, 111
-#2 (id=1200487)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#2 (id=1200487)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spelldesc1215709
 Tooltip          : You cannot lose Holy Power!
@@ -19486,7 +19486,7 @@ Labels           : 16: Class Spells
                  : 295
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1200764)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1200764)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spelldesc1215707
 
@@ -19553,7 +19553,7 @@ Labels           : 16: Class Spells
                  : 295
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1213295)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1213295)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spelldesc1215707
 
@@ -19855,7 +19855,7 @@ Labels           : 16: Class Spells
                  : 5061
                  : 5086: Paladin Herald of the Sun 11.2 Class Set 4pc (1236384 effect#1), Paladin Herald of the Sun 11.2 Class Set 4pc (1236384 effect#3)
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1233438)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -19880,7 +19880,7 @@ Labels           : 16: Class Spells
                  : 5061
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=1236265)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -19921,7 +19921,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
 Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1236560)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)

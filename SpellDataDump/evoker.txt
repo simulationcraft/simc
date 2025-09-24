@@ -22,7 +22,7 @@ Duration         : 600 seconds
 Labels           : 292
                  : 933
 Attributes       : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=51004)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -48,7 +48,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Bounding Agility (450520 effect#1), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 7, 33
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), Allow Entering Arena (149), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416)
-Aura Interrupt   : Sheathing (11)
+Aura Interrupt   : Interacting (10)
 Effects          :
 #1 (id=128615)   : Apply Aura (6) | Unknown(373)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
@@ -107,7 +107,7 @@ Proc Chance      : 100%
 Proc Flags       : Death
 Triggered By     : Battle Fatigue (134732)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -464,7 +464,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23), Release (28)
+Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=889008)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: in Area of Ground Area (138) -> at Enemy in Area (16)
@@ -924,18 +924,18 @@ Triggered By     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=891597)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=891597)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.63409 | PvP Coefficient: 0.7 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-#2 (id=893576)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (18)
+#2 (id=893576)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.394834 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-#3 (id=997861)   : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (18)
+#3 (id=997861)   : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-#4 (id=1015129)  : Dispel (38) | Attributes: Area Effects Use Target Radius (18)
+#4 (id=1015129)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-#5 (id=1161081)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (18)
+#5 (id=1161081)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.274 | Misc Value: 1464 (Label) | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
                    Affected Spells (Label): Red Evoker Spells (1464)
-#6 (id=1166934)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (18)
+#6 (id=1166934)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.274 | PvP Coefficient: 0.5 | Misc Value: 1468 (Label) | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
                    Affected Spells (Label): Black Evoker Spells (1468)
 Description      : $@spelldesc357208
@@ -959,7 +959,7 @@ Affecting Spells : Recall (371807 effect#2), Onyx Legacy (386348 effect#1), Reca
 Triggered By     : Deep Breath (362019)
 Family Flags     : 9
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Face Destination (395), Unknown (458)
-Aura Interrupt   : Raid Encounter End or M+ Start (43)
+Aura Interrupt   : Disconnect (42)
 Effects          :
 #1 (id=891598)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area (87)
@@ -1015,7 +1015,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0, 5, 38
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (6)
+#1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.508 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc357211
 
@@ -1161,7 +1161,7 @@ Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spel
 Affecting Spells : Extended Flight (375517 effect#1), Nimble Flyer (441253 effect#1)
 Family Flags     : 13
 Attributes       : Not Shapeshifted (16), Immunity Purges Effect (47), Can Proc From Procs (122), Vehicle Immunity Category (218), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Action (Delayed) (18)
+Aura Interrupt   : Mount (17)
 Effects          :
 #1 (id=893446)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -1252,7 +1252,7 @@ Family Flags     : 16
 Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Action (Delayed) (17)
 Effects          :
-#1 (id=894877)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (23)
+#1 (id=894877)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #2 (id=894878)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1330,7 +1330,7 @@ Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 e
 Triggered By     : Emerald Trance (424402)
 Family Flags     : 43
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=896118)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -1354,7 +1354,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=896464)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=915976)   : Dummy (3) | Attributes: Suppress Points Stacking (7)
+#2 (id=915976)   : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40
 Description      : Emerald Blossom sends out flying seedlings when it bursts, healing $s1 $Lally:allies; up to $s2 yds away for $361361s1.
 
@@ -1435,7 +1435,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Hover (358267 effect#5), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3)
 Family Flags     : 2, 26
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), Bouncy Chain Missiles (146), Limit N (165), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Release (28)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=898166)   : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Sleep | Chain Targets: 1 | Target: Targeted Enemy (6)
@@ -1490,11 +1490,11 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken
 Affecting Spells : Hover (358267 effect#5), Hover (393271 effect#1), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Regenerative Chitin (406907 effect#1), Evoker Augmentation 10.0 Class Set 2pc (415222 effects: #1, #2), Arcane Reach (454983 effect#1)
 Family Flags     : 2, 67, 68
 Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Implied Targeting (171), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38)
 Effects          :
-#1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (7)
+#1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Targeted Ally (21)
-#2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (7)
+#2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Targeted Ally (21)
 Description      : Protect an ally with $n explosive dragonscales, increasing their Armor by $<perc>% of your own.
 
@@ -1517,7 +1517,7 @@ Labels           : 16: Class Spells
                  : 1468: Black Evoker Spells
 Attributes       : Active Threat (94), Do Not Display Range (126), Reactive Damage Proc (142), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=898193)   : School Damage (2): firestorm | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=898193)   : School Damage (2): firestorm | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc360827
 
@@ -1786,7 +1786,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20), Duel End (46)
+Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=900370)   : Remove Aura (203): Deep Breath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 357210 | Target: Self (1)
@@ -2091,7 +2091,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Hardened Scales (441180 effect#1)
 Family Flags     : 39, 67
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
@@ -2300,7 +2300,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evo
 Family Flags     : 1, 8
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (7)
+#1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
 #2 (id=1003140)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -2478,7 +2478,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evo
 Family Flags     : 1, 8
 Attributes       : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=911002)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (7)
+#1 (id=911002)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
 #2 (id=1003141)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -2565,7 +2565,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0, 28
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=912826)   : School Damage (2): spellfrost | Attributes: Damage Only Affects Absorbs (27)
+#1 (id=912826)   : School Damage (2): spellfrost | Attributes: Damage Only Affects Absorbs (26)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 9 | Target: Targeted Enemy (6)
 Description      : Sunder an enemy's protective magic, dealing $s1 Spellfrost damage to absorb shields.
 
@@ -2719,7 +2719,7 @@ Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 e
 Triggered By     : Essence Rush (409899)
 Family Flags     : 43
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=914512)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -2729,7 +2729,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Emerald Blossom (373766)
                    Family Flags: 6, 10, 11
-#3 (id=1139070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#3 (id=1139070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Echo (364343)
                    Family Flags: 11
@@ -2820,7 +2820,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Potent Mana (418101 effects: #1, #2), Arcane Reach (454983 effect#1)
 Family Flags     : 67, 74
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Exclude Caster (51), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Cannot Be Stolen (134), Limit N (165), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=914804)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -2848,7 +2848,7 @@ Labels           : 292
                  : 1607
                  : 1862: Familiar Skies (360009 effect#2), Time Skip (404977 effect#6), Interwoven Threads (412713 effect#6), Expedited Takeoff (430935 effect#1)
 Attributes       : Is Ability (4), Only Outdoors (15), Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Aura Icon (60), No Caster Aura Icon (187), No Target Aura Icon (188), Aura Points On Client (268), This Mount is NOT at the account level (349), Update Fall Speed After Aura Removal (447)
-Aura Interrupt   : Login (31)
+Aura Interrupt   : Summon (30)
 Effects          :
 #1 (id=914943)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3031,9 +3031,9 @@ Attributes       : Not Shapeshifted (16), Allow Spell Reflection (224), Aura Poi
 Effects          :
 #1 (id=981816)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
-#2 (id=1019175)  : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (18)
+#2 (id=1019175)  : School Damage (2): spellfrost | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.3056 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#3 (id=1020208)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Area Effects Use Target Radius (18)
+#3 (id=1020208)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657), Essence Bomb (1236792), Disintegrate (1236949), Pyre (1236970)
                    Family Flags: 0
@@ -3096,7 +3096,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Family Flags     : 17
 Attributes       : Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Duel End (46)
+Aura Interrupt   : Leave Arena or Battleground (45)
 Effects          :
 #1 (id=981929)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -3122,7 +3122,7 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Evoker Chronowarden 11.2 Class Set 2pc (1236368 effect#1)
 Family Flags     : 82
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Cannot Be Stolen (134), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Duel End (46), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Leave Arena or Battleground (45), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=981949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 1 | Target: Self (1)
@@ -3822,7 +3822,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=996412)   : Apply Aura Party (Non-Random) (271) | Periodic Heal% (20): every 2 seconds
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
@@ -3975,7 +3975,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=997126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -4247,7 +4247,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evo
 Family Flags     : 1, 45
 Attributes       : Fail on all targets immune (85), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
-#1 (id=999378)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (10)
+#1 (id=999378)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : $@spelldesc373861
@@ -4274,7 +4274,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 127 | Radius: 0 - 20 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=999973)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Radius: 0 - 20 yards | Target: at Self (18) -> At Ally in Area (31)
-#3 (id=999974)   : Apply Aura (6) | Levitate (106) | Attributes: Players Only (15)
+#3 (id=999974)   : Apply Aura (6) | Levitate (106) | Attributes: Players Only (14)
                    Base Value: 4 | Scaled Value: 4 | Radius: 0 - 20 yards | Target: at Self (18) -> At Ally in Area (31)
 Description      : Conjure an updraft to lift you and your $s3 nearest allies within $A1 yds into the air, reducing damage taken from area-of-effect attacks by $s1% and increasing movement speed by $s2% for $d.
 Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.
@@ -4424,7 +4424,7 @@ Labels           : 16: Class Spells
                  : 1464: Red Evoker Spells
 Family Flags     : 44
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Jump (39), Raid Encounter Start or M+ Start (42), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001313)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -4449,7 +4449,7 @@ Labels           : 16: Class Spells
 Triggered By     : Dragonrage (375087)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292)
 Effects          :
-#1 (id=1001316)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12), Area Effects Use Target Radius (18)
+#1 (id=1001316)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 3 | Scaled Value: 3 | Radius: 25 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc375087
 
@@ -4466,7 +4466,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001492)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1941 (Category) | Target: Targeted Ally (21)
@@ -4490,7 +4490,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001496)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1545 (Category) | Target: Targeted Ally (21)
@@ -4520,7 +4520,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001501)  : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -4548,7 +4548,7 @@ Proc Flags       : Cast Successful
 Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001510)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1948 (Category) | Target: Targeted Ally (21)
@@ -4572,7 +4572,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001517)  : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -4594,7 +4594,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001521)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1446 (Category) | Target: Targeted Ally (21)
@@ -4624,7 +4624,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001540)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 (Category) | Target: Targeted Ally (21)
@@ -4648,7 +4648,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001542)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1662 (Category) | Target: Targeted Ally (21)
@@ -4672,7 +4672,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001544)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2308 (Category) | Target: Targeted Ally (21)
@@ -4696,7 +4696,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001545)  : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -4718,7 +4718,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001546)  : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -4740,7 +4740,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001547)  : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -4761,7 +4761,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1001548)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1211 (Category) | Target: Targeted Ally (21)
@@ -4998,7 +4998,7 @@ Labels           : 16: Class Spells
                  : 2731: Burnout (375802 effect#2), Lifespark (394552 effect#3), Lifespark (443176 effect#3)
 Triggered By     : Ancient Flame (369990)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1002118)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
@@ -5199,13 +5199,13 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Family Flags     : 75
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
-#1 (id=1002422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#1 (id=1002422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1089730)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#2 (id=1089730)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc375801
@@ -5409,7 +5409,7 @@ Duration         : 3 seconds
 Labels           : 292
 Triggered By     : Surge Forward (386449)
 Attributes       : Allow While Mounted (24), No Aura Icon (60), Not In Spellbook (143), Allow during spell override (404)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=1003907)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -5427,7 +5427,7 @@ GCD              : 1.5 seconds
 Labels           : 292
 Triggered By     : Skyward Ascent (386451)
 Attributes       : Allow While Mounted (24), Not In Spellbook (143), Allow during spell override (404)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=1003908)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Self (18) -> Self (1)
@@ -5714,7 +5714,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Active Passive (393), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Dismount (8), Falling (34), Leave War Mode (51)
+Aura Interrupt   : Under Water (7), Swimming (33), Touch Ground (50)
 Effects          :
 #1 (id=1012249)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6219,7 +6219,7 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#2 (id=1014218)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#2 (id=1014218)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : Divert spiritual energy, healing an ally for $367230s1. Jumps to injured allies within $<range> yards when empowered.
 
@@ -6416,7 +6416,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1020361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1020361)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Red spell deals $s1% more damage.
@@ -6433,7 +6433,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1020432)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1020432)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
@@ -6466,7 +6466,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered By     : Surge Forward (376743)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=1020533)  : Apply Aura (6) | Set Action Button Spell Count (408): Surge Forward
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376743 | Target: Self (1)
@@ -6483,7 +6483,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered By     : Skyward Ascent (376744)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
-Aura Interrupt   : Enter Combat (30)
+Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=1020536)  : Apply Aura (6) | Set Action Button Spell Count (408): Skyward Ascent
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376744 | Target: Self (1)
@@ -6739,7 +6739,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal
 Attributes       : Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1022092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -6917,7 +6917,7 @@ Labels           : 16: Class Spells
                  : 615
                  : 1216: Evoker Spells
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1027169)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards | Target: Raid in Area (56)
@@ -6942,17 +6942,17 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Essence Attunement (375722 effect#1), Mastery: Timewalker (406380 effect#2), Ignition Rush (408775 effects: #1, #2)
 Family Flags     : 43, 67
 Attributes       : Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1030355)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Emerald Blossom (373766), Eruption (395160), Eruption (438653)
                    Family Flags: 10, 54
-#2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#2 (id=1080153)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
-#3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (7)
+#3 (id=1080154)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
@@ -7138,15 +7138,15 @@ Proc Flags       : Cast Successful
 Triggered By     : Evoker Preservation Class Set 4pc (393645), Lifespark (443177)
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1034313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7), Players Only (15)
+#1 (id=1034313)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6), Players Only (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1034314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#2 (id=1034314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
-#3 (id=1089731)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#3 (id=1089731)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc393645
@@ -7186,7 +7186,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Hover (358267 effect#5), Hover (393271 effect#1), Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1), Arcane Reach (454983 effect#4)
 Family Flags     : 2, 56, 65, 67
 Attributes       : Exclude Caster (51), Ignore Line of Sight (66), Only On Player (104), Limit N (165), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -7246,7 +7246,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0, 2, 3, 38, 54
 Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1035409)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (6)
+#1 (id=1035409)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.8 | PvP Coefficient: 1.4375 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Cause a violent eruption beneath an enemy's feet, dealing $s1 Volcanic damage split between them and nearby enemies.$?s395153[
 
@@ -7263,7 +7263,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Evoker Augmentation 10.1 Class Set 2pc (414877 effects: #1, #2), Arcane Reach (454983 effect#4)
 Family Flags     : 56, 66, 67
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Exit Vehicle (41), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035680)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -7458,7 +7458,7 @@ Attributes       : Allow While Sitting (27), No Aura Icon (60), Ignore Line of S
 Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1037395)  : School Damage (2): firestorm | Attributes: Area Effects Use Target Radius (18)
+#2 (id=1037395)  : School Damage (2): firestorm | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.3 | Radius: 0 - 2 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=1052932)  : Directional Knockback (144)
                    Base Value: 120 | Scaled Value: 120 (delta=0.2) | Misc Value: -20 | Radius: 0 - 2 yards | Mechanic: Knockback | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -7494,7 +7494,7 @@ Stacks           : 8 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1040646)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1040646)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 7.5 | Scaled Value: 7.5 | Target: Self (1)
 Description      : Essence Burst increases the damage of affected spells by ${$s1}.1%.
 
@@ -7511,7 +7511,7 @@ Stacks           : 8 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1043306)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1043306)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
@@ -7580,7 +7580,7 @@ Duration         : 0.5 seconds
 Cooldown         : 10 seconds
 Labels           : 292
 Attributes       : Allow While Mounted (24), No Aura Cancel (31), No Aura Icon (60), Do Not Log on Learn (355), Allow during spell override (404)
-Aura Interrupt   : Enter Combat (30), Leave War Mode (51)
+Aura Interrupt   : Login (29), Touch Ground (50)
 Effects          :
 #1 (id=1050035)  : Apply Aura (6) | Unknown(513)
                    Base Value: 10000 | Scaled Value: 10000 | Target: Self (1)
@@ -7644,7 +7644,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Black Aspect's Favor (407254 effect#1)
 Family Flags     : 70
 Attributes       : No Threat (42), Do Not Display Range (126), Allow Entering Arena (149), Do Not Display Duration (170), No Target Duration Mod (225), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1050155)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Ally (21)
@@ -7663,7 +7663,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Bronze Aspect's Favor (407244 effect#1)
 Family Flags     : 69
 Attributes       : No Threat (42), Do Not Display Range (126), Allow Entering Arena (149), Do Not Display Duration (170), No Target Duration Mod (225), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1050156)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
@@ -7704,7 +7704,7 @@ Affecting Spells : Recall (403760 effect#2), Recall (455962 effect#1)
 Triggered By     : Breath of Eons (403758)
 Family Flags     : 63
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Face Destination (395), Unknown (458)
-Aura Interrupt   : Standing (20), Raid Encounter End or M+ Start (43)
+Aura Interrupt   : Leave World (19), Disconnect (42)
 Effects          :
 #1 (id=1050694)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Area (87)
@@ -7855,7 +7855,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Remove Entering Arena (162), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter Start or M+ Start (42), Duel End (46)
+Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1051857)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8208,7 +8208,7 @@ Effects          :
 #8 (id=1083748)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 5 | Misc Value 2: 2695 (Label) | Target: Self (1)
                    Affected Spells (Label): Deep Breath (357210), Dream Flight (359816), Rescue (370665), Breath of Eons (403631), Spatial Paradox (406732), Deep Breath (433874), Breath of Eons (442204), Deep Breath (1236943)
-#9 (id=1085170)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#9 (id=1085170)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #10 (id=1091013) : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8593,7 +8593,7 @@ Family Flags     : 59
 Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12)
 Effects          :
-#1 (id=1072015)  : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (23)
+#1 (id=1072015)  : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1072016)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -8698,11 +8698,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#7), Spatial Paradox (406789 effect#7), Arcane Reach (454983 effects: #1, #4)
 Family Flags     : 67, 73
 Attributes       : Only On Player (104), Allow Class Ability Procs (416)
-Aura Interrupt   : Exit Vehicle (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=1074054)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1074054)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 26.5 yards | Target: at Self (18) -> At Ally in Area (31)
-#2 (id=1080811)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (21)
+#2 (id=1080811)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Ally (21)
 Description      : Grant an ally the gift of foresight, increasing their critical strike chance by $410089s1% $?s412774[and occasionally copying their damage and healing spells at $412774s1% power ][]for $410089d.
 
@@ -8789,7 +8789,7 @@ Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Ignore Caster Absorb Modifiers (370)
 Effects          :
-#1 (id=1074705)  : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (10)
+#1 (id=1074705)  : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : $@spelldesc409676
@@ -8807,7 +8807,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1074767)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
+#1 (id=1074767)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1075264)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
@@ -8902,7 +8902,7 @@ Labels           : 16: Class Spells
                  : 2557
                  : 2675: Preservation Evoker (356810 effect#16)
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
-Aura Interrupt   : Jump (39), Exit Vehicle (41)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1075116)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -8955,7 +8955,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075265)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
+#1 (id=1075265)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1075266)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
@@ -8974,7 +8974,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075267)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
+#1 (id=1075267)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1075268)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
@@ -8993,7 +8993,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Display Range (126), Aura Icon Only For Caster (Limit 10) (212), Taps immediately (215), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1075269)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (10)
+#1 (id=1075269)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1075270)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
@@ -9015,7 +9015,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Can Target Untargetable (216), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1075415)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 2 | Misc Value: 5 | Target: Targeted Ally (21)
@@ -9323,7 +9323,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Mastery: Timewalker (406380 effect#2), Arcane Reach (454983 effect#1), Inner Flame (1236776 effect#1)
 Family Flags     : 1, 67
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38)
 Effects          :
 #1 (id=1076514)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -9552,7 +9552,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Cannot Be Stolen (134), Limit N (165), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1080324)  : Apply Aura (6) | Threat (10)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 127 | Target: Targeted Raid Member (57)
@@ -9656,7 +9656,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1080428)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1080428)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Prescience grants the ally a chance for their spells and abilities to echo their damage or healing, dealing $s1% of the amount again.
 Variables        : $doses=${50}
@@ -9682,7 +9682,7 @@ Spell Type       : None
 Max Targets      : 4
 Duration         : 10 seconds
 Attributes       : Exclude Caster (51), Ignore Line of Sight (66), Limit N (165), Not On Player (167), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1082076)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -9744,9 +9744,9 @@ Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Triggered By     : Mastery: Timewalker (406380)
 Family Flags     : 67
 Attributes       : Only On Player (104), Do Not Display Range (126), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
-Aura Interrupt   : Standing (20), Invulnerability (23), Jump (39)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38)
 Effects          :
-#1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540) | Attributes: Compute Points Only At Cast Time (16)
+#1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.272 | Misc Value: 6 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -9786,7 +9786,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Standing (20), Invulnerability (23)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1083143)  : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: at Enemy in Area (16)
@@ -9938,7 +9938,7 @@ Proc Flags       : Magic Heal, Magic Hostile Spell
 Affecting Spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2)
 Family Flags     : 43
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1088989)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -10099,7 +10099,7 @@ Spell Type       : None
 Max Targets      : 4
 Duration         : 10 seconds
 Attributes       : Exclude Caster (51), Ignore Line of Sight (66), Limit N (165), Not On Player (167), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1100057)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -10170,7 +10170,7 @@ Stacks           : 5 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Exit Vehicle (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1101113)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -10218,7 +10218,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1101203)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (6)
+#1 (id=1101203)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.1 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc422869
 
@@ -10235,7 +10235,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Hover (358267 effect#5), Hover (393271 effect#1), Close as Clutchmates (396043 effects: #1, #2), Mastery: Timewalker (406380 effect#2), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1), Arcane Reach (454983 effect#4)
 Family Flags     : 2, 56, 65, 67
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Can't Crit (93), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Allow during spell override (404), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Standing (20), Jump (39), Leave Arena or Battleground (47), Change Talent (48)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1104850)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Current Target (25)
@@ -10361,7 +10361,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1118730)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (6)
+#1 (id=1118730)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 1.2075 | Scaled Value: 1.2075 (delta=0.05) | PvP Coefficient: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc357211
 
@@ -10384,9 +10384,9 @@ Range            : 100 yards
 Duration         : 24 seconds
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1118749)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1118749)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1.134 | Scaled Value: 1.134 (delta=0.05) | PvP Coefficient: 0 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
-#2 (id=1118750)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (18)
+#2 (id=1118750)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0.274 | Scaled Value: 0.274 | Radius: 2 - 30 yards | Target: Front of Self (47) -> Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]
@@ -10633,7 +10633,7 @@ Labels           : 16: Class Spells
 Stacks           : 30 maximum
 Proc Chance      : 101%
 Attributes       : Can Proc From Procs (122), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1119630)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -10662,19 +10662,19 @@ Effects          :
                    Affected Spells (Label): Tail Swipe (368970)
 #10 (id=1119652) : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#11 (id=1234011) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (7)
+#11 (id=1234011) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
-#12 (id=1234370) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (7)
+#12 (id=1234370) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
 #13 (id=1237463) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2411 (Category) | Target: Self (1)
                    Affected Spells (Category): Time Dilation (357170)
-#14 (id=1254731) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (7)
+#14 (id=1254731) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 5459 (Label) | Target: Self (1)
                    Affected Spells (Label): Afterimage (431875)
-#15 (id=1260183) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#15 (id=1260183) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Echo (364343), Eruption (395160), Eruption (438653)
                    Family Flags: 11, 49, 54
@@ -10851,7 +10851,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Do Not Log on Learn (355)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1120244)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Stat: Int | Target: Self (1)
@@ -10915,7 +10915,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), Ignore Line of Sight (66), Do Not Log on Learn (355)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1120341)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
@@ -11062,7 +11062,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Recall (371807 effect#2), Onyx Legacy (386348 effect#1), Recall (403760 effect#2), Recall (455962 effect#1)
 Family Flags     : 9
 Attributes       : Not Shapeshifted (16), Immunity to Hostile & Friendly Effects (48), Do Not Display Range (126), Always Line of Sight (185), No Jump Pathing (208), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), JumpCharge - no facing control (311), Reset cooldown upon ending an encounter (333), Face Destination (395), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1123474)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11236,9 +11236,9 @@ Labels           : 16: Class Spells
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave Arena or Battleground (47)
+Aura Interrupt   : Change Talent (46)
 Effects          :
-#1 (id=1127597)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (7)
+#1 (id=1127597)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
@@ -11276,9 +11276,9 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave Arena or Battleground (47)
+Aura Interrupt   : Change Talent (46)
 Effects          :
-#1 (id=1131290)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1131290)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $@spelldesc438587
 Tooltip          : Next Eruption strikes up to ${$s1+1} targets.
@@ -11296,7 +11296,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0, 3, 38, 54
 Attributes       : Initiate Combat Post-Cast (Enables Auto-Attack) (84), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1131385)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (6)
+#1 (id=1131385)  : School Damage (2): firestorm | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.8 | PvP Coefficient: 1.4375 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc422869
 
@@ -11676,7 +11676,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Recall (403760 effect#2), Recall (455962 effect#1)
 Family Flags     : 63
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Always Line of Sight (185), No Jump Pathing (208), Aura Points On Client (268), JumpCharge - no facing control (311), Reset cooldown upon ending an encounter (333), Face Destination (395), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Standing (20), Raid Encounter End or M+ Start (43)
+Aura Interrupt   : Leave World (19), Disconnect (42)
 Effects          :
 #1 (id=1137191)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11737,15 +11737,15 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1138905)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7), Players Only (15)
+#1 (id=1138905)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6), Players Only (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Chrono Flames (431443)
                    Family Flags: 52
-#2 (id=1138906)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#2 (id=1138906)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
-#3 (id=1138907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (7)
+#3 (id=1138907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc393645
@@ -11923,14 +11923,14 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1140268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10) | Attributes: Suppress Points Stacking (7)
+#1 (id=1140268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Evoker Spells (1216)
-#2 (id=1140269)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (7)
+#2 (id=1140269)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Dream Breath (355936), Disintegrate (356995), Fire Breath (357208), Eternity Surge (359073), Spiritbloom (367226), Emerald Communion (370960), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731)
                    Family Flags: 6, 15, 16, 25, 30, 47
-#3 (id=1140272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (7)
+#3 (id=1140272)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Disintegrate (356995), Emerald Communion (370960)
                    Family Flags: 6, 47
@@ -11951,7 +11951,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1140270)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (7)
+#1 (id=1140270)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engulf quickens your pulse, reducing the cast time of your next spell by $444019s1%. Stacks up to $444019u charges.
 
@@ -12007,7 +12007,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Ignore Caster Damage Modifiers (221)
 Effects          :
-#1 (id=1140381)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (12)
+#1 (id=1140381)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc444088
 
@@ -12043,15 +12043,15 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2, #11, #12), Preser
 Family Flags     : 0, 35
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1140572)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (18)
+#1 (id=1140572)  : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.63409 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
-#2 (id=1140573)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (18)
+#2 (id=1140573)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.394834 | Target: Targeted Enemy (6)
-#3 (id=1140574)  : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (18)
+#3 (id=1140574)  : Apply Aura (6) | Silence (27) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Targeted Enemy (6)
-#4 (id=1140575)  : Dispel (38) | Attributes: Area Effects Use Target Radius (18)
+#4 (id=1140575)  : Dispel (38) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Targeted Enemy (6)
-#5 (id=1161086)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (18)
+#5 (id=1161086)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.274 | Misc Value: 1464 (Label) | Target: Targeted Enemy (6)
                    Affected Spells (Label): Red Evoker Spells (1464)
 Description      : $@spelldesc357208
@@ -12445,7 +12445,7 @@ Proc Flags       : Cast Successful
 Triggered By     : Evoker Augmentation 11.0 Class Set 2pc (453672)
 Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (7)
+#1 (id=1160138)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653)
                    Family Flags: 54
@@ -12465,7 +12465,7 @@ Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Evoker Augmentation 11.0 Class Set 4pc (456221)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1160261)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -12482,7 +12482,7 @@ Labels           : 16: Class Spells
                  : 2557
 Triggered By     : Evoker Augmentation 11.0 Class Set 4pc (453671)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1160262)  : Apply Aura (6) | Periodic Trigger Spell (23): Evoker Augmentation 11.0 Class Set 4pc every 2 seconds
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Trigger Spell: 456220 | Target: Self (1)
@@ -12745,7 +12745,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evo
 Triggered By     : Evoker Preservation 11.1 Class Set 2pc (1215549)
 Family Flags     : 1
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
-Aura Interrupt   : Jump (39)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1198574)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.8064 | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
@@ -13264,7 +13264,7 @@ Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evo
 Family Flags     : 0, 5, 38
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1233435)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (6)
+#1 (id=1233435)  : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.65 | PvP Coefficient: 0.33 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc357211
 
@@ -13296,7 +13296,7 @@ Stacks           : 15 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Can Proc From Procs (122), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Jump (39), Leave Arena or Battleground (47)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1233954)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -13325,10 +13325,10 @@ Effects          :
                    Affected Spells (Label): Tail Swipe (368970)
 #10 (id=1233963) : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#11 (id=1234005) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (7)
+#11 (id=1234005) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
-#12 (id=1234367) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (7)
+#12 (id=1234367) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 5137 (Label) | Trigger Spell: 431442 | Target: Self (1)
                    Affected Spells (Label): Chrono Flame (431442)
 Description      : $@spelldesc431695
@@ -13417,7 +13417,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1468: Black Evoker Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Aura Interrupt   : Standing (20), Duel End (46)
+Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1250143)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
