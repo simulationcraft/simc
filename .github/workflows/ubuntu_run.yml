@@ -9,22 +9,27 @@ on:
 
 env:
   SIMC_PROFILE: profiles/CI.simc
-  SIMC_ARGS: output=/dev/null html=/dev/null json=/dev/null
 
 jobs:
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
-    env:
-      CACHE_KEY: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
-      UBSAN_OPTIONS: print_stacktrace=1
 
     strategy:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
         compiler: [clang++-15, clang++-18, gcc-12, gcc-14]
+        type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
+          - type: spell_query
+            simc_flags: spell_query=spell > /dev/null
+          - type: log_debug
+            simc_flags: $SIMC_PROFILE log=1 debug=1 max_time=100
+          - type: patchwerk
+            simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
+          - type: dungeon_slice
+            simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice allow_experimental_specializations=1 cleanup_threads=1
           - compiler: clang++-15
             os: ubuntu-22.04
           - compiler: clang++-18
@@ -43,22 +48,9 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ${{ env.CACHE_KEY }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ inputs.cache-sha }}-cpp-${{ matrix.cppVersion }}
 
-      - name: "Spell Query"
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS spell_query=spell > /dev/null
-
-      - name: "Log Debug"
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE log=1 debug=1 max_time=100
-
-      - name: "Patchwerk"
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE iterations=10 cleanup_threads=1
-
-      - name: "DungeonSlice"
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_ARGS $SIMC_PROFILE iterations=10 fight_style=DungeonSlice allow_experimental_specializations=1 cleanup_threads=1
-
-      - name: Clear Cache
-        if: ( matrix.compiler != 'clang++-15' || matrix.cppVersion != '17' ) && github.event_name == 'push'
+      - name: Run
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh cache delete ${{ env.CACHE_KEY }}
+          UBSAN_OPTIONS: print_stacktrace=1
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}

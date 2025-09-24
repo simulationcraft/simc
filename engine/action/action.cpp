@@ -633,23 +633,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   trigger_gcd       = spell_data.gcd();
   school            = spell_data.get_school_type();
 
-  // non-abilities have hasted gcd by default
-  if ( !spell_data.flags( spell_attribute::SX_ABILITY ) && !spell_data.flags( spell_attribute::SX_RANGED_ABILITY ) )
-  {
-    // use actor's primary stat to determine attack or spell haste
-    if ( player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_INTELLECT )
-    {
-      gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
-    }
-    else
-    {
-      // 1s gcd melee class abilities don't get hasted
-      if ( spell_data.dmg_class() == SPELL_TYPE_MELEE && spell_data.affected_by_label( 16 ) && trigger_gcd == 1_s )
-        gcd_type = gcd_haste_type::NONE;
-      else
-        gcd_type = gcd_haste_type::ATTACK_HASTE;
-    }
-  }
+  // generic (type==none) and spells (type==magic) have hasted gcd by default
+  if ( spell_data.dmg_class() == SPELL_TYPE_NONE || spell_data.dmg_class() == SPELL_TYPE_MAGIC )
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
   // parse attributes
   suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
@@ -914,7 +900,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         energize_amount   = spelleffect_data.resource( energize_resource );
       }
       break;
-    case E_CREATE_AREA_TRIGGER: // Spawn Area Triggers
+    case E_179: // Spawn Area Triggers
       ground_aoe_duration = spelleffect_data.spell()->duration();
       break;
 
@@ -2201,12 +2187,6 @@ void action_t::start_gcd()
   if ( player->action_queued && sim->strict_gcd_queue )
   {
     player->gcd_ready -= sim->queue_gcd_reduction;
-  }
-
-  if ( sim->debug )
-  {
-    sim->print_debug( "{} {} starting {} GCD for {}, ready at {}", *player, *this, gcd_type, current_gcd,
-                      player->gcd_ready );
   }
 }
 
@@ -5630,14 +5610,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         }
         break;
 
-      case P_RESOURCE_COST_1:
+      case P_RESOURCE_COST:
         base_costs[ resource_current ] += effect.resource( current_resource() );
         sim->print_debug( "{} base resource cost for resource {} (1) modified by {}", *this, resource_current,
                           effect.resource( current_resource() ) );
         value_ = effect.resource( current_resource() );
         break;
 
-      case P_RESOURCE_COST_2:
+      case P_RESOURCE_COST_1:
       {
         if ( data().powers().size() < 2 )
           break;
@@ -5650,7 +5630,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_RESOURCE_COST_3:
+      case P_RESOURCE_COST_2:
       {
         if ( data().powers().size() < 3 )
           break;
@@ -5663,7 +5643,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_CHAIN_TARGETS:
+      case P_TARGET:
         assert( !( aoe == -1 || ( effect.base_value() < 0 && effect.base_value() > aoe ) ) );
         if ( aoe > 0 )
         {
@@ -5683,7 +5663,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         value_ = effect.base_value();
         break;
 
-      case P_CHAIN_MULTIPLIER:
+      case P_TARGET_BONUS:
         chain_multiplier += effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {} to {}", *this, effect.percent(), chain_multiplier );
         value_ = effect.percent();
@@ -5769,14 +5749,14 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         }
         break;
 
-      case P_RESOURCE_COST_1:
+      case P_RESOURCE_COST:
         base_costs[ resource_current ] *= 1.0 + effect.percent();
         sim->print_debug( "{} base resource cost for resource {} (1) modified by {}%", *this, resource_current,
                           effect.base_value() );
         value_ = effect.percent();
         break;
 
-      case P_RESOURCE_COST_2:
+      case P_RESOURCE_COST_1:
       {
         if ( data().powers().size() < 2 )
           break;
@@ -5789,7 +5769,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_RESOURCE_COST_3:
+      case P_RESOURCE_COST_2:
       {
         if ( data().powers().size() < 3 )
           break;
@@ -5802,7 +5782,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         break;
       }
 
-      case P_CHAIN_MULTIPLIER:
+      case P_TARGET_BONUS:
         chain_multiplier *= 1.0 + effect.percent();
         sim->print_debug( "{} chain target multiplier modified by {}% to {}", *this, effect.base_value(), chain_multiplier );
         value_ = effect.percent();

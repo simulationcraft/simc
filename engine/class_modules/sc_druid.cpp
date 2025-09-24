@@ -490,7 +490,7 @@ static const spelleffect_data_t& find_trigger( T val )
           case A_PROC_TRIGGER_SPELL_WITH_VALUE:
           case A_PERIODIC_TRIGGER_SPELL:
           case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-          case A_LINKED_SPELL_WITH_VALUE:
+          case A_285:
             return eff;
           default:
             break;
@@ -5224,6 +5224,8 @@ struct lunar_inspiration_t final : public cp_generator_t
                  p->talent.lunar_inspiration.ok() ? p->find_spell( 155625 ) : spell_data_t::not_found() )
   {
     may_dodge = may_parry = may_block = false;
+    // LI is a spell, but we parent to cp_generator_t to get all the proper cat attack methods.
+    gcd_type = gcd_haste_type::SPELL_CAST_SPEED;
 
     s_data_reporting = p->talent.lunar_inspiration;
     dot_name = "lunar_inspiration";
@@ -5859,6 +5861,7 @@ struct bristling_fur_t final : public bear_attack_t
   DRUID_ABILITY( bristling_fur_t, bear_attack_t, "bristling_fur", p->talent.bristling_fur )
   {
     harmful = false;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void execute() override
@@ -6051,7 +6054,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
     if ( p->talent.incarnation_bear.ok() )
     {
       inc_targets =
-        as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_CHAIN_TARGETS ).base_value() );
+        as<int>( find_effect( p->spec.incarnation_bear, this, A_ADD_FLAT_MODIFIER, P_TARGET ).base_value() );
     }
 
     if ( p->talent.strike_for_the_heart.ok() )
@@ -7220,7 +7223,7 @@ struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<
       form_mask |= CAT_FORM;
 
       base_costs[ RESOURCE_ENERGY ] =
-        find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_2 )
+        find_effect( p->talent.empowered_shapeshifting, this, A_ADD_FLAT_MODIFIER, P_RESOURCE_COST_1 )
           .resource( RESOURCE_ENERGY );
     }
 
@@ -11919,7 +11922,7 @@ void druid_t::create_buffs()
 
   buff.incarnation_cat =
     make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
-      ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
+      ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST )
       ->set_stack_change_callback(
         [ this,
           ag_dur = timespan_t::from_seconds( find_spell( 421440 )->effectN( 1 ).base_value() ) ]

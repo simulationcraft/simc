@@ -752,7 +752,7 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_EXPERTISE:
         case A_MOD_MANA_REGEN_INTERRUPT:  // Meditation
         case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS: // Increase critical chance of something, Stormstrike, Mind Spike, Holy Word: Serenity
-        case A_MOD_SPELL_POWER_PCT: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
+        case A_317: // Totemic Wrath, Flametongue Totem, Demonic Pact, etc ...
         case A_MOD_MELEE_AUTO_ATTACK_SPEED:
         case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
           v /= 100.0;
@@ -1107,7 +1107,6 @@ util::span<const effect_subtype_t> dbc::effect_category_subtypes()
     A_MOD_RECHARGE_TIME_PCT_CATEGORY,
     A_MOD_MAX_CHARGES,
     A_HASTED_CATEGORY,
-    A_IGNORE_SPELL_CHARGE_COOLDOWN_CATEGORY,
   };
   return util::make_span( subtypes );
 }
