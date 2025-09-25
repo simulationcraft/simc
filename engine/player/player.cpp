@@ -15044,7 +15044,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_CHAIN_MULTIPLIER, "chain_multiplier"  },  // 20
   { P_GCD,              "gcd"               },  // 21
   { P_TICK_DAMAGE,      "base_td"           },  // 22
-  { P_COEFFICIENT,      "coefficient"       },  // 24
+  { P_COEFFICIENT,      "bonus_coefficient" },  // 24
   { P_MAX_STACKS,       "max_stack"         },  // 37
   { P_PROC_COOLDOWN,    "internal_cooldown" },  // 38
   { P_MAX_TARGETS,      "max_targets"       },  // 40
@@ -15541,7 +15541,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         success = true;
       }
     }
-    else if ( eff_idx > 0 )  // modify another effect
+    else if ( eff_idx != 0 )  // modify another effect
     {
       if ( as<int>( spell->effect_count() ) < eff_idx )
       {

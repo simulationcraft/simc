@@ -823,7 +823,7 @@ buff_t* buff_t::set_duration( timespan_t duration )
       if ( source )
         base_buff_duration = source->get_passive_value( data(), "duration" );
       else
-        data().duration();
+        base_buff_duration = data().duration();
     }
     else
     {
