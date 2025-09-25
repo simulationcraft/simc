@@ -1170,9 +1170,10 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
   out << "</div>";
 }
 
-void set_global_locale( ) {
+void set_global_locale()
+{
   // Set global locale to en-US for consistent number formatting
-  for (const auto& name :
+  for ( const auto& name :
   {
     "en_US.UTF-8",
     "en_US.utf8",
@@ -1181,15 +1182,17 @@ void set_global_locale( ) {
     "en-US",
     "English_United States.1252",
     "C"
-  })
+  } )
   {
-    try {
-      std::locale::global(std::locale(name));
+    try
+    {
+      std::locale::global( std::locale( name ) );
       return;
-    } catch (const std::runtime_error&)
+    }
+    catch ( const std::runtime_error& )
     { }
   }
-  std::locale::global(std::locale::classic());
+  std::locale::global( std::locale::classic() );
 }
 
 /* Main function building the html document and calling subfunctions
