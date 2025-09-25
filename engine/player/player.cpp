@@ -15038,7 +15038,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_COOLDOWN,         "cooldown"          },  // 11
   { P_RESOURCE_COST_1,  "cost"              },  // 14
   { P_CRIT_BONUS,       "crit_bonus"        },  // 15
-  { P_CHAIN_TARGETS,    "chain_targets"     },  // 17
+  { P_CHAIN_TARGETS,    "chain_target"      },  // 17
   { P_TICK_TIME,        "period"            },  // 19
   { P_CHAIN_MULTIPLIER, "chain_multiplier"  },  // 20
   { P_GCD,              "gcd"               },  // 21
@@ -15134,6 +15134,7 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     case A_ADD_FLAT_MODIFIER:
     case A_ADD_PCT_MODIFIER:
       prop = true;
+      SC_FALLTHROUGH;
     case A_MODIFY_SCHOOL:
     case A_HASTED_COOLDOWN:
     case A_HASTED_GCD:
@@ -15541,7 +15542,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
     else if ( eff_idx > 0 )  // modify another effect
     {
-      if ( spell->effect_count() < eff_idx )
+      if ( as<int>( spell->effect_count() ) < eff_idx )
       {
         if ( sim->debug )
         {

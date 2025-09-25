@@ -5472,7 +5472,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
   }
 }
 
-void action_t::apply_affecting_aura( const spell_data_t* spell )
+void action_t::apply_affecting_aura( const spell_data_t* )
 {
   return;
 }

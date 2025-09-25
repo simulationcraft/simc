@@ -611,7 +611,7 @@ const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
   // always clone matching class spell family
   if constexpr ( std::is_base_of_v<T, player_t> )
   {
-    if ( return_spell->class_family() == dbc::get_class_spell_family( obj->type ) )
+    if ( as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) )
       return_spell = T::clone_dbc_override_spell( obj, return_spell );
   }
 
