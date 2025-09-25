@@ -1001,7 +1001,9 @@ protected:
   void register_passive_effect_override( const spelleffect_data_t&, double value );
 
 public:
-  // return { orig, flat, pct }
+  bool disable_class_spell_auto_cloning;
+
+// return { orig, flat, pct }
   std::array<double, 3> get_passive_value( const spell_data_t&, std::string_view field ) const;
   std::array<double, 3> get_passive_value( const spellpower_data_t&, std::string_view field ) const;
   std::array<double, 3> get_passive_value( const spelleffect_data_t&, std::string_view field ) const;

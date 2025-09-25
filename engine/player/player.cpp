@@ -1151,6 +1151,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     action_list_id_( 0 ),
     current_execute_type( execute_type::FOREGROUND ),
     has_active_resource_callbacks( false ),
+    disable_class_spell_auto_cloning( false ),
     resource_threshold_trigger()
 {
   actor_index = sim->actor_list.size();

@@ -7921,6 +7921,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
+  disable_class_spell_auto_cloning = true;
 }
 
 action_t* mage_t::create_action( std::string_view name, std::string_view options_str )
