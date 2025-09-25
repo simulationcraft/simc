@@ -26,7 +26,12 @@ namespace
 {
 #if defined(SC_WINDOWS)
 
-enum : int { CLOCK_PROCESS_CPUTIME_ID, CLOCK_THREAD_CPUTIME_ID };
+#ifndef CLOCK_PROCESS_CPUTIME_ID
+constexpr int CLOCK_PROCESS_CPUTIME_ID = 2;
+#endif
+#ifndef CLOCK_THREAD_CPUTIME_ID
+constexpr int CLOCK_THREAD_CPUTIME_ID = 3;
+#endif
 std::chrono::nanoseconds do_clock_gettime( int clock_id )
 {
   FILETIME lpCreationTime, lpExitTime, lpKernelTime, lpUserTime;
