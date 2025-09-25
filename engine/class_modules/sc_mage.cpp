@@ -1948,14 +1948,6 @@ public:
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = action_energize::NONE;
-
-    const auto& ea = p->talents.elemental_affinity;
-    if ( p->specialization() == MAGE_FIRE )
-      for ( int ix : { 1, 2, 5 } )
-        apply_affecting_effect( ea->effectN( ix ) );
-
-    if ( p->specialization() == MAGE_FROST )
-      apply_affecting_effect( ea->effectN( 3 ) );
   }
 
   mage_t* p()
@@ -8580,6 +8572,13 @@ void mage_t::init_spells()
 
   // Misc
   cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
+
+  // Register passives
+  auto ea_mask = specialization() == MAGE_FIRE    ? effect_mask_t( true ).disable( 3 )
+                 : specialization() == MAGE_FROST ? effect_mask_t( false ).enable( 3 )
+                                                  : effect_mask_t( false );
+  register_passive_effect_mask( talents.elemental_affinity, ea_mask );
+  parse_passive_effects( talents.elemental_affinity );
 }
 
 void mage_t::init_special_effects()

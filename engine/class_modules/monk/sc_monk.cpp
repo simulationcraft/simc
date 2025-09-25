@@ -140,7 +140,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
-  apply_affecting_aura( p()->talent.master_of_harmony.manifestation, p()->baseline.brewmaster.aura );
+  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
 
   // Shado-Pan
   parse_effects( p()->talent.shado_pan.efficient_training,
@@ -2594,15 +2594,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
 
     return 1.0;
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
-
-    return am;
-  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -2628,15 +2619,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     }
 
     return 1.0;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
-
-    return am;
   }
 
   void impact( action_state_t *s ) override
@@ -2669,8 +2651,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr )
   {
-    apply_affecting_effect( p->talent.windwalker.communion_with_wind->effectN( 1 ) );
-
     may_combo_strike = true;
     cast_during_sck  = true;
     cooldown->hasted = false;
@@ -7500,6 +7480,10 @@ void monk_t::init_spells()
     shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
+
+  // Register passives
+  parse_passive_effects( talent.brewmaster.high_tolerance );
+  parse_passive_effects( talent.windwalker.communion_with_wind );
 }
 
 void monk_t::init_background_actions()
@@ -7690,7 +7674,6 @@ struct debuff_override : stagger_impl::debuff_t<monk_t>
   {
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    apply_affecting_aura( player->talent.brewmaster.high_tolerance );
     set_stack_change_callback( [ player ]( buff_t *, int old_, int new_ ) {
       if ( old_ )
         player->buff.training_of_niuzao->expire();

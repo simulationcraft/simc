@@ -1045,7 +1045,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, std::s
   { P_GCD,                "Spell Global Cooldown"           },
   { P_TICK_DAMAGE,        "Spell Periodic Amount"           },
   { P_EFFECT_3,           "Spell Effect 3"                  },
-  { P_SPELL_POWER,        "Spell Power"                     },
+  { P_COEFFICIENT,        "Spell Coefficient"               },
   { P_TRIGGER_DAMAGE,     "Spell Trigger Damage"            },
   { P_PROC_FREQUENCY,     "Spell Proc Frequency"            },
   { P_DAMAGE_TAKEN,       "Spell Amplitude"                 },

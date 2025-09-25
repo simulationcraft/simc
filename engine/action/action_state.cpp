@@ -213,7 +213,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " ap=" << attack_power;
   s << " sp=" << spell_power;
 
-  s.precision( 4 );
+  s.precision( 6 );
 
   s << " haste=" << haste;
   s << " crit=" << crit_chance;

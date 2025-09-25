@@ -7288,7 +7288,7 @@ void fyrakks_tainted_rageheart( special_effect_t& effect )
 
   auto p_self = create_proc_action<tainted_heart_t>( "tainted_heart_self", effect, "tainted_heart_self", p_driver );
   p_self->aoe = 0;
-  p_self->crit_bonus = 0.5;
+  p_self->base_crit_bonus = 0.5;
   p_self->target = effect.player;
   p_self->stats->type = stats_e::STATS_NEUTRAL;
 

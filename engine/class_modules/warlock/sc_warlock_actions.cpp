@@ -1694,10 +1694,6 @@ using namespace helpers;
     {
       may_crit = false;
 
-      apply_affecting_effect( p->talents.socrethars_guile->effectN( 1 ) );
-      apply_affecting_effect( p->talents.socrethars_guile->effectN( 4 ) );
-      apply_affecting_effect( p->hero.mark_of_xavius->effectN( 1 ) );
-
       triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();

@@ -172,10 +172,10 @@ struct affect_list_t
   affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
   affect_list_t& add_family( int8_t f )
-  { family.push_back( f ); return *this; }
+  { family.push_back( f + 1 ); return *this; }  // +1 to account for flag 0
 
   affect_list_t& remove_family( int8_t f )
-  { family.push_back( -f ); return *this; }
+  { family.push_back( -f - 1); return *this; }  // -1 to account for flag 0
 
   template <typename... Ts>
   affect_list_t& add_family( int8_t f, Ts... fs )

@@ -636,7 +636,7 @@ enum property_type_t {
   P_GCD                 = 21, // Only used for flat modifiers?
   P_TICK_DAMAGE         = 22,
   P_EFFECT_3            = 23,
-  P_SPELL_POWER         = 24,
+  P_COEFFICIENT         = 24,
   P_TRIGGER_DAMAGE      = 25,
   P_PROC_FREQUENCY      = 26,
   P_DAMAGE_TAKEN        = 27,

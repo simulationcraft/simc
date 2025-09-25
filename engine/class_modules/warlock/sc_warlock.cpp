@@ -926,9 +926,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.wrathful_minion ); // 386864
   action.apply_affecting_aura( talents.demonic_inspiration ); // 386858  // The attack speed increase to the main pet is a Dummy effect
   action.apply_affecting_aura( talents.sargerei_technique ); // 405955  // Sargerei Technique appears to double dip for Infernal Bolt due to Destro/Demo modifier
-  // Only Socrethars Guile effects #1 and #4 are enabled for Affliction, and they are handled directly in agony_t
-  if ( !affliction() )
-    action.apply_affecting_aura( talents.socrethars_guile ); // 405936
   if ( !demonology() )
     action.apply_affecting_aura( talents.summoners_embrace ); // 453105
 
@@ -997,8 +994,8 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     if ( destruction() )
     {
-      action.apply_affecting_aura( hero.xalans_ferocity, warlock_base.destruction_warlock ); // 440044 (m: 137046)
-      action.apply_affecting_aura( hero.xalans_cruelty, warlock_base.destruction_warlock ); // 440040 (m: 137046)
+      action.apply_affecting_aura( hero.xalans_ferocity ); // 440044
+      action.apply_affecting_aura( hero.xalans_cruelty ); // 440040
     }
     else
     {
@@ -1007,10 +1004,6 @@ void warlock_t::apply_affecting_auras( action_t& action )
     }
     action.apply_affecting_aura( hero.hatefury_rituals ); // 440048
     action.apply_affecting_aura( hero.bleakheart_tactics ); // 440051
-
-    // Effects #2 and #4 of Mark of Xavius are disabled for Affliction ( and effect #1 is handled in agony_t )
-    if ( destruction() )
-      action.apply_affecting_aura( hero.mark_of_xavius ); // 440046
 
     // NOTE: There are two effects in 'warlock_base.affliction_warlock' that modify Mark of Perotharn, but they cancel each other out
     // In any case, currently `action.apply_affecting_aura` can't handle two modifier effects (from the same modifier spell) redirecting onto a single

@@ -2448,7 +2448,7 @@ struct atonement_t final : public priest_heal_t
     aoe       = -1;
     may_dodge = may_parry = may_block = harmful = false;
     background                                  = true;
-    crit_bonus                                  = 0.0;
+    base_crit_bonus                             = 0.0;
     disc_mastery                                = true;
     divine_aegis                                = false;
   }

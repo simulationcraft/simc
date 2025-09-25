@@ -1036,10 +1036,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>may_crit:</span>{}</li>"
                    "<li><span>attack_power_mod.direct:</span>{:.6f}</li>"
                    "<li><span>spell_power_mod.direct:</span>{:.6f}</li>"
-                   "<li><span>base_dd_min:</span>{:.2f}</li>"
-                   "<li><span>base_dd_max:</span>{:.2f}</li>"
-                   "<li><span>base_dd_mult:</span>{:.2f}</li>\n"
-                   "<li><span>base_multiplier:</span>{:.2f}</li></ul></div>\n",
+                   "<li><span>base_dd_min:</span>{:.6f}</li>"
+                   "<li><span>base_dd_max:</span>{:.6f}</li>"
+                   "<li><span>base_dd_mult:</span>{:.6f}</li>\n"
+                   "<li><span>base_multiplier:</span>{:.6f}</li></ul></div>\n",
                    a->may_crit ? "true" : "false",
                    a->attack_power_mod.direct,
                    a->spell_power_mod.direct,
@@ -1058,9 +1058,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>rolling_periodic:</span>{}</li>"
                    "<li><span>attack_power_mod.tick:</span>{:.6f}</li>"
                    "<li><span>spell_power_mod.tick:</span>{:.6f}</li>"
-                   "<li><span>base_td:</span>{:.2f}</li>"
-                   "<li><span>base_td_mult:</span>{:.2f}</li>"
-                   "<li><span>base_multiplier:</span>{:.2f}</li>"
+                   "<li><span>base_td:</span>{:.6f}</li>"
+                   "<li><span>base_td_mult:</span>{:.6f}</li>"
+                   "<li><span>base_multiplier:</span>{:.6f}</li>"
                    "<li><span>dot_duration:</span>{:.2f}</li>"
                    "<li><span>base_tick_time:</span>{:.2f}</li>"
                    "<li><span>hasted_ticks:</span>{}</li>"
@@ -1085,7 +1085,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
         os.format( R"(<div><h4>Weapon</h4><ul class="label">)"
                    "<li><span>normalized:</span>{}</li>"
                    "<li><span>weapon_power_mod:</span>{:.6f}</li>"
-                   "<li><span>weapon_multiplier:</span>{:.2f}</li></ul></div>\n",
+                   "<li><span>weapon_multiplier:</span>{:.6f}</li></ul></div>\n",
                    a->normalize_weapon_speed ? "true" : "false",
                    a->weapon_power_mod,
                    a->weapon_multiplier );

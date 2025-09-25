@@ -101,9 +101,11 @@ std::vector<const spell_data_t*> class_passives( const player_t* );
 
 player_e get_class_from_spec( specialization_e );
 
-// Retuns a list of all effect subtypes affecting the spell through categories
+// Returns a list of all effect subtypes affecting the spell through categories
 util::span<const effect_subtype_t> effect_category_subtypes();
 
+// Defined in sc_spell_data.cpp
+int get_class_spell_family( player_e );
 } // namespace dbc
 
 struct custom_dbc_data_t
@@ -287,7 +289,6 @@ namespace hotfix
   void apply();
   std::string to_str( bool ptr );
 
-  void add_hotfix_spell( spell_data_t* spell, bool ptr = false );
   const spell_data_t* find_spell( const spell_data_t* dbc_spell, bool ptr = false );
   const spelleffect_data_t* find_effect( const spelleffect_data_t* dbc_effect, bool ptr = false );
   const spellpower_data_t* find_power( const spellpower_data_t* dbc_power, bool ptr = false );
@@ -512,8 +513,9 @@ public:
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, unsigned idx ) const;
 
-  std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
-  std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
+  std::vector<const spell_data_t*> effect_affects_spells( unsigned family, const spelleffect_data_t* ) const;
+  std::vector<const spell_data_t*> family_flag_affects_spells( unsigned family, unsigned flag ) const;
+  std::vector<const spelleffect_data_t*> effects_affecting_spell( const spell_data_t* ) const;
   std::vector<const spelleffect_data_t*> effect_labels_affecting_spell( const spell_data_t* ) const;
   std::vector<const spelleffect_data_t*> effect_labels_affecting_label( short label ) const;
   std::vector<const spelleffect_data_t*> effect_categories_affecting_spell( const spell_data_t* ) const;
@@ -576,6 +578,9 @@ public:
   // Creates a "deep" copy of the current override database
   std::unique_ptr<dbc_override_t> clone() const;
 
+  // Clone a single spell
+  const spell_data_t* clone_spell( const spell_data_t*, bool ptr );
+
   const spell_data_t* find_spell( unsigned, bool ptr = false ) const;
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false ) const;
   const spellpower_data_t* find_power( unsigned, bool ptr = false ) const;
@@ -590,38 +595,49 @@ private:
 
 namespace dbc
 {
-
 // Wrapper for fetching spell data through various spell data variants
 template <typename T>
 const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
 {
-  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell -> id(), obj -> dbc->ptr ) )
+  auto return_spell = obj->dbc_override->find_spell( spell->id(), obj->dbc->ptr );
+  if ( return_spell )
+    return return_spell;
+
+  if ( !obj->disable_hotfixes )
+    return_spell = hotfix::find_spell( spell, obj->dbc->ptr );
+  else
+    return_spell = spell;
+
+  // always clone matching class spell family
+  if constexpr ( std::is_base_of_v<T, player_t> )
   {
-    return override_spell;
+    if ( return_spell->class_family() == dbc::get_class_spell_family( obj->type ) )
+      return_spell = T::clone_dbc_override_spell( obj, return_spell );
   }
 
-  if ( ! obj -> disable_hotfixes )
-  {
-    return hotfix::find_spell( spell, obj -> dbc->ptr );
-  }
-
-  return spell;
+  return return_spell;
 }
 
 template <typename T>
 const spell_data_t* find_spell( const T* obj, unsigned spell_id )
 {
-  if ( const spell_data_t* override_spell = obj->dbc_override->find_spell( spell_id, obj -> dbc->ptr ) )
+  auto return_spell = obj->dbc_override->find_spell( spell_id, obj->dbc->ptr );
+  if ( return_spell )
+    return return_spell;
+
+  if ( !obj->disable_hotfixes )
+    return_spell = hotfix::find_spell( obj->dbc->spell( spell_id ), obj->dbc->ptr );
+  else
+    return_spell = obj->dbc->spell( spell_id );
+
+  // always clone matching class spell family
+  if constexpr ( std::is_base_of_v<T, player_t> )
   {
-    return override_spell;
+    if ( return_spell->class_family() == dbc::get_class_spell_family( obj->type ) )
+      return_spell = T::clone_dbc_override_spell( obj, return_spell );
   }
 
-  if ( ! obj -> disable_hotfixes )
-  {
-    return hotfix::find_spell( obj -> dbc->spell( spell_id ), obj -> dbc->ptr );
-  }
-
-  return obj -> dbc->spell( spell_id );
+  return return_spell;
 }
 
 template <typename T>
@@ -655,8 +671,6 @@ const spellpower_data_t* find_power( const T* obj, unsigned power_id )
 
   return & obj -> dbc->power( power_id );
 }
-
-
 } // dbc namespace ends
 
 #endif // SC_DBC_HPP

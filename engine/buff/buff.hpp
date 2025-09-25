@@ -104,7 +104,7 @@ public:
   // dynamic values
   double current_value;
   int current_stack;
-  timespan_t base_buff_duration;
+  parsed_value_t<timespan_t> base_buff_duration;
   double buff_duration_multiplier;
   double default_chance;
   double manual_chance; // user-specified "overridden" proc-chance
@@ -124,7 +124,7 @@ public:
 
   // Ticking buff values
   unsigned current_tick;
-  timespan_t buff_period;
+  parsed_value_t<timespan_t> buff_period;
   buff_tick_time_behavior tick_time_behavior;
   buff_tick_behavior tick_behavior;
   event_t* tick_event;
@@ -423,6 +423,7 @@ public:
   buff_t* set_allow_precombat( bool b );
   buff_t* set_name_reporting( std::string_view );
 
+  buff_t* apply_time_rate_modifier( const spell_data_t* spell );
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
   virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
   virtual buff_t* apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );

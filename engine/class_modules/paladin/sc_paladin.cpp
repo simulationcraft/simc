@@ -434,9 +434,7 @@ struct divine_guidance_damage_t : public paladin_spell_t
   {
     proc = may_crit         = true;
     may_miss                = false;
-    attack_power_mod.direct = ( p->talents.lightsmith.divine_guidance->effectN( 1 ).base_value() +
-                                p->spec.protection_paladin->effectN( 25 ).base_value() ) /
-                              10.0;
+    attack_power_mod.direct = p->talents.lightsmith.divine_guidance->effectN( 1 ).base_value() / 10.0;
     aoe                     = -1;
     split_aoe_damage        = true;
   }
@@ -455,9 +453,7 @@ struct divine_guidance_heal_t : public paladin_heal_t
   {
     proc = may_crit         = true;
     may_miss                = false;
-    attack_power_mod.direct = ( p->talents.lightsmith.divine_guidance->effectN( 1 ).base_value() +
-                                p->spec.protection_paladin->effectN( 25 ).base_value() ) /
-                              10.0;
+    attack_power_mod.direct = p->talents.lightsmith.divine_guidance->effectN( 1 ).base_value() / 10.0;
     aoe                     = 1;
   }
 
@@ -2225,11 +2221,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     doesnt_consume_dp = false;
     hol_cost          = p->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
-
-    if ( p->sets->has_set_bonus( HERO_TEMPLAR, TWW3, B4 ) )
-      // Both effect 1 and 3 adjust HoL. This is probably a tuning knob for Blizzard. Also maybe Ret is 1, Prot 3, who knows.
-      apply_affecting_effect(
-          p->sets->set( HERO_TEMPLAR, TWW3, B4 )->effectN( p->specialization() == PALADIN_RETRIBUTION ? 3 : 1 ) );
   }
 
   action_state_t* new_state() override
@@ -2999,10 +2990,7 @@ public:
       echo->base_aoe_multiplier = base_aoe_multiplier;
       echo->crit_bonus_multiplier = crit_bonus_multiplier;
       echo->triggers_higher_calling = true;
-      // ret spec aura applies +20% to second sunrise effectiveness
-      // temporary fix until register_passive_effect_modifier() is implemented
-      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent() +
-                               p->spec.retribution_paladin_2->effectN( 26 ).percent();
+      echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
     }
   }
 
@@ -3111,12 +3099,7 @@ public:
         s->chain_target == 0 &&
         p()->cooldowns.second_sunrise_icd->up() )
     {
-      // ret spec aura applies +5% to second sunrise chance
-      // temporary fix until register_passive_effect_modifier() is implemented
-      auto sunrise_chance = p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() +
-                            p()->spec.retribution_paladin_2->effectN( 25 ).percent();
-
-      if ( rng().roll( sunrise_chance ) )
+      if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
       {
         p()->cooldowns.second_sunrise_icd->start();
         // TODO(mserrano): verify this delay
@@ -3157,10 +3140,6 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p )
   } );
   set_refresh_behavior( buff_refresh_behavior::CUSTOM );
   cooldown->duration = 0_ms;  // handled by the ability
-  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B2 ) )
-  {
-    apply_affecting_aura( p->sets->set( PALADIN_PROTECTION, TWW1, B2 ) );
-  }
 }
 
 void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -3659,11 +3638,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_default_value_from_effect( 1 )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  if (paladin->specialization() == PALADIN_PROTECTION)
-  {
-    debuff.judgment->apply_affecting_aura( paladin->spec.protection_paladin );
-  }
-
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
 
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
@@ -4132,10 +4106,6 @@ void paladin_t::create_buffs()
 
   buffs.blessing_of_dawn =
       make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect( 1 );
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    buffs.blessing_of_dawn->apply_affecting_aura( spec.retribution_paladin );
-  }
   buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
   buffs.faiths_armor     = make_buff( this, "faiths_armor", find_spell( 379017 ) )
                            ->set_default_value_from_effect( 1 )
@@ -4260,11 +4230,6 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", spells.herald_of_the_sun.gleaming_rays )
     ->set_duration( bugs ? timespan_t::from_seconds( 30 ) : timespan_t::zero() ) // infinite duration, except it's bugged
     ->set_default_value_from_effect( 1 );
-  if ( specialization() == PALADIN_RETRIBUTION )
-  {
-    buffs.herald_of_the_sun.gleaming_rays->apply_affecting_aura( spec.retribution_paladin );
-    buffs.herald_of_the_sun.gleaming_rays->apply_affecting_aura( spec.retribution_paladin_2 );
-  }
   auto blessing_of_anshe_id = specialization() == PALADIN_RETRIBUTION ? 445206 : 445204;
   buffs.herald_of_the_sun.blessing_of_anshe = make_buff( this, "blessing_of_anshe", find_spell( blessing_of_anshe_id ) );
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
@@ -4813,6 +4778,18 @@ void paladin_t::init_spells()
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
   spells.herald_of_the_sun.solar_wrath            = find_spell( 1236972 );
+
+  // Register passives
+  parse_passive_effects( spec.protection_paladin );
+  parse_passive_effects( spec.retribution_paladin );
+  parse_passive_effects( spec.retribution_paladin_2 );
+  parse_passive_effects( sets->set( PALADIN_PROTECTION, TWW1, B2 ) );
+
+  auto t_tww3_4pc_mask = specialization() == PALADIN_RETRIBUTION  ? effect_mask_t( true ).disable( 3 )
+                         : specialization() == PALADIN_PROTECTION ? effect_mask_t( true ).disable( 1 )
+                                                                  : effect_mask_t( false );
+  register_passive_effect_mask( sets->set( HERO_TEMPLAR, TWW3, B4 ), t_tww3_4pc_mask );
+  parse_passive_effects( sets->set( HERO_TEMPLAR, TWW3, B4 ) );
 }
 
 // paladin_t::primary_role ==================================================
@@ -5046,7 +5023,7 @@ double paladin_t::composite_base_armor_multiplier() const
     a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
   if ( talents.sanctified_plates->ok() )
-    a *= 1.0 + ( talents.sanctified_plates->effectN( 3 ).percent() * ( 1.0 + spec.protection_paladin->effectN( 20 ).percent() ) );
+    a *= 1.0 + talents.sanctified_plates->effectN( 3 ).percent();
 
   if ( talents.faiths_armor->ok() && buffs.faiths_armor->up() )
     a *= 1.0 + buffs.faiths_armor->default_value;
@@ -5145,9 +5122,6 @@ double paladin_t::composite_bonus_armor() const
   if ( buffs.shield_of_the_righteous->check() )
   {
     double bonus = spells.sotr_buff->effectN( 1 ).percent() * cache.strength();
-
-    if ( specialization() == PALADIN_PROTECTION )
-      bonus *= 1.0 + spec.protection_paladin->effectN( 23 ).percent();
 
     ba += bonus;
   }

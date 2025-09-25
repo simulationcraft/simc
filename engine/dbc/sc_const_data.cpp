@@ -300,9 +300,9 @@ double dbc::stat_data_to_attribute(const stat_data_t& s, attribute_e a) {
   return 0.0;
 }
 
-std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
+std::vector<const spell_data_t*> dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
 {
-  std::vector< const spell_data_t* > affected_spells;
+  std::vector<const spell_data_t*> affected_spells;
 
   if ( family == 0 )
     return affected_spells;
@@ -315,11 +315,32 @@ std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family
   {
     for ( unsigned int j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
     {
-      if ( effect -> class_flag(j ) && s -> class_flag( j ) )
+      if ( effect->class_flag( j ) && s->class_flag( j ) && !range::contains( affected_spells, s ) )
       {
-        if ( std::find( affected_spells.begin(), affected_spells.end(), s ) == affected_spells.end() )
-          affected_spells.push_back( s );
+        affected_spells.push_back( s );
       }
+    }
+  }
+
+  return affected_spells;
+}
+
+std::vector<const spell_data_t*> dbc_t::family_flag_affects_spells( unsigned family, unsigned flag ) const
+{
+  std::vector<const spell_data_t*> affected_spells;
+
+  if ( family == 0 )
+    return affected_spells;
+
+  const auto& index = class_family_index[ ptr ];
+  if ( family >= index.size() )
+    return affected_spells;
+
+  for ( auto s : index[ family ] )
+  {
+    if ( s->class_flag( flag ) )
+    {
+      affected_spells.push_back( s );
     }
   }
 

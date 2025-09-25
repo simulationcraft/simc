@@ -83,6 +83,18 @@ namespace warlock
     warlock_t::init_spells_soul_harvester();
 
     version_11_1_0_data = find_spell( 1214442 ); // For 11.1 version checking, new talent: Demonfire Infusion
+
+    // Register passives
+    auto sg_mask = affliction() ? effect_mask_t( false ).enable( 1, 4 ) : effect_mask_t( true ).disable( 1, 4 );
+    register_passive_effect_mask( talents.socrethars_guile, sg_mask );
+
+    auto mox_mask = affliction() ? effect_mask_t( false ).enable( 1 ) : effect_mask_t( true ).disable( 1 );
+    register_passive_effect_mask( hero.mark_of_xavius, mox_mask );
+
+    parse_passive_effects( warlock_base.destruction_warlock );
+    parse_passive_effects( talents.socrethars_guile );
+    parse_passive_effects( hero.mark_of_xavius );
+    
   }
 
   void warlock_t::init_spells_affliction()

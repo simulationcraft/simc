@@ -1726,7 +1726,7 @@ bool parse_action_base_t::check_affected_list( const std::vector<affect_list_t>&
 
     for ( auto f : list.family )
     {
-      if ( _action->data().class_flag( std::abs( f ) ) )
+      if ( _action->data().class_flag( std::abs( f ) - 1 ) )
       {
         if ( f > 0 )
         {

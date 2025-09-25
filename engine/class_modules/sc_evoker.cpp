@@ -6776,7 +6776,7 @@ public:
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
-    crit_bonus = 0.0;
+    base_crit_bonus = 0.0;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

@@ -31,7 +31,7 @@ spell_base_t::spell_base_t( action_e at, util::string_view token, player_t* p, c
   min_gcd = p->min_gcd;
   special = true;
 
-  crit_bonus = 1.0;
+  base_crit_bonus = 1.0;
 }
 
 double spell_base_t::cost() const

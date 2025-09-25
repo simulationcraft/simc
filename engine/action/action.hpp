@@ -10,7 +10,6 @@
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
 #include "sc_enums.hpp"
-#include "sim/cooldown_waste_data.hpp"
 #include "util/format.hpp"
 #include "util/generic.hpp"
 #include "util/parse_util.hpp"
@@ -28,6 +27,7 @@ struct action_priority_list_t;
 struct action_state_t;
 struct spell_data_t;
 struct cooldown_t;
+struct cooldown_waste_data_t;
 class conduit_data_t;
 struct dot_t;
 struct buff_t;
@@ -49,6 +49,8 @@ namespace io {
 namespace report {
   using sc_html_stream = io::ofstream;
 }
+template <typename T>
+struct parsed_value_t;
 
 // Action ===================================================================
 
@@ -376,10 +378,10 @@ public:
   double base_hit;
   double base_crit;
   double crit_chance_multiplier;
-  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-  double crit_bonus;
+  double base_crit_bonus;      // action scoped Add Percent Modifier (107): Spell Critical Bonus Multiplier (15)
+  double crit_bonus_multiplier;// action scoped Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
   double base_dd_adder;
-  double base_ta_adder;
+  double base_td_adder;
 
   /// Weapon damage for the ability.
   double weapon_multiplier;
@@ -698,10 +700,7 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura( const spell_data_t*, const spell_data_t* modifier = nullptr );
-  void apply_affecting_effect( const spelleffect_data_t& effect, const spelleffect_data_t* modifier = nullptr );
-  void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
-  void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
+  void apply_affecting_aura( const spell_data_t* );
 
   action_state_t* get_state( const action_state_t* = nullptr );
 
@@ -869,7 +868,7 @@ public:
   { return base_dd_adder; }
 
   virtual double bonus_ta( const action_state_t* ) const
-  { return base_ta_adder; }
+  { return base_td_adder; }
 
   virtual double range_() const
   { return range; }

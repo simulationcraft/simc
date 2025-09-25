@@ -23,7 +23,7 @@ attack_t::attack_t( util::string_view n, player_t* p ) : attack_t( n, p, spell_d
 attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : action_t( ACTION_ATTACK, n, p, s ), base_attack_expertise( 0 ), attack_table()
 {
-  crit_bonus = 1.0;
+  base_crit_bonus = 1.0;
   special = true;  // Make sure to set this to false with autoattacks.
 
   weapon_power_mod = 1.0 / WEAPON_POWER_COEFFICIENT;

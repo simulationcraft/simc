@@ -968,8 +968,48 @@ private:
 
   /// Per-player custom dbc data
   std::unique_ptr<dbc_override_t> dbc_override_;
+  struct modified_value_t
+  {
+    unsigned id, field_id;
+    double orig, flat, pct;
+    modified_value_t( unsigned id, unsigned field_id, double orig, double flat = 0.0, double pct = 1.0 )
+      : id( id ), field_id( field_id ), orig( orig ), flat( flat ), pct( pct )
+    {}
+
+    double value() const { return ( orig + flat ) * pct; }
+  };
+  std::vector<modified_value_t> passive_spell_modifiers_;
+  std::vector<modified_value_t> passive_effect_modifiers_;
+  std::vector<modified_value_t> passive_power_modifiers_;
+  std::vector<modified_value_t> passive_player_modifiers_;
+  std::vector<unsigned> registered_passive_spells_;
+  std::vector<unsigned> registered_effect_ignore_list_;
+  std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
+
+  bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
+  std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
+
+  friend std::pair<modified_value_t, const modified_value_t&> add_passive_modifier(
+    sim_t*, std::vector<modified_value_t>&,
+    unsigned id, unsigned field_id,
+    double orig_val, double flat_val, double pct_val );
+
+protected:
+  void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );
+  void parse_all_passive_talents();
+  void register_passive_effect_mask( const spell_data_t*, uint32_t );
+  void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
+  // directly override the base_value of effects
+  void register_passive_effect_override( const spelleffect_data_t&, double value );
 
 public:
+  // return { orig, flat, pct }
+  std::array<double, 3> get_passive_value( const spell_data_t&, std::string_view field ) const;
+  std::array<double, 3> get_passive_value( const spellpower_data_t&, std::string_view field ) const;
+  std::array<double, 3> get_passive_value( const spelleffect_data_t&, std::string_view field ) const;
+  // clone a spell into the override dbc
+  static const spell_data_t* clone_dbc_override_spell( const player_t* p, const spell_data_t* s );
+
   player_t( sim_t* sim, player_e type, util::string_view name, race_e race_e );
   ~player_t() override;
 
@@ -1042,7 +1082,6 @@ public:
   timespan_t cooldown_tolerance() const;
   position_e position() const
   { return current.position; }
-
 
   pet_t* cast_pet();
   const pet_t* cast_pet() const;
@@ -1138,7 +1177,6 @@ public:
   int get_action_id( util::string_view name );
   int get_dot_id( util::string_view name );
   cooldown_waste_data_t* get_cooldown_waste_data( const cooldown_t* cd );
-
 
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
@@ -1358,7 +1396,6 @@ public:
   virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
-
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,

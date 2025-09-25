@@ -2018,10 +2018,7 @@ struct bear_t final : public dire_critter_t
     dire_critter_t::create_buffs();
 
     buffs.bear_summon = make_buff( this, "bear_summon", o()->talents.howl_of_the_pack_leader_bear_buff )
-      ->set_default_value_from_effect( 1 )
-      ->apply_affecting_aura( o()->specs.beast_mastery_hunter )
-      ->apply_affecting_aura( o()->specs.survival_hunter )
-      ->apply_affecting_aura( o()->tier_set.tww_s3_pack_leader_2pc );
+      ->set_default_value_from_effect( 1 );
   }
 
   const bear_td_t* find_target_data( const player_t* target ) const override
@@ -2134,7 +2131,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
       -> set_default_value_from_effect( 1 )
       -> modify_default_value( o() -> tier_set.tww_s1_bm_2pc -> effectN( 1 ).percent() )
       -> apply_affecting_aura( o() -> talents.savagery )
-      -> apply_affecting_aura( o() -> talents.better_together )
       -> add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     buffs.thrill_of_the_hunt =
@@ -2766,7 +2762,7 @@ struct kill_command_bm_t: public hunter_pet_attack_t<hunter_main_pet_base_t>
 
     if ( o()->talents.phantom_pain.ok() )
     {
-      phantom_pain.replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent() + o()->specs.beast_mastery_hunter->effectN( 13 ).percent();
+      phantom_pain.replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent();
       phantom_pain.max_targets = as<int>( o()->talents.phantom_pain->effectN( 3 ).base_value() );
     }
   }
@@ -3880,7 +3876,7 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
   if ( buffs.howl_of_the_pack_leader_wyvern->check() )
   {
     up++;
-    buffs.wyverns_cry->trigger( as<int>( talents.howl_of_the_pack_leader->effectN( 3 ).base_value() + specs.survival_hunter->effectN( 12 ).base_value() ) );
+    buffs.wyverns_cry->trigger( as<int>( talents.howl_of_the_pack_leader->effectN( 3 ).base_value() ) );
     buffs.howl_of_the_pack_leader_wyvern->expire();
     buffs.sharpened_fangs->trigger();
   }
@@ -8615,6 +8611,15 @@ void hunter_t::init_spells()
   cooldowns.banshees_mark->duration = talents.banshees_mark->internal_cooldown();
 
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
+
+  // Passives that modify effects
+  parse_passive_effects( specs.beast_mastery_hunter );
+  parse_passive_effects( specs.survival_hunter );
+  parse_passive_effects( talents.aspect_of_the_beast );
+  parse_passive_effects( talents.better_together );
+  parse_passive_effects( talents.unmatched_precision );
+  parse_passive_effects( talents.windrunner_quiver );
+  parse_passive_effects( tier_set.tww_s3_pack_leader_2pc );
 }
 
 void hunter_t::init_base_stats()
@@ -8704,7 +8709,6 @@ void hunter_t::create_buffs()
   buffs.precise_shots = 
     make_buff( this, "precise_shots", talents.precise_shots_buff )
       ->set_default_value_from_effect( 1 )
-      ->apply_affecting_aura( talents.unmatched_precision )
       ->apply_affecting_aura( talents.windrunner_quiver );
 
   buffs.streamline =
@@ -8944,7 +8948,6 @@ void hunter_t::create_buffs()
   buffs.endurance_training =
     make_buff( this, "endurance_training", find_spell( 264662 ) )
       -> set_default_value_from_effect( 2 )
-      -> apply_affecting_aura( talents.aspect_of_the_beast )
       -> set_stack_change_callback(
           []( buff_t* b, int old, int cur ) {
             player_t* p = b -> player;
@@ -8958,13 +8961,11 @@ void hunter_t::create_buffs()
   buffs.pathfinding =
     make_buff( this, "pathfinding", find_spell( 264656 ) )
       -> set_default_value_from_effect( 2 )
-      -> apply_affecting_aura( talents.aspect_of_the_beast )
       -> add_invalidate( CACHE_RUN_SPEED );
 
   buffs.predators_thirst =
     make_buff( this, "predators_thirst", find_spell( 264663 ) )
       -> set_default_value_from_effect( 2 )
-      -> apply_affecting_aura( talents.aspect_of_the_beast )
       -> add_invalidate( CACHE_LEECH );
 
   // Tier Set Bonuses
@@ -9103,8 +9104,7 @@ void hunter_t::create_buffs()
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )
       ->set_default_value_from_effect( 1 )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      ->apply_affecting_aura( specs.beast_mastery_hunter );
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 void hunter_t::init_gains()
