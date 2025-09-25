@@ -1686,8 +1686,7 @@ struct hunter_pet_t: public pet_t
 
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
-      -> set_default_value( o()->talents.beast_cleave.ok() ? o() -> talents.beast_cleave -> effectN( 1 ).percent() : 1.0 )
-      -> apply_affecting_effect( o() -> talents.beast_cleave -> effectN( 2 ) );
+      -> set_default_value( o()->talents.beast_cleave.ok() ? o() -> talents.beast_cleave -> effectN( 1 ).percent() : 1.0 );
   }
 
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
