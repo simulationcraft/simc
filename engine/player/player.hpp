@@ -986,13 +986,11 @@ private:
   std::vector<unsigned> registered_effect_ignore_list_;
   std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
 
-  bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
   std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
-
-  friend std::pair<modified_value_t, const modified_value_t&> add_passive_modifier(
-    sim_t*, std::vector<modified_value_t>&,
-    unsigned id, unsigned field_id,
+  std::pair<modified_value_t, const modified_value_t&> add_passive_effect_modifier(
+    std::vector<modified_value_t>&, unsigned id, unsigned field_id,
     double orig_val, double flat_val, double pct_val );
+  bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
 
 protected:
   void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );

@@ -15181,9 +15181,8 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
   return affected_spells;
 }
 
-static std::pair<player_t::modified_value_t, const player_t::modified_value_t&> add_passive_modifier(
-  sim_t* sim, std::vector<player_t::modified_value_t>& modifiers,
-  unsigned id, unsigned field_id,
+std::pair<player_t::modified_value_t, const player_t::modified_value_t&> player_t::add_passive_effect_modifier(
+  std::vector<player_t::modified_value_t>& modifiers, unsigned id, unsigned field_id,
   double orig_val, double flat_val, double pct_val )
 {
   auto it = range::find_if( modifiers, [ id, field_id ]( const auto& mod ) {
@@ -15434,7 +15433,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       {
         auto data_val = is_dbc ? spell->get_field( field ) : 0.0;
         auto [ prev, now ] =
-          add_passive_modifier( sim, passive_spell_modifiers_, id, field_type, data_val, flat_val, pct_val );
+          add_passive_effect_modifier( passive_spell_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
         now_val = now.value();
 
@@ -15473,8 +15472,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           if ( !data_val )
             continue;
 
-          auto [ prev, now ] = add_passive_modifier( sim, passive_power_modifiers_, id,
-                                                     get_type_from_field( pow_field ), data_val, flat_val, pct_val );
+          auto [ prev, now ] = add_passive_effect_modifier(
+            passive_power_modifiers_, id, get_type_from_field( pow_field ), data_val, flat_val, pct_val );
 
           if ( sim->debug )
           {
@@ -15527,7 +15526,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           continue;
 
         auto [ prev, now ] =
-          add_passive_modifier( sim, passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
+          add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
         if ( sim->debug )
         {
@@ -15580,7 +15579,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
         auto data_val = eff->base_value();
         auto [ prev, now ] =
-          add_passive_modifier( sim, passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
+          add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
         if ( sim->debug )
         {

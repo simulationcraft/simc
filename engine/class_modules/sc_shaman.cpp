@@ -12898,6 +12898,7 @@ void shaman_t::init_spells()
   auto s_tww3_4pc_mask = specialization() == SHAMAN_ELEMENTAL     ? effect_mask_t( false ).enable( 3, 4 )
                          : specialization() == SHAMAN_ENHANCEMENT ? effect_mask_t( false ).enable( 1, 2 )
                                                                   : effect_mask_t( false );
+  register_passive_effect_mask( spell.tww3_stormbringer_4pc, s_tww3_4pc_mask );
   parse_passive_effects( spell.tww3_stormbringer_4pc );
 }
 
