@@ -11445,9 +11445,9 @@ void druid_t::init_spells()
   register_passive_effect_mask( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
 
   // EC TWW3 2pc only buffs spec-relevant spell
-  auto ec_tww3_2pc_mask = specialization() == DRUID_BALANCE ? effect_mask_t( false ).enable( 1 )
-                                                            : effect_mask_t( false ).enable( 2, 3 );
-  register_passive_effect_mask( sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 ), ec_tww3_2pc_mask );
+  register_passive_effect_mask( sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 ),
+    specialization() == DRUID_BALANCE ? effect_mask_t( false ).enable( 1 )
+                                      : effect_mask_t( false ).enable( 2, 3 ) );
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family( 0 ) );

@@ -106,6 +106,7 @@ util::span<const effect_subtype_t> effect_category_subtypes();
 
 // Defined in sc_spell_data.cpp
 int get_class_spell_family( player_e );
+int get_class_spell_label( player_e );
 } // namespace dbc
 
 struct custom_dbc_data_t
@@ -608,11 +609,12 @@ const spell_data_t* find_spell( const T* obj, const spell_data_t* spell )
   else
     return_spell = spell;
 
-  // always clone matching class spell family
+  // always clone matching class spell family or label
   if constexpr ( std::is_base_of_v<T, player_t> )
   {
     if ( !obj->disable_class_spell_auto_cloning &&
-         as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) )
+         ( as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) ||
+           return_spell->affected_by_label( dbc::get_class_spell_label( obj->type ) ) ) )
     {
       return_spell = T::clone_dbc_override_spell( obj, return_spell );
     }
@@ -633,11 +635,12 @@ const spell_data_t* find_spell( const T* obj, unsigned spell_id )
   else
     return_spell = obj->dbc->spell( spell_id );
 
-  // always clone matching class spell family
+  // always clone matching class spell family or label
   if constexpr ( std::is_base_of_v<T, player_t> )
   {
     if ( !obj->disable_class_spell_auto_cloning &&
-         as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) )
+         ( as<int>( return_spell->class_family() ) == dbc::get_class_spell_family( obj->type ) ||
+           return_spell->affected_by_label( dbc::get_class_spell_label( obj->type ) ) ) )
     {
       return_spell = T::clone_dbc_override_spell( obj, return_spell );
     }

@@ -223,24 +223,25 @@ static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
 } };
 
 struct class_info_t {
-  util::string_view name;
+  std::string_view name;
   unsigned mask;
   unsigned spell_family;
+  int spell_label;
 };
 static constexpr std::array<class_info_t, 13> _class_info { {
-  { "Warrior",       1U <<  0,   4 },
-  { "Paladin",       1U <<  1,  10 },
-  { "Hunter",        1U <<  2,   9 },
-  { "Rogue",         1U <<  3,   8 },
-  { "Priest",        1U <<  4,   6 },
-  { "DeathKnight",   1U <<  5,  15 },
-  { "Shaman",        1U <<  6,  11 },
-  { "Mage",          1U <<  7,   3 },
-  { "Warlock",       1U <<  8,   5 },
-  { "Monk",          1U <<  9,  53 },
-  { "Druid",         1U << 10,   7 },
-  { "DemonHunter",   1U << 11, 107 },
-  { "Evoker",        1U << 12, 224 }
+  { "Warrior",       1U <<  0,   4, LABEL_WARRIOR_SPELLS      },
+  { "Paladin",       1U <<  1,  10, LABEL_PALADIN_SPELLS      },
+  { "Hunter",        1U <<  2,   9, LABEL_HUNTER_SPELLS       },
+  { "Rogue",         1U <<  3,   8, LABEL_ROGUE_SPELLS        },
+  { "Priest",        1U <<  4,   6, LABEL_PRIEST_SPELLS       },
+  { "DeathKnight",   1U <<  5,  15, LABEL_DEATH_KNIGHT_SPELLS },
+  { "Shaman",        1U <<  6,  11, LABEL_SHAMAN_SPELLS       },
+  { "Mage",          1U <<  7,   3, LABEL_MAGE_SPELLS         },
+  { "Warlock",       1U <<  8,   5, LABEL_WARLOCK_SPELLS      },
+  { "Monk",          1U <<  9,  53, LABEL_MONK_SPELLS         },
+  { "Druid",         1U << 10,   7, LABEL_DRUID_SPELLS        },
+  { "DemonHunter",   1U << 11, 107, LABEL_DEMON_HUNTER_SPELLS },
+  { "Evoker",        1U << 12, 224, LABEL_EVOKER_SPELLS       },
 } };
 
 static constexpr std::array<util::string_view, 33> _race_strings { {
@@ -1204,4 +1205,14 @@ int dbc::get_class_spell_family( player_e type )
     return -1;
 
   return _class_info[ id - 1 ].spell_family;
+}
+
+int dbc::get_class_spell_label( player_e type )
+{
+  auto id = util::class_id( type );
+
+  if ( id <= 0 || id >= MAX_CLASS )
+    return -1;
+
+  return _class_info[ id - 1 ].spell_label;
 }

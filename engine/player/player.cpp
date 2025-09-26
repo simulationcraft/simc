@@ -15230,6 +15230,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     double flat_val = 0.0;
     double pct_val = 0.0;
     bool is_dbc = true;  // modifies the dbc
+    bool allow_zero = false;  // don't skip 0 original value effects
 
     auto do_debug = [ & ]( std::string_view msg ) {
       sim->print_debug( "{} ({}) eff#{} modifying {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
@@ -15347,9 +15348,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field = get_field_from_type( field_type );
           break;
         // spelleffect_data_t modifiers
+        case P_CHAIN_TARGETS:
+          allow_zero = true;
+          SC_FALLTHROUGH;
         case P_TICK_TIME:
         case P_RADIUS:
-        case P_CHAIN_TARGETS:
         case P_CHAIN_MULTIPLIER:
           eff_field = get_field_from_type( field_type );
           break;
@@ -15471,17 +15474,19 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             continue;
 
           auto data_val = pow.get_field( pow_field ) / pow.cost_divisor( false );
-          if ( !data_val )
+          if ( !data_val && !allow_zero )
             continue;
 
+          auto flat_pow = flat_val / pow.cost_divisor( false );
+
           auto [ prev, now ] = add_passive_effect_modifier(
-            passive_power_modifiers_, id, get_type_from_field( pow_field ), data_val, flat_val, pct_val );
+            passive_power_modifiers_, id, get_type_from_field( pow_field ), data_val, flat_pow, pct_val );
 
           if ( sim->debug )
           {
             do_debug( fmt::format( "pow#{} {} ({}) {} by {}{} (orig={} prev={}[{}/{}%] now={}[{}/{}%])", i + 1,
                                    util::resource_type_string( pow.resource() ), id, pow_field,
-                                   flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
+                                   flat_pow ? flat_pow : pct_val * 100, flat_pow ? "" : "%", now.orig, prev.value(),
                                    prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
           }
 
@@ -15524,7 +15529,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           data_val = eff.get_field( field_ );
         }
 
-        if ( !data_val )
+        if ( !data_val && !allow_zero )
           continue;
 
         auto [ prev, now ] =
