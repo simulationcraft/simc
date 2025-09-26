@@ -1033,7 +1033,6 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
-  void apply_affecting_auras( action_t& action ) override;
   void analyze( sim_t& sim ) override;
 
   // custom demon_hunter_t functions
@@ -1639,7 +1638,6 @@ public:
     // Havoc
     affect_flags a_fire_inside;
     affect_flags demonic_presence;
-    affect_flags demon_hide;
 
     bool chaos_theory        = false;
     bool chaotic_disposition = false;
@@ -1682,61 +1680,13 @@ public:
   {
     ab::parse_options( o );
 
-    // Talent Passives
-    ab::apply_affecting_aura( p->talent.demon_hunter.blazing_path );
-    ab::apply_affecting_aura( p->talent.demon_hunter.improved_disrupt );
-    ab::apply_affecting_aura( p->talent.demon_hunter.bouncing_glaives );
-    ab::apply_affecting_aura( p->talent.demon_hunter.aura_of_pain );
-    ab::apply_affecting_aura( p->talent.demon_hunter.master_of_the_glaive );
-    ab::apply_affecting_aura( p->talent.demon_hunter.champion_of_the_glaive );
-    ab::apply_affecting_aura( p->talent.demon_hunter.rush_of_chaos );
-    ab::apply_affecting_aura( p->talent.demon_hunter.precise_sigils );
-    ab::apply_affecting_aura( p->talent.demon_hunter.improved_sigil_of_misery );
-    ab::apply_affecting_aura( p->talent.demon_hunter.erratic_felheart );
-    ab::apply_affecting_aura( p->talent.demon_hunter.pitch_black );
-    ab::apply_affecting_aura( p->talent.demon_hunter.flames_of_fury );
-    ab::apply_affecting_aura( p->talent.demon_hunter.quickened_sigils );
-
-    ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
-    ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
-    ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
-    ab::apply_affecting_aura( p->talent.havoc.blind_fury );
-    ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
-    ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
-    ab::apply_affecting_aura( p->talent.havoc.accelerated_blade );
-    ab::apply_affecting_aura( p->talent.havoc.dancing_with_fate );
-    ab::apply_affecting_aura( p->talent.havoc.a_fire_inside );
-
-    ab::apply_affecting_aura( p->talent.vengeance.perfectly_balanced_glaive );
-    ab::apply_affecting_aura( p->talent.vengeance.meteoric_strikes );
-    ab::apply_affecting_aura( p->talent.vengeance.burning_blood );
-    ab::apply_affecting_aura( p->talent.vengeance.ascending_flame );
-    ab::apply_affecting_aura( p->talent.vengeance.ruinous_bulwark );
-    ab::apply_affecting_aura( p->talent.vengeance.chains_of_anger );
-    ab::apply_affecting_aura( p->talent.vengeance.stoke_the_flames );
-    ab::apply_affecting_aura( p->talent.vengeance.down_in_flames );
-    ab::apply_affecting_aura( p->talent.vengeance.illuminated_sigils );
-
-    ab::apply_affecting_aura( p->talent.aldrachi_reaver.incisive_blade );
-
-    ab::apply_affecting_aura( p->talent.felscarred.flamebound );
-
-    // Rank Passives
     // TODO: MIDNIGHT - ADD DEVOURER
     switch ( p->specialization() )
     {
       case DEMON_HUNTER_HAVOC:
-        // Rank Passives
-        ab::apply_affecting_aura( p->spec.immolation_aura_3 );
-
-        // Set Bonus Passives
-        ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_2pc );
-        ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_4pc );
-
         // Affect Flags
         parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
         parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
-        parse_affect_flags( p->talent.havoc.demon_hide, affected_by.demon_hide );
 
         if ( p->talent.havoc.chaos_theory->ok() )
         {
@@ -1750,16 +1700,7 @@ public:
         }
         break;
       case DEMON_HUNTER_VENGEANCE:
-        // Rank Passives
-        ab::apply_affecting_aura( p->spec.immolation_aura_cdr );
-
-        // Set Bonus Passives
-        ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_2pc );
-        ab::apply_affecting_aura( p->set_bonuses.tww1_vengeance_4pc );
-
         // Affect Flags
-
-        // Talents
         break;
       default:
         break;
@@ -1769,13 +1710,6 @@ public:
     if ( p->talent.aldrachi_reaver.reavers_mark->ok() )
     {
       affected_by.reavers_mark = ab::data().affected_by( p->hero_spec.reavers_mark->effectN( 1 ) );
-      ab::apply_affecting_aura( p->set_bonuses.tww3_aldrachi_2pc );
-    }
-
-    // Fel-scarred
-    if ( p->talent.felscarred.demonsurge->ok() )
-    {
-      ab::apply_affecting_aura( p->set_bonuses.tww3_felscarred_2pc );
     }
   }
 
@@ -1905,7 +1839,7 @@ public:
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
     // We exclude parsing effect #4 as that tier set is no longer active.
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::dots_t::fiery_brand ), p()->spec.fiery_brand_debuff,
-                              effect_mask_t( true ).disable( 4 ), p()->talent.vengeance.fiery_demise );
+                              effect_mask_t( true ).disable( 4 ) );
 
     // Aldrachi Reaver
 
@@ -1943,11 +1877,6 @@ public:
     if ( affected_by.a_fire_inside.direct )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.demon_hide.direct )
-    {
-      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 1 ).percent();
     }
 
     if ( affected_by.chaotic_disposition )
@@ -1995,11 +1924,6 @@ public:
     if ( affected_by.a_fire_inside.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by.demon_hide.periodic )
-    {
-      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 3 ).percent();
     }
 
     if ( affected_by.chaotic_disposition )
@@ -2294,12 +2218,9 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       second_ability = !BASE::p()->buff.glaive_flurry->up();
 
-      int second_ability_increase =
-          as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
-
       int first_ability_amount = 1;
       int second_ability_amount =
-          1 + second_ability_increase + as<int>( BASE::p()->set_bonuses.tww3_aldrachi_4pc->effectN( 3 ).base_value() );
+        1 + as<int>( BASE::p()->talent.aldrachi_reaver.reavers_mark->effectN( 2 ).base_value() );
       if ( BASE::p()->talent.aldrachi_reaver.reavers_mark->ok() )
       {
         BASE::td( BASE::target )
@@ -6385,10 +6306,6 @@ struct shear_t : public felblade_trigger_t<
     {
       ea += p()->spec.metamorphosis_buff->effectN( 4 ).resource( RESOURCE_FURY );
     }
-    if ( p()->talent.vengeance.shear_fury->ok() )
-    {
-      ea += p()->talent.vengeance.shear_fury->effectN( 1 ).resource( RESOURCE_FURY );
-    }
 
     return ea;
   }
@@ -7100,13 +7017,6 @@ struct wounded_quarry_t : public demon_hunter_attack_t
       affected_by.demonic_presence.direct   = true;
       affected_by.demonic_presence.periodic = true;
     }
-
-    // WQ is affected by Demon Hide
-    if ( p->talent.havoc.demon_hide->ok() )
-    {
-      affected_by.demon_hide.direct   = true;
-      affected_by.demon_hide.periodic = true;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -7181,8 +7091,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
         growing_inferno_multiplier( p->talent.havoc.growing_inferno->effectN( 1 ).percent() )
     {
       set_cooldown( timespan_t::zero() );
-      apply_affecting_aura( p->spec.immolation_aura_3 );
-      apply_affecting_aura( p->talent.vengeance.agonizing_flames );
       set_partial_tick( true );
       set_quiet( true );
 
@@ -7255,8 +7163,6 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
   immolation_aura_buff_t( demon_hunter_t* p ) : base_t( *p, "immolation_aura", p->spell.immolation_aura ), immos()
   {
     set_cooldown( timespan_t::zero() );
-    apply_affecting_aura( p->spec.immolation_aura_3 );
-    apply_affecting_aura( p->talent.vengeance.agonizing_flames );
     set_tick_behavior( buff_tick_behavior::NONE );
     disable_ticking( true );
 
@@ -7528,7 +7434,6 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   {
     set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
     set_refresh_behavior( buff_refresh_behavior::EXTEND );
-    apply_affecting_aura( p->talent.vengeance.extended_spikes );
     add_invalidate( CACHE_PARRY );
     add_invalidate( CACHE_ARMOR );
   }
@@ -7767,8 +7672,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                             ->set_default_value_from_effect( 1 )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                            ->disable_ticking( true )
-                            ->apply_affecting_aura( p.talent.vengeance.soulcrush );
+                            ->disable_ticking( true );
       break;
     default:
       break;
@@ -7802,9 +7706,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
               }
               p.last_reavers_mark_applied = b->player;
             }
-          } )
-          ->modify_default_value( p.spec.havoc_demon_hunter->effectN( 15 ).percent() )
-          ->apply_affecting_aura( p.set_bonuses.tww3_aldrachi_4pc );
+          } );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -7814,16 +7716,12 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
       make_buff( *this, "sigil_of_flame", p.spell.sigil_of_flame_damage )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
-                                                                         : buff_stack_behavior::DEFAULT )
-          ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
-          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger );
+                                                                         : buff_stack_behavior::DEFAULT );
   debuffs.sigil_of_doom =
       make_buff( *this, "sigil_of_doom", p.hero_spec.sigil_of_doom_damage )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->set_stack_behavior( p.talent.vengeance.ascending_flame->ok() ? buff_stack_behavior::ASYNCHRONOUS
-                                                                         : buff_stack_behavior::DEFAULT )
-          ->apply_affecting_aura( p.talent.vengeance.ascending_flame )
-          ->apply_affecting_aura( p.talent.vengeance.chains_of_anger );
+                                                                         : buff_stack_behavior::DEFAULT );
 
   debuffs.serrated_glaive =
       make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
@@ -8106,7 +8004,7 @@ void demon_hunter_t::create_buffs()
   buff.calcified_spikes = new buffs::calcified_spikes_t( this );
 
   buff.painbringer = make_buff( this, "painbringer", spec.painbringer_buff )
-                         ->set_default_value( talent.vengeance.painbringer->effectN( 1 ).percent() )
+                         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                          ->disable_ticking( true );
@@ -8230,8 +8128,7 @@ void demon_hunter_t::create_buffs()
 
   buff.demonsurge_demonic  = make_buff( this, "demonsurge_demonic", hero_spec.demonsurge_demonic_buff );
   buff.demonsurge_hardcast = make_buff( this, "demonsurge_hardcast", hero_spec.demonsurge_hardcast_buff );
-  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff )
-                        ->apply_affecting_aura( set_bonuses.tww3_felscarred_4pc );
+  buff.demonsurge          = make_buff( this, "demonsurge", hero_spec.demonsurge_stacking_buff );
 
   // Set Bonus Items ========================================================
 
@@ -9208,6 +9105,19 @@ void demon_hunter_t::init_spells()
       break;
   }
 
+  // Wounded Quarry (442808) is affected by Demon Hide.
+  register_passive_affect_list( talent.havoc.demon_hide,
+                                affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
+
+  parse_passive_effects( spell.all_demon_hunter );
+  parse_passive_effects( spec.havoc_demon_hunter );
+  parse_passive_effects( spec.vengeance_demon_hunter );
+  parse_passive_effects( spec.immolation_aura_3 );
+  parse_passive_effects( spec.immolation_aura_cdr );
+
+  parse_all_passive_talents();
+  parse_all_passive_sets();
+
   // Spell Initialization ===================================================
 
   using namespace actions::attacks;
@@ -9587,7 +9497,7 @@ double demon_hunter_t::composite_armor_multiplier() const
 
   if ( buff.immolation_aura->check() )
   {
-    am *= pow( 1.0 + talent.demon_hunter.infernal_armor->effectN( 1 ).percent(), buff.immolation_aura->check() );
+    am *= pow( 1.0 + spell.immolation_aura->effectN( 5 ).percent(), buff.immolation_aura->check() );
   }
 
   return am;
@@ -10282,7 +10192,7 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
-  parse_effects( talent.demon_hunter.soul_rending, talent.felscarred.improved_soul_rending );
+  parse_effects( talent.demon_hunter.soul_rending );
   parse_effects( talent.demon_hunter.aldrachi_design );
   parse_effects( talent.demon_hunter.internal_struggle,
                  talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
@@ -10350,15 +10260,6 @@ demon_hunter_td_t* demon_hunter_t::get_target_data( player_t* target ) const
     td = new demon_hunter_td_t( target, const_cast<demon_hunter_t&>( *this ) );
   }
   return td;
-}
-
-void demon_hunter_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-
-  action.apply_affecting_aura( spell.all_demon_hunter );
-  action.apply_affecting_aura( spec.havoc_demon_hunter );
-  action.apply_affecting_aura( spec.vengeance_demon_hunter );
 }
 
 // Reporting functions ======================================================
