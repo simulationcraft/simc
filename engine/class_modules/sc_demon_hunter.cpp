@@ -5782,7 +5782,7 @@ struct chaos_strike_base_t
     }
 
     // Demonic Appetite
-    if ( !from_onslaught && p()->rppm.demonic_appetite->trigger() )
+    if ( p()->rppm.demonic_appetite->trigger() )
     {
       p()->proc.demonic_appetite->occur();
       p()->spawn_soul_fragment( soul_fragment::LESSER );
