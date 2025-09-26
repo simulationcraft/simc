@@ -857,6 +857,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
   if ( spelleffect_data.chain_target() > 1 )
   {
     aoe = spelleffect_data.chain_target();
+    chain_multiplier = spelleffect_data.chain_multiplier();
   }
 
   switch ( spelleffect_data.type() )
