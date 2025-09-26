@@ -14211,8 +14211,6 @@ void death_knight_t::init_spells()
   set_icds();
 
   // Passives that modify effects
-  register_passive_effect_mask( find_spell( 1236355 ), effect_mask_t( true ).disable( 8 ) );
-
   register_passive_effect_mask( talent.improved_death_strike,
     specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 2, 3 )
                                            : effect_mask_t( true ).disable( 4, 5 ) );
@@ -14245,7 +14243,7 @@ void death_knight_t::init_spells()
     parse_passive_effects( spell.vampiric_strike_clawing_shadows );
 
   parse_passive_effects( spell.attuned_to_the_aether );
-parse_passive_effects( talent.unholy.menacing_magus );
+
   parse_all_passive_talents();
   parse_all_passive_sets();
 
