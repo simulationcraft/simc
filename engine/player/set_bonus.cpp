@@ -353,6 +353,9 @@ void set_bonus_t::enable_all_sets()
   // assume class & spec matching bonuses are tier or hero tree is available to spec
   for ( const auto& bonus : set_bonuses )
   {
+    if ( !range::contains( current_sets, bonus.enum_id ) )
+      continue;
+
     bool has_class = bonus.class_id == -1 || bonus.class_id == util::class_id( actor->type );
     bool has_spec  = bonus.spec == -1 || bonus.spec == static_cast<int>( actor->_spec );
     bool has_trait_sub_tree =
