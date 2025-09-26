@@ -11441,6 +11441,9 @@ void druid_t::init_spells()
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   register_passive_effect_mask( talent.rattle_the_stars, effect_mask_t( true ).disable( 3 ) );
 
+  // Bear TWW1 4pc ignores eff#5 and eff#6 regardless of lunar calling
+  register_passive_effect_mask( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
+
   // EC TWW3 2pc only buffs spec-relevant spell
   auto ec_tww3_2pc_mask = specialization() == DRUID_BALANCE ? effect_mask_t( false ).enable( 1 )
                                                             : effect_mask_t( false ).enable( 2, 3 );
@@ -11457,10 +11460,9 @@ void druid_t::init_spells()
   parse_passive_effects( spec.cenarius_guidance );
   parse_passive_effects( spec.moonfire_2 );
   parse_passive_effects( spec.ursine_adept );
-  parse_passive_effects( sets->set( DRUID_BALANCE, TWW1, B2 ) );
-  parse_passive_effects( sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 ) );
 
   parse_all_passive_talents();
+  parse_all_passive_sets();
 }
 
 // druid_t::init_items ======================================================
@@ -15334,9 +15336,6 @@ void druid_t::parse_action_effects( action_t* action )
     _a->parse_effects( buff.tooth_and_claw );
 
   _a->parse_effects( buff.guardians_tenacity );
-  // effects#5 and #6 are ignored regardless of lunar calling
-  _a->parse_effects( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
-
   _a->parse_effects( buff.luck_of_the_draw );
 
   // Restoration

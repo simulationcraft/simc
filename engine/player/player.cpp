@@ -15669,6 +15669,15 @@ void player_t::parse_all_passive_talents()
   }
 }
 
+void player_t::parse_all_passive_sets()
+{
+  for ( const auto& type : sets->set_bonus_spec_data )
+    for ( const auto& bonus : type )
+      for ( const auto& data : bonus )
+        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+          parse_passive_effects( data.spell );
+}
+
 void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t mask )
 {
   for ( const auto& eff : spell->effects() )

@@ -995,6 +995,7 @@ private:
 protected:
   void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );
   void parse_all_passive_talents();
+  void parse_all_passive_sets();
   void register_passive_effect_mask( const spell_data_t*, uint32_t );
   void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
   // directly override the base_value of effects

@@ -8521,15 +8521,9 @@ void hunter_t::init_spells()
   parse_passive_effects( specs.beast_mastery_hunter );
   parse_passive_effects( specs.marksmanship_hunter );
   parse_passive_effects( specs.survival_hunter );
-  parse_passive_effects( tier_set.tww_s1_mm_2pc );
-  parse_passive_effects( tier_set.tww_s1_mm_4pc );
-  parse_passive_effects( tier_set.tww_s1_sv_2pc );
-  parse_passive_effects( tier_set.tww_s3_dark_ranger_2pc);
-  parse_passive_effects( tier_set.tww_s3_dark_ranger_4pc );
-  parse_passive_effects( tier_set.tww_s3_sentinel_2pc );
-  parse_passive_effects( tier_set.tww_s3_pack_leader_2pc );
 
   parse_all_passive_talents();
+  parse_all_passive_sets();
 }
 
 void hunter_t::init_base_stats()
