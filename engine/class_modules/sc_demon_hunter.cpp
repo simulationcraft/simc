@@ -903,8 +903,11 @@ public:
   struct actives_t
   {
     // General
-    heal_t* consume_soul_greater     = nullptr;
-    heal_t* consume_soul_lesser      = nullptr;
+    heal_t* consume_soul_greater         = nullptr;
+    heal_t* consume_soul_lesser          = nullptr;
+    heal_t* consume_soul_greater_demon   = nullptr;
+    heal_t* consume_soul_empowered_demon = nullptr;
+
     spell_t* immolation_aura         = nullptr;
     spell_t* immolation_aura_initial = nullptr;
     spell_t* collective_anguish      = nullptr;
@@ -1415,6 +1418,7 @@ struct soul_fragment_t
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
     double distance = 0;
+    double dist;
     switch ( dh->specialization() )
     {
       case DEMON_HUNTER_HAVOC:
@@ -1426,17 +1430,27 @@ struct soul_fragment_t
       default:
         break;
     }
-    x = dh->x_position + ( dh->next_fragment_spawn % 2 ? -distance : distance );
-    y = dh->y_position + distance;
 
-    // Calculate random offset, 2-5 yards from the base position.
-    double r_min = 2.0;
-    double r_max = 5.0;
-    // Nornmalizing factor
-    double a = 2.0 / ( r_max * r_max - r_min * r_min );
-    // Calculate distance from origin using power-law distribution for
-    // uniformity.
-    double dist = sqrt( 2.0 * dh->rng().real() / a + r_min * r_min );
+    if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
+    {
+      dist = 6.592;
+      x    = dh->x_position;
+      y    = dh->y_position;
+    }
+    else
+    {
+      x = dh->x_position + ( dh->next_fragment_spawn % 2 ? -distance : distance );
+      y = dh->y_position + distance;
+
+      // Calculate random offset, 2-5 yards from the base position.
+      double r_min = 2.0;
+      double r_max = 5.0;
+      // Nornmalizing factor
+      double a = 2.0 / ( r_max * r_max - r_min * r_min );
+      // Calculate distance from origin using power-law distribution for
+      // uniformity.
+      dist = sqrt( 2.0 * dh->rng().real() / a + r_min * r_min );
+    }
     // Pick a random angle.
     double theta = dh->rng().range( 0.0, 2.0 * m_pi );
     // And finally, apply the offsets to x and y;
@@ -1459,8 +1473,22 @@ struct soul_fragment_t
 
     if ( heal )
     {
-      action_t* consume_action =
-          is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater : dh->active.consume_soul_lesser;
+      action_t* consume_action;
+      switch ( type )
+      {
+        case soul_fragment::EMPOWERED_DEMON:
+          consume_action = dh->active.consume_soul_empowered_demon;
+          break;
+        case soul_fragment::GREATER_DEMON:
+          consume_action = dh->active.consume_soul_greater_demon;
+          break;
+        case soul_fragment::LESSER:
+          consume_action = dh->active.consume_soul_lesser;
+          break;
+        case soul_fragment::GREATER:
+          consume_action = dh->active.consume_soul_greater;
+          break;
+      }
 
       timespan_t delay = get_travel_time();
       if ( instant || delay == 0_s )
@@ -1491,25 +1519,7 @@ struct soul_fragment_t
     }
 
     dh->buff.painbringer->trigger();
-    dh->buff.art_of_the_glaive->trigger();
     dh->buff.tww1_vengeance_4pc->trigger();
-
-    // Warblade's hunger currently applies an additional stack on first buff application
-
-    if ( !dh->buff.warblades_hunger->up() )
-    {
-      dh->buff.warblades_hunger->trigger();
-    }
-    dh->buff.warblades_hunger->trigger();
-
-    if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
-    {
-      dh->buff.demon_soul_tww3->trigger();
-    }
-    else if ( is_type( soul_fragment::GREATER_DEMON ) )
-    {
-      dh->buff.demon_soul->trigger();
-    }
 
     dh->buff.soul_fragments->decrement();
     remove();
@@ -2720,6 +2730,29 @@ struct consume_soul_t : public demon_hunter_heal_t
   timespan_t travel_time() const override
   {
     return 0_s;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    p()->buff.art_of_the_glaive->trigger();
+    p()->buff.tww1_vengeance_4pc->trigger();
+
+    // Warblade's hunger currently applies an additional stack on first buff application
+
+    if ( !p()->buff.warblades_hunger->up() )
+    {
+      p()->buff.warblades_hunger->trigger();
+    }
+    p()->buff.warblades_hunger->trigger();
+
+    if ( type == soul_fragment::EMPOWERED_DEMON )
+    {
+      p()->buff.demon_soul_tww3->trigger();
+    }
+    else if ( type == soul_fragment::GREATER_DEMON )
+    {
+      p()->buff.demon_soul->trigger();
+    }
   }
 };
 
@@ -4405,7 +4438,9 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   timespan_t calculate_movement_time( soul_fragment_t* frag )
   {
     // Fragments have a 6 yard trigger radius
-    double dtm    = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
+    // TOCHECK: The empowered Demon soul from the TWW3 tier set has a slightly decreased pickup radius
+    double dtm =
+        std::max( 0.0, frag->get_distance( p() ) - 6.0 + ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) * 2 ) );
     timespan_t mt = timespan_t::from_seconds( dtm / p()->cache.run_speed() );
     return mt;
   }
@@ -9218,6 +9253,10 @@ void demon_hunter_t::init_spells()
       new consume_soul_t( this, "consume_soul_greater", spec.consume_soul_greater, soul_fragment::GREATER );
   active.consume_soul_lesser =
       new consume_soul_t( this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER );
+  active.consume_soul_greater_demon =
+      new consume_soul_t( this, "consume_soul_greater_demon", spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
+  active.consume_soul_empowered_demon = new consume_soul_t( this, "consume_soul_empowered_demon",
+                                                            spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
 
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
@@ -9235,8 +9274,8 @@ void demon_hunter_t::init_spells()
     auto cs            = get_background_action<chaos_strike_t>( "chaos_strike_onslaught" );
     cs->from_onslaught = true;
 
-    auto anni                   = get_background_action<annihilation_t>( "annihilation_onslaught" );
-    anni->from_onslaught        = true;
+    auto anni            = get_background_action<annihilation_t>( "annihilation_onslaught" );
+    anni->from_onslaught = true;
 
     active.relentless_onslaught = get_background_action<relentless_onslaught_t>( "relentless_onslaught", cs, anni );
   }
