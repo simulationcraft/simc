@@ -15040,6 +15040,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_RESOURCE_COST_1,  "cost"              },  // 14
   { P_CRIT_BONUS,       "crit_bonus"        },  // 15
   { P_CHAIN_TARGETS,    "chain_target"      },  // 17
+  { P_PROC_CHANCE,      "proc_chance"       },  // 18
   { P_TICK_TIME,        "period"            },  // 19
   { P_CHAIN_MULTIPLIER, "chain_multiplier"  },  // 20
   { P_GCD,              "gcd"               },  // 21
@@ -15230,7 +15231,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     double flat_val = 0.0;
     double pct_val = 0.0;
     bool is_dbc = true;  // modifies the dbc
-    bool allow_zero = false;  // don't skip 0 original value effects
+    bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
+    bool allow_zero = true;  // modify even if base dbc value is 0
 
     auto do_debug = [ & ]( std::string_view msg ) {
       sim->print_debug( "{} ({}) eff#{} modifying {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
@@ -15334,10 +15336,13 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field = "duration";
           break;
         case P_COOLDOWN:
-          if ( spell->_cooldown == 0 )
+          if ( spell->_cooldown == 0 && flat_val < 0 )
             continue;
           field = "cooldown";
           break;
+        case P_PROC_CHANCE:
+          allow_zero = false;
+          SC_FALLTHROUGH;
         case P_STACK:
         case P_RANGE:
         case P_CAST_TIME:
@@ -15349,11 +15354,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           break;
         // spelleffect_data_t modifiers
         case P_CHAIN_TARGETS:
-          allow_zero = true;
+        case P_CHAIN_MULTIPLIER:
+          is_damage = true;
           SC_FALLTHROUGH;
         case P_TICK_TIME:
         case P_RADIUS:
-        case P_CHAIN_MULTIPLIER:
           eff_field = get_field_from_type( field_type );
           break;
         case P_COEFFICIENT:
@@ -15403,7 +15408,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     if ( remove )
     {
       flat_val = -flat_val;
-      pct_val = -pct_val;
+      pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
     if ( !field.empty() )  // modify spell_data_t
@@ -15426,6 +15431,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       else if ( !property )  // determined via sub_type
       {
         auto prev_val = spell->get_field( field );
+        if ( prev_val == 0 && !allow_zero )
+          continue;
+
         now_val = ( prev_val + flat_val ) * ( 1.0 + pct_val );
 
         if ( sim->debug )
@@ -15437,6 +15445,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       else  // determined via property_type (misc_value1)
       {
         auto data_val = is_dbc ? spell->get_field( field ) : 0.0;
+        if ( data_val == 0 && !allow_zero )
+          continue;
+
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_spell_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
@@ -15474,7 +15485,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             continue;
 
           auto data_val = pow.get_field( pow_field ) / pow.cost_divisor( false );
-          if ( !data_val && !allow_zero )
+          if ( data_val == 0 && !allow_zero )
             continue;
 
           auto flat_pow = flat_val / pow.cost_divisor( false );
@@ -15529,8 +15540,18 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           data_val = eff.get_field( field_ );
         }
 
-        if ( !data_val && !allow_zero )
-          continue;
+        if ( data_val == 0 )
+        {
+          if ( is_damage )
+          {
+            if ( eff.type() != E_SCHOOL_DAMAGE )
+              continue;
+          }
+          else if ( !allow_zero )
+          {
+            continue;
+          }
+        }
 
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
