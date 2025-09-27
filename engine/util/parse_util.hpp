@@ -279,6 +279,8 @@ private:
     for ( const spelllabel_data_t& label : spell_data->labels() )
       if ( !default_state != !range::contains( _label, label.label() ) )
         return false;
+
+    return true;
   }
 
 public:
