@@ -4273,16 +4273,15 @@ void player_t::init_assessors()
       {
         if ( type == result_amount_type::DMG_DIRECT )
         {
-          sim->print_log( "{} {} hits {} for {} {} damage ({})", *this, state->action->name(),
-                               *state->target, state->result_amount,
-                               state->action->get_school(), state->result );
+          sim->print_log( "{} {} hits {} for {:.6f} {} damage ({})", *this, *state->action, *state->target,
+                          state->result_amount, state->action->get_school(), state->result );
         }
         else  // result_amount_type::DMG_OVER_TIME
         {
           dot_t* dot = state->action->get_dot( state->target );
-          sim->print_log( "{} {} ticks ({} of {}) on {} for {} {} damage ({})", *this, state->action->name(),
-                               dot->current_tick, dot->num_ticks(), *state->target, state->result_amount,
-                               state->action->get_school(), state->result );
+          sim->print_log( "{} {} ticks ({} of {}) on {} for {:.6f} {} damage ({})", *this, *state->action,
+                          dot->current_tick, dot->num_ticks(), *state->target, state->result_amount,
+                          state->action->get_school(), state->result );
         }
       }
       return assessor::CONTINUE;

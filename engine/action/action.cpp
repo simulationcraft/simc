@@ -1393,8 +1393,8 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
 
   if ( sim->debug )
   {
-    sim->print_debug( "{} crit_bonus for {}: total={} base={} bonus_mult={} total_damage_mult={}", *player, *this,
-                      bonus, base_bonus, bonus_mult, damage_from_crit_multiplier );
+    sim->print_debug( "{} crit_bonus for {}: total={:.7g} base={:.7g} bonus_mult={:.7g} total_damage_mult={:.7g}",
+                      *player, *this, bonus, base_bonus, bonus_mult, damage_from_crit_multiplier );
   }
 
   return bonus;
@@ -1412,10 +1412,11 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   double power_damage     = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg        = dmg + power_damage;
 
-  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} multiplier={} "
-      "speed={} power_damage={} ap={}",
-      *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm,
-      weapon_speed, power_damage, attack_power );
+  sim->print_debug(
+    "{} weapon damage for {}: base=({:.7g} to {:.7g}) total={:.6f} weapon_damage={:.7g} bonus_damage={:.7g} "
+    "multiplier={:.7g} speed={} power_damage={:.7g} ap={:.7g}",
+    *player, *this, weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg, capm, weapon_speed,
+    power_damage, attack_power );
 
   return total_dmg;
 }
@@ -1457,11 +1458,11 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   if ( sim->debug )
   {
     sim->print_debug(
-        "{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
-        "a_power={} mult={}, tick_mult={}",
-        *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
-        spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
-        state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
+      "{} tick amount for {} on {}: amount={:.6f} initial_amount={:.6f} base={:.7g} bonus={:.7g} s_mod={:.7g} "
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}, tick_mult={:.7g}",
+      *player, *this, *state->target, amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
+      spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
+      state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
   }
 
   return amount;
@@ -1596,12 +1597,12 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   if ( sim->debug )
   {
     sim->print_debug(
-        "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
-        "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
-        *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
-        spell_direct_power_coefficient( state ), state->composite_spell_power(),
-        attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
-        weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
+      "{} direct amount for {}: amount={:.6f} initial_amount={:.6f} weapon={:.7g} base={:.7g} s_mod={:.7g} "
+      "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g} w_mult={:.7g} w_slot_mod={:.7g} bonus_da={:.7g}",
+      *player, *this, amount, state->result_raw, weapon_amount, base_direct_amount,
+      spell_direct_power_coefficient( state ), state->composite_spell_power(), attack_direct_power_coefficient( state ),
+      state->composite_attack_power(), state->composite_da_multiplier(), weapon_multiplier, weapon_slot_modifier,
+      bonus_da( state ) );
   }
 
   // Record total amount to state

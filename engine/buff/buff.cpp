@@ -2387,12 +2387,14 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} refreshes {} (value={}, duration={}, time_duration_multiplier={})", *player, buff_display_name, current_value, d, get_time_duration_multiplier() );
+        sim->print_log( "{} refreshes {} (value={:.7g}, duration={}, time_duration_multiplier={:.7g})", *player,
+                        buff_display_name, current_value, d, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid refreshes {} (value={}, duration={}, time_duration_multiplier={})", buff_display_name, current_value, d, get_time_duration_multiplier() );
+      sim->print_log( "Raid refreshes {} (value={:.7g}, duration={}, time_duration_multiplier={:.7g})",
+                      buff_display_name, current_value, d, get_time_duration_multiplier() );
     }
   }
 }
@@ -2767,12 +2769,14 @@ void buff_t::aura_gain()
     {
       if ( !player->is_sleeping() )
       {
-        sim->print_log( "{} gains {} (value={}, time_duration_multiplier={})", *player, buff_display_name, current_value, get_time_duration_multiplier() );
+        sim->print_log( "{} gains {} (value={:.7g}, time_duration_multiplier={:.7g})", *player, buff_display_name,
+                        current_value, get_time_duration_multiplier() );
       }
     }
     else
     {
-      sim->print_log( "Raid gains {} (value={}, time_duration_multiplier={})", buff_display_name, current_value, get_time_duration_multiplier() );
+      sim->print_log( "Raid gains {} (value={:.7g}, time_duration_multiplier={:.7g})", buff_display_name, current_value,
+                      get_time_duration_multiplier() );
     }
   }
 }

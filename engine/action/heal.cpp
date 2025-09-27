@@ -124,8 +124,8 @@ double heal_t::total_crit_bonus( const action_state_t* state ) const
 
   if ( sim->debug )
   {
-    sim->print_debug( "{} crit_bonus for {}: total={} base={} bonus_mult={} total_damage_mult={}", *player, *this,
-                      bonus, base_bonus, bonus_mult, damage_from_crit_multiplier );
+    sim->print_debug( "{} crit_bonus for {}: total={:.7g} base={:.7g} bonus_mult={:.7g} total_damage_mult={:.7g}",
+                      *player, *this, bonus, base_bonus, bonus_mult, damage_from_crit_multiplier );
   }
 
   return bonus;
@@ -234,8 +234,8 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
 
   if ( heal_type == result_amount_type::HEAL_DIRECT )
   {
-    sim->print_log( "{} {} heals {} for {} ({}) ({})", *player, *this, *s->target, s->result_total, s->result_amount,
-                    s->result );
+    sim->print_log( "{} {} heals {} for {:.7g} ({:.6f}) ({})", *player, *this, *s->target, s->result_total,
+                    s->result_amount, s->result );
   }
   else  // result_amount_type::HEAL_OVER_TIME
   {
@@ -243,7 +243,7 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
     {
       dot_t* dot = get_dot( s->target );
       assert( dot );
-      sim->print_log( "{} {} ticks ({} of {}) {} for {} ({}) heal ({})", *player, *this, dot->current_tick,
+      sim->print_log( "{} {} ticks ({} of {}) {} for {:.7g} ({:.6f}) heal ({})", *player, *this, dot->current_tick,
                       dot->num_ticks(), *s->target, s->result_total, s->result_amount, s->result );
     }
   }

@@ -106,10 +106,10 @@ public:
 
     // Spit out debug for what we did
     ab::sim->print_debug(
-        "{} {} residual_action impact amount={} old_total={} old_ticks={} old_tick={} current_total={} "
-        "current_ticks={} current_tick={}",
-        *ab::player, *this, s->result_amount, old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
-        current_amount, dot->ticks_left_fractional(), dot_state->tick_amount );
+      "{} {} residual_action impact amount={:.6f} old_total={:.6f} old_ticks={} old_tick={:.6f} current_total={:.6f} "
+      "current_ticks={} current_tick={:.6f}",
+      *ab::player, *this, s->result_amount, old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
+      current_amount, dot->ticks_left_fractional(), dot_state->tick_amount );
   }
 
   // The damage of the tick is simply the tick_amount in the state
