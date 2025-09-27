@@ -15659,7 +15659,7 @@ const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const
   return p->dbc_override_->clone_spell( s, p->dbc->ptr );
 }
 
-void player_t::parse_all_passive_talents()
+void player_t::parse_all_passive_talents( parsed_passive_list_t affect_list )
 {
   for ( auto [ tree, entry_id, rank ] : player_traits )
   {
@@ -15667,19 +15667,19 @@ void player_t::parse_all_passive_talents()
       continue;
 
     auto obj = find_talent_spell( entry_id );
-    if ( !obj.ok() || !obj.spell()->ok() || !obj.spell()->flags( SX_PASSIVE ) )
+    if ( !obj.ok() || !obj.spell()->ok() || !obj.spell()->flags( SX_PASSIVE ) || !affect_list.is_allowed( obj ) )
       continue;
 
     parse_passive_effects( obj.spell() );
   }
 }
 
-void player_t::parse_all_passive_sets()
+void player_t::parse_all_passive_sets( parsed_passive_list_t affect_list )
 {
   for ( const auto& type : sets->set_bonus_spec_data )
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
-        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) && affect_list.is_allowed( data ) )
           parse_passive_effects( data.spell );
 }
 

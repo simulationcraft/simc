@@ -6,6 +6,8 @@
 #include "config.hpp"
 
 #include "util/timespan.hpp"
+#include "dbc/spell_data.hpp"
+#include "player/talent.hpp"
 
 #include <vector>
 
@@ -212,4 +214,94 @@ struct affect_list_t
   template <typename... Ts>
   affect_list_t& remove_spell( int32_t s, Ts... ss )
   { remove_spell( s ); return remove_spell( ss... ); }
+};
+
+/*
+ * Filters enable/disable behaviour for `parse_all_passive_talents()/parse_all_passive_sets()`.
+ * If constructed with `true`, members act to create a whitelist, allowing a specific set of spells.
+ * If constructed with `false`, members act to create a blacklist, disallowing a specific set of spells.
+ */
+
+struct parsed_passive_list_t
+{
+  bool default_state;
+  std::vector<unsigned>  _family;
+  std::vector<short> _label;
+  std::vector<unsigned> _spell;
+  std::vector<set_bonus_type_e> _set_bonus;
+
+  parsed_passive_list_t() : default_state( true )
+  {
+  }
+
+  parsed_passive_list_t( bool default_state ) : default_state( default_state )
+  {
+  }
+
+  parsed_passive_list_t& family( unsigned f )
+  { _family.push_back( f + 1 ); return *this; }  // +1 to account for flag 0
+
+  template <typename... Ts>
+  parsed_passive_list_t& family( unsigned f, Ts... fs )
+  { family( f ); return family( fs... ); }
+
+  parsed_passive_list_t& label( short l )
+  { _label.push_back( l ); return *this; }
+
+  template <typename... Ts>
+  parsed_passive_list_t& label( short l, Ts... ls )
+  { label( l ); return label( ls... ); }
+
+  parsed_passive_list_t& spell( unsigned s )
+  { _spell.push_back( s ); return *this; }
+
+  template <typename... Ts>
+  parsed_passive_list_t& spell( unsigned s, Ts... ss )
+  { spell( s ); return spell( ss... ); }
+
+  parsed_passive_list_t& set_bonus( set_bonus_type_e s )
+  { _set_bonus.push_back( s ); return *this; }
+
+  template <typename... Ts>
+  parsed_passive_list_t& set_bonus( set_bonus_type_e s, Ts... ss )
+  { set_bonus( s ); return set_bonus( ss... ); }
+
+private:
+
+  bool is_allowed( spell_data_t* spell_data )
+  {
+    if ( !default_state != !range::contains( _family, spell_data->class_family() ) )
+      return false;
+
+    if ( !default_state != !range::contains( _spell, spell_data->id() ) )
+      return false;
+
+    for ( const spelllabel_data_t& label : spell_data->labels() )
+      if ( !default_state != !range::contains( _label, label.label() ) )
+        return false;
+  }
+
+public:
+  bool is_allowed( player_talent_t& talent )
+  {
+    // TODO: assume this is strictly false due to usage context?
+    // don't proceed if talent does not contain valid spell data
+    // if ( !talent.ok() || !talent.spell()->ok() )
+    //   return false;
+
+    return is_allowed( talent.spell() );
+  }
+
+  bool is_allowed( set_bonus_data_t& set_bonus )
+  {
+    // TODO: assume this is strictly false due to usage context?
+    // don't proceed if set bonus is not enabled
+    // if ( !set_bonus.enabled )
+    //   return false;
+
+    if ( !default_state != !range::contains( _set_bonus, set_bonus.bonus->enum_id ) )
+      return false;
+
+    return is_allowed( set_bonus.spell );
+  }
 };
