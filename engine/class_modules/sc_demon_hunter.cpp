@@ -903,14 +903,15 @@ public:
   struct actives_t
   {
     // General
-    heal_t* consume_soul_greater         = nullptr;
-    heal_t* consume_soul_lesser          = nullptr;
-    heal_t* consume_soul_greater_demon   = nullptr;
-    heal_t* consume_soul_empowered_demon = nullptr;
-
-    spell_t* immolation_aura         = nullptr;
-    spell_t* immolation_aura_initial = nullptr;
-    spell_t* collective_anguish      = nullptr;
+    spell_t* consume_soul_greater         = nullptr;
+    spell_t* consume_soul_lesser          = nullptr;
+    spell_t* consume_soul_greater_demon   = nullptr;
+    spell_t* consume_soul_empowered_demon = nullptr;
+    heal_t* consume_soul_greater_heal     = nullptr;
+    heal_t* consume_soul_lesser_heal      = nullptr;
+    spell_t* immolation_aura              = nullptr;
+    spell_t* immolation_aura_initial      = nullptr;
+    spell_t* collective_anguish           = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -1470,34 +1471,44 @@ struct soul_fragment_t
   void consume( bool heal = true, bool instant = false )
   {
     assert( active() );
+    timespan_t delay = get_travel_time();
 
+    action_t* consume_action;
+    action_t* heal_action =
+        is_type( soul_fragment::ANY_GREATER ) ? dh->active.consume_soul_greater_heal : dh->active.consume_soul_lesser_heal;
+    switch ( type )
+    {
+      case soul_fragment::EMPOWERED_DEMON:
+        consume_action = dh->active.consume_soul_empowered_demon;
+        break;
+      case soul_fragment::GREATER_DEMON:
+        consume_action = dh->active.consume_soul_greater_demon;
+        break;
+      case soul_fragment::LESSER:
+        consume_action = dh->active.consume_soul_lesser;
+        break;
+      case soul_fragment::GREATER:
+        consume_action = dh->active.consume_soul_greater;
+        break;
+    }
+
+    if ( instant || delay == 0_s )
+    {
+      consume_action->execute();
+    }
+    else
+    {
+      make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
+    }
     if ( heal )
     {
-      action_t* consume_action;
-      switch ( type )
-      {
-        case soul_fragment::EMPOWERED_DEMON:
-          consume_action = dh->active.consume_soul_empowered_demon;
-          break;
-        case soul_fragment::GREATER_DEMON:
-          consume_action = dh->active.consume_soul_greater_demon;
-          break;
-        case soul_fragment::LESSER:
-          consume_action = dh->active.consume_soul_lesser;
-          break;
-        case soul_fragment::GREATER:
-          consume_action = dh->active.consume_soul_greater;
-          break;
-      }
-
-      timespan_t delay = get_travel_time();
       if ( instant || delay == 0_s )
       {
-        consume_action->execute();
+        heal_action->execute();
       }
       else
       {
-        make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
+        make_event<delayed_execute_event_t>( *dh->sim, dh, heal_action, dh, delay );
       }
     }
 
@@ -2659,24 +2670,13 @@ namespace heals
 
 // Consume Soul =============================================================
 
-struct consume_soul_t : public demon_hunter_heal_t
+struct consume_soul_heal_t : public demon_hunter_heal_t
 {
-  struct demonic_appetite_energize_t : public demon_hunter_spell_t
-  {
-    demonic_appetite_energize_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.demonic_appetite_fury )
-    {
-      may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      background = quiet = dual = true;
-      energize_type             = action_energize::ON_CAST;
-    }
-  };
-
   const soul_fragment type;
   const spell_data_t* vengeance_heal;
   const timespan_t vengeance_heal_interval;
 
-  consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
+  consume_soul_heal_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ),
       type( t ),
       vengeance_heal( p->find_specialization_spell( 203783 ) ),
@@ -2684,11 +2684,6 @@ struct consume_soul_t : public demon_hunter_heal_t
   {
     may_miss   = false;
     background = true;
-
-    if ( p->specialization() == DEMON_HUNTER_HAVOC )
-    {
-      execute_action = p->get_background_action<demonic_appetite_energize_t>( "demonic_appetite_fury" );
-    }
   }
 
   double calculate_heal( const action_state_t* ) const
@@ -2730,29 +2725,6 @@ struct consume_soul_t : public demon_hunter_heal_t
   timespan_t travel_time() const override
   {
     return 0_s;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    p()->buff.art_of_the_glaive->trigger();
-    p()->buff.tww1_vengeance_4pc->trigger();
-
-    // Warblade's hunger currently applies an additional stack on first buff application
-
-    if ( !p()->buff.warblades_hunger->up() )
-    {
-      p()->buff.warblades_hunger->trigger();
-    }
-    p()->buff.warblades_hunger->trigger();
-
-    if ( type == soul_fragment::EMPOWERED_DEMON )
-    {
-      p()->buff.demon_soul_tww3->trigger();
-    }
-    else if ( type == soul_fragment::GREATER_DEMON )
-    {
-      p()->buff.demon_soul->trigger();
-    }
   }
 };
 
@@ -4961,6 +4933,64 @@ struct demonsurge_t : public demon_hunter_spell_t
     }
 
     return m;
+  }
+};
+
+struct consume_soul_t : public demon_hunter_spell_t
+{
+  struct demonic_appetite_energize_t : public demon_hunter_spell_t
+  {
+    demonic_appetite_energize_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_spell_t( name, p, p->spec.demonic_appetite_fury )
+    {
+      may_miss = may_block = may_dodge = may_parry = callbacks = false;
+      background = quiet = dual = true;
+      energize_type             = action_energize::ON_CAST;
+    }
+  };
+
+  const soul_fragment type;
+
+  consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
+    : demon_hunter_spell_t( n, p, s ),
+      type( t )
+  {
+    may_miss   = false;
+    background = true;
+
+    if ( p->specialization() == DEMON_HUNTER_HAVOC )
+    {
+      execute_action = p->get_background_action<demonic_appetite_energize_t>( "demonic_appetite_fury" );
+    }
+  }
+
+  // Handled in the delayed consume event
+  timespan_t travel_time() const override
+  {
+    return 0_s;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    p()->buff.art_of_the_glaive->trigger();
+    p()->buff.tww1_vengeance_4pc->trigger();
+
+    // Warblade's hunger currently applies an additional stack on first buff application
+
+    if ( !p()->buff.warblades_hunger->up() )
+    {
+      p()->buff.warblades_hunger->trigger();
+    }
+    p()->buff.warblades_hunger->trigger();
+
+    if ( type == soul_fragment::EMPOWERED_DEMON )
+    {
+      p()->buff.demon_soul_tww3->trigger();
+    }
+    else if ( type == soul_fragment::GREATER_DEMON )
+    {
+      p()->buff.demon_soul->trigger();
+    }
   }
 };
 
@@ -9257,6 +9287,10 @@ void demon_hunter_t::init_spells()
       new consume_soul_t( this, "consume_soul_greater_demon", spec.consume_soul_greater, soul_fragment::GREATER_DEMON );
   active.consume_soul_empowered_demon = new consume_soul_t( this, "consume_soul_empowered_demon",
                                                             spec.consume_soul_greater, soul_fragment::EMPOWERED_DEMON );
+  active.consume_soul_greater_heal =
+      new consume_soul_heal_t( this, "consume_soul_greater_heal", spec.consume_soul_greater, soul_fragment::GREATER );
+  active.consume_soul_lesser_heal =
+      new consume_soul_heal_t( this, "consume_soul_lesser_heal", spec.consume_soul_lesser, soul_fragment::LESSER );
 
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
