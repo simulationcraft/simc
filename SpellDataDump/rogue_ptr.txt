@@ -767,7 +767,7 @@ Triggered By     : Numbing Poison (5761)
 Family Flags     : 51, 83
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Item Cast With Owner Skill (88), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=2042)     : Apply Aura (6) | Unknown(355)
+#1 (id=2042)     : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.533333 | Target: Targeted Enemy (6)
 #2 (id=806027)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.533333 | Target: Targeted Enemy (6)
@@ -8245,7 +8245,7 @@ Affecting Spells : Envenom (32645 effect#5), Mastery: Potent Assassin (76803 eff
 Family Flags     : 14, 51
 Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Item Cast With Owner Skill (88), Do Not Display Range (126), No Partial Immunity (139), Show Mechanic as Combat Text (213), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=894884)   : Apply Aura (6) | Unknown(355)
+#1 (id=894884)   : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48 | Target: Targeted Enemy (6)
 #2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48 | Target: Targeted Enemy (6)
