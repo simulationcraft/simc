@@ -12235,7 +12235,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Targeted Enemy (6)
 #2 (id=1154962)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: -15 | Scaled Value: -15 | Target: Targeted Enemy (6)
-#3 (id=1158112)  : Apply Aura (6) | Unknown(355)
+#3 (id=1158112)  : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
 Description      : $@spelldesc452403
 Tooltip          : Slowed by $w1%.

@@ -393,7 +393,7 @@ Affecting Spells : Norgannon's Foresight (236431 effect#1), Amplify Curse (32877
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), Aura Bounce Fails Spell (157), Taps immediately (215), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
 Effects          :
-#1 (id=521)      : Apply Aura (6) | Unknown(355)
+#1 (id=521)      : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.3334 | Target: Targeted Enemy (6)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
@@ -14324,7 +14324,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Target: Targeted Enemy (6)
 #2 (id=1138285)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#3 (id=1138286)  : Apply Aura (6) | Unknown(355)
+#3 (id=1138286)  : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.3334 | Target: Targeted Enemy (6)
 Description      : Increases the time between an enemy's attacks by $s1% and the casting time of all spells by $s3% for $d.$?s103112[
 
@@ -14482,7 +14482,7 @@ Attributes       : No Caster Aura Icon (187), Aura Points On Client (268)
 Effects          :
 #1 (id=1148866)  : Apply Aura Enemy in Area (129) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -20 | Scaled Value: -20 | Radius: 30 yards | Target: Self (1)
-#2 (id=1148867)  : Apply Aura Enemy in Area (129) | Unknown(355)
+#2 (id=1148867)  : Apply Aura Enemy in Area (129) | Modify Spell Haste% (355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.3334 | Radius: 30 yards | Target: Self (1)
 Description      : $@spelldesc440059
 Tooltip          : Time between attacks increased $w1% and casting speed increased by $w2%.

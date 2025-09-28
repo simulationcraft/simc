@@ -8789,7 +8789,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=818084)   : Apply Aura (6) | Unknown(355)
+#1 (id=818084)   : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
 Description      : $@spelldesc326864
 
@@ -14769,7 +14769,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
 Effects          :
-#1 (id=1134827)  : Apply Aura (6) | Unknown(355)
+#1 (id=1134827)  : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
 Description      : $@spelldesc439948
 

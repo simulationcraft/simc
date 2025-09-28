@@ -652,7 +652,7 @@ public:
     const spell_data_t* fatal_intent_damage;
     const spell_data_t* fatal_intent_debuff;
     const spell_data_t* fatebound_coin_heads_buff;
-    const spell_data_t* fatebound_coin_heads_stacking_buff;
+    const spell_data_t* fatebound_coin_heads_initial_buff;
     const spell_data_t* fatebound_coin_tails_buff;
     const spell_data_t* fatebound_coin_tails;
     const spell_data_t* fatebound_lucky_coin_buff;
@@ -2132,28 +2132,6 @@ public:
     for ( size_t i = 1; i <= s->effect_count(); i++ )
     {
       const spelleffect_data_t& effect = s->effectN( i );
-
-      /*
-      Effect Type 80 no longer appears to be used for Combo Point regeneration
-      Instead it appears to use Effect Type 30 (Energize Power)
-      Misc Value 1 equaling 4 (power_e POWER_COMBO_POINT)
-
-      No spells remain in our data that use Effect Type 80,
-      commenting out to prevent potential future issues.
-
-      switch ( effect.type() )
-      {
-        case E_ADD_COMBO_POINTS:
-          if ( ab::energize_type != action_energize::NONE )
-          {
-            ab::energize_type = action_energize::ON_HIT;
-            ab::energize_amount = effect.base_value();
-            ab::energize_resource = RESOURCE_COMBO_POINT;
-          }
-          break;
-        default:
-          break;
-      } */
 
       if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
       {
@@ -11510,7 +11488,7 @@ void rogue_t::init_spells()
   
   // Fatebound
   spell.fatebound_coin_heads_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452923 ) : spell_data_t::not_found();
-  spell.fatebound_coin_heads_stacking_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 456479 ) : spell_data_t::not_found();
+  spell.fatebound_coin_heads_initial_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 456479 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.fateful_ending->ok() ? find_spell( 452562 ) : spell_data_t::not_found();
@@ -12240,15 +12218,16 @@ void rogue_t::create_buffs()
   // Fatebound
 
   buffs.fatebound_coin_heads = make_buff<damage_buff_t>( this, "fatebound_coin_heads", spell.fatebound_coin_heads_buff, false );
-  if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_stacking_buff->ok() )
+  if ( spell.fatebound_coin_heads_buff->ok() && spell.fatebound_coin_heads_initial_buff->ok() )
   {
-    // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff (the fatebound_coin_heads_stacking_buff)
+    // Combine the 2% per additional stack buff (which we use as the stacking base buff) and 8% from initial stack buff
+    // 2025-09-27 -- The initial buff is currently bugged due to using Add Flat Modifier (107) instead of Add Percent Modifier (108)
     buffs.fatebound_coin_heads->set_direct_mod( spell.fatebound_coin_heads_buff, 1, spell.fatebound_coin_heads_buff->effectN( 1 ).percent(),
-                                                1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 1 ).percent() );
+                                                1.0 + ( this->bugs ? 0.0 : spell.fatebound_coin_heads_initial_buff->effectN( 1 ).percent() ) );
     buffs.fatebound_coin_heads->set_periodic_mod( spell.fatebound_coin_heads_buff, 2, spell.fatebound_coin_heads_buff->effectN( 2 ).percent(),
-                                                  1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 2 ).percent() );
+                                                  1.0 + ( this->bugs ? 0.0 : spell.fatebound_coin_heads_initial_buff->effectN( 2 ).percent() ) );
     buffs.fatebound_coin_heads->set_auto_attack_mod( spell.fatebound_coin_heads_buff, 5, spell.fatebound_coin_heads_buff->effectN( 5 ).percent(),
-                                                      1.0 + spell.fatebound_coin_heads_stacking_buff->effectN( 3 ).percent() );
+                                                      1.0 + spell.fatebound_coin_heads_initial_buff->effectN( 3 ).percent() );
   }
   buffs.fatebound_coin_heads
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
