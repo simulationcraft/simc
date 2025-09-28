@@ -9576,7 +9576,7 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
-    timespan_t duration = timespan_t::zero();
+    timespan_t duration = 0_ms;
 
     if ( background )
     {
