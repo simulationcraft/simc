@@ -518,6 +518,8 @@ unsigned spelleffect_data_t::affected_schools() const
     case A_MOD_DAMAGE_FROM_CASTER:
     case A_MOD_CRIT_DAMAGE_BONUS:
     case A_SCHOOL_ABSORB_OVERKILL:
+    case A_MOD_IMMUNE_A_APPLY_SCHOOL:
+
       return static_cast<unsigned>( misc_value1() );
     default:
       break;
