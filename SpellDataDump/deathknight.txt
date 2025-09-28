@@ -590,8 +590,9 @@ Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=40864)    : Apply Aura (6) | Unknown(267)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 126 | Target: Self (1)
+#2 (id=40864)    : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -1224,7 +1225,7 @@ Effects          :
                    Family Flags: 126
 #7 (id=1203570)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-#8 (id=1203572)  : Apply Aura (6) | Unknown(191)
+#8 (id=1203572)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : The power of frost increases your Strength by $s1% for $d.
 Tooltip          : Strength increased by $w1%.$?e5[
@@ -2639,7 +2640,7 @@ Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), 
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
-#2 (id=95551)    : Apply Aura (6) | Root (455)
+#2 (id=95551)    : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $d.
 Tooltip          : Immobilized.
@@ -15526,9 +15527,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1140753)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.8 | Target: Self (1)
-#6 (id=1140754)  : Apply Aura (6) | Unknown(487)
+#6 (id=1140754)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98541 | Target: Self (1)
-#7 (id=1140755)  : Apply Aura (6) | Unknown(191)
+#7 (id=1140755)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1140756)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
@@ -15715,8 +15716,9 @@ Effects          :
 #1 (id=1141329)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=1141330)  : Apply Aura (6) | Unknown(267)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 126 | Target: Targeted Ally (21)
+#2 (id=1141330)  : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Targeted Ally (21)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=1141331)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -15858,9 +15860,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1141940)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#6 (id=1141941)  : Apply Aura (6) | Unknown(487)
+#6 (id=1141941)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98541 | Target: Self (1)
-#7 (id=1141942)  : Apply Aura (6) | Unknown(191)
+#7 (id=1141942)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1141943)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
@@ -16063,9 +16065,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154226)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#6 (id=1154227)  : Apply Aura (6) | Unknown(487)
+#6 (id=1154227)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98540 | Target: Self (1)
-#7 (id=1154228)  : Apply Aura (6) | Unknown(191)
+#7 (id=1154228)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1154229)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Target: Self (1)
@@ -16094,9 +16096,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154240)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#6 (id=1154241)  : Apply Aura (6) | Unknown(487)
+#6 (id=1154241)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98541 | Target: Self (1)
-#7 (id=1154242)  : Apply Aura (6) | Unknown(191)
+#7 (id=1154242)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1154243)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Target: Self (1)
@@ -16125,9 +16127,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154252)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#6 (id=1154253)  : Apply Aura (6) | Unknown(487)
+#6 (id=1154253)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98542 | Target: Self (1)
-#7 (id=1154254)  : Apply Aura (6) | Unknown(191)
+#7 (id=1154254)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1154255)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Target: Self (1)
@@ -16156,9 +16158,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154263)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#6 (id=1154264)  : Apply Aura (6) | Unknown(487)
+#6 (id=1154264)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98539 | Target: Self (1)
-#7 (id=1154265)  : Apply Aura (6) | Unknown(191)
+#7 (id=1154265)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #8 (id=1154266)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | Target: Self (1)
@@ -16386,7 +16388,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Is Ability (4), Do Not Sheath (18), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Suppress Weapon Procs (151), Can Cause Interrupt (235), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1157676)  : Apply Aura (6) | Root (455)
+#1 (id=1157676)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : $@spelldesc454786
 Tooltip          : Rooted.
@@ -17438,8 +17440,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1171290)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 | Target: Self (1)
+#1 (id=1171290)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
 
 Name             : Frost Death Knight (id=462063) [Spell Family (15), Passive, Hidden] 
 Class            : Frost Death Knight
@@ -17791,7 +17794,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Legion of Souls (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388)
                    Family Flags: 43
-#3 (id=1203614)  : Apply Aura (6) | Unknown(530)
+#3 (id=1203614)  : Apply Aura (6) | Modify Auto Attack Damage% (530)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1203699)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)

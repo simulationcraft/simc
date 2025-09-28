@@ -50,7 +50,7 @@ Family Flags     : 7, 33
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Casting Bar Text (98), Hide Channel Bar (109), Allow Entering Arena (149), Extra Initial Period (169), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), JumpCharge - no facing control (311), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10)
 Effects          :
-#1 (id=128615)   : Apply Aura (6) | Unknown(373)
+#1 (id=128615)   : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #2 (id=128616)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -58,7 +58,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #4 (id=156817)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=157594)   : Apply Aura (6) | Unknown(191)
+#5 (id=157594)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #6 (id=164864)   : Trigger Spell (64): Chi Torpedo
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 119085 | Target: Self (1)
@@ -466,7 +466,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#1 (id=889008)   : Apply Aura (6) | Root (455)
+#1 (id=889008)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: in Area of Ground Area (138) -> at Enemy in Area (16)
 #2 (id=997612)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 25144 | Target: in Area of Ground Area (138)
@@ -623,7 +623,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #7 (id=1032442)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#8 (id=1032443)  : Apply Aura (6) | Unknown(188)
+#8 (id=1032443)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1034033)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
@@ -711,7 +711,7 @@ Effects          :
                    Base Value: -6000 | Scaled Value: -6000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Verdant Embrace (360995)
                    Family Flags: 24
-#7 (id=905167)   : Apply Aura (6) | Unknown(188)
+#7 (id=905167)   : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
 #8 (id=910334)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2010 (Category) | Target: Self (1)
@@ -799,7 +799,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=1041659)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#9 (id=1041660)  : Apply Aura (6) | Unknown(188)
+#9 (id=1041660)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #10 (id=1041661) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -1032,11 +1032,11 @@ Labels           : 16: Class Spells
                  : 3446
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Jump While Cast Pending (82), No Casting Bar Text (98), No Cooldown On Tooltip (192), No Aura Log (202), Aura Points On Client (268), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Update Fall Speed After Aura Removal (447)
 Effects          :
-#1 (id=891762)   : Apply Aura (6) | Unknown(373)
+#1 (id=891762)   : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #2 (id=891763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=891764)   : Apply Aura (6) | Unknown(191)
+#3 (id=891764)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=891765)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)
@@ -1063,11 +1063,11 @@ Labels           : 16: Class Spells
                  : 3446
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Jump While Cast Pending (82), No Casting Bar Text (98), No Cooldown On Tooltip (192), No Aura Log (202), Aura Points On Client (268), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Update Fall Speed After Aura Removal (447)
 Effects          :
-#1 (id=891816)   : Apply Aura (6) | Unknown(373)
+#1 (id=891816)   : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #2 (id=891817)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=891818)   : Apply Aura (6) | Unknown(191)
+#3 (id=891818)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=891819)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)
@@ -1094,11 +1094,11 @@ Labels           : 16: Class Spells
                  : 3446
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Jump While Cast Pending (82), No Casting Bar Text (98), No Cooldown On Tooltip (192), No Aura Log (202), Aura Points On Client (268), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Update Fall Speed After Aura Removal (447)
 Effects          :
-#1 (id=891897)   : Apply Aura (6) | Unknown(373)
+#1 (id=891897)   : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #2 (id=891898)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=891899)   : Apply Aura (6) | Unknown(191)
+#3 (id=891899)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=891900)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)
@@ -1125,11 +1125,11 @@ Labels           : 16: Class Spells
                  : 3446
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Jump While Cast Pending (82), No Casting Bar Text (98), No Cooldown On Tooltip (192), No Aura Log (202), Aura Points On Client (268), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Update Fall Speed After Aura Removal (447)
 Effects          :
-#1 (id=891903)   : Apply Aura (6) | Unknown(373)
+#1 (id=891903)   : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
 #2 (id=891904)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=891905)   : Apply Aura (6) | Unknown(191)
+#3 (id=891905)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=891906)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)
@@ -1185,7 +1185,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
 #11 (id=1030729) : Apply Aura (6) | Unknown(527)
                    Base Value: 56 | Scaled Value: 56 | Target: Self (1)
-#12 (id=1135599) : Apply Aura (6) | Unknown(235)
+#12 (id=1135599) : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Launch yourself and gain $s2% increased movement speed for $<dura> sec.
 
@@ -1439,7 +1439,7 @@ Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=898166)   : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Sleep | Chain Targets: 1 | Target: Targeted Enemy (6)
-#2 (id=898609)   : Apply Aura (6) | Unknown(191)
+#2 (id=898609)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : Disorient an enemy for $d, causing them to sleep walk towards you. Damage has a chance to awaken them.
 Tooltip          : Asleep.
@@ -7337,7 +7337,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1037194)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1037195)  : Apply Aura (6) | Unknown(188)
+#8 (id=1037195)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
 #9 (id=1037196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
@@ -8185,7 +8185,7 @@ Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1055872)  : Apply Aura (6) | Unknown(235)
+#1 (id=1055872)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1055873)  : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1013 | Target: Self (1)
@@ -8199,7 +8199,7 @@ Effects          :
 #5 (id=1081268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 3957 (Label) | Target: Self (1)
                    Affected Spells (Label): Dwarven Medicine (416224), Brann's Epic Egg (432647), Idol of the Earthmother (439237), Brute Force Idol (458465), Idol of the Earthmother (458918), Idol of the Earthmother (458923), Idol of the Earthmother (458927), Dwarven Medicine (460909), Veteran of Ironforge (473250), L00T RAID-R (473679), L00T RAID-R (1213486), L00T RAID-R (1213487), L00T RAID-R (1213488), Pinged Augment Chip (1214502), Automatic Footbomb Dispenser (1214572), Pinged Augment Chip (1214796), Pinged Augment Chip (1214802), Three Dimensional Bioprinter (1214857), Three Dimensional Bioprinter (1214873), Biofuel Rocket Gear (1214882), Concussion (1214893), Pinged Augment Chip (1214905), Pinged Augment Chip (1214906), Pinged Augment Chip (1214907), Reverse Engineered Goblin Death Bomb (1214930), Reverse Engineered Goblin Death Bomb (1214932), Reverse Engineered Goblin Death Bomb (1214972), Reverse Engineered Goblin Death Bomb (1214994), Bomb Potion (1215011), Pacifist Rig (1215045), LifeLink Emergency Activator (1215051), Reverse Engineered Goblin Death Bomb (1215108), Reverse Engineered Goblin Death Bomb (1215109), Reverse Engineered Goblin Death Bomb (1215110), Reverse Engineered Goblin Death Bomb (1215111), Reverse Engineered Goblin Death Bomb (1215112), Reverse Engineered Goblin Death Bomb (1215114), Reverse Engineered Goblin Death Bomb (1215115), Reverse Engineered Goblin Death Bomb (1215116), Reverse Engineered Goblin Death Bomb (1215117), Silencing Potion (1215127), Three Dimensional Bioprinter (1215251), Three Dimensional Bioprinter (1215253), Three Dimensional Bioprinter (1215255), Three Dimensional Bioprinter (1215257), Mechasaur EZ-Build Kit (1215339), Mechasaur EZ-Build Kit (1215365), Mechasaur EZ-Build Kit (1215368), Mechasaur EZ-Build Kit (1215369), Pacifist Rig (1215958), Pacifist Rig (1215959), Pacifist Rig (1215960), Automatic Footbomb Dispenser (1216123), Automatic Footbomb Dispenser (1216129), Automatic Footbomb Dispenser (1216130), Biofuel Rocket Gear (1216680), Biofuel Rocket Gear (1216681), Biofuel Rocket Gear (1216682), Dwarven Medicine (1226262)
-#6 (id=1081995)  : Apply Aura (6) | Unknown(188)
+#6 (id=1081995)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #7 (id=1083267)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self (1)
@@ -8234,7 +8234,7 @@ Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1055981)  : Apply Aura (6) | Unknown(235)
+#1 (id=1055981)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1055982)  : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 16 | Target: Targeted Ally (21)
@@ -8248,7 +8248,7 @@ Effects          :
 #5 (id=1081271)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 16 (Label) | Target: Targeted Ally (21)
                    Affected Spells (Label): Class Spells (16)
-#6 (id=1081272)  : Apply Aura (6) | Unknown(188)
+#6 (id=1081272)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Ally (21)
 #7 (id=1082581)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Targeted Ally (21)
@@ -9639,7 +9639,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Upheaval (396288)
                    Family Flags: 58
-#2 (id=1080362)  : Apply Aura (6) | Unknown(203)
+#2 (id=1080362)  : Apply Aura (6) | Modify Melee Crit Damage Taken from Attacker (203)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Upheaval (396286), Upheaval (408092)
                    Family Flags: 59
@@ -12398,7 +12398,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355941), Blistering Scales (360827), Verdant Embrace (360995), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361509), Dream Flight (363502), Echo (364343), Expunge (365585), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Source of Magic (369459), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Cauterizing Flame (374251), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Prescience (409311), Spiritbloom (409894), Spiritbloom (409895), Molten Blood (410651), Chrono Flames (431443), Engulf (443328), Engulf (443329), Engulf (443330), Insurance! (1215550), Insurance! (1215553), Essence Bomb (1236803)
                    Family Flags: 1, 10, 24, 52, 57, 61, 68, 73, 74, 79, 80
-#2 (id=1158020)  : Apply Aura (6) | Unknown(188)
+#2 (id=1158020)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1169792)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Misc Value 2: 3885 (Label) | Target: Self (1)
@@ -12675,11 +12675,11 @@ Labels           : 16: Class Spells
                  : 3446
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Cast While Dead (23), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Jump While Cast Pending (82), No Casting Bar Text (98), No Cooldown On Tooltip (192), No Aura Log (202), Aura Points On Client (268), JumpCharge - no facing control (311), Allow Class Ability Procs (416), Update Fall Speed After Aura Removal (447)
 Effects          :
-#1 (id=1183658)  : Apply Aura (6) | Unknown(373)
+#1 (id=1183658)  : Apply Aura (6) | Force Move (No Control) (373)
                    Base Value: 750 | Scaled Value: 750 | Target: Self (1)
 #2 (id=1183659)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=1183660)  : Apply Aura (6) | Unknown(191)
+#3 (id=1183660)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #4 (id=1183661)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27 | Target: Self (1)

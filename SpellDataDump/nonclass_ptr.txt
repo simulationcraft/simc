@@ -835,7 +835,7 @@ Spell Type       : None
 Max Scaling Level: 25
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=3091)     : Apply Aura (6) | Unknown(59) | Scaling Class: Replace Primary (-8)
+#1 (id=3091)     : Apply Aura (6) | Modify Damage done to Creature Type (59) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1.126168 (coefficient=0.402108) | Misc Value: 1 | Target: Self (1)
 
 Name             : Minor Beastslayer (id=7786) 
@@ -2545,7 +2545,7 @@ Spell Type       : None
 Max Scaling Level: 25
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=6077)     : Apply Aura (6) | Unknown(59) | Scaling Class: Replace Primary (-8)
+#1 (id=6077)     : Apply Aura (6) | Modify Damage done to Creature Type (59) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 2.252336 (coefficient=0.804216) | Misc Value: 1 | Target: Self (1)
 
 Name             : Lesser Elemental Slayer (id=13651) [Passive, Hidden] 
@@ -2554,7 +2554,7 @@ Spell Type       : None
 Max Scaling Level: 25
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=6078)     : Apply Aura (6) | Unknown(59) | Scaling Class: Replace Primary (-8)
+#1 (id=6078)     : Apply Aura (6) | Modify Damage done to Creature Type (59) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 45.04674 (coefficient=16.08433) | Misc Value: 8 | Target: Self (1)
 
 Name             : Lesser Beastslayer (id=13653) 
@@ -5402,7 +5402,7 @@ Spell Type       : None
 Duration         : 900 seconds
 Aura Interrupt   : Looting (11)
 Effects          :
-#1 (id=11099)    : Apply Aura (6) | Unknown(139)
+#1 (id=11099)    : Apply Aura (6) | Force Reaction (139)
                    Base Value: 4 | Scaled Value: 4 | SP Coefficient: 1 | Misc Value: 80 | Target: Self (1)
 Description      : Use to disguise yourself as a member of the Black Dragonflight.
 Tooltip          : Disguised as a member of the Black Dragonflight.
@@ -6091,7 +6091,7 @@ Spell Type       : Magic
 Duration         : Aura (infinite)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Icon (60), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=11817)    : Apply Aura (6) | Unknown(161)
+#1 (id=11817)    : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Restores $s1 health per 5 sec.
 Tooltip          : Restores $s1 health per 5 sec.
@@ -6313,7 +6313,7 @@ School           : Nature
 Spell Type       : Magic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Icon (60), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=12257)    : Apply Aura (6) | Unknown(161) | Scaling Class: Replace Secondary (-9)
+#1 (id=12257)    : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 547.3608 (coefficient=0.214) | Target: Self (1)
 Description      : Restores $s1 health per 5 sec.
 Tooltip          : Restores $s1 health per 5 sec.
@@ -6323,7 +6323,7 @@ School           : Nature
 Spell Type       : Magic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Icon (60), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=12260)    : Apply Aura (6) | Unknown(161) | Scaling Class: Replace Secondary (-9)
+#1 (id=12260)    : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 388.7797 (coefficient=0.152) | Target: Self (1)
 Description      : Restores $s1 health per 5 sec.
 Tooltip          : Restores $s1 health per 5 sec.
@@ -6333,7 +6333,7 @@ School           : Nature
 Spell Type       : Magic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Icon (60), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=12263)    : Apply Aura (6) | Unknown(161) | Scaling Class: Replace Secondary (-9)
+#1 (id=12263)    : Apply Aura (6) | Modify Health Regeneration Rate in Combat (161) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 590.8428 (coefficient=0.231) | Target: Self (1)
 Description      : Restores $s1 health per 5 sec.
 Tooltip          : Restores $s1 health per 5 sec.
@@ -9507,11 +9507,11 @@ Range            : 30 yards
 Duration         : Aura (infinite)
 Attributes       : Do Not Log (8), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=17734)    : Apply Aura (6) | Unknown(139)
+#1 (id=17734)    : Apply Aura (6) | Force Reaction (139)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Misc Value: 529 | Target: Self (1)
 #2 (id=17735)    : Apply Aura (6) | Periodic Trigger Spell (23): AB Effect 000 every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 28441 | Target: Self (1)
-#3 (id=255062)   : Apply Aura (6) | Unknown(139)
+#3 (id=255062)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1 | Misc Value: 1106 | Target: Self (1)
 Description      : Inflicts the will of the Ashbringer upon the wielder.
 Tooltip          : Inflicts the will of the Ashbringer upon the wielder.
@@ -42281,9 +42281,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126408 | Target: Self (1)
 #3 (id=169343)   : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=177988)   : Apply Aura (6) | Unknown(139)
+#4 (id=177988)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1059 | Target: Self (1)
-#5 (id=177989)   : Apply Aura (6) | Unknown(139)
+#5 (id=177989)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1102 | Target: Self (1)
 Description      : Reduces your falling speed for $d.
 Tooltip          : Falling speed reduced.
@@ -71617,7 +71617,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #4 (id=299138)   : Apply Aura (6) | Replace Animation (Set) (312)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 531 | Target: Self (1)
-#5 (id=309535)   : Apply Aura (6) | Unknown(139)
+#5 (id=309535)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 1065 | Target: Self (1)
 Description      : Kick the tires and light the fires!
 Tooltip          : How this is working, you have no idea.
@@ -72543,7 +72543,7 @@ Effects          :
 #21 (id=1164323) : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x22 | Target: Self (1)
                    Affected School(s): Holy, Shadow
-#22 (id=1164652) : Apply Aura (6) | Unknown(280)
+#22 (id=1164652) : Apply Aura (6) | Modify Target Armor% (280)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #23 (id=1164968) : Apply Aura (6) | Modify Armor% (101)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 1 | Target: Self (1)
@@ -86840,7 +86840,7 @@ School           : Physical
 Spell Type       : Magic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=343994)   : Apply Aura (6) | Unknown(530) | Scaling Class: Replace Primary (-8)
+#1 (id=343994)   : Apply Aura (6) | Modify Auto Attack Damage% (530) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1190.287 (coefficient=0.465363) | Target: Self (1)
 Description      : Increases your autoattack damage by $s1.
 
@@ -89260,7 +89260,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=355560)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 12 yards | Target: at Enemy in Area (16)
-#2 (id=355561)   : Apply Aura (6) | Root (455)
+#2 (id=355561)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Root | Target: at Enemy in Area (16)
 Description      : Blasts enemies within $A1 yds of you for $s1 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
@@ -96332,7 +96332,7 @@ Spell Type       : None
 Duration         : 300 seconds
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Effects          :
-#2 (id=464049)   : Apply Aura (6) | Unknown(139)
+#2 (id=464049)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 2192 | Target: Self (1)
 #3 (id=477506)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
@@ -101108,13 +101108,13 @@ Attributes       : No Aura Icon (60), Do Not Display Range (126), Target Must Be
 Effects          :
 #1 (id=477701)   : Apply Aura (6) | Forced Movement (241)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=477806)   : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
+#2 (id=477806)   : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #3 (id=477807)   : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11887 | Target: Self (1)
 #4 (id=706251)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-#5 (id=706253)   : Apply Aura (6) | Unknown(191)
+#5 (id=706253)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #6 (id=716391)   : Apply Aura (6) | Modify Minimum Speed (437)
                    Base Value: 21 | Scaled Value: 21 | Target: Self (1)
@@ -126299,11 +126299,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126408 | Target: Self (1)
 #3 (id=741279)   : Apply Aura (6) | Slow Fall (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=741280)   : Apply Aura (6) | Unknown(139)
+#4 (id=741280)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1059 | Target: Self (1)
-#5 (id=741281)   : Apply Aura (6) | Unknown(139)
+#5 (id=741281)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1102 | Target: Self (1)
-#6 (id=763194)   : Apply Aura (6) | Unknown(487)
+#6 (id=763194)   : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 91312 | Target: Self (1)
 Description      : Reduces your falling speed for $d.
 Tooltip          : Falling speed reduced.
@@ -129344,7 +129344,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=751773)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#4 (id=751774)   : Apply Aura (6) | Unknown(191)
+#4 (id=751774)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=753961)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
@@ -131861,7 +131861,7 @@ Attributes       : Heartbeat Resist (30), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=757382)   : School Damage (2): frost | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 17420.94 (coefficient=600) | Target: Targeted Enemy (6)
-#2 (id=777307)   : Apply Aura (6) | Root (455)
+#2 (id=777307)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : Launches a shard at your target, dealing $s1 Frost damage and freezing them in place. Only in Nazjatar.
 Tooltip          : Frozen.
@@ -151475,7 +151475,7 @@ Mechanic         : Root
 Triggered By     : Revel in Violence (312643)
 Attributes       : Aura Is Debuff (26), No Aura Cancel (31)
 Effects          :
-#1 (id=794442)   : Apply Aura (6) | Root (455)
+#1 (id=794442)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You are affected by the Corruption of N'Zoth!
 Tooltip          : Reveling in violence.
@@ -157516,7 +157516,7 @@ Triggered By     : Sulfuric Emission (323916)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#2 (id=815267)   : Apply Aura (6) | Unknown(191)
+#2 (id=815267)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Mechanic: Flee | Target: Source (22) -> Enemy in Area (15)
 #3 (id=868902)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Radius: 0 - 8 yards | Target: Self (1) -> Enemy in Area (15)
@@ -158717,7 +158717,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 327656 | Target: Self (1)
 #3 (id=818500)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#4 (id=818501)   : Apply Aura (6) | Unknown(94)
+#4 (id=818501)   : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=818530)   : Apply Aura (6) | Modify Mana Cost% (423)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
@@ -165166,7 +165166,7 @@ Attributes       : Do Not Log (8), Do Not Sheath (18), No Active Defense (21), A
 Effects          :
 #1 (id=837453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=837454)   : Apply Aura (6) | Unknown(236)
+#2 (id=837454)   : Apply Aura (6) | Control Vehicle (236)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 #3 (id=844338)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 100 | Scaled Value: 100 | Target: Current Target (25)
@@ -168390,7 +168390,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Limit N (165), Allow Class Ability Procs (416)
 Effects          :
-#2 (id=869215)   : Apply Aura (6) | Unknown(128)
+#2 (id=869215)   : Apply Aura (6) | Fixate (128)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #3 (id=869343)   : Trigger Spell (64): Shadowflame Rift
                    Base Value: 1.5 | Scaled Value: 1.5 | Misc Value: 100 | Trigger Spell: 344748
@@ -171152,7 +171152,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 327656 | Target: Self (1)
 #3 (id=876316)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
-#4 (id=876317)   : Apply Aura (6) | Unknown(94)
+#4 (id=876317)   : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=876318)   : Apply Aura (6) | Modify Mana Cost% (423)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
@@ -173902,7 +173902,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Show Mechanic as Combat Text (213), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=886148)   : Apply Aura (6) | Root (455)
+#1 (id=886148)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc352366
 Tooltip          : Rooted.
@@ -178964,7 +178964,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117500)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23893 | Target: Self (1)
-#2 (id=1117501)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117501)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s361382[Builds a sphere of Arcane energy, gaining power over $d. 
 
@@ -179678,7 +179678,7 @@ Family Flags     : 1, 13
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1110805)  : Apply Aura (6) | Root (455)
+#1 (id=1110805)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s363355[Blasts nearby enemies around you, freezing them in place for $d.][Freezes for $d.]
 Tooltip          : Frozen in place.
@@ -184689,7 +184689,7 @@ Triggered By     : Twisted Judgment (369097)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Remove Entering Arena (162), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
-#1 (id=914208)   : Apply Aura (6) | Unknown(139)
+#1 (id=914208)   : Apply Aura (6) | Force Reaction (139)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1369 | Target: Self (1)
 
 Name             : Food & Drink (id=369166) 
@@ -186738,8 +186738,9 @@ Effects          :
 #1 (id=1117524)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=1117525)  : Apply Aura (6) | Unknown(267)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 126 | Target: Self (1)
+#2 (id=1117525)  : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=1117526)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -186888,7 +186889,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1110916)  : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#2 (id=1110917)  : Apply Aura (6) | Unknown(191)
+#2 (id=1110917)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s372405[Causes nearby enemies to flee for $d.][Fear for $d.]
 Tooltip          : Disoriented.
@@ -187152,7 +187153,7 @@ Family Flags     : 1, 9, 25
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), No Aura Icon (60), Always Hit (114), No Aura Log (202), Aura Points On Client (268), Can Attack ImmunePC (287), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon (30), Swimming (33)
 Effects          :
-#1 (id=1110966)  : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
+#1 (id=1110966)  : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=1110967)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 397156 | Scaled Value: 397156 | Target: Self (1)
@@ -187162,7 +187163,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1110969)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
-#5 (id=1110970)  : Apply Aura (6) | Unknown(191)
+#5 (id=1110970)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 Description      : $?s373231[Soar forward through the air at high speed for $d.
 
@@ -187926,7 +187927,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 376363 | Target: Self (1)
 #2 (id=1112448)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 209 | Target: Self (1)
-#3 (id=1112449)  : Apply Aura (6) | Unknown(191)
+#3 (id=1112449)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s376361[Engulfs the surrounding area in hellfire, causing $376363m1 Fire damage to all nearby enemies every $t1 sec.][Deals $376363m1 Fire damage every $t1 sec.]
 Tooltip          : Engulfing the surrounding area in hellfire, damaging all nearby enemies.
@@ -188025,7 +188026,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117533)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 25633 | Target: Self (1)
-#2 (id=1117534)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117534)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Builds a sphere of Arcane energy, gaining power over $d. Upon release, the sphere knocks enemies back and deals $376607s1 |CFFDDA0DDArcane|R damage.
 
@@ -188698,7 +188699,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 #5 (id=1038974)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-#6 (id=1040713)  : Apply Aura (6) | Unknown(191)
+#6 (id=1040713)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for $d.
 
@@ -194213,7 +194214,7 @@ Effects          :
                    Base Value: -999 | Scaled Value: -999 | Target: Self (1)
 #7 (id=1111175)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
-#8 (id=1111176)  : Apply Aura (6) | Unknown(191)
+#8 (id=1111176)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #9 (id=1111177)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 0x7f | Target: Self (1)
@@ -202684,7 +202685,7 @@ Effects          :
                    Base Value: -999 | Scaled Value: -999 | Target: Self (1)
 #7 (id=1111471)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
-#8 (id=1111472)  : Apply Aura (6) | Unknown(191)
+#8 (id=1111472)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #9 (id=1111473)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
@@ -203285,7 +203286,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 27297 | Target: Self (1)
 #2 (id=1112499)  : Apply Aura (6) | Periodic Trigger Spell (23): Arclight Cannon every 0.15 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397885 | Target: Self (1)
-#3 (id=1112500)  : Apply Aura (6) | Unknown(191)
+#3 (id=1112500)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Charge up a continual beam of energy, inflicting $395729s1 Nature damage every $t2 sec for $d.
 
@@ -203316,7 +203317,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117543)  : Apply Aura (6) | Periodic Trigger Spell (23): Shadow Barrage every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395761 | Target: Self (1)
-#2 (id=1117544)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117544)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s395758[Rapidly fires a spray of shadow bolts, dealing an average of $<damageSec> Shadow damage to all nearby enemies in front of you.][Deals up to $<damageSec> Shadow damage.]
 Variables        : $damageSec=${$395761s1*24}
@@ -204748,7 +204749,7 @@ Family Flags     : 1, 13
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1111675)  : Apply Aura (6) | Root (455)
+#1 (id=1111675)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397236[Blasts nearby enemies around you, freezing them in place for $d.][Freezes for $d.]
 Tooltip          : Frozen in place.
@@ -204778,7 +204779,7 @@ Family Flags     : 1, 13
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1111676)  : Apply Aura (6) | Root (455)
+#1 (id=1111676)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397237[Blasts nearby enemies around you, freezing them in place for $d.][Freezes for $d.]
 Tooltip          : Frozen in place.
@@ -204807,7 +204808,7 @@ Family Flags     : 1, 13
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1111677)  : Apply Aura (6) | Root (455)
+#1 (id=1111677)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397238[Blasts nearby enemies around you, freezing them in place for $d.][Freezes for $d.]
 Tooltip          : Frozen in place.
@@ -204913,7 +204914,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1111690)  : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#2 (id=1111691)  : Apply Aura (6) | Unknown(191)
+#2 (id=1111691)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397242[Causes nearby enemies to flee for $d.][Fear for $d.]
 Tooltip          : Disoriented.
@@ -204938,7 +204939,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1111692)  : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#2 (id=1111693)  : Apply Aura (6) | Unknown(191)
+#2 (id=1111693)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397243[Causes nearby enemies to flee for $d.][Fear for $d.]
 Tooltip          : Disoriented.
@@ -204963,7 +204964,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=1111694)  : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#2 (id=1111695)  : Apply Aura (6) | Unknown(191)
+#2 (id=1111695)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s397244[Causes nearby enemies to flee for $d.][Fear for $d.]
 Tooltip          : Disoriented.
@@ -205378,8 +205379,9 @@ Effects          :
 #1 (id=1039410)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=1039411)  : Apply Aura (6) | Unknown(267)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 126 | Target: Self (1)
+#2 (id=1039411)  : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=1039412)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -205405,8 +205407,9 @@ Effects          :
 #1 (id=1117550)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=1117551)  : Apply Aura (6) | Unknown(267)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 126 | Target: Self (1)
+#2 (id=1117551)  : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=1117552)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -205432,8 +205435,9 @@ Effects          :
 #1 (id=1117553)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-#2 (id=1117554)  : Apply Aura (6) | Unknown(267)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 126 | Target: Self (1)
+#2 (id=1117554)  : Apply Aura (6) | Immune Debuff Application from School (267)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #3 (id=1117555)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -206454,7 +206458,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117564)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23893 | Target: Self (1)
-#2 (id=1117565)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117565)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397622[Builds a sphere of Arcane energy, gaining power over $d. 
 
@@ -206479,7 +206483,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117566)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23893 | Target: Self (1)
-#2 (id=1117567)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117567)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397623[Builds a sphere of Arcane energy, gaining power over $d. 
 
@@ -206504,7 +206508,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117568)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23893 | Target: Self (1)
-#2 (id=1117569)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117569)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397624[Builds a sphere of Arcane energy, gaining power over $d. 
 
@@ -207134,7 +207138,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397666 | Target: Self (1)
 #2 (id=1111898)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 209 | Target: Self (1)
-#3 (id=1111899)  : Apply Aura (6) | Unknown(191)
+#3 (id=1111899)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397667[Engulfs the surrounding area in hellfire, causing $397666m1 Fire damage to all nearby enemies every $t1 sec.][Deals $397666m1 Fire damage every $t1 sec.]
 Tooltip          : Engulfing the surrounding area in hellfire, damaging all nearby enemies.
@@ -207166,7 +207170,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397668 | Target: Self (1)
 #2 (id=1111902)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 209 | Target: Self (1)
-#3 (id=1111903)  : Apply Aura (6) | Unknown(191)
+#3 (id=1111903)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397669[Engulfs the surrounding area in hellfire, causing $397668m1 Fire damage to all nearby enemies every $t1 sec.][Deals $397668m1 Fire damage every $t1 sec.]
 Tooltip          : Engulfing the surrounding area in hellfire, damaging all nearby enemies.
@@ -207198,7 +207202,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397670 | Target: Self (1)
 #2 (id=1111906)  : Apply Aura (6) | Override Keybind (406)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 209 | Target: Self (1)
-#3 (id=1111907)  : Apply Aura (6) | Unknown(191)
+#3 (id=1111907)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397671[Engulfs the surrounding area in hellfire, causing $397670m1 Fire damage to all nearby enemies every $t1 sec.][Deals $397670m1 Fire damage every $t1 sec.]
 Tooltip          : Engulfing the surrounding area in hellfire, damaging all nearby enemies.
@@ -207233,7 +207237,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117573)  : Apply Aura (6) | Periodic Trigger Spell (23): Shadow Barrage every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397672 | Target: Self (1)
-#2 (id=1117574)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117574)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397673[Rapidly fires a spray of shadow bolts, dealing an average of $<damageSec> Shadow damage to all nearby enemies in front of you.][Deals up to $<damageSec> Shadow damage.]
 Variables        : $damageSec=${$397672s1*24}
@@ -207268,7 +207272,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117575)  : Apply Aura (6) | Periodic Trigger Spell (23): Shadow Barrage every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397674 | Target: Self (1)
-#2 (id=1117576)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117576)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397675[Rapidly fires a spray of shadow bolts, dealing an average of $<damageSec> Shadow damage to all nearby enemies in front of you.][Deals up to $<damageSec> Shadow damage.]
 Variables        : $damageSec=${$397674s1*24}
@@ -207303,7 +207307,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1117577)  : Apply Aura (6) | Periodic Trigger Spell (23): Shadow Barrage every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397676 | Target: Self (1)
-#2 (id=1117578)  : Apply Aura (6) | Unknown(191)
+#2 (id=1117578)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : $?s397677[Rapidly fires a spray of shadow bolts, dealing an average of $<damageSec> Shadow damage to all nearby enemies in front of you.][Deals up to $<damageSec> Shadow damage.]
 Variables        : $damageSec=${$397676s1*24}
@@ -207343,7 +207347,7 @@ Family Flags     : 1, 9, 25
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), No Aura Icon (60), Always Hit (114), No Aura Log (202), Aura Points On Client (268), Can Attack ImmunePC (287), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon (30), Swimming (33)
 Effects          :
-#1 (id=1111920)  : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
+#1 (id=1111920)  : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=1111921)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 397679 | Scaled Value: 397679 | Target: Self (1)
@@ -207353,7 +207357,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1111923)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
-#5 (id=1111924)  : Apply Aura (6) | Unknown(191)
+#5 (id=1111924)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 Description      : $?s397680[Soar forward through the air at high speed for $d.
 
@@ -207394,7 +207398,7 @@ Family Flags     : 1, 9, 25
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), No Aura Icon (60), Always Hit (114), No Aura Log (202), Aura Points On Client (268), Can Attack ImmunePC (287), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon (30), Swimming (33)
 Effects          :
-#1 (id=1111927)  : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
+#1 (id=1111927)  : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=1111928)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 397682 | Scaled Value: 397682 | Target: Self (1)
@@ -207404,7 +207408,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1111930)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
-#5 (id=1111931)  : Apply Aura (6) | Unknown(191)
+#5 (id=1111931)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 Description      : $?s397683[Soar forward through the air at high speed for $d.
 
@@ -207444,7 +207448,7 @@ Family Flags     : 1, 9, 25
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), No Aura Icon (60), Always Hit (114), No Aura Log (202), Aura Points On Client (268), Can Attack ImmunePC (287), Allow Class Ability Procs (416)
 Aura Interrupt   : Interacting (10), Leave World (19), Enter World (22), Summon (30), Swimming (33)
 Effects          :
-#1 (id=1111934)  : Apply Aura (6) | Unknown(373) | Attributes: Uncontrolled No Backwards (8)
+#1 (id=1111934)  : Apply Aura (6) | Force Move (No Control) (373) | Attributes: Uncontrolled No Backwards (8)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #2 (id=1111935)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
                    Base Value: 397685 | Scaled Value: 397685 | Target: Self (1)
@@ -207454,7 +207458,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1111937)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
-#5 (id=1111938)  : Apply Aura (6) | Unknown(191)
+#5 (id=1111938)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 Description      : $?s397686[Soar forward through the air at high speed for $d.
 
@@ -209037,7 +209041,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1000 | Misc Value: 10 | Misc Value 2: 0xa | Target: at Self (18) -> at Area (87)
 #4 (id=1047175)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 650 | Scaled Value: 650 | Target: Self (1)
-#5 (id=1047176)  : Apply Aura (6) | Unknown(191)
+#5 (id=1047176)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 #6 (id=1047177)  : Apply Aura (6) | Disable Gravity (488)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -211953,7 +211957,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1052910)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 402938
-#3 (id=1052963)  : Apply Aura (6) | Unknown(530)
+#3 (id=1052963)  : Apply Aura (6) | Modify Auto Attack Damage% (530)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 Description      : $@spelldesc402938
 Tooltip          : Autoattack damage increased by $w3.
@@ -216154,7 +216158,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1084456)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 414928
-#3 (id=1084457)  : Apply Aura (6) | Unknown(191)
+#3 (id=1084457)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1092577)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -216362,7 +216366,7 @@ Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Heartbeat Resist (30), No Aura Cancel (31), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#2 (id=1084650)  : Apply Aura (6) | Unknown(191)
+#2 (id=1084650)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 2 | Scaled Value: 2 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Let the Scourge coarse through and corrupt you consuming all Lost Souls, transforming into a Lich for $415033d. During this time you periodically deal $415006s2 Frost damage split between nearby enemies. After $415006s10 sec unleash of wave of shadows Fearing nearby enemies for $415038d. The duration of the Fear is reduced for each nearby enemy down to 0.5 sec against $415006s12 or more targets.
 Tooltip          : Disoriented.
@@ -217163,7 +217167,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1089400)  : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#3 (id=1089414)  : Apply Aura (6) | Unknown(191)
+#3 (id=1089414)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Freezes the target in time, making them unable to move or act.
 Tooltip          : Stuck in a Paradox, and unable to move or act!
@@ -222525,7 +222529,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1119325)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1119326)  : Apply Aura (6) | Unknown(191)
+#2 (id=1119326)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Projectile|R
 |CFFFFFFFF- Hold to charge|R
@@ -223331,7 +223335,7 @@ Labels           : 3136
 Category Cooldown: 14 seconds
 Attributes       : No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1121223)  : Apply Aura (6) | Unknown(191)
+#1 (id=1121223)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1134514)  : Force Cast (160): Searing Axe
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432493 | Target: Self (1)
@@ -223672,7 +223676,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1121631)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1121632)  : Apply Aura (6) | Unknown(191)
+#2 (id=1121632)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Projectile|R
 |CFFFFFFFF- Hold to charge|R
@@ -223712,7 +223716,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1121641)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1121642)  : Apply Aura (6) | Unknown(191)
+#2 (id=1121642)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Projectile|R
 |CFFFFFFFF- Hold to charge|R
@@ -223751,7 +223755,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1121650)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1121651)  : Apply Aura (6) | Unknown(191)
+#2 (id=1121651)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Projectile|R
 |CFFFFFFFF- Hold to charge|R
@@ -223875,7 +223879,7 @@ Labels           : 3136
 Category Cooldown: 12 seconds
 Attributes       : No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1121667)  : Apply Aura (6) | Unknown(191)
+#1 (id=1121667)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1134521)  : Force Cast (160): Searing Axe
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432751 | Target: Self (1)
@@ -223912,7 +223916,7 @@ Labels           : 3136
 Category Cooldown: 10 seconds
 Attributes       : Is Ability (4), Do Not Log (8), Cooldown On Event (25), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1121670)  : Apply Aura (6) | Unknown(191)
+#1 (id=1121670)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1134518)  : Force Cast (160): Searing Axe
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432753 | Target: Self (1)
@@ -223949,7 +223953,7 @@ Labels           : 3136
 Category Cooldown: 8 seconds
 Attributes       : Is Ability (4), Do Not Log (8), Cooldown On Event (25), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1121673)  : Apply Aura (6) | Unknown(191)
+#1 (id=1121673)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1134517)  : Force Cast (160): Searing Axe
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432755 | Target: Self (1)
@@ -224440,7 +224444,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1122188)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1122189)  : Apply Aura (6) | Unknown(191)
+#2 (id=1122189)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
@@ -224475,7 +224479,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1122372)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1122373)  : Apply Aura (6) | Unknown(191)
+#2 (id=1122373)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
@@ -224500,7 +224504,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1122374)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1122375)  : Apply Aura (6) | Unknown(191)
+#2 (id=1122375)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
@@ -224525,7 +224529,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1122376)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1122377)  : Apply Aura (6) | Unknown(191)
+#2 (id=1122377)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
@@ -224641,7 +224645,7 @@ Labels           : 3136
 Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1122497)  : Apply Aura (6) | Unknown(191)
+#1 (id=1122497)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1125755)  : Force Cast (160): Windstorm
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435257 | Target: Self (1)
@@ -224664,7 +224668,7 @@ Labels           : 3136
 Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1122508)  : Apply Aura (6) | Unknown(191)
+#1 (id=1122508)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1125751)  : Force Cast (160): Windstorm
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 433252 | Target: Self (1)
@@ -224687,7 +224691,7 @@ Labels           : 3136
 Category Cooldown: 10 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1122509)  : Apply Aura (6) | Unknown(191)
+#1 (id=1122509)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1125758)  : Force Cast (160): Windstorm
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435260 | Target: Self (1)
@@ -224710,7 +224714,7 @@ Labels           : 3136
 Category Cooldown: 8 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1122510)  : Apply Aura (6) | Unknown(191)
+#1 (id=1122510)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1125762)  : Force Cast (160): Windstorm
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435262 | Target: Self (1)
@@ -225640,7 +225644,7 @@ Labels           : 3136
 Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125391)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125391)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125392)  : Force Cast (160): Earthbreaker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 433216 | Target: Self (1)
@@ -225686,7 +225690,7 @@ Labels           : 3136
 Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125402)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125402)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125403)  : Force Cast (160): Earthbreaker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435020 | Target: Self (1)
@@ -225732,7 +225736,7 @@ Labels           : 3136
 Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125407)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125407)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125408)  : Force Cast (160): Earthbreaker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435022 | Target: Self (1)
@@ -225779,7 +225783,7 @@ Labels           : 3136
 Category Cooldown: 10 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125412)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125412)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125413)  : Force Cast (160): Earthbreaker
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435024 | Target: Self (1)
@@ -226115,7 +226119,7 @@ Labels           : 3136
 Category Cooldown: 22 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), No Aura Log (202), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125806)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125806)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125807)  : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
@@ -226230,7 +226234,7 @@ Labels           : 3136
 Category Cooldown: 20 seconds
 Attributes       : No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Do Not Log Caster (141), No Cooldown On Tooltip (192), No Aura Log (202), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125817)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125817)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125818)  : Force Cast (160): Repel
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435291 | Target: Self (1)
@@ -226310,7 +226314,7 @@ Labels           : 3136
 Category Cooldown: 18 seconds
 Attributes       : No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Do Not Log Caster (141), No Cooldown On Tooltip (192), No Aura Log (202), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125826)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125826)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125827)  : Force Cast (160): Repel
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435294 | Target: Self (1)
@@ -226357,7 +226361,7 @@ Labels           : 3136
 Category Cooldown: 16 seconds
 Attributes       : No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Do Not Log Caster (141), No Cooldown On Tooltip (192), No Aura Log (202), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1125833)  : Apply Aura (6) | Unknown(191)
+#1 (id=1125833)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1125834)  : Force Cast (160): Repel
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 435297 | Target: Self (1)
@@ -226426,7 +226430,7 @@ Attributes       : Is Ability (4), Cooldown On Event (25), Is Self Channelled (3
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
-#1 (id=1126056)  : Apply Aura (6) | Unknown(191)
+#1 (id=1126056)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1126058)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Quaking Leap
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 435455 | Target: Self (1)
@@ -226634,7 +226638,7 @@ Attributes       : Is Ability (4), Cooldown On Event (25), Is Self Channelled (3
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
-#1 (id=1126160)  : Apply Aura (6) | Unknown(191)
+#1 (id=1126160)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1126161)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Quaking Leap
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 435511 | Target: Self (1)
@@ -226717,7 +226721,7 @@ Attributes       : Is Ability (4), Cooldown On Event (25), Is Self Channelled (3
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
-#1 (id=1126601)  : Apply Aura (6) | Unknown(191)
+#1 (id=1126601)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1126602)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Quaking Leap
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 435731 | Target: Self (1)
@@ -226767,7 +226771,7 @@ Attributes       : Is Ability (4), Cooldown On Event (25), Is Self Channelled (3
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
-#1 (id=1126656)  : Apply Aura (6) | Unknown(191)
+#1 (id=1126656)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1126657)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Quaking Leap
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Trigger Spell: 435758 | Target: Self (1)
@@ -228122,7 +228126,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1131018)  : Apply Aura (6) | Periodic Heal% (20): every 0.5 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-#3 (id=1131022)  : Apply Aura (6) | Unknown(191)
+#3 (id=1131022)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Chug Keg Leg's restorative brew, restoring health immediately and an additional amount over time.
 
@@ -228634,7 +228638,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1133992)  : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#3 (id=1133993)  : Apply Aura (6) | Unknown(191)
+#3 (id=1133993)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc435493
 Tooltip          : Stunned.
@@ -229870,7 +229874,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442379 | Target: Self (1)
 #2 (id=1137524)  : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#3 (id=1137525)  : Apply Aura (6) | Unknown(191)
+#3 (id=1137525)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #4 (id=1137557)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -229954,7 +229958,7 @@ Attributes       : Is Self Channelled (38), No Aura Icon (60), Do Not Display Ra
 Effects          :
 #1 (id=1137578)  : Apply Aura (6) | Proc Trigger Spell (42): Lightning Bulwark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442403 | Target: Self (1)
-#2 (id=1137579)  : Apply Aura (6) | Unknown(191)
+#2 (id=1137579)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=1137580)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -230012,7 +230016,7 @@ Attributes       : Is Self Channelled (38), No Aura Icon (60), Do Not Display Ra
 Effects          :
 #1 (id=1137586)  : Apply Aura (6) | Proc Trigger Spell (42): Lightning Bulwark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442406 | Target: Self (1)
-#2 (id=1137587)  : Apply Aura (6) | Unknown(191)
+#2 (id=1137587)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=1137588)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -230070,7 +230074,7 @@ Attributes       : Is Self Channelled (38), No Aura Icon (60), Do Not Display Ra
 Effects          :
 #1 (id=1137595)  : Apply Aura (6) | Proc Trigger Spell (42): Lightning Bulwark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442410 | Target: Self (1)
-#2 (id=1137596)  : Apply Aura (6) | Unknown(191)
+#2 (id=1137596)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=1137597)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -230121,7 +230125,7 @@ Category         : 2280 (Type 0x0)
 Category Cooldown: 18 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1137651)  : Apply Aura (6) | Unknown(191)
+#1 (id=1137651)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1137741)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442434 | Target: Self (1)
@@ -230230,7 +230234,7 @@ GCD              : 1 seconds
 Duration         : 0.75 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1137902)  : Apply Aura (6) | Unknown(191)
+#1 (id=1137902)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1137903)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442551 | Target: Self (1)
@@ -230258,7 +230262,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1137911)  : Apply Aura (6) | Unknown(191)
+#1 (id=1137911)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1137912)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442599 | Target: Self (1)
@@ -230380,7 +230384,7 @@ Category         : 2280 (Type 0x0)
 Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138312)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138312)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138313)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442821 | Target: Self (1)
@@ -230446,7 +230450,7 @@ GCD              : 1 seconds
 Duration         : 0.75 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138322)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138322)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138323)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442825 | Target: Self (1)
@@ -230506,7 +230510,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138331)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138331)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1138332)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442831 | Target: Self (1)
@@ -230532,7 +230536,7 @@ GCD              : 1 seconds
 Duration         : 0.75 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138336)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138336)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138337)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442834 | Target: Self (1)
@@ -230584,7 +230588,7 @@ Category         : 2280 (Type 0x0)
 Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138344)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138344)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138345)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442839 | Target: Self (1)
@@ -230629,7 +230633,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138351)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138351)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1138352)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442843 | Target: Self (1)
@@ -230686,7 +230690,7 @@ GCD              : 1 seconds
 Duration         : 0.75 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138373)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138373)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138374)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442856 | Target: Self (1)
@@ -230738,7 +230742,7 @@ Category         : 2280 (Type 0x0)
 Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138381)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138381)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1138382)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442861 | Target: Self (1)
@@ -230783,7 +230787,7 @@ GCD              : 1 seconds
 Duration         : 1 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1138390)  : Apply Aura (6) | Unknown(191)
+#1 (id=1138390)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1138391)  : Force Cast (160): Storm Archon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442866 | Target: Self (1)
@@ -231104,7 +231108,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1139255)  : Jump Charge (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1058 | Radius: 15 yards | Target: Front of Self (47)
-#2 (id=1147675)  : Apply Aura (6) | Unknown(487)
+#2 (id=1147675)  : Apply Aura (6) | Mount Cosmetic Mount (487)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 113899 | Target: Self (1)
 #3 (id=1149773)  : Trigger Spell (64): Ravenous Honey Buzzer
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 450038 | Target: Self (1)
@@ -236548,7 +236552,7 @@ Labels           : 3959: Item Effects
 Triggered By     : Synergistic Brewterializer (449490)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Not an Action (92), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1148453)  : Apply Aura (6) | Unknown(139)
+#1 (id=1148453)  : Apply Aura (6) | Force Reaction (139)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1370 | Target: Self (1)
 Description      : $@spelldesc443393
 
@@ -237805,8 +237809,9 @@ Attributes       : DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points
 Effects          :
 #1 (id=1151238)  : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1151239)  : Apply Aura (6) | Unknown(639)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Trigger Spell: 443545 | Target: Targeted Enemy (6)
+#2 (id=1151239)  : Apply Aura (6) | Modify Damage done to Caster from School (639)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Trigger Spell: 443545 | Target: Targeted Enemy (6)
+                   Affected School(s): All
 Description      : $@spelldesc443545
 Tooltip          : Inflicting $w1 Nature Damage every $t1 sec.
 
@@ -242268,7 +242273,7 @@ Effects          :
 #4 (id=1163030)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#5 (id=1163031)  : Apply Aura (6) | Unknown(94)
+#5 (id=1163031)  : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1163032)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
@@ -247955,7 +247960,7 @@ Effects          :
 #4 (id=1165564)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#5 (id=1165565)  : Apply Aura (6) | Unknown(94)
+#5 (id=1165565)  : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1165566)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
@@ -248041,7 +248046,7 @@ Effects          :
 #4 (id=1165582)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#5 (id=1165583)  : Apply Aura (6) | Unknown(94)
+#5 (id=1165583)  : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1165584)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
@@ -248127,7 +248132,7 @@ Effects          :
 #4 (id=1165600)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#5 (id=1165601)  : Apply Aura (6) | Unknown(94)
+#5 (id=1165601)  : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1165602)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
@@ -252152,7 +252157,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1000 | Misc Value: 80 | Misc Value 2: 0x50 | Target: at Self (18) -> at Area (87)
 #4 (id=1180362)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 650 | Scaled Value: 650 | Target: Self (1)
-#5 (id=1180363)  : Apply Aura (6) | Unknown(191)
+#5 (id=1180363)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 36 | Scaled Value: 36 | Target: Self (1)
 #6 (id=1180364)  : Apply Aura (6) | Disable Gravity (488)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -253736,9 +253741,9 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1189444)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1189445)  : Apply Aura (6) | Unknown(191)
+#2 (id=1189445)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#3 (id=1191291)  : Apply Aura (6) | Unknown(201)
+#3 (id=1191291)  : Apply Aura (6) | Fly (201)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1191293)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Celestial Barrage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472881 | Target: Self (1)
@@ -254125,9 +254130,9 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1190502)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1190503)  : Apply Aura (6) | Unknown(191)
+#2 (id=1190503)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#3 (id=1191300)  : Apply Aura (6) | Unknown(201)
+#3 (id=1191300)  : Apply Aura (6) | Fly (201)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1191302)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Celestial Barrage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472881 | Target: Self (1)
@@ -254152,9 +254157,9 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1190519)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1190520)  : Apply Aura (6) | Unknown(191)
+#2 (id=1190520)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#3 (id=1191298)  : Apply Aura (6) | Unknown(201)
+#3 (id=1191298)  : Apply Aura (6) | Fly (201)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1191303)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Celestial Barrage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472881 | Target: Self (1)
@@ -254180,9 +254185,9 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=1190523)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1190524)  : Apply Aura (6) | Unknown(191)
+#2 (id=1190524)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-#3 (id=1191299)  : Apply Aura (6) | Unknown(201)
+#3 (id=1191299)  : Apply Aura (6) | Fly (201)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1191304)  : Apply Aura (6) | Trigger Spell on Aura Expire (495): Celestial Barrage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472881 | Target: Self (1)
@@ -254571,7 +254576,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1191602)  : Apply Aura (6) | Unknown(236)
+#1 (id=1191602)  : Apply Aura (6) | Control Vehicle (236)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 #2 (id=1191603)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: -40 | Scaled Value: -40 | Target: Current Target (25)
@@ -256600,9 +256605,9 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immuni
 Effects          :
 #1 (id=1196508)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1196509)  : Apply Aura (6) | Unknown(336)
+#2 (id=1196509)  : Apply Aura (6) | Restrict Mounts (336)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=1196510)  : Apply Aura (6) | Unknown(336)
+#3 (id=1196510)  : Apply Aura (6) | Restrict Mounts (336)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 13 | Target: Self (1)
 #5 (id=1196675)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -256618,7 +256623,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1787 | Target: Self (1)
 #11 (id=1265483) : Remove Aura (Label) (212)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1786 | Target: Self (1)
-#12 (id=1265484) : Apply Aura (6) | Unknown(331)
+#12 (id=1265484) : Apply Aura (6) | Force Weather (331)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 520 | Target: Self (1)
 Description      : Enter an ethereal state of energy.
 Tooltip          : Existing in an ethereal state of energy known as "Untethered Space."
@@ -256915,7 +256920,7 @@ Labels           : 3957: Spatial Paradox (406732 effect#5)
 Triggered By     : Concussion (1214893)
 Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426), Unknown (465)
 Effects          :
-#1 (id=1197265)  : Apply Aura (6) | Unknown(128)
+#1 (id=1197265)  : Apply Aura (6) | Fixate (128)
                    Base Value: 1 | Scaled Value: 1 | Target: Current Target (25)
 #2 (id=1197304)  : Apply Aura (6) | Unknown(472)
                    Base Value: 1 | Scaled Value: 1 | Target: Current Target (25)

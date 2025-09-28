@@ -457,13 +457,13 @@ Family Flags     : 8, 27, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#2 (id=1869)     : Apply Aura (6) | Root (455)
+#2 (id=1869)     : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
-#4 (id=194839)   : Apply Aura (6) | Root (455)
+#4 (id=194839)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#5 (id=200193)   : Apply Aura (6) | Unknown(191)
+#5 (id=200193)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
-#6 (id=200194)   : Apply Aura (6) | Unknown(191)
+#6 (id=200194)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $?s275338[Causes the targeted enemy and up to $s1 additional enemies within $5246A3 yards to cower in fear.][Causes the targeted enemy to cower in fear and up to $s1 additional enemies within $5246A3 yards to flee.]
 Targets are disoriented for $d.
@@ -1961,7 +1961,7 @@ Mechanic         : Root
 Family Flags     : 24
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=115753)   : Apply Aura (6) | Root (455)
+#1 (id=115753)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Mechanic: Root | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Rooted.
@@ -3455,7 +3455,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Always Show Ground Texture (190), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=292904)   : Apply Aura (6) | Root (455)
+#1 (id=292904)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
@@ -6213,7 +6213,7 @@ Family Flags     : 8, 27
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Taps immediately (215), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#2 (id=801182)   : Apply Aura (6) | Root (455)
+#2 (id=801182)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #3 (id=801183)   : Trigger Spell (64): Intimidating Shout
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 316594 | Target: Self (1)
@@ -6253,7 +6253,7 @@ Affecting Spells : Battlefield Commander (424742 effect#3)
 Family Flags     : 27, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#2 (id=801186)   : Apply Aura (6) | Root (455)
+#2 (id=801186)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc316593
 Tooltip          : Disoriented.
@@ -15160,8 +15160,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1171344)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 | Target: Self (1)
+#1 (id=1171344)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
 
 Name             : Fury Warrior (id=462117) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior

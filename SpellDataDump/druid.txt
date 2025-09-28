@@ -45,7 +45,7 @@ Family Flags     : 9
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Threat (42), Aura Stays After Combat (57), PvP Enabling (96), Can Proc From Procs (122), No Partial Immunity (139), Aura Never Bounces (148), Aura Bounce Fails Spell (157), Limit N (165), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#1 (id=142)      : Apply Aura (6) | Root (455)
+#1 (id=142)      : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=824443)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | Target: Targeted Enemy (6)
@@ -944,7 +944,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000001
 Attributes       : Is Ability (4), Passive (6), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=8636)     : Apply Aura (6) | Unknown(154)
+#1 (id=8636)     : Apply Aura (6) | Modify Stealth Detection Level (154)
                    Base Value: 15 | Scaled Value: 15 | SP Coefficient: 0.25 | Target: Self (1)
 Description      : Reduces the chance enemies have to detect you while Prowl is active.
 
@@ -1027,7 +1027,7 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=8739)     : Energize Power (30)
                    Base Value: 250 | Scaled Value: 250 | Resource: rage | Target: Self (1)
-#2 (id=8740)     : Apply Aura (6) | Unknown(94)
+#2 (id=8740)     : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : You gain ${$m1/10} Rage upon shapeshifting into Bear Form.
 
@@ -1599,7 +1599,7 @@ Labels           : 16: Class Spells
 Triggered By     : Wild Charge (16979)
 Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Not an Action (92), Not In Spellbook (143), Taps immediately (215), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#2 (id=37278)    : Apply Aura (6) | Root (455)
+#2 (id=37278)    : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : Charge to an enemy, immobilizing them for $45334d.
 Tooltip          : Immobilized.
@@ -2906,7 +2906,7 @@ Family Flags     : 66
 Attributes       : Heartbeat Resist (30), No Threat (42), Aura Stays After Combat (57), Can Proc From Procs (122), No Partial Immunity (139), Aura Never Bounces (148), Aura Bounce Fails Spell (157), Taps immediately (215), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Chain by Most Hit (440)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#1 (id=111098)   : Apply Aura (6) | Root (455)
+#1 (id=111098)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=868561)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5 | Radius: 0 - 12 yards | Target: Targeted Enemy (6) -> at Enemy in Area (16)
@@ -4182,8 +4182,9 @@ Effects          :
                    Family Flags: 3, 11, 13, 25, 27, 29, 30, 31, 32, 38, 40, 41, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
-#6 (id=1072297)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2594 | Target: Self (1)
+#6 (id=1072297)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2594 (Label) | Target: Self (1)
+                   Affected Spells (Label): Bristling Fur (155835)
 
 Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
@@ -5853,7 +5854,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Tranquility (740), Starfall (50286), Typhoon (61391), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Overgrowth (203651), Starfall (359399), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Tranquility (1236573), Starfall (1236607), Starfall (1236608)
                    Family Flags: 3, 7, 53, 54, 55, 56, 82, 88
-#4 (id=340874)   : Apply Aura (6) | Unknown(188)
+#4 (id=340874)   : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #5 (id=874468)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Misc Value 2: 1162 (Label) | Target: Self (1)
@@ -6082,7 +6083,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=290831)   : Apply Aura (6) | Unknown(179)
+#1 (id=290831)   : Apply Aura (6) | Modify Attacker Spell Crit Chance (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self (1)
 #2 (id=349879)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 12 | Target: Self (1)
@@ -7119,7 +7120,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=310991)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#5 (id=310992)   : Apply Aura (6) | Unknown(191)
+#5 (id=310992)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #6 (id=370141)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
@@ -20446,7 +20447,7 @@ Effects          :
 #3 (id=1193146)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=1193147)  : Apply Aura (6) | Unknown(191)
+#4 (id=1193147)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=1193148)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self (1)
