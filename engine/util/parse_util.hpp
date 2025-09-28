@@ -171,19 +171,19 @@ struct affect_list_t
   template <typename... Ts>
   affect_list_t( uint8_t i, Ts... is ) : affect_list_t( is... ) { idx.push_back( i ); }
 
-  affect_list_t& add_family( int8_t f )
+  affect_list_t& add_family_flag( int8_t f )
   { family.push_back( f + 1 ); return *this; }  // +1 to account for flag 0
 
-  affect_list_t& remove_family( int8_t f )
+  affect_list_t& remove_family_flag( int8_t f )
   { family.push_back( -f - 1); return *this; }  // -1 to account for flag 0
 
   template <typename... Ts>
-  affect_list_t& add_family( int8_t f, Ts... fs )
-  { add_family( f ); return add_family( fs... ); }
+  affect_list_t& add_family_flag( int8_t f, Ts... fs )
+  { add_family_flag( f ); return add_family_flag( fs... ); }
 
   template <typename... Ts>
-  affect_list_t& remove_family( int8_t f, Ts... fs )
-  { remove_family( f ); return remove_family( fs... ); }
+  affect_list_t& remove_family_flag( int8_t f, Ts... fs )
+  { remove_family_flag( f ); return remove_family_flag( fs... ); }
 
   affect_list_t& add_label( int16_t l )
   { label.push_back( l ); return *this; }

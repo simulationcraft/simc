@@ -11448,7 +11448,7 @@ void druid_t::init_spells()
                                       : effect_mask_t( false ).enable( 2, 3 ) );
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
-  register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family( 0 ) );
+  register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
 
   parse_passive_effects( spec.ashamanes_guidance );
   parse_passive_effects( spec.astral_power );

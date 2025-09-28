@@ -984,6 +984,7 @@ private:
   std::vector<modified_value_t> passive_power_modifiers_;
   std::vector<modified_value_t> passive_player_modifiers_;
   std::vector<unsigned> registered_passive_spells_;
+  std::vector<unsigned> deregistered_passive_spells_;
   std::vector<unsigned> registered_effect_ignore_list_;
   std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
 
@@ -995,6 +996,8 @@ private:
 
 protected:
   void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );
+  // remove any existing parses and prevent future parsing
+  void deregister_passive_effects( const spell_data_t* );
   void parse_all_class_passives();
   void parse_all_passive_talents();
   void parse_all_passive_sets();

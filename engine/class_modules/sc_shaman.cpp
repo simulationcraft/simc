@@ -12700,7 +12700,7 @@ void shaman_t::init_spells()
 
   // Register passives
   register_passive_effect_mask( talent.enhanced_imbues,
-        specialization() == SHAMAN_ELEMENTAL ? effect_mask_t( false ).enable( 1, 4, 5, 9 )
+    specialization() == SHAMAN_ELEMENTAL     ? effect_mask_t( false ).enable( 1, 4, 5, 9 )
     : specialization() == SHAMAN_ENHANCEMENT ? effect_mask_t( false ).enable( 2 )
                                              : effect_mask_t( false ).enable( 3, 6, 7, 8, 10 ) );
 
@@ -12708,18 +12708,12 @@ void shaman_t::init_spells()
     specialization() == SHAMAN_ELEMENTAL ? effect_mask_t( false ).enable( 3, 4 )
                                          : effect_mask_t( false ).enable( 1, 2 ) );
 
-  parse_passive_effects( spec.shaman );
-  parse_passive_effects( spec.elemental_shaman );
-  parse_passive_effects( spec.elemental_shaman2 );
-  parse_passive_effects( spec.enhancement_shaman );
-  parse_passive_effects( spec.enhancement_shaman2 );
-  parse_passive_effects( spec.restoration_shaman );
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
 
   parse_passive_effects( spec.lightning_bolt_2 );
   parse_passive_effects( spec.maelstrom );
-
-  parse_all_passive_talents();
-  parse_all_passive_sets();
 
   // Constants
   constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent();

@@ -9109,14 +9109,15 @@ void demon_hunter_t::init_spells()
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
 
-  parse_passive_effects( spell.all_demon_hunter );
-  parse_passive_effects( spec.havoc_demon_hunter );
-  parse_passive_effects( spec.vengeance_demon_hunter );
-  parse_passive_effects( spec.immolation_aura_3 );
-  parse_passive_effects( spec.immolation_aura_cdr );
+  // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
+  register_passive_effect_mask( talent.havoc.critical_chaos, effect_mask_t( true ).disable( 1 ) );
 
+  parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+
+  parse_passive_effects( spec.immolation_aura_3 );
+  parse_passive_effects( spec.immolation_aura_cdr );
 
   // Spell Initialization ===================================================
 

@@ -14227,14 +14227,9 @@ void death_knight_t::init_spells()
     specialization() == DEATH_KNIGHT_BLOOD ? effect_mask_t( true ).disable( 1, 4, 7 )
                                            : effect_mask_t( true ).disable( 2, 5, 8 ) );
 
-  parse_passive_effects( spec.death_knight );
-  parse_passive_effects( spec.death_knight_2 );
-  parse_passive_effects( spec.blood_death_knight );
-  parse_passive_effects( spec.blood_death_knight_2 );
-  parse_passive_effects( spec.frost_death_knight );
-  parse_passive_effects( spec.frost_death_knight_2 );
-  parse_passive_effects( spec.unholy_death_knight );
-  parse_passive_effects( spec.unholy_death_knight_2 );
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
 
   if ( main_hand_weapon.group() == WEAPON_2H )
     parse_passive_effects( spec.might_of_the_frozen_wastes );
@@ -14243,9 +14238,6 @@ void death_knight_t::init_spells()
     parse_passive_effects( spell.vampiric_strike_clawing_shadows );
 
   parse_passive_effects( spell.attuned_to_the_aether );
-
-  parse_all_passive_talents();
-  parse_all_passive_sets();
 
   apply_effect_modifying_effects();
 }

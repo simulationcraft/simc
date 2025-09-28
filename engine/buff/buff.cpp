@@ -3584,7 +3584,7 @@ double absorb_buff_t::consume( double amount, action_state_t* state )
 
   current_value -= amount;
 
-  sim->print_debug( "{} {} absorbs {} (remaining: {})", *player, *this, amount, current_value );
+  sim->print_debug( "{} {} absorbs {:.6f} (remaining: {:.7g})", *player, *this, amount, current_value );
 
   absorb_used( amount, state ? state->action->player : nullptr );
 

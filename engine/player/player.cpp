@@ -8370,8 +8370,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         s->self_absorb_amount += absorbed;
 
         if ( p.sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() && absorbed != 0 )
-          p.sim->out_debug.printf( "Damage to %s after %s is %f", s->target->name(), ab.name.c_str(),
-                                   s->result_amount );
+          p.sim->print_debug( "Damage to {} after {} is {:.6f}", s->target->name(), ab.name, s->result_amount );
       }
       else
       {
@@ -8398,8 +8397,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
                 s->self_absorb_amount += absorbed;
 
               if ( p.sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() && absorbed != 0 )
-                p.sim->out_debug.printf( "Damage to %s after %s is %f", s->target->name(), ab->name(),
-                                         s->result_amount );
+                p.sim->print_debug( "Damage to {} after {} is {:.6f}", s->target->name(), ab->name(), s->result_amount );
             }
 
             if ( ab->current_value <= 0 )
@@ -8450,7 +8448,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
           s->self_absorb_amount += absorbed;
 
         if ( p.sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-          p.sim->out_debug.printf( "Damage to %s after %s is %f", s->target->name(), ab->name(), s->result_amount );
+          p.sim->print_debug( "Damage to {} after {} is {:.6f}", s->target->name(), ab->name(), s->result_amount );
 
         if ( s->result_amount <= 0 )
         {
@@ -8650,7 +8648,7 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
   {
     if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->print_debug( "Damage to {} before armor mitigation is {}", s->target->name(), s->result_amount );
+      sim->print_debug( "Damage to {} before armor mitigation is {:.6f}", s->target->name(), s->result_amount );
 
     // Maximum amount of damage reduced by armor
     double armor_cap = 0.85;
@@ -8667,9 +8665,9 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
     {
       if ( s->action->ignores_armor )
-        sim->print_debug( "Damage to {} after armor mitigation is {} (ignores armor)", s->target->name(), s->result_amount );
+        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} (ignores armor)", s->target->name(), s->result_amount );
       else
-        sim->print_debug( "Damage to {} after armor mitigation is {} ({} armor, {} armor coeff)",
+        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} ({:.7g} armor, {:.7g} armor coeff)",
                           s->target->name(), s->result_amount, s->target_armor, s->action->player->current.armor_coeff );
     }
 
@@ -8695,7 +8693,7 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     s->blocked_amount = pre_block_amount - s->result_amount;
 
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() && s->blocked_amount > 0.0 )
-      sim->out_debug.printf( "Damage to %s after blocking is %f", s->target->name(), s->result_amount );
+      sim->print_debug( "Damage to {} after blocking is {:.6f}", s->target->name(), s->result_amount );
   }
 }
 
@@ -15226,7 +15224,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     std::string_view field, field2;
     std::string_view eff_field, eff_field2;
-    std::string_view pow_field, pow_field2;
+    std::string_view pow_field;
     int field_type = -1;
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
@@ -15348,22 +15346,20 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         case P_COEFFICIENT:
           eff_field = "sp_coefficient";
           eff_field2 = "ap_coefficient";
+          allow_zero = false;
           break;
         // spellpower_data_t modifiers
         case P_RESOURCE_COST_1:
           pow_idx_bit = 1U << 0;
           pow_field = "cost";
-          pow_field2 = "cost_per_tick";
           break;
         case P_RESOURCE_COST_2:
           pow_idx_bit = 1U << 1;
           pow_field = "cost";
-          pow_field2 = "cost_per_tick";
           break;
         case P_RESOURCE_COST_3:
           pow_idx_bit = 1U << 2;
           pow_field = "cost";
-          pow_field2 = "cost_per_tick";
           break;
         // action_t modifiers, these don't modify spell data so will require special handling later
         case P_GENERIC:
@@ -15499,9 +15495,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           }
 
           dbc_override_->register_power( *dbc, id, pow_field, now.value() );
-          if ( !pow_field2.empty() )
+
+          if ( pow_field == "cost" )
           {
-            auto prev_val2 = pow.get_field( pow_field2 );
+            auto prev_val2 = pow.get_field( "cost_per_tick" );
             if ( prev_val2 )
             {
               auto now_val2 = ( prev_val2 + flat_val ) * ( 1.0 + pct_val );
@@ -15509,12 +15506,12 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               if ( sim->debug )
               {
                 do_debug( fmt::format( "pow#{} {} ({}) {} by {:.7g}{} (prev={:.7g} now={:.7g})", i + 1,
-                                       util::resource_type_string( pow.resource() ), id, pow_field2,
+                                       util::resource_type_string( pow.resource() ), id, "cost_per_tick",
                                        flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2,
                                        now_val2 ) );
               }
 
-              dbc_override_->register_power( *dbc, id, pow_field2, now_val2 );
+              dbc_override_->register_power( *dbc, id, "cost_per_tick", now_val2 );
             }
           }
 
@@ -15561,7 +15558,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
                                  prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
         }
 
-        dbc_override_->register_effect( *dbc, id, eff_field, now.value() );
+        dbc_override_->register_effect( *dbc, id, field_, now.value() );
         success = true;
       }
     }
@@ -15571,7 +15568,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       {
         if ( sim->debug )
         {
-          sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring",
+          sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring.",
                             spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
                             modifying_spell->id(), eff_idx );
         }
@@ -15636,40 +15633,80 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   return success;
 }
 
-void player_t::parse_passive_effects( const spell_data_t* modifying_spell, bool allow_non_passive )
+void player_t::parse_passive_effects( const spell_data_t* spell, bool allow_non_passive )
 {
-  if ( !modifying_spell || !modifying_spell->ok() ||
-       range::contains( registered_passive_spells_, modifying_spell->id() ) )
+  if ( !spell || !spell->ok() || range::contains( registered_passive_spells_, spell->id() ) )
+    return;
+
+  if ( range::contains( deregistered_passive_spells_, spell->id() ) )
   {
+    if ( sim->debug )
+    {
+      sim->print_debug( "Unabled to register {} ({}), this spell has been de-registered.", spell->name_cstr(),
+                        spell->id() );
+    }
     return;
   }
 
   // passive spells are not allowed unless allow_non_passive == true
-  if ( !allow_non_passive && !modifying_spell->flags( SX_PASSIVE ) )
+  if ( !allow_non_passive && !spell->flags( SX_PASSIVE ) )
   {
     sim->error( "{} cannot register passive effect modifiers from non-passive spell {} ({}), ignoring.",
-                *this, modifying_spell->name_cstr(), modifying_spell->id() );
+                *this, spell->name_cstr(), spell->id() );
     return;
   }
 
   bool success = false;
 
   // go thru all the effects on the modifying spell
-  for ( const auto& modifying_eff : modifying_spell->effects() )
+  for ( const auto& eff : spell->effects() )
   {
     // filter out ignore list
-    if ( range::contains( registered_effect_ignore_list_, modifying_eff.id() ) )
+    if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
       continue;
 
     // filter out non-effect-modifying effects
-    if ( modifying_eff.type() != E_APPLY_AURA )
+    if ( eff.type() != E_APPLY_AURA )
       continue;
 
-    success = register_passive_effect( modifying_eff );
+    success = register_passive_effect( eff );
   }
 
   if ( success )
-    registered_passive_spells_.push_back( modifying_spell->id() );
+    registered_passive_spells_.push_back( spell->id() );
+}
+
+void player_t::deregister_passive_effects( const spell_data_t* spell )
+{
+  if ( !spell || !spell->ok() || range::contains( deregistered_passive_spells_, spell->id() ) )
+    return;
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "De-registering {} ({}), all future parsing on this spell blocked.", spell->name_cstr(),
+                      spell->id() );
+  }
+
+  deregistered_passive_spells_.push_back( spell->id() );
+
+  if ( range::contains( registered_passive_spells_, spell->id() ) )
+  {
+    // go thru all the effects on the modifying spell
+    for ( const auto& eff : spell->effects() )
+    {
+      // filter out ignore list
+      if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
+        continue;
+
+      // filter out non-effect-modifying effects
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      register_passive_effect( eff, true );
+    }
+
+    range::erase_remove( registered_passive_spells_, spell->id() );
+  }
 }
 
 void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value )
@@ -15723,9 +15760,9 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
   {
     std::vector<std::string> msg;
     auto mask_ = mask;
-    for ( int i = 1; mask_;  mask_ >>= 1 )
+    for ( int i = 1; mask_ && i <= spell->effect_count(); mask_ >>= 1, i++ )
       if ( mask_ & 1 )
-        msg.push_back( std::to_string( i++ ) );
+        msg.push_back( std::to_string( i ) );
 
     sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
                       util::string_join( msg, "," ), mask );

@@ -8517,11 +8517,7 @@ void hunter_t::init_spells()
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
 
   // Register passives
-  parse_passive_effects( specs.hunter );
-  parse_passive_effects( specs.beast_mastery_hunter );
-  parse_passive_effects( specs.marksmanship_hunter );
-  parse_passive_effects( specs.survival_hunter );
-
+  parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
 }
