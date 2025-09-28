@@ -96,7 +96,7 @@ const dbc_item_data_t& find_consumable( item_subclass_consumable type, bool ptr,
 const dbc_item_data_t& find_gem( std::string_view gem, bool ptr, bool tokenized = true );
 
 // Class / Spec specific passives for an actor
-const spell_data_t* get_class_passive( const player_t&, specialization_e );
+const spell_data_t* get_class_passive( const player_t&, specialization_e, size_t idx = 1 );
 std::vector<const spell_data_t*> class_passives( const player_t* );
 
 player_e get_class_from_spec( specialization_e );

@@ -202,6 +202,8 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " original_x=" << original_x;
   s << " original_y=" << original_y;
 
+  s.precision( 7 );
+
   s << " raw_amount=" << result_raw;
   s << " total_amount=" << result_total;
   s << " mitigated_amount=" << result_mitigated;
@@ -212,8 +214,6 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " self_absorbed_damage=" << self_absorb_amount;
   s << " ap=" << attack_power;
   s << " sp=" << spell_power;
-
-  s.precision( 6 );
 
   s << " haste=" << haste;
   s << " crit=" << crit_chance;

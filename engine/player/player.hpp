@@ -970,9 +970,10 @@ private:
   std::unique_ptr<dbc_override_t> dbc_override_;
   struct modified_value_t
   {
-    unsigned id, field_id;
+    unsigned id;
+    int field_id;
     double orig, flat, pct;
-    modified_value_t( unsigned id, unsigned field_id, double orig, double flat = 0.0, double pct = 1.0 )
+    modified_value_t( unsigned id, int field_id, double orig, double flat = 0.0, double pct = 1.0 )
       : id( id ), field_id( field_id ), orig( orig ), flat( flat ), pct( pct )
     {}
 
@@ -994,6 +995,7 @@ private:
 
 protected:
   void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );
+  void parse_all_class_passives();
   void parse_all_passive_talents();
   void parse_all_passive_sets();
   void register_passive_effect_mask( const spell_data_t*, uint32_t );

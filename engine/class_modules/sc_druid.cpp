@@ -1240,9 +1240,6 @@ struct druid_t final : public parse_player_effects_t
   // Class Specializations
   struct specializations_t
   {
-    // Passive Auras
-    const spell_data_t* druid;
-
     // Baseline
     const spell_data_t* bear_form_override;  // swipe/thrash
     const spell_data_t* bear_form_passive;
@@ -11023,6 +11020,10 @@ void druid_t::init_spells()
   };
   auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
+
   // Class tree
   sim->print_debug( "Initializing class talents..." );
   talent.aessinas_renewal               = CT( "Aessina's Renewal" );  // TODO: NYI
@@ -11354,9 +11355,6 @@ void druid_t::init_spells()
   talent.the_eternal_moon               = HT( "The Eternal Moon" );
   talent.the_light_of_elune             = HT( "The Light of Elune" );
 
-  // Passive Auras
-  spec.druid                    = dbc::get_class_passive( *this, SPEC_NONE );
-
   // Baseline
   spec.bear_form_override       = find_spell( 106829 );
   spec.bear_form_passive        = find_spell( 1178 );
@@ -11452,17 +11450,12 @@ void druid_t::init_spells()
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family( 0 ) );
 
-  parse_passive_effects( spec.druid );
-  parse_passive_effects( spec_spell );
   parse_passive_effects( spec.ashamanes_guidance );
   parse_passive_effects( spec.astral_power );
   parse_passive_effects( spec.bear_form_2 );
   parse_passive_effects( spec.cenarius_guidance );
   parse_passive_effects( spec.moonfire_2 );
   parse_passive_effects( spec.ursine_adept );
-
-  parse_all_passive_talents();
-  parse_all_passive_sets();
 }
 
 // druid_t::init_items ======================================================

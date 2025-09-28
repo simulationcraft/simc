@@ -15028,28 +15028,32 @@ bool player_t::is_ptr() const
 namespace
 {
 static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
-  { P_GENERIC,          "base_dd"           },  // 0
-  { P_DURATION,         "duration"          },  // 1
-  { P_STACK,            "proc_charges"      },  // 4
-  { P_RANGE,            "max_range"         },  // 5
-  { P_RADIUS,           "max_radius"        },  // 6
-  { P_CRIT,             "crit"              },  // 7
-  { P_CAST_TIME,        "cast_time"         },  // 10
-  { P_COOLDOWN,         "cooldown"          },  // 11
-  { P_RESOURCE_COST_1,  "cost"              },  // 14
-  { P_CRIT_BONUS,       "crit_bonus"        },  // 15
-  { P_CHAIN_TARGETS,    "chain_target"      },  // 17
-  { P_PROC_CHANCE,      "proc_chance"       },  // 18
-  { P_TICK_TIME,        "period"            },  // 19
-  { P_CHAIN_MULTIPLIER, "chain_multiplier"  },  // 20
-  { P_GCD,              "gcd"               },  // 21
-  { P_TICK_DAMAGE,      "base_td"           },  // 22
-  { P_COEFFICIENT,      "bonus_coefficient" },  // 24
-  { P_MAX_STACKS,       "max_stack"         },  // 37
-  { P_PROC_COOLDOWN,    "internal_cooldown" },  // 38
-  { P_MAX_TARGETS,      "max_targets"       },  // 40
-  { A_HASTED_COOLDOWN,  "hasted_cooldown"   },  // 416
-  { A_HASTED_GCD,       "hasted_gcd"        },  // 417
+  { P_GENERIC,                    "base_dd"           },  // 0
+  { P_DURATION,                   "duration"          },  // 1
+  { P_STACK,                      "proc_charges"      },  // 4
+  { P_RANGE,                      "max_range"         },  // 5
+  { P_RADIUS,                     "max_radius"        },  // 6
+  { P_CRIT,                       "crit"              },  // 7
+  { P_CAST_TIME,                  "cast_time"         },  // 10
+  { P_COOLDOWN,                   "cooldown"          },  // 11
+  { P_RESOURCE_COST_1,            "cost"              },  // 14
+  { P_CRIT_BONUS,                 "crit_bonus"        },  // 15
+  { P_CHAIN_TARGETS,              "chain_target"      },  // 17
+  { P_PROC_CHANCE,                "proc_chance"       },  // 18
+  { P_TICK_TIME,                  "period"            },  // 19
+  { P_CHAIN_MULTIPLIER,           "chain_multiplier"  },  // 20
+  { P_GCD,                        "gcd"               },  // 21
+  { P_TICK_DAMAGE,                "base_td"           },  // 22
+  { P_COEFFICIENT,                "bonus_coefficient" },  // 24
+  { P_MAX_STACKS,                 "max_stack"         },  // 37
+  { P_PROC_COOLDOWN,              "internal_cooldown" },  // 38
+  { P_MAX_TARGETS,                "max_targets"       },  // 40
+  { A_MODIFY_SCHOOL,              "school"            },  // 220
+  { A_MODIFY_CATEGORY_COOLDOWN,   "category_cooldown" },  // 341
+  { A_MOD_MAX_CHARGES,            "charges"           },  // 411
+  { A_HASTED_COOLDOWN,            "hasted_cooldown"   },  // 416
+  { A_HASTED_GCD,                 "hasted_gcd"        },  // 417
+  { A_MOD_RECHARGE_TIME_CATEGORY, "charge_cooldown"   },  // 453
 };
 
 std::string_view get_field_from_type( unsigned type )
@@ -15061,15 +15065,14 @@ std::string_view get_field_from_type( unsigned type )
   return {};
 }
 
-unsigned get_type_from_field( std::string_view field )
+int get_type_from_field( std::string_view field )
 {
   for ( auto [ t, f ] : field_type_map )
     if ( f == field )
       return t;
 
-  return 0;
+  return -1;
 }
-
 }
 
 std::array<double, 3> player_t::get_passive_value( const spell_data_t& spell, std::string_view field ) const
@@ -15224,7 +15227,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     std::string_view field, field2;
     std::string_view eff_field, eff_field2;
     std::string_view pow_field, pow_field2;
-    unsigned field_type = modifying_eff.property_type();
+    int field_type = -1;
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
@@ -15234,8 +15237,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     bool allow_zero = true;  // modify even if base dbc value is 0
 
     auto do_debug = [ & ]( std::string_view msg ) {
-      sim->print_debug( "{} ({}) eff#{} modifying {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
-                        modifying_eff.index() + 1, spell->name_cstr(), spell->id(), msg );
+      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
+                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
+                        msg );
     };
 
     switch ( sub_type )
@@ -15268,47 +15272,22 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_ADD_PCT_LABEL_MODIFIER:
         pct_val = modifying_eff.percent();
         break;
+      // special handling
       case A_MODIFY_SCHOOL:
-        if ( remove )
-        {
-          sim->error( "{} cannot remove modify school effect from {} ({}) on {} ({}).", *this,
-                      modifying_eff.spell()->name_cstr(), modifying_eff.spell()->id(), spell->name_cstr(),
-                      spell->id() );
-          continue;
-        }
-        flat_val = modifying_eff.misc_value1();
         field = "school";
+        flat_val = modifying_eff.misc_value1();
         break;
-      // special handling for action_t modifying effects
       case A_HASTED_COOLDOWN:
       case A_HASTED_CATEGORY:
-        if ( remove )
-        {
-          sim->error( "{} cannot remove hasted cooldown effect from {} ({}) on {} ({}).", *this,
-                      modifying_eff.spell()->name_cstr(), modifying_eff.spell()->id(), spell->name_cstr(),
-                      spell->id() );
-          continue;
-        }
-        // use field_id = A_HASTED_COOLDOWN
-        passive_spell_modifiers_.emplace_back( spell->id(), A_HASTED_COOLDOWN, 0.0, 1.0, 1.0 );
-        if ( sim->debug )
-          do_debug( "with hasted cooldown" );
-        success = true;
-        continue;
+        field = "hasted_cooldown";
+        flat_val = 1.0;
+        is_dbc = false;
+        break;
       case A_HASTED_GCD:
-        if ( remove )
-        {
-          sim->error( "{} cannot remove hasted gcd effect from {} ({}) on {} ({}).", *this,
-                      modifying_eff.spell()->name_cstr(), modifying_eff.spell()->id(), spell->name_cstr(),
-                      spell->id() );
-          continue;
-        }
-        // use field_id = A_HASTED_GCD
-        passive_spell_modifiers_.emplace_back( spell->id(), A_HASTED_GCD, 0.0, 1.0, 1.0 );
-        if ( sim->debug )
-          do_debug( "with hasted gcd" );
-        success = true;
-        continue;
+        field = "hasted_gcd";
+        flat_val = 1.0;
+        is_dbc = false;
+        break;
       default:
         continue;
     }
@@ -15317,8 +15296,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     if ( !flat_val && !pct_val )
       continue;
 
-    if ( property )
+    if ( !field.empty() && !property )
     {
+      field_type = get_type_from_field( field );
+    }
+    else if ( property )
+    {
+      field_type = modifying_eff.property_type();
+
       switch ( field_type )
       {
         // effect modifier
@@ -15415,33 +15400,45 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       auto id = spell->id();
       double now_val;
 
-      if ( sub_type == A_MODIFY_SCHOOL )
+      // special cases
+      if ( sub_type == A_HASTED_GCD || sub_type == A_HASTED_COOLDOWN || sub_type == A_HASTED_CATEGORY ||
+           sub_type == A_MODIFY_SCHOOL )
       {
-        auto prev_val = spell->get_field( field );
-        now_val = flat_val;
+        double prev_val;
+        auto it = range::find_if( passive_spell_modifiers_, [ id, field_type ]( const auto& mod ) {
+          return mod.id == id && mod.field_id == field_type;
+        } );
+
+        if ( remove )
+        {
+          assert( it != passive_spell_modifiers_.end() );
+          prev_val = it->flat;
+          it->flat = it->orig;
+          now_val = it->orig;
+        }
+        else if ( it == passive_spell_modifiers_.end() )
+        {
+          prev_val = sub_type == A_MODIFY_SCHOOL ? spell->get_field( "school" ) : 0.0;
+          now_val = flat_val;
+          passive_spell_modifiers_.emplace_back( id, field_type, prev_val, now_val, 1.0 );
+        }
+        else
+        {
+          prev_val = it->flat;
+          now_val = flat_val;
+          it->flat = now_val;
+        }
 
         if ( sim->debug )
         {
-          do_debug( fmt::format( "school (prev={} now={})",
-                                 util::school_type_string( dbc::get_school_type( as<uint32_t>( prev_val ) ) ),
-                                 util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) ) ) );
+          do_debug( fmt::format( "{} (prev={} now={})", field,
+            sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( prev_val ) ) )
+                                        : util::to_string( prev_val ),
+            sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) )
+                                        : util::to_string( now_val ) ) );
         }
       }
-      else if ( !property )  // determined via sub_type
-      {
-        auto prev_val = spell->get_field( field );
-        if ( prev_val == 0 && !allow_zero )
-          continue;
-
-        now_val = ( prev_val + flat_val ) * ( 1.0 + pct_val );
-
-        if ( sim->debug )
-        {
-          do_debug( fmt::format( "{} by {}{} (prev={} now={})", field, flat_val ? flat_val : pct_val * 100,
-                                 flat_val ? "" : "%", prev_val, now_val ) );
-        }
-      }
-      else  // determined via property_type (misc_value1)
+      else
       {
         auto data_val = is_dbc ? spell->get_field( field ) : 0.0;
         if ( data_val == 0 && !allow_zero )
@@ -15454,9 +15451,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
         if ( sim->debug )
         {
-          do_debug( fmt::format( "{} by {}{} (orig={} prev={}[{}/{}%] now={}[{}/{}%])", field,
-                                 flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
-                                 prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
+          do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                                 field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
+                                 prev.value(), prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
         }
       }
 
@@ -15494,10 +15491,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
           if ( sim->debug )
           {
-            do_debug( fmt::format( "pow#{} {} ({}) {} by {}{} (orig={} prev={}[{}/{}%] now={}[{}/{}%])", i + 1,
-                                   util::resource_type_string( pow.resource() ), id, pow_field,
-                                   flat_pow ? flat_pow : pct_val * 100, flat_pow ? "" : "%", now.orig, prev.value(),
-                                   prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
+            do_debug( fmt::format(
+              "pow#{} {} ({}) {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+              i + 1, util::resource_type_string( pow.resource() ), id, pow_field, flat_pow ? flat_pow : pct_val * 100,
+              flat_pow ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+              now.pct * 100 ) );
           }
 
           dbc_override_->register_power( *dbc, id, pow_field, now.value() );
@@ -15510,9 +15508,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
               if ( sim->debug )
               {
-                do_debug( fmt::format(
-                  "pow#{} {} ({}) {} by {}{} (prev={} now={})", i + 1, util::resource_type_string( pow.resource() ), id,
-                  pow_field2, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2, now_val2 ) );
+                do_debug( fmt::format( "pow#{} {} ({}) {} by {:.7g}{} (prev={:.7g} now={:.7g})", i + 1,
+                                       util::resource_type_string( pow.resource() ), id, pow_field2,
+                                       flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2,
+                                       now_val2 ) );
               }
 
               dbc_override_->register_power( *dbc, id, pow_field2, now_val2 );
@@ -15557,9 +15556,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
         if ( sim->debug )
         {
-          do_debug( fmt::format( "{} by {}{} (orig={} prev={}[{}/{}%] now={}[{}/{}%])", field_,
-                                 flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
-                                 prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
+          do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                                 field_, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
+                                 prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
         }
 
         dbc_override_->register_effect( *dbc, id, eff_field, now.value() );
@@ -15610,9 +15609,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
         if ( sim->debug )
         {
-          do_debug( fmt::format( "eff#{} by {}{} (orig={} prev={}[{}/{}%] now={}[{}/{}%])", eff->index() + 1,
-                                 flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
-                                 prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
+          do_debug(
+            fmt::format( "eff#{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                         eff->index() + 1, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
+                         prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
         }
 
         dbc_override_->register_effect( *dbc, id, "base_value", now.value() );
@@ -15638,8 +15638,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
 void player_t::parse_passive_effects( const spell_data_t* modifying_spell, bool allow_non_passive )
 {
-  if ( !modifying_spell->ok() || range::contains( registered_passive_spells_, modifying_spell->id() ) )
+  if ( !modifying_spell || !modifying_spell->ok() ||
+       range::contains( registered_passive_spells_, modifying_spell->id() ) )
+  {
     return;
+  }
 
   // passive spells are not allowed unless allow_non_passive == true
   if ( !allow_non_passive && !modifying_spell->flags( SX_PASSIVE ) )
@@ -15679,6 +15682,12 @@ const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const
   return p->dbc_override_->clone_spell( s, p->dbc->ptr );
 }
 
+void player_t::parse_all_class_passives()
+{
+  for ( auto spell : dbc::class_passives( this ) )
+    parse_passive_effects( spell );
+}
+
 void player_t::parse_all_passive_talents()
 {
   for ( auto [ tree, entry_id, rank ] : player_traits )
@@ -15705,13 +15714,54 @@ void player_t::parse_all_passive_sets()
 
 void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t mask )
 {
+  if ( !spell || !spell->ok() || !mask )
+    return;
+
+  bool deregister = range::contains( registered_passive_spells_, spell->id() );
+
+  if ( sim->debug )
+  {
+    std::vector<std::string> msg;
+    auto mask_ = mask;
+    for ( int i = 1; mask_;  mask_ >>= 1 )
+      if ( mask_ & 1 )
+        msg.push_back( std::to_string( i++ ) );
+
+    sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
+                      util::string_join( msg, "," ), mask );
+  }
+
   for ( const auto& eff : spell->effects() )
-    if ( mask & ( 1U << eff.index() ) )
+  {
+    if ( mask & ( 1U << eff.index() ) && !range::contains( registered_effect_ignore_list_, eff.id() ) )
+    {
       registered_effect_ignore_list_.push_back( eff.id() );
+
+      if ( deregister )
+      {
+        if ( sim->debug )
+          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), eff.index() + 1 );
+
+        register_passive_effect( eff, true );
+      }
+    }
+  }
 }
 
 void player_t::register_passive_affect_list( const spell_data_t* spell, const affect_list_t& mod )
 {
+  if ( !spell || !spell->ok() || mod.idx.empty() || ( mod.spell.empty() && mod.label.empty() && mod.family.empty() ) )
+    return;
+
+  bool deregister = range::contains( registered_passive_spells_, spell->id() );
+
+  if ( sim->debug )
+  {
+    sim->print_debug( "Registering {} ({}) eff#{} affect_list (spell={} label={} family={})", spell->name_cstr(),
+                      spell->id(), util::string_join( mod.idx, "," ), util::string_join( mod.spell, ", " ),
+                      util::string_join( mod.label, ", " ), util::string_join( mod.family, ", " ) );
+  }
+
   for ( auto idx : mod.idx )
   {
     if ( const auto& eff = spell->effectN( idx ); eff.ok() )
@@ -15735,7 +15785,25 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
       } );
 
       if ( !list.empty() )
+      {
+        if ( deregister )
+        {
+          if ( sim->debug )
+            sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+
+          register_passive_effect( eff, true );
+        }
+
         registered_affected_spell_list_.emplace_back( eff.id(), std::move( list ) );
+
+        if ( deregister )
+        {
+          if ( sim->debug )
+            sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+
+          register_passive_effect( eff );
+        }
+      }
     }
   }
 }

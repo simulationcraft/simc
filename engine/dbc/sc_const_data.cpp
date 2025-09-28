@@ -91,58 +91,117 @@ struct class_passives_entry_t
     specialization_e spec;
     unsigned         spell_id;
   };
-static constexpr std::array<class_passives_entry_t, 51> _class_passives { {
-  { DEATH_KNIGHT, SPEC_NONE,              137005 },
-  { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
-  { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
-  { DEATH_KNIGHT, DEATH_KNIGHT_FROST,     137006 },
-  { DEMON_HUNTER, SPEC_NONE,              212611 },
-  { DEMON_HUNTER, DEMON_HUNTER_HAVOC,     212612 },
-  { DEMON_HUNTER, DEMON_HUNTER_VENGEANCE, 212613 },
-  { DRUID,        SPEC_NONE,              137009 },
-  { DRUID,        DRUID_RESTORATION,      137012 },
-  { DRUID,        DRUID_FERAL,            137011 },
-  { DRUID,        DRUID_BALANCE,          137013 },
-  { DRUID,        DRUID_GUARDIAN,         137010 },
-  { EVOKER,       EVOKER_DEVASTATION,     356809 },
-  { EVOKER,       EVOKER_PRESERVATION,    356810 },
-  { EVOKER,       EVOKER_AUGMENTATION,    396186 },
-  { HUNTER,       SPEC_NONE,              137014 },
-  { HUNTER,       HUNTER_SURVIVAL,        137017 },
-  { HUNTER,       HUNTER_MARKSMANSHIP,    137016 },
-  { HUNTER,       HUNTER_BEAST_MASTERY,   137015 },
-  { MAGE,         SPEC_NONE,              137018 },
-  { MAGE,         MAGE_ARCANE,            137021 },
-  { MAGE,         MAGE_FIRE,              137019 },
-  { MAGE,         MAGE_FROST,             137020 },
-  { MONK,         SPEC_NONE,              137022 },
-  { MONK,         MONK_BREWMASTER,        137023 },
-  { MONK,         MONK_MISTWEAVER,        137024 },
-  { MONK,         MONK_WINDWALKER,        137025 },
-  { PALADIN,      SPEC_NONE,              137026 },
-  { PALADIN,      PALADIN_HOLY,           137029 },
-  { PALADIN,      PALADIN_PROTECTION,     137028 },
-  { PALADIN,      PALADIN_RETRIBUTION,    137027 },
-  { PRIEST,       SPEC_NONE,              137030 },
-  { PRIEST,       PRIEST_SHADOW,          137033 },
-  { PRIEST,       PRIEST_HOLY,            137031 },
-  { PRIEST,       PRIEST_DISCIPLINE,      137032 },
-  { ROGUE,        SPEC_NONE,              137034 },
-  { ROGUE,        ROGUE_OUTLAW,           137036 },
-  { ROGUE,        ROGUE_SUBTLETY,         137035 },
-  { ROGUE,        ROGUE_ASSASSINATION,    137037 },
-  { SHAMAN,       SPEC_NONE,              137038 },
-  { SHAMAN,       SHAMAN_ELEMENTAL,       137040 },
-  { SHAMAN,       SHAMAN_ENHANCEMENT,     137041 },
-  { SHAMAN,       SHAMAN_RESTORATION,     137039 },
-  { WARLOCK,      SPEC_NONE,              137042 },
-  { WARLOCK,      WARLOCK_AFFLICTION,     137043 },
-  { WARLOCK,      WARLOCK_DEMONOLOGY,     137044 },
-  { WARLOCK,      WARLOCK_DESTRUCTION,    137046 },
-  { WARRIOR,      SPEC_NONE,              137047 },
-  { WARRIOR,      WARRIOR_ARMS,           137049 },
-  { WARRIOR,      WARRIOR_FURY,           137050 },
-  { WARRIOR,      WARRIOR_PROTECTION,     137048 },
+static constexpr std::array<class_passives_entry_t, 110> _class_passives { {
+  { DEATH_KNIGHT, SPEC_NONE,              137005  },
+  { DEATH_KNIGHT, SPEC_NONE,              462062  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     462061  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_FROST,     137006  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_FROST,     462063  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007  },
+  { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    462064  },
+  { DEMON_HUNTER, SPEC_NONE,              212611  },
+  { DEMON_HUNTER, SPEC_NONE,              462065  },
+  { DEMON_HUNTER, DEMON_HUNTER_HAVOC,     212612  },
+  { DEMON_HUNTER, DEMON_HUNTER_HAVOC,     462066  },
+  { DEMON_HUNTER, DEMON_HUNTER_VENGEANCE, 212613  },
+  { DEMON_HUNTER, DEMON_HUNTER_VENGEANCE, 462067  },
+  { DRUID,        SPEC_NONE,              137009  },
+  { DRUID,        SPEC_NONE,              462069  },
+  { DRUID,        DRUID_BALANCE,          137013  },
+  { DRUID,        DRUID_BALANCE,          462068  },
+  { DRUID,        DRUID_FERAL,            137011  },
+  { DRUID,        DRUID_FERAL,            462070  },
+  { DRUID,        DRUID_GUARDIAN,         137010  },
+  { DRUID,        DRUID_GUARDIAN,         462071  },
+  { DRUID,        DRUID_RESTORATION,      137012  },
+  { DRUID,        DRUID_RESTORATION,      462073  },
+  { EVOKER,       SPEC_NONE,              353167  },
+  { EVOKER,       SPEC_NONE,              462075  },
+  { EVOKER,       EVOKER_DEVASTATION,     356809  },
+  { EVOKER,       EVOKER_DEVASTATION,     462076  },
+  { EVOKER,       EVOKER_PRESERVATION,    356810  },
+  { EVOKER,       EVOKER_PRESERVATION,    462078  },
+  { EVOKER,       EVOKER_AUGMENTATION,    396186  },
+  { EVOKER,       EVOKER_AUGMENTATION,    396186  },
+  { HUNTER,       SPEC_NONE,              137014  },
+  { HUNTER,       SPEC_NONE,              462080  },
+  { HUNTER,       HUNTER_BEAST_MASTERY,   137015  },
+  { HUNTER,       HUNTER_BEAST_MASTERY,   462079  },
+  { HUNTER,       HUNTER_MARKSMANSHIP,    137016  },
+  { HUNTER,       HUNTER_MARKSMANSHIP,    462080  },
+  { HUNTER,       HUNTER_SURVIVAL,        137017  },
+  { HUNTER,       HUNTER_SURVIVAL,        462082  },
+  { MAGE,         SPEC_NONE,              137018  },
+  { MAGE,         SPEC_NONE,              462084  },
+  { MAGE,         MAGE_ARCANE,            137021  },
+  { MAGE,         MAGE_ARCANE,            462083  },
+  { MAGE,         MAGE_FIRE,              137019  },
+  { MAGE,         MAGE_FIRE,              462083  },
+  { MAGE,         MAGE_FROST,             137020  },
+  { MAGE,         MAGE_FROST,             462086  },
+  { MONK,         SPEC_NONE,              137022  },
+  { MONK,         SPEC_NONE,              462088  },
+  { MONK,         MONK_BREWMASTER,        137023  },
+  { MONK,         MONK_BREWMASTER,        462087  },
+  { MONK,         MONK_MISTWEAVER,        137024  },
+  { MONK,         MONK_MISTWEAVER,        462090  },
+  { MONK,         MONK_WINDWALKER,        137025  },
+  { MONK,         MONK_WINDWALKER,        462091  },
+  { MONK,         MONK_WINDWALKER,        1222923 },
+  { PALADIN,      SPEC_NONE,              137026  },
+  { PALADIN,      SPEC_NONE,              462092  },
+  { PALADIN,      PALADIN_HOLY,           137029  },
+  { PALADIN,      PALADIN_HOLY,           428076  },
+  { PALADIN,      PALADIN_HOLY,           462093  },
+  { PALADIN,      PALADIN_PROTECTION,     137028  },
+  { PALADIN,      PALADIN_PROTECTION,     462095  },
+  { PALADIN,      PALADIN_RETRIBUTION,    137027  },
+  { PALADIN,      PALADIN_RETRIBUTION,    412314  },
+  { PALADIN,      PALADIN_RETRIBUTION,    462096  },
+  { PRIEST,       SPEC_NONE,              137030  },
+  { PRIEST,       SPEC_NONE,              462097  },
+  { PRIEST,       PRIEST_DISCIPLINE,      137032  },
+  { PRIEST,       PRIEST_DISCIPLINE,      462098  },
+  { PRIEST,       PRIEST_HOLY,            137031  },
+  { PRIEST,       PRIEST_HOLY,            462099  },
+  { PRIEST,       PRIEST_HOLY,            1238052 },
+  { PRIEST,       PRIEST_SHADOW,          137033  },
+  { PRIEST,       PRIEST_SHADOW,          462101  },
+  { ROGUE,        SPEC_NONE,              137034  },
+  { ROGUE,        SPEC_NONE,              462103  },
+  { ROGUE,        ROGUE_ASSASSINATION,    137037  },
+  { ROGUE,        ROGUE_ASSASSINATION,    462102  },
+  { ROGUE,        ROGUE_OUTLAW,           137036  },
+  { ROGUE,        ROGUE_OUTLAW,           462104  },
+  { ROGUE,        ROGUE_SUBTLETY,         137035  },
+  { ROGUE,        ROGUE_SUBTLETY,         462105  },
+  { SHAMAN,       SPEC_NONE,              137038  },
+  { SHAMAN,       SPEC_NONE,              462106  },
+  { SHAMAN,       SHAMAN_ELEMENTAL,       137040  },
+  { SHAMAN,       SHAMAN_ELEMENTAL,       462107  },
+  { SHAMAN,       SHAMAN_ELEMENTAL,       1231772 },
+  { SHAMAN,       SHAMAN_ENHANCEMENT,     137041  },
+  { SHAMAN,       SHAMAN_ENHANCEMENT,     462108  },
+  { SHAMAN,       SHAMAN_ENHANCEMENT,     1214207 },
+  { SHAMAN,       SHAMAN_RESTORATION,     137039  },
+  { SHAMAN,       SHAMAN_RESTORATION,     462110  },
+  { WARLOCK,      SPEC_NONE,              137042  },
+  { WARLOCK,      SPEC_NONE,              462112  },
+  { WARLOCK,      WARLOCK_AFFLICTION,     137043  },
+  { WARLOCK,      WARLOCK_AFFLICTION,     462111  },
+  { WARLOCK,      WARLOCK_DEMONOLOGY,     137044  },
+  { WARLOCK,      WARLOCK_DEMONOLOGY,     462113  },
+  { WARLOCK,      WARLOCK_DESTRUCTION,    137046  },
+  { WARLOCK,      WARLOCK_DESTRUCTION,    462114  },
+  { WARRIOR,      SPEC_NONE,              137047  },
+  { WARRIOR,      SPEC_NONE,              462116  },
+  { WARRIOR,      WARRIOR_ARMS,           137049  },
+  { WARRIOR,      WARRIOR_ARMS,           462115  },
+  { WARRIOR,      WARRIOR_FURY,           137050  },
+  { WARRIOR,      WARRIOR_FURY,           462117  },
+  { WARRIOR,      WARRIOR_PROTECTION,     137048  },
+  { WARRIOR,      WARRIOR_PROTECTION,     462119  },
 } };
 
 } // ANONYMOUS namespace ====================================================
@@ -1034,16 +1093,22 @@ bool dbc::has_common_school( school_e s1, school_e s2 )
  * To get class data, use SPEC_NONE
  * Only returns class passives or spec passive for your active spec
  */
-const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e s )
+const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e s, size_t idx )
 {
-  for ( const auto& entry :  _class_passives )
+  for ( const auto& entry : _class_passives )
   {
-    if ( entry.type != p.type ) continue;
-    if ( s != SPEC_NONE && entry.spec != s ) continue;
-    if ( s != SPEC_NONE && entry.spec != p.specialization() ) continue;
+    if ( entry.type != p.type )
+      continue;
+    if ( s != SPEC_NONE && entry.spec != s )
+      continue;
+    if ( s != SPEC_NONE && entry.spec != p.specialization() )
+      continue;
+    if ( idx-- > 1 )
+      continue;
 
     return p.find_spell( entry.spell_id );
   }
+
   return spell_data_t::not_found();
 }
 
@@ -1051,13 +1116,9 @@ std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
   std::vector<const spell_data_t*> spells;
 
-  range::for_each( _class_passives, [ &spells, p ]( const class_passives_entry_t& entry ) {
-
-    if ( entry.type != p -> type ) return;
-    if ( entry.spec != SPEC_NONE && entry.spec != p -> specialization() ) return;
-
-    spells.push_back( p -> find_spell( entry.spell_id ) );
-  } );
+  for ( const auto& entry : _class_passives )
+    if ( entry.type == p->type && ( entry.spec == SPEC_NONE || entry.spec == p->specialization() ) )
+      spells.push_back( p->find_spell( entry.spell_id ) );
 
   return spells;
 }
