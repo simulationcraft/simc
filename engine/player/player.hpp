@@ -995,7 +995,7 @@ private:
   bool register_passive_effect( const spelleffect_data_t&, bool remove = false );
 
 protected:
-  void parse_passive_effects( const spell_data_t*, bool allow_non_passive = false );
+  void parse_passive_effects( const spell_data_t*, bool force = false );
   // remove any existing parses and prevent future parsing
   void deregister_passive_effects( const spell_data_t* );
   void parse_all_class_passives();
@@ -1004,7 +1004,7 @@ protected:
   void register_passive_effect_mask( const spell_data_t*, uint32_t );
   void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
   // directly override the base_value of effects
-  void register_passive_effect_override( const spelleffect_data_t&, double value );
+  void register_passive_effect_override( const spelleffect_data_t&, double value, std::string field = "base_value" );
 
 public:
   bool disable_class_spell_auto_cloning;

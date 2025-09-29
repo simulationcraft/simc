@@ -15338,10 +15338,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         case P_CHAIN_TARGETS:
         case P_CHAIN_MULTIPLIER:
           is_damage = true;
-          SC_FALLTHROUGH;
-        case P_TICK_TIME:
-        case P_RADIUS:
           eff_field = get_field_from_type( field_type );
+          break;
+        case P_TICK_TIME:
+          allow_zero = false;
+          eff_field = "period";
+          break;
+        case P_RADIUS:
+          eff_field = "radius";
           break;
         case P_COEFFICIENT:
           eff_field = "sp_coefficient";
@@ -15633,26 +15637,34 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   return success;
 }
 
-void player_t::parse_passive_effects( const spell_data_t* spell, bool allow_non_passive )
+void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
 {
-  if ( !spell || !spell->ok() || range::contains( registered_passive_spells_, spell->id() ) )
+  if ( !spell || !spell->ok() )
     return;
 
-  if ( range::contains( deregistered_passive_spells_, spell->id() ) )
+  if ( range::contains( registered_passive_spells_, spell->id() ) && !force )
   {
     if ( sim->debug )
     {
-      sim->print_debug( "Unabled to register {} ({}), this spell has been de-registered.", spell->name_cstr(),
+      sim->print_debug( "Unable to register {} ({}), spell already registered.", spell->name_cstr(),
                         spell->id() );
     }
     return;
   }
 
-  // passive spells are not allowed unless allow_non_passive == true
-  if ( !allow_non_passive && !spell->flags( SX_PASSIVE ) )
+  if ( range::contains( deregistered_passive_spells_, spell->id() ) && !force )
   {
-    sim->error( "{} cannot register passive effect modifiers from non-passive spell {} ({}), ignoring.",
-                *this, spell->name_cstr(), spell->id() );
+    if ( sim->debug )
+    {
+      sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(),
+                        spell->id() );
+    }
+    return;
+  }
+
+  if ( !spell->flags( SX_PASSIVE ) && !force )
+  {
+    sim->error( "Unable to register {} ({}), spell is not passive.", spell->name_cstr(), spell->id() );
     return;
   }
 
@@ -15666,7 +15678,7 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool allow_non_
       continue;
 
     // filter out non-effect-modifying effects
-    if ( eff.type() != E_APPLY_AURA )
+    if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
       continue;
 
     success = register_passive_effect( eff );
@@ -15699,7 +15711,7 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
         continue;
 
       // filter out non-effect-modifying effects
-      if ( eff.type() != E_APPLY_AURA )
+      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
         continue;
 
       register_passive_effect( eff, true );
@@ -15709,9 +15721,9 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
   }
 }
 
-void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value )
+void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string field )
 {
-  dbc_override_->register_effect( *dbc, effect.id(), "base_value", value );
+  dbc_override_->register_effect( *dbc, effect.id(), field, value );
 }
 
 const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )
