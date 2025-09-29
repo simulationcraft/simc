@@ -180,7 +180,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=ff_combustion_flamestrike,if=talent.frostfire_bolt,value=100" );
   precombat->add_action( "variable,name=ff_filler_flamestrike,if=talent.frostfire_bolt,value=100" );
   precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=100-(50*talent.mark_of_the_firelord)-(44*talent.quickflame)" );
-  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=100" );
+  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=100-(50*talent.mark_of_the_firelord)-(42*talent.quickflame)" );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
   precombat->add_action( "use_item,name=ingenious_mana_battery,target=self" );
