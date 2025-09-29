@@ -945,8 +945,6 @@ public:
   std::string default_food() const override { return warlock_apl::food( this ); }
   std::string default_rune() const override { return warlock_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
-  void apply_affecting_auras( action_t& action ) override;
-  void apply_affecting_auras( buff_t& buff );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
   void feast_of_souls_gain();
 

@@ -149,7 +149,7 @@ using namespace helpers;
         parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571  // Effect #3 is handled in a custom action_state
         parse_effects( p()->buffs.tormented_crescendo ); // 387079
         parse_effects( p()->buffs.umbral_lattice ); // 455679 // TWW1
-        parse_effects( p()->buffs.jackpot_affliction, p()->tier.spliced_aff_4pc ); // 1219034 (m: 1215683) // TWW2
+        parse_effects( p()->buffs.jackpot_affliction ); // 1219034 // TWW2
       }
 
       // Demonology
@@ -158,19 +158,19 @@ using namespace helpers;
         parse_effects( p()->buffs.demonic_core ); // 264173
         parse_effects( p()->warlock_base.master_demonologist ); // 77219
         // NOTE: Currently 'parse_effects' system does not support some of the Power Siphon dmg amp modifiers spell effects, so we manually override the value
-        parse_effects( p()->buffs.power_siphon, p()->buffs.power_siphon->data().effectN( 1 ).percent() + p()->talents.blood_invocation->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 3 ).percent() ); // 334581 (m: 455576, 449620)
+        parse_effects( p()->buffs.power_siphon ); // 334581
         parse_effects( p()->buffs.demonic_calling ); // 205146
       }
 
       // Destruction
       if ( destruction() )
       {
-        parse_effects( p()->buffs.backdraft, p()->talents.indiscriminate_flames ); // 117828 (m: 457114)
+        parse_effects( p()->buffs.backdraft ); // 117828
         parse_effects( p()->buffs.ritual_of_ruin ); // 387157
         parse_effects( p()->buffs.conflagration_of_chaos_cf ); // 387109
         parse_effects( p()->buffs.conflagration_of_chaos_sb ); // 387110
         parse_effects( p()->buffs.crashing_chaos ); // 417282 // RoF is dummy
-        parse_effects( p()->buffs.burn_to_ashes, p()->talents.burn_to_ashes ); // 387154 (m: 387153)
+        parse_effects( p()->buffs.burn_to_ashes ); // 387154
         parse_effects( p()->buffs.decimation ); // 457555
         parse_effects( p()->buffs.echo_of_the_azjaqir ); // 455674 // TWW1
       }
@@ -178,9 +178,9 @@ using namespace helpers;
       // Diabolist
       if ( diabolist() )
       {
-        parse_effects( p()->buffs.art_overlord, p()->hero.touch_of_rancora ); // 428524 (m: 429893)
-        parse_effects( p()->buffs.art_mother, p()->hero.touch_of_rancora ); // 432794 (m: 429893)
-        parse_effects( p()->buffs.art_pit_lord, p()->hero.touch_of_rancora ); // 432795 (m: 429893)
+        parse_effects( p()->buffs.art_overlord ); // 428524
+        parse_effects( p()->buffs.art_mother ); // 432794
+        parse_effects( p()->buffs.art_pit_lord ); // 432795
       }
 
       // Hellcaller
@@ -204,14 +204,14 @@ using namespace helpers;
       // Demonology
       if ( demonology() )
       {
-        parse_target_effects( d_fn( &warlock_td_t::debuffs_t::wicked_maw ), p()->talents.wicked_maw_debuff, p()->talents.shadowtouched ); // 270569 (m: 453619)
+        parse_target_effects( d_fn( &warlock_td_t::debuffs_t::wicked_maw ), p()->talents.wicked_maw_debuff ); // 270569
       }
 
       // Destruction
       if ( destruction() )
       {
         parse_target_effects( d_fn( &warlock_td_t::debuffs_t::conflagrate ), p()->talents.conflagrate_debuff ); // 265931
-        parse_target_effects( d_fn( &warlock_td_t::dots_t::immolate ), p()->warlock_base.immolate_dot, p()->talents.ashen_remains ); // 157736 (m: 387252)
+        parse_target_effects( d_fn( &warlock_td_t::dots_t::immolate ), p()->warlock_base.immolate_dot ); // 157736
       }
 
       // Diabolist
@@ -220,7 +220,7 @@ using namespace helpers;
       if ( hellcaller() )
       {
         if ( destruction() )
-          parse_target_effects( d_fn( &warlock_td_t::dots_t::wither, false ), p()->hero.wither_dot, p()->talents.ashen_remains ); // 445474 (m: 387252)
+          parse_target_effects( d_fn( &warlock_td_t::dots_t::wither, false ), p()->hero.wither_dot ); // 445474
       }
 
       // Soul Harvester
@@ -607,8 +607,7 @@ using namespace helpers;
 
       if ( destruction() && affected_by.havoc )
       {
-        // TOCHECK: 2025-08-27 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
-        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + ( !p()->bugs ? p()->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 );
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent();
         p()->havoc_spells.push_back( this );
       }
     }
@@ -818,9 +817,6 @@ using namespace helpers;
       : warlock_spell_t( "Shadow Bolt Volley", p, p->talents.shadow_bolt_volley )
     {
       background = dual = true;
-
-      base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();  // Shadow Bolt Volley affected but not in the spell data whitelist
-      base_dd_multiplier *= 1.0 + p->talents.improved_shadow_bolt->effectN( 2 ).percent();  // Shadow Bolt Volley affected but not in the spell data whitelist
     }
   };
 
@@ -920,7 +916,7 @@ using namespace helpers;
       double m = warlock_spell_t::action_multiplier();
 
       if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-        m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent();
+        m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
       return m;
     }
@@ -1228,14 +1224,6 @@ using namespace helpers;
       if ( p()->hero.mark_of_xavius.ok() )
       {
         double val = p()->hero.mark_of_xavius->effectN( 3 ).percent();
-
-        if ( active_2pc<TWW3, HERO_HELLCALLER>() )
-        {
-          if ( affliction() )
-            val += p()->tier.inquisitor_hc_2pc->effectN( 3 ).percent();
-          if ( destruction() )
-            val += p()->tier.inquisitor_hc_2pc->effectN( 2 ).percent();
-        }
 
         m *= 1.0 + td( target )->dots.wither->current_stack() * val;
       }
@@ -1617,8 +1605,6 @@ using namespace helpers;
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
     {
-      dot_duration += p->talents.unstable_affliction_3->effectN( 1 ).time_value();
-
       triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
@@ -1940,7 +1926,7 @@ using namespace helpers;
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
       // 11.1 onward, nightfall has not buffed hellcaller drain soul dmg (bug)
-      double mul = ( p()->bugs && hellcaller() ) ? 0.0 : ( p()->talents.nightfall_buff->effectN( 2 ).percent() + p()->hero.necrolyte_teachings->effectN( 1 ).percent() );
+      double mul = ( p()->bugs && hellcaller() ) ? 0.0 : ( p()->talents.nightfall_buff->effectN( 2 ).percent() );
 
       debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0.0 );
       debug_cast<drain_soul_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? mul : 0.0 );
@@ -2991,9 +2977,9 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_target_multiplier( t );
 
-        // TOCHECK: 2025-07-27 Despite what is listed in spell data, Bilescourge Bombers also benefits from Wicked Maw, but only with Shadowtouched (bug?)
-        if ( p()->bugs && p()->talents.shadowtouched.ok() )
-          m *= 1.0 + td( t )->debuffs.wicked_maw->check_value();
+        // TOCHECK: 2025-07-27 Despite what is listed in spell data, Bilescourge Bombers benefits from shadowtouched
+        if ( p()->bugs && td( t )->debuffs.wicked_maw->check() )
+          m *= 1.0 + p()->talents.wicked_maw_debuff->effectN( 2 ).percent();
 
         return m;
       }
@@ -3437,7 +3423,8 @@ using namespace helpers;
       if ( affected_by.havoc )
       {
         // NOTE: The FnB talent adds its bonus damage to Incinerate Havoc (regardless of havoc target range)
-        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() + ( !p()->bugs ? p()->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 ) + p()->talents.fire_and_brimstone->effectN( 1 ).percent();
+        base_aoe_multiplier *= p()->talents.havoc_debuff->effectN( 1 ).percent() +
+                               p()->talents.fire_and_brimstone->effectN( 1 ).percent();
         p()->havoc_spells.push_back( this );
       }
     }
@@ -3643,7 +3630,7 @@ using namespace helpers;
       triggers.rancora_cb_bonus = true;
       triggers.jackpot_destruction = true;
 
-      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent() + ( !p->bugs ? p->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 );
+      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
 
       if ( p->talents.internal_combustion.ok() )
       {
@@ -3980,7 +3967,7 @@ using namespace helpers;
       triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
       triggers.jackpot_destruction = true;
 
-      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent() + ( !p->bugs ? p->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 );
+      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -4323,7 +4310,6 @@ using namespace helpers;
       : warlock_spell_t( "Infernal Bolt", p, p->hero.infernal_bolt, options_str )
     {
       energize_type = action_energize::ON_CAST;
-      energize_amount += p->warlock_base.destruction_warlock->effectN( 9 ).base_value() / 10.0;
 
       affected_by.havoc = true;
 
@@ -4338,7 +4324,7 @@ using namespace helpers;
       if ( destruction() && affected_by.havoc )
       {
         // NOTE: 2025-08-27 Infernal Bolt Havoc deals 100% of the original damage (bug?)
-        base_aoe_multiplier *= p()->bugs ? havoc_mod_value : ( p()->talents.havoc_debuff->effectN( 1 ).percent() + ( !p()->bugs ? p()->hero.gloom_of_nathreza->effectN( 2 ).percent() : 0.0 ) );
+        base_aoe_multiplier *= p()->bugs ? havoc_mod_value : ( p()->talents.havoc_debuff->effectN( 1 ).percent() );
         p()->havoc_spells.push_back( this );
       }
     }
@@ -4631,8 +4617,6 @@ using namespace helpers;
       if( malevolence )
       {
         stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
-        if( p->active_2pc<TWW3, HERO_HELLCALLER>() )
-          stacks += as<int>( p->tier.inquisitor_hc_2pc->effectN( 1 ).base_value() );
       }
 
       tdata->dots.wither->increment( stacks );

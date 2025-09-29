@@ -37,7 +37,7 @@ void warlock_pet_t::create_buffs()
                                ->set_cooldown( 0_ms );
 
   buffs.grimoire_of_service = make_buff( this, "grimoire_of_service", o()->talents.grimoire_of_service )
-                                  ->set_default_value( o()->talents.grimoire_of_service->effectN( 1 ).percent() + o()->talents.fiendish_oblation->effectN( 1 ).percent() );
+                                  ->set_default_value( o()->talents.grimoire_of_service->effectN( 1 ).percent() );
 
   buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
                                  ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
@@ -48,7 +48,7 @@ void warlock_pet_t::create_buffs()
                             ->set_default_value_from_effect( 2 );
 
   buffs.antoran_armaments = make_buff( this, "antoran_armaments", o()->talents.antoran_armaments_buff )
-                                ->set_default_value( o()->talents.antoran_armaments->effectN( 1 ).percent() );
+                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
 
   buffs.ferocity_of_fharg = make_buff( this, "ferocity_of_fharg", o()->talents.ferocity_of_fharg_buff );
 
@@ -135,12 +135,6 @@ void warlock_pet_t::init_action_list()
       summon_stats->add_child( action_list[ i ]->stats );
 }
 
-void warlock_pet_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-  o()->apply_affecting_auras( action );
-}
-
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
   dot_t* d;
@@ -195,7 +189,7 @@ double warlock_pet_t::composite_melee_haste() const
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   if ( buffs.ferocity_of_fharg->check() )
-    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+    m *= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
 
   return m;
 }
@@ -218,7 +212,7 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
   if ( buffs.ferocity_of_fharg->check() )
-    m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+    m /= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
 
   return m;
 }
@@ -730,7 +724,7 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
   {
     auto amount = s->result_raw;
 
-    amount *= p()->o()->talents.antoran_armaments->effectN( 2 ).percent();
+    amount *= p()->o()->talents.antoran_armaments_buff->effectN( 2 ).percent();
 
     warlock_pet_melee_attack_t::impact( s );
     
@@ -1022,9 +1016,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   double cost_pct_multiplier() const override
   {
     double c = warlock_pet_spell_t::cost_pct_multiplier();
-
-    if ( p()->o()->warlock_base.fel_firebolt_2->ok() )
-      c *= 1.0 + p()->o()->warlock_base.fel_firebolt_2->effectN( 1 ).percent();
 
     if ( p()->buffs.demonic_power->check() )
       c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
@@ -1338,7 +1329,8 @@ double dreadstalker_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  m += o()->talents.flametouched->effectN( 2 ).percent();
+  if ( buffs.ferocity_of_fharg->check() )
+    m += buffs.ferocity_of_fharg->data().effectN( 2 ).percent();
 
   return m;
 }
@@ -1347,7 +1339,8 @@ double dreadstalker_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  m += o()->talents.flametouched->effectN( 2 ).percent();
+  if ( buffs.ferocity_of_fharg->check() )
+    m += buffs.ferocity_of_fharg->data().effectN( 2 ).percent();
 
   return m;
 }
@@ -2216,7 +2209,7 @@ namespace diabolist
 
       // TOCHECK: 2025-07-27 Wicked Cleave spell from Overlord does not benefit from Shadowtouched talent even though its damage school is Shadowflame (bug?)
       if ( !p()->bugs && p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
-        m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+        m *= 1.0 + p()->o()->talents.wicked_maw_debuff->effectN( 2 ).percent();
 
       return m;
     }
@@ -2344,8 +2337,8 @@ namespace diabolist
       double m = spell_t::composite_target_multiplier( target );  // skip warlock_pet_spell_t::composite_target_multiplier
 
       // TOCHECK: 2025-07-27 Despite what is listed in spell data, Shadowtouched increases the damage of Feelseeker spell from Pit Lord by 25% instead of 20% (bug?)
-      if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
-        m *= 1.0 + ( p()->bugs ? shadowtouched_value : p()->o()->talents.shadowtouched->effectN( 1 ).percent() );
+      if ( owner_td( target )->debuffs.wicked_maw->check() )
+        m *= 1.0 + ( p()->bugs ? shadowtouched_value : p()->o()->talents.wicked_maw_debuff->effectN( 2 ).percent() );
 
       return m;
     }
@@ -2537,8 +2530,8 @@ struct soul_swipe_base_t : public warlock_pet_spell_t
     double m = spell_t::composite_target_multiplier( target );  // skip warlock_pet_spell_t::composite_target_multiplier
 
     // TOCHECK: 2025-09-23 Despite what is listed in spell data, Shadowtouched increases the damage of Soul Swipe spell from Rampaging Demonic Soul by 18.18% (1.30/1.10) instead of 20% (bug?)
-    if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( spell_t::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
-      m *= 1.0 + ( p()->bugs ? shadowtouched_value : p()->o()->talents.shadowtouched->effectN( 1 ).percent() );
+    if ( owner_td( target )->debuffs.wicked_maw->check() )
+      m *= 1.0 + ( p()->bugs ? shadowtouched_value : p()->o()->talents.wicked_maw_debuff->effectN( 2 ).percent() );
 
     return m;
   }

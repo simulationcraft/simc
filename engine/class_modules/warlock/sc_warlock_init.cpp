@@ -85,16 +85,36 @@ namespace warlock
     version_11_1_0_data = find_spell( 1214442 ); // For 11.1 version checking, new talent: Demonfire Infusion
 
     // Register passives
-    auto sg_mask = affliction() ? effect_mask_t( false ).enable( 1, 4 ) : effect_mask_t( true ).disable( 1, 4 );
-    register_passive_effect_mask( talents.socrethars_guile, sg_mask );
+    // TOCHECK: 2025-08-27 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
+    if ( destruction() && bugs )
+      register_passive_effect_mask( hero.gloom_of_nathreza, effect_mask_t( true ).disable( 2 ) );
 
-    auto mox_mask = affliction() ? effect_mask_t( false ).enable( 1 ) : effect_mask_t( true ).disable( 1 );
-    register_passive_effect_mask( hero.mark_of_xavius, mox_mask );
+    register_passive_effect_mask( talents.socrethars_guile,
+      affliction() ? effect_mask_t( false ).enable( 1, 4 ) : effect_mask_t( true ).disable( 1, 4 ) );
 
-    parse_passive_effects( warlock_base.destruction_warlock );
-    parse_passive_effects( talents.socrethars_guile );
-    parse_passive_effects( hero.mark_of_xavius );
+    register_passive_effect_mask( hero.mark_of_xavius,
+      affliction() ? effect_mask_t( false ).enable( 1 ) : effect_mask_t( true ).disable( 1 ) );
+
+    register_passive_effect_mask( tier.inquisitor_hc_2pc,
+      affliction() ? effect_mask_t( true ).disable( 2 ) : effect_mask_t( true ).disable( 3 ) );
+  
+    // adjustment to demonfire_flurry is handled manually during buff initialization
+    register_passive_affect_list( talents.raging_demonfire, affect_list_t( 3 ).remove_spell( 1217731 ) );
+
+    // Shadow Bolt Volley affected but not in the spell data whitelist
+    register_passive_affect_list( talents.improved_shadow_bolt, affect_list_t( 2 ).add_spell( 453176 ) );
+    register_passive_affect_list( talents.sargerei_technique, affect_list_t( 1 ).add_spell( 453176 ) );
+
+    parse_all_class_passives();
+    parse_all_passive_talents();
+    parse_all_passive_sets();
     
+    parse_passive_effects( warlock_base.agony_2 );
+    parse_passive_effects( warlock_base.fel_firebolt_2 );
+    parse_passive_effects( talents.unstable_affliction_3 );
+
+    if ( bugs ) // Mark of Perotharn is being applied twice in what appears to be a bug
+      parse_passive_effects( hero.mark_of_perotharn, true );
   }
 
   void warlock_t::init_spells_affliction()
@@ -784,7 +804,6 @@ namespace warlock
     buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
     buffs.impending_ruin = make_buff ( this, "impending_ruin", talents.impending_ruin_buff )
-                               ->set_max_stack( std::max( as<int>( talents.impending_ruin_buff->max_stacks() + as<int>( talents.master_ritualist->effectN( 2 ).base_value() ) ), 1 ) )
                                ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                  {
                                    if ( cur == b->max_stack() )
@@ -846,12 +865,6 @@ namespace warlock
 
     timespan_t tick_time = tier.demonfire_flurry->effectN( 1 ).period();
     timespan_t duration = tier.demonfire_flurry->duration();
-
-    if ( talents.demonfire_mastery.ok() )
-    {
-      tick_time *= 1.0 + talents.demonfire_mastery->effectN( 2 ).percent();
-      duration *= 1.0 + talents.demonfire_mastery->effectN( 3 ).percent();
-    }
 
     int ticks = as<int>( floor( ( duration / tick_time ) ) );
     if ( talents.raging_demonfire.ok() )
@@ -948,14 +961,11 @@ namespace warlock
                                  }
                                } );
 
-    buffs.ritual_overlord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_overlord", hero.ritual_overlord, 1, buffs.art_overlord )
-                                ->set_duration( hero.ritual_overlord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+    buffs.ritual_overlord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_overlord", hero.ritual_overlord, 1, buffs.art_overlord );
 
-    buffs.ritual_mother = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother, 2, buffs.art_mother )
-                              ->set_duration( hero.ritual_mother->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+    buffs.ritual_mother = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_mother_of_chaos", hero.ritual_mother, 2, buffs.art_mother );
 
-    buffs.ritual_pit_lord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord, 0, buffs.art_pit_lord )
-                                ->set_duration( hero.ritual_pit_lord->duration() + warlock_base.destruction_warlock->effectN( 5 ).time_value() );
+    buffs.ritual_pit_lord = make_buff<diabolic_ritual_buff_t>( this, "diabolic_ritual_pit_lord", hero.ritual_pit_lord, 0, buffs.art_pit_lord );
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 

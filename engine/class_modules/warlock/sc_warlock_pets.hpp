@@ -99,7 +99,6 @@ struct warlock_pet_t : public pet_t
   double composite_melee_haste() const override;
   double composite_spell_cast_speed() const override;
   double composite_melee_auto_attack_speed() const override;
-  void apply_affecting_auras( action_t& action ) override;
   void arise() override;
   void demise() override;
 
@@ -279,7 +278,7 @@ public:
     double m = ab::composite_target_multiplier( target );
 
     if ( p()->o()->talents.shadowtouched.ok() && dbc::has_common_school( ab::get_school(), SCHOOL_SHADOW ) && owner_td( target )->debuffs.wicked_maw->check() )
-      m *= 1.0 + p()->o()->talents.shadowtouched->effectN( 1 ).percent();
+      m *= 1.0 + p()->o()->talents.wicked_maw_debuff->effectN( 2 ).percent();
 
     return m;
   }

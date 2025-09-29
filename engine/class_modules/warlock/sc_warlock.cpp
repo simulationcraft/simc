@@ -358,10 +358,6 @@ void warlock_t::init_assessors()
 
 void warlock_t::init_finished()
 {
-  for ( auto& b : buff_list )
-    if ( b->data().ok() )
-      apply_affecting_auras( *b );
-
   parse_player_effects();
 
   player_t::init_finished();
@@ -863,7 +859,7 @@ void warlock_t::parse_player_effects()
     parse_effects( tier.hexflame_demo_2pc ); // 453644 // TWW1
 
     // Demonology Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::fel_sunder ), talents.fel_sunder_debuff, talents.fel_sunder ); // 387402 (m: 387399)
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::fel_sunder ), talents.fel_sunder_debuff  ); // 387402
   }
 
   // Destruction
@@ -873,11 +869,11 @@ void warlock_t::parse_player_effects()
     parse_effects( talents.backlash ); // 387384
 
     // Destruction Buffs
-    parse_effects( buffs.rolling_havoc, talents.rolling_havoc ); // 387570 (m: 387569)
+    parse_effects( buffs.rolling_havoc ); // 387570
 
     // Destruction Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::eradication ), talents.eradication_debuff, talents.eradication ); // 196414 (m: 196412)
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::pyrogenics ), talents.pyrogenics_debuff, talents.pyrogenics ); // 387096 (m: 387095)
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::eradication ), talents.eradication_debuff ); // 196414
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::pyrogenics ), talents.pyrogenics_debuff ); // 387096
   }
 
   // Diabolist
@@ -897,8 +893,8 @@ void warlock_t::parse_player_effects()
   {
     if ( destruction() )
     {
-      parse_effects( hero.xalans_ferocity, warlock_base.destruction_warlock ); // 440044 (m: 137046)
-      parse_effects( hero.xalans_cruelty, warlock_base.destruction_warlock ); // 440040 (m: 137046)
+      parse_effects( hero.xalans_ferocity ); // 440044
+      parse_effects( hero.xalans_cruelty ); // 440040
     }
     else
     {
@@ -910,149 +906,6 @@ void warlock_t::parse_player_effects()
 
   // Soul Harvester
 
-}
-
-/* ----------------------------------------------------------
-* NOTE NOTE NOTE
-* Applies PASSIVE (Talents, Spec Auras, Baseline) 
-* effects to any action created by the player 
-* NOTE NOTE NOTE
-------------------------------------------------------------- */
-void warlock_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-
-  // Shared
-  action.apply_affecting_aura( talents.wrathful_minion ); // 386864
-  action.apply_affecting_aura( talents.demonic_inspiration ); // 386858  // The attack speed increase to the main pet is a Dummy effect
-  action.apply_affecting_aura( talents.sargerei_technique ); // 405955  // Sargerei Technique appears to double dip for Infernal Bolt due to Destro/Demo modifier
-  if ( !demonology() )
-    action.apply_affecting_aura( talents.summoners_embrace ); // 453105
-
-  // Affliction
-  if ( affliction() )
-  {
-    action.apply_affecting_aura( warlock_base.affliction_warlock ); // 137043
-    action.apply_affecting_aura( warlock_base.agony_2 ); // 231792
-    action.apply_affecting_aura( talents.writhe_in_agony ); // 196102
-    action.apply_affecting_aura( talents.dark_virtuosity ); // 405327
-    action.apply_affecting_aura( talents.absolute_corruption ); // 196103
-    action.apply_affecting_aura( talents.siphon_life ); // 452999
-    action.apply_affecting_aura( talents.kindled_malice ); // 405330  // 2025-09-21 This is still affecting SoC
-    action.apply_affecting_aura( talents.improved_shadow_bolt ); // 453080
-    action.apply_affecting_aura( talents.sacrolashs_dark_strike ); // 386986
-    action.apply_affecting_aura( talents.improved_haunt ); // 458034
-    action.apply_affecting_aura( talents.malediction ); // 453087
-    action.apply_affecting_aura( talents.malevolent_visionary ); // 387273
-    action.apply_affecting_aura( talents.contagion ); // 453096
-    action.apply_affecting_aura( talents.creeping_death ); // 264000
-    action.apply_affecting_aura( talents.xavius_gambit ); // 416615
-    action.apply_affecting_aura( talents.perpetual_unstability ); // 459376
-    action.apply_affecting_aura( talents.improved_malefic_rapture ); // 454378
-    action.apply_affecting_aura( tier.hexflame_aff_2pc ); // 453643 // TWW1
-  }
-
-  // Demonology
-  if ( demonology() )
-  {
-    action.apply_affecting_aura( warlock_base.demonology_warlock ); // 137044
-    action.apply_affecting_aura( talents.spiteful_reconstitution ); // 428394
-    action.apply_affecting_aura( talents.rune_of_shadows ); // 453744
-    action.apply_affecting_aura( talents.imperator ); // 416230
-    action.apply_affecting_aura( talents.shadow_invocation ); // 422054
-    action.apply_affecting_aura( talents.master_summoner ); // 1240189
-    action.apply_affecting_aura( talents.impending_doom ); // 455587
-    action.apply_affecting_aura( tier.hexflame_demo_2pc ); // 453644 // TWW1
-  }
-
-  // Destruction
-  if ( destruction() )
-  {
-    action.apply_affecting_aura( warlock_base.destruction_warlock ); // 137046
-    action.apply_affecting_aura( talents.improved_conflagrate ); // 231793
-    action.apply_affecting_aura( talents.scalding_flames ); // 388832
-    action.apply_affecting_aura( talents.explosive_potential ); // 388827
-    action.apply_affecting_aura( talents.blistering_atrophy ); // 456939
-    action.apply_affecting_aura( talents.emberstorm ); // 454744
-    action.apply_affecting_aura( talents.raging_demonfire ); // 387166
-    action.apply_affecting_aura( talents.demonfire_mastery ); // 456946
-    action.apply_affecting_aura( talents.devastation ); // 454735
-    action.apply_affecting_aura( talents.ruin ); // 387103
-    action.apply_affecting_aura( talents.improved_chaos_bolt ); // 456951
-    action.apply_affecting_aura( tier.hexflame_destro_2pc ); // 453647
-  }
-
-  // Diabolist
-  if ( diabolist() )
-  {
-    action.apply_affecting_aura( hero.flames_of_xoroth ); // 429657
-    action.apply_affecting_aura( hero.abyssal_dominion ); // 429581
-  }
-
-  // Hellcaller
-  if ( hellcaller() )
-  {
-    if ( destruction() )
-    {
-      action.apply_affecting_aura( hero.xalans_ferocity ); // 440044
-      action.apply_affecting_aura( hero.xalans_cruelty ); // 440040
-    }
-    else
-    {
-      action.apply_affecting_aura( hero.xalans_ferocity ); // 440044
-      action.apply_affecting_aura( hero.xalans_cruelty ); // 440040
-    }
-    action.apply_affecting_aura( hero.hatefury_rituals ); // 440048
-    action.apply_affecting_aura( hero.bleakheart_tactics ); // 440051
-
-    // NOTE: There are two effects in 'warlock_base.affliction_warlock' that modify Mark of Perotharn, but they cancel each other out
-    // In any case, currently `action.apply_affecting_aura` can't handle two modifier effects (from the same modifier spell) redirecting onto a single
-    action.apply_affecting_aura( hero.mark_of_perotharn ); // 440045
-    if ( bugs ) // Mark of Perotharn is being applied twice in what appears to be a bug
-      action.apply_affecting_aura( hero.mark_of_perotharn ); // 440045
-
-  }
-
-  // Soul Harvester
-  if ( soul_harvester() )
-  {
-    action.apply_affecting_aura( hero.necrolyte_teachings ); // 449620
-    action.apply_affecting_aura( hero.wicked_reaping ); // 449631
-    action.apply_affecting_aura( hero.quietus ); // 449634
-    action.apply_affecting_aura( hero.sataiels_volition ); // 449637
-    action.apply_affecting_aura( tier.inquisitor_sh_4pc ); // 1236416
-  }
-}
-
-/* ----------------------------------------------------------
-* NOTE NOTE NOTE
-* Applies PASSIVE (Talents, Spec Auras, Baseline)
-* effects to any buff that could be applied to the player
-* NOTE NOTE NOTE
-------------------------------------------------------------- */
-void warlock_t::apply_affecting_auras( buff_t& buff )
-{
-  // Shared
-
-  // Affliction
-  if ( affliction() )
-    buff.apply_affecting_aura( warlock_base.affliction_warlock ); // 137043
-
-  // Demonology
-  if ( demonology() )
-    buff.apply_affecting_aura( warlock_base.demonology_warlock ); // 137044
-
-  // Destruction
-  if ( destruction() )
-    buff.apply_affecting_aura( warlock_base.destruction_warlock ); // 137046
-
-  // Diabolist
-
-  // Hellcaller
-
-  // Soul Harvester
-  if ( soul_harvester() )
-    buff.apply_affecting_aura( hero.necrolyte_teachings ); // 449620
 }
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
