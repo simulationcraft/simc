@@ -710,17 +710,6 @@ using namespace helpers;
       : summon_pet_t( n, p )
     { ignore_false_positive = true; }
 
-    void init_finished() override
-    {
-      summon_pet_t::init_finished();
-
-      if ( is_precombat && pet->affected_by.demonic_inspiration )
-        make_event( *sim, 1_ms, [ this ] {  // Delay buff gain until after pet->reset()
-          if ( !pet->buffs.demonic_inspiration->check() )
-            pet->buffs.demonic_inspiration->trigger();
-        } );
-    }
-
     void schedule_execute( action_state_t* s = nullptr ) override
     {
       summon_pet_t::schedule_execute( s );
@@ -745,6 +734,9 @@ using namespace helpers;
       summon_pet_t::execute();
 
       p()->warlock_pet_list.active = pet;
+
+      if ( is_precombat && pet->affected_by.demonic_inspiration && !pet->buffs.demonic_inspiration->check() )
+        pet->buffs.demonic_inspiration->trigger();
 
       if ( p()->buffs.grimoire_of_sacrifice->check() )
         p()->buffs.grimoire_of_sacrifice->expire();
