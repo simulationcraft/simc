@@ -123,7 +123,7 @@ static constexpr std::array<class_passives_entry_t, 110> _class_passives { {
   { EVOKER,       EVOKER_PRESERVATION,    356810  },
   { EVOKER,       EVOKER_PRESERVATION,    462078  },
   { EVOKER,       EVOKER_AUGMENTATION,    396186  },
-  { EVOKER,       EVOKER_AUGMENTATION,    396186  },
+  { EVOKER,       EVOKER_AUGMENTATION,    462074  },
   { HUNTER,       SPEC_NONE,              137014  },
   { HUNTER,       SPEC_NONE,              462080  },
   { HUNTER,       HUNTER_BEAST_MASTERY,   137015  },

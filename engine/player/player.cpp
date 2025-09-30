@@ -15028,7 +15028,6 @@ namespace
 static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_GENERIC,                    "base_dd"           },  // 0
   { P_DURATION,                   "duration"          },  // 1
-  { P_STACK,                      "proc_charges"      },  // 4
   { P_RANGE,                      "max_range"         },  // 5
   { P_RADIUS,                     "max_radius"        },  // 6
   { P_CRIT,                       "crit"              },  // 7
@@ -15042,7 +15041,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_CHAIN_MULTIPLIER,           "chain_multiplier"  },  // 20
   { P_GCD,                        "gcd"               },  // 21
   { P_TICK_DAMAGE,                "base_td"           },  // 22
-  { P_COEFFICIENT,                "bonus_coefficient" },  // 24
+  { P_DOSES,                      "proc_charges"      },  // 31
   { P_MAX_STACKS,                 "max_stack"         },  // 37
   { P_PROC_COOLDOWN,              "internal_cooldown" },  // 38
   { P_MAX_TARGETS,                "max_targets"       },  // 40
@@ -15226,6 +15225,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     std::string_view eff_field, eff_field2;
     std::string_view pow_field;
     int field_type = -1;
+    int field_type2 = -1;
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
@@ -15248,7 +15248,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // if a spell has category_cooldown but no cooldown, category_cooldown value will be used for cooldown field.
         // if category_cooldown == cooldown assume this happened and modify both.
         if ( spell->get_field( "category_cooldown" ) == spell->get_field( "cooldown" ) )
+        {
           field2 = "cooldown";
+          field_type2 = P_COOLDOWN;
+        }
         break;
       case A_MOD_MAX_CHARGES:
         field = "charges";
@@ -15317,6 +15320,12 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             continue;
           field = "duration";
           break;
+        case P_STACK:
+          field = "proc_charges";
+          field_type = P_DOSES;
+          field2 = "max_stack";
+          field_type2 = P_MAX_STACKS;
+          break;
         case P_COOLDOWN:
           if ( spell->_cooldown == 0 && flat_val < 0 )
             continue;
@@ -15325,10 +15334,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         case P_PROC_CHANCE:
           allow_zero = false;
           SC_FALLTHROUGH;
-        case P_STACK:
         case P_RANGE:
         case P_CAST_TIME:
         case P_GCD:
+        case P_DOSES:
         case P_MAX_STACKS:
         case P_PROC_COOLDOWN:
         case P_MAX_TARGETS:
@@ -15340,12 +15349,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           is_damage = true;
           eff_field = get_field_from_type( field_type );
           break;
+        case P_RADIUS:
         case P_TICK_TIME:
           allow_zero = false;
-          eff_field = "period";
-          break;
-        case P_RADIUS:
-          eff_field = "radius";
+          eff_field = get_field_from_type( field_type );
           break;
         case P_COEFFICIENT:
           eff_field = "sp_coefficient";
@@ -15418,7 +15425,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         }
         else if ( it == passive_spell_modifiers_.end() )
         {
-          prev_val = sub_type == A_MODIFY_SCHOOL ? spell->get_field( "school" ) : 0.0;
+          prev_val = is_dbc ? spell->get_field( field ) : 0.0;
           now_val = flat_val;
           passive_spell_modifiers_.emplace_back( id, field_type, prev_val, now_val, 1.0 );
         }
@@ -15437,6 +15444,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) )
                                         : util::to_string( now_val ) ) );
         }
+
+        if ( is_dbc )
+          dbc_override_->register_spell( *dbc, id, field, now_val );
       }
       else
       {
@@ -15455,13 +15465,30 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
                                  field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
                                  prev.value(), prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
         }
-      }
 
-      if ( is_dbc )
-      {
-        dbc_override_->register_spell( *dbc, id, field, now_val );
+        if ( is_dbc )
+          dbc_override_->register_spell( *dbc, id, field, now_val );
+
         if ( !field2.empty() )
-          dbc_override_->register_spell( *dbc, id, field2, now_val );
+        {
+          auto data_val2 = spell->get_field( field2 );
+
+          auto [ prev2, now2 ] =
+            add_passive_effect_modifier( passive_spell_modifiers_, id, field_type2, data_val2, flat_val, pct_val );
+
+          auto now_val2 = now2.value();
+
+          if ( sim->debug )
+          {
+            do_debug(
+              fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                           field2, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now2.orig, prev2.value(),
+                           prev2.flat, prev2.pct * 100, now_val2, now2.flat, now2.pct * 100 ) );
+          }
+
+          if ( is_dbc )
+            dbc_override_->register_spell( *dbc, id, field2, now_val2 );
+        }
       }
 
       success = true;

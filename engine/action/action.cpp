@@ -732,6 +732,10 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   else if ( auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id ); it != spell_powers.end() )
   {
     resource_current = it->resource();
+
+    // check if any remaining entries have an aura
+    if ( range::contains( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id ) )
+      require_spec_aura = true;
   }
   // If all entries have an aura, find the one matching the spec aura
   else if ( auto it = range::find( spell_powers, player->spec_spell->id(), &spellpower_data_t::aura_id );
@@ -747,20 +751,31 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   for ( const spellpower_data_t& pd : spell_powers )
   {
-    if ( require_spec_aura && pd.aura_id() != player->spec_spell->id() )
+    if ( pd.resource() != resource_current && require_spec_aura && pd.aura_id() != player->spec_spell->id() )
       continue;
 
+    auto cost_array = player->get_passive_value( pd, "cost" );
+
     if ( pd._cost != 0 || pd._pct_cost == 0 )
-      base_costs[ pd.resource() ] = player->get_passive_value( pd, "cost" );
+    {
+      base_costs[ pd.resource() ] = cost_array;
+    }
     else  // use _pct_cost
-      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] );
+    {
+      base_costs[ pd.resource() ] = floor( pd.cost() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+    }
 
     secondary_costs[ pd.resource() ] = pd.max_cost();
 
     if ( pd._cost_per_tick != 0 || pd._pct_cost_per_tick == 0 )
-      base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
+    {
+      base_costs_per_tick[ pd.resource() ] = ( pd.cost_per_tick() + cost_array[ 1 ] ) * cost_array[ 2 ];
+    }
     else  // use _pct_cost_per_tick
-      base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] );
+    {
+      base_costs_per_tick[ pd.resource() ] =
+        floor( pd.cost_per_tick() * player->resources.base[ pd.resource() ] * cost_array[ 2 ] );
+    }
   }
 
   // handle parsed base damage modifiers
