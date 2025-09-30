@@ -2927,7 +2927,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
       base_empower_duration = base_time_to_empower( static_cast<empower_e>( empower_to ) );
     }
 
-    // apply parsed mofifiers
+    // apply parsed modifiers
     ab::dot_duration = ab::player->get_passive_value( ab::data(), "duration" );
     ab::dot_duration.base = base_empower_duration;
     ab::base_tick_time = ab::dot_duration;
