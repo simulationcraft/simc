@@ -711,7 +711,7 @@ public:
   {
     const spell_data_t* voidweaver_4pc_buff;
     const spell_data_t* archon_2pc_buff;
-    std::unique_ptr<modified_spell_data_t> voidweaver_4pc;
+    const spell_data_t* voidweaver_4pc;
   } tww3_spells;
 
   // Cooldowns
@@ -985,8 +985,6 @@ public:
   void arise() override;
   void demise() override;
   void do_dynamic_regen( bool ) override;
-  void apply_affecting_auras( action_t& ) override;
-  void apply_affecting_auras_late( action_t& );
   void invalidate_cache( cache_e ) override;
   void init_items() override;
 
@@ -1148,52 +1146,6 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-
-    if ( ab::data().ok() )
-    {
-      const auto spell_powers = ab::data().powers();
-      if ( spell_powers.size() == 1 && spell_powers.front().aura_id() == 0 )
-      {
-        ab::resource_current = spell_powers.front().resource();
-      }
-      else
-      {
-        // Find the first power entry without a aura id
-        auto it = range::find( spell_powers, 0U, &spellpower_data_t::aura_id );
-        if ( it != spell_powers.end() )
-        {
-          ab::resource_current = it->resource();
-        }
-        else
-        {
-          auto it = range::find( spell_powers, p.specialization_aura_id(), &spellpower_data_t::aura_id );
-          if ( it != spell_powers.end() )
-          {
-            ab::resource_current = it->resource();
-          }
-        }
-      }
-
-      for ( const spellpower_data_t& pd : spell_powers )
-      {
-        if ( pd.aura_id() != 0 && pd.aura_id() != p.specialization_aura_id() )
-          continue;
-
-        if ( pd._cost != 0 )
-          ab::base_costs[ pd.resource() ] = pd.cost();
-        else
-          ab::base_costs[ pd.resource() ] = floor( pd.cost() * p.resources.base[ pd.resource() ] );
-
-        ab::secondary_costs[ pd.resource() ] = pd.max_cost();
-
-        if ( pd._cost_per_tick != 0 )
-          ab::base_costs_per_tick[ pd.resource() ] = pd.cost_per_tick();
-        else
-          ab::base_costs_per_tick[ pd.resource() ] = floor( pd.cost_per_tick() * p.resources.base[ pd.resource() ] );
-      }
-
-      p.apply_affecting_auras_late( *this );
-    }
   }
 
   priest_td_t* td( player_t* t ) const
@@ -1260,27 +1212,22 @@ public:
   void apply_buff_effects()
   {
     // GENERAL PRIEST BUFF EFFECTS
-    parse_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
+    parse_effects( p().buffs.twist_of_fate );
     parse_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
-    parse_effects( p().buffs.rhapsody, p().specs.discipline_priest );
-    if ( p().specialization() == PRIEST_HOLY )
-      parse_effects( p().buffs.surge_of_light, p().talents.archon.empowered_surges, IGNORE_STACKS );
-    else
-      parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
+    parse_effects( p().buffs.rhapsody );
+    parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
-                     p().talents.archon.perfected_form );
+      parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
-      parse_effects( p().buffs.shattered_psyche,
-                     p().talents.shadow.shattered_psyche );  // Mind Blast critical strike chance
+      parse_effects( p().buffs.shattered_psyche );  // Mind Blast critical strike chance
 
-      parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
-                     p().talents.archon.perfected_form );  // Buffs non-periodic spells
-      parse_effects( p().buffs.screams_of_the_void, p().talents.shadow.screams_of_the_void );
+      // Buffs non-periodic spells
+      parse_effects( p().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
+      parse_effects( p().buffs.screams_of_the_void );
 
       if ( p().talents.shadow.ancient_madness.enabled() )
       {
@@ -1310,8 +1257,7 @@ public:
     // DISCIPLINE BUFF EFFECTS
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
-                     p().talents.discipline.twilight_corruption );
+      parse_effects( p().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
       parse_effects( p().buffs.sins_of_the_many, IGNORE_STACKS, USE_CURRENT );
@@ -1356,7 +1302,7 @@ public:
     if ( p().talents.archon.resonant_energy.enabled() )
     {
       parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
-                            p().talents.archon.resonant_energy_shadow, p().sets->set( HERO_ARCHON, TWW3, B2 ) );
+                            p().talents.archon.resonant_energy_shadow );
     }
   }
 
@@ -1780,11 +1726,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     // TODO: is this additive or multiplicative?
     double amount = s->result_amount;
     amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();
-
-    if ( priest().talents.sanlayn.enabled() )
-    {
-      amount *= priest().talents.sanlayn->effectN( 2 ).percent();
-    }
 
     for ( player_t* ally : sim->player_no_pet_list )
     {

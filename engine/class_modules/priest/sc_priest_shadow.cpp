@@ -138,9 +138,6 @@ struct dispersion_t final : public priest_spell_t
     tick_may_crit         = false;
     hasted_ticks          = false;
     may_miss              = false;
-
-    // CD Reduction
-    apply_affecting_aura( priest().talents.shadow.intangibility );
   }
 
   void execute() override
@@ -209,9 +206,6 @@ struct silence_t final : public priest_spell_t
     parse_options( options_str );
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
-
-    // CD Reduction
-    apply_affecting_aura( priest().talents.shadow.last_word );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -244,9 +238,6 @@ struct vampiric_embrace_t final : public priest_spell_t
     parse_options( options_str );
 
     harmful = false;
-
-    // Cooldown reduction
-    apply_affecting_aura( priest().talents.sanlayn );
   }
 
   void execute() override
@@ -320,10 +311,6 @@ public:
       callbacks                  = true;
       may_miss                   = false;
       may_crit                   = true;
-
-      base_dd_multiplier *= 1 + priest().talents.shadow.auspicious_spirits->effectN( 1 ).percent();
-
-      apply_affecting_aura( priest().talents.shadow.phantom_menace );
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -456,21 +443,9 @@ struct shadow_word_pain_t final : public priest_spell_t
       idol_of_nzoth_execute_stacks = 3;
     }
 
-    // Shadow: DoT Duration increase
-    apply_affecting_aura( priest().talents.shadow.misery );
-    // Discipline: 8% / 15% damage increase
-    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
-    // Spell Direct and Periodic 3%/5% gain
-    apply_affecting_aura( priest().talents.throes_of_pain );
-
     if ( priest().talents.holy.divine_image.enabled() )
     {
       child_searing_light = priest().background_actions.searing_light;
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T30, B2 ) )
-    {
-      apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
     }
 
     triggers_atonement = true;
@@ -716,9 +691,6 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       idol_of_nzoth_execute_stacks = 4;
     }
-
-    // Spell Periodic Percent Increase
-    apply_affecting_aura( priest().talents.shadow.maddening_touch );
   }
 
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
@@ -839,18 +811,6 @@ struct devouring_plague_t final : public priest_spell_t
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p )
   {
     parse_options( options_str );
-
-    // Spell Direct/Periodic Percent Increase
-    apply_affecting_aura( p.talents.shadow.voidtouched );
-    // Spell Resource Cost
-    apply_affecting_aura( p.talents.shadow.minds_eye );
-    // Duration, Direct/Periodic Percent Increase, and Resource Cost
-    apply_affecting_aura( p.talents.shadow.distorted_reality );
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
-    {
-      apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
-    }
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1586,8 +1546,6 @@ struct shadow_crash_damage_t final : public priest_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-
-    apply_affecting_aura( priest().talents.shadow.descending_darkness );
   }
 
   double action_da_multiplier() const override
@@ -2125,9 +2083,6 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   {
     if ( !data().ok() )
       return;
-
-    // Increases duration
-    apply_affecting_aura( priest().talents.archon.heightened_alteration );
 
     set_period( data().effectN( 5 ).period() );
 

@@ -249,9 +249,6 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( data().ok() )
     {
-      apply_affecting_aura( p.o().specs.shadow_priest );
-      apply_affecting_aura( p.o().specs.discipline_priest );
-
       apply_buff_effects();
       apply_debuffs_effects();
     }
@@ -286,15 +283,14 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
   void apply_buff_effects()
   {
-    parse_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
+    parse_effects( p().o().buffs.twist_of_fate );
 
     if ( p().o().specialization() == PRIEST_SHADOW )
     {
-      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS,  // Skip E3 for AM
-                     p().o().talents.archon.perfected_form );
+      parse_effects( p().o().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().o().buffs.shadowform );
-      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS,  // Skip E4 for AM
-                     p().o().talents.archon.perfected_form );  // Buffs non-periodic spells
+      // Buffs non-periodic spells
+      parse_effects( p().o().buffs.dark_ascension, effect_mask_t( true ).disable( 4 ), IGNORE_STACKS );  // Skip E4 for AM
     }
 
     if ( p().o().talents.shadow.ancient_madness.enabled() )
@@ -318,8 +314,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     // DISCIPLINE BUFF EFFECTS
     if ( p().o().specialization() == PRIEST_DISCIPLINE )
     {
-      parse_effects( p().o().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT,
-                     p().o().talents.discipline.twilight_corruption );
+      parse_effects( p().o().buffs.shadow_covenant, IGNORE_STACKS, USE_DEFAULT );
       // 280398 applies the buff to the correct spells, but does not contain the correct buff value
       // (12% instead of 40%) So, override to use our provided default_value (40%) instead
       parse_effects( p().o().buffs.sins_of_the_many, IGNORE_STACKS, USE_DEFAULT );
@@ -818,8 +813,6 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     background                 = true;
     affected_by_shadow_weaving = true;
     triggers_atonement         = true;
-
-    spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -974,8 +967,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
-
-    apply_affecting_aura( p.o().talents.shadow.subservient_shadows );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1068,8 +1059,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
-
-    apply_affecting_aura( p.o().talents.shadow.subservient_shadows );
   }
 
   // You only get the Insanity on your main target
@@ -1276,16 +1265,14 @@ void priest_t::priest_pets_t::set_pet_defaults( priest_t& p )
   // Void Tendril: 377355
   // Void Lasher: 377355
   auto idol_of_cthun  = p.find_spell( 377355 );
-  auto cthun_duration = ( idol_of_cthun->duration() + timespan_t::from_millis( 1 ) ) *
-                        ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() );
+  auto cthun_duration = idol_of_cthun->duration() + timespan_t::from_millis( 1 );
 
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( cthun_duration );
   void_lasher.set_default_duration( cthun_duration );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
-  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() *
-                                          ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) );
+  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }
 
 }  // namespace priestspace

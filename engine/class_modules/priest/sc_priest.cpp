@@ -172,8 +172,6 @@ public:
     }
 
     // Extra charge of Mind Blast
-    apply_affecting_aura( p.talents.shadow.thought_harvester );
-
     triggers_atonement = true;
   }
 
@@ -360,11 +358,6 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_INSANITY;
 
-    if ( p.talents.voidweaver.void_infusion.enabled() )
-    {
-      energize_amount *= 1 + p.talents.voidweaver.void_infusion->effectN( 1 ).percent();
-    }
-
     base_costs[ RESOURCE_INSANITY ] = 0;
 
     if ( cooldown->duration == 0_s )
@@ -451,10 +444,10 @@ struct divine_star_spell_t final : public priest_spell_t
     triggers_atonement         = true;
 
     // This is not found in the affected spells for Dark Ascension, overriding it manually
-    force_effect( p.buffs.dark_ascension, 1, p.talents.archon.perfected_form );
+    force_effect( p.buffs.dark_ascension, 1 );
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-    force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
+    force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT );
   }
 
   // Hits twice, but only if you are at the correct distance
@@ -1319,7 +1312,7 @@ struct summon_fiend_t final : public priest_spell_t
 
   summon_fiend_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( pet_name( p ), p, pet_summon_spell( p ) ),
-      default_duration( data().duration() * ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) ),
+      default_duration( data().duration() ),
       spawner( pet_spawner( p ) )
   {
     parse_options( options_str );
@@ -1356,9 +1349,6 @@ struct fade_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
-
-    // Reduces CD of Fade
-    apply_affecting_aura( p.talents.improved_fade );
   }
 
   void execute() override
@@ -1463,17 +1453,12 @@ public:
   // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1359
   shadow_word_death_t( priest_t& p, timespan_t execute_override = timespan_t::min() )
     : ab( "shadow_word_death", p, p.talents.shadow_word_death ),
-      execute_percent(
-          priest().talents.shadow.deathspeaker.enabled()
-              ? ( data().effectN( 3 ).base_value() + priest().talents.shadow.deathspeaker->effectN( 2 ).base_value() )
-              : data().effectN( 3 ).base_value() ),
-      execute_modifier( data().effectN( 4 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
+      execute_percent( data().effectN( 3 ).base_value() ),
+      execute_modifier( data().effectN( 4 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       depth_of_shadows_duration(
-          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) *
-          ( 1.0 + p.talents.shadow.subservient_shadows->effectN( 2 ).percent() ) ),
-      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() +
-                                  priest().talents.shadow.deathspeaker->effectN( 5 ).base_value() ),
+          timespan_t::from_seconds( p.talents.voidweaver.depth_of_shadows->effectN( 1 ).base_value() ) ),
+      depth_of_shadows_threshold( p.talents.voidweaver.depth_of_shadows->effectN( 2 ).base_value() ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
       execute_override( execute_override )
@@ -1485,13 +1470,6 @@ public:
     {
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
-    }
-
-    if ( priest().specialization() == PRIEST_SHADOW )
-    {
-      energize_type     = action_energize::ON_CAST;
-      energize_resource = RESOURCE_INSANITY;
-      energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
 
     spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
@@ -1506,8 +1484,6 @@ public:
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
       spell_power_mod.direct += data().effectN( 1 ).sp_coeff();
     }
-
-    apply_affecting_aura( priest().talents.shadow.deathspeaker );
   }
 
   shadow_word_death_t( priest_t& p, util::string_view options_str ) : shadow_word_death_t( p )
@@ -1781,9 +1757,6 @@ struct psychic_scream_t final : public priest_spell_t
     aoe      = -1;
     may_miss = may_crit   = false;
     ignore_false_positive = true;
-
-    // CD reduction
-    apply_affecting_aura( p.talents.psychic_voice );
   }
 
   void execute() override
@@ -1978,7 +1951,6 @@ struct flash_heal_t final : public priest_heal_t
     parse_options( options_str );
     harmful = false;
 
-    apply_affecting_aura( priest().talents.improved_flash_heal );
     disc_mastery = true;
     holy_mastery = true;
 
@@ -2156,14 +2128,6 @@ struct desperate_prayer_t final : public priest_heal_t
     // The "Heal" portion comes from the buff
     base_td_multiplier = 0.0;
     dot_duration       = timespan_t::from_seconds( 0 );
-
-    // CDR
-    apply_affecting_aura( p.talents.angels_mercy );
-
-    if ( priest().talents.lights_inspiration.enabled() )
-    {
-      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
-    }
   }
 
   double calculate_direct_amount( action_state_t* state ) const override
@@ -2580,12 +2544,6 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
   {
     // Cooldown handled by the action
     cooldown->duration = 0_ms;
-
-    // Additive health increase
-    if ( priest().talents.lights_inspiration.enabled() )
-    {
-      health_change += priest().talents.lights_inspiration->effectN( 1 ).percent();
-    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -2684,8 +2642,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire          = target->get_dot( "holy_fire", &p );
 
-  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff )
-                     ->apply_affecting_aura( p.talents.discipline.malicious_intent );
+  buffs.schism = make_buff( *this, "schism", p.talents.discipline.schism_debuff );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
@@ -3179,14 +3136,7 @@ double priest_t::composite_leech() const
 
   if ( talents.sanguine_teachings.enabled() )
   {
-    auto amount = talents.sanguine_teachings->effectN( 1 ).percent();
-
-    if ( talents.sanlayn.enabled() )
-    {
-      amount += talents.sanlayn->effectN( 3 ).percent();
-    }
-
-    l += amount;
+    l += talents.sanguine_teachings->effectN( 1 ).percent();
   }
 
   return l;
@@ -3746,15 +3696,12 @@ void priest_t::init_spells()
   talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
 
-  if ( sets->has_set_bonus( HERO_VOIDWEAVER, TWW3, B4 ) )
-  {
-    tww3_spells.voidweaver_4pc = std::make_unique<modified_spell_data_t>( sets->set( HERO_VOIDWEAVER, TWW3, B4 ) );
-    tww3_spells.voidweaver_4pc->parse_effects( specs.shadow_priest )->parse_effects( specs.discipline_priest );
-  }
-  else
-  {
-    tww3_spells.voidweaver_4pc = std::make_unique<modified_spell_data_t>( sd_nf );
-  }
+  tww3_spells.voidweaver_4pc = sets->set( HERO_VOIDWEAVER, TWW3, B4 );
+
+  // Register passives
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
 }
 
 void priest_t::create_buffs()
@@ -3996,63 +3943,6 @@ void priest_t::init_background_actions()
 void priest_t::do_dynamic_regen( bool forced )
 {
   player_t::do_dynamic_regen( forced );
-}
-
-void priest_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-}
-
-void priest_t::apply_affecting_auras_late( action_t& action )
-{
-  action.apply_affecting_aura( specs.shadow_priest );
-  action.apply_affecting_aura( specs.holy_priest );
-  action.apply_affecting_aura( specs.discipline_priest );
-
-  // Class Talents
-  action.apply_affecting_aura( talents.benevolence );
-  action.apply_affecting_aura( talents.mental_agility );
-
-  // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.mastermind );
-  action.apply_affecting_aura( talents.shadow.mental_decay );
-  action.apply_affecting_aura( talents.shadow.instilled_doubt );
-  action.apply_affecting_aura( talents.shadow.subservient_shadows );
-  action.apply_affecting_aura( talents.shadow.dark_evangelism );
-
-  // Discipline Talents
-  action.apply_affecting_aura( talents.discipline.dark_indulgence );
-  action.apply_affecting_aura( talents.discipline.expiation );
-  action.apply_affecting_aura( talents.discipline.blaze_of_light );
-  action.apply_affecting_aura( talents.discipline.revel_in_darkness );
-  action.apply_affecting_aura( talents.discipline.eternal_barrier );
-  action.apply_affecting_aura( talents.discipline.inner_focus );
-  action.apply_affecting_aura( talents.discipline.void_summoner );
-
-  // Holy Talents
-  action.apply_affecting_aura( talents.holy.miracle_worker );
-  action.apply_affecting_aura( talents.holy.burning_vehemence );
-  action.apply_affecting_aura( talents.holy.holy_celerity );
-  action.apply_affecting_aura( talents.holy.light_in_the_darkness );
-  action.apply_affecting_aura( talents.holy.crisis_management );
-  action.apply_affecting_aura( talents.holy.prismatic_echoes );
-
-  // Voidweaver Talents
-  action.apply_affecting_aura( talents.voidweaver.inner_quietus );
-
-  // Archon Talents
-  action.apply_affecting_aura( talents.archon.empowered_surges );
-  action.apply_affecting_aura( talents.archon.energy_compression );
-
-  // Oracle Talents
-  action.apply_affecting_aura( talents.oracle.preventive_measures );
-
-  // TWW1 2pc
-  action.apply_affecting_aura( sets->set( PRIEST_SHADOW, TWW1, B2 ) );
-  action.apply_affecting_aura( sets->set( PRIEST_DISCIPLINE, TWW1, B2 ) );
-
-  // TWW3 2pc
-  action.apply_affecting_aura( sets->set( HERO_VOIDWEAVER, TWW3, B2 ) );
 }
 
 double priest_t::composite_mastery_value() const

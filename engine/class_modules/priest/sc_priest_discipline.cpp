@@ -25,13 +25,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
     aoe = 1 + as<int>( data().effectN( 3 ).base_value() );
 
-    apply_affecting_aura( p.talents.discipline.lights_promise );
-    apply_affecting_aura( p.talents.discipline.bright_pupil );
-    apply_affecting_aura( p.talents.discipline.enduring_luminescence );
-
-    atonement_duration =
-        ( data().effectN( 4 ).percent() + p.talents.discipline.enduring_luminescence->effectN( 1 ).percent() ) *
-        p.talents.discipline.atonement_buff->duration();
+    atonement_duration = data().effectN( 4 ).percent() * p.talents.discipline.atonement_buff->duration();
   }
 
   void execute() override
@@ -221,13 +215,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     {
       parse_options( options_str );
       background = true;
-      // 3% / 5% damage increase
-      apply_affecting_aura( priest().talents.throes_of_pain );
-      // 5% damage increase
       // TODO: Implement the spreading of Purge the Wicked via penance
-      apply_affecting_aura( p.talents.discipline.revel_in_purity );
-      // 8% / 15% damage increase
-      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
 
       triggers_atonement = true;
     }
@@ -285,17 +273,6 @@ struct purge_the_wicked_t final : public priest_spell_t
     parse_options( options_str );
     tick_zero      = false;
     execute_action = new purge_the_wicked_dot_t( p, "" );
-    // 3% / 5% damage increase
-    apply_affecting_aura( priest().talents.throes_of_pain );
-    // 5% damage increase
-    apply_affecting_aura( priest().talents.discipline.revel_in_purity );
-    // 8% / 15% damage increase
-    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
-
-    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T30, B2 ) )
-    {
-      apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
-    }
 
     triggers_atonement = true;
   }
@@ -333,7 +310,7 @@ protected:
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
-      force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT, p.talents.discipline.twilight_corruption );
+      force_effect( p.buffs.shadow_covenant, 1, IGNORE_STACKS, USE_DEFAULT );
 
       triggers_atonement = true;
     }
@@ -429,11 +406,6 @@ public:
     for ( const spelleffect_data_t& ed : s_channel->effects() )
     {
       parse_effect_data( ed );
-    }
-
-    if ( priest().talents.discipline.castigation.ok() )
-    {
-      base_tick_time *= 1 + priest().talents.discipline.castigation->effectN( 1 ).percent();
     }
 
     // One is always tick zero
@@ -986,7 +958,7 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new evangelism_t( *this, options_str );
   }
-  if ( name == "ultimate_penitence" or name == "uppies" )
+  if ( name == "ultimate_penitence" || name == "uppies" )
   {
     return new ultimate_penitence_t( *this, options_str );
   }
