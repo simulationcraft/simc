@@ -988,7 +988,6 @@ private:
   std::vector<unsigned> registered_effect_ignore_list_;
   std::vector<std::pair<unsigned, std::vector<int>>> registered_affected_spell_list_;
 
-  std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
   std::pair<modified_value_t, const modified_value_t&> add_passive_effect_modifier(
     std::vector<modified_value_t>&, unsigned id, unsigned field_id,
     double orig_val, double flat_val, double pct_val );
@@ -1005,12 +1004,13 @@ protected:
   void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
   // directly override the base_value of effects
   void register_passive_effect_override( const spelleffect_data_t&, double value, std::string field = "base_value" );
+  std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
 
 public:
   bool disable_class_spell_auto_cloning;
 
 // return { orig, flat, pct }
-  std::array<double, 3> get_passive_value( const spell_data_t&, std::string_view field ) const;
+  std::array<double, 3> get_passive_value( const spell_data_t&, std::string_view field, double mul = 1.0 ) const;
   std::array<double, 3> get_passive_value( const spellpower_data_t&, std::string_view field ) const;
   std::array<double, 3> get_passive_value( const spelleffect_data_t&, std::string_view field ) const;
   // clone a spell into the override dbc

@@ -15072,7 +15072,7 @@ int get_type_from_field( std::string_view field )
 }
 }
 
-std::array<double, 3> player_t::get_passive_value( const spell_data_t& spell, std::string_view field ) const
+std::array<double, 3> player_t::get_passive_value( const spell_data_t& spell, std::string_view field, double mul ) const
 {
   assert( !is_pet() || get_owner_or_self() != this );
   if ( is_pet() )
@@ -15085,9 +15085,9 @@ std::array<double, 3> player_t::get_passive_value( const spell_data_t& spell, st
     return mod.id == id && mod.field_id == type;
   } );
   if ( it == passive_spell_modifiers_.end() )
-    return { spell.get_field( field ), 0.0, 1.0 };
+    return { spell.get_field( field ) * mul, 0.0, 1.0 };
   else
-    return { it->orig, it->flat, it->pct };
+    return { it->orig * mul, it->flat * mul, it->pct };
 }
 
 std::array<double, 3> player_t::get_passive_value( const spellpower_data_t& power, std::string_view field ) const
@@ -15332,6 +15332,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field = "cooldown";
           break;
         case P_PROC_CHANCE:
+          if ( spell->_proc_chance == 101 )
+            continue;
           allow_zero = false;
           SC_FALLTHROUGH;
         case P_RANGE:
@@ -15833,9 +15835,16 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
   if ( sim->debug )
   {
-    sim->print_debug( "Registering {} ({}) eff#{} affect_list (spell={} label={} family={})", spell->name_cstr(),
-                      spell->id(), util::string_join( mod.idx, "," ), util::string_join( mod.spell, ", " ),
-                      util::string_join( mod.label, ", " ), util::string_join( mod.family, ", " ) );
+    std::vector<std::string> list_str;
+    if ( !mod.spell.empty() )
+      list_str.push_back( fmt::format( "spell={}", fmt::join( mod.spell, ", " ) ) );
+    if ( !mod.label.empty() )
+      list_str.push_back( fmt::format( "label={}", fmt::join( mod.label, ", " ) ) );
+    if ( !mod.family.empty() )
+      list_str.push_back( fmt::format( "family_flag={}", fmt::join( mod.family, ", " ) ) );
+
+    sim->print_debug( "Registering {} ({}) eff#{} affect_list ({})", spell->name_cstr(), spell->id(),
+                      fmt::join( mod.idx, "," ), fmt::join( list_str, ", " ) );
   }
 
   for ( auto idx : mod.idx )
