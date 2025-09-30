@@ -71,6 +71,7 @@ struct warlock_pet_t : public pet_t
 
   struct buffs_t
   {
+    propagate_const<buff_t*> demonic_inspiration; // Hidden buff from talent that gives haste to some demons
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
@@ -85,6 +86,11 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> demonic_hunger; // TWW2 Demonology 2pc buff
     propagate_const<buff_t*> spliced_4pc; // TWW2 Demonology 4pc dummy buff
   } buffs;
+
+  struct affected_by_t
+  {
+    bool demonic_inspiration = false;
+  } affected_by;
 
   bool is_main_pet = false;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
@@ -102,6 +108,8 @@ struct warlock_pet_t : public pet_t
   void apply_affecting_auras( action_t& action ) override;
   void arise() override;
   void demise() override;
+
+  virtual void heartbeat_update_event();
 
   target_specific_t<warlock_pet_td_t> target_data;
 

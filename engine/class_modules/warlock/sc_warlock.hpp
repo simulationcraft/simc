@@ -145,7 +145,7 @@ public:
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
 
-  unsigned active_pets;
+  unsigned n_active_pets;
 
   // This should hold any spell data that is guaranteed in the base class or spec, without talents or other external systems required
   struct base_t
@@ -227,6 +227,7 @@ public:
     // Class Tree
 
     player_talent_t demonic_inspiration; // Primary pet attack speed increase
+    const spell_data_t* demonic_inspiration_buff; // This hidden buff is applied to pets/guardians in the first heartbeat update after arise
     player_talent_t demonic_embrace;
     player_talent_t demonic_fortitude;
     player_talent_t wrathful_minion; // Primary pet damage increase
@@ -672,7 +673,6 @@ public:
     propagate_const<cooldown_t*> haunt;
     propagate_const<cooldown_t*> shadowburn;
     propagate_const<cooldown_t*> soul_fire;
-    propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
     propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
     propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
@@ -887,6 +887,7 @@ public:
   std::string default_pet;
   bool disable_auto_felstorm; // For Demonology main pet
   bool normalize_destruction_mastery;
+  bool demonic_inspiration_double_dip; // Enable Demonic Inspiration double dip on main pets
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* jackpot_demonology_rng;

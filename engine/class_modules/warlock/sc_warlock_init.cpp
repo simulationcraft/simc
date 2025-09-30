@@ -60,6 +60,7 @@ namespace warlock
     talents.summoners_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Summoner's Embrace" ); // Should be ID 453105
 
     talents.demonic_inspiration = find_talent_spell( talent_tree::CLASS, "Demonic Inspiration" ); // Should be ID 386858
+    talents.demonic_inspiration_buff = conditional_spell_lookup( talents.demonic_inspiration, 386861 );
 
     talents.demonic_embrace = find_talent_spell( talent_tree::CLASS, "Demonic Embrace" ); // Should be ID 288843
 
@@ -1349,6 +1350,7 @@ namespace warlock
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
     add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
+    add_option( opt_bool( "demonic_inspiration_double_dip", demonic_inspiration_double_dip ) );
 
     add_rng_option( rng_settings.cunning_cruelty_sb );
     add_rng_option( rng_settings.cunning_cruelty_ds );

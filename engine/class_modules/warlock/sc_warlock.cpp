@@ -258,7 +258,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     corruption_accumulator( 0.0 ),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
-    active_pets( 0 ),
+    n_active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
     hero(),
@@ -272,12 +272,12 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     initial_soul_shards( 3 ),
     default_pet(),
     disable_auto_felstorm( false ),
-    normalize_destruction_mastery( false )
+    normalize_destruction_mastery( false ),
+    demonic_inspiration_double_dip( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.shadowburn = get_cooldown( "shadowburn" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
-  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
   cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
@@ -285,6 +285,13 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
+
+  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    for ( auto& pet : active_pets )
+    {
+      debug_cast<warlock_pet_t*>( pet )->heartbeat_update_event();
+    }
+  } );
 }
 
 const spell_data_t* warlock_t::conditional_spell_lookup( bool fn, int id )
@@ -499,6 +506,8 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
     if ( normalize_destruction_mastery )
       profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
+    if ( demonic_inspiration_double_dip )
+      profile_str += "demonic_inspiration_double_dip=" + util::to_string( demonic_inspiration_double_dip ) + "\n";
 
     profile_str += append_rng_option( rng_settings.cunning_cruelty_sb );
     profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
@@ -534,6 +543,7 @@ void warlock_t::copy_from( player_t* source )
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
   normalize_destruction_mastery = p->normalize_destruction_mastery;
+  demonic_inspiration_double_dip = p->demonic_inspiration_double_dip;
 
   rng_settings.cunning_cruelty_sb = p->rng_settings.cunning_cruelty_sb;
   rng_settings.cunning_cruelty_ds = p->rng_settings.cunning_cruelty_ds;
@@ -680,7 +690,7 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   }
   else if ( name_str == "pet_count" )
   {
-    return make_ref_expr( name_str, active_pets );
+    return make_ref_expr( name_str, n_active_pets );
   }
   else if ( name_str == "last_cast_imps" )
   {

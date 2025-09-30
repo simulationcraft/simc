@@ -17,8 +17,8 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
 
-  register_on_arise_callback( this, [ owner ]() { owner->active_pets++; } );
-  register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->active_pets--; } );
+  register_on_arise_callback( this, [ owner ]() { owner->n_active_pets++; } );
+  register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->n_active_pets--; } );
 }
 
 warlock_t* warlock_pet_t::o()
@@ -75,6 +75,8 @@ void warlock_pet_t::create_buffs()
                      } );
 
   // All Specs
+  buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", o()->talents.demonic_inspiration_buff )
+                                  ->set_default_value_from_effect( 1 );
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -154,6 +156,13 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
+// Stuff that are updated at the heartbeat update interval
+void warlock_pet_t::heartbeat_update_event()
+{
+  if ( affected_by.demonic_inspiration && !buffs.demonic_inspiration->check() )
+    buffs.demonic_inspiration->trigger();
+};
+
 /*
 Felguard had a Haste scaling energy bug that was supposedly fixed once already. Real fix apparently went live
 2019-03-12. Preserving code from resource regen override for now in case of future issues. if ( !o()->dbc.ptr && ( pet_type == PET_FELGUARD ||
@@ -181,8 +190,12 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-    m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -191,11 +204,15 @@ double warlock_pet_t::composite_melee_haste() const
 {
   double m = pet_t::composite_melee_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-    m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   if ( buffs.ferocity_of_fharg->check() )
-    m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
+    m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
 }
@@ -204,8 +221,12 @@ double warlock_pet_t::composite_spell_cast_speed() const
 {
   double m = pet_t::composite_spell_cast_speed();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -214,8 +235,12 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
   double m = pet_t::composite_melee_auto_attack_speed();
 
-  if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
-    m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   if ( buffs.ferocity_of_fharg->check() )
     m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
@@ -278,6 +303,7 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "shadow_bite";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct spell_lock_t : public warlock_pet_spell_t
@@ -327,6 +353,7 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 action_t* imp_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -364,6 +391,7 @@ sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "whiplash/lash_of_pain";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 void sayaad_pet_t::init_base_stats()
@@ -418,6 +446,7 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "consuming_shadows";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct consuming_shadows_t : public warlock_pet_spell_t
@@ -482,6 +511,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.75;
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct felguard_melee_t : public warlock_pet_melee_t
@@ -613,6 +643,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
   }
 
+  // NOTE: Although Felstorm is a "melee" attack, its duration/ticks depend on the pet's 'spell_cast_speed' 
+  double composite_haste() const override
+  { return action_t::composite_haste() * player->cache.spell_cast_speed(); }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   { return s->action->tick_time( s ) * 5.0; }
 
@@ -622,7 +656,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
     if ( internal_cooldown )
-      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+      internal_cooldown->start( 5_s * p()->composite_spell_cast_speed() );
 
     p()->melee_attack->cancel();
   }
@@ -899,6 +933,8 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
   felstorm_cd = get_cooldown( "felstorm" );
 
   owner_coeff.health = 0.75;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 void grimoire_felguard_pet_t::arise()
@@ -989,6 +1025,8 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 {
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health = 0.15;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
@@ -1429,6 +1467,10 @@ struct bile_spit_t : public warlock_pet_spell_t
     return warlock_pet_spell_t::ready();
   }
 
+  // NOTE: Bile Spit spell cast time is not affected by any haste effects
+  double execute_time_pct_multiplier() const override
+  { return 1.0; }
+
   void execute() override
   {
     warlock_pet_spell_t::execute();
@@ -1555,6 +1597,8 @@ demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
 {
   resource_regeneration = regen_type::DISABLED;
   action_list_str += "/demonfire";
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct demonfire_t : public warlock_pet_spell_t
@@ -1704,6 +1748,8 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 
   owner_coeff.ap_from_sp = 2.2275;
   owner_coeff.sp_from_sp = 2.2275;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct immolation_tick_t : public warlock_pet_spell_t
@@ -1790,6 +1836,8 @@ infernal_roc_t::infernal_roc_t( warlock_t* owner, util::string_view name ) : des
   type                   = RAIN;
   owner_coeff.ap_from_sp = 1.5;
   owner_coeff.sp_from_sp = 1.5;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 /// Infernal Rain of Chaos End
@@ -2110,7 +2158,11 @@ namespace affliction
 
 darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DARKGLARE, true )
-{ action_list_str += "eye_beam"; }
+{
+  action_list_str += "eye_beam";
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
+}
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
@@ -2429,6 +2481,8 @@ namespace diabolist
     type = FRAG;
     owner_coeff.ap_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
     owner_coeff.sp_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
+
+    affected_by.demonic_inspiration = false;
   }
 
   /// Infernal Fragment End
