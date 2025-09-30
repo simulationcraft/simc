@@ -289,7 +289,14 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
     for ( auto& pet : active_pets )
     {
-      debug_cast<warlock_pet_t*>( pet )->heartbeat_update_event();
+      auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+      if ( lock_pet == nullptr )
+        continue;
+      if ( lock_pet->is_sleeping() )
+        continue;
+
+      lock_pet->heartbeat_update_event();
     }
   } );
 }
