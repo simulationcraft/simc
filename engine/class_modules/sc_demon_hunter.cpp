@@ -1513,26 +1513,6 @@ struct soul_fragment_t
       }
     }
 
-    if ( dh->talent.vengeance.feed_the_demon->ok() )
-    {
-      timespan_t duration =
-          timespan_t::from_seconds( dh->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
-      dh->cooldown.demon_spikes->adjust( -duration );
-    }
-
-    if ( dh->talent.vengeance.soul_furnace->ok() )
-    {
-      dh->buff.soul_furnace_stack->trigger();
-      if ( dh->buff.soul_furnace_stack->at_max_stacks() )
-      {
-        dh->buff.soul_furnace_stack->expire();
-        dh->buff.soul_furnace_damage_amp->trigger();
-      }
-    }
-
-    dh->buff.painbringer->trigger();
-    dh->buff.tww1_vengeance_4pc->trigger();
-
     dh->buff.soul_fragments->decrement();
     remove();
   }
@@ -4980,8 +4960,7 @@ struct consume_soul_t : public demon_hunter_spell_t
   const soul_fragment type;
 
   consume_soul_t( demon_hunter_t* p, util::string_view n, const spell_data_t* s, soul_fragment t )
-    : demon_hunter_spell_t( n, p, s ),
-      type( t )
+    : demon_hunter_spell_t( n, p, s ), type( t )
   {
     may_miss   = false;
     background = true;
@@ -5000,6 +4979,24 @@ struct consume_soul_t : public demon_hunter_spell_t
 
   void impact( action_state_t* s ) override
   {
+    if ( p()->talent.vengeance.feed_the_demon->ok() )
+    {
+      timespan_t duration =
+          timespan_t::from_seconds( p()->talent.vengeance.feed_the_demon->effectN( 1 ).base_value() / 100 );
+      p()->cooldown.demon_spikes->adjust( -duration );
+    }
+
+    if ( p()->talent.vengeance.soul_furnace->ok() )
+    {
+      p()->buff.soul_furnace_stack->trigger();
+      if ( p()->buff.soul_furnace_stack->at_max_stacks() )
+      {
+        p()->buff.soul_furnace_stack->expire();
+        p()->buff.soul_furnace_damage_amp->trigger();
+      }
+    }
+
+    p()->buff.painbringer->trigger();
     p()->buff.art_of_the_glaive->trigger();
     p()->buff.tww1_vengeance_4pc->trigger();
 
