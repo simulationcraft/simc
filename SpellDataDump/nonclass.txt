@@ -268107,11 +268107,13 @@ Effects          :
 Description      : $@spelldesc1242344
 
 Name             : Soulgorged Augmentation (id=1242347) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
 Duration         : 3600 seconds
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Not In Arena or Rated Battleground (144), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not In Arena (297), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
+Cooldown         : 3 seconds
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not In Arena (297), Check Required Target Aura By Caster (382), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1241808)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 733.2477 (coefficient=0.1915) | Stat: StrAgiInt | Target: Self (1)
