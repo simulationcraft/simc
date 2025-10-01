@@ -323,7 +323,6 @@ public:
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
     gain_t* hp_divine_auxiliary;
-    gain_t* eye_of_tyr;
     gain_t* luck_of_the_draw;
     gain_t* all_in_refund;
   } gains;
@@ -907,7 +906,7 @@ public:
   void adjust_health_percent();
   void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
   void cast_lesser_armament( int amount, lesser_armament usedArmament );
-  void trigger_greater_judgment( paladin_td_t* targetdata, int num_stacks );
+  void trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack = false );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
@@ -931,8 +930,6 @@ public:
   std::string default_food() const override;
   std::string default_rune() const override;
   std::string default_temporary_enchant() const override;
-
-  void apply_affecting_auras( action_t& action ) override;
 
   void create_buffs_retribution();
   void init_rng_retribution();
@@ -1026,13 +1023,6 @@ struct execution_sentence_debuff_t : public buff_t
   {
     set_cooldown( 0_ms );  // handled by the ability
     accum_percent = data().effectN( 2 ).percent();
-
-    paladin_t* p = debug_cast<paladin_t*>( td->source );
-
-    if ( p->talents.executioners_will->ok() )
-    {
-      modify_duration( timespan_t::from_millis( p->talents.executioners_will->effectN( 1 ).base_value() ) );
-    }
   }
 
   void reset() override
@@ -1236,11 +1226,9 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, divine_purpose,
-      divine_purpose_cost, sacred_strength;                                                // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, divine_purpose, divine_purpose_cost;  // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      blades_of_light, ret_t29_2p, ret_t29_4p, rise_from_ash, winning_streak,
-      all_in; // Ret
+      blades_of_light, ret_t29_2p, ret_t29_4p, rise_from_ash, winning_streak, all_in; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath, luck_of_the_draw;  // Prot
     bool gleaming_rays, solar_wrath; // Herald of the Sun
@@ -1309,42 +1297,16 @@ public:
     this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
-    this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.blessing_of_dawn    = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
-    this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
     this->affected_by.luck_of_the_draw    = this->data().affected_by( p->buffs.luck_of_the_draw->data().effectN( 1 ) );
-
-    if ( p->talents.penitence->ok() )
-    {
-      if ( this->data().affected_by_label( p->talents.penitence->effectN( 1 ).misc_value2() ) )
-      {
-        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
-      }
-      else if ( this->data().affected_by_label( p->talents.penitence->effectN( 2 ).misc_value2() ) )
-      {
-        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 2 ).percent();
-      }
-    }
-
-    if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
-    {
-      ab::crit_bonus_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
-    }
 
     if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
     {
       this->affected_by.blades_of_light = true;
-      ab::school = SCHOOL_HOLYSTRIKE;
-      ab::base_multiplier *= 1.0 + p->talents.blades_of_light->effectN( 2 ).percent();
     }
     else
     {
       this->affected_by.blades_of_light = false;
-    }
-
-    if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
-    {
-      ab::school = SCHOOL_RADIANT;
     }
 
     if ( p->talents.herald_of_the_sun.gleaming_rays->ok() )
@@ -1527,15 +1489,6 @@ public:
     if ( affected_by.divine_purpose && p()->buffs.divine_purpose->up() )
     {
       am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
-    }
-    if (affected_by.sacred_strength && p()->talents.sacred_strength->ok())
-    {
-      am *= 1.0 + p()->talents.sacred_strength->effectN( 1 ).percent();
-    }
-
-    if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
-    {
-      am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
 
     if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() )

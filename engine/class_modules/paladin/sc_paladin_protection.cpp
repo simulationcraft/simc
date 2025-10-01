@@ -31,12 +31,6 @@ namespace paladin {
     health_bonus              = data().effectN( 11 ).percent();
     damage_reduction_modifier = data().effectN( 12 ).percent();
 
-    if ( p->talents.sanctified_wrath->ok() )
-    {
-      // the tooltip doesn't say this, but the spelldata does
-      base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
-    }
-
     // Sentinel starts at max stacks
     set_initial_stack( max_stack() );
 
@@ -76,10 +70,6 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = 0_ms;
-
-    // unbreakable spirit reduces cooldown
-    if ( p->talents.unbreakable_spirit->ok() )
-      cooldown->duration = data().cooldown() * ( 1 + p->talents.unbreakable_spirit->effectN( 1 ).percent() );
   }
 
   void execute() override
@@ -137,12 +127,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       background = true;
     }
     may_crit = true;
-
-    // Soaring Shield hits +2 targets
-    if ( p->talents.soaring_shield->ok() )
-    {
-      aoe += as<int>( p->talents.soaring_shield->effectN( 1 ).base_value() );
-    }
 
     if ( p->talents.tyrs_enforcer->ok() )
     {
@@ -335,8 +319,6 @@ struct hammer_and_anvil_t : public paladin_spell_t
     background = proc = may_crit = true;
     may_miss                     = false;
     aoe                          = -1;
-    if ( p->sets->has_set_bonus( HERO_LIGHTSMITH, TWW3, B2 ) )
-      apply_affecting_aura( p->sets->set( HERO_LIGHTSMITH, TWW3, B2 ) );
   }
 };
 
@@ -526,8 +508,6 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     harmful = false;
     may_miss = false;
     cooldown = p->cooldowns.blessing_of_spellwarding; // Needed for shared cooldown with Blessing of Protection
-    if ( p->talents.uthers_counsel->ok() )
-      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
   }
 
   void execute() override
@@ -718,11 +698,6 @@ struct eye_of_tyr_t : public paladin_spell_t
     parse_options( options_str );
     aoe      = -1;
     may_crit = true;
-
-    if ( p->talents.inmost_light->ok() )
-    {
-      cooldown->duration *= ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
-    }
   }
 
   void impact(action_state_t* s) override
@@ -744,16 +719,6 @@ struct eye_of_tyr_t : public paladin_spell_t
     return paladin_spell_t::target_ready( candidate_target );
   }
 
-  double action_multiplier() const override
-  {
-    double m = paladin_spell_t::action_multiplier();
-    if ( p()->talents.inmost_light->ok() )
-    {
-      m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
-    }
-    return m;
-  }
-
   void execute() override
   {
     paladin_spell_t::execute();
@@ -765,12 +730,6 @@ struct eye_of_tyr_t : public paladin_spell_t
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
       p()->buffs.templar.sacrosanct_crusade->trigger();
-    }
-
-    if ( p()->talents.templar.undisputed_ruling->ok() )
-    {
-      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.templar.undisputed_ruling->effectN( 2 ).base_value(),
-                          p()->gains.eye_of_tyr );
     }
   }
 
@@ -791,7 +750,6 @@ struct judgment_prot_t : public judgment_t
       hammer_and_anvil( nullptr )
   {
     parse_options( options_str );
-    cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
     triggers_higher_calling = true;
     if (p->talents.lightsmith.hammer_and_anvil->ok())
     {
@@ -987,11 +945,6 @@ void paladin_t::target_mitigation( school_e school,
   if ( buffs.ardent_defender->up() )
   {
     double adReduce = buffs.ardent_defender->data().effectN( 1 ).percent();
-    // Improved Ardent Defender reduces damage taken by an additional amount
-    if ( talents.improved_ardent_defender->ok() )
-    {
-      adReduce += talents.improved_ardent_defender->effectN( 1 ).percent();
-    }
     s->result_amount *= 1.0 + adReduce;
   }
 
@@ -1126,11 +1079,6 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
   {
     // TODO: according to Woliance; proc chance not obvious in spelldata
     gc_proc_chance = 0.5;
-  }
-
-  if ( talents.inspiring_vanguard->ok() )
-  {
-    gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard

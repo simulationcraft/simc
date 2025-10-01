@@ -25,13 +25,6 @@ namespace buffs {
     damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
-    auto* paladin = static_cast<paladin_t*>( p );
-    if ( paladin->talents.divine_wrath->ok() )
-    {
-      base_buff_duration += paladin->talents.divine_wrath->effectN( 1 ).time_value();
-    }
-
-
     // let the ability handle the cooldown
     cooldown->duration = 0_ms;
 
@@ -397,25 +390,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "blade_of_justice", p, p->talents.blade_of_justice )
   {
     parse_options( options_str );
-    if ( p->talents.holy_blade->ok() )
-    {
-      energize_amount += p->talents.holy_blade->effectN( 1 ).resource( RESOURCE_HOLY_POWER );
-    }
-
-    if ( p->talents.light_of_justice->ok() )
-    {
-      cooldown->duration += timespan_t::from_millis( p->talents.light_of_justice->effectN( 1 ).base_value() );
-    }
-
-    if ( p->talents.improved_blade_of_justice->ok() )
-    {
-      cooldown->charges += as<int>( p->talents.improved_blade_of_justice->effectN( 1 ).base_value() );
-    }
-
-    if ( p->talents.jurisdiction->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-    }
 
     if ( p->talents.blade_of_vengeance->ok() )
     {
@@ -505,10 +479,6 @@ struct divine_storm_echo_t : public paladin_melee_attack_t
 
     aoe = -1;
     base_multiplier *= multiplier;
-    if ( p->talents.holy_flames->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
-    }
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
 
@@ -545,11 +515,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     is_divine_storm = true;
 
-    if ( p->talents.holy_flames->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
-    }
-
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
 
@@ -576,10 +541,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     background = is_free;
     base_multiplier *= mul;
-    if ( p->talents.holy_flames->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.holy_flames->effectN( 1 ).percent();
-    }
 
     if ( p->talents.tempest_of_the_lightbringer->ok() )
     {
@@ -685,11 +646,6 @@ struct templars_verdict_echo_t : public paladin_melee_attack_t
   {
     background = true;
     base_multiplier *= p->buffs.echoes_of_wrath->data().effectN( 1 ).percent();
-    // TV/FV Echo damage is increased by Jurisdiction
-    if ( p->talents.jurisdiction->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-    }
     clears_judgment                   = false;
     base_costs[ RESOURCE_HOLY_POWER ] = 0;
   }
@@ -758,11 +714,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     // wtf is happening in spell data?
     aoe = 0;
-
-    if ( p->talents.jurisdiction->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-    }
 
     if ( p->talents.judge_jury_and_executioner->ok() )
     {
@@ -906,11 +857,6 @@ struct judgment_ret_t : public judgment_t
   {
     parse_options( options_str );
 
-    if ( p->talents.boundless_judgment->ok() )
-    {
-      holy_power_generation += as<int>( p->talents.boundless_judgment->effectN( 1 ).base_value() );
-    }
-
     if ( p->talents.blessed_champion->ok() )
     {
       aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
@@ -938,11 +884,6 @@ struct judgment_ret_t : public judgment_t
         aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
         base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
       }
-    }
-
-    if ( p->talents.boundless_judgment->ok() )
-    {
-      holy_power_generation += as<int>( p->talents.boundless_judgment->effectN( 1 ).base_value() );
     }
 
     // we don't do the blessed champion stuff here; DT judgments do not seem to cleave
@@ -1009,11 +950,6 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
     weapon_multiplier = 0; // why is this needed?
 
     // Healing isn't implemented
-
-    if ( p->talents.jurisdiction->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.jurisdiction->effectN( 4 ).percent();
-    }
 
     if ( p->talents.judge_jury_and_executioner->ok() )
     {
@@ -1376,11 +1312,6 @@ struct base_templar_strike_t : public paladin_melee_attack_t
       base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
     }
 
-    if ( p->talents.heart_of_the_crusader->ok() )
-    {
-      crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
-      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
-    }
     triggers_higher_calling = true;
   }
 
@@ -1404,15 +1335,6 @@ struct templar_strike_t : public base_templar_strike_t
   templar_strike_t( paladin_t* p, util::string_view options_str )
     : base_templar_strike_t( "templar_strike", p, options_str, p->find_spell( 407480 ) )
   {
-    if ( p->talents.templar_strikes->ok() )
-    {
-      cooldown->duration += timespan_t::from_millis( p->talents.templar_strikes->effectN( 2 ).base_value() );
-    }
-
-    if ( p->talents.swift_justice->ok() )
-    {
-      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
-    }
   }
 
   void execute() override
