@@ -126,11 +126,6 @@ public:
   {
     base_t::parse_target_effects( std::forward<Ts>( args )... );
   }
-  template <typename... Ts>
-  void apply_affecting_aura( Ts &&...args )
-  {
-    base_t::apply_affecting_aura( std::forward<Ts>( args )... );
-  }
 
   const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
                                               const spell_data_t *affected, effect_type_t type );

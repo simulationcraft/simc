@@ -137,42 +137,6 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   pet_melee_attack_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
-    //   base_t::apply_affecting_aura( p->o()->passives.aura_monk );
-
-    //   switch ( p->o()->specialization() )
-    //   {
-    //     case MONK_WINDWALKER:
-    //       base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
-    //       break;
-
-    //     case MONK_BREWMASTER:
-    //       base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
-    //       break;
-
-    //     case MONK_MISTWEAVER:
-    //       base_t::apply_affecting_aura( p->o()->baseline.mistweaver.aura );
-    //       break;
-
-    //     default:
-    //       assert( 0 );
-    //       break;
-    //   }
-
-    //   if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
-    //   {
-    //     switch ( p->o()->specialization() )
-    //     {
-    //       case MONK_BREWMASTER:
-    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_brm );
-    //         break;
-    //       case MONK_WINDWALKER:
-    //         base_t::apply_affecting_aura( p->o()->spec.two_hand_adjustment_ww );
-    //         break;
-    //       default:
-    //         assert( 0 );
-    //         break;
-    //     }
-    //   }
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -647,6 +611,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_tiger_palm_t( storm_earth_and_fire_pet_t *player )
       : sef_melee_attack_t( "tiger_palm", player, player->o()->baseline.monk.tiger_palm )
     {
+      energize_type = action_energize::NONE;
     }
 
     double action_multiplier() const override

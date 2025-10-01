@@ -108,55 +108,6 @@ template <class Base>
 void monk_action_t<Base>::apply_buff_effects()
 {
   /*
-   * Permanent action-specific effects that apply to more than one action.
-   */
-
-  // Monk
-  apply_affecting_aura( p()->baseline.monk.aura );
-  apply_affecting_aura( p()->talent.monk.chi_proficiency );
-  apply_affecting_aura( p()->talent.monk.fast_feet );
-
-  // Brewmaster
-  apply_affecting_aura( p()->baseline.brewmaster.aura );
-  apply_affecting_aura( p()->baseline.brewmaster.aura_2 );
-
-  // Mistweaver
-  apply_affecting_aura( p()->baseline.mistweaver.aura );
-  apply_affecting_aura( p()->baseline.mistweaver.aura_2 );
-  apply_affecting_aura( p()->baseline.mistweaver.aura_3 );
-
-  // Windwalker
-  apply_affecting_aura( p()->baseline.windwalker.aura );
-  apply_affecting_aura( p()->baseline.windwalker.aura_2 );
-  apply_affecting_aura( p()->baseline.windwalker.aura_3 );
-  apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
-  apply_affecting_aura( p()->talent.windwalker.hardened_soles );
-  apply_affecting_aura( p()->talent.windwalker.shadowboxing_treads );
-  apply_affecting_aura( p()->talent.windwalker.rising_star );
-  apply_affecting_aura( p()->talent.windwalker.xuens_bond );
-
-  // Conduit of the Celestials
-  apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
-  apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
-
-  // Master of Harmony
-  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
-
-  // Shado-Pan
-  parse_effects( p()->talent.shado_pan.efficient_training,
-                 p()->specialization() == MONK_WINDWALKER ? effect_mask_t( true ).disable( 5 ) : effect_mask_t( true ),
-                 p()->baseline.windwalker.aura_3 );
-  apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
-  apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
-
-  // TWW S1 Set Effects
-  apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
-
-  // TWW S3 Set Effects
-
-  // TWW S4 Set Effects
-
-  /*
    * Temporary action-specific effects that apply to more than one action.
    * If so, the aura gets parsed here with `parse_effects`.
    */
@@ -172,7 +123,7 @@ void monk_action_t<Base>::apply_buff_effects()
       CONSUME_BUFF );
 
   // Mistweaver
-  parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
+  parse_effects( p()->buff.jadefire_brand );
 
   // Windwalker
   if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
@@ -194,8 +145,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.pressure_point );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
-  parse_effects(
-      p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse,
+  parse_effects( p()->buff.bok_proc,
       affect_list_t( 1, 2, 3 ).remove_spell( p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
 
   // Conduit of the Celestials
@@ -209,10 +159,10 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Master of Harmony
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
-  parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
+  parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical, p()->baseline.brewmaster.aura, CONSUME_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, p()->baseline.brewmaster.aura, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_physical,  CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic,  CONSUME_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -252,8 +202,7 @@ void monk_action_t<Base>::apply_debuff_effects()
                           p()->talent.brewmaster.weapons_of_order_debuff );
 
   parse_target_effects( td_fn( &monk_td_t::dots_t::aspect_of_harmony ),
-                        p()->talent.master_of_harmony.aspect_of_harmony_damage,
-                        p()->talent.master_of_harmony.coalescence );
+                        p()->talent.master_of_harmony.aspect_of_harmony_damage );
 
   if ( p()->talent.windwalker.jadefire_harmony->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
@@ -986,9 +935,6 @@ struct flurry_strikes_t : public monk_melee_attack_t
     {
       background = dual = true;
 
-      apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
-      parse_effects( p->tier.tww3.spm_2pc );
-
       wisdom_flurry = new flurry_strike_wisdom_t( p );
 
       parent->add_child( wisdom_flurry );
@@ -1143,7 +1089,6 @@ struct overwhelming_force_t : base_action_t
     {
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
-      base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
       aoe                 = -1;
       reduced_aoe_targets = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
@@ -1296,15 +1241,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck        = true;
 
-    if ( p->specialization() == MONK_WINDWALKER )
-      energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
-    else
-      energize_type = action_energize::NONE;
-
     spell_power_mod.direct = 0.0;
-
-    apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
-    apply_affecting_aura( p->talent.windwalker.inner_peace );
 
     std::function<bool()> fp_condition;
     if ( p->wowv_l( { 11, 2, 0 } ) )
@@ -1720,7 +1657,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     if ( p()->shared.teachings_of_the_monastery->ok() )
     {
       double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-      totm_reset_chance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
 
       if ( rng().roll( totm_reset_chance ) )
       {
@@ -1823,10 +1759,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     trigger_jadefire_stomp = true;
     cast_during_sck        = true;
 
-    apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
-    apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
-    apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
-
     parse_effects( p->tier.tww2.opportunistic_strike, [ & ]() { return tier_tww2_opportunistic_strike; } );
 
     if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
@@ -1840,10 +1772,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       bok_totm_proc = new blackout_kick_totm_proc_t( p );
       add_child( bok_totm_proc );
     }
-
-    if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
-      base_costs[ RESOURCE_CHI ].base +=
-          p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -1912,7 +1840,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
       if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       {
-        cd_reduction += ( p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+        cd_reduction += p()->buff.storm_earth_and_fire->data().effectN( 5 ).time_value();
         p()->proc.blackout_kick_cdr_oe->occur();
       }
       else
@@ -1975,7 +1903,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( p()->shared.teachings_of_the_monastery->ok() )
     {
       double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-      totm_reset_chance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
 
       if ( rng().roll( totm_reset_chance ) )
       {
@@ -2118,8 +2045,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     aoe                 = -1;
     reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
     ap_type             = attack_power_type::WEAPON_BOTH;
-
-    parse_effects( p->talent.windwalker.crane_vortex );
 
     // dance of chiji is scripted
     const auto add_docj_parse_entry = [ this, &p ]( auto talent, size_t effectNum ) {
@@ -2424,15 +2349,6 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
     name_str_reporting = "wdp_aoe";
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
-
-    return am;
-  }
 };
 
 struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
@@ -2445,15 +2361,6 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
     background = true;
 
     name_str_reporting = "wdp_st";
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
-
-    return am;
   }
 };
 
@@ -2517,8 +2424,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
                                                    p->passives.whirling_dragon_punch_st_tick );
     add_child( st_tick );
-
-    apply_affecting_aura( p->talent.windwalker.revolving_whirl );
   }
 
   action_state_t *new_state() override
@@ -2925,7 +2830,6 @@ struct keg_smash_t : monk_melee_attack_t
     reduced_aoe_targets = data().effectN( 7 ).base_value();
     aoe                 = -1;
 
-    apply_affecting_aura( player->talent.brewmaster.stormstouts_last_keg );
     parse_effects( player->buff.hit_scheme );
     // we have to set this up by hand, as scalding brew is scripted
     if ( const auto &effect = player->talent.brewmaster.scalding_brew->effectN( 1 ); effect.ok() )
@@ -2996,8 +2900,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown->duration = data().cooldown();
-
-    apply_affecting_aura( p->talent.monk.fatal_touch );
   }
 
   void init() override
@@ -3051,7 +2953,8 @@ struct touch_of_death_t : public monk_melee_attack_t
     {
       amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
-      amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
+      // Apply and parsed multipliers
+      amount *= base_dd_multiplier;
 
       // Damage is only affected by Windwalker's Mastery
       // Versatility does not affect the damage of Touch of Death.
@@ -3242,8 +3145,6 @@ struct leg_sweep_t : public monk_melee_attack_t
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
     cast_during_sck                              = true;
-
-    radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
   }
 };
 
@@ -3601,9 +3502,6 @@ struct roll_t : public monk_spell_t
     cast_during_sck = true;
 
     parse_options( options_str );
-
-    cooldown->duration += player->talent.monk.celerity->effectN( 1 ).time_value();
-    cooldown->charges += (int)player->talent.monk.celerity->effectN( 2 ).base_value();
   }
 
   void execute() override
@@ -3661,7 +3559,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
       if ( player->talent.mistweaver.jade_empowerment->ok() )
         base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
 
-      parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( player->buff.the_emperors_capacitor );
       parse_effects( player->buff.jade_empowerment );
     }
@@ -3688,7 +3585,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     min_gcd = timespan_t::from_millis( 750 );
 
-    parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
     parse_effects( player->buff.the_emperors_capacitor );
     parse_effects( player->buff.jade_empowerment );
 
@@ -3989,10 +3885,6 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
     parse_options( options_str );
 
     harmful = may_crit = false;
-
-    apply_affecting_aura( p->talent.monk.expeditious_fortification );
-    apply_affecting_aura( p->talent.monk.ironshell_brew );
-    apply_affecting_aura( p->talent.brewmaster.fortifying_brew_determination );
   }
 
   void execute() override
@@ -4081,8 +3973,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     harmful         = false;
     cast_during_sck = true;
     use_off_gcd     = true;
-
-    apply_affecting_aura( player->talent.brewmaster.light_brewing );
   }
 
   bool ready() override
@@ -4129,7 +4019,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     }
 
     double purify_percent = data().effectN( 1 ).percent();
-    purify_percent += p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
@@ -4558,8 +4447,6 @@ struct niuzao_spell_t : public monk_spell_t
     harmful = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
-
-    apply_affecting_aura( p->talent.brewmaster.walk_with_the_ox );
   }
 
   void execute() override
@@ -4751,9 +4638,6 @@ struct celestial_conduit_t : public monk_spell_t
     interrupt_auto_attack = false;
 
     tick_action = damage;
-
-    apply_affecting_aura( p->talent.conduit_of_the_celestials.flight_of_the_red_crane );
-    apply_affecting_aura( p->talent.conduit_of_the_celestials.jade_sanctuary );
   }
 
   bool usable_moving() const override
@@ -4795,8 +4679,6 @@ struct chi_surge_t : monk_spell_t
     harmful = true;
     dual = background = true;
     aoe               = -1;
-
-    apply_affecting_aura( player->talent.brewmaster.press_the_advantage );
   }
 
   double composite_persistent_multiplier( const action_state_t *state ) const override
@@ -4878,8 +4760,6 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 
     attack_power_mod.direct = p->talent.windwalker.jadefire_stomp_damage->effectN( 1 ).ap_coeff();
     spell_power_mod.direct  = 0;
-
-    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
   }
 
   double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -4904,8 +4784,6 @@ struct jadefire_stomp_heal_t : public monk_heal_t
 
     attack_power_mod.direct = 0;
     spell_power_mod.direct  = p->talent.windwalker.jadefire_stomp_damage->effectN( 2 ).sp_coeff();
-
-    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
   }
 
   void impact( action_state_t *s ) override
@@ -4931,9 +4809,6 @@ struct jadefire_stomp_t : public monk_spell_t
     damage = new jadefire_stomp_damage_t( p );
     heal   = new jadefire_stomp_heal_t( p );
     aoe    = as<int>( data().effectN( 1 ).base_value() );
-
-    apply_affecting_aura( p->talent.windwalker.singularly_focused_jade );
-    aoe += as<int>( p->talent.windwalker.singularly_focused_jade->effectN( 1 ).base_value() );
 
     if ( p->specialization() == MONK_WINDWALKER )
     {
@@ -5151,9 +5026,6 @@ struct sheiluns_gift_t : public monk_heal_t
     parse_options( options_str );
 
     aoe = as<int>( data().effectN( 2 ).base_value() );
-    aoe += as<int>( player->talent.mistweaver.legacy_of_wisdom->effectN( 1 ).base_value() );
-
-    apply_affecting_aura( player->talent.mistweaver.legacy_of_wisdom );
   }
 
   bool ready() override
@@ -5226,10 +5098,6 @@ struct expel_harm_t : monk_heal_t
     cast_during_sck  = true;
     if ( player->talent.windwalker.combat_wisdom->ok() )
       background = true;
-
-    apply_affecting_aura( player->baseline.brewmaster.expel_harm_rank_2 );
-    apply_affecting_aura( player->talent.monk.vigorous_expulsion );
-    apply_affecting_aura( player->talent.monk.profound_rebuttal );
 
     add_child( damage );
   }
@@ -5324,9 +5192,6 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
   {
     parse_options( options_str );
     cast_during_sck = true;
-
-    apply_affecting_aura( player->talent.brewmaster.light_brewing );
-    apply_affecting_aura( player->talent.master_of_harmony.endless_draught );
 
     if ( const spelleffect_data_t &effect = player->talent.brewmaster.purified_chi->effectN( 1 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
@@ -5782,10 +5647,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<>
     } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-
-    apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
-    apply_affecting_aura( player->baseline.brewmaster.aura );
-    apply_affecting_aura( player->baseline.windwalker.aura );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -6033,8 +5894,7 @@ void aspect_of_harmony_t::construct_buffs( monk_t *player )
 {
   path_of_resurgence =
       make_buff_fallback( player->talent.master_of_harmony.path_of_resurgence->ok(), &*player, "path_of_resurgence",
-                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() )
-          ->apply_affecting_aura( player->talent.monk.chi_wave );
+                          player->talent.master_of_harmony.path_of_resurgence->effectN( 1 ).trigger() );
 
   if ( fallback || !player->talent.master_of_harmony.aspect_of_harmony->ok() )
   {
@@ -6542,7 +6402,7 @@ void monk_t::parse_player_effects()
   // windwalker talent auras
   parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
                         talent.windwalker.acclamation->effectN( 1 ).trigger() );
-  parse_effects( buff.invokers_delight, baseline.windwalker.aura );
+  parse_effects( buff.invokers_delight );
   parse_effects( buff.memory_of_the_monastery );
   parse_effects( buff.momentum_boost_speed );
   parse_effects( buff.dual_threat );
@@ -7481,9 +7341,15 @@ void monk_t::init_spells()
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
 
-  // Register passives
-  parse_passive_effects( talent.brewmaster.high_tolerance );
-  parse_passive_effects( talent.windwalker.communion_with_wind );
+   // Register passives
+  register_passive_effect_mask( talent.shado_pan.efficient_training,
+    specialization() == MONK_WINDWALKER ? effect_mask_t( true ).disable( 5 ) : effect_mask_t( true ) );
+
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
+
+  parse_passive_effects( baseline.windwalker.blackout_kick_rank_2 );
 }
 
 void monk_t::init_background_actions()
@@ -7809,8 +7675,7 @@ void monk_t::create_buffs()
       make_buff_fallback( shared.teachings_of_the_monastery->ok(), this, "teachings_of_the_monastery",
                           find_spell( 202090 ) )
           ->set_trigger_spell( shared.teachings_of_the_monastery )
-          ->set_default_value_from_effect( 1 )
-          ->modify_max_stack( as<int>( talent.windwalker.knowledge_of_the_broken_temple->effectN( 3 ).base_value() ) );
+          ->set_default_value_from_effect( 1 );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( this, "windwalking_aura_driver", find_spell( 365080 ) );
 
@@ -7973,14 +7838,12 @@ void monk_t::create_buffs()
 
   buff.thunder_focus_tea =
       make_buff_fallback( talent.mistweaver.thunder_focus_tea->ok(), this, "thunder_focus_tea",
-                          talent.mistweaver.thunder_focus_tea )
-          ->modify_max_stack( as<int>( talent.mistweaver.focused_thunder->effectN( 1 ).base_value() ) );
+                          talent.mistweaver.thunder_focus_tea );
 
   // Windwalker
   buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
                       ->set_trigger_spell( baseline.windwalker.combo_breaker )
-                      ->set_chance( baseline.windwalker.combo_breaker->effectN( 1 ).percent() *
-                                    ( 1.0f + talent.windwalker.memory_of_the_monastery->effectN( 1 ).percent() ) );
+                      ->set_chance( baseline.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", find_spell( 393057 ) )
@@ -8136,14 +7999,12 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
-          ->apply_affecting_aura( baseline.windwalker.aura_3 )
           ->set_expire_callback(
               [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
-          ->apply_affecting_aura( baseline.windwalker.aura_3 )
           ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
             if ( new_ && !old_ )
               buff.heart_of_the_jade_serpent_cdr->expire();
@@ -8154,7 +8015,6 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_stack_mw", find_spell( 443506 ) )
-          ->apply_affecting_aura( talent.mistweaver.veil_of_pride )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
               buff.heart_of_the_jade_serpent_cdr->trigger();
@@ -8309,11 +8169,9 @@ void monk_t::create_buffs()
   tier.tww3.coc_2pc_heart_of_the_jade_serpent =
       make_buff_fallback( tier.tww3.coc_2pc->ok(), this, "heart_of_the_jade_serpent_tww3_tier",
                           tier.tww3.coc_2pc_heart_of_the_jade_serpent_data )
+          ->set_duration( tier.tww3.coc_2pc->effectN( 1 ).time_value() )
           ->set_expire_callback(
               [ & ]( buff_t *, int, timespan_t ) { tier.tww3.coc_4pc_jade_serpents_blessing->trigger(); } );
-  if ( specialization() == MONK_WINDWALKER )
-    tier.tww3.coc_2pc_heart_of_the_jade_serpent->modify_duration(
-        baseline.windwalker.aura_3->effectN( 5 ).time_value() );
 
   tier.tww3.coc_4pc_jade_serpents_blessing =
       make_buff_fallback( tier.tww3.coc_4pc->ok(), this, "jade_serpents_blessing_tww3_tier",
@@ -9130,8 +8988,7 @@ void monk_t::combat_begin()
 
   if ( talent.mistweaver.sheiluns_gift->ok() )
   {
-    auto period = timespan_t::from_seconds( 8 );
-    period += talent.mistweaver.veil_of_pride->effectN( 1 ).time_value();
+    auto period = talent.mistweaver.sheiluns_gift->effectN( 1 ).period();
 
     make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
   }
