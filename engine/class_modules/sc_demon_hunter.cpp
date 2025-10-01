@@ -4426,16 +4426,18 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       switch ( p()->specialization() )
       {
         case DEMON_HUNTER_HAVOC:
-          dtm =
-              std::max( 0.0, frag->get_distance( p() ) - 8.0 - ( frag->is_type( soul_fragment::GREATER_DEMON ) * 2 ) );
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 8.0 );
           break;
         case DEMON_HUNTER_VENGEANCE:
-          dtm =
-              std::max( 0.0, frag->get_distance( p() ) - 4.0 - ( frag->is_type( soul_fragment::GREATER_DEMON ) * 2 ) );
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 4.0 );
           break;
         default:
           dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
           break;
+      }
+      if ( frag->is_type( soul_fragment::GREATER_DEMON ) )
+      {
+        dtm -= 2.0;
       }
     }
     timespan_t mt = timespan_t::from_seconds( dtm / p()->cache.run_speed() );
