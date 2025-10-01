@@ -6654,6 +6654,7 @@ struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     residual_action_t( name, p, p->spec.doomblade_debuff ), rogue( p )
   {
     dual = true;
+    apply_affecting_aura( p->talent.assassination.sudden_demise );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override

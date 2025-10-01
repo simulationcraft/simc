@@ -3680,7 +3680,7 @@ void hunter_t::trigger_deathblow( bool activated )
     if ( talents.razor_fragments.ok() )
       buffs.razor_fragments->trigger();
   }
-  
+
   talents.black_arrow.ok() ? cooldowns.black_arrow->reset( !activated ) : cooldowns.kill_shot->reset( !activated );
 }
 
@@ -8992,7 +8992,7 @@ void hunter_t::create_buffs()
         } );
 
   if ( specialization() == HUNTER_BEAST_MASTERY )
-    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow( true ); } );
+    buffs.withering_fire->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_deathblow(); } );
 
   buffs.the_bell_tolls = 
     make_buff( this, "the_bell_tolls", talents.the_bell_tolls_buff )

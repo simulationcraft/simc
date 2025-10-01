@@ -394,12 +394,20 @@ using namespace helpers;
       {
         if ( p()->jackpot_demonology_rng->trigger() )
         {
-          auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+          const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *target );
+          const timespan_t& delay = delay_dur_adjusts.first;
+          const timespan_t& dur_adjust = delay_dur_adjusts.second;
+
+          auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration() + dur_adjust, 1u );
 
           for ( auto d : dogs )
           {
-            if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
-              d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+            if ( d->is_active() )
+            {
+              d->server_action_delay = delay;
+              if ( p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+                d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+            }
           }
 
           p()->procs.jackpot_demonology->occur();
@@ -733,6 +741,9 @@ using namespace helpers;
       summon_pet_t::execute();
 
       p()->warlock_pet_list.active = pet;
+
+      if ( is_precombat && pet->affected_by.demonic_inspiration && !pet->buffs.demonic_inspiration->check() )
+        pet->buffs.demonic_inspiration->trigger();
 
       if ( p()->buffs.grimoire_of_sacrifice->check() )
         p()->buffs.grimoire_of_sacrifice->expire();
@@ -2927,10 +2938,9 @@ using namespace helpers;
 
       unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-      // Set a randomized offset on first melee attacks after travel time. Make sure it's the same value for each dog so they're synced
-      timespan_t delay = rng().range( 0_s, 1_s );
-
-      timespan_t dur_adjust = duration_adjustment( delay );
+      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *target );
+      const timespan_t& delay = delay_dur_adjusts.first;
+      const timespan_t& dur_adjust = delay_dur_adjusts.second;
 
       auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
 
@@ -2939,7 +2949,6 @@ using namespace helpers;
         if ( d->is_active() )
         {
           d->server_action_delay = delay;
-
           if ( p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
             d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
         }
@@ -2949,14 +2958,6 @@ using namespace helpers;
         p()->buffs.demonic_calling->decrement();
 
       p()->buffs.dread_calling->expire();
-    }
-
-    timespan_t duration_adjustment( timespan_t delay )
-    {
-      // Despawn events appear to be offset from the melee attack check in a correlated manner
-      // Starting with this function which mimics despawns on the "off-beats" compared to the 1s heartbeat for the melee attack
-      // This may require updating if better understanding is found for the behavior, such as a fudge from Blizzard related to player distance
-      return ( delay + 500_ms ) % 1_s;
     }
   };
 
@@ -3069,7 +3070,7 @@ using namespace helpers;
 
         debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
 
-        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+        internal_cooldown->start( 5_s * active_pet->composite_spell_cast_speed() );
       }
     }
   };
@@ -3170,12 +3171,20 @@ using namespace helpers;
 
       if ( active_2pc<TWW2>() )
       {
-        auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+        const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *target );
+        const timespan_t& delay = delay_dur_adjusts.first;
+        const timespan_t& dur_adjust = delay_dur_adjusts.second;
+
+        auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration() + dur_adjust, 1u );
 
         for ( auto d : dogs )
         {
-          if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
-            d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+          if ( d->is_active() )
+          {
+            d->server_action_delay = delay;
+            if ( p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+              d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+          }
         }
 
         p()->procs.jackpot_demonology->occur();

@@ -17,8 +17,8 @@ warlock_pet_t::warlock_pet_t( warlock_t* owner, util::string_view pet_name, pet_
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
 
-  register_on_arise_callback( this, [ owner ]() { owner->active_pets++; } );
-  register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->active_pets--; } );
+  register_on_arise_callback( this, [ owner ]() { owner->n_active_pets++; } );
+  register_on_demise_callback( this, [ owner ]( const player_t* ) { owner->n_active_pets--; } );
 }
 
 warlock_t* warlock_pet_t::o()
@@ -75,6 +75,8 @@ void warlock_pet_t::create_buffs()
                      } );
 
   // All Specs
+  buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", o()->talents.demonic_inspiration_buff )
+                                  ->set_default_value_from_effect( 1 );
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -148,6 +150,13 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
+// Stuff that are updated at the heartbeat update interval
+void warlock_pet_t::heartbeat_update_event()
+{
+  if ( affected_by.demonic_inspiration && !buffs.demonic_inspiration->check() )
+    buffs.demonic_inspiration->trigger();
+};
+
 /*
 Felguard had a Haste scaling energy bug that was supposedly fixed once already. Real fix apparently went live
 2019-03-12. Preserving code from resource regen override for now in case of future issues. if ( !o()->dbc.ptr && ( pet_type == PET_FELGUARD ||
@@ -175,8 +184,12 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-    m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -185,8 +198,12 @@ double warlock_pet_t::composite_melee_haste() const
 {
   double m = pet_t::composite_melee_haste();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-    m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   if ( buffs.ferocity_of_fharg->check() )
     m *= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
@@ -198,8 +215,12 @@ double warlock_pet_t::composite_spell_cast_speed() const
 {
   double m = pet_t::composite_spell_cast_speed();
 
-  if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
-      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -208,8 +229,12 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
 {
   double m = pet_t::composite_melee_auto_attack_speed();
 
-  if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
-    m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  if ( buffs.demonic_inspiration->check() )
+  {
+    m /= 1.0 + buffs.demonic_inspiration->check_value();
+    if ( is_main_pet && o()->demonic_inspiration_double_dip )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   if ( buffs.ferocity_of_fharg->check() )
     m /= 1.0 + buffs.ferocity_of_fharg->data().effectN( 1 ).percent();
@@ -272,6 +297,7 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "shadow_bite";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct spell_lock_t : public warlock_pet_spell_t
@@ -321,6 +347,7 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 action_t* imp_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -358,6 +385,7 @@ sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "whiplash/lash_of_pain";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 void sayaad_pet_t::init_base_stats()
@@ -412,6 +440,7 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
   action_list_str = "consuming_shadows";
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct consuming_shadows_t : public warlock_pet_spell_t
@@ -476,6 +505,7 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   owner_coeff.health = 0.75;
 
   is_main_pet = true;
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct felguard_melee_t : public warlock_pet_melee_t
@@ -607,6 +637,10 @@ struct felstorm_t : public warlock_pet_melee_attack_t
       internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
   }
 
+  // NOTE: Although Felstorm is a "melee" attack, its duration/ticks depend on the pet's 'spell_cast_speed' 
+  double composite_haste() const override
+  { return action_t::composite_haste() * player->cache.spell_cast_speed(); }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   { return s->action->tick_time( s ) * 5.0; }
 
@@ -616,7 +650,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
     if ( internal_cooldown )
-      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+      internal_cooldown->start( 5_s * p()->composite_spell_cast_speed() );
 
     p()->melee_attack->cancel();
   }
@@ -893,6 +927,8 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
   felstorm_cd = get_cooldown( "felstorm" );
 
   owner_coeff.health = 0.75;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 void grimoire_felguard_pet_t::arise()
@@ -983,6 +1019,8 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 {
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health = 0.15;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
@@ -1135,7 +1173,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2024-11-16: Coefficient updated
@@ -1150,7 +1188,7 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
 dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pet_e pet_type )
   : warlock_pet_t( owner, pet_name, pet_type, true )
 {
-  action_list_str = "leap/dreadbite";
+  action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
   // 2024-11-16: Coefficient updated
@@ -1252,14 +1290,32 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
 {
   dreadstalker_leap_t( dreadstalker_t* p ) : warlock_pet_t::travel_t( p, "leap" )
   {
-    speed = 30.0; // Note: this is an approximation - leap may have some variation with distance. This could be updated with a function in the future by overriding execute_time()
+    speed = 33.17; // This speed value will be updated in the 'schedule_execute', since leap speed have some variation with distance
   }
 
   void schedule_execute( action_state_t* s ) override
   {
     debug_cast<warlock_pet_t*>( player )->melee_attack->cancel();
 
+    // The dreadstalkers' travel speed is not constant, since it has a certain acceleration
+    // The average speed for various distances is extracted from the ingame behavior and the rest is interpolated, thus obtaining a lookup table
+    // 2025-04-06: lookup_table for speeds in [5-40]yd TO 1yd range (there should be no distance values outside this range, but we will handle them just in case)
+    const size_t distance_st = static_cast<size_t>( player->current.distance + 0.5 );
+    const std::array<double, 36> lookup_table_speed = {
+                                  14.81, 15.50, 16.42, 18.89, 20.73, 22.19, // [ 5yd-10yd]
+      23.41, 24.45, 25.36, 26.17, 26.89, 27.55, 28.15, 28.70, 29.21, 29.69, // [11yd-20yd]
+      30.13, 30.54, 30.94, 31.31, 31.66, 31.99, 32.30, 32.61, 32.89, 33.17, // [21yd-30yd]
+      33.43, 33.69, 33.93, 34.17, 34.40, 34.61, 34.83, 35.03, 35.23, 35.42  // [31yd-40yd]
+    };
+    speed = lookup_table_speed[ std::min( std::max( distance_st, as<size_t>( 5 ) ), as<size_t>( 40 ) ) - as<size_t>( 5 ) ];
+
     warlock_pet_t::travel_t::schedule_execute( s );
+  }
+
+  bool ready() override
+  {
+    // Dreadstalkers will not do a leap if are summoned too close to the target. In addition, the leap can only occur once.
+    return ( ( !debug_cast<dreadstalker_t*>( player )->melee_on_summon ) && ( debug_cast<dreadstalker_t*>( player )->leap_executes > 0 ) && ( warlock_pet_t::travel_t::ready() ) );
   }
 
   void execute() override
@@ -1271,6 +1327,8 @@ struct dreadstalker_leap_t : warlock_pet_t::travel_t
       debug_cast<warlock_pet_t*>( player )->melee_attack->reset();
       debug_cast<warlock_pet_t*>( player )->melee_attack->schedule_execute();
     } );
+
+    debug_cast<dreadstalker_t*>( player )->leap_executes--;
   }
 };
 
@@ -1284,6 +1342,11 @@ void dreadstalker_t::init_base_stats()
 
 void dreadstalker_t::arise()
 {
+  if ( o()->get_player_distance( *target ) <= 5.0 )
+  {
+    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
+
   warlock_pet_t::arise();
 
   o()->buffs.dreadstalkers->trigger();
@@ -1293,8 +1356,7 @@ void dreadstalker_t::arise()
 
   dreadbite_executes = 1;
 
-  if ( position() == POSITION_NONE || position() == POSITION_FRONT )
-    melee_on_summon = true; // Within this range, Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  leap_executes = 1;
 }
 
 void dreadstalker_t::demise()
@@ -1422,6 +1484,10 @@ struct bile_spit_t : public warlock_pet_spell_t
     return warlock_pet_spell_t::ready();
   }
 
+  // NOTE: Bile Spit spell cast time is not affected by any haste effects
+  double execute_time_pct_multiplier() const override
+  { return 1.0; }
+
   void execute() override
   {
     warlock_pet_spell_t::execute();
@@ -1548,6 +1614,8 @@ demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
 {
   resource_regeneration = regen_type::DISABLED;
   action_list_str += "/demonfire";
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct demonfire_t : public warlock_pet_spell_t
@@ -1632,19 +1700,28 @@ void doomguard_t::arise()
 greater_dreadstalker_t::greater_dreadstalker_t( warlock_t* owner )
   : dreadstalker_t( owner, "greater_dreadstalker", PET_FELHUNTER )
 {
-  action_list_str = "dreadbite";
+  action_list_str = "leap/travel/dreadbite";
 
   owner_coeff.ap_from_sp = 0.825;
   owner_coeff.health = 0.4 * o()->tier.demonic_hunger->effectN( 2 ).percent();
+
+  melee_on_summon = false; // Greater Dreadstalkers leap from the player location to target, which has a non-negligible travel time
+  server_action_delay = 0_ms; // Will be set when spawning Greater Dreadstalkers
 }
 
 void greater_dreadstalker_t::arise()
 {
+  if ( o()->get_player_distance( *target ) <= 5.0 )
+  {
+    melee_on_summon = true; // Within this range, Greater Dreadstalkers will not do a leap, so they immediately start using auto attacks
+  }
+
   warlock_pet_t::arise();
 
   vilefiend_present_on_summon = bugs ? o()->buffs.vilefiend->check_value() : o()->buffs.vilefiend->check();
 
   dreadbite_executes = 1;
+  leap_executes = 1;
 
   buffs.demonic_hunger->trigger();
 
@@ -1697,6 +1774,8 @@ infernal_t::infernal_t( warlock_t* owner, util::string_view name )
 
   owner_coeff.ap_from_sp = 2.2275;
   owner_coeff.sp_from_sp = 2.2275;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 struct immolation_tick_t : public warlock_pet_spell_t
@@ -1783,6 +1862,8 @@ infernal_roc_t::infernal_roc_t( warlock_t* owner, util::string_view name ) : des
   type                   = RAIN;
   owner_coeff.ap_from_sp = 1.5;
   owner_coeff.sp_from_sp = 1.5;
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
 }
 
 /// Infernal Rain of Chaos End
@@ -2103,7 +2184,11 @@ namespace affliction
 
 darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DARKGLARE, true )
-{ action_list_str += "eye_beam"; }
+{
+  action_list_str += "eye_beam";
+
+  affected_by.demonic_inspiration = o()->talents.demonic_inspiration.ok();
+}
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
@@ -2422,6 +2507,8 @@ namespace diabolist
     type = FRAG;
     owner_coeff.ap_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
     owner_coeff.sp_from_sp = 1.5 * owner->hero.abyssal_dominion->effectN( 4 ).percent();
+
+    affected_by.demonic_inspiration = false;
   }
 
   /// Infernal Fragment End
