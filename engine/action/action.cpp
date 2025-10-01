@@ -525,7 +525,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   if ( data().ok() )
   {
     parse_spell_data( data() );
-    player->apply_affecting_auras(*this);
   }
 
   if ( s_data == spell_data_t::not_found() )
@@ -5490,11 +5489,6 @@ void action_t::html_customsection( report::sc_html_stream& os )
     os << "</table>\n"
         << "</div>\n";
   }
-}
-
-void action_t::apply_affecting_aura( const spell_data_t* )
-{
-  return;
 }
 
 void action_t::execute_on_target( player_t* t, double amount )

@@ -1864,30 +1864,6 @@ public:
     // Manually apply scripted modifiers from Veiltouched and Deeper Daggers when affected by Dark Brew talent
     if ( p->talent.subtlety.dark_brew->ok() && ab::data().affected_by( p->talent.subtlety.dark_brew->effectN( 1 ) ) )
     {
-/*    if ( p->talent.subtlety.veiltouched->ok() )
-      {
-        damage_affect_data passive_list;
-        parse_damage_affecting_spell( p->talent.subtlety.veiltouched, passive_list );
-        if ( !passive_list.direct )
-        {
-          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 1 );
-          ab::base_dd_multiplier *= ( 1 + effect.percent() );
-          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
-                               effect.id(), effect.spell_effect_num() + 1 );
-          p->sim->print_debug( "{} base_dd_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_dd_multiplier );
-          ab::affecting_list.emplace_back( &effect, effect.percent() );
-        }
-        if ( !passive_list.periodic )
-        {
-          const spelleffect_data_t& effect = p->talent.subtlety.veiltouched->effectN( 2 );
-          ab::base_td_multiplier *= ( 1 + effect.percent() );
-          p->sim->print_debug( "{} {} is manually affected by Veiltouched (id={} - effect #{})", *p, *this,
-                               effect.id(), effect.spell_effect_num() + 1 );
-          p->sim->print_debug( "{} base_td_multiplier modified by {}% to {}", *this, effect.base_value(), ab::base_td_multiplier );
-          ab::affecting_list.emplace_back( &effect, effect.percent() );
-        }
-      }*/
-
       if ( p->talent.subtlety.deeper_daggers->ok() )
       {
         if ( !affected_by.deeper_daggers.direct )
@@ -6654,7 +6630,6 @@ struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     residual_action_t( name, p, p->spec.doomblade_debuff ), rogue( p )
   {
     dual = true;
-    apply_affecting_aura( p->talent.assassination.sudden_demise );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override

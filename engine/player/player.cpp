@@ -4554,11 +4554,6 @@ void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration
   } );
 }
 
-/// Called in every action constructor for all actions constructred for a player
-void player_t::apply_affecting_auras(action_t&)
-{
-}
-
 void player_t::action_init_finished(action_t&)
 {
 }

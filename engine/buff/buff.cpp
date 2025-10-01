@@ -1558,111 +1558,6 @@ buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
   return this;
 }
 
-buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
-{
-  if ( !spell->ok() || !s_data->ok() )
-    return this;
-
-  assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
-
-  for ( const spelleffect_data_t& effect : spell->effects() )
-  {
-    apply_affecting_effect( effect );
-  }
-
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
-{
-  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
-    return this;
-
-  if ( !data().affected_by_all( effect ) )
-    return this;
-
-  if ( sim->debug )
-  {
-    const spell_data_t& spell = *effect.spell();
-    std::string desc_str;
-    const auto& spell_text = player->dbc->spell_text( spell.id() );
-    if ( spell_text.rank() )
-      desc_str = fmt::format( " (desc={})", spell_text.rank() );
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
-    }
-  }
-
-  // Applies a modifier from -99 to infinity that controls how fast the buff functions.
-  // Values less than -99 will be rounded to -99, which seems to match in-game behavior where
-  // auras with a time modifier effect of -100 actually only apply a 100x slowdown, and not a total pause.
-  // It's intended to modify real time duration and tickrate, without affecting the apparent duration
-  // as used for things like pandemic refresh behavior.
-  // Currently, this only modifies the duration of the buff, moving its expiration closer or
-  // further out. The "apparent" duration is lost (but recoverable), since remains() returns the
-  // real-time duration. The tickrate is un-adjusted, since it is currently based on the real-time duration.
-  // None of these limitations particularly matter for current usecases, but if you're looking at using this, be
-  // aware there may be more work required to support your usecase.
-  auto apply_time_modifier_duration = [ this ]( const spelleffect_data_t& effect )
-  {
-    if ( ignore_time_modifier )
-      return this;
-
-    auto mul = 1.0 / ( 1.0 + std::max( effect.percent(), -0.99 ) ); // Limit slow down to 100x slower
-
-    base_time_duration_multiplier = base_time_duration_multiplier * mul;
-
-    return this;
-  };
-
-  if ( data().affected_by_label( effect ) )
-  {
-    switch ( effect.subtype() )
-    {
-      case A_MOD_TIME_RATE_BY_SPELL_LABEL:
-        apply_time_modifier_duration( effect );
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_conduit( const conduit_data_t& conduit, int effect_num )
-{
-  assert( effect_num == -1 || effect_num > 0 );
-
-  if ( !conduit.ok() )
-    return this;
-
-  for ( size_t i = 1; i <= conduit->effect_count(); i++ )
-  {
-    if ( effect_num == -1 || as<size_t>( effect_num ) == i )
-      apply_affecting_conduit_effect( conduit, i );
-    else
-      apply_affecting_effect( conduit->effectN( i ) );
-  }
-
-  return this;
-}
-
-buff_t* buff_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num )
-{
-  if ( !conduit.ok() )
-    return this;
-
-  spelleffect_data_t effect = conduit->effectN( effect_num );
-  effect._base_value = conduit.value();
-  apply_affecting_effect( effect );
-
-  return this;
-}
-
 void buff_t::datacollection_begin()
 {
   iteration_uptime_sum = timespan_t::zero();
@@ -3923,19 +3818,6 @@ damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t
   // For now, just assume the side-by-side label modifiers are correct. May need to split out in the future
 
   return this;
-}
-
-buff_t* damage_buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
-{
-  if ( !effect.ok() || effect.type() != E_APPLY_AURA )
-    return this;
-
-  apply_mod_affecting_effect( direct_mod, effect );
-  apply_mod_affecting_effect( periodic_mod, effect );
-  apply_mod_affecting_effect( auto_attack_mod, effect );
-  apply_mod_affecting_effect( crit_chance_mod, effect );
-
-  return buff_t::apply_affecting_effect( effect );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )

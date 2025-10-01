@@ -61,8 +61,6 @@ struct SL_buff_t : public buff_t
 
     auto cov_player = player->is_enemy() ? source : player;
     auto ep  = cov_player->find_soulbind_spell( "Exacting Preparation" );
-    if ( ep->ok() )
-      apply_affecting_aura( ep );
 
     return this;
   }

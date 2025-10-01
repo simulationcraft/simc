@@ -700,8 +700,6 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura( const spell_data_t* );
-
   action_state_t* get_state( const action_state_t* = nullptr );
 
   void execute_on_target( player_t*, double = -1.0 );
