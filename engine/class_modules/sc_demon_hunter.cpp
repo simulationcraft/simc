@@ -1434,7 +1434,7 @@ struct soul_fragment_t
 
     if ( is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
-      dist = 6.592;
+      dist = 6.5;
       x    = dh->x_position;
       y    = dh->y_position;
     }
@@ -4409,10 +4409,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
   timespan_t calculate_movement_time( soul_fragment_t* frag )
   {
-    // Fragments have a 6 yard trigger radius
+    // Fragments have a 8 yard trigger radius
     // TOCHECK: The empowered Demon soul from the TWW3 tier set has a slightly decreased pickup radius
     double dtm =
-        std::max( 0.0, frag->get_distance( p() ) - 6.0 + ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) * 2 ) );
+        std::max( 0.0, frag->get_distance( p() ) - 8.0 + ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) * 2 ) );
     timespan_t mt = timespan_t::from_seconds( dtm / p()->cache.run_speed() );
     return mt;
   }
