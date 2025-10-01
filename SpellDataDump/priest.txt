@@ -494,9 +494,9 @@ Family Flags     : 16
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#2 (id=3305)     : Apply Aura (6) | Unknown(191)
+#2 (id=3305)     : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-#3 (id=1045260)  : Apply Aura (6) | Root (455)
+#3 (id=1045260)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Lets out a psychic scream, causing all enemies within $A1 yards to flee, disorienting them for $d. Damage may interrupt the effect.
 Tooltip          : Disoriented.
@@ -2058,7 +2058,7 @@ Mechanic         : Horrify
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Always Hit (114), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Not in Mythic+ Mode (Challenge Mode) (368), Allow While Stunned by Stun Mechanic (378), Active Passive (393), Not In Proving Grounds (401), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#2 (id=200206)   : Apply Aura (6) | Unknown(191)
+#2 (id=200206)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Target: Current Target (25)
 Description      : $@spelldesc131556
 Tooltip          : Fleeing in terror.
@@ -2504,7 +2504,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Is Debuff (26), No Aura Cancel (31), No Redirection (35), No Reflection (39), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=127678)   : Apply Aura (6) | Root (455)
+#1 (id=127678)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc108920
 Tooltip          : Rooted.
@@ -3589,7 +3589,7 @@ Stance Mask      : 0x08000000
 Attributes       : Allow Item Spell In PvP (13), Not Shapeshifted (16), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Not an Attack (194), Not In Spellbook Until Learned (269)
 Aura Interrupt   : Mount (17), Transform (36)
 Effects          :
-#1 (id=227170)   : Apply Aura (6) | Unknown(201)
+#1 (id=227170)   : Apply Aura (6) | Fly (201)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Ascend into the air, keeping you out of harm's way. Lasts $d. Can only be used while in Ashran.
 Tooltip          : Flying.
@@ -3883,7 +3883,7 @@ Effects          :
                    Family Flags: 36
 #8 (id=290891)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
-#9 (id=294246)   : Apply Aura (6) | Unknown(235)
+#9 (id=294246)   : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=294247)  : Apply Aura (6) | Shapeshift (36) | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 0x2 | Target: Self (1)
@@ -4499,7 +4499,7 @@ Effects          :
                    Family Flags: 10, 28, 69
 #7 (id=1181324)  : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#8 (id=1198070)  : Apply Aura (6) | Unknown(235)
+#8 (id=1198070)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=1198071)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -5149,11 +5149,11 @@ Effects          :
 #9 (id=320869)   : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x2 | Misc Value 2: 0x1 | Target: Self (1)
                    Affected School(s): Holy
-#10 (id=320870)  : Apply Aura (6) | Root (455)
+#10 (id=320870)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Target: Self (1)
 #12 (id=320872)  : Apply Aura (6) | Unknown(176)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#13 (id=868726)  : Apply Aura (6) | Unknown(94)
+#13 (id=868726)  : Apply Aura (6) | Interrupt Health Regen (94)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=1054264) : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 127 | Target: Self (1)
@@ -5639,7 +5639,7 @@ Effects          :
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
 #12 (id=469755)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
-#13 (id=469756)  : Apply Aura (6) | Unknown(235)
+#13 (id=469756)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc228264
 Tooltip          : Cooldown on Mind Blast reduced by ${$w6/1000} sec.
@@ -5678,7 +5678,7 @@ Aura Interrupt   : Damage (1), Mount (17), Change Specialization (38), Change Ta
 Effects          :
 #3 (id=472567)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
-#4 (id=472568)   : Apply Aura (6) | Unknown(235)
+#4 (id=472568)   : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Raid Member (57)
 Description      : $@spelldesc1706
 Tooltip          : Levitating.
@@ -6202,7 +6202,7 @@ Effects          :
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
 #12 (id=745679)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Voidform overrides Shadowform | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
-#13 (id=745680)  : Apply Aura (6) | Unknown(235)
+#13 (id=745680)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=745681)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Suppress Points Stacking (6)
                    Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1590 (Category) | Target: Self (1)
@@ -6621,7 +6621,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=814983)   : Apply Aura (6) | Unknown(235)
+#1 (id=814983)   : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=815010)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ascended Nova overrides Boon of the Ascended | Attributes: Suppress Points Stacking (6)
                    Base Value: 325020 | Scaled Value: 325020 | Misc Value: 325013 | Target: Self (1)
@@ -9573,7 +9573,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), No Aura Icon (60), Limit N (165), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
-#2 (id=998658)   : Apply Aura (6) | Unknown(128)
+#2 (id=998658)   : Apply Aura (6) | Fixate (128)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #3 (id=998659)   : Trigger Spell (64): Inescapable Torment
                    Base Value: 1.5 | Scaled Value: 1.5 | Misc Value: 100 | Trigger Spell: 373442
@@ -11826,7 +11826,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
-#1 (id=1039952)  : Apply Aura (6) | Unknown(179)
+#1 (id=1039952)  : Apply Aura (6) | Modify Attacker Spell Crit Chance (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 13 | Target: Self (1)
 
 Name             : Dark Reprimand (id=400169) [Spell Family (6)] 
@@ -15063,7 +15063,7 @@ Effects          :
 #6 (id=1168480)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 6 | Misc Value 2: 3873 (Label) | Target: Self (1)
                    Affected Spells (Label): Psychic Link (199486)
-#7 (id=1168786)  : Apply Aura (6) | Unknown(188)
+#7 (id=1168786)  : Apply Aura (6) | Modify Attacker Ranged Crit Chance (188)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #8 (id=1175933)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
@@ -15139,8 +15139,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1171325)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 | Target: Self (1)
+#1 (id=1171325)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
 
 Name             : Discipline Priest (id=462098) [Spell Family (6), Passive, Hidden] 
 Class            : Discipline Priest

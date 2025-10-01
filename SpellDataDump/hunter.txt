@@ -175,7 +175,7 @@ Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heart
 Effects          :
 #1 (id=478)      : Apply Aura (6) | Fear (7)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 1 | Target: Targeted Enemy (6)
-#2 (id=200191)   : Apply Aura (6) | Unknown(191)
+#2 (id=200191)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
 Description      : Scares a beast, causing it to run in fear for up to $d.  Damage caused may interrupt the effect.  Only one beast can be feared at a time.
 Tooltip          : Feared.
@@ -2405,7 +2405,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Not Shapeshifted (16), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=178929)   : Apply Aura (6) | Root (455) | Attributes: Chain from Initial Target (7)
+#1 (id=178929)   : Apply Aura (6) | Root (Respects Threat Table) (455) | Attributes: Chain from Initial Target (7)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc109298
 Tooltip          : Webbed.
@@ -3007,7 +3007,7 @@ Family Flags     : 36
 Attributes       : Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Limit N (165), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
-#1 (id=228143)   : Apply Aura (6) | Root (455)
+#1 (id=228143)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc162488
 Tooltip          : Immobilized.
@@ -3617,7 +3617,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=279987)   : Trigger Missiles (32): Harpoon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186260 | Target: Targeted Enemy (6)
-#2 (id=870215)   : Apply Aura (6) | Root (455)
+#2 (id=870215)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : Hurls a harpoon at an enemy, rooting them in place for $190927d and pulling you to them.
 Tooltip          : Rooted.
@@ -3637,7 +3637,7 @@ Labels           : 16: Class Spells
 Mechanic         : Root
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=279990)   : Apply Aura (6) | Root (455)
+#1 (id=279990)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc190925
 Tooltip          : Rooted.
@@ -4544,7 +4544,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=314796)   : Apply Aura (6) | Root (455)
+#1 (id=314796)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc190925
 Tooltip          : Rooted
@@ -4565,7 +4565,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=314825)   : Apply Aura (6) | Root (455)
+#1 (id=314825)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc190925
 Tooltip          : Rooted
@@ -12099,7 +12099,7 @@ Mechanic         : Root
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1032450)  : Apply Aura (6) | Root (455)
+#1 (id=1032450)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc393344
 Tooltip          : Rooted.
@@ -15311,8 +15311,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1171308)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 | Target: Self (1)
+#1 (id=1171308)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
 
 Name             : Marksmanship Hunter (id=462081) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter

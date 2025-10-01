@@ -9738,16 +9738,16 @@ struct ascendance_t : public shaman_spell_t
 
     p()->cooldown.strike->reset( false );
 
-    auto dre_duration = p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
-    dre_duration += p()->talent.thorims_invocation->effectN( 2 ).time_value();
+    timespan_t duration = 0_ms;
 
     if ( background )
     {
       assert( var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS || var_ == spell_variant::TWW3 );
-      timespan_t duration = timespan_t::zero();
+
       if (var_ == spell_variant::DEEPLY_ROOTED_ELEMENTS)
       {
-        duration = dre_duration;
+        duration = p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() +
+                   p()->talent.thorims_invocation->effectN( 2 ).time_value();
       }
       else
       {
@@ -9802,7 +9802,7 @@ struct ascendance_t : public shaman_spell_t
     {
       if ( background )
       {
-        p()->buff.static_accumulation->extend_duration_or_trigger( dre_duration, player );
+        p()->buff.static_accumulation->extend_duration_or_trigger( duration, player );
       }
       else
       {
@@ -11312,7 +11312,8 @@ struct tempest_t : public shaman_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     base_aoe_multiplier = data().effectN( 2 ).percent();
-    base_aoe_multiplier += player->spec.enhancement_shaman2->effectN( 10 ).percent();
+    base_aoe_multiplier += player->spec.enhancement_shaman2->effectN( 10 ).percent() +
+                           player->spec.enhancement_shaman2->effectN( 11 ).percent();
 
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -15039,7 +15040,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   // Talents
   action.apply_affecting_aura( talent.echo_of_the_elements );
   action.apply_affecting_aura( talent.elemental_assault );
-  action.apply_affecting_aura( talent.elemental_fury );
+  action.apply_affecting_aura( talent.elemental_fury, talent.primordial_fury );
   action.apply_affecting_aura( talent.improved_lightning_bolt );
   action.apply_affecting_aura( talent.molten_assault );
   action.apply_affecting_aura( talent.natures_fury );
@@ -15054,7 +15055,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.flash_of_lightning );
   action.apply_affecting_aura( talent.herald_of_the_storms );
 
-  action.apply_affecting_aura( talent.stormcaller );
+  action.apply_affecting_aura( talent.stormcaller, spec.enhancement_shaman2 );
   action.apply_affecting_aura( talent.pulse_capacitor );
   action.apply_affecting_aura( talent.supportive_imbuements );
   action.apply_affecting_aura( talent.totemic_coordination );
@@ -15068,33 +15069,12 @@ void shaman_t::apply_affecting_auras( action_t& action )
   // Set bonuses
   action.apply_affecting_aura( sets->set( SHAMAN_ENHANCEMENT, TWW1, B2 ) );
   action.apply_affecting_aura( sets->set( SHAMAN_ELEMENTAL, TWW1, B2 ) );
-  if ( action.player->specialization() == SHAMAN_ELEMENTAL )
+  if ( action.player->get_owner_or_self()->specialization() == SHAMAN_ELEMENTAL )
     for ( int ix : { 3, 4 } )
       action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
-  if ( action.player->specialization() == SHAMAN_ENHANCEMENT )
+  if ( action.player->get_owner_or_self()->specialization() == SHAMAN_ENHANCEMENT )
     for ( int ix : { 1, 2 } )
       action.apply_affecting_effect( spell.tww3_stormbringer_4pc->effectN( ix ) );
-
-  // Custom
-
-  // Elemental Fury + Primordial Fury
-  if ( action.data().affected_by_all( talent.elemental_fury->effectN( 1 ) ) )
-  {
-    print_debug( talent.elemental_fury->effectN( 1 ) );
-    action.crit_bonus_multiplier = 1.0 + talent.elemental_fury->effectN( 1 ).percent() +
-                                   talent.primordial_fury->effectN( 1 ).percent();
-    sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
-      talent.elemental_fury->effectN( 1 ).base_value() + talent.primordial_fury->effectN( 1 ).base_value() );
-  }
-
-  if ( action.data().affected_by_all( talent.elemental_fury->effectN( 2 ) ) )
-  {
-    print_debug( talent.elemental_fury->effectN( 2 ) );
-    action.crit_bonus_multiplier = 1.0 + talent.elemental_fury->effectN( 2 ).percent() +
-                                   talent.primordial_fury->effectN( 2 ).percent();
-    sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this,
-      talent.elemental_fury->effectN( 2 ).base_value() + talent.primordial_fury->effectN( 2 ).base_value() );
-  }
 }
 
 void shaman_t::apply_player_effects()

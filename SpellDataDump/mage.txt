@@ -100,7 +100,7 @@ Family Flags     : 3, 6
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=83)       : Apply Aura (6) | Root (455)
+#1 (id=83)       : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
 #2 (id=84)       : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.05149 | Radius: 0 - 12 yards | Target: Source (22) -> Enemy in Area (15)
@@ -857,7 +857,7 @@ Affecting Spells : Frost Mage (137020 effect#4), Norgannon's Foresight (236380 e
 Family Flags     : 73
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=23237)    : Apply Aura (6) | Root (455)
+#1 (id=23237)    : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Root | Target: at Enemy in Area (16)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
@@ -1108,7 +1108,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=809066)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#6 (id=809067)   : Apply Aura (6) | Unknown(191)
+#6 (id=809067)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #7 (id=877190)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -3263,7 +3263,7 @@ Attributes       : Not Shapeshifted (16), Can Proc From Procs (122), Use Spell B
 Effects          :
 #1 (id=220383)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#2 (id=220384)   : Apply Aura (6) | Root (455)
+#2 (id=220384)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=220385)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
@@ -4916,7 +4916,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.54 | PvP Coefficient: 1.169 | Target: Targeted Enemy (6)
-#2 (id=344290)   : Apply Aura (6) | Root (455)
+#2 (id=344290)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
@@ -6539,7 +6539,7 @@ Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Heartbeat Resist 
 Effects          :
 #1 (id=802830)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.51 | Target: Current Target (25)
-#2 (id=802831)   : Apply Aura (6) | Root (455)
+#2 (id=802831)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Current Target (25)
 #3 (id=805341)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Silence | Target: Current Target (25)
@@ -8221,7 +8221,7 @@ Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection 
 Effects          :
 #1 (id=843438)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.98 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#2 (id=843439)   : Apply Aura (6) | Root (455)
+#2 (id=843439)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: At Enemy (53) -> at Enemy in Area (16)
 #3 (id=843440)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 8 yards | Mechanic: Silence | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -9006,7 +9006,7 @@ Triggered By     : Frostbite (378756)
 Family Flags     : 63
 Attributes       : Allow Cast While Dead (23), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1007196)  : Apply Aura (6) | Root (455)
+#1 (id=1007196)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Current Target (25)
 Description      : $@spelldesc378756
 Tooltip          : Frozen.
@@ -10628,7 +10628,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Heartbeat Resist (30), No Redirection (35), No Reflection (39), Can Proc From Procs (122), Do Not Display Range (126), Aura Bounce Fails Spell (157), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
-#1 (id=1021069)  : Apply Aura (6) | Root (455)
+#1 (id=1021069)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Targeted Enemy (6)
 Description      : $@spelldesc386763
 Tooltip          : Frozen in place.
@@ -11416,7 +11416,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1083950)  : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-#6 (id=1083951)  : Apply Aura (6) | Unknown(191)
+#6 (id=1083951)  : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #7 (id=1083952)  : Apply Aura (6) | Periodic Heal% (20): every 0.6 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -15879,8 +15879,9 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1171312)  : Apply Aura (6) | Unknown(320)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 | Target: Self (1)
+#1 (id=1171312)  : Apply Aura (6) | Apply Hasted GCD to Spells in Label (320)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
 
 Name             : Fire Mage (id=462085) [Spell Family (3), Passive, Hidden] 
 Class            : Fire Mage
