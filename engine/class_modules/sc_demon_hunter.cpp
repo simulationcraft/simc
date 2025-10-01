@@ -4409,10 +4409,35 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
   timespan_t calculate_movement_time( soul_fragment_t* frag )
   {
-    // Fragments have a 8 yard trigger radius
-    // TOCHECK: The empowered Demon soul from the TWW3 tier set has a slightly decreased pickup radius
-    double dtm =
-        std::max( 0.0, frag->get_distance( p() ) - 8.0 + ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) * 2 ) );
+    // Fragments have the following trigger radius:
+    // Vengeance Lesser and Greater souls: 4 yards
+    // Vengeance Greater Demon soul: 6 yards
+    // Havoc Lesser and Greater souls: 8 yards
+    // Havoc Greater Demon soul: 10 yards
+    // TODO: 11.2 Empowered soul for both specs: 6 yards
+    // TOCHECK: Devourer souls (currently default to previous 6 yard)
+    double dtm;
+    if ( type == soul_fragment::EMPOWERED_DEMON )
+    {
+      dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
+    }
+    else
+    {
+      switch ( p()->specialization() )
+      {
+        case DEMON_HUNTER_HAVOC:
+          dtm =
+              std::max( 0.0, frag->get_distance( p() ) - 8.0 - ( frag->is_type( soul_fragment::GREATER_DEMON ) * 2 ) );
+          break;
+        case DEMON_HUNTER_VENGEANCE:
+          dtm =
+              std::max( 0.0, frag->get_distance( p() ) - 4.0 - ( frag->is_type( soul_fragment::GREATER_DEMON ) * 2 ) );
+          break;
+        default:
+          dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
+          break;
+      }
+    }
     timespan_t mt = timespan_t::from_seconds( dtm / p()->cache.run_speed() );
     return mt;
   }
