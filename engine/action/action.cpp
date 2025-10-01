@@ -701,13 +701,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   {
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();
+
     if ( spell_data.internal_cooldown() > timespan_t::zero() )
-    {
       internal_cooldown->duration = spell_data.internal_cooldown();
-    } else if ( spell_data.cooldown() > timespan_t::zero() )
-    {
+    else if ( spell_data.cooldown() > timespan_t::zero() )
       internal_cooldown->duration = spell_data.cooldown();
-    }
   }
   else if ( spell_data.cooldown() > timespan_t::zero() )
   {
@@ -1164,7 +1162,7 @@ bool action_t::verify_actor_weapon() const
 double action_t::base_cost() const
 {
   resource_e cr = current_resource();
-  double c = base_costs[ cr ].base;
+  double c = base_costs[ cr ].value();
 
   if ( secondary_costs[ cr ] != 0 )
   {
@@ -1183,16 +1181,14 @@ double action_t::cost() const
     return 0;
 
   auto cr = current_resource();
+  if ( cr == resource_e::RESOURCE_NONE )
+    return 0;
+
   const auto& bc = base_costs[ cr ];
   auto mul = bc.pct_mul * cost_pct_multiplier();
 
   if ( mul <= 0 )
-  {
-    if ( sim->debug )
-      sim->out_debug.print( "{} action_t::cost: cost=FREE resource={}", *this, cr );
-
     return 0;
-  }
 
   auto base = bc.base;
   auto add = bc.flat_add + cost_flat_modifier();

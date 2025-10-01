@@ -1062,8 +1062,6 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
     if ( data().ok() && data().cooldown() != 0_ms )
     {
       cooldown->duration = data().cooldown();
-      if ( source && source->get_passive_value( data(), "hasted_cooldown" )[ 1 ] )
-        cooldown->hasted = true;
     }
   }
   else
