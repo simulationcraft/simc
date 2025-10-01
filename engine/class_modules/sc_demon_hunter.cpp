@@ -1418,6 +1418,7 @@ struct soul_fragment_t
   void set_position()
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
+    // TODO: MIDNIGHT - ADD DEVOURER
     double distance = 0;
     double dist;
     switch ( dh->specialization() )
