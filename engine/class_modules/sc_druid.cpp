@@ -11020,10 +11020,6 @@ void druid_t::init_spells()
   };
   auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
-  parse_all_class_passives();
-  parse_all_passive_talents();
-  parse_all_passive_sets();
-
   // Class tree
   sim->print_debug( "Initializing class talents..." );
   talent.aessinas_renewal               = CT( "Aessina's Renewal" );  // TODO: NYI
@@ -11430,6 +11426,9 @@ void druid_t::init_spells()
 
   eclipse_handler.init();  // initialize this here since we need talent info to properly init
 
+  // Arcane affinity is bugged with wrath and manually handled in wrath_t
+  register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
+
   // Circle of the Heavens/Wild have different values for restoration
   auto circle_mask = specialization() == DRUID_RESTORATION ? effect_mask_t( true ).disable( 1, 2 )
                                                            : effect_mask_t( true ).disable( 3, 4 );
@@ -11444,11 +11443,11 @@ void druid_t::init_spells()
 
   // EC TWW3 2pc only buffs spec-relevant spell
   register_passive_effect_mask( sets->set( HERO_ELUNES_CHOSEN, TWW3, B2 ),
-    specialization() == DRUID_BALANCE ? effect_mask_t( false ).enable( 1 )
-                                      : effect_mask_t( false ).enable( 2, 3 ) );
+    specialization() == DRUID_BALANCE ? effect_mask_t( false ).enable( 1 ) : effect_mask_t( false ).enable( 2, 3 ) );
 
-  // Arcane affinity is bugged with wrath and manually handled in wrath_t
-  register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
+  parse_all_class_passives();
+  parse_all_passive_talents();
+  parse_all_passive_sets();
 
   parse_passive_effects( spec.ashamanes_guidance );
   parse_passive_effects( spec.astral_power );

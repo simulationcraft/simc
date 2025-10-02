@@ -15179,7 +15179,7 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
 }
 
 std::pair<player_t::modified_value_t, const player_t::modified_value_t&> player_t::add_passive_effect_modifier(
-  std::vector<player_t::modified_value_t>& modifiers, unsigned id, unsigned field_id,
+  std::vector<player_t::modified_value_t>& modifiers, unsigned id, int field_id,
   double orig_val, double flat_val, double pct_val )
 {
   auto it = range::find_if( modifiers, [ id, field_id ]( const auto& mod ) {
@@ -15230,9 +15230,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     bool allow_zero = true;  // modify even if base dbc value is 0
 
     auto do_debug = [ & ]( std::string_view msg ) {
-      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
-                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
-                        msg );
+      std::string _tmp_full_message_tmp_ = fmt::format(
+        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
+      sim->print_debug( _tmp_full_message_tmp_ );
+      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
     switch ( sub_type )
@@ -15433,14 +15435,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           it->flat = now_val;
         }
 
-        if ( sim->debug )
-        {
-          do_debug( fmt::format( "{} (prev={} now={})", field,
-            sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( prev_val ) ) )
-                                        : util::to_string( prev_val ),
-            sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) )
-                                        : util::to_string( now_val ) ) );
-        }
+        do_debug( fmt::format( "{} (prev={} now={})", field,
+          sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( prev_val ) ) )
+                                      : util::to_string( prev_val ),
+          sub_type == A_MODIFY_SCHOOL ? util::school_type_string( dbc::get_school_type( as<uint32_t>( now_val ) ) )
+                                      : util::to_string( now_val ) ) );
 
         if ( is_dbc )
           dbc_override_->register_spell( *dbc, id, field, now_val );
@@ -15456,12 +15455,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
         now_val = now.value();
 
-        if ( sim->debug )
-        {
-          do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-                                 field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
-                                 prev.value(), prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
-        }
+        do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                               field, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
+                               prev.flat, prev.pct * 100, now_val, now.flat, now.pct * 100 ) );
 
         if ( is_dbc )
           dbc_override_->register_spell( *dbc, id, field, now_val );
@@ -15475,13 +15471,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
           auto now_val2 = now2.value();
 
-          if ( sim->debug )
-          {
-            do_debug(
-              fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-                           field2, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now2.orig, prev2.value(),
-                           prev2.flat, prev2.pct * 100, now_val2, now2.flat, now2.pct * 100 ) );
-          }
+          do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                                 field2, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now2.orig,
+                                 prev2.value(), prev2.flat, prev2.pct * 100, now_val2, now2.flat, now2.pct * 100 ) );
 
           if ( is_dbc )
             dbc_override_->register_spell( *dbc, id, field2, now_val2 );
@@ -15513,14 +15505,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           auto [ prev, now ] = add_passive_effect_modifier(
             passive_power_modifiers_, id, get_type_from_field( pow_field ), data_val, flat_pow, pct_val );
 
-          if ( sim->debug )
-          {
-            do_debug( fmt::format(
-              "pow#{} {} ({}) {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-              i + 1, util::resource_type_string( pow.resource() ), id, pow_field, flat_pow ? flat_pow : pct_val * 100,
-              flat_pow ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
-              now.pct * 100 ) );
-          }
+          do_debug( fmt::format(
+            "pow#{} {} ({}) {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])", i + 1,
+            util::resource_type_string( pow.resource() ), id, pow_field, flat_pow ? flat_pow : pct_val * 100,
+            flat_pow ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+            now.pct * 100 ) );
 
           dbc_override_->register_power( *dbc, id, pow_field, now.value() );
 
@@ -15531,13 +15520,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             {
               auto now_val2 = ( prev_val2 + flat_val ) * ( 1.0 + pct_val );
 
-              if ( sim->debug )
-              {
-                do_debug( fmt::format( "pow#{} {} ({}) {} by {:.7g}{} (prev={:.7g} now={:.7g})", i + 1,
-                                       util::resource_type_string( pow.resource() ), id, "cost_per_tick",
-                                       flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2,
-                                       now_val2 ) );
-              }
+              do_debug( fmt::format( "pow#{} {} ({}) {} by {:.7g}{} (prev={:.7g} now={:.7g})", i + 1,
+                                     util::resource_type_string( pow.resource() ), id, "cost_per_tick",
+                                     flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", prev_val2, now_val2 ) );
 
               dbc_override_->register_power( *dbc, id, "cost_per_tick", now_val2 );
             }
@@ -15579,12 +15564,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
-        if ( sim->debug )
-        {
-          do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-                                 field_, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
-                                 prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
-        }
+        do_debug( fmt::format( "{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                               field_, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(),
+                               prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
 
         dbc_override_->register_effect( *dbc, id, field_, now.value() );
         success = true;
@@ -15594,12 +15576,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       if ( as<int>( spell->effect_count() ) < eff_idx )
       {
-        if ( sim->debug )
-        {
-          sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring.",
-                            spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
-                            modifying_spell->id(), eff_idx );
-        }
+        sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring.",
+                          spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
+                          modifying_spell->id(), eff_idx );
         continue;
       }
       // populate all effects in case of P_EFFECTS
@@ -15632,13 +15611,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
-        if ( sim->debug )
-        {
-          do_debug(
-            fmt::format( "eff#{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-                         eff->index() + 1, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
-                         prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
-        }
+        do_debug(
+          fmt::format( "eff#{} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+                       eff->index() + 1, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig,
+                       prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 ) );
 
         dbc_override_->register_effect( *dbc, id, "base_value", now.value() );
         success = true;
