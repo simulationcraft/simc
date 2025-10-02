@@ -15721,9 +15721,14 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
   }
 }
 
-void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string field )
+void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string_view field )
 {
   dbc_override_->register_effect( *dbc, effect.id(), field, value );
+}
+
+void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
+{
+  dbc_override_->register_spell( *dbc, spell.id(), field, value );
 }
 
 const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )

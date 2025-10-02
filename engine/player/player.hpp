@@ -1002,8 +1002,9 @@ protected:
   void parse_all_passive_sets();
   void register_passive_effect_mask( const spell_data_t*, uint32_t );
   void register_passive_affect_list( const spell_data_t*, const affect_list_t& );
-  // directly override the base_value of effects
-  void register_passive_effect_override( const spelleffect_data_t&, double value, std::string field = "base_value" );
+  // directly override the values
+  void register_passive_effect_override( const spelleffect_data_t&, double value, std::string_view field = "base_value" );
+  void register_passive_spell_override( const spell_data_t&, double value, std::string_view field );
   std::vector<const spell_data_t*> spells_affected_by_passive( const spelleffect_data_t&, bool& property ) const;
 
 public:
