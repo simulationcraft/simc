@@ -15233,7 +15233,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( _tmp_full_message_tmp_ );
+      sim->print_debug( "{}", _tmp_full_message_tmp_ );
       _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
