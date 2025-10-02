@@ -338,71 +338,106 @@ public:
     struct class_talents_t
     {
       player_talent_t vengeful_retreat;
-      player_talent_t blazing_path;
+      player_talent_t felblade;
+      player_talent_t voidblade; // NYI
       player_talent_t sigil_of_misery;  // NYI
 
-      player_talent_t unrestrained_fury;
-      player_talent_t imprison;               // No Implementation
-      player_talent_t shattered_restoration;  // NYI Vengeance
-
       player_talent_t vengeful_bonds;  // No Implementation
-      player_talent_t improved_disrupt;
-      player_talent_t bouncing_glaives;
-      player_talent_t consume_magic;
+      player_talent_t unrestrained_fury;
+      player_talent_t shattered_restoration;  // NYI Vengeance
       player_talent_t improved_sigil_of_misery;
 
-      player_talent_t pursuit;
-      player_talent_t disrupting_fury;
-      player_talent_t felblade;
-      player_talent_t swallowed_anger;
+      player_talent_t bouncing_glaives;
+      player_talent_t imprison;               // No Implementation
       player_talent_t charred_warblades;  // NYI Vengeance
 
-      player_talent_t felfire_haste;  // NYI
-      player_talent_t master_of_the_glaive;
-      player_talent_t champion_of_the_glaive;
-      player_talent_t aura_of_pain;
-      player_talent_t precise_sigils;    // Partial NYI (debuff Sigils)
-      player_talent_t lost_in_darkness;  // No Implementation
-
       player_talent_t chaos_nova;
-      player_talent_t soul_rending;
-      player_talent_t infernal_armor;
+      player_talent_t improved_disrupt;
+      player_talent_t consume_magic;
       player_talent_t aldrachi_design;
 
-      player_talent_t chaos_fragments;
-      player_talent_t illidari_knowledge;
-      player_talent_t demonic;
-      player_talent_t will_of_the_illidari;  // NYI Vengeance
+      player_talent_t master_of_the_glaive;
+      player_talent_t champion_of_the_glaive;
+      player_talent_t disrupting_fury;
+      player_talent_t blazing_path;
+      player_talent_t swallowed_anger;
+      player_talent_t aura_of_pain;
       player_talent_t live_by_the_glaive;    // NYI
+
+      player_talent_t pursuit;
+      player_talent_t soul_rending;
+      player_talent_t infernal_armor;
+      player_talent_t lost_in_darkness;  // No Implementation
+
+      player_talent_t felfire_haste;  // NYI
+      player_talent_t illidari_knowledge;
+      player_talent_t guile;
+      player_talent_t will_of_the_illidari;  // NYI Vengeance
 
       player_talent_t internal_struggle;
       player_talent_t darkness;  // No Implementation
-      player_talent_t soul_sigils;
-      player_talent_t quickened_sigils;
 
       player_talent_t erratic_felheart;
       player_talent_t long_night;   // No Implementation
       player_talent_t pitch_black;  // No Implementation
-      player_talent_t rush_of_chaos;
-      player_talent_t demon_muzzle;  // NYI Vengeance
-      player_talent_t flames_of_fury;
-
-      player_talent_t collective_anguish;
-      player_talent_t the_hunt;
-      player_talent_t sigil_of_spite;
-
     } demon_hunter;
+
+    struct devourer_talents_t
+    {
+      player_talent_t void_ray; // NYI
+
+      player_talent_t soul_immolation; // NYI
+      player_talent_t predators_thirst; // NYI
+
+      player_talent_t tempered_soul; // NYI
+      player_talent_t spontaneous_immolation; // NYI
+      player_talent_t void_metamorphosis; // NYI
+      player_talent_t feast_of_souls; // NYI
+
+      player_talent_t scythes_embrace; // NYI
+      player_talent_t duty_eternal; // NYI
+      player_talent_t entropy; // NYI
+      player_talent_t moment_of_craving; // NYI
+
+      player_talent_t sunder; // NYI
+      player_talent_t second_helping; // NYI
+      player_talent_t waste_not; // NYI
+      player_talent_t soulshaper; // NYI
+
+      player_talent_t focused_ray; // NYI
+      player_talent_t collapsing_star; // NYI
+      player_talent_t sweet_suffering; // NYI
+      player_talent_t voidpurge; // NYI
+
+      player_talent_t hungering_slash; // NYI
+      player_talent_t voidrage; // NYI
+      player_talent_t dark_ultimatum; // NYI
+      player_talent_t beckon; // NYI
+      player_talent_t voidglare_boon; // NYI
+
+      player_talent_t voidstep; // NYI
+      player_talent_t up_close; // NYI
+      player_talent_t impending_apocalypse; // NYI
+      player_talent_t rolling_torment; // NYI
+      player_talent_t improved_reap; // NYI
+
+      player_talent_t devourers_bite; // NYI
+      player_talent_t star_fragments; // NYI
+      player_talent_t calamitous; // NYI
+
+      player_talent_t the_hunt; // NYI
+      player_talent_t emptiness; // NYI
+      player_talent_t soul_glutton; // NYI
+      player_talent_t eradicate; // NYI
+    } devourer;
 
     struct havoc_talents_t
     {
       player_talent_t eye_beam;
 
       player_talent_t critical_chaos;
-      player_talent_t insatiable_hunger;
-      player_talent_t demon_blades;
       player_talent_t burning_hatred;
 
-      player_talent_t improved_fel_rush;
       player_talent_t dash_of_chaos;  // NYI
       player_talent_t improved_chaos_strike;
       player_talent_t first_blood;
@@ -416,79 +451,78 @@ public:
 
       player_talent_t initiative;
       player_talent_t scars_of_suffering;
-      player_talent_t chaotic_transformation;
+      player_talent_t demonic;
       player_talent_t furious_throws;
       player_talent_t trail_of_ruin;
 
-      player_talent_t unbound_chaos;
+      player_talent_t tactical_retreat;
       player_talent_t blind_fury;
-      player_talent_t looks_can_kill;
+      player_talent_t chaotic_transformation;
       player_talent_t dancing_with_fate;
       player_talent_t growing_inferno;
 
-      player_talent_t tactical_retreat;
-      player_talent_t isolated_prey;
-      player_talent_t furious_gaze;
-      player_talent_t relentless_onslaught;
-      player_talent_t burning_wound;
-
       player_talent_t exergy;
       player_talent_t inertia;
-      player_talent_t chaos_theory;
-      player_talent_t restless_hunter;
-      player_talent_t inner_demon;
+      player_talent_t isolated_prey;
+      player_talent_t furious_gaze;
       player_talent_t serrated_glaive;  // Partially implemented
+      player_talent_t burning_wound;
+
+      player_talent_t unbound_chaos;
+      player_talent_t chaos_theory;
+      player_talent_t inner_demon;
+      player_talent_t the_hunt;
+
+      player_talent_t relentless_onslaught;
+      player_talent_t soulscar;
       player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
-      player_talent_t glaive_tempest;
       player_talent_t cycle_of_hatred;
-      player_talent_t soulscar;
       player_talent_t chaotic_disposition;
 
       player_talent_t essence_break;
-      player_talent_t fel_barrage;  // Old implementation
+      player_talent_t glaive_tempest;
       player_talent_t shattered_destiny;
+      player_talent_t collective_anguish;
       player_talent_t screaming_brutality;
       player_talent_t a_fire_inside;
-
     } havoc;
 
     struct vengeance_talents_t
     {
       player_talent_t fel_devastation;
 
-      player_talent_t frailty;
+      player_talent_t spirit_bomb;
       player_talent_t fiery_brand;
 
       player_talent_t perfectly_balanced_glaive;
-      player_talent_t deflecting_spikes;
+      player_talent_t quickened_sigils;
       player_talent_t ascending_flame;
 
-      player_talent_t shear_fury;
-      player_talent_t fracture;
+      player_talent_t tempered_steel;
       player_talent_t calcified_spikes;
       player_talent_t roaring_fire;      // No Implementation
       player_talent_t sigil_of_silence;  // Partial Implementation
       player_talent_t retaliation;
-      player_talent_t meteoric_strikes;
+      player_talent_t felfire_fist;
 
-      player_talent_t spirit_bomb;
-      player_talent_t feast_of_souls;
+      player_talent_t sigil_of_spite;
       player_talent_t agonizing_flames;
-      player_talent_t extended_spikes;
+      player_talent_t feed_the_demon;
       player_talent_t burning_blood;
-      player_talent_t soul_barrier;  // NYI
-      player_talent_t bulk_extraction;
-      player_talent_t revel_in_pain;  // No Implementation
+      player_talent_t revel_in_pain;
 
-      player_talent_t void_reaver;
+      player_talent_t frailty;
+      player_talent_t feast_of_souls;
       player_talent_t fallout;
       player_talent_t ruinous_bulwark;  // No Implementation
       player_talent_t volatile_flameblood;
+      player_talent_t soul_barrier;
+      player_talent_t soul_sigils;
       player_talent_t fel_flame_fortification;  // No Implementation
 
-      player_talent_t soul_furnace;
+      player_talent_t void_reaver;
       player_talent_t painbringer;
       player_talent_t sigil_of_chains;  // Partial Implementation
       player_talent_t fiery_demise;
@@ -501,7 +535,7 @@ public:
       player_talent_t cycle_of_binding;
 
       player_talent_t vulnerability;
-      player_talent_t feed_the_demon;
+      player_talent_t vengeful_beast;
       player_talent_t charred_flesh;
 
       player_talent_t soulcrush;
@@ -509,7 +543,6 @@ public:
       player_talent_t last_resort;  // NYI
       player_talent_t darkglare_boon;
       player_talent_t down_in_flames;
-      player_talent_t illuminated_sigils;  // Partial Implementation
 
     } vengeance;
 
@@ -534,6 +567,29 @@ public:
 
       player_talent_t thrill_of_the_fight;
     } aldrachi_reaver;
+
+    struct annihilator_talents_t
+    {
+      player_talent_t voidfall; // NYI
+
+      player_talent_t swift_erasure; // NYI
+      player_talent_t meteoric_rise; // NYI
+      player_talent_t catastrophe; // NYI
+      player_talent_t phase_shift; // NYI
+
+      player_talent_t path_to_oblivion; // NYI
+      player_talent_t state_of_matter; // NYI
+      player_talent_t mass_acceleration; // NYI
+      player_talent_t doomsayer; // NYI
+      player_talent_t celestial_echoes; // NYI
+
+      player_talent_t final_hour; // NYI
+      player_talent_t meteoric_fall; // NYI
+      player_talent_t dark_matter; // NYI
+      player_talent_t otherworldly_focus; // NYI
+
+      player_talent_t world_killer; // NYI
+    } annihilator;
 
     struct felscarred_talents_t
     {
