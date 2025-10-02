@@ -15018,6 +15018,57 @@ bool player_t::is_ptr() const
   return maybe_ptr( dbc->ptr );
 }
 
+/* Passive spells DBC parsing
+
+player_t::parse_passive_effects( const spell_data_t* ) is the main entry point. Only spells with the `SX_PASSIVE` flag
+will be parsed, unless `true` is passed as an optional second argument.
+
+Since modifications are directly made onto the DBC (or pre-registered) it's not necessary to wait until object
+construction to parse, but it is recommended you wait until various named class module spell_t pointer structs are
+populated by the end of `init_spells()`.
+
+player_t::get_passive_value( const spell_data_t&, string )
+player_t::get_passive_value( const spelleffect_data_t&, string )
+player_t::get_passive_value( const spellpower_data_t&, string )
+These are used to get the final modified value from the modified DBC for the stat specified. Stat strings can be found
+in `field_type_map` in player.cpp. A 3-value array will be returned, representing `{ original, flat add, pct mult }`.
+Variables of type `parsed_value_t<T>` can directly be assigned this array.
+
+player_t::parse_all_class_passives() will automatically parse all class/spec auras, including additional ones added
+beyond the first. The table of auras can be found in `_class_passives` in `sc_const_data.cpp`.
+player_t::parse_all_passive_talents() will automatically parse all talents active for the current player, including
+those from the trait hash, manual talent strings, and enable_all_talents. player_t::parse_all_passive_sets() will
+automatically parse all tier set bonuses for the current expansion. It is recommended you call these three functions for
+both convenience and to ensure that no errant effects are missed.
+
+player_t::deregister_passive_effects( const spell_data_t* ) will retroactively remove any existing parsing of the spell
+and prevent all future parsing of the spell.
+
+player_t::register_passive_effect_mask( const spell_data_t*, effect_mask_t ) will allow you to filter out which effects
+to be parsed. It uses the same `effect_mask_t` syntax used in `parse_effects()`. This will retroactively adjust any
+existing parsing of the spell. If the spell has not been parsed yet, `parse_passive_effects()` will still need to be
+called.
+```
+// skip effect#1 and effect#5 of the spec spell
+register_passive_effect_mask( spec_spell, effect_mask_t( true ).disable( 1, 5 ) )
+```
+
+player_t::register_passive_affect_list( const spell_data_t*, affect_list_t ) will allow you to modify which spells are
+affected by the parsed spell. It uses the same `affect_list_t` syntax used in `parse_effects()`. This will retroactively
+adjust any existing parsing of the spell. If the spell has not been parsed yet, `parse_passive_effects()` will still
+need to be called.
+```
+// also apply family flag 2 to effect#1 of the spec spell
+register_passive_affect_list( spec_spell, affect_list_t( 1 ).add_family( 2 ) )
+```
+
+player_t::register_passive_effect_override( const spelleffect_data_t&, value[, field = "base_value"] )
+player_t::register_passive_spell_override( const spell_data_t&, value, field )
+These provide a method within the scope of `player_t` that you can use to directly override the values. Unlike the
+hotfix system, this can be called as a normal `player_t` method allowing you to use any conditional flows as needed. As
+this directly manipulates the DBC without any processing, it should be called before any other parse methods are used.
+
+*/
 namespace
 {
 static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
