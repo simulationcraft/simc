@@ -244,13 +244,7 @@ struct expiration_t : public buff_event_t
 
   void execute() override
   {
-#ifndef NDEBUG
-    if ( buff->expiration.empty() )
-    {
-      sim().error( error_level_e::SEVERE, "{} {} could not find buff_expiration!", *buff->player, *buff );
-      sim().cancel();
-    }
-#endif
+    assert( !buff->expiration.empty() );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||

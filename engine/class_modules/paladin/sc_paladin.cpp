@@ -2374,6 +2374,9 @@ void paladin_t::trigger_lights_deliverance()
 
 void paladin_t::trigger_greater_judgment(paladin_td_t* targetdata, bool remove_stack )
 {
+  if ( !targetdata->target->in_combat )
+    return;
+
   if ( !remove_stack )
     targetdata->debuff.judgment->trigger();
 
