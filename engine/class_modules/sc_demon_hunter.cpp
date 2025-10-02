@@ -4398,7 +4398,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     // TODO: 11.2 Empowered soul for both specs: 6 yards
     // TOCHECK: Devourer souls (currently default to previous 6 yard)
     double dtm;
-    if ( type == soul_fragment::EMPOWERED_DEMON )
+    if ( frag->is_type( soul_fragment::EMPOWERED_DEMON ) )
     {
       dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
     }
