@@ -15164,7 +15164,7 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     {
       for ( auto spell_id : list.second )
       {
-        auto it = range::find( affected_spells, abs( spell_id ), &spell_data_t::id );
+        auto it = range::find( affected_spells, as<unsigned>( abs( spell_id ) ), &spell_data_t::id );
         if ( spell_id > 0 && it == affected_spells.end() )
           affected_spells.push_back( dbc::find_spell( this, spell_id ) );
         else if ( spell_id < 0 && it != affected_spells.end() )
@@ -15777,7 +15777,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
   {
     std::vector<std::string> msg;
     auto mask_ = mask;
-    for ( int i = 1; mask_ && i <= spell->effect_count(); mask_ >>= 1, i++ )
+    for ( size_t i = 1; mask_ && i <= spell->effect_count(); mask_ >>= 1, i++ )
       if ( mask_ & 1 )
         msg.push_back( std::to_string( i ) );
 
