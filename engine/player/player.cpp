@@ -15062,8 +15062,9 @@ need to be called.
 register_passive_affect_list( spec_spell, affect_list_t( 1 ).add_family( 2 ) )
 ```
 
-player_t::register_passive_effect_override( const spelleffect_data_t&, value[, field = "base_value"] )
 player_t::register_passive_spell_override( const spell_data_t&, value, field )
+player_t::register_passive_power_override( const spellpower_data_t& value[, field = "cost" ] )
+player_t::register_passive_effect_override( const spelleffect_data_t&, value[, field = "base_value"] )
 These provide a method within the scope of `player_t` that you can use to directly override the values. Unlike the
 hotfix system, this can be called as a normal `player_t` method allowing you to use any conditional flows as needed. As
 this directly manipulates the DBC without any processing, it should be called before any other parse methods are used.
