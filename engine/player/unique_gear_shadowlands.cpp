@@ -59,8 +59,9 @@ struct SL_buff_t : public buff_t
   {
     buff_t::set_default_value_from_effect_type( a, p, m, e );
 
-    auto cov_player = player->is_enemy() ? source : player;
-    auto ep  = cov_player->find_soulbind_spell( "Exacting Preparation" );
+    // Needs to be re-implemented if ever used in the future
+    // auto cov_player = player->is_enemy() ? source : player;
+    // auto ep  = cov_player->find_soulbind_spell( "Exacting Preparation" );
 
     return this;
   }
