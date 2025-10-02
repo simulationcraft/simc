@@ -4720,6 +4720,9 @@ struct the_hunt_t : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exe
       {
         dual = true;
         aoe  = as<int>( p->talent.demon_hunter.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+
+        // TOCHECK: The Hunt dot is bugged to not proc chaotic disposition
+        affected_by.chaotic_disposition = !p->bugs;
       }
     };
 
