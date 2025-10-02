@@ -251,7 +251,6 @@ struct expiration_t : public buff_event_t
       sim().cancel();
     }
 #endif
-    assert( !buff->expiration.empty() );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||

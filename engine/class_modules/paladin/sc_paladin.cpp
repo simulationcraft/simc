@@ -2560,7 +2560,7 @@ struct sacred_weapon_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p() != target && target->is_enemy() )
+    if ( p() != target && !target->is_enemy() )
       p()->get_target_data( target )->buffs.sacred_weapon->execute();
     else
       p()->buffs.lightsmith.sacred_weapon->execute();
@@ -2577,7 +2577,7 @@ struct holy_bulwark_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p() != target && target->is_enemy() )
+    if ( p() != target && !target->is_enemy() )
       p()->get_target_data( target )->buffs.holy_bulwark->trigger();
     else
       p()->buffs.lightsmith.holy_bulwark->trigger();
