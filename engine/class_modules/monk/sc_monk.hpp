@@ -895,14 +895,15 @@ public:
     } windwalker;
   } baseline;
 
-  struct talents_t
+  struct
   {
     struct
     {
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
-      player_talent_t rising_sun_kick;
+      player_talent_t rising_sun_kick;  // Mistweaver and Windwalker
+      player_talent_t stagger;          // Brewmaster
       // Row 2
       player_talent_t elusive_mists;
       player_talent_t tigers_lust;
@@ -914,8 +915,8 @@ public:
       player_talent_t bounding_agility;
       player_talent_t calming_presence;
       player_talent_t winds_reach;
-      player_talent_t detox;
-      player_talent_t improved_detox;
+      player_talent_t detox;           // Brewmaster and Windwalker
+      player_talent_t improved_detox;  // Mistweaver
       // Row 4
       player_talent_t vivacious_vivification;
       player_talent_t jade_walk;
@@ -923,12 +924,12 @@ public:
       player_talent_t spear_hand_strike;
       player_talent_t ancient_arts;
       // Row 5
-      player_talent_t chi_wave;
+      player_talent_t chi_wave;  // Brewmaster, Mistweaver and Windwalker
       const spell_data_t *chi_wave_buff;
       const spell_data_t *chi_wave_driver;
       const spell_data_t *chi_wave_damage;
       const spell_data_t *chi_wave_heal;
-      player_talent_t chi_burst;
+      player_talent_t chi_burst;  // Brewmaster
       const spell_data_t *chi_burst_buff;
       const spell_data_t *chi_burst_projectile;
       const spell_data_t *chi_burst_damage;
@@ -949,23 +950,23 @@ public:
       // Row 7
       player_talent_t vigorous_expulsion;
       player_talent_t yulons_grace;
-      player_talent_t diffuse_magic;
       player_talent_t peace_and_prosperity;
       player_talent_t fortifying_brew;
       const spell_data_t *fortifying_brew_buff;
       player_talent_t dance_of_the_wind;
-      player_talent_t dampen_harm;
       // Row 8
       player_talent_t save_them_all;
       player_talent_t swift_art;
       player_talent_t strength_of_spirit;
       player_talent_t profound_rebuttal;
-      player_talent_t summon_black_ox_statue;
-      player_talent_t summon_jade_serpent_statue;
-      player_talent_t summon_white_tiger_statue;
+      player_talent_t summon_black_ox_statue;      // Brewmaster
+      player_talent_t jade_infusion;               // Mistweaver
+      player_talent_t summon_jade_serpent_statue;  // Mistweaver
+      player_talent_t summon_white_tiger_statue;   // Windwalker
       const spell_data_t *claw_of_the_white_tiger;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
+      player_talent_t diffuse_magic;
       player_talent_t celestial_determination;
       // Row 9
       player_talent_t chi_proficiency;
@@ -980,7 +981,6 @@ public:
       player_talent_t transcendence_linked_spirits;
       player_talent_t fatal_touch;
       player_talent_t rushing_reflexes;
-      player_talent_t clash;
     } monk;
 
     // Brewmaster
