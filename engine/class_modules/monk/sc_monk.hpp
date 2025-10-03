@@ -54,7 +54,6 @@ struct niuzao_pet_t : public monk_pet_t
   void init_spells() override;
 };
 }  // namespace niuzao
-struct call_to_arms_niuzao_pet_t;
 struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
@@ -384,7 +383,6 @@ public:
     // Brewmaster
     propagate_const<buff_t *> keg_smash;
     propagate_const<buff_t *> exploding_keg;
-    propagate_const<buff_t *> weapons_of_order;
 
     // Windwalker
     propagate_const<buff_t *> acclamation;
@@ -500,8 +498,6 @@ public:
     propagate_const<action_t *> breath_of_fire;
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
-    propagate_const<action_t *> niuzao_call_to_arms_summon;
-    propagate_const<action_t *> chi_surge;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
 
@@ -619,7 +615,6 @@ public:
     propagate_const<buff_t *> awakened_jadefire;
     propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
-    propagate_const<buff_t *> dampen_harm;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> jadefire_stomp;
@@ -634,7 +629,6 @@ public:
     // Brewmaster
     propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
-    propagate_const<buff_t *> call_to_arms_invoke_niuzao;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
     propagate_const<buff_t *> elusive_brawler;
@@ -642,14 +636,11 @@ public:
     propagate_const<buff_t *> fortifying_brew;
     propagate_const<buffs::gift_of_the_ox_t *> gift_of_the_ox;
     propagate_const<buff_t *> expel_harm_accumulator;
-    propagate_const<buff_t *> hit_scheme;
     propagate_const<buff_t *> invoke_niuzao;
     propagate_const<buff_t *> press_the_advantage;
     propagate_const<buff_t *> pretense_of_instability;
-    propagate_const<buff_t *> purified_chi;
     propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
-    propagate_const<buff_t *> weapons_of_order;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> ox_stance;
 
@@ -762,7 +753,6 @@ public:
     propagate_const<gain_t *> power_strikes;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
-    propagate_const<gain_t *> weapons_of_order;
   } gain;
 
   struct procs_t
@@ -778,7 +768,6 @@ public:
     propagate_const<proc_t *> blackout_kick_cdr;
     propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
-    propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
     propagate_const<proc_t *> dance_of_chiji;
@@ -819,7 +808,6 @@ public:
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;
     propagate_const<cooldown_t *> touch_of_death;
-    propagate_const<cooldown_t *> weapons_of_order;
     propagate_const<cooldown_t *> whirling_dragon_punch;
   } cooldown;
 
@@ -1396,7 +1384,6 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
-    spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> call_to_arms_niuzao;
 
     pet_t *bron;
 

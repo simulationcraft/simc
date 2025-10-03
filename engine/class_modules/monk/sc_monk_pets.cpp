@@ -1334,13 +1334,6 @@ struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
   }
 };
 
-struct call_to_arms_niuzao_pet_t : public niuzao::niuzao_pet_t
-{
-  call_to_arms_niuzao_pet_t( monk_t *player ) : niuzao_pet_t( "call_to_arms_niuzao_the_black_ox", player )
-  {
-  }
-};
-
 // ==========================================================================
 // Chi-Ji Pet
 // ==========================================================================
@@ -1552,8 +1545,6 @@ monk_t::pets_t::pets_t( monk_t *p )
     chiji( "chiji_the_red_crane", p, []( monk_t *p ) { return new pets::chiji_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } ),
     fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t *p ) { return new pets::fury_of_xuen_pet_t( p ); } ),
-    call_to_arms_niuzao( "call_to_arms_niuzao", p,
-                         []( monk_t *p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } )
 {
 }
 
