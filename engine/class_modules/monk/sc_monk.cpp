@@ -6523,23 +6523,14 @@ void monk_t::init_spells()
 {
   base_t::init_spells();
 
-  specialization_e current_spec = specialization();
-
   // Talents spells =====================================
-  auto _CT = [ this, &current_spec ]( std::string_view name ) {
-    return find_talent_spell( talent_tree::CLASS, name, current_spec );
-  };
-  auto _ST = [ this, &current_spec ]( std::string_view name ) {
-    return find_talent_spell( talent_tree::SPECIALIZATION, name, current_spec );
+  auto _CT = [ & ]( std::string_view name ) { return find_talent_spell( talent_tree::CLASS, name, specialization() ); };
+  auto _ST = [ & ]( std::string_view name ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, name, specialization() );
   };
   auto _HT = [ this ]( std::string_view name ) { return find_talent_spell( talent_tree::HERO, name ); };
 
-  // auto _CTID = [ this, &current_spec ]( int id ) { return find_talent_spell( talent_tree::CLASS, id, current_spec );
-  // };
-  auto _STID = [ this, &current_spec ]( int id ) {
-    return find_talent_spell( talent_tree::SPECIALIZATION, id, current_spec );
-  };
-  // auto _HTID = [ this ]( int id ) { return find_talent_spell( talent_tree::HERO, id ); };
+  auto _STID = [ & ]( int id ) { return find_talent_spell( talent_tree::SPECIALIZATION, id, specialization() ); };
 
   // =================================================================================================
 
@@ -6582,29 +6573,30 @@ void monk_t::init_spells()
   }
 
   // monk_t::baseline::brewmaster
+  if ( specialization() == MONK_BREWMASTER )
   {
-    current_spec                                   = MONK_BREWMASTER;
-    baseline.brewmaster.mastery                    = find_mastery_spell( MONK_BREWMASTER );
-    baseline.brewmaster.aura                       = find_specialization_spell( "Brewmaster Monk" );
-    baseline.brewmaster.aura_2                     = find_specialization_spell( 462087 );
-    baseline.brewmaster.brewmasters_balance        = find_specialization_spell( "Brewmaster's Balance" );
-    baseline.brewmaster.celestial_fortune          = find_specialization_spell( "Celestial Fortune" );
-    baseline.brewmaster.celestial_fortune_heal     = find_spell( 216521 );  // TODO: Can you be more specific?
-    baseline.brewmaster.expel_harm_rank_2          = find_rank_spell( "Expel Harm", "Rank 2", current_spec );
-    baseline.brewmaster.blackout_kick              = find_spell( 205523 );
-    baseline.brewmaster.stagger                    = find_specialization_spell( "Stagger" );
-    baseline.brewmaster.stagger_self_damage        = find_spell( 124255 );
-    baseline.brewmaster.light_stagger              = find_spell( 124275 );
-    baseline.brewmaster.moderate_stagger           = find_spell( 124274 );
-    baseline.brewmaster.heavy_stagger              = find_spell( 124273 );
-    baseline.brewmaster.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
-    baseline.brewmaster.spinning_crane_kick_rank_2 = find_rank_spell( "Spinning Crane Kick", "Rank 2", current_spec );
-    baseline.brewmaster.touch_of_death_rank_3      = find_rank_spell( "Touch of Death", "Rank 3", current_spec );
+    baseline.brewmaster.mastery                = find_mastery_spell( MONK_BREWMASTER );
+    baseline.brewmaster.aura                   = find_specialization_spell( "Brewmaster Monk" );
+    baseline.brewmaster.aura_2                 = find_specialization_spell( 462087 );
+    baseline.brewmaster.brewmasters_balance    = find_specialization_spell( "Brewmaster's Balance" );
+    baseline.brewmaster.celestial_fortune      = find_specialization_spell( "Celestial Fortune" );
+    baseline.brewmaster.celestial_fortune_heal = find_spell( 216521 );  // TODO: Can you be more specific?
+    baseline.brewmaster.expel_harm_rank_2      = find_rank_spell( "Expel Harm", "Rank 2", specialization() );
+    baseline.brewmaster.blackout_kick          = find_spell( 205523 );
+    baseline.brewmaster.stagger                = find_specialization_spell( "Stagger" );
+    baseline.brewmaster.stagger_self_damage    = find_spell( 124255 );
+    baseline.brewmaster.light_stagger          = find_spell( 124275 );
+    baseline.brewmaster.moderate_stagger       = find_spell( 124274 );
+    baseline.brewmaster.heavy_stagger          = find_spell( 124273 );
+    baseline.brewmaster.spinning_crane_kick    = find_specialization_spell( "Spinning Crane Kick" );
+    baseline.brewmaster.spinning_crane_kick_rank_2 =
+        find_rank_spell( "Spinning Crane Kick", "Rank 2", specialization() );
+    baseline.brewmaster.touch_of_death_rank_3 = find_rank_spell( "Touch of Death", "Rank 3", specialization() );
   }
 
   // monk_t::baseline::mistweaver
+  if ( specialization() == MONK_MISTWEAVER )
   {
-    current_spec                                   = MONK_MISTWEAVER;
     baseline.mistweaver.mastery                    = find_mastery_spell( MONK_MISTWEAVER );
     baseline.mistweaver.aura                       = find_specialization_spell( "Mistweaver Monk" );
     baseline.mistweaver.aura_2                     = find_specialization_spell( 428200 );
@@ -6614,8 +6606,8 @@ void monk_t::init_spells()
   }
 
   // monk_t::baseline::windwalker
+  if ( specialization() == MONK_WINDWALKER )
   {
-    current_spec                                  = MONK_WINDWALKER;
     baseline.windwalker.mastery                   = find_mastery_spell( MONK_WINDWALKER );
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
     baseline.windwalker.aura_2                    = find_specialization_spell( 462091 );
@@ -6632,7 +6624,6 @@ void monk_t::init_spells()
 
   // monk_t::talent::monk
   {
-    current_spec = specialization();
     // Row 1
     talent.monk.rising_sun_kick = _CT( "Rising Sun Kick" );
     talent.monk.soothing_mist   = _CT( "Soothing Mist" );
@@ -6800,8 +6791,8 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::mistweaver
+  if ( specialization() == MONK_MISTWEAVER )
   {
-    current_spec = MONK_MISTWEAVER;
     // Row 1
     talent.mistweaver.enveloping_mist = _ST( "Enveloping Mist" );
     // Row 2
@@ -6884,7 +6875,6 @@ void monk_t::init_spells()
 
   // monk_t::talent::windwalker
   {
-    current_spec = MONK_WINDWALKER;
     // Row 1
     talent.windwalker.fists_of_fury = _ST( "Fists of Fury" );
     // Row 2
@@ -6960,8 +6950,6 @@ void monk_t::init_spells()
     talent.windwalker.slicing_winds                  = _ST( "Slicing Winds" );
     talent.windwalker.slicing_winds_damage           = find_spell( 1217411 );
   }
-
-  current_spec = specialization();
 
   // monk_t::talent::conduit_of_the_celestials
   {
