@@ -899,6 +899,12 @@ public:
   {
     struct
     {
+      const spell_data_t *rushing_jade_wind_buff;
+      const spell_data_t *rushing_jade_wind_tick;
+    } shared_spell;
+
+    struct
+    {
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
@@ -994,37 +1000,37 @@ public:
       const spell_data_t *shuffle_buff;
       // row 3
       player_talent_t august_blessing;
+      player_talent_t staggering_strikes;
+      player_talent_t quick_sip;
+      player_talent_t elixir_of_determination;
+      player_talent_t improved_blackout_kick;
+      player_talent_t swift_as_a_coursing_river;
+      // row 4
       player_talent_t gift_of_the_ox;
       const spell_data_t *gift_of_the_ox_buff;
       const spell_data_t *gift_of_the_ox_heal_trigger;
       const spell_data_t *gift_of_the_ox_heal_expire;
-      player_talent_t staggering_strikes;
-      player_talent_t quick_sip;
-      player_talent_t spirit_of_the_ox;
-      player_talent_t strike_at_dawn;
-      // row 4
-      player_talent_t hit_scheme;
-      player_talent_t elixir_of_determination;
       player_talent_t special_delivery;
       const spell_data_t *special_delivery_missile;
       player_talent_t rushing_jade_wind;
+      player_talent_t spirit_of_the_ox;
       // row 5
+      player_talent_t jade_flash;
       player_talent_t celestial_brew;
-      const spell_data_t *purified_chi;
       player_talent_t celestial_infusion;
       player_talent_t niuzaos_resolve;
-      player_talent_t autumn_blessing;
-      player_talent_t one_with_the_wind;
+      player_talent_t celestial_flames;
       player_talent_t shadowboxing_treads;
       player_talent_t fluidity_of_motion;
+      player_talent_t elusive_footwork;
+      player_talent_t one_with_the_wind;
       // row 6
       player_talent_t breath_of_fire;
       const spell_data_t *breath_of_fire_dot;
       player_talent_t gai_plins_imperial_brew;
       const spell_data_t *gai_plins_imperial_brew_heal;
-      player_talent_t invoke_niuzao_the_black_ox;
-      const spell_data_t *invoke_niuzao_the_black_ox_stomp;
-      player_talent_t tranquil_spirit;
+      player_talent_t light_brewing;
+      player_talent_t training_of_niuzao;
       player_talent_t pretense_of_instability;
       // row 7
       player_talent_t scalding_brew;
@@ -1034,35 +1040,38 @@ public:
       player_talent_t black_ox_brew;
       player_talent_t walk_with_the_ox;
       const spell_data_t *walk_with_the_ox_stomp;
-      player_talent_t light_brewing;
-      player_talent_t training_of_niuzao;
       player_talent_t zen_state;
-      player_talent_t counterstrike;
+      player_talent_t tranquil_spirit;
+      player_talent_t face_palm;
       // row 8
       player_talent_t dragonfire_brew;
       const spell_data_t *dragonfire_brew_hit;
       player_talent_t charred_passions;
       const spell_data_t *charred_passions_damage;
       player_talent_t high_tolerance;
-      player_talent_t exploding_keg;
-      player_talent_t improved_invoke_niuzao_the_black_ox;
-      player_talent_t elusive_footwork;
+      player_talent_t press_the_advantage;
+      player_talent_t blackout_combo;
       player_talent_t anvil__stave;
-      player_talent_t face_palm;
+      player_talent_t counterstrike;
       // row 9
+      player_talent_t exploding_keg;
       player_talent_t ox_stance;
       const spell_data_t *ox_stance_buff;
-      player_talent_t stormstouts_last_keg;
-      player_talent_t blackout_combo;
-      player_talent_t press_the_advantage;
-      player_talent_t weapons_of_order;
-      const spell_data_t *weapons_of_order_debuff;
+      player_talent_t awakening_spirit;
+      player_talent_t vital_flame;
+      player_talent_t invoke_niuzao_the_black_ox;
+      const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       // row 10
-      player_talent_t black_ox_adept;
-      player_talent_t heightened_guard;
-      player_talent_t call_to_arms;
-      const spell_data_t *call_to_arms_buff;
-      player_talent_t chi_surge;
+      player_talent_t fuel_on_the_fire;
+      player_talent_t empty_the_cellar;
+      player_talent_t keg_volley;
+      player_talent_t stormstouts_last_keg;
+      player_talent_t heart_of_the_ox;
+      player_talent_t mighty_stomp;
+      // apex
+      player_talent_t bring_me_another_1;
+      player_talent_t bring_me_another_2;
+      player_talent_t bring_me_another_3;
     } brewmaster;
 
     // Mistweaver
@@ -1417,8 +1426,6 @@ public:
   struct
   {
     // General
-    const spell_data_t *rushing_jade_wind;
-    const spell_data_t *rushing_jade_wind_tick;
 
     // Windwalker
     const spell_data_t *bok_proc;

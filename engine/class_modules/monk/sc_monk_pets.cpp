@@ -812,10 +812,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rushing_jade_wind_tick_t : public sef_tick_action_t
   {
     sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t *p )
-      : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->passives.rushing_jade_wind_tick )
+      : sef_tick_action_t( "rushing_jade_wind_tick", p, p->o()->talent.shared_spell.rushing_jade_wind_tick )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->o()->passives.rushing_jade_wind->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->o()->talent.shared_spell.rushing_jade_wind_buff->effectN( 1 ).base_value();
     }
   };
 
