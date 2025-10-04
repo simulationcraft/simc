@@ -503,7 +503,6 @@ public:
     propagate_const<buff_t *> pretense_of_instability;
     propagate_const<buff_t *> shuffle;
     propagate_const<buff_t *> training_of_niuzao;
-    // niuzao r2 recent purifies fake buff
     propagate_const<buff_t *> ox_stance;
 
     // Mistweaver
@@ -639,24 +638,9 @@ public:
   {
     propagate_const<cooldown_t *> anvil__stave;
     propagate_const<cooldown_t *> blackout_kick;
-    propagate_const<cooldown_t *> breath_of_fire;
-    propagate_const<cooldown_t *> chi_torpedo;
-    propagate_const<cooldown_t *> drinking_horn_cover;
     propagate_const<cooldown_t *> expel_harm;
     propagate_const<cooldown_t *> fists_of_fury;
-    propagate_const<cooldown_t *> flying_serpent_kick;
-    propagate_const<cooldown_t *> healing_elixir;
-    propagate_const<cooldown_t *> invoke_niuzao;
-    propagate_const<cooldown_t *> invoke_xuen;
-    propagate_const<cooldown_t *> invoke_yulon;
-    propagate_const<cooldown_t *> keg_smash;
     propagate_const<cooldown_t *> rising_sun_kick;
-    propagate_const<cooldown_t *> refreshing_jade_wind;
-    propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> strike_of_the_windlord;
-    propagate_const<cooldown_t *> thunder_focus_tea;
-    propagate_const<cooldown_t *> touch_of_death;
-    propagate_const<cooldown_t *> whirling_dragon_punch;
   } cooldown;
 
   struct

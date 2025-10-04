@@ -383,11 +383,6 @@ void monk_action_t<Base>::combo_strikes_trigger()
     p()->buff.combo_strikes->trigger();
 
     p()->buff.hit_combo->trigger();
-
-    if ( p()->talent.windwalker.meridian_strikes->ok() )
-      p()->cooldown.touch_of_death->adjust(
-          -1 * timespan_t::from_seconds( p()->talent.windwalker.meridian_strikes->effectN( 2 ).base_value() / 100 ),
-          true );  // Saved as 35
   }
   else
   {
@@ -2494,8 +2489,10 @@ struct auto_attack_t : public monk_melee_attack_t
 // ==========================================================================
 struct keg_smash_t : monk_melee_attack_t
 {
+  cooldown_t *breath_of_fire;
+
   keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
-    : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash )
+    : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ), breath_of_fire( nullptr )
   {
     parse_options( options_str );
     // TODO: can cast_during_sck be automated?
@@ -2511,6 +2508,9 @@ struct keg_smash_t : monk_melee_attack_t
           .set_value( effect.percent() )
           .set_eff( &effect );
     parse_effects( player->buff.flow_of_battle_free_keg_smash );
+
+    if ( player->talent.brewmaster.salsalabims_strength->ok() )
+      breath_of_fire = player->get_cooldown( "breath_of_fire" );
   }
 
   void execute() override
@@ -2518,9 +2518,9 @@ struct keg_smash_t : monk_melee_attack_t
     monk_melee_attack_t::execute();
     p()->buff.flow_of_battle_free_keg_smash->expire();
 
-    if ( p()->talent.brewmaster.salsalabims_strength->ok() )
+    if ( breath_of_fire )
     {
-      p()->cooldown.breath_of_fire->reset( true );
+      breath_of_fire->reset( true );
       p()->proc.salsalabims_strength->occur();
     }
 
@@ -2842,12 +2842,11 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
     : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ), first_charge( true )
   {
     parse_options( options_str );
-    may_crit                        = true;
-    ww_mastery                      = true;
-    may_combo_strike                = true;
-    ignore_false_positive           = true;
-    aoe                             = -1;
-    p->cooldown.flying_serpent_kick = cooldown;
+    may_crit              = true;
+    ww_mastery            = true;
+    may_combo_strike      = true;
+    ignore_false_positive = true;
+    aoe                   = -1;
   }
 
   void reset() override
@@ -5412,25 +5411,10 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     shared(),
     passives()
 {
-  cooldown.anvil__stave           = get_cooldown( "anvil__stave" );
-  cooldown.blackout_kick          = get_cooldown( "blackout_kick" );
-  cooldown.breath_of_fire         = get_cooldown( "breath_of_fire" );
-  cooldown.drinking_horn_cover    = get_cooldown( "drinking_horn_cover" );
-  cooldown.expel_harm             = get_cooldown( "expel_harm" );
-  cooldown.fists_of_fury          = get_cooldown( "fists_of_fury" );
-  cooldown.flying_serpent_kick    = get_cooldown( "flying_serpent_kick" );
-  cooldown.healing_elixir         = get_cooldown( "healing_elixir" );
-  cooldown.invoke_niuzao          = get_cooldown( "invoke_niuzao_the_black_ox" );
-  cooldown.invoke_xuen            = get_cooldown( "invoke_xuen_the_white_tiger" );
-  cooldown.invoke_yulon           = get_cooldown( "invoke_yulon_the_jade_serpent" );
-  cooldown.keg_smash              = get_cooldown( "keg_smash" );
-  cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
-  cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
-  cooldown.roll                   = get_cooldown( "roll" );
-  cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
-  cooldown.thunder_focus_tea      = get_cooldown( "thunder_focus_tea" );
-  cooldown.touch_of_death         = get_cooldown( "touch_of_death" );
-  cooldown.whirling_dragon_punch  = get_cooldown( "whirling_dragon_punch" );
+  cooldown.anvil__stave    = get_cooldown( "anvil__stave" );
+  cooldown.blackout_kick   = get_cooldown( "blackout_kick" );
+  cooldown.fists_of_fury   = get_cooldown( "fists_of_fury" );
+  cooldown.rising_sun_kick = get_cooldown( "rising_sun_kick" );
 
   resource_regeneration = regen_type::DYNAMIC;
   if ( specialization() != MONK_MISTWEAVER )
