@@ -57,7 +57,6 @@ struct niuzao_pet_t : public monk_pet_t
 struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
-struct fury_of_xuen_pet_t;
 
 enum class sef_pet_e
 {
@@ -95,7 +94,6 @@ struct monk_action_t : public parse_action_effects_t<Base>
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
-  bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
 
@@ -385,11 +383,7 @@ public:
     propagate_const<buff_t *> exploding_keg;
 
     // Windwalker
-    propagate_const<buff_t *> acclamation;
-    propagate_const<buff_t *> gale_force;
     propagate_const<buff_t *> empowered_tiger_lightning;
-    propagate_const<buff_t *> fury_of_xuen_empowered_tiger_lightning;
-    propagate_const<buff_t *> jadefire_brand;
 
     // Mistweaver
     propagate_const<buff_t *> lesson_of_anger;
@@ -507,9 +501,6 @@ public:
     // Windwalker
     propagate_const<action_t *> empowered_tiger_lightning;
     propagate_const<action_t *> flurry_of_xuen;
-    propagate_const<action_t *> fury_of_xuen_summon;
-    propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
-    propagate_const<action_t *> gale_force;
   } active_actions;
 
   struct passive_actions_t
@@ -617,8 +608,6 @@ public:
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
-    propagate_const<buff_t *> jadefire_stomp;
-    propagate_const<buff_t *> invokers_delight;
     propagate_const<buff_t *> rushing_jade_wind;
     propagate_const<buff_t *> spinning_crane_kick;
     propagate_const<buff_t *> windwalking_driver;
@@ -647,7 +636,6 @@ public:
     // Mistweaver
     propagate_const<buff_t *> dance_of_chiji_mw;
     propagate_const<buff_t *> jade_empowerment;
-    propagate_const<buff_t *> jadefire_stomp_reset;
     propagate_const<buff_t *> secret_infusion_haste;
     propagate_const<buff_t *> secret_infusion_crit;
     propagate_const<buff_t *> secret_infusion_mastery;
@@ -671,25 +659,19 @@ public:
     propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> ferociousness;
     propagate_const<buff_t *> flying_serpent_kick_movement;
-    propagate_const<buff_t *> fury_of_xuen_stacks;
-    propagate_const<buff_t *> fury_of_xuen;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
-    propagate_const<buff_t *> jadefire_brand;
-    propagate_const<buff_t *> martial_mixture;
     propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
-    propagate_const<buff_t *> ordered_elements;
     propagate_const<buff_t *> pressure_point;
     propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;
     propagate_const<buff_t *> thunderfist;
     propagate_const<buff_t *> touch_of_death_ww;
     propagate_const<buff_t *> touch_of_karma;
-    propagate_const<buff_t *> transfer_the_power;
     propagate_const<buff_t *> whirling_dragon_punch;
 
     // Conduit of the Celestials
@@ -749,7 +731,6 @@ public:
     propagate_const<gain_t *> glory_of_the_dawn;
     propagate_const<gain_t *> healing_elixir;
     propagate_const<gain_t *> open_palm_strikes;
-    propagate_const<gain_t *> ordered_elements;
     propagate_const<gain_t *> power_strikes;
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
@@ -773,7 +754,6 @@ public:
     propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
     propagate_const<proc_t *> face_palm;
-    propagate_const<proc_t *> jadefire_stomp_reset;
     propagate_const<proc_t *> glory_of_the_dawn;
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
@@ -793,7 +773,6 @@ public:
     propagate_const<cooldown_t *> chi_torpedo;
     propagate_const<cooldown_t *> drinking_horn_cover;
     propagate_const<cooldown_t *> expel_harm;
-    propagate_const<cooldown_t *> jadefire_stomp;
     propagate_const<cooldown_t *> fists_of_fury;
     propagate_const<cooldown_t *> flying_serpent_kick;
     propagate_const<cooldown_t *> healing_elixir;
@@ -1149,80 +1128,80 @@ public:
     // Windwalker
     struct
     {
+      // TODO: REMOVE SEF
+      player_talent_t storm_earth_and_fire;
+
       // Row 1
       player_talent_t fists_of_fury;
       // Row 2
       player_talent_t momentum_boost;
       player_talent_t combat_wisdom;
       const spell_data_t *combat_wisdom_expel_harm;
-      player_talent_t acclamation;
+      player_talent_t sharp_reflexes;
       // Row 3
       player_talent_t touch_of_the_tiger;
+      player_talent_t ferociousness;
       player_talent_t hardened_soles;
       player_talent_t ascension;
-      player_talent_t ferociousness;
       // Row 4
-      player_talent_t crane_vortex;
+      player_talent_t dual_threat;
       player_talent_t teachings_of_the_monastery;
       const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
-      // 8 Required
       // Row 5
-      player_talent_t jade_ignition;
-      player_talent_t courageous_impulse;
-      player_talent_t storm_earth_and_fire;
-      player_talent_t flurry_of_xuen;
+      player_talent_t crane_vortex;
+      player_talent_t meridian_strikes;
+      player_talent_t rising_star;
+      player_talent_t weapons_of_order;
       player_talent_t hit_combo;
       player_talent_t brawlers_intensity;
-      player_talent_t meridian_strikes;
       // Row 6
-      player_talent_t dance_of_chiji;
+      player_talent_t jade_ignition;
+      player_talent_t cyclones_drift;
+      player_talent_t crashing_fists;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
-      player_talent_t ordered_elements;
-      player_talent_t strike_of_the_windlord;
+      player_talent_t obsidian_spiral;
+      player_talent_t combo_breaker;
       // Row 7
-      player_talent_t martial_mixture;
-      player_talent_t energy_burst;
+      player_talent_t dance_of_chiji;
       player_talent_t shadowboxing_treads;
-      player_talent_t invoke_xuen_the_white_tiger;
-      player_talent_t inner_peace;
-      player_talent_t rushing_jade_wind;
-      player_talent_t thunderfist;
-      // 20 Required
-      // Row 8
-      player_talent_t sequenced_strikes;
-      player_talent_t rising_star;
-      player_talent_t invokers_delight;
-      player_talent_t dual_threat;
-      player_talent_t gale_force;
-      const spell_data_t *gale_force_damage;
-      // Row 9
-      player_talent_t last_emperors_capacitor;
+      player_talent_t strike_of_the_windlord;
       player_talent_t whirling_dragon_punch;
       const spell_data_t *whirling_dragon_punch_buff;
-      player_talent_t xuens_bond;
-      player_talent_t xuens_battlegear;
-      player_talent_t transfer_the_power;
-      player_talent_t jadefire_fists;
-      player_talent_t jadefire_stomp;
-      const spell_data_t *jadefire_stomp_debuff;
-      const spell_data_t *jadefire_stomp_damage;
-      const spell_data_t *jadefire_stomp_ww_damage;
+      player_talent_t energy_burst;
+      player_talent_t inner_peace;
+      // Row 8
+      player_talent_t sequenced_strikes;
+      player_talent_t stormspirit_strikes;
       player_talent_t communion_with_wind;
-      // Row 10
-      player_talent_t power_of_the_thunder_king;
       player_talent_t revolving_whirl;
-      player_talent_t knowledge_of_the_broken_temple;
+      player_talent_t echo_technique;
+      player_talent_t rushing_jade_wind;
       player_talent_t memory_of_the_monastery;
-      player_talent_t fury_of_xuen;
-      player_talent_t path_of_jade;
-      player_talent_t singularly_focused_jade;
-      player_talent_t jadefire_harmony;
-      const spell_data_t *jadefire_brand_dmg;
-      const spell_data_t *jadefire_brand_heal;
+      // Row 9
+      player_talent_t rushing_wind_kick;
+      player_talent_t xuens_battlegear;
+      player_talent_t thunderfist;
+      player_talent_t invoke_xuen_the_white_tiger;
+      player_talent_t knowledge_of_the_broken_temple;
       player_talent_t slicing_winds;
       const spell_data_t *slicing_winds_damage;
+      player_talent_t jadefire_stomp;
+      const spell_data_t *jadefire_stomp_damage;
+      // Row 10
+      player_talent_t skyfire_heel;
+      player_talent_t harmonic_combo;
+      player_talent_t flurry_of_xuen;
+      player_talent_t xuens_bond;
+      player_talent_t airborne_rhythm;
+      player_talent_t hurricanes_vault;
+      player_talent_t path_of_jade;
+      player_talent_t singularly_focused_jade;
+      // Apex
+      player_talent_t tigereye_brew_1;
+      player_talent_t tigereye_brew_2;
+      player_talent_t tigereye_brew_3;
     } windwalker;
 
     // Master of Harmony
@@ -1383,7 +1362,6 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
-    spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
 
     pet_t *bron;
 
@@ -1395,7 +1373,6 @@ public:
   {
     int initial_chi;
     double expel_harm_effectiveness;
-    double jadefire_stomp_uptime;
     int chi_burst_healing_targets;
     double squirm_frequency;
 
@@ -1405,8 +1382,6 @@ public:
   // exterminate these structs
   struct
   {
-    const spell_data_t *jadefire_stomp;
-    const spell_data_t *invokers_delight;
     const spell_data_t *teachings_of_the_monastery;
   } shared;
 
@@ -1425,14 +1400,10 @@ public:
     const spell_data_t *dual_threat_kick;
     const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;
-    const spell_data_t *jadefire_brand_dmg;
-    const spell_data_t *jadefire_brand_heal;
     const spell_data_t *fists_of_fury_tick;
     const spell_data_t *flurry_of_xuen_driver;
     const spell_data_t *flying_serpent_kick_damage;
     const spell_data_t *focus_of_xuen;
-    const spell_data_t *fury_of_xuen_stacking_buff;
-    const spell_data_t *fury_of_xuen;
     const spell_data_t *glory_of_the_dawn_damage;
     const spell_data_t *hidden_masters_forbidden_touch;
     const spell_data_t *hit_combo;
