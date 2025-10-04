@@ -789,47 +789,6 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 namespace attacks
 {
 // ==========================================================================
-// Windwalking Aura Toggle
-// ==========================================================================
-
-struct windwalking_aura_t : public monk_spell_t
-{
-  windwalking_aura_t( monk_t *player ) : monk_spell_t( player, "windwalking_aura_toggle" )
-  {
-    harmful     = false;
-    background  = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  size_t available_targets( std::vector<player_t *> &tl ) const override
-  {
-    tl.clear();
-
-    for ( auto t : sim->player_non_sleeping_list )
-    {
-      tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  std::vector<player_t *> &check_distance_targeting( std::vector<player_t *> &tl ) const override
-  {
-    size_t i = tl.size();
-    while ( i > 0 )
-    {
-      i--;
-      player_t *target_to_buff = tl[ i ];
-
-      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
-        tl.erase( tl.begin() + i );
-    }
-
-    return tl;
-  }
-};
-
-// ==========================================================================
 // Flurry Strikes
 // ==========================================================================
 struct flurry_strikes_t : public monk_melee_attack_t
@@ -2314,8 +2273,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    p()->movement.whirling_dragon_punch->trigger();
-
     for ( auto &tick : aoe_ticks )
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
 
@@ -3036,18 +2993,14 @@ struct paralysis_t : public monk_melee_attack_t
 struct flying_serpent_kick_t : public monk_melee_attack_t
 {
   bool first_charge;
-  double movement_speed_increase;
   flying_serpent_kick_t( monk_t *p, util::string_view options_str )
-    : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ),
-      first_charge( true ),
-      movement_speed_increase( p->baseline.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
+    : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ), first_charge( true )
   {
     parse_options( options_str );
     may_crit                        = true;
     ww_mastery                      = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
-    movement_directionality         = movement_direction_type::OMNI;
     aoe                             = -1;
     p->cooldown.flying_serpent_kick = cooldown;
   }
@@ -3070,25 +3023,10 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->current.distance_to_move >= 0 )
-    {
-      p()->buff.flying_serpent_kick_movement->trigger(
-          1, movement_speed_increase, 1,
-          timespan_t::from_seconds(
-              std::min( 1.5, p()->current.distance_to_move /
-                                 ( p()->base_movement_speed *
-                                   ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) ) );
-      p()->current.moving_away = 0;
-    }
-
     monk_melee_attack_t::execute();
 
     if ( first_charge )
-    {
-      p()->movement.flying_serpent_kick->trigger();
-
       first_charge = !first_charge;
-    }
   }
 };
 
@@ -3367,13 +3305,6 @@ struct roll_t : public monk_spell_t
 
     parse_options( options_str );
   }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->movement.roll->trigger();
-  }
 };
 
 // ==========================================================================
@@ -3390,14 +3321,6 @@ struct chi_torpedo_t : public monk_spell_t
     parse_options( options_str );
 
     cast_during_sck = true;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->buff.chi_torpedo->trigger();
-    p()->movement.chi_torpedo->trigger();
   }
 };
 
@@ -5299,29 +5222,6 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<>
 };
 
 // ===============================================================================
-// Windwalking Buff
-// ===============================================================================
-struct windwalking_driver_t : public monk_buff_t<>
-{
-  double movement_increase;
-  windwalking_driver_t( monk_t *p, util::string_view n, const spell_data_t *s )
-    : monk_buff_t( p, n, s ), movement_increase( 0 )
-  {
-    set_tick_callback( [ p, this ]( buff_t *, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      range::for_each( p->windwalking_aura->target_list(), [ this ]( player_t *target ) {
-        target->buffs.windwalking_movement_aura->trigger( 1, ( movement_increase ), 1, timespan_t::from_seconds( 10 ) );
-      } );
-    } );
-    set_trigger_spell( p->talent.monk.windwalking );
-    set_cooldown( timespan_t::zero() );
-    set_duration( timespan_t::zero() );
-    set_period( timespan_t::from_seconds( 1 ) );
-    set_tick_behavior( buff_tick_behavior::CLIP );
-    movement_increase = p->talent.monk.windwalking->effectN( 1 ).percent();
-  }
-};
-
-// ===============================================================================
 // Aspect of Harmony (Master of Harmony)
 // ===============================================================================
 aspect_of_harmony_t::aspect_of_harmony_t()
@@ -5691,7 +5591,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   : base_t( sim, MONK, name, r ),
     active_actions(),
     passive_actions(),
-    squirm_timer( 0 ),
     spiritual_focus_count( 0 ),
     efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
@@ -5708,13 +5607,9 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     shared(),
     passives()
 {
-  // actives
-  windwalking_aura = nullptr;
-
   cooldown.anvil__stave           = get_cooldown( "anvil__stave" );
   cooldown.blackout_kick          = get_cooldown( "blackout_kick" );
   cooldown.breath_of_fire         = get_cooldown( "breath_of_fire" );
-  cooldown.chi_torpedo            = get_cooldown( "chi_torpedo" );
   cooldown.drinking_horn_cover    = get_cooldown( "drinking_horn_cover" );
   cooldown.expel_harm             = get_cooldown( "expel_harm" );
   cooldown.fists_of_fury          = get_cooldown( "fists_of_fury" );
@@ -5742,7 +5637,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   user_options.initial_chi =
       talent.windwalker.combat_wisdom.ok() ? (int)talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
   user_options.chi_burst_healing_targets = 8;
-  user_options.squirm_frequency          = 15;
 }
 
 bool monk_t::wowv_l( wowv_t value ) const
@@ -6721,7 +6615,6 @@ void monk_t::init_background_actions()
 
   // General
   active_actions.chi_wave = new actions::spells::chi_wave_t( this );
-  windwalking_aura        = new actions::attacks::windwalking_aura_t( this );
 
   // Conduit of the Celestials
   bool uw  = talent.conduit_of_the_celestials.unity_within->ok();
@@ -6975,10 +6868,6 @@ void monk_t::create_buffs()
   buff.chi_burst = make_buff_fallback( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER, this,
                                        "chi_burst", talent.monk.chi_burst_buff );
 
-  buff.chi_torpedo = make_buff_fallback( talent.monk.chi_torpedo->ok(), this, "chi_torpedo", find_spell( 119085 ) )
-                         ->set_trigger_spell( talent.monk.chi_torpedo )
-                         ->set_default_value_from_effect( 1 );
-
   buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
 
   buff.diffuse_magic = make_buff_fallback( talent.monk.diffuse_magic->ok() && specialization() == MONK_BREWMASTER, this,
@@ -7010,8 +6899,6 @@ void monk_t::create_buffs()
                                                         "teachings_of_the_monastery", find_spell( 202090 ) )
                                         ->set_trigger_spell( shared.teachings_of_the_monastery )
                                         ->set_default_value_from_effect( 1 );
-
-  buff.windwalking_driver = new buffs::windwalking_driver_t( this, "windwalking_aura_driver", find_spell( 365080 ) );
 
   buff.yulons_grace =
       make_buff_fallback<absorb_buff_t>( talent.monk.yulons_grace->ok(), this, "yulons_grace", find_spell( 414143 ) );
@@ -7202,10 +7089,6 @@ void monk_t::create_buffs()
                            ->set_period( 1_s )
                            ->set_freeze_stacks( true )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
-
-  buff.flying_serpent_kick_movement = make_buff_fallback( baseline.windwalker.flying_serpent_kick->ok(), this,
-                                                          "flying_serpent_kick_movement_buff" )  // find_spell( 115057 )
-                                          ->set_trigger_spell( baseline.windwalker.flying_serpent_kick );
 
   buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
                        ->set_default_value_from_effect( 1 );
@@ -7466,25 +7349,6 @@ void monk_t::create_buffs()
   tier.tww3.moh_2pc_harmonic_surge_buff =
       make_buff_fallback( sets->has_set_bonus( HERO_MASTER_OF_HARMONY, TWW3, B2 ), this, "harmonic_surge_buff",
                           tier.tww3.moh_2pc_harmonic_surge_buff_data );
-
-  // ------------------------------
-  // Movement
-  // ------------------------------
-
-  movement.chi_torpedo = new monk_movement_t( this, "chi_torpedo_movement", talent.monk.chi_torpedo );
-  movement.chi_torpedo->set_distance( 10 );
-
-  movement.flying_serpent_kick = new monk_movement_t( this, "fsk_movement", baseline.windwalker.flying_serpent_kick );
-  movement.flying_serpent_kick->set_distance( 1 );
-
-  movement.melee_squirm = new monk_movement_t( this, "melee_squirm" );
-  movement.melee_squirm->set_distance( 1 );
-
-  movement.roll = new monk_movement_t( this, "roll_movement", baseline.monk.roll );
-  movement.roll->set_distance( 8 );
-
-  movement.whirling_dragon_punch = new monk_movement_t( this, "wdp_movement", talent.windwalker.whirling_dragon_punch );
-  movement.whirling_dragon_punch->set_distance( 1 );
 }
 
 // monk_t::init_gains =======================================================
@@ -7907,7 +7771,6 @@ void monk_t::reset()
 {
   base_t::reset();
 
-  squirm_timer          = 0;
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
 
@@ -8032,19 +7895,6 @@ double monk_t::composite_dodge() const
   return d;
 }
 
-// monk_t::temporary_movement_modifier =====================================
-
-double monk_t::non_stacking_movement_modifier() const
-{
-  double ms = base_t::non_stacking_movement_modifier();
-
-  ms = std::max( buff.chi_torpedo->check_stack_value(), ms );
-
-  ms = std::max( buff.flying_serpent_kick_movement->check_value(), ms );
-
-  return ms;
-}
-
 // monk_t::composite_player_target_armor ==============================
 
 double monk_t::composite_player_target_armor( player_t *target ) const
@@ -8109,7 +7959,6 @@ void monk_t::create_options()
 
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
-  add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 
   // shado-pan options
   add_option(
@@ -8218,19 +8067,6 @@ void monk_t::combat_begin()
 
   base_t::combat_begin();
 
-  if ( talent.monk.windwalking->ok() )
-  {
-    if ( sim->distance_targeting_enabled )
-    {
-      buff.windwalking_driver->trigger();
-    }
-    else
-    {
-      buffs.windwalking_movement_aura->trigger( 1, buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), 1,
-                                                timespan_t::zero() );
-    }
-  }
-
   if ( talent.monk.chi_wave->ok() )
   {
     // Player starts combat with buff
@@ -8270,26 +8106,6 @@ void monk_t::combat_begin()
 
     make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
   }
-
-  // if ( specialization() == MONK_BREWMASTER )
-  //   stagger->current->debuff->trigger();
-
-  // Melee Squirm
-  // Periodic 1 YD movement to simulate combat movement
-  make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ]() {
-    squirm_timer += 1;
-
-    // Do not interrupt a cast
-    if ( !( executing && !executing->usable_moving() ) && !( queueing && !queueing->usable_moving() ) &&
-         !( channeling && !channeling->usable_moving() ) )
-    {
-      if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
-      {
-        movement.melee_squirm->trigger();
-        squirm_timer = 0;
-      }
-    }
-  } );
 }
 
 // monk_t::assess_damage ====================================================
@@ -8625,18 +8441,15 @@ struct monk_module_t : public module_t
         .verification_value( 150 );
   }
 
-  void init( player_t *p ) const override
-  {
-    p->buffs.windwalking_movement_aura = make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )
-                                             ->add_invalidate( CACHE_RUN_SPEED )
-                                             ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS );
-  }
-
   void combat_begin( sim_t * ) const override
   {
   }
 
   void combat_end( sim_t * ) const override
+  {
+  }
+
+  void init( player_t * ) const override
   {
   }
 };

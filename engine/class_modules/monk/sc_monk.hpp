@@ -465,9 +465,6 @@ private:
   target_specific_t<monk_td_t> target_data;
 
 public:
-  // Active
-  action_t *windwalking_aura;
-
   // Special Auto-Attacks
   action_t *dual_threat_kick;
 
@@ -511,108 +508,22 @@ public:
   } passive_actions;
 
   std::vector<action_t *> combo_strike_actions;
-  double squirm_timer;
   double spiritual_focus_count;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
 
-  //==============================================
-  // Monk Movement
-  //==============================================
-
-  struct monk_movement_t : public buff_t
-  {
-  private:
-    monk_t *p;
-
-    propagate_const<buff_t *> base_movement;
-    const spell_data_t *data;
-
-  public:
-    double distance_moved;
-
-    monk_movement_t( monk_t *player, util::string_view n, const spell_data_t *s = spell_data_t::not_found() )
-      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) ), data( s )
-    {
-      set_chance( 1 );
-      set_max_stack( 1 );
-      set_duration( timespan_t::from_seconds( 1 ) );
-
-      if ( base_movement == nullptr )
-        base_movement = new movement_buff_t( p );
-
-      if ( s->ok() )
-      {
-        set_trigger_spell( s );
-        set_duration( s->duration() );
-      }
-    };
-
-    void set_distance( double distance )
-    {
-      distance_moved = distance;
-    }
-
-    bool trigger( int stacks = 1, double value = -std::numeric_limits<double>::min(), double chance = -1.0,
-                  timespan_t /*duration*/ = timespan_t::min() ) override
-    {
-      if ( distance_moved > 0 )
-      {
-        // Check if we're already moving away from the target, if so we will now be moving towards it
-        if ( p->current.distance_to_move )
-        {
-          // TODO: Movement speed increase based on distance_moved for roll / fsk style abilities
-          if ( data->ok() )
-          {
-          }
-          p->current.distance_to_move   = distance_moved;
-          p->current.movement_direction = movement_direction_type::TOWARDS;
-        }
-        else
-        {
-          // TODO: Set melee out of range
-          p->current.moving_away        = distance_moved;
-          p->current.movement_direction = movement_direction_type::AWAY;
-        }
-
-        return base_movement->trigger( stacks, value, chance, this->buff_duration() );
-      }
-
-      return false;
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      base_movement->expire_override( expiration_stacks, remaining_duration );
-    }
-  };
-
-  struct movement_t
-  {
-    propagate_const<monk_movement_t *> chi_torpedo;
-    propagate_const<monk_movement_t *> flying_serpent_kick;
-    propagate_const<monk_movement_t *> melee_squirm;
-    propagate_const<monk_movement_t *> roll;
-    propagate_const<monk_movement_t *> whirling_dragon_punch;
-  } movement;
-
-  //=================================================
-
   struct buffs_t
   {
     // General
     propagate_const<buff_t *> awakened_jadefire;
-    propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> rushing_jade_wind;
     propagate_const<buff_t *> spinning_crane_kick;
-    propagate_const<buff_t *> windwalking_driver;
     propagate_const<buff_t *> yulons_grace;
-    propagate_const<buff_t *> windwalking_movement_aura;
     propagate_const<buff_t *> chi_burst;
 
     // Brewmaster
@@ -658,7 +569,6 @@ public:
     propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> ferociousness;
-    propagate_const<buff_t *> flying_serpent_kick_movement;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
@@ -1374,8 +1284,6 @@ public:
     int initial_chi;
     double expel_harm_effectiveness;
     int chi_burst_healing_targets;
-    double squirm_frequency;
-
     int shado_pan_initial_charge_accumulator;
   } user_options;
 
@@ -1470,7 +1378,6 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_dodge() const override;
-  double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
   double resource_regen_per_second( resource_e ) const override;
 
