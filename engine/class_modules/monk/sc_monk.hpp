@@ -434,23 +434,14 @@ private:
 
 public:
   // Special Auto-Attacks
-  action_t *dual_threat_kick;
 
   // For Debug reporting, used by create_proc_callback in init_special_effects
   std::map<std::string, std::vector<action_t *>> proc_tracking;
 
-  struct active_actions_t
+  struct
   {
-    // General
+    // Monk
     propagate_const<action_t *> chi_wave;
-
-    // Conduit of the Celestials
-    actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
-    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
-    actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
-
-    // Shado-Pan
-    action_t *flurry_strikes;
 
     // Brewmaster
     propagate_const<action_t *> special_delivery;
@@ -459,35 +450,38 @@ public:
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
+    propagate_const<action_t *> press_the_advantage;
 
     // Mistweaver
     propagate_const<action_t *> lesson_of_anger_damage;
 
     // Windwalker
+    propagate_const<action_t *> dual_threat;
     propagate_const<action_t *> empowered_tiger_lightning;
     propagate_const<action_t *> flurry_of_xuen;
-  } active_actions;
+    propagate_const<action_t *> combat_wisdom_eh;
+    propagate_const<action_t *> thunderfist;
 
-  struct passive_actions_t
-  {
-    action_t *combat_wisdom_eh;
-    action_t *thunderfist;
-    action_t *press_the_advantage;
-  } passive_actions;
+    // Conduit of the Celestials
+    actions::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
+    actions::conduit_of_the_celestials_container_t flight_of_the_red_crane;
+    actions::conduit_of_the_celestials_container_t strength_of_the_black_ox;
+
+    // Shado-Pan
+    action_t *flurry_strikes;
+  } action;
 
   std::vector<action_t *> combo_strike_actions;
-  double spiritual_focus_count;
 
   int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
 
-  struct buffs_t
+  struct
   {
     // General
     propagate_const<buff_t *> awakened_jadefire;
     propagate_const<buff_t *> chi_wave;
-    propagate_const<buff_t *> diffuse_magic;
     propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> rushing_jade_wind;
     propagate_const<buff_t *> spinning_crane_kick;
@@ -535,7 +529,6 @@ public:
     propagate_const<buff_t *> dance_of_chiji_ww;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> dizzying_kicks;
-    propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> ferociousness;
     propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
@@ -1018,6 +1011,7 @@ public:
       player_talent_t ascension;
       // Row 4
       player_talent_t dual_threat;
+      const spell_data_t *dual_threat_damage;
       player_talent_t teachings_of_the_monastery;
       const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
@@ -1267,7 +1261,6 @@ public:
     const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
-    const spell_data_t *dual_threat_kick;
     const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;
     const spell_data_t *fists_of_fury_tick;
