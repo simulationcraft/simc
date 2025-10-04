@@ -1213,8 +1213,6 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
 
-    pet_t *bron;
-
     pets_t( monk_t *p );
   } pets;
 

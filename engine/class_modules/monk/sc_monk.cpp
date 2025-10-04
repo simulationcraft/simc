@@ -1791,20 +1791,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
-  struct spinning_crane_kick_state_t : public action_state_t
-  {
-    spinning_crane_kick_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
-    {
-    }
-
-    proc_types2 cast_proc_type2() const override
-    {
-      // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
-      // effects that care about casts).
-      return PROC2_CAST_GENERIC;
-    }
-  };
-
   chi_explosion_t *chi_x;
 
   spinning_crane_kick_t( monk_t *p, util::string_view options_str )
@@ -1853,11 +1839,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   bool usable_moving() const override
   {
     return true;
-  }
-
-  action_state_t *new_state() override
-  {
-    return new spinning_crane_kick_state_t( this, p()->target );
   }
 
   double cost_flat_modifier() const override
@@ -2063,20 +2044,6 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_t : public monk_melee_attack_t
 {
-  struct whirling_dragon_punch_state_t : public action_state_t
-  {
-    whirling_dragon_punch_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
-    {
-    }
-
-    proc_types2 cast_proc_type2() const override
-    {
-      // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
-      // effects that care about casts).
-      return PROC2_CAST_GENERIC;
-    }
-  };
-
   std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
   whirling_dragon_punch_st_tick_t *st_tick;
 
@@ -2119,11 +2086,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
                                                    p->passives.whirling_dragon_punch_st_tick );
     add_child( st_tick );
-  }
-
-  action_state_t *new_state() override
-  {
-    return new whirling_dragon_punch_state_t( this, p()->target );
   }
 
   void execute() override
