@@ -58,7 +58,6 @@ template <class Base>
 template <typename... Args>
 monk_action_t<Base>::monk_action_t( Args &&...args )
   : parse_action_effects_t<Base>( std::forward<Args>( args )... ),
-    sef_ability( actions::sef_ability_e::SEF_MIN ),
     ww_mastery( false ),
     may_combo_strike( false ),
     cast_during_sck( false ),
@@ -139,8 +138,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.pressure_point );
-  parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
-                 affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
   parse_effects( p()->buff.bok_proc, affect_list_t( 1, 2, 3 ).remove_spell(
                                          p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
 
@@ -443,53 +440,13 @@ void monk_action_t<Base>::consume_resource()
               timespan_t::from_millis( -1 * p()->talent.shado_pan.efficient_training->effectN( 4 ).base_value() );
           p()->efficient_training_energy -=
               as<int>( p()->talent.shado_pan.efficient_training->effectN( 3 ).base_value() );
-          p()->cooldown.storm_earth_and_fire->adjust( cdr );
         }
       }
     }
   }
 
   if ( current_resource() == RESOURCE_CHI )
-  {
-    // Dance of Chi-Ji talent triggers from spending chi
     p()->buff.dance_of_chiji_ww->trigger();
-
-    auto base_cost = base_t::base_cost();
-
-    if ( base_cost )
-    {
-      if ( p()->talent.windwalker.spiritual_focus->ok() )
-      {
-        p()->spiritual_focus_count += base_cost;
-
-        if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
-        {
-          if ( p()->talent.windwalker.storm_earth_and_fire->ok() )
-            p()->cooldown.storm_earth_and_fire->adjust(
-                -1 * p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
-
-          p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
-        }
-      }
-
-      if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
-      {
-        if ( p()->buff.storm_earth_and_fire->up() )
-        {
-          auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).percent();
-          time_extend *= base_cost;
-
-          p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
-
-          p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-          p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
-        }
-        p()->cooldown.drinking_horn_cover->start( p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
-      }
-    }
-
-    p()->buff.the_emperors_capacitor->trigger();
-  }
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -531,8 +488,6 @@ void monk_action_t<Base>::execute()
       p()->tier.tww2.winning_streak->expire();
 
   base_t::execute();
-
-  trigger_storm_earth_and_fire( this );
 
   // TWW S1 Windwalker 2PC
   if ( p()->buff.tiger_strikes->up() )
@@ -608,12 +563,6 @@ void monk_action_t<Base>::assess_damage( result_amount_type typ, action_state_t 
     double amount = td->debuff.lesson_of_anger->check_value() + s->result_total;
     td->debuff.lesson_of_anger->trigger( 1, amount );
   }
-}
-
-template <class Base>
-void monk_action_t<Base>::trigger_storm_earth_and_fire( const action_t *a )
-{
-  p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && p()->buff.combo_strikes->check() ) );
 }
 
 template <class Base>
@@ -716,75 +665,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
     snapshot_stats_t::execute();
   }
 };
-
-namespace pet_summon
-{
-// ==========================================================================
-// Storm, Earth, and Fire
-// ==========================================================================
-
-struct storm_earth_and_fire_t : public monk_spell_t
-{
-  storm_earth_and_fire_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "storm_earth_and_fire", p->talent.windwalker.storm_earth_and_fire )
-  {
-    parse_options( options_str );
-
-    cast_during_sck  = false;
-    trigger_gcd      = timespan_t::zero();
-    may_combo_strike = true;
-    callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.storm_earth_and_fire->check() )
-      return false;
-
-    return monk_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->tier.tww3.spm_2pc_flurry_charge->trigger();
-
-    p()->summon_storm_earth_and_fire( data().duration() );
-  }
-};
-
-struct storm_earth_and_fire_fixate_t : public monk_spell_t
-{
-  storm_earth_and_fire_fixate_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "storm_earth_and_fire_fixate",
-                    p->find_spell( (int)p->talent.windwalker.storm_earth_and_fire->effectN( 5 ).base_value() ) )
-  {
-    parse_options( options_str );
-
-    cast_during_sck    = true;
-    callbacks          = false;
-    trigger_gcd        = timespan_t::zero();
-    cooldown->duration = timespan_t::zero();
-  }
-
-  bool target_ready( player_t *target ) override
-  {
-    if ( !p()->storm_earth_and_fire_fixate_ready( target ) )
-      return false;
-
-    return monk_spell_t::target_ready( target );
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->storm_earth_and_fire_fixate( target );
-  }
-};
-
-}  // namespace pet_summon
 
 namespace attacks
 {
@@ -1153,7 +1033,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     ww_mastery       = true;
     may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck  = true;
 
     spell_power_mod.direct = 0.0;
@@ -1246,15 +1125,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     {
       double damage = s->result_amount;
 
-      if ( p()->buff.storm_earth_and_fire->up() )
-      {
-        // Damage during SEF is based on the actor's damage before the SEF modifier.
-        damage /= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() );
-
-        // Tested 09/08/2024. Tiger's Ferocity deals additional damage during SEF.
-        damage *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-      }
-
       damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
 
       tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
@@ -1273,9 +1143,8 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
   glory_of_the_dawn_t( monk_t *p, const std::string &name )
     : monk_melee_attack_t( p, name, p->passives.glory_of_the_dawn_damage )
   {
-    background  = true;
-    ww_mastery  = true;
-    sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
+    background = true;
+    ww_mastery = true;
   }
 
   void impact( action_state_t *s ) override
@@ -1443,7 +1312,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     parse_options( options_str );
 
     may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
     ap_type          = attack_power_type::NONE;
     cast_during_sck  = true;
 
@@ -1488,7 +1356,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   blackout_kick_totm_proc_t( monk_t *p )
     : monk_melee_attack_t( p, "blackout_kick_totm_proc", p->talent.windwalker.teachings_of_the_monastery_blackout_kick )
   {
-    sef_ability        = actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
     ww_mastery         = false;
     cooldown->duration = timespan_t::zero();
     background = dual = true;
@@ -1633,7 +1500,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     parse_options( options_str );
 
     ap_type          = attack_power_type::WEAPON_BOTH;
-    sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     ww_mastery       = true;
     may_combo_strike = true;
     cast_during_sck  = true;
@@ -1954,7 +1820,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
     may_combo_strike = true;
     tick_zero        = true;
     tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
@@ -2114,7 +1979,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     parse_options( options_str );
 
     cooldown         = p->cooldown.fists_of_fury;
-    sef_ability      = actions::sef_ability_e::SEF_FISTS_OF_FURY;
     may_combo_strike = true;
 
     channeled = tick_zero = true;
@@ -2239,8 +2103,6 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   whirling_dragon_punch_t( monk_t *p, util::string_view options_str )
     : monk_melee_attack_t( p, "whirling_dragon_punch", p->talent.windwalker.whirling_dragon_punch )
   {
-    sef_ability = actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
-
     parse_options( options_str );
     interrupt_auto_attack = false;
     channeled             = false;
@@ -2315,8 +2177,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   strike_of_the_windlord_main_hand_t( monk_t *p, const char *name, const spell_data_t *s )
     : monk_melee_attack_t( p, name, s )
   {
-    sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
-
     ww_mastery = true;
     ap_type    = attack_power_type::WEAPON_MAINHAND;
 
@@ -2342,9 +2202,8 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
   strike_of_the_windlord_off_hand_t( monk_t *p, const char *name, const spell_data_t *s )
     : monk_melee_attack_t( p, name, s )
   {
-    sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
-    ww_mastery  = true;
-    ap_type     = attack_power_type::WEAPON_OFFHAND;
+    ww_mastery = true;
+    ap_type    = attack_power_type::WEAPON_OFFHAND;
 
     aoe       = -1;
     may_dodge = may_parry = may_block = may_miss = true;
@@ -3051,13 +2910,6 @@ struct slicing_winds_t : public monk_melee_attack_t
       may_combo_strike    = true;
       aoe                 = -1;
       reduced_aoe_targets = player->talent.windwalker.slicing_winds->effectN( 3 ).base_value();
-
-      if ( const spelleffect_data_t &effect = player->talent.windwalker.storm_earth_and_fire->effectN( 1 );
-           effect.ok() )
-        add_parse_entry( da_multiplier_effects )
-            .set_buff( player->buff.storm_earth_and_fire )
-            .set_value( ( 1.0 + effect.percent() ) * 3.0 - 1.0 )
-            .set_eff( &effect );
     }
   };
 
@@ -3134,8 +2986,6 @@ struct chi_wave_t : public monk_spell_t
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
 
-    damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
-
     add_child( damage );
     add_child( heal );
   }
@@ -3174,13 +3024,6 @@ struct chi_burst_t : monk_spell_t
       for ( const auto &effect : spell_data->effects() )
         if ( effect.type() == E_SCHOOL_DAMAGE )
           TBase::ww_mastery = true;
-
-      if ( const spelleffect_data_t &effect = player->talent.windwalker.storm_earth_and_fire->effectN( 1 );
-           effect.ok() )
-        add_parse_entry( TBase::da_multiplier_effects )
-            .set_buff( player->buff.storm_earth_and_fire )
-            .set_value( ( 1.0 + effect.percent() ) * 3.0 - 1.0 )
-            .set_eff( &effect );
     }
   };
 
@@ -3337,7 +3180,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     {
       dual = background = true;
       ww_mastery        = true;
-      sef_ability       = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
 
       parse_effects( player->buff.the_emperors_capacitor );
       parse_effects( player->buff.jade_empowerment );
@@ -3357,7 +3199,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    sef_ability           = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike      = true;
     ww_mastery            = true;
     interrupt_auto_attack = true;
@@ -3420,11 +3261,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
         p()->buff.jade_empowerment->expire();
         const auto &tl = target_list();
         for ( const auto &t : tl )
-        {
           get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
-          get_td( t )->dot.crackling_jade_lightning_sef->cancel();
-          get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
-        }
       } );
     else
       p()->buff.the_emperors_capacitor->expire();
@@ -3990,18 +3827,6 @@ struct flurry_of_xuen_t : public monk_spell_t
     aoe                 = -1;
     reduced_aoe_targets = p->talent.windwalker.flurry_of_xuen->effectN( 2 ).base_value();
   }
-
-  double composite_da_multiplier( const action_state_t *s ) const override
-  {
-    double da = monk_spell_t::composite_da_multiplier( s );
-
-    if ( p()->buff.storm_earth_and_fire->check() )
-    {
-      // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
-      da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-    }
-    return da;
-  }
 };
 
 // ==========================================================================
@@ -4262,7 +4087,6 @@ struct celestial_conduit_t : public monk_spell_t
     parse_options( options_str );
 
     may_combo_strike      = true;
-    sef_ability           = actions::sef_ability_e::SEF_CELESTIAL_CONDUIT;
     channeled             = true;
     interrupt_auto_attack = false;
 
@@ -5068,7 +4892,6 @@ struct rushing_jade_wind_buff_t : public monk_buff_t<>
     {
       ww_mastery = true;
 
-      sef_ability = actions::sef_ability_e::SEF_RJW_TICK;
       dual = background   = true;
       aoe                 = -1;
       reduced_aoe_targets = p->talent.shared_spell.rushing_jade_wind_buff->effectN( 1 ).base_value();
@@ -5580,11 +5403,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                             ->set_quiet( true );
 
-  dot.breath_of_fire                   = target->get_dot( "breath_of_fire_dot", p );
-  dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
-  dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
-  dot.crackling_jade_lightning_sef_aoe = target->get_dot( "crackling_jade_lightning_sef_aoe", p );
-  dot.aspect_of_harmony                = target->get_dot( "aspect_of_harmony_damage", p );
+  dot.breath_of_fire               = target->get_dot( "breath_of_fire_dot", p );
+  dot.crackling_jade_lightning_aoe = target->get_dot( "crackling_jade_lightning_aoe", p );
+  dot.aspect_of_harmony            = target->get_dot( "aspect_of_harmony_damage", p );
 }
 
 monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
@@ -5622,7 +5443,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.rising_sun_kick        = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind   = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                   = get_cooldown( "roll" );
-  cooldown.storm_earth_and_fire   = get_cooldown( "storm_earth_and_fire" );
   cooldown.strike_of_the_windlord = get_cooldown( "strike_of_the_windlord" );
   cooldown.thunder_focus_tea      = get_cooldown( "thunder_focus_tea" );
   cooldown.touch_of_death         = get_cooldown( "touch_of_death" );
@@ -5756,7 +5576,6 @@ void monk_t::parse_player_effects()
 action_t *monk_t::create_action( util::string_view name, util::string_view options_str )
 {
   using namespace actions;
-  using namespace actions::pet_summon;
   using namespace actions::attacks;
   using namespace actions::spells;
   using namespace actions::heals;
@@ -5838,10 +5657,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" )
     return new touch_of_death_t( this, options_str );
-  if ( name == "storm_earth_and_fire" )
-    return new storm_earth_and_fire_t( this, options_str );
-  if ( name == "storm_earth_and_fire_fixate" )
-    return new storm_earth_and_fire_fixate_t( this, options_str );
 
   // Talents
   if ( name == "chi_burst" )
@@ -5904,16 +5719,6 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 }
 
 // monk_t::activate =========================================================
-
-void monk_t::activate()
-{
-  base_t::activate();
-
-  if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
-  {
-    sim->target_non_sleeping_list.register_callback( sef_despawn_cb_t( this ) );
-  }
-}
 
 void monk_t::collect_resource_timeline_information()
 {
@@ -6388,7 +6193,6 @@ void monk_t::init_spells()
     talent.windwalker.teachings_of_the_monastery_blackout_kick = find_spell( 228649 );
     talent.windwalker.glory_of_the_dawn                        = _ST( "Glory of the Dawn" );
     talent.windwalker.jade_ignition                            = _STID( 392979 );  // _ST( "Jade Ignition" );
-    talent.windwalker.storm_earth_and_fire                     = _ST( "Storm, Earth, and Fire" );
     talent.windwalker.flurry_of_xuen                           = _ST( "Flurry of Xuen" );
     talent.windwalker.hit_combo                                = _ST( "Hit Combo" );
     talent.windwalker.brawlers_intensity                       = _ST( "Brawler's Intensity" );
@@ -7124,14 +6928,6 @@ void monk_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
-  buff.storm_earth_and_fire =
-      make_buff_fallback( talent.windwalker.storm_earth_and_fire->ok(), this, "storm_earth_and_fire",
-                          talent.windwalker.storm_earth_and_fire )
-          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-          ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
-          ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
-          ->set_cooldown( timespan_t::zero() );
-
   buff.thunderfist =
       make_buff_fallback( talent.windwalker.thunderfist->ok(), this, "thunderfist", passives.thunderfist );
 
@@ -7387,7 +7183,6 @@ void monk_t::init_procs()
   proc.blackout_combo_celestial_brew  = get_proc( "Blackout Combo - Celestial Brew" );
   proc.blackout_combo_purifying_brew  = get_proc( "Blackout Combo - Purifying Brew" );
   proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
-  proc.blackout_kick_cdr_oe           = get_proc( "Blackout Kick CDR During SEF" );
   proc.blackout_kick_cdr              = get_proc( "Blackout Kick CDR" );
   proc.bountiful_brew_proc            = get_proc( "Bountiful Brew Trigger" );
   proc.charred_passions               = get_proc( "Charred Passions" );
@@ -7803,65 +7598,6 @@ void monk_t::reset()
   }
 }
 
-// monk_t::create_storm_earth_and_fire_target_list ====================================
-
-std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
-{
-  // Make a copy of the non sleeping target list
-  std::vector<player_t *> l = sim->target_non_sleeping_list.data();
-
-  // Sort the list by ascending order of the actor index
-  range::sort( l, []( const player_t *l, const player_t *r ) { return l->actor_index < r->actor_index; } );
-
-  if ( sim->debug )
-  {
-    sim->out_debug.print( "{} storm_earth_and_fire target list, n_targets={}", *this, l.size() );
-  }
-
-  return l;
-}
-
-// monk_t::affected_by_sef ==================================================
-
-bool monk_t::affected_by_sef( spell_data_t data ) const
-{
-  auto filter = [ & ]( std::vector<size_t> indices ) {
-    return std::any_of( indices.begin(), indices.end(), [ & ]( size_t index ) {
-      return data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( index ) );
-    } );
-  };
-  // Chi Explosion must be added manually.
-  return filter( { 1, 2, 7, 8 } ) || data.id() == 337342;
-}
-
-// monk_t::retarget_storm_earth_and_fire ====================================
-
-void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> &targets ) const
-{
-  // Clones attack your target if there are no other targets available
-  if ( targets.size() == 1 )
-    pet->target = pet->owner->target;
-  else
-  {
-    for ( auto it = targets.begin(); it != targets.end(); ++it )
-    {
-      player_t *candidate_target = *it;
-
-      // Candidate target is a valid target
-      if ( *it != pet->owner->target && *it != pet->target && !candidate_target->debuffs.invulnerable->check() )
-      {
-        pet->target = *it;
-        // This target has been chosen, so remove from the list (so that the second pet can choose something else)
-        targets.erase( it );
-        break;
-      }
-    }
-  }
-
-  range::for_each( pet->action_list,
-                   [ pet ]( action_t *a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
-}
-
 // monk_t::composite_attack_power_multiplier() ==========================
 
 double monk_t::composite_attack_power_multiplier() const
@@ -8217,7 +7953,6 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   /*
    * From discovery by the Peak of Serenity Discord server, ETL has two remaining bugs
    * 1.) If both tigers are up the damage cache is a shared pool for both tigers and resets to 0 when either spawn
-   * 2.) SEF Actions contribute 0 to the FoX pool
    */
 
   if ( specialization() != MONK_WINDWALKER || !baseline.windwalker.empowered_tiger_lightning->ok() )
@@ -8256,10 +7991,6 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 
   double xuen_contribution = mode != 2 ? s->result_amount : 0;
   double fox_contribution  = mode > 1 ? s->result_amount : 0;
-
-  // No damage done by SEF spirits contributes to FoX ETL
-  if ( s->action->player->name_str.find( "_spirit" ) != std::string::npos )
-    fox_contribution = 0;
 
   // Return value
   double amount = xuen_contribution + fox_contribution;
@@ -8338,7 +8069,6 @@ public:
 
     // Add bugs / issues with sims here:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
-    ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );

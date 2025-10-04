@@ -41,7 +41,6 @@ struct monk_pet_t : public pet_t
   const monk_t *o() const;
   void init_assessors() override;
 };
-struct storm_earth_and_fire_pet_t;
 struct xuen_pet_t;
 namespace niuzao  // niuzao
 {
@@ -57,41 +56,13 @@ struct niuzao_pet_t : public monk_pet_t
 struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
-
-enum class sef_pet_e
-{
-  SEF_FIRE = 0,
-  SEF_EARTH,
-  SEF_PET_MAX
-};
 }  // namespace pets
 
 namespace actions
 {
-enum class sef_ability_e
-{
-  SEF_MIN = -1,
-  SEF_TIGER_PALM,
-  SEF_BLACKOUT_KICK,
-  SEF_BLACKOUT_KICK_TOTM,
-  SEF_RISING_SUN_KICK,
-  SEF_GLORY_OF_THE_DAWN,
-  SEF_FISTS_OF_FURY,
-  SEF_SPINNING_CRANE_KICK,
-  SEF_WHIRLING_DRAGON_PUNCH,
-  SEF_STRIKE_OF_THE_WINDLORD,
-  SEF_STRIKE_OF_THE_WINDLORD_OH,
-  SEF_CELESTIAL_CONDUIT,
-  SEF_RJW_TICK,
-  SEF_CHI_WAVE,
-  SEF_CRACKLING_JADE_LIGHTNING,
-  SEF_CRACKLING_JADE_LIGHTNING_AOE
-};
-
 template <class Base>
 struct monk_action_t : public parse_action_effects_t<Base>
 {
-  sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
   bool cast_during_sck;
@@ -144,7 +115,6 @@ public:
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
   void assess_damage( result_amount_type typ, action_state_t *s ) override;
-  void trigger_storm_earth_and_fire( const action_t *action );
   void trigger_mystic_touch( action_state_t *state );
 };
 
@@ -369,8 +339,6 @@ public:
   {
     propagate_const<dot_t *> breath_of_fire;
     propagate_const<dot_t *> crackling_jade_lightning_aoe;
-    propagate_const<dot_t *> crackling_jade_lightning_sef;
-    propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
 
     // Master of Harmony
     propagate_const<dot_t *> aspect_of_harmony;
@@ -577,7 +545,6 @@ public:
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
     propagate_const<buff_t *> pressure_point;
-    propagate_const<buff_t *> storm_earth_and_fire;
     propagate_const<buff_t *> the_emperors_capacitor;
     propagate_const<buff_t *> thunderfist;
     propagate_const<buff_t *> touch_of_death_ww;
@@ -693,7 +660,6 @@ public:
     propagate_const<cooldown_t *> rising_sun_kick;
     propagate_const<cooldown_t *> refreshing_jade_wind;
     propagate_const<cooldown_t *> roll;
-    propagate_const<cooldown_t *> storm_earth_and_fire;
     propagate_const<cooldown_t *> strike_of_the_windlord;
     propagate_const<cooldown_t *> thunder_focus_tea;
     propagate_const<cooldown_t *> touch_of_death;
@@ -1038,9 +1004,6 @@ public:
     // Windwalker
     struct
     {
-      // TODO: REMOVE SEF
-      player_talent_t storm_earth_and_fire;
-
       // Row 1
       player_talent_t fists_of_fury;
       // Row 2
@@ -1266,7 +1229,6 @@ public:
 
   struct pets_t
   {
-    std::array<pets::storm_earth_and_fire_pet_t *, (int)pets::sef_pet_e::SEF_PET_MAX> sef;
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
     spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> yulon;
@@ -1365,7 +1327,6 @@ public:
   void collect_resource_timeline_information() override;
 
   // Combat
-  void activate() override;
   void combat_begin() override;
   void target_mitigation( school_e, result_amount_type, action_state_t * ) override;
   void assess_damage( school_e, result_amount_type, action_state_t *s ) override;
@@ -1403,29 +1364,6 @@ public:
   // Actions
   void trigger_celestial_fortune( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-
-  // Storm Earth and Fire targeting logic
-  bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
-  std::vector<player_t *> create_storm_earth_and_fire_target_list() const;
-  void summon_storm_earth_and_fire( timespan_t duration );
-  void retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> &targets ) const;
-  void retarget_storm_earth_and_fire_pets() const;
-
-  void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
-  void storm_earth_and_fire_fixate( player_t *target );
-  bool storm_earth_and_fire_fixate_ready( player_t *target );
-  player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
-};
-
-struct sef_despawn_cb_t
-{
-  monk_t *monk;
-
-  sef_despawn_cb_t( monk_t *m ) : monk( m )
-  {
-  }
-
-  void operator()( player_t * );
 };
 
 namespace events
