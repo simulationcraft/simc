@@ -2678,11 +2678,6 @@ double priest_t::composite_leech() const
 {
   double l = player_t::composite_leech();
 
-  if ( talents.sanguine_teachings.enabled() )
-  {
-    l += talents.sanguine_teachings->effectN( 1 ).percent();
-  }
-
   return l;
 }
 

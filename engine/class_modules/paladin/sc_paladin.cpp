@@ -4980,7 +4980,7 @@ double paladin_t::composite_block() const
 double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-  c += spec.protection_paladin->effectN( 8 ).percent();
+
   return c;
 }
 

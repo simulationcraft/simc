@@ -10403,8 +10403,6 @@ double warrior_t::composite_leech() const
 {
   double m = parse_player_effects_t::composite_leech();
 
-  m += talents.warrior.leeching_strikes->effectN( 1 ).percent();
-
   return m;
 }
 

@@ -1279,6 +1279,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   expertise( 0 ),
   leech( 0 ),
   avoidance( 0 ),
+  crit_avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
@@ -1348,6 +1349,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " spell_haste={}", s.spell_haste );
   fmt::format_to( out, " ranged_haste={}", s.ranged_haste );
   fmt::format_to( out, " leech={}", s.leech );
+  fmt::format_to( out, " expertise={}", s.expertise );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
@@ -1535,10 +1537,12 @@ void player_t::init_base_stats()
     base.spell_haste              = base.all_haste;
     base.ranged_haste             = base.all_haste;
 
-    base.leech                    = 0.0;
+    base.leech                    = get_passive_player_value( base.leech, "leech" );
     base.avoidance                = 0.0;
+    base.crit_avoidance           = get_passive_player_value( base.crit_avoidance, "crit_avoidance" );
 
-    base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
+    base.base_armor_multiplier    = get_passive_player_value( base.base_armor_multiplier, "base_armor_multiplier" );
+    base.armor_multiplier         = get_passive_player_value( base.armor_multiplier, "armor_multiplier" );
     for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
     {
       base.damage_multiplier[ school ] = get_passive_player_value(
@@ -1554,6 +1558,8 @@ void player_t::init_base_stats()
     base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
 
     base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
+
+    base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
 
     // Base Pet Damage Modifiers
     base.pet_damage_multiplier = get_passive_player_value( base.pet_damage_multiplier, "pet_damage_multiplier" );
@@ -1573,6 +1579,7 @@ void player_t::init_base_stats()
     // players have a base 7.5% hit/exp
     base.hit       = 0.075;
     base.expertise = 0.075;
+    base.expertise = get_passive_player_value( base.expertise, "expertise" );
 
     if ( base.distance < 1 )
       base.distance = 5;
@@ -1603,6 +1610,7 @@ void player_t::init_base_stats()
 
   // All classes get 3% dodge and miss
   base.dodge = 0.03;
+  base.dodge = get_passive_player_value( base.dodge, "dodge" );
   base.miss = 0.03;
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
@@ -1640,6 +1648,7 @@ void player_t::init_base_stats()
        type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT  )
   {
     base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
+    base.parry = get_passive_player_value( base.parry, "parry" );
   }
   else if ( type == ENEMY || type == TANK_DUMMY )
   {
@@ -5391,7 +5400,7 @@ double player_t::composite_crit_block() const
 
 double player_t::composite_crit_avoidance() const
 {
-  return 0;
+  return current.crit_avoidance;
 }
 
 /**
@@ -15247,6 +15256,8 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_MAX_STACKS,                             "max_stack"                                 }, // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                         }, // 38
   { P_MAX_TARGETS,                            "max_targets"                               }, // 40
+  { A_MOD_PARRY_PERCENT,                      "parry"                                     }, // 47
+  { A_MOD_DODGE_PERCENT,                      "dodge"                                     }, // 49
   { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
   { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 60
@@ -15257,6 +15268,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "nature_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
+  { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
@@ -15267,6 +15279,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_stamina_multiplier"         }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_intellect_multiplier"       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_spirit_multiplier"          }, // 137
+  { A_MOD_BASE_RESISTANCE_PCT,                "base_armor_multiplier"                     }, // 142
   { A_MOD_CRIT_DAMAGE_BONUS,                  "all_crit_damage_multiplier"                }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "arcane_crit_damage_multiplier"             }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "fire_crit_damage_multiplier"               }, // 163
@@ -15275,9 +15288,12 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_BONUS,                  "nature_crit_damage_multiplier"             }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "shadow_crit_damage_multiplier"             }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "physical_crit_damage_multiplier"           }, // 163
+  { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",                  }, // 166
   { A_MOD_MAX_MANA_PCT,                       "max_mana"                                  }, // 178
+  { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                            }, // 187
   { A_HASTE_ALL,                              "all_haste"                                 }, // 193
   { A_MODIFY_SCHOOL,                          "school"                                    }, // 220
+  { A_MOD_EXPERTISE,                          "expertise"                                 }, // 240
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                                  }, // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                                   }, // 318
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                         }, // 341
@@ -15310,7 +15326,8 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MAX_CHARGES,                        "charges"                                   }, // 411
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
   { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
-  { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 419
+  { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
+  { A_MOD_LEECH_PERCENT,                       "leech"                                    }, // 443
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
   { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
   { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"                }, // 531
@@ -15586,6 +15603,48 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_GUARDIAN_DAMAGE_DONE:
         field   = "guardian_damage_multiplier";
         pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_ATTACK_POWER_PCT:
+        field = "attack_power_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_LEECH_PERCENT:
+        field = "leech";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_EXPERTISE:
+        field = "expertise";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
+        field = "crit_avoidance";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_PARRY_PERCENT:
+        field = "parry";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BASE_RESISTANCE_PCT:
+        if ( misc_type & SCHOOL_MASK_PHYSICAL )
+        {
+          field   = "base_armor_multiplier";
+          pct_val = modifying_eff.percent();
+        }
+        else
+          return false;
+        break;
+      case A_MOD_RESISTANCE_PCT:
+        if ( misc_type & SCHOOL_MASK_PHYSICAL )
+        {
+          field   = "armor_multiplier";
+          pct_val = modifying_eff.percent();
+        }
+        else
+          return false;
+        break;
+      case A_MOD_DODGE_PERCENT:
+        field = "dodge";
+        flat_val = modifying_eff.percent();
         break;
       default:
         return false;

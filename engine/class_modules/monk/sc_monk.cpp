@@ -8740,8 +8740,6 @@ double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
-  d += talent.monk.dance_of_the_wind->effectN( 1 ).percent();
-
   if ( specialization() == MONK_BREWMASTER )
   {
     d += buff.elusive_brawler->current_stack * cache.mastery_value();
