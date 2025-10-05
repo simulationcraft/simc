@@ -1363,7 +1363,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
-  for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX; ++school )
+  for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
     fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
                     s.crit_damage_multiplier[ school ] );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
@@ -1530,7 +1530,7 @@ void player_t::init_base_stats()
     base.avoidance                = 0.0;
 
     base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
-    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
     {
       base.crit_damage_multiplier[ school ] =
           get_passive_player_value( base.crit_damage_multiplier[ school ],
@@ -1708,7 +1708,7 @@ void player_t::init_initial_stats()
     initial.stats += sim->enchant;
 
     // crit damage multiplier meta gems
-    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX; ++school )
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
       initial.crit_damage_multiplier[ school ] *= util::crit_multiplier( meta_gem );
   }
 
@@ -15659,7 +15659,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           }
           if ( field.empty() )
           {
-            for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
+            for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; ++i )
             {
               if ( misc_type & dbc::get_school_mask( i ) )
               {
