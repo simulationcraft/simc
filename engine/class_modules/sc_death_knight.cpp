@@ -885,7 +885,6 @@ public:
     // Blood
     propagate_const<action_t*> bonestorm_tick;
     propagate_const<action_t*> mark_of_blood_heal;
-    action_t* shattering_bone;
     action_t* heart_strike_bloodied_blade;
     propagate_const<action_t*> soul_reaper_execute_expired_drw;
 
@@ -1132,7 +1131,6 @@ public:
       player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
       // Row 9
-      player_talent_t shattering_bone;
       player_talent_t heartrend;
       player_talent_t carnage;
       player_talent_t iron_heart;
@@ -1375,7 +1373,6 @@ public:
     const spell_data_t* dancing_rune_weapon_buff;
     const spell_data_t* relish_in_blood_gains;
     const spell_data_t* leeching_strike_damage;
-    const spell_data_t* shattering_bone_damage;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -5863,42 +5860,6 @@ struct hyperpyrexia_damage_t final : public residual_action::residual_periodic_a
   }
 };
 
-// Shattering Bone ==========================================================
-
-struct shattering_bone_t final : public death_knight_spell_t
-{
-  shattering_bone_t( std::string_view n, death_knight_t* p )
-    : death_knight_spell_t( n, p, p->spell.shattering_bone_damage )
-  {
-    background = true;
-    aoe        = -1;
-    boneshield_charges_consumed = 1.0;
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    if ( p()->buffs.death_and_decay->up() )
-      m *= p()->talent.blood.shattering_bone->effectN( 1 ).base_value();
-
-    m *= boneshield_charges_consumed;
-
-    return m;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    // Reset charges consumed to default
-    boneshield_charges_consumed = 1.0;
-  }
-
-public:
-  double boneshield_charges_consumed;
-};
-
 // ==========================================================================
 // Death Knight Buffs
 // ==========================================================================
@@ -7763,13 +7724,6 @@ struct bonestorm_t final : public death_knight_spell_t
 
       if ( p()->talent.blood.insatiable_blade->ok() )
         p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
-
-      if ( p()->talent.blood.shattering_bone.ok() )
-      {
-        // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
-        debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed = charges;
-        p()->background_actions.shattering_bone->execute_on_target( target );
-      }
 
       p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
       p()->buffs.bonestorm->extend_duration_or_trigger( p()->talent.blood.bonestorm->duration() * charges );
@@ -12221,10 +12175,6 @@ void death_knight_t::create_actions()
     {
       background_actions.mark_of_blood_heal = get_action<mark_of_blood_heal_t>( "mark_of_blood_heal", this );
     }
-    if ( talent.blood.shattering_bone.ok() )
-    {
-      background_actions.shattering_bone = get_action<shattering_bone_t>( "shattering_bone", this );
-    }
     if ( talent.blood.bloodied_blade.ok() )
     {
       background_actions.heart_strike_bloodied_blade =
@@ -12989,7 +12939,6 @@ void death_knight_t::init_spells()
   talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
-  talent.blood.shattering_bone = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
   talent.blood.heartrend       = find_talent_spell( talent_tree::SPECIALIZATION, "Heartrend" );
   talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
@@ -13251,7 +13200,6 @@ void death_knight_t::spell_lookups()
   spell.dancing_rune_weapon_buff = conditional_spell_lookup( talent.blood.dancing_rune_weapon.ok(), 81256 );
   spell.relish_in_blood_gains    = conditional_spell_lookup( talent.blood.relish_in_blood.ok(), 317614 );
   spell.leeching_strike_damage   = conditional_spell_lookup( talent.blood.leeching_strike.ok(), 377633 );
-  spell.shattering_bone_damage   = conditional_spell_lookup( talent.blood.shattering_bone.ok(), 377642 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -14538,9 +14486,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
       buffs.ossified_vitriol->trigger();
   }
   cooldown.bone_shield_icd->start();
-
-  if ( talent.blood.shattering_bone.ok() )
-    background_actions.shattering_bone->execute_on_target( target );
 
   cooldown.dancing_rune_weapon->adjust( talent.blood.insatiable_blade->effectN( 1 ).time_value() );
 }
