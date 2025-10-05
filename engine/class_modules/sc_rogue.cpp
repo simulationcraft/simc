@@ -10915,8 +10915,6 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 100;
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.outlaw.combat_potency->effectN( 1 ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.rogue.vigor->effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );

@@ -8544,14 +8544,6 @@ void hunter_t::init_base_stats()
   base.spell_power_per_intellect = 1;
 
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
-  for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, talents.pack_tactics } )
-  {
-    for ( const spelleffect_data_t& effect : spell->effects() )
-    {
-      if ( effect.ok() && effect.type() == E_APPLY_AURA && effect.subtype() == A_MOD_POWER_REGEN_PERCENT )
-        resources.base_regen_per_second[ RESOURCE_FOCUS ] *= 1 + effect.percent();
-    }
-  }
 
   resources.base[ RESOURCE_FOCUS ] = 100;
   player_t::init_base_stats();

@@ -8015,16 +8015,10 @@ void demon_hunter_t::init_base_stats()
     base.distance = 5.0;
 
   resources.base[ RESOURCE_FURY ] = 100;
-  resources.active_resource[ RESOURCE_FURY ] = true;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
-
-  // Avoidance diminishing Returns constants/conversions now handled in
-  // player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
 
   base_gcd = timespan_t::from_seconds( 1.5 );
   base_t::init_base_stats();

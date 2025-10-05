@@ -8513,9 +8513,6 @@ void mage_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  // Mana Attunement
-  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 )->effectN( 1 ).percent();
-
   for ( auto rt = RESOURCE_RAGE; rt < RESOURCE_MAX; rt++ )
     resources.active_resource[ rt ] = false;
 

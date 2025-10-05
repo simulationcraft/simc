@@ -7438,14 +7438,9 @@ void monk_t::init_base_stats()
         base.distance = 5;
       base.attack_power_per_agility     = 1.0;
       resources.base[ RESOURCE_ENERGY ] = 100;
-      resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
-      resources.base[ RESOURCE_ENERGY ] += talent.windwalker.inner_peace->effectN( 1 ).base_value();
       resources.base[ RESOURCE_MANA ] = 0;
       resources.base[ RESOURCE_CHI ]  = 4;
-      resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
-      resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.windwalker.ascension->effectN( 2 ).percent();
       resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
       break;
     }

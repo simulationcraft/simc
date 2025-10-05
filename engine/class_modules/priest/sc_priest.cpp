@@ -2880,13 +2880,9 @@ void priest_t::init_base_stats()
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
 
-  if ( talents.holy.enlightenment.enabled() )
-    resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.holy.enlightenment->effectN( 1 ).percent();
-
   if ( specialization() == PRIEST_SHADOW )
   {
     resources.base[ RESOURCE_INSANITY ] = 100.0;
-    resources.active_resource[ RESOURCE_INSANITY ] = true;
   }
 
   base_t::init_base_stats();

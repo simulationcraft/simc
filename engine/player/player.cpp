@@ -1577,6 +1577,8 @@ void player_t::init_base_stats()
     // Resources
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
+    // 1% of base mana as mana regen per second for all classes.
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
     for ( auto power = POWER_HEALTH; power < POWER_MAX; ++power )
     {
       resource_e resource = util::translate_power_type( power );
@@ -1590,10 +1592,10 @@ void player_t::init_base_stats()
       // Passive Resource Multipliers
       resources.base_multiplier[ resource ] =
           get_passive_player_value( resources.base_multiplier[ resource ], fmt::format( "{}_multiplier", res_str ) );
+      // Passive Resource Regen Modifiers
+      resources.base_regen_per_second[ resource ] =
+          get_passive_player_value( resources.base_regen_per_second[ resource ], fmt::format( "{}_regen", res_str ) );
     }
-    // 1% of base mana as mana regen per second for all classes.
-    resources.base_regen_per_second[ RESOURCE_MANA ] =
-      get_passive_player_value( dbc->resource_base( type, level() ) * 0.01, "mana_regen" );
 
     base.health_per_stamina = dbc->health_per_stamina( level() );
 
@@ -15301,6 +15303,21 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
+  { A_MOD_POWER_REGEN_PERCENT,                "health_regen"                              }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "rage_regen"                                }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "astral_power_regen"                        }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "energy_regen"                              }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "focus_regen"                               }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "rune_regen"                                }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "soul_shard_regen"                          }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "holy_power_regen"                          }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "chi_regen"                                 }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "combo_points_regen"                        }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "maelstrom_regen"                           }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "fury_regen"                                }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "pain_regen"                                }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "insanity_regen"                            }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "essence_regen"                             }, // 105
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
   { A_INCREASE_RESOURCE_PCT,                  "health_multiplier"                         }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "mana_multiplier"                           }, // 119
@@ -15615,6 +15632,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_MANA_REGEN_PCT:
         field   = "mana_regen";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_POWER_REGEN_PERCENT:
+        field = fmt::format(
+            "{}_regen", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ) );
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MELEE_AUTO_ATTACK_SPEED:

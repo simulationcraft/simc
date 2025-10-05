@@ -11476,10 +11476,8 @@ void druid_t::init_base_stats()
   }
 
   // Passive Talents & Spells
-  auto crit = find_effect( find_specialization_spell( "Critical Strikes" ), A_MOD_ALL_CRIT_CHANCE ).percent();
   base.spell_crit_chance  += crit;
   base.attack_crit_chance += crit;
-  base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
 
   // Resources
   resources.base[ RESOURCE_RAGE ] = 100;
@@ -11504,12 +11502,6 @@ void druid_t::init_base_stats()
 
   // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( spec_spell, A_MOD_POWER_REGEN_PERCENT ).percent();
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-    1.0 + find_effect( talent.tireless_energy, A_MOD_POWER_REGEN_PERCENT ).percent();
 
   if ( options.disable_ready_trigger )
     ready_type = ready_e::READY_POLL;
