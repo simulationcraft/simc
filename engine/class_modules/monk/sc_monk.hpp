@@ -649,6 +649,7 @@ public:
       const spell_data_t *flying_serpent_kick;
       const spell_data_t *touch_of_death_rank_3;
       const spell_data_t *touch_of_karma;
+      const spell_data_t *touch_of_karma_buff;
       const spell_data_t *touch_of_karma_tick;
       const spell_data_t *empowered_tiger_lightning;
       const spell_data_t *empowered_tiger_lightning_damage;
@@ -809,6 +810,7 @@ public:
       const spell_data_t *charred_passions_damage;
       player_talent_t high_tolerance;
       player_talent_t press_the_advantage;
+      const spell_data_t *press_the_advantage_damage;
       player_talent_t blackout_combo;
       player_talent_t anvil__stave;
       player_talent_t counterstrike;
@@ -819,6 +821,7 @@ public:
       player_talent_t awakening_spirit;
       player_talent_t vital_flame;
       player_talent_t invoke_niuzao_the_black_ox;
+      const spell_data_t *invoke_niuzao_the_black_ox_npc;
       const spell_data_t *invoke_niuzao_the_black_ox_stomp;
       // row 10
       player_talent_t fuel_on_the_fire;
@@ -841,7 +844,9 @@ public:
       const spell_data_t *fists_of_fury_tick;
       // Row 2
       player_talent_t momentum_boost;
+      const spell_data_t *momentum_boost_speed;
       player_talent_t combat_wisdom;
+      const spell_data_t *combat_wisdom_buff;
       const spell_data_t *combat_wisdom_expel_harm;
       player_talent_t sharp_reflexes;
       // Row 3
@@ -853,6 +858,7 @@ public:
       player_talent_t dual_threat;
       const spell_data_t *dual_threat_damage;
       player_talent_t teachings_of_the_monastery;
+      const spell_data_t *teachings_of_the_monastery_buff;
       const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
       const spell_data_t *glory_of_the_dawn_damage;
@@ -866,6 +872,7 @@ public:
       player_talent_t brawlers_intensity;
       // Row 6
       player_talent_t jade_ignition;
+      const spell_data_t *chi_energy_buff;
       const spell_data_t *chi_explosion;
       player_talent_t cyclones_drift;
       player_talent_t crashing_fists;
@@ -893,12 +900,14 @@ public:
       player_talent_t echo_technique;
       player_talent_t rushing_jade_wind;
       player_talent_t memory_of_the_monastery;
+      const spell_data_t *memory_of_the_monastery_buff;
       // Row 9
       player_talent_t rushing_wind_kick;
       player_talent_t xuens_battlegear;
       player_talent_t thunderfist;
       const spell_data_t *thunderfist_buff;
       player_talent_t invoke_xuen_the_white_tiger;
+      const spell_data_t *invoke_xuen_the_white_tiger_npc;
       const spell_data_t *crackling_tiger_lightning_driver;
       const spell_data_t *crackling_tiger_lightning;
       player_talent_t knowledge_of_the_broken_temple;
@@ -927,23 +936,30 @@ public:
     {
       // Row 1
       player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_buff;
       const spell_data_t *celestial_conduit_dmg;
       const spell_data_t *celestial_conduit_heal;
       // Row 2
       player_talent_t temple_training;
       player_talent_t xuens_guidance;
       player_talent_t courage_of_the_white_tiger;
+      const spell_data_t *courage_of_the_white_tiger_buff;
       const spell_data_t *courage_of_the_white_tiger_damage;
       const spell_data_t *courage_of_the_white_tiger_heal;
       player_talent_t restore_balance;
       player_talent_t yulons_knowledge;
       player_talent_t heart_of_the_jade_serpent;
+      const spell_data_t *heart_of_the_jade_serpent_buff;
+      const spell_data_t *heart_of_the_jade_serpent_celestial_buff;
       // Row 3
       player_talent_t chijis_swiftness;
+      const spell_data_t *chijis_swiftness_buff;
       player_talent_t strength_of_the_black_ox;
+      const spell_data_t *strength_of_the_black_ox_buff;
       const spell_data_t *strength_of_the_black_ox_absorb;
       const spell_data_t *strength_of_the_black_ox_damage;
       player_talent_t flight_of_the_red_crane;
+      const spell_data_t *flight_of_the_red_crane_buff;
       const spell_data_t *flight_of_the_red_crane_dmg;
       const spell_data_t *flight_of_the_red_crane_heal;
       const spell_data_t *flight_of_the_red_crane_celestial_dmg;
@@ -952,11 +968,17 @@ public:
       // Row 4
       player_talent_t niuzaos_protection;
       player_talent_t jade_sanctuary;
+      const spell_data_t *jade_sanctuary_buff;
       player_talent_t stampede_of_the_ancients;
       player_talent_t inner_compass;
+      const spell_data_t *inner_compass_crane_stance_buff;
+      const spell_data_t *inner_compass_ox_stance_buff;
+      const spell_data_t *inner_compass_tiger_stance_buff;
+      const spell_data_t *inner_compass_serpent_stance_buff;
       player_talent_t flowing_wisdom;
       // Row 5
       player_talent_t unity_within;
+      const spell_data_t *unity_within_buff;
       const spell_data_t *unity_within_dmg_mult;
     } conduit_of_the_celestials;
 
@@ -1001,11 +1023,14 @@ public:
       // Row 1
       player_talent_t flurry_strikes;
       const spell_data_t *flurry_strikes_hit;
+      const spell_data_t *flurry_charge;
       // Row 2
       player_talent_t pride_of_pandaria;
       player_talent_t high_impact;
       const spell_data_t *high_impact_debuff;
       player_talent_t veterans_eye;
+      const spell_data_t *veterans_eye_buff;
+      const spell_data_t *veterans_eye_debuff;
       player_talent_t martial_precision;
       // Row 3
       player_talent_t protect_and_serve;
@@ -1015,13 +1040,18 @@ public:
       player_talent_t predictive_training;
       // Row 4
       player_talent_t against_all_odds;
+      const spell_data_t *against_all_odds_buff;
       player_talent_t efficient_training;
       player_talent_t vigilant_watch;
+      const spell_data_t *vigilant_watch_buff;
       // Row 5
       player_talent_t wisdom_of_the_wall;
+      const spell_data_t *wisdom_of_the_wall_crit_buff;
+      const spell_data_t *wisdom_of_the_wall_dodge_buff;
+      const spell_data_t *wisdom_of_the_wall_flurry_buff;
+      const spell_data_t *wisdom_of_the_wall_mastery_buff;
       const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
-
   } talent;
 
   struct

@@ -322,7 +322,7 @@ private:
 public:
   xuen_pet_t( monk_t *owner ) : monk_pet_t( owner, "xuen_the_white_tiger", PET_XUEN, false, true )
   {
-    npc_id                      = (int)o()->find_spell( 123904 )->effectN( 1 ).misc_value1();
+    npc_id = as<int>( o()->talent.brewmaster.invoke_niuzao_the_black_ox_npc->effectN( 1 ).misc_value1() );
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
     main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
@@ -404,8 +404,8 @@ struct auto_attack_t : public pet_auto_attack_t
 niuzao_pet_t::niuzao_pet_t( std::string_view name, monk_t *player )
   : monk_pet_t( player, name, PET_NIUZAO, false, true ), stomp( nullptr )
 {
-  npc_id                      = (int)o()->find_spell( 132578 )->effectN( 1 ).misc_value1();
-  main_hand_weapon.type       = WEAPON_BEAST;
+  npc_id                = as<int>( o()->talent.windwalker.invoke_xuen_the_white_tiger_npc->effectN( 1 ).misc_value1() );
+  main_hand_weapon.type = WEAPON_BEAST;
   main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
   main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
   main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
