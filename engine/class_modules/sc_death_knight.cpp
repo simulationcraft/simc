@@ -748,7 +748,6 @@ public:
     propagate_const<buff_t*> consumption;
     propagate_const<buff_t*> crimson_scourge;
     propagate_const<buff_t*> dancing_rune_weapon;
-    propagate_const<buff_t*> heartrend;
     propagate_const<buff_t*> hemostasis;
     propagate_const<buff_t*> ossuary;
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
@@ -1123,7 +1122,6 @@ public:
       player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
       // Row 9
-      player_talent_t heartrend;
       player_talent_t carnage;
       player_talent_t iron_heart;
       player_talent_t red_thirst;
@@ -1354,7 +1352,6 @@ public:
     const spell_data_t* ossuary_buff;
     const spell_data_t* crimson_scourge_buff;
     const spell_data_t* heartbreaker_rp_gain;
-    const spell_data_t* heartrend_buff;
     const spell_data_t* heart_strike_bloodied_blade;
     const spell_data_t* perserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
@@ -8499,7 +8496,6 @@ struct death_strike_t final : public death_knight_melee_attack_t
     }
 
     p()->buffs.hemostasis->expire();
-    p()->buffs.heartrend->expire();
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
       p()->trigger_vampiric_strike_proc( target );
@@ -9408,11 +9404,6 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-
-    if ( p()->talent.blood.heartrend.ok() )
-    {
-      p()->buffs.heartrend->trigger();
-    }
 
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
@@ -12856,7 +12847,6 @@ void death_knight_t::init_spells()
   talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
-  talent.blood.heartrend       = find_talent_spell( talent_tree::SPECIALIZATION, "Heartrend" );
   talent.blood.carnage         = find_talent_spell( talent_tree::SPECIALIZATION, "Carnage" );
   talent.blood.iron_heart      = find_talent_spell( talent_tree::SPECIALIZATION, "Iron Heart" );
   talent.blood.red_thirst      = find_talent_spell( talent_tree::SPECIALIZATION, "Red Thirst" );
@@ -13108,7 +13098,6 @@ void death_knight_t::spell_lookups()
   spell.ossuary_buff                = conditional_spell_lookup( talent.blood.ossuary.ok(), 219788 );
   spell.crimson_scourge_buff        = conditional_spell_lookup( spec.crimson_scourge->ok(), 81141 );
   spell.heartbreaker_rp_gain        = conditional_spell_lookup( talent.blood.heartbreaker.ok(), 210738 );
-  spell.heartrend_buff              = conditional_spell_lookup( talent.blood.heartrend.ok(), 377656 );
   spell.heart_strike_bloodied_blade = conditional_spell_lookup( talent.blood.bloodied_blade.ok(), 460501 );
   spell.perserverence_of_the_ebon_blade_buff =
       conditional_spell_lookup( talent.blood.perseverance_of_the_ebon_blade.ok(), 374748 );
@@ -13842,11 +13831,6 @@ void death_knight_t::create_buffs()
                                       if ( talent.sanlayn.the_blood_is_life.ok() && pets.blood_beast.active_pet() != nullptr )
                                         pets.blood_beast.active_pet()->demise();
                                     } );
-
-    buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
-                          ->set_default_value( talent.blood.heartrend->effectN( 1 ).percent() )
-                          ->set_chance( 0.10 );  // Sept 20 2022.  Chance was found via testing for 30 mins.  Other
-    // people have mentioned the same proc rate.  Not in spelldata.
 
     buffs.hemostasis = make_buff( this, "hemostasis", talent.blood.hemostasis->effectN( 1 ).trigger() )
                            ->set_trigger_spell( talent.blood.hemostasis )
@@ -14656,7 +14640,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
   action->parse_effects( buffs.consumption );
   action->parse_effects( buffs.crimson_scourge );
   action->parse_effects( buffs.sanguine_ground );
-  action->parse_effects( buffs.heartrend );
   action->parse_effects( buffs.hemostasis );
   action->parse_effects( buffs.ossuary );
 
