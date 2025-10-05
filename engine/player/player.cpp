@@ -1283,7 +1283,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
-  mastery( 8.0 ),
+  mastery( 0 ),
   versatility( 0 ),
   all_crit( 0 ),
   all_haste( 1.0 ),
@@ -1532,12 +1532,13 @@ void player_t::init_base_stats()
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
 
-    base.mastery                  = get_passive_player_value( base.mastery, "mastery" );
-    base.versatility              = get_passive_player_value( base.versatility, "versatility" );
-    base.all_haste                /= get_passive_player_value( base.all_haste, "all_haste" );
-    base.melee_haste              = base.all_haste;
-    base.spell_haste              = base.all_haste;
-    base.ranged_haste             = base.all_haste;
+    base.mastery      = 8.0;
+    base.mastery      = get_passive_player_value( base.mastery, "mastery" );
+    base.versatility  = get_passive_player_value( base.versatility, "versatility" );
+    base.all_haste   /= get_passive_player_value( base.all_haste, "all_haste" );
+    base.melee_haste  = base.all_haste;
+    base.spell_haste  = base.all_haste;
+    base.ranged_haste = base.all_haste;
 
     base.leech                    = get_passive_player_value( base.leech, "leech" );
     base.avoidance                = 0.0;
@@ -15533,7 +15534,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   auto sub_type = modifying_eff.subtype();
   auto success = false;
   auto property = false;
-  bool is_bitmap = false;
   bitmap_type_e bit_type   = BITMAP_NONE;
 
   // find all affected spells
@@ -15543,6 +15543,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // check player affecting subtypes
     auto misc_type = modifying_eff.misc_value1();
     std::string_view field;
+    std::string subtype_str = "";
     double flat_val = 0.0;
     double pct_val = 0.0;
 
@@ -15568,18 +15569,18 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:
         // Stat type is in misc_value2
-        misc_type = modifying_eff.misc_value2();
-        is_bitmap = true;
-        bit_type  = BITMAP_ATTRIBUTE;
-        pct_val   = modifying_eff.percent();
+        misc_type   = modifying_eff.misc_value2();
+        subtype_str = "multiplier";
+        bit_type    = BITMAP_ATTRIBUTE;
+        pct_val     = modifying_eff.percent();
         break;
       case A_MOD_RATING_MULTIPLIER:
-        is_bitmap = true;
-        bit_type  = BITMAP_RATING;
-        pct_val   = modifying_eff.percent();
+        subtype_str = "rating_multiplier";
+        bit_type    = BITMAP_RATING;
+        pct_val     = modifying_eff.percent();
         break;
       case A_MOD_VERSATILITY_PCT:
-        field   = "versatility";
+        field    = "versatility";
         flat_val = modifying_eff.percent();
         break;
       case A_HASTE_ALL:
@@ -15587,35 +15588,35 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MASTERY_PCT:
-        field   = "mastery";
+        field    = "mastery";
         flat_val = modifying_eff.base_value();
         break;
       case A_MOD_ALL_CRIT_CHANCE:
-        field   = "all_crit";
+        field    = "all_crit";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_SPELL_CRIT_CHANCE:
-        field   = "spell_crit";
+        field    = "spell_crit";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_CRIT_DAMAGE_BONUS:
-        misc_type = modifying_eff.affected_schools();
-        is_bitmap = true;
-        bit_type  = BITMAP_SCHOOL;
-        pct_val = modifying_eff.percent();
+        misc_type   = modifying_eff.affected_schools();
+        subtype_str = "crit_damage_multiplier";
+        bit_type    = BITMAP_SCHOOL;
+        pct_val     = modifying_eff.percent();
         break;
       case A_MOD_CRITICAL_HEALING_AMOUNT:
         field   = "crit_heal_multiplier";
-        pct_val = modifying_eff.percent(); 
+        pct_val = modifying_eff.percent();
         break;
       case A_MOD_DAMAGE_PERCENT_DONE:
-        misc_type = modifying_eff.affected_schools();
-        is_bitmap = true;
-        bit_type  = BITMAP_SCHOOL;
-        pct_val   = modifying_eff.percent();
+        misc_type   = modifying_eff.affected_schools();
+        subtype_str = "damage_multiplier";
+        bit_type    = BITMAP_SCHOOL;
+        pct_val     = modifying_eff.percent();
         break;
       case A_MOD_PET_DAMAGE_DONE:
-        field = "pet_damage_multiplier";
+        field   = "pet_damage_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_GUARDIAN_DAMAGE_DONE:
@@ -15623,23 +15624,23 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_ATTACK_POWER_PCT:
-        field = "attack_power_multiplier";
+        field   = "attack_power_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_LEECH_PERCENT:
-        field = "leech";
+        field    = "leech";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_EXPERTISE:
-        field = "expertise";
+        field    = "expertise";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:
-        field = "crit_avoidance";
+        field    = "crit_avoidance";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_PARRY_PERCENT:
-        field = "parry";
+        field    = "parry";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_BASE_RESISTANCE_PCT:
@@ -15661,23 +15662,23 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           return false;
         break;
       case A_MOD_DODGE_PERCENT:
-        field = "dodge";
+        field    = "dodge";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_ABSORB_DONE_PERCENT:
-        field = "absorb_multiplier";
+        field   = "absorb_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_ABSORB_RECEIVED_PERCENT:
-        field = "absorb_received_multiplier";
+        field   = "absorb_received_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_HEALING_RECEIVED_PCT:
-        field = "healing_received_multiplier";
+        field   = "healing_received_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_HEALING_DONE_PERCENT:
-        field = "healing_multiplier";
+        field   = "healing_multiplier";
         pct_val = modifying_eff.percent();
         break;
       default:
@@ -15690,66 +15691,90 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
-    // TODO: Refactor to cleanup repetitive debut output messages.
-    // Likely needs a template vector since types are unknown.
-    // So creating a vector of temporary types we can push back to, then once its done
-    // iterating through all bit types, print from the vector?
-    if ( is_bitmap )
+    switch ( bit_type )
     {
-      std::string subtype_str = "";
-      switch ( bit_type )
-      {
-        case BITMAP_NONE:
-          break;
-        case BITMAP_ATTRIBUTE:
-          if ( modifying_eff.subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
-            subtype_str = "multiplier";
-
-          for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+      case BITMAP_ATTRIBUTE:
+        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+        {
+          if ( misc_type & ( 1 << ( stat - 1 ) ) )
           {
-            if ( misc_type & ( 1 << ( stat - 1 ) ) )
+            if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
+                 modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
             {
-              if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
-                   modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
-              {
-                auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
-                if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
-                  field = fmt::format( "matching_armor_{}_{}", util::stat_type_string( stat ), subtype_str );
-                else
-                  continue;
-              }
+              auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+              if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
+                field = fmt::format( "matching_armor_{}_{}", util::stat_type_string( stat ), subtype_str );
               else
-                field = fmt::format( "{}_{}", util::stat_type_string( stat ), subtype_str );
-
-              if ( field.empty() )
                 continue;
-
-              auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
-                                                                stat, 0, flat_val, pct_val );
-              std::string _tmp_full_message_tmp_ = fmt::format(
-                  "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
-                  "now={:.7g}[{:.7g}/{:.7g}%])",
-                  modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-                  remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
-                  flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
-                  now.pct * 100 );
-              sim->print_debug( "{}", _tmp_full_message_tmp_ );
-              _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
             }
-          }
-          break;
-        case BITMAP_RATING:
-          if ( modifying_eff.subtype() == A_MOD_RATING_MULTIPLIER )
-            subtype_str = "rating_multiplier";
+            else
+              field = fmt::format( "{}_{}", util::stat_type_string( stat ), subtype_str );
 
-          for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
+            if ( field.empty() )
+              continue;
+
+            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                              stat, 0, flat_val, pct_val );
+            std::string _tmp_full_message_tmp_ = fmt::format(
+                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                "now={:.7g}[{:.7g}/{:.7g}%])",
+                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                now.pct * 100 );
+            sim->print_debug( "{}", _tmp_full_message_tmp_ );
+            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+          }
+        }
+        return true;
+        break;
+      case BITMAP_RATING:
+        for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
+        {
+          auto mod = util::rating_to_rating_mod( i );
+          if ( misc_type & mod )
           {
-            auto mod = util::rating_to_rating_mod( i );
-            if ( misc_type & mod )
+            field = fmt::format( "{}_{}", util::rating_type_string( i ), subtype_str );
+            if ( field.empty() )
+              continue;
+            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                              i, 0, flat_val, pct_val );
+            std::string _tmp_full_message_tmp_ = fmt::format(
+                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                "now={:.7g}[{:.7g}/{:.7g}%])",
+                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                now.pct * 100 );
+            sim->print_debug( "{}", _tmp_full_message_tmp_ );
+            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+          }
+        }
+        return true;
+        break;
+      case BITMAP_SCHOOL:
+        if ( misc_type == 0x7f )
+        {
+          field              = fmt::format( "all_{}", subtype_str );
+          auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                            misc_type, 0, flat_val, pct_val );
+          std::string _tmp_full_message_tmp_ = fmt::format(
+              "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+              "now={:.7g}[{:.7g}/{:.7g}%])",
+              modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+              remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+              flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+              now.pct * 100 );
+          sim->print_debug( "{}", _tmp_full_message_tmp_ );
+          _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+        }
+        else
+        {
+          for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; ++i )
+          {
+            if ( misc_type & dbc::get_school_mask( i ) )
             {
-              field = fmt::format( "{}_{}", util::rating_type_string( i ), subtype_str );
-              if ( field.empty() )
-                continue;
+              field              = fmt::format( "{}_{}", util::school_type_string( i ), subtype_str );
               auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
                                                                 i, 0, flat_val, pct_val );
               std::string _tmp_full_message_tmp_ = fmt::format(
@@ -15763,55 +15788,12 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
             }
           }
-          break;
-        case BITMAP_SCHOOL:
-          if ( modifying_eff.subtype() == A_MOD_CRIT_DAMAGE_BONUS )
-            subtype_str = "crit_damage_multiplier";
-          if ( modifying_eff.subtype() == A_MOD_DAMAGE_PERCENT_DONE )
-            subtype_str = "damage_multiplier";
-
-          if ( misc_type == 0x7f )
-          {
-            field              = fmt::format( "all_{}", subtype_str );
-            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
-                                                              misc_type, 0, flat_val, pct_val );
-            std::string _tmp_full_message_tmp_ = fmt::format(
-                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
-                "now={:.7g}[{:.7g}/{:.7g}%])",
-                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
-                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
-                now.pct * 100 );
-            sim->print_debug( "{}", _tmp_full_message_tmp_ );
-            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
-          }
-          else
-          {
-            for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; ++i )
-            {
-              if ( misc_type & dbc::get_school_mask( i ) )
-              {
-                field              = fmt::format( "{}_{}", util::school_type_string( i ), subtype_str );
-                auto [ prev, now ] = add_passive_effect_modifier(
-                    passive_player_modifiers_, get_type_from_field( field ), i, 0, flat_val, pct_val );
-                std::string _tmp_full_message_tmp_ = fmt::format(
-                    "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
-                    "now={:.7g}[{:.7g}/{:.7g}%])",
-                    modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-                    remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
-                    flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
-                    now.pct * 100 );
-                sim->print_debug( "{}", _tmp_full_message_tmp_ );
-                _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
-              }
-            }
-          }
-          break;
-        default:
-          return false;
-          break;
-      }
-      return true;
+        }
+        return true;
+        break;
+      case BITMAP_NONE:
+      default:
+        break;
     }
 
     auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
