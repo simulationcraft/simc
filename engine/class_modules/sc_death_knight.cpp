@@ -848,7 +848,6 @@ public:
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
     cooldown_t* blood_tap;
-    cooldown_t* blooddrinker;
     cooldown_t* consumption;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
@@ -1135,7 +1134,6 @@ public:
       player_talent_t blood_feast;
       player_talent_t mark_of_blood;
       player_talent_t tombstone;
-      player_talent_t blooddrinker;
       player_talent_t consumption;
       player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
@@ -1747,7 +1745,6 @@ public:
   {
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
     cooldown.blood_tap           = get_cooldown( "blood_tap" );
-    cooldown.blooddrinker        = get_cooldown( "blooddrinker" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
     cooldown.consumption         = get_cooldown( "consumption" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
@@ -5684,8 +5681,6 @@ struct blood_shield_buff_t final : public absorb_buff_t
     if ( dk->rppm.carnage->trigger() )
     {
       dk->procs.carnage->occur();
-      if ( dk->talent.blood.blooddrinker.ok() )
-        dk->cooldown.blooddrinker->reset( true );
       if ( dk->talent.blood.consumption.ok() )
         dk->cooldown.consumption->reset( true );
     }
@@ -7693,59 +7688,6 @@ struct blood_draw_t final : public death_knight_spell_t
 
 private:
   double health_threshold;
-};
-
-// Blooddrinker =============================================================
-
-struct blooddrinker_heal_t final : public death_knight_leech_damage_heal_t
-{
-  blooddrinker_heal_t( std::string_view name, death_knight_t* p )
-    : death_knight_leech_damage_heal_t( name, p, p->talent.blood.blooddrinker )
-  {
-    background = true;
-    callbacks = may_crit = may_miss = false;
-    base_costs[ RESOURCE_RUNE ]     = 0;
-    energize_type                   = action_energize::NONE;
-    cooldown->duration              = 0_ms;
-    target                          = p;
-    attack_power_mod.direct = attack_power_mod.tick = 0;
-    dot_duration = base_tick_time = 0_ms;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_leech_damage_heal_t::impact( state );
-
-    if ( p()->talent.blood.carnage.ok() )
-      trigger_blood_shield( state );
-  }
-};
-
-// TODO: Implement the defensive stuff somehow
-struct blooddrinker_t final : public death_knight_spell_t
-{
-  blooddrinker_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "blooddrinker", p, p->talent.blood.blooddrinker ),
-      heal( get_action<blooddrinker_heal_t>( "blooddrinker_heal", p ) )
-  {
-    parse_options( options_str );
-    channeled = hasted_ticks = tick_zero = true;
-    base_tick_time                       = 1.0_s;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    death_knight_spell_t::tick( d );
-
-    if ( d->state->result_amount > 0 )
-    {
-      heal->base_dd_min = heal->base_dd_max = d->state->result_amount;
-      heal->execute();
-    }
-  }
-
-private:
-  propagate_const<action_t*> heal;
 };
 
 // The Blood is Life ========================================================
@@ -12545,8 +12487,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new blood_boil_t( this, options_str );
   if ( name == "blood_tap" )
     return new blood_tap_t( this, options_str );
-  if ( name == "blooddrinker" )
-    return new blooddrinker_t( this, options_str );
   if ( name == "bonestorm" )
     return new bonestorm_t( this, options_str );
   if ( name == "consumption" )
@@ -13134,7 +13074,6 @@ void death_knight_t::init_spells()
   talent.blood.blood_feast     = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.mark_of_blood   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.tombstone       = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.blooddrinker    = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
   talent.blood.consumption     = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
