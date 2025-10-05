@@ -11475,10 +11475,6 @@ void druid_t::init_base_stats()
     default: break;
   }
 
-  // Passive Talents & Spells
-  base.spell_crit_chance  += crit;
-  base.attack_crit_chance += crit;
-
   // Resources
   resources.base[ RESOURCE_RAGE ] = 100;
   resources.base[ RESOURCE_COMBO_POINT ] = 5;

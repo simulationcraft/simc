@@ -1561,7 +1561,7 @@ void player_t::init_base_stats()
     }
 
     base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
-    base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
+    base.attack_speed_multiplier /= get_passive_player_value( base.attack_speed_multiplier, "attack_speed" );
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
     base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
     base.absorb_received_multiplier =
@@ -1689,12 +1689,6 @@ void player_t::init_base_stats()
        ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
-  }
-
-  // Expansive Mind
-  for ( auto& r : { RESOURCE_MANA, RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_RUNIC_POWER, RESOURCE_FOCUS} )
-  {
-    resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
   }
 
   if ( primary_role() == ROLE_TANK )
@@ -15610,15 +15604,17 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     std::string_view field;
     std::string subtype_str = "";
     bitmap_type_e bit_type = BITMAP_NONE;
+    resource_e resource_type;
     double flat_val = 0.0;
     double pct_val = 0.0;
 
     switch ( modifying_eff.subtype() )
     {
       case A_MOD_MAX_RESOURCE:
-        resource_e power_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
-        field                 = fmt::format( "max_{}", util::resource_type_string( power_type ), subtype_str );
-        flat_val              = modifying_eff.resource( power_type );
+        resource_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
+        field                 = fmt::format( "max_{}", util::resource_type_string( resource_type ), subtype_str );
+        flat_val              = modifying_eff.resource( resource_type );
+        break;
       case A_INCREASE_RESOURCE_PCT:
       case A_MOD_MAX_RESOURCE_PCT:
         field = fmt::format(
