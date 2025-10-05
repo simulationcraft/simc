@@ -1496,12 +1496,12 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT ] = dbc->race_base( race ).intellect + dbc->attribute_base( type, level() ).intellect;
     base.stats.attribute[ STAT_SPIRIT ]    = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
-    // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
-    base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
-    base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
-    // Endurance seems to be using ceiling
-    base.stats.attribute[ STAT_STAMINA ] += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
+    // Passive Flat Stat Modifiers
+    for( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+    {
+      base.stats.attribute[ stat ] = get_passive_player_value( base.stats.attribute[ stat ],
+                                                               fmt::format( "flat_{}", util::stat_type_string( stat ) ) );
+    }
 
     // Passive Attribute Multipliers
     for ( auto stat : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
@@ -1577,8 +1577,20 @@ void player_t::init_base_stats()
     // Resources
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
+    for ( auto power = POWER_HEALTH; power < POWER_MAX; ++power )
+    {
+      resource_e resource = util::translate_power_type( power );
+      if ( resources.active_resource[ resource ] == false )
+        continue;
 
-    resources.base_multiplier[ RESOURCE_MANA ] = get_passive_player_value( 1.0, "mana_multiplier" );
+      std::string res_str = util::resource_type_string( resource );
+      // Passive Flat Resource Modifiers
+      resources.base[ resource ] =
+          get_passive_player_value( resources.base[ resource ], fmt::format( "flat_{}", res_str ) );
+      // Passive Resource Multipliers
+      resources.base_multiplier[ resource ] =
+          get_passive_player_value( resources.base_multiplier[ resource ], fmt::format( "{}_multiplier", res_str ) );
+    }
     // 1% of base mana as mana regen per second for all classes.
     resources.base_regen_per_second[ RESOURCE_MANA ] =
       get_passive_player_value( dbc->resource_base( type, level() ) * 0.01, "mana_regen" );
@@ -15267,6 +15279,11 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_CHAIN_MULTIPLIER,                       "chain_multiplier"                          }, // 20
   { P_GCD,                                    "gcd"                                       }, // 21
   { P_TICK_DAMAGE,                            "base_td"                                   }, // 22
+  { A_MOD_STAT,                               "flat_strength"                             }, // 29
+  { A_MOD_STAT,                               "flat_agility"                              }, // 29
+  { A_MOD_STAT,                               "flat_stamina"                              }, // 29
+  { A_MOD_STAT,                               "flat_intellect"                            }, // 29
+  { A_MOD_STAT,                               "flat_spirit"                               }, // 29
   { P_DOSES,                                  "proc_charges"                              }, // 31
   { P_MAX_STACKS,                             "max_stack"                                 }, // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                         }, // 38
@@ -15285,6 +15302,22 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
+  { A_INCREASE_RESOURCE_PCT,                  "health_multiplier"                         }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "mana_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "rage_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "astral_power_multiplier"                   }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "energy_multiplier"                         }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "focus_multiplier"                          }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "rune_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "soul_shard_multiplier"                     }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "holy_power_multiplier"                     }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "chi_multiplier"                            }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "combo_points_multiplier"                   }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "maelstrom_multiplier"                      }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "fury_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "pain_multiplier"                           }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "insanity_multiplier"                       }, // 119
+  { A_INCREASE_RESOURCE_PCT,                  "essence_multiplier"                        }, // 119
   { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"                        }, // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
@@ -15306,7 +15339,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_BONUS,                  "shadow_crit_damage_multiplier"             }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "physical_crit_damage_multiplier"           }, // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",                  }, // 166
-  { A_MOD_MAX_MANA_PCT,                       "max_mana"                                  }, // 178
+  { A_MOD_MAX_MANA_PCT,                       "mana_multiplier"                           }, // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                            }, // 187
   { A_HASTE_ALL,                              "all_haste"                                 }, // 193
   { A_MODIFY_SCHOOL,                          "school"                                    }, // 220
@@ -15343,6 +15376,37 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MAX_CHARGES,                        "charges"                                   }, // 411
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
   { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
+  { A_MOD_MAX_RESOURCE,                       "max_health"                                }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_mana"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_rage"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_focus"                                 }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_energy"                                }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_astral_power"                          }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_runic_power"                           }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_soul_shard"                            }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_holy_power"                            }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_chi"                                   }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_combo_points"                          }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_maelstrom"                             }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_fury"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_pain"                                  }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_insanity"                              }, // 418
+  { A_MOD_MAX_RESOURCE,                       "max_essence"                               }, // 418
+  { A_MOD_MAX_RESOURCE_PCT,                   "health_multiplier"                         }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "rage_multiplier"                           }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "focus_multiplier"                          }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "energy_multiplier"                         }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "astral_power_multiplier"                   }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "runic_power_multiplier"                    }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "soul_shard_multiplier"                     }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "holy_power_multiplier"                     }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "chi_multiplier"                            }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "combo_points_multiplier"                   }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "maelstrom_multiplier"                      }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "fury_multiplier"                           }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "pain_multiplier"                           }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "insanity_multiplier"                       }, // 419
+  { A_MOD_MAX_RESOURCE_PCT,                   "essence_multiplier"                        }, // 419
   { A_MOD_ABSORB_DONE_PERCENT,                "absorb_multiplier"                         }, // 421
   { A_MOD_ABSORB_RECEIVED_PERCENT,            "absorb_received_multiplier"                }, // 422
   { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
@@ -15534,7 +15598,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   auto sub_type = modifying_eff.subtype();
   auto success = false;
   auto property = false;
-  bitmap_type_e bit_type   = BITMAP_NONE;
 
   // find all affected spells
   auto affected_spells = spells_affected_by_passive( modifying_eff, property );
@@ -15544,18 +15607,33 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto misc_type = modifying_eff.misc_value1();
     std::string_view field;
     std::string subtype_str = "";
+    bitmap_type_e bit_type = BITMAP_NONE;
     double flat_val = 0.0;
     double pct_val = 0.0;
 
     switch ( modifying_eff.subtype() )
     {
       case A_INCREASE_RESOURCE_PCT:
+        field =
+            fmt::format( "{}_multiplier",
+                         util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
+                         subtype_str );
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_MAX_RESOURCE:
+        resource_e power_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
+        field = fmt::format(
+            "max_{}", util::resource_type_string( power_type ),
+            subtype_str );
+        flat_val = modifying_eff.resource( power_type );
       case A_MOD_MAX_RESOURCE_PCT:
-        if ( misc_type != POWER_MANA )
-          return false;
-        SC_FALLTHROUGH;
+        field = fmt::format(
+            "{}_multiplier", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
+            subtype_str );
+        pct_val = modifying_eff.percent();
+        break;
       case A_MOD_MAX_MANA_PCT:
-        field   = "max_mana";
+        field   = "mana_multiplier";
         pct_val = modifying_eff.percent();
         break;
       case A_MOD_MANA_REGEN_PCT:
@@ -15681,6 +15759,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         field   = "healing_multiplier";
         pct_val = modifying_eff.percent();
         break;
+      case A_MOD_STAT:
+        subtype_str = "flat"; 
+        bit_type    = BITMAP_ATTRIBUTE;
+        flat_val    = modifying_eff.average( this );
       default:
         return false;
     }

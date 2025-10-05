@@ -10907,22 +10907,12 @@ void rogue_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5;
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.rogue.deeper_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.assassination.sanguine_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.outlaw.devious_stratagem->effectN( 2 ).base_value();
-  resources.base[ RESOURCE_COMBO_POINT ] += talent.subtlety.secret_stratagem->effectN( 2 ).base_value();
-
   resources.base[ RESOURCE_ENERGY ] = 100;
-  resources.base[ RESOURCE_ENERGY ] += talent.rogue.vigor->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_ENERGY ] += talent.assassination.path_of_blood->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue->effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.outlaw.combat_potency->effectN( 1 ).percent();
@@ -10936,6 +10926,8 @@ void rogue_t::init_base_stats()
     ready_type = READY_TRIGGER;
     rogue_ready_trigger_threshold = ( specialization() == ROGUE_OUTLAW ) ? 20 : 25;
   }
+
+  player_t::init_base_stats();
 }
 
 // rogue_t::init_spells =====================================================

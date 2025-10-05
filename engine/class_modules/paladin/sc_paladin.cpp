@@ -3773,32 +3773,22 @@ void paladin_t::init_base_stats()
     base.distance = 5;
   }
 
-  player_t::init_base_stats();
-
   base.attack_power_per_agility  = 0.0;
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   // Boundless Conviction raises max holy power to 5
-  resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction->effectN( 1 ).base_value();
+  resources.base[ RESOURCE_HOLY_POWER ] = 3;
 
   // Ignore mana for non-holy
   if ( specialization() != PALADIN_HOLY )
   {
     resources.base[ RESOURCE_MANA ]                  = 0;
     resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
+    resources.active_resource[ RESOURCE_MANA ]       = false;
   }
 
-  // Avoidance diminishing Returns constants/conversions now handled in player_t::init_base_stats().
-  // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
-  // Just need to add class- or spec-based modifiers here.
-  // add Sanctuary dodge
-  base.dodge += passives.sanctuary->effectN( 3 ).percent();
-  // add Sanctuary expertise
-  base.expertise += passives.sanctuary->effectN( 4 ).percent();
-
-  // Paladins gets +7% block from their class aura
-  base.block += passives.paladin->effectN( 7 ).percent();
+  player_t::init_base_stats();
 }
 
 void paladin_t::init_initial_stats()

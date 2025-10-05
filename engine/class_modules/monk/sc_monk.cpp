@@ -7409,7 +7409,6 @@ void monk_t::init_base_stats()
     else
       base.distance = 5;
   }
-  base_t::init_base_stats();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -7455,6 +7454,7 @@ void monk_t::init_base_stats()
   }
 
   resources.base_regen_per_second[ RESOURCE_CHI ] = 0;
+  base_t::init_base_stats();
 }
 
 // monk_t::init_scaling =====================================================

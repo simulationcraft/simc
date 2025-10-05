@@ -705,10 +705,9 @@ struct simplified_player_t : public player_t
   {
     // Become a Priest temporarily to steal its base stat initialisation.
     type = PRIEST;
+    base.spell_power_per_intellect = 1;
     player_t::init_base_stats();
     type = PLAYER_SIMPLIFIED;
-
-    base.spell_power_per_intellect = 1;
   }
 
   void init_items() override
@@ -9363,17 +9362,17 @@ void evoker_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 25;
 
-  player_t::init_base_stats();
-
   // We need to check travel time during init_finished... So we have to initialise current.distance ourselves. Note to
   // self: Never play with prepull actions ever again.
   current.distance = base.distance;
 
   base.spell_power_per_intellect = 1.0;
 
-  resources.base[ RESOURCE_ESSENCE ] = 5 + find_spelleffect( talent.power_nexus, A_MOD_MAX_RESOURCE )->base_value();
+  resources.base[ RESOURCE_ESSENCE ] = 5;
   // TODO: confirm base essence regen. currently estimated at 1 per 5s base
   resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1.0 + talent.innate_magic->effectN( 1 ).percent() );
+
+  player_t::init_base_stats();
 }
 
 void evoker_t::init_background_actions()

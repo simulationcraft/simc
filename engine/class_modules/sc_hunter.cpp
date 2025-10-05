@@ -8539,8 +8539,6 @@ void hunter_t::init_base_stats()
       base.distance = 5;
   }
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 0;
   base.attack_power_per_agility  = 1;
   base.spell_power_per_intellect = 1;
@@ -8548,14 +8546,15 @@ void hunter_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_FOCUS ] = 5;
   for ( auto spell : { specs.marksmanship_hunter, specs.survival_hunter, talents.pack_tactics } )
   {
-    for ( const spelleffect_data_t& effect : spell -> effects() )
+    for ( const spelleffect_data_t& effect : spell->effects() )
     {
       if ( effect.ok() && effect.type() == E_APPLY_AURA && effect.subtype() == A_MOD_POWER_REGEN_PERCENT )
         resources.base_regen_per_second[ RESOURCE_FOCUS ] *= 1 + effect.percent();
     }
   }
 
-  resources.base[RESOURCE_FOCUS] = 100;
+  resources.base[ RESOURCE_FOCUS ] = 100;
+  player_t::init_base_stats();
 }
 
 void hunter_t::create_actions()

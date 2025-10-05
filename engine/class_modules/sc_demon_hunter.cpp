@@ -8014,11 +8014,8 @@ void demon_hunter_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  base_t::init_base_stats();
-
   resources.base[ RESOURCE_FURY ] = 100;
-  resources.base[ RESOURCE_FURY ] += talent.demon_hunter.unrestrained_fury->effectN( 1 ).base_value();
-  resources.base[ RESOURCE_FURY ] += talent.felscarred.untethered_fury->effectN( 1 ).base_value();
+  resources.active_resource[ RESOURCE_FURY ] = true;
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
@@ -8030,6 +8027,7 @@ void demon_hunter_t::init_base_stats()
   // Just need to add class- or spec-based modifiers here.
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+  base_t::init_base_stats();
 }
 
 // demon_hunter_t::init_procs ===============================================

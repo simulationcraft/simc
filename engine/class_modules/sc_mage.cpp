@@ -8511,8 +8511,6 @@ void mage_t::init_base_stats()
   if ( base.distance < 1.0 )
     base.distance = 10.0;
 
-  player_t::init_base_stats();
-
   base.spell_power_per_intellect = 1.0;
 
   // Mana Attunement
@@ -8523,6 +8521,8 @@ void mage_t::init_base_stats()
 
   if ( specialization() == MAGE_ARCANE )
     regen_caches[ CACHE_MASTERY ] = true;
+
+  player_t::init_base_stats();
 }
 
 void mage_t::create_buffs()

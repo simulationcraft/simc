@@ -12725,8 +12725,6 @@ void shaman_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
 
-  parse_player_effects_t::init_base_stats();
-
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
@@ -12734,17 +12732,15 @@ void shaman_t::init_base_stats()
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     resources.base[ RESOURCE_MAELSTROM ] = 100;
-    resources.base[ RESOURCE_MAELSTROM ]+= talent.swelling_maelstrom->effectN( 1 ).base_value();
-    resources.base[ RESOURCE_MAELSTROM ]+= talent.primordial_capacity->effectN( 1 ).base_value();
   }
 
   if ( specialization() == SHAMAN_RESTORATION )
   {
     resources.base[ RESOURCE_MANA ]               = 20000;
     resources.initial_multiplier[ RESOURCE_MANA ] = 1.0;
-    resources.initial_multiplier[ RESOURCE_MANA ]+= spec.restoration_shaman->effectN( 5 ).percent();
-    resources.initial_multiplier[ RESOURCE_MANA ]+= talent.primordial_capacity->effectN( 2 ).percent();
   }
+
+  parse_player_effects_t::init_base_stats();
 }
 
 // shaman_t::init_scaling ===================================================

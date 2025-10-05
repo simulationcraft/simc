@@ -13089,23 +13089,23 @@ void death_knight_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5;
 
-  player_t::init_base_stats();
-
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 0.0;
   base.spell_power_per_intellect = 1.0;
-  base.leech += talent.blood_scent->effectN( 1 ).percent();
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight->effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
-
-  if ( talent.blood.ossuary.ok() )
-    resources.base[ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary->effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
-
-  if ( talent.frost.runic_command.ok() )
-    resources.base[ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command->effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
   resources.base[ RESOURCE_RUNE ] = MAX_RUNES;
+  // only intially activate required resources.
+  for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
+  {
+    if ( r == RESOURCE_RUNIC_POWER || r == RESOURCE_RUNE || r == RESOURCE_HEALTH )
+      resources.active_resource[ r ] = true;
+    else
+      resources.active_resource[ r ] = false;
+  }
+
+  player_t::init_base_stats();
 }
 
 // death_knight_t::init_spells ==============================================

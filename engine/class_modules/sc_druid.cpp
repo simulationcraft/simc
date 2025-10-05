@@ -11466,8 +11466,6 @@ void druid_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = specialization() == DRUID_BALANCE ? 40 : 5;
 
-  player_t::init_base_stats();
-
   switch ( specialization() )
   {
     case DRUID_BALANCE:
@@ -11484,18 +11482,10 @@ void druid_t::init_base_stats()
   base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();
 
   // Resources
-  resources.base[ RESOURCE_RAGE ] = 100 +
-    find_effect( talent.fount_of_strength, A_MOD_INCREASE_RESOURCE, POWER_RAGE ).resource();
+  resources.base[ RESOURCE_RAGE ] = 100;
   resources.base[ RESOURCE_COMBO_POINT ] = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100 +
-    find_effect( talent.astral_communion, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource() +
-    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE, POWER_ASTRAL_POWER ).resource();
-  resources.base[ RESOURCE_ENERGY ] = 100 +
-    find_effect( talent.tireless_energy, A_MOD_INCREASE_RESOURCE, POWER_ENERGY ).resource() +
-    find_effect( talent.fount_of_strength, A_MOD_MAX_RESOURCE, POWER_ENERGY ).resource();
-
-  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 +
-    find_effect( talent.expansiveness, A_MOD_MAX_RESOURCE_PCT ).percent();
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
+  resources.base[ RESOURCE_ENERGY ] = 100;;
 
   // only intially activate required resources. others will be dynamically activated depending on apl
   for ( auto r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
@@ -11527,6 +11517,8 @@ void druid_t::init_base_stats()
     ready_type = ready_e::READY_TRIGGER;
 
   base_gcd = 1.5_s;
+
+  player_t::init_base_stats();
 }
 
 void druid_t::init_stats()

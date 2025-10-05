@@ -8848,13 +8848,7 @@ void warrior_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = 5.0;
 
-  parse_player_effects_t::init_base_stats();
-
   resources.base[ RESOURCE_RAGE ] = 100;
-  if ( talents.warrior.overwhelming_rage->ok() )
-  {
-    resources.base[ RESOURCE_RAGE ] += find_spell( 382767 )->effectN( 1 ).base_value() / 10.0;
-  }
   resources.max[ RESOURCE_RAGE ]  = resources.base[ RESOURCE_RAGE ];
 
   base.attack_power_per_strength = 1.0;
@@ -8867,13 +8861,7 @@ void warrior_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
-  resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.protection.indomitable -> effectN( 3 ).percent();
-
-  // Warriors gets +7% block from their class aura
-  base.block += spec.warrior -> effectN( 7 ).percent();
-
-  // Protection Warriors have a +8% block chance in their spec aura
-  base.block += spec.protection_warrior -> effectN( 9 ).percent();
+  parse_player_effects_t::init_base_stats();
 }
 
 // warrior_t::merge ==========================================================

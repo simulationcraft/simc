@@ -1258,8 +1258,6 @@ void enemy_t::init_race()
 
 void enemy_t::init_base_stats()
 {
-  player_t::init_base_stats();
-
   resources.infinite_resource[ RESOURCE_HEALTH ] = false;
 
   if ( true_level == 0 )
@@ -1311,6 +1309,8 @@ void enemy_t::init_base_stats()
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
   base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : armor_coefficient( level(), tank_dummy_e::MYTHIC );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
+
+  player_t::init_base_stats();
 }
 
 bool enemy_t::validate_custom_timeline()
