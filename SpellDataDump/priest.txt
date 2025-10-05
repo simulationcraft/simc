@@ -25,6 +25,7 @@ Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.638 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
 Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
@@ -53,6 +54,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+                   Modified By: Renewed Faith (341997 effect#1)
 Description      : Fill the target with faith in the light, healing for $o1 over $d.
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -384,6 +386,7 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=613)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.4104 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -524,6 +527,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.78336 | Target: Targeted Enemy (6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
+                   Modified By: Shadow Priest (137033 effect#6), Fortress of the Mind (193195 effect#2), Shadowy Insight (375981 effect#3)
 #3 (id=1033758)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Blast the target's mind for $s1 Shadow damage.$?c1[ Costs a high amount of mana.][]$?s137033[
@@ -556,6 +560,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=3305)     : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 4 | Scaled Value: 4 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Modified By: Petrifying Scream (55676 effect#1)
 #3 (id=1045260)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Lets out a psychic scream, causing all enemies within $A1 yards to flee, disorienting them for $d. Damage may interrupt the effect.
@@ -673,6 +678,7 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (4
 Effects          :
 #1 (id=7216)     : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Modified By: San'layn (199855 effect#2)
 Description      : Fills you with the embrace of Shadow energy for $d, causing you to heal a nearby ally for $s1% of any single-target Shadow spell damage you deal.
 Tooltip          : $15286s1% of any single-target Shadow spell damage you deal heals a nearby ally.
 
@@ -715,6 +721,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self (1)
+                   Modified By: Fortress of the Mind (193195 effect#1), Surge of Insanity (391399 effect#2)
 #4 (id=623774)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
@@ -767,8 +774,10 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=10552)    : Apply Aura (6) | Increase Health% (133)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Modified By: Light's Inspiration (373450 effect#1)
 #2 (id=332013)   : Direct Heal% (136)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Modified By: Light's Inspiration (373450 effect#2)
 #3 (id=332014)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1164957)  : Dummy (3)
@@ -955,7 +964,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -1029,7 +1038,7 @@ Family Flags     : 73
 Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Can Proc From Suppressed Target Procs (254), Absorb Falling Damage (357), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x3c | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 60 | Target: Self (1)
                    Affected School(s): All
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
@@ -1123,10 +1132,12 @@ Effects          :
 #2 (id=17325)    : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Misc Value 2: 16 (Label) | Target: Self (1)
                    Affected Spells (Label): Class Spells (16)
+                   Modified By: Afterlife (196707 effect#2)
 #3 (id=191002)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Divine Hymn (64844), Cosmic Ripple (243241)
                    Family Flags: 66, 93, 124
+                   Modified By: Afterlife (196707 effect#3)
 #4 (id=223620)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
 #5 (id=263490)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -1134,7 +1145,7 @@ Effects          :
 #6 (id=809103)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1054274)  : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 32 | Misc Value 2: 9 | Target: Self (1)
 #8 (id=1096713)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 Description      : Upon death, the Priest becomes the Spirit of Redemption for $27827d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. When the effect ends, the Priest dies.
@@ -1218,10 +1229,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.85 | Target: Targeted Enemy (6)
 #3 (id=340366)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
+                   Modified By: Deathspeaker (392507 effect#2)
 #4 (id=1073582)  : Server Side Script (77)
                    Base Value: 150 | Scaled Value: 150 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Priest (137033 effect#8)
 #5 (id=1101755)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
+                   Modified By: Shadow Priest (137033 effect#7)
 #6 (id=1152610)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : A word of dark binding that inflicts $s2 Shadow damage to your target. If your target is not killed by Shadow Word: Death, you take backlash damage equal to $s6% of your maximum health.$?A364675[
@@ -1294,6 +1308,7 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=22870)    : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Ally (21)
+                   Modified By: Prayers of the Virtuous (390977 effect#1)
 Description      : Places a ward on an ally that heals them for $33110s1 the next time they take damage, and then jumps to another ally within $155793a1 yds. Jumps up to $s1 times and lasts $41635d after each jump.
 Variables        : $mult1=$?s87336[${1.25}][${1.0}]
 $mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]
@@ -1342,6 +1357,7 @@ Effects          :
 #1 (id=23040)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Foreseen Circumstances (440738 effect#1)
 Description      : Reduces all damage taken by a friendly target by $s1% for $d. Castable while stunned.
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -1383,7 +1399,7 @@ Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=24424)    : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 19668 | Misc Value 2: 0xcb7 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 19668 | Misc Value 2: 3255 | Target: At Enemy (53)
 #2 (id=24425)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=111848)   : Trigger Spell (64): (41967)
@@ -1729,10 +1745,11 @@ Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Phyrix's Embrace (234689 effect#2), Lasting Spirit (337811 effect#1)
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x14 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 20 | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%. If the target would die, the Spirit sacrifices itself and restores the target to $s2% health.
 
@@ -1785,6 +1802,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -1816,7 +1834,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=51292)    : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 127963 | Scaled Value: 127963 | Misc Value: 9484 | Misc Value 2: 0x1f3db | Target: Self (1)
+                   Base Value: 127963 | Scaled Value: 127963 | Misc Value: 9484 | Misc Value 2: 127963 | Target: Self (1)
 Description      : Changes the appearance of your Shackle Undead.
 
 Name             : Shackle Undead (id=58251) 
@@ -2488,7 +2506,7 @@ Family Flags     : 88
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Vehicle Immunity Category (218), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81792)    : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Current Target (25)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 15 | Target: Current Target (25)
 #2 (id=81793)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 2 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
@@ -2753,6 +2771,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | Target: Self (1)
 #2 (id=127395)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Desperate Measures (458718 effect#2)
 #3 (id=127396)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Target: Self (1)
 Description      : When an attack brings you below $s1% health, you gain an absorption shield equal to $s2% of your maximum health for $114214d. Cannot occur more than once every $s3 sec.
@@ -2834,6 +2853,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 2148 | Target: at Self (18)
 #2 (id=1042300)  : Dummy (3)
                    Base Value: 27 | Scaled Value: 27 | Target: at Self (18)
+                   Modified By: Phantom Reach (459559 effect#8)
 #3 (id=1175917)  : Dummy (3)
                    Base Value: 31 | Scaled Value: 31 | Target: at Self (18)
 #4 (id=1175919)  : Create Area Trigger (179)
@@ -2967,6 +2987,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
+                   Modified By: Empowered Surges (453799 effect#1)
 #6 (id=1155847)  : Apply Aura (6) | Set Action Button Spell Count (408): Flash Heal
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 2061 | Target: Self (1)
 #7 (id=1249169)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
@@ -3048,6 +3069,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 33742 | Target: at Self (18)
 #2 (id=1156257)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 33742 | Target: Self (1)
+                   Modified By: Phantom Reach (459559 effect#8)
 #3 (id=1156258)  : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 34682 | Target: at Self (18)
 #4 (id=1175935)  : Apply Aura (6) | Area Trigger (395)
@@ -3098,6 +3120,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 658 | Target: at Self (18)
 #2 (id=1045446)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 33742 | Target: Self (1)
+                   Modified By: Phantom Reach (459559 effect#8)
 #3 (id=1156298)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 34681 | Target: at Self (18)
 #4 (id=1156299)  : Apply Aura (6) | Area Trigger (395)
@@ -3203,6 +3226,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=150932)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25 | Target: Targeted Ally (21)
+                   Modified By: Divine Feathers (440670 effect#2)
 Description      : $@spelldesc121536
 Tooltip          : Movement speed increased by $w1%.
 
@@ -3229,6 +3253,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 2148 | Target: at Self (18)
 #2 (id=1042301)  : Dummy (3)
                    Base Value: 27 | Scaled Value: 27 | Target: at Self (18)
+                   Modified By: Phantom Reach (459559 effect#8)
 #3 (id=1045444)  : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Resource: insanity | Target: Self (1)
 #4 (id=1175922)  : Create Area Trigger (179)
@@ -3282,7 +3307,7 @@ Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=155077)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 62982 | Misc Value 2: 0x1161 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 62982 | Misc Value 2: 4449 | Target: At Enemy (53)
 #2 (id=155078)   : Trigger Spell (64): (41967)
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 41967 | Target: Self (1)
 #3 (id=1107468)  : Dummy (3)
@@ -3898,7 +3923,7 @@ Duration         : Aura (infinite)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Log Caster (141), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Vehicle Immunity Category (218), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378)
 Effects          :
 #1 (id=220934)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Current Target (25)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 15 | Target: Current Target (25)
 #2 (id=220935)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
@@ -4043,7 +4068,7 @@ Family Flags     : 127
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=270241)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Insanity
-                   Base Value: 200 | Scaled Value: 200 | Resource: insanity | Misc Value 2: 0x1 | Trigger Spell: 194251 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Resource: insanity | Misc Value 2: 1 | Trigger Spell: 194251 | Target: Self (1)
 #2 (id=270242)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=285134)   : Apply Aura (6) | Dummy (4)
@@ -4071,6 +4096,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not S
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 11 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : Wraps an ally in shadows which heal for $s1, but at a price.
 
 The ally will take ${$s1/20} damage every $187464t1 sec, until they have taken ${$s1/2} total damage from all sources, or leave combat.
@@ -4291,6 +4317,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.32189 | Target: Targeted Enemy (6)
 #2 (id=283829)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
+                   Modified By: Subservient Shadows (1228516 effect#4)
 #3 (id=1072056)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s3%.
@@ -4331,10 +4358,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
+                   Modified By: Iridi's Empowerment (224999 effect#2), Improved Voidform (341240 effect#2), Perfected Form (453917 effect#1)
 #2 (id=285131)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
+                   Modified By: Iridi's Empowerment (224999 effect#3), Improved Voidform (341240 effect#3), Perfected Form (453917 effect#2)
 #3 (id=285132)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
@@ -4352,7 +4381,7 @@ Effects          :
 #9 (id=294246)   : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=294247)  : Apply Aura (6) | Shapeshift (36) | Attributes: No Immunity (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 2 | Target: Self (1)
 #11 (id=1223363) : Energize Power (30)
                    Base Value: 6000 | Scaled Value: 6000 | Resource: insanity | Target: Self (1)
 Description      : $@spelldesc228264
@@ -4393,6 +4422,7 @@ Effects          :
 #2 (id=294886)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Lenience (238063 effect#1)
 #3 (id=325533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Ally (21)
 Description      : $@spelldesc81749
@@ -4425,6 +4455,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
+                   Modified By: Enduring Luminescence (279245 effect#1), Enduring Luminescence (390685 effect#1)
 Description      : A burst of light heals the target and $s3 injured allies within $A2 yards for $s2, and applies Atonement for $s4% of its normal duration.
 
 Name             : Honorable Medallion (desc=PvP Talent) (id=195710) 
@@ -4471,7 +4502,7 @@ Triggered By     : Light of T'uure (208065)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288760)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99904 | Misc Value 2: 0xe67 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99904 | Misc Value 2: 3687 | Radius: 3 yards | Target: Right of Self (49)
 #2 (id=289218)   : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196705 | Target: Self (1)
 Description      : $@spelldesc392988
@@ -4780,6 +4811,7 @@ Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=291099)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Til Dawn (363494 effect#1)
 Description      : $@spelldesc198068
 Tooltip          : Your next Penance will deal $w1% additional damage or healing.
 
@@ -4930,7 +4962,7 @@ Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294666)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 62982 | Misc Value 2: 0xcb6 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 62982 | Misc Value 2: 3254 | Target: At Enemy (53)
 #2 (id=294667)   : Trigger Spell (64): (41967)
                    Base Value: 75 | Scaled Value: 75 | Trigger Spell: 41967 | Target: Self (1)
 #3 (id=1034688)  : Dummy (3)
@@ -4957,7 +4989,7 @@ Stance Mask      : 0x80000000
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=294682)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 126 | Misc Value 2: 1 | Target: Self (1)
 #2 (id=334777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596), Heal (2060)
@@ -4966,10 +4998,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+                   Modified By: Perfected Form (453917 effect#3), Divinity (1215241 effect#1)
 #4 (id=476563)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
+                   Modified By: Perfected Form (453917 effect#4), Divinity (1215241 effect#2)
 #5 (id=1156166)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Prayer of Healing (596), Heal (2060)
@@ -5249,7 +5283,7 @@ Proc Chance      : 101%
 Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303234)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Dominate Mind overrides Mind Control
-                   Base Value: 205364 | Scaled Value: 205364 | Misc Value: 605 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 205364 | Scaled Value: 205364 | Misc Value: 605 | Misc Value 2: 3 | Target: Self (1)
 Description      : You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -5573,10 +5607,12 @@ Effects          :
 #2 (id=320862)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Misc Value 2: 16 (Label) | Target: Self (1)
                    Affected Spells (Label): Class Spells (16)
+                   Modified By: Afterlife (196707 effect#2)
 #3 (id=320863)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Divine Hymn (64844), Cosmic Ripple (243241)
                    Family Flags: 66, 93, 124
+                   Modified By: Afterlife (196707 effect#3)
 #4 (id=320864)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
 #5 (id=320865)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -5584,11 +5620,11 @@ Effects          :
 #6 (id=320866)   : Apply Aura (6) | Levitate (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=320867)   : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 32 | Misc Value 2: 0x9 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 32 | Misc Value 2: 9 | Target: Self (1)
 #8 (id=320868)   : Apply Aura (6) | Unknown(93)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Target: Self (1)
 #9 (id=320869)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x2 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x2 | Misc Value 2: 1 | Target: Self (1)
                    Affected School(s): Holy
 #10 (id=320870)  : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Target: Self (1)
@@ -5842,7 +5878,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #2 (id=351200)   : Apply Aura (6) | Shapeshift (36) | Attributes: No Immunity (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 28 | Misc Value 2: 2 | Target: Self (1)
 #3 (id=351464)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: No Immunity (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
@@ -6270,7 +6306,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -6344,7 +6380,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -6690,7 +6726,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -7021,6 +7057,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 74, 126
+                   Modified By: Lenience (238063 effect#1)
 #3 (id=742649)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1239608), Ultimate Serenity (1250581), Benediction (1262763)
@@ -7399,7 +7436,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -7430,7 +7467,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -7570,7 +7607,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7585,7 +7622,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7654,7 +7691,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7666,7 +7703,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7678,7 +7715,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Holy Relic (id=315879) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7814,7 +7851,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7831,7 +7868,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7848,7 +7885,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7865,7 +7902,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -7881,7 +7918,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Death and Madness (id=321973) [Spell Family (6)] 
@@ -7939,7 +7976,7 @@ Effects          :
                    Affected Spells: Shadow Word: Pain (589), Unholy Transfusion (325203), Mind Sear (344754)
                    Family Flags: 15, 65, 114
 #3 (id=843265)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
-                   Base Value: 122121 | Scaled Value: 122121 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 122121 | Scaled Value: 122121 | Misc Value 2: 2 | Target: Self (1)
                    Affected Spells: Divine Star (110744), Divine Star (122121)
                    Family Flags: 110
 #4 (id=1000342)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
@@ -7998,12 +8035,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | PvP Coefficient: 0.67 | Target: Targeted Enemy (6)
 #2 (id=812776)   : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Word: Manipulation (356392 effect#2)
 #3 (id=812810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
+                   Modified By: Shattered Perceptions (338315 effect#1)
 #4 (id=812816)   : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 323701 | Target: Self (1)
 #5 (id=812823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Word: Manipulation (356392 effect#3)
 #6 (id=819553)   : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Current Target (25)
 #7 (id=872982)   : Trigger Spell (64): Mindgames
@@ -8052,7 +8092,7 @@ Triggered By     : Mindgames (323673)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=812821)   : Apply Aura (6) | Absorb Healing (301) | Attributes: Aura Points Stack (9)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: -0xa | Radius: 0 - 100 yards | Target: at Self (18) -> at any in Area (8)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: -10 | Radius: 0 - 100 yards | Target: at Self (18) -> at any in Area (8)
 Description      : $@spelldesc323673
 
 Name             : Mindgames (id=323706) [Spell Family (6)] 
@@ -8158,6 +8198,7 @@ Effects          :
                    Family Flags: 7
 #5 (id=815475)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Courageous Ascension (337966 effect#2)
 #6 (id=819021)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=819722)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
@@ -8693,7 +8734,7 @@ Triggered By     : Divine Image (336400)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=833843)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 172309 | Misc Value 2: 0x142d | Radius: 3 yards | Target: at Radius in Area (91)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 172309 | Misc Value 2: 5165 | Radius: 3 yards | Target: at Radius in Area (91)
 #2 (id=833844)   : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196705 | Target: Self (1)
 Description      : $@spelldesc336400
@@ -8705,7 +8746,7 @@ Labels           : 931
 Attributes       : Passive (6), Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=833937)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Leap of Faith overrides Leap of Faith
-                   Base Value: 336471 | Scaled Value: 336471 | Misc Value: 73325 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 336471 | Scaled Value: 336471 | Misc Value: 73325 | Misc Value 2: 3 | Target: Self (1)
 Description      : Leap of Faith instead causes you to leap to your target, and has 2 charges.
 
 Name             : Crystalline Reflection (id=336507) [Spell Family (6), Passive] 
@@ -9480,7 +9521,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Hungering Void (id=345218) [Spell Family (6), Passive, Hidden] 
@@ -9625,7 +9666,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9640,7 +9681,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9677,6 +9718,7 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889279)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Blaze of Light (215768 effect#2)
 Description      : $@spelldesc215768
 Tooltip          : Movement speed increased by $w1%.
 
@@ -9710,7 +9752,7 @@ Effects          :
                    Affected Spells: Flash Heal (2061), Benediction (1262763)
                    Family Flags: 11
 #4 (id=1045831)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Inner Shadow overrides Inner Light
-                   Base Value: 355898 | Scaled Value: 355898 | Misc Value: 355897 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 355898 | Scaled Value: 355898 | Misc Value: 355897 | Misc Value 2: 2 | Target: Self (1)
 Description      : $?s355897[Embrace the light, reducing the mana cost of healing spells by $s1%.][$@spellicon355897 Inner Light: Healing spells cost $355897s1% less mana.
 
 $@spellicon355898$@spellname355898: Spell damage and Atonement healing increased by $355898s1%.
@@ -9744,7 +9786,7 @@ Effects          :
                    Affected Spells: Atonement (81751), Atonement (94472)
                    Family Flags: 74
 #3 (id=889364)   : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): Inner Light overrides Inner Light
-                   Base Value: 355897 | Scaled Value: 355897 | Misc Value: 355897 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 355897 | Scaled Value: 355897 | Misc Value: 355897 | Misc Value 2: 2 | Target: Self (1)
 #4 (id=894590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Void Bolt (1264177)
@@ -9776,6 +9818,7 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889701)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Blaze of Light (215768 effect#2)
 Description      : $@spelldesc215768
 Tooltip          : Movement speed decreased by $w1%.
 
@@ -9871,6 +9914,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -10835,6 +10879,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=998278)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: San'layn (199855 effect#3)
 Description      : Increases your Leech by $s1%.
 
 Name             : Tithe Evasion (id=373223) [Spell Family (6), Passive, Hidden] 
@@ -10902,7 +10947,7 @@ Labels           : 16: Class Spells
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=998384)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 189988 | Misc Value 2: 0x14e5 | Target: at Random (72)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 189988 | Misc Value 2: 5349 | Target: at Random (72)
 #2 (id=998385)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc373273
@@ -11224,12 +11269,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Target: Targeted Enemy (6)
 #2 (id=1002579)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1050 | Scaled Value: 1050 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Word: Manipulation (356392 effect#2)
 #3 (id=1002580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
+                   Modified By: Shattered Perceptions (338315 effect#1)
 #4 (id=1002581)  : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 375902 | Target: Self (1)
 #5 (id=1002582)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1050 | Scaled Value: 1050 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Word: Manipulation (356392 effect#3)
 #6 (id=1002583)  : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Current Target (25)
 #7 (id=1002584)  : Trigger Spell (64): Mindgames
@@ -11277,7 +11325,7 @@ Triggered By     : Mindgames (375901)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Do Not Display Range (126), Not In Spellbook (143), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1002587)  : Apply Aura (6) | Absorb Healing (301) | Attributes: Aura Points Stack (9)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: -0xa | Radius: 0 - 100 yards | Target: at Self (18) -> at any in Area (8)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: -10 | Radius: 0 - 100 yards | Target: at Self (18) -> at any in Area (8)
 Description      : $@spelldesc375901
 
 Name             : Mindgames (id=375904) [Spell Family (6)] 
@@ -11333,10 +11381,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
+                   Modified By: Priest Shadow 10.1 Class Set 2pc (405557 effect#1)
 #3 (id=1074373)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
+                   Modified By: Priest Shadow 10.1 Class Set 2pc (405557 effect#2), Dark Thoughts (1240388 effect#1)
 Description      : $@spelldesc375888
 Tooltip          : Your next Mind Blast is instant cast.
 
@@ -11453,7 +11503,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005146)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192337 | Misc Value 2: 0x1513 | Radius: 3 yards | Target: at Radius (73)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192337 | Misc Value 2: 5395 | Radius: 3 yards | Target: at Radius (73)
 Description      : $@spelldesc377349
 
 Name             : Idol of C'Thun (id=377357) [Spell Family (6)] 
@@ -11470,7 +11520,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005148)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198757 | Misc Value 2: 0x1586 | Radius: 3 yards | Target: at Radius (73)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198757 | Misc Value 2: 5510 | Radius: 3 yards | Target: at Radius (73)
 Description      : $@spelldesc377349
 
 Name             : Idol of C'Thun (id=377358) [Spell Family (6)] 
@@ -11820,6 +11870,7 @@ Attributes       : Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1027701)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Borrowed Time (390691 effect#2)
 Description      : $@spelldesc390691
 Tooltip          : Haste increased by $w1%.
 
@@ -12136,10 +12187,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Void Shield (1253828), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
+                   Modified By: Twist of Fate (390972 effect#1)
 #2 (id=1028181)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Divine Hymn (64844), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Holy Nova (132157), Shadow Mend (186263), Mind Flay (193473), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Searing Light (196811), Light Eruption (196812), Blessed Light (196813), Tranquil Light (196816), Purge the Wicked (204213), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Cosmic Ripple (243241), Void Torrent (263165), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Mindgames (323673), Mindgames (323707), Unholy Nova (324724), Ascended Nova (325020), Ascended Nova (325041), Unholy Transfusion (325118), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Cauterizing Shadows (336373), Crystalline Reflection (336509), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Unholy Nova (347788), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Halo (390971), Divine Star (390981), Holy Mending (391156), Mind Flay: Insanity (391403), Mind Sear (394979), Dark Reprimand (400187), Shadowy Apparition (413231), Ultimate Penitence (421543), Ultimate Penitence (421544), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232567), Penance (1232571), Dark Reprimand (1232592), Dark Reprimand (1232615), Prompt Prognosis (1239608), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Ultimate Serenity (1250581), Void Shield (1253828), Benediction (1262763), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72, 126
+                   Modified By: Twist of Fate (390972 effect#2)
 Description      : $@spelldesc390972
 Tooltip          : Increases damage and healing by $w1%.
 
@@ -12268,6 +12321,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
+                   Modified By: Shattered Psyche (391090 effect#1)
 Description      : $@spelldesc391090
 Tooltip          : The critical strike chance of your next Mind Blast is increased by $w1%.
 
@@ -12456,6 +12510,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1028592)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
+                   Modified By: Maddening Touch (391228 effect#2)
 Description      : $@spelldesc391228
 
 Name             : Divine Service (id=391233) [Spell Family (6), Passive, Hidden] 
@@ -12539,7 +12594,7 @@ Proc Flags       : Cast Successful
 Attributes       : Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1028893)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 2 | Target: Self (1)
                    Affected Spells: Mind Flay (15407), Mind Flay: Insanity (391403)
                    Family Flags: 70
 #2 (id=1074850)  : Apply Aura (6) | Set Action Button Spell Count (408): Mind Flay: Insanity
@@ -12574,6 +12629,7 @@ Effects          :
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Targeted Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.375 seconds
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self (1)
+                   Modified By: Fortress of the Mind (193195 effect#1), Surge of Insanity (391399 effect#2)
 #4 (id=1028900)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
@@ -12640,7 +12696,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Icon (60), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031612)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: at Radius in Area (91)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 198236 | Misc Value 2: 5504 | Radius: 3 yards | Target: at Radius in Area (91)
 #2 (id=1031613)  : Trigger Spell (64): Divine Image
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 405216 | Target: Self (1)
 Description      : $@spelldesc392988
@@ -12777,8 +12833,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+                   Modified By: Screams of the Void (375767 effect#2)
 #2 (id=1071109)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Screams of the Void (375767 effect#1)
 Description      : $@spelldesc375767
 Tooltip          : Shadow Word: Pain and Vampiric Touch are dealing damage $w2% faster.
 
@@ -12903,6 +12961,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 394979 | Target: Targeted Enemy (6)
 #2 (id=1035085)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
+                   Modified By: Subservient Shadows (1228516 effect#4)
 Description      : Corrosive shadow energy radiates from the target, dealing ${$394979s2*$s2} Shadow damage over $d to all enemies within $394979a2 yards of the target. Damage reduced beyond $394979s3 targets.
 
 |cFFFFFFFFGenerates ${$s2*$377358s1/100} Insanity over the duration.|r
@@ -13217,6 +13276,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1054184)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: insanity | Target: Self (1)
+                   Modified By: Auspicious Spirits (155271 effect#2)
 Description      : $@spelldesc341491
 
 Name             : Divine Image (id=405963) [Spell Family (6)] 
@@ -14499,14 +14559,17 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+                   Modified By: Discipline Priest (137032 effect#13)
 #2 (id=1151713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.5 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593)
                    Family Flags: 0
+                   Modified By: Shadow Priest (137033 effect#9)
 #3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+                   Modified By: Discipline Priest (137032 effect#12)
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
@@ -14730,8 +14793,9 @@ Attributes       : No Aura Icon (60), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1150022)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Dark Energy (451018 effect#2)
 #2 (id=1150023)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 223273 | Misc Value 2: 0x18a8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 223273 | Misc Value 2: 6312 | Target: Self (1)
 Description      : $@spelldesc447444
 
 Name             : Void Blast (id=450215) [Spell Family (6)] 
@@ -14773,7 +14837,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellc
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1150284)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Blast overrides Smite | Attributes: Suppress Points Stacking (6)
-                   Base Value: 450215 | Scaled Value: 450215 | Misc Value: 585 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 450215 | Scaled Value: 450215 | Misc Value: 585 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=1150381)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Void Blast overrides Mind Blast | Attributes: Suppress Points Stacking (6)
                    Base Value: 450983 | Scaled Value: 450983 | Misc Value: 8092 | Target: Self (1)
 #3 (id=1244589)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
@@ -14861,6 +14925,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Shadow Priest (137033 effect#6), Fortress of the Mind (193195 effect#2), Shadowy Insight (375981 effect#3)
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
 
 |cFFFFFFFFGenerates ${$c/100*-1} Insanity.|r][]
@@ -14961,7 +15026,7 @@ Family Flags     : 113
 Attributes       : Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=1151696)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 224466 | Misc Value 2: 0x1403 | Radius: 3 yards | Target: Summoner in Area (32)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 224466 | Misc Value 2: 5123 | Radius: 3 yards | Target: Summoner in Area (32)
 #2 (id=1158794)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Summon a Voidwraith for $d that casts Void Flay from afar. Void Flay deals bonus damage to high health enemies, up to a maximum of $451435s2% if they are full health.$?s137033[
@@ -14984,8 +15049,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1151811)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Subservient Shadows (1228516 effect#5)
 #2 (id=1151812)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Deathspeaker (392507 effect#4)
 Description      : Shadow Word: Death has a high chance to summon a Shadowfiend for $s1 sec when damaging targets below $s2% health.
 
 Name             : Void Leech (id=451311) [Spell Family (6), Passive, Hidden] 
@@ -15514,6 +15581,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Ultimate Serenity (1250581)
                    Family Flags: 10, 28
+                   Modified By: Priest Archon 11.2 Class Set 2pc (1236398 effect#2)
 Description      : $@spelldesc453845
 Tooltip          : Receiving $w1% increased healing from $@auracaster.$?$w2>0[
 
@@ -15565,6 +15633,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Shadow Word: Madness (335467)
                    Family Flags: 87
+                   Modified By: Priest Archon 11.2 Class Set 2pc (1236398 effect#1)
 Description      : $@spelldesc453845
 Tooltip          : $?$w1>0[Receiving $w1% increased damage from $@auracaster. ][]$?$w2<0[Movement speed reduced by $w2%.][]$?$w3>0[
 
@@ -15648,7 +15717,7 @@ Labels           : 16: Class Spells
                  : 3022
 Effects          :
 #1 (id=1156104)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225672 | Misc Value 2: 0x1753 | Target: at Self (18)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225672 | Misc Value 2: 5971 | Target: at Self (18)
 Description      : $@spelldesc453918
 
 Name             : Incessant Screams (id=453943) [Spell Family (6), Hidden] 
@@ -15842,6 +15911,7 @@ Attributes       : No Aura Icon (60), Spell Haste Affects Periodic (173), Do Not
 Effects          :
 #1 (id=1166003)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Dark Energy (451018 effect#2)
 Description      : $@spelldesc447444
 
 Name             : Phantom Reach (id=459559) [Spell Family (6), Passive, Hidden] 
@@ -15999,8 +16069,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1189053)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12000 | Scaled Value: 12000 | Target: Self (1)
+                   Modified By: Preemptive Care (440671 effect#4)
 #2 (id=1189054)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+                   Modified By: Preemptive Care (440671 effect#5)
 #3 (id=1189055)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Holy Word: Serenity applies ${$s1/1000} sec of Renew to its target.
@@ -16857,6 +16929,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
 #2 (id=1234140)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Modified By: Shadow Priest (137033 effect#23)
 #3 (id=1234381)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Void Blast now also causes Entropic Rift to grow, Collapsing Void increases Entropic Rift's damage by an additional $?c1[$s1][$s3]%, and the damage of your next $?c1[Mind Blast][Void Torrent] is increased by up to $s2% based on the size of Entropic Rift when it collapses.
@@ -17292,7 +17365,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1248107)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
-                   Base Value: 1250548 | Scaled Value: 1250548 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 1250548 | Scaled Value: 1250548 | Misc Value 2: 2 | Target: Self (1)
                    Affected Spells: Holy Word: Sanctify (34861)
                    Family Flags: 28
 #2 (id=1254653)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17350,6 +17423,7 @@ Effects          :
 #1 (id=1248517)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.638 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
 Description      : Shields an ally for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
@@ -17572,7 +17646,7 @@ Triggered By     : Spectral Illusion (1250378)
 Attributes       : Is Ability (4), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Always Cast Log (255), Allow during spell override (404), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1254462)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 250373 | Misc Value 2: 0x1954 | Target: at Self (18)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 250373 | Misc Value 2: 6484 | Target: at Self (18)
 #2 (id=1254463)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1250378
@@ -17934,6 +18008,7 @@ Effects          :
 #1 (id=1259452)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected School(s): All
+                   Modified By: Improved Power Word: Shield (24191 effect#1)
 Description      : Shields $i allies for $d, absorbing $s1 damage.
 Tooltip          : Absorbs $w1 damage.
 
@@ -18133,7 +18208,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Benediction (id=1262755) [Spell Family (6), Passive] 
@@ -18216,6 +18291,7 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=1273235)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.4104 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : A divine spell that heals an ally for $s1.
 
 Name             : Benediction (id=1262766) [Spell Family (6)] 
@@ -18230,7 +18306,7 @@ Labels           : 16: Class Spells
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1273238)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Benediction overrides Flash Heal
-                   Base Value: 1262763 | Scaled Value: 1262763 | Misc Value: 2061 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 1262763 | Scaled Value: 1262763 | Misc Value: 2061 | Misc Value 2: 2 | Target: Self (1)
 Description      : $@spelldesc1262755
 Tooltip          : Flash Heal is upgraded to Benediction.
 

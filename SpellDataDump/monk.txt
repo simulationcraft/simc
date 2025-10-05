@@ -345,7 +345,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -537,6 +537,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -969,6 +970,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: chi | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#1)
 #3 (id=281299)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #4 (id=368223)   : Dummy (3)
@@ -1019,6 +1021,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #3 (id=728117)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
+                   Modified By: Weapons of Order (310454 effect#8), Weapons of Order (1249625 effect#3)
 Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1*$<CAP>/$AP}][$s1] Physical damage.$?s261917[
 
 Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m3/1000}.1 sec when used.][]$?s387638[
@@ -1119,7 +1122,7 @@ Family Flags     : 9
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Client Targeting (133), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=110144)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 54569 | Misc Value 2: 0xca2 | Target: at Self (18)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 54569 | Misc Value 2: 3234 | Target: at Self (18)
 #2 (id=255742)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Split your body and spirit, leaving your spirit behind for $d. Use Transcendence: Transfer to swap locations with your spirit.
@@ -1420,6 +1423,7 @@ Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (2
 Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 113 | Scaled Value: 113 | Misc Value: 126 | Target: Self (1)
+                   Modified By: Fortifying Brew (120954 effect#5), High Tolerance (196737 effect#2)
 #2 (id=128724)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Misc Value 2: -10 | Target: Self (1)
                    Affected School(s): Physical
@@ -1429,7 +1433,7 @@ Effects          :
 #4 (id=138807)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #5 (id=140824)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 58 | Scaled Value: 58 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 58 | Scaled Value: 58 | Misc Value: 23 | Misc Value 2: 2 | Target: Self (1)
 Description      : You shrug off attacks, delaying a portion of Physical damage based on your Agility, instead taking it over $124273d. Affects magical attacks at $s5% effectiveness.$?s383714[
 
 $@spelldesc383714][]
@@ -1531,6 +1535,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=290332)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Ally (21)
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : Surrounds the target with healing mists, restoring $119611o1 health over $119611d.
 
 If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $119607A2 yds.$?a231606[
@@ -1581,6 +1586,7 @@ Effects          :
 #2 (id=1149950)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Elusive Mists (388681 effect#3)
 #3 (id=1243160)  : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Soothing Mist (115175), Breath of Fire (115181), Fortifying Brew (115203), Energizing Elixir (115288), Mana Tea (115294), Revival (115310), Black Ox Brew (115399), Vivify (116670), Thunder Focus Tea (116680), Fists of Fury (117418), Crackling Jade Lightning (117952), Purifying Brew (119582), Renewing Mist (119611), Keg Smash (121253), Flying Serpent Kick (123586), Chi Burst (123986), Zen Pulse (124081), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Refreshing Jade Wind (162530), Rising Sun Kick (185099), Gust of Mists (191894), Eye of the Tiger (196608), Special Delivery (196733), Mana Tea (197908), Zen Pulse (198487), Soothing Mist (198533), Song of Chi-Ji (198898), Blackout Kick (205523), Soothing Mist (209525), Stomp (227291), Surging Mist (227344), Blackout Kick (228649), Chi Burst (261682), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Sunrise Technique (275673), Burst of Life (278564), Glory of the Dawn (288636), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Celestial Brew (322507), Exploding Keg (325153), Enveloping Breath (325209), Faeline Stomp (327264), Gust of Mists (328748), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Yu'lon's Whisper (337268), Chi Explosion (337342), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388201), Jadefire Stomp (388207), Overflowing Mists (388514), Zen Pulse (388609), Restoral (388615), Zen Pulse (388668), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Press the Advantage (418360), Invigorating Mists (425804), Celestial Conduit (443038), Celestial Conduit (443039), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443272), Flight of the Red Crane (443611), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Whirling Dragon Punch (451767), Dual Threat (451839), Expel Harm (451968), Flurry of Xuen (452130), Courage of the White Tiger (457917), Chi Burst (461404), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Insurance! (1215544), Insurance! (1215545), Slicing Winds (1217411), Renewing Mist (1238851), Harmonic Surge (1239442), Harmonic Surge (1239443), Celestial Infusion (1241059), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667)
@@ -1641,8 +1647,10 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset coo
 Effects          :
 #1 (id=128913)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Ironshell Brew (388814 effect#1)
 #2 (id=1035050)  : Dummy (3)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Target: Self (1)
+                   Modified By: Ironshell Brew (388814 effect#2)
 Description      : $@spelldesc120954
 Variables        : $health=$?s322960[${$115203s1}][${$115203s1}]
 $damage=$?c1[${$115203s2*-1}][${$115203s2*-1}]
@@ -1689,6 +1697,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), A
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: Restore Health/Resource (-2)
                    Base Value: 3 | Scaled Value: 3984.375 (coefficient=0.02125) | Target: Self (1)
+                   Modified By: Energizing Brew (422031 effect#2)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana.
@@ -1748,7 +1757,7 @@ Attributes       : No Aura Cancel (31), No AutoCast (AI) (49), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129077)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 0xc90 | Target: at Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 60849 | Misc Value 2: 3216 | Target: at Area (87)
 Description      : Summons a Jade Serpent Statue at the target location. When you channel Soothing Mist, the statue will also begin to channel Soothing Mist on your target, healing for $198533o1 over $198533d.
 
 Name             : Summon Black Ox Statue (id=115315) [Spell Family (53)] 
@@ -1768,7 +1777,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49),
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=129080)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 0xc97 | Target: at Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 61146 | Misc Value 2: 3223 | Target: at Area (87)
 #2 (id=129081)   : None (0)
                    Base Value: 30 | Scaled Value: 30
 Description      : Summons a Black Ox Statue at the target location for $d, pulsing threat to all enemies within $163178A1 yards.
@@ -2007,6 +2016,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Target: Targeted Enemy (6)
 #3 (id=131039)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Hasty Provocation (328670 effect#1)
 Description      : $@spelldesc115546
 Tooltip          : Taunted. Movement speed increased by $s3%.
 
@@ -2026,6 +2036,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=131760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 8 | Target: Self (1)
+                   Modified By: Mistweaver Monk (1258138 effect#10)
 Description      : Tiger Palm causes your next Blackout Kick to strike an additional time, stacking up to $202090u.
 
 Blackout Kick has a $s1% chance to reset the remaining cooldown on Rising Sun Kick.
@@ -2055,6 +2066,7 @@ Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.58 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : Causes a surge of invigorating mists, healing the target for $<healing>$?s274586[ and all allies with your Renewing Mist active for $425804s1][].
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
 
@@ -2189,6 +2201,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+                   Modified By: Courageous Impulse (451495 effect#1)
 Description      : $@spelldesc137384
 Tooltip          : Your next Blackout Kick costs no Chi$?a451495[ and deals $w3% more damage][].
 
@@ -2560,6 +2573,7 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=137916)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Mantra of Purity (451036 effect#1)
 #2 (id=1270290)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : Clears $s1% of your |CFFffffffStaggered|R damage, or a minimum of $s2% of your maximum health.
@@ -2601,6 +2615,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
 
@@ -2707,9 +2722,11 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Fortifying Brew (388917 effect#1)
 #2 (id=153591)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Fortifying Brew (388917 effect#2)
 #3 (id=153607)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #4 (id=158673)   : Apply Aura (6) | Modify Damage Taken% from Mechanic (255)
@@ -2718,6 +2735,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069), Shuffle (322120)
                    Family Flags: 34
+                   Modified By: Fortifying Brew: Determination (322960 effect#3)
 #6 (id=726762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #7 (id=1151985)  : Apply Aura (6) | Absorb Damage (69)
@@ -3070,6 +3088,7 @@ Effects          :
 #2 (id=342380)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Blackout Combo (228563 effect#2), Celestial Flames (325190 effect#1), Breath of the Cosmos (364415 effect#1)
 Description      : $@spelldesc115181
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.  Dealing $w2% reduced damage to the Monk.
 
@@ -3106,7 +3125,7 @@ Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=156549)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0xcbe | Radius: 0 - 3 yards | Target: at Target (63) -> Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 3262 | Radius: 0 - 3 yards | Target: at Target (63) -> Random in Area (86)
 #2 (id=832829)   : Apply Aura (6) | Periodic Dummy (226): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1164752)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -3444,6 +3463,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.992 | PvP Coefficient: 1.5 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
@@ -3462,7 +3482,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=158657)   : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 185099 | Misc Value 2: 0x1e8de | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 185099 | Misc Value 2: 125150 | Target: Self (1)
 Description      : Your Rising Sun Kick's visual is altered to the color of the White Tiger.
 
 Name             : Rising Tiger Kick (id=125152) 
@@ -3611,7 +3631,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=159909)   : Apply Aura Pet (174) | Override Spell Visual (403)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 117952 | Misc Value 2: 0x1ebea | Radius: 100 yards | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 117952 | Misc Value 2: 125930 | Radius: 100 yards | Target: Self (1)
 Description      : Your Crackling Jade Lightning visual is altered to the color of the White Tiger celestial.
 
 Name             : Crackling Tiger Lightning (id=125932) 
@@ -3826,7 +3846,7 @@ Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Co
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=171856)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 0xd19 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 73967 | Misc Value 2: 3353 | Target: At Enemy (53)
 #2 (id=811201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #3 (id=813932)   : Apply Aura (6) | Absorb Damage (69)
@@ -4129,6 +4149,7 @@ Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=180339)   : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Memory of the Monastery (454969 effect#1)
 Description      : You have a $m1% chance when you Tiger Palm to cause your next Blackout Kick to cost no Chi within $116768d.
 
 Name             : Energy Sphere (id=138311) [Spell Family (53)] 
@@ -4282,7 +4303,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=214754)   : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: energy | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: energy | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum energy increased by $s1%.
 
 Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 
@@ -4694,6 +4715,7 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow
 Effects          :
 #1 (id=287163)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Mastery: Elusive Brawler (117906 effect#1)
 Description      : $@spelldesc117906
 Tooltip          : Dodge chance increased by $w1%.
 
@@ -4738,7 +4760,7 @@ Triggered By     : Crosswinds (195651)
 Attributes       : Ignore Line of Sight (66), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287191)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 15 yards | Target: at Radius (73)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 3687 | Radius: 15 yards | Target: at Radius (73)
 Description      : $@spelldesc195650
 
 Name             : Honorable Medallion (desc=PvP Talent) (id=195710) 
@@ -5090,7 +5112,7 @@ Family Flags     : 53
 Attributes       : Not Shapeshifted (16), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290828)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Misc Value 2: 1 | Target: Self (1)
                    Affected School(s): All
 Description      : Reduces the mana cost of your spells by $s1% for $d.
 Tooltip          : Mana cost of spells reduced by $s1%.
@@ -5109,11 +5131,11 @@ Proc Flags       : Yellow Melee, Magic Heal
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 8 | Target: Self (1)
 #2 (id=1097149)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 8 | Target: Self (1)
 #3 (id=1097150)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 8 | Target: Self (1)
 Description      : $?s399491[Sheilun's Gift][Vivify] has a $s2% chance to cause your next Rising Sun Kick or Enveloping Mist to generate $s1 stack of Mana Tea.
 
 Enveloping Mist and Rising Sun Kick have a $s3% chance to cause your next $?s399491[Sheilun's Gift][Vivify] to generate $s1 stack of Mana Tea.
@@ -5409,6 +5431,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 25, 79
+                   Modified By: Elusive Mists (388681 effect#3)
 Description      : Heals the target for $o1 over $d.
 
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
@@ -6214,7 +6237,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -6288,7 +6311,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -6694,7 +6717,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -7059,7 +7082,7 @@ Effects          :
 #2 (id=749812)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 287055
 #3 (id=749813)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0x11e4 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 4580 | Target: At Enemy (53)
 Description      : $@spelldesc287062
 Tooltip          : Haste increased by $w1.
 
@@ -7498,7 +7521,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -7529,7 +7552,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -7669,7 +7692,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7684,7 +7707,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7737,7 +7760,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7749,7 +7772,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7761,7 +7784,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Holy Relic (id=315879) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7838,7 +7861,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7855,7 +7878,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7872,7 +7895,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7889,7 +7912,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -7905,7 +7928,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Expel Harm (id=322101) [Spell Family (53)] 
@@ -7932,6 +7955,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Target: Self (1)
 #2 (id=810237)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Tea of Plenty (388524 effect#1), Mistweaver Monk (1258138 effect#15)
 Description      : Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[
 
 Draws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[
@@ -8053,7 +8077,7 @@ Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=810260)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165374 | Misc Value 2: 0x13bf | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165374 | Misc Value 2: 5055 | Radius: 3 yards | Target: Left of Self (50)
 #2 (id=867517)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=869762)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -8085,6 +8109,7 @@ Attributes       : Passive (6), Unknown (454)
 Effects          :
 #1 (id=810265)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Fortifying Brew (120954 effect#5), High Tolerance (196737 effect#2)
 Description      : Niuzao's teachings allow you to shuffle during combat, increasing the effectiveness of your |CFFffffffStagger|R by $s1%.
 
 Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.
@@ -8390,7 +8415,7 @@ Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Do Not Log Aura Refresh (291), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815332)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 166949 | Misc Value 2: 0xe95 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 166949 | Misc Value 2: 3733 | Radius: 3 yards | Target: Left of Self (50)
 #2 (id=872141)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=1241902)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
@@ -8465,6 +8490,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.171 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=845650)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=867662)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
@@ -8588,7 +8614,7 @@ Effects          :
 #1 (id=818073)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=818083)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168020 | Misc Value 2: 0x126c | Radius: 0 - 3 yards | Target: at Self (18) -> Left in Area (81)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168020 | Misc Value 2: 4716 | Radius: 0 - 3 yards | Target: at Self (18) -> Left in Area (81)
 #3 (id=818307)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=868041)   : Apply Aura (6) | Dummy (4)
@@ -8611,7 +8637,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818301)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168033 | Misc Value 2: 0x132b | Radius: 0 - 8 yards | Target: at Area (87) -> Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168033 | Misc Value 2: 4907 | Radius: 0 - 8 yards | Target: at Area (87) -> Random in Area (86)
 #2 (id=905418)   : Trigger Spell w/ Value (142): Windwalking
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 364944 | Target: Self (1)
 Description      : $@spelldesc326860
@@ -8629,7 +8655,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818302)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168073 | Misc Value 2: 0x132b | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168073 | Misc Value 2: 4907 | Target: at Area (87)
 Description      : $@spelldesc326860
 
 Name             : Fallen Order (id=327006) [Spell Family (53)] 
@@ -8645,7 +8671,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=818303)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168074 | Misc Value 2: 0x139c | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168074 | Misc Value 2: 5020 | Target: at Area (87)
 Description      : $@spelldesc326860
 
 Name             : Faeline Stomp (desc=Night Fae) (id=327104) [Spell Family (53)] 
@@ -8674,6 +8700,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=818448)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 #2 (id=818681)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=874755)   : Apply Aura (6) | Dummy (4)
@@ -9096,7 +9123,7 @@ Conduit Id       : 28 (values=6.25, 6.875, 7.5, 8.125, 8.75, 9.375, 10, 10.625, 
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=834385)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 1137 | Target: Self (1)
 #2 (id=842459)   : Apply Aura (6) | Dummy (4)
                    Base Value: -300 | Scaled Value: -300 | Target: Self (1)
 Description      : Abilities that activate Gust of Mist reduce the cooldown on $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s2/-1000}.1 sec, and $?s325197[Chi-Ji's Gusts of Mists][Yu'lon's Soothing Breath] healing is increased by |cFFFFFFFF${$s1}.1%|r.
@@ -10119,7 +10146,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Faeline Stomp (desc=Night Fae) (id=345727) [Spell Family (53)] 
@@ -10220,7 +10247,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10235,7 +10262,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10395,6 +10422,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -10416,6 +10444,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=893950)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Mist Wrap (197900 effect#1)
 #3 (id=893951)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 10 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
@@ -11496,6 +11525,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1021960)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.7 | Target: Self (1)
+                   Modified By: Mistweaver Monk (1258138 effect#13)
 Description      : Expel Harm's healing is increased by up to $s1%, based on your missing health.
 
 Name             : Dragonfire Brew (id=387621) [Spell Family (53)] 
@@ -11683,6 +11713,7 @@ Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Acti
 Effects          :
 #1 (id=1023472)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 2.2 | Target: Self (1)
+                   Modified By: Jadefire Teachings (388026 effect#2), Jadefire Teachings (467293 effect#1)
 #2 (id=1070189)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Your Tiger Palm, Blackout Kick, Rising Sun Kick, and Crackling Jade Lightning heal up to $s2 injured allies within $388024A1 yds for $s1% of the damage done, split evenly among them.
@@ -11757,11 +11788,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 1137 | Target: Self (1)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #3 (id=1147040)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | Misc Value 2: 1137 | Target: Self (1)
 Description      : Chi Cocoons now apply Enveloping Mist for ${$s2/1000} sec when they expire or are consumed, and Chi-Ji's Gusts of Mists healing is increased by $s1% and Yu'lon's Soothing Breath healing is increased by $s3%.
 
 Name             : Yu'lon's Whisper (id=388038) [Spell Family (53), Passive] 
@@ -11838,12 +11869,14 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1023715)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 #2 (id=1023716)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=1023717)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1152252)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Singularly Focused Jade (451573 effect#3)
 Description      : Strike the ground fiercely to expose a path of jade for $d$?a137025[ that increases your movement speed by $451943s1% while inside][], dealing $388207s1 Nature damage to $?a451573[$s1 enemy][up to $s1 enemies], and restoring $388207s2 health to $?a451573[$s1 ally][up to $s4 allies] within $388207a1 yds caught in the path.$?a137024[]?a137025[ Up to 5 enemies caught in the path][Stagger is $s3% more effective for $347480d against enemies caught in the path.]$?a137023[]?a137024[][ suffer an additional $388201s1 damage.]$?a137024[
 
 Your abilities have a $s2% chance of resetting the cooldown of Jadefire Stomp while fighting within the path.][]
@@ -12626,6 +12659,7 @@ Effects          :
 #1 (id=1024492)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Mistweaver Monk (1258138 effect#16)
 Description      : Reduces all damage taken by $s1%.
 Tooltip          : Reduces all damage taken by $w1%.
 
@@ -12725,7 +12759,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49),
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1024526)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 196581 | Misc Value 2: 0x156d | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 196581 | Misc Value 2: 5485 | Target: Self (1)
 #2 (id=1024527)  : None (0)
                    Base Value: 30 | Scaled Value: 30
 Description      : Summons a White Tiger Statue at the target location for $d, pulsing $389541s1 damage to all enemies every 2 sec for $d.
@@ -12852,6 +12886,7 @@ Effects          :
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Fortifying Brew (115203)
                    Family Flags: 52
+                   Modified By: Brewmaster Monk (1258153 effect#13)
 Description      : Fortifying Brew cooldown reduced by ${$s1/-1000} sec.
 
 Name             : Ironshell Brew (id=388814) [Spell Family (53), Passive, Hidden] 
@@ -13131,6 +13166,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1025904)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: -20 | Scaled Value: -20 | Trigger Spell: 390239 | Target: Self (1)
+                   Modified By: Mistweaver Monk (1258138 effect#17)
 #2 (id=1026929)  : Dummy (3)
                    Base Value: 12 | Scaled Value: 12
 #3 (id=1026930)  : Dummy (3)
@@ -13316,6 +13352,7 @@ Effects          :
                    Family Flags: 26, 114
 #2 (id=1160956)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#9)
 #3 (id=1167349)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Vivify (116670)
@@ -13366,6 +13403,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Expel Harm (322101), Expel Harm (451968)
                    Family Flags: 17
+                   Modified By: Mistweaver Monk (1258138 effect#14)
 Description      : Expel Harm's critical healing is increased by $s1%.
 
 Name             : Glory of the Dawn (id=392958) [Spell Family (53), Passive, Hidden] 
@@ -14081,7 +14119,7 @@ Family Flags     : 3
 Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035629)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 180743 | Misc Value 2: 0x135e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 180743 | Misc Value 2: 4958 | Target: Self (1)
 #2 (id=1035630)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #3 (id=1035631)  : Apply Aura (6) | Absorb Damage (69)
@@ -14218,7 +14256,7 @@ Effects          :
 #1 (id=1037158)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1037159)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0x11e4 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 4580 | Target: At Enemy (53)
 #3 (id=1037168)  : Apply Aura (6) | Periodic Dummy (226): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1160470)  : Apply Aura (6) | Modify Mastery% (318)
@@ -14304,6 +14342,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.73707 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=1043548)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Legacy of Wisdom (404408 effect#1), Emperor's Favor (471761 effect#1)
 #3 (id=1043953)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #4 (id=1046682)  : Dummy (3)
@@ -14607,6 +14646,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=1054861)  : Dummy (3)
                    Base Value: 24 | Scaled Value: 24
+                   Modified By: Gift of the Celestials (388212 effect#5)
 #3 (id=1054866)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<newshield> damage.
@@ -14725,7 +14765,7 @@ Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Gene
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1077422)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 205353 | Misc Value 2: 0x161f | Radius: 2 yards | Target: Back Left of Self (43)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 205353 | Misc Value 2: 5663 | Radius: 2 yards | Target: Back Left of Self (43)
 #2 (id=1077429)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc411098
@@ -14781,8 +14821,10 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1082937)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#11)
 #2 (id=1082949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#12)
 Description      : Find resilience in the flow of chi in battle, gaining a magic absorb shield for ${$s1/10}.1% of your max health every $t sec in combat, stacking up to $s2%.
 
 Name             : Dance of the Wind (id=414132) [Spell Family (53), Passive] 
@@ -15134,6 +15176,7 @@ Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (
 Effects          :
 #1 (id=1103894)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.24286 | Radius: 0 - 60 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : $@spelldesc274586
 Tooltip          : $@spelldesc274586
 Variables        : $healing=$?c2[${$s1*1.95}][${$s1}]
@@ -15564,12 +15607,15 @@ Effects          :
 #2 (id=1138649)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Jade Sanctuary (443059 effect#1)
 #3 (id=1138676)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1138701)  : Direct Heal% (136)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Jade Sanctuary (443059 effect#2)
 #5 (id=1138702)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Chi-Ji's Swiftness (443566 effect#1)
 #6 (id=1138739)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #7 (id=1139554)  : Apply Aura (6) | Dummy (4)
@@ -15659,6 +15705,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1138753)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#10), Mistweaver Monk (1258138 effect#23)
 Description      : $?c2[Tiger Palm and Vivify have a chance to cause Xuen to claw a nearby enemy for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.]?c3[Tiger Palm has a chance to cause Xuen to claw your target for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.][Xuen claws your target for $457917s1 Physical damage, healing a nearby ally for $s2% of the damage done.]
 
 $?c2[Invoke Yu'lon, the Jade Serpent or Invoke Chi-Ji, the Red Crane]?c3[Invoke Xuen, the White Tiger][Invoking a celestial] guarantees your next cast activates this effect.
@@ -15867,7 +15914,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139298)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 719 | Target: at Self (18)
 #2 (id=1139299)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545), Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179), Slicing Winds (1217407), Slicing Winds (1217408), Slicing Winds (1217409), Slicing Winds (1217412), Slicing Winds (1217413)
@@ -16171,7 +16218,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139673)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 719 | Target: at Self (18)
 #2 (id=1139674)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545), Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179), Slicing Winds (1217407), Slicing Winds (1217408), Slicing Winds (1217409), Slicing Winds (1217412), Slicing Winds (1217413)
@@ -16217,6 +16264,7 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Refreshing Jade Wind (196725)
                    Family Flags: 76
+                   Modified By: Mistweaver Monk (1258138 effect#22)
 Description      : $?c2[Refreshing Jade Wind's duration is increased by ${$s1/1000} sec.]?c3[Rushing Jade Wind's duration is increased by ${$s1/1000} sec.][]
 
 Name             : Crane Style (id=446260) [Spell Family (53), Passive] 
@@ -16350,6 +16398,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -16532,6 +16581,7 @@ Attributes       : Completely Blocked (99), Aura Never Bounces (148), Show Mecha
 Effects          :
 #1 (id=1150185)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Wind's Reach (450514 effect#2)
 Description      : $@spelldesc450335
 Tooltip          : Movement slowed by $w1%.
 
@@ -16687,12 +16737,16 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1150447)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Modified By: Path of Resurgence (451084 effect#1)
 #2 (id=1150448)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Path of Resurgence (451084 effect#2)
 #3 (id=1150449)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+                   Modified By: Path of Resurgence (451084 effect#3)
 #4 (id=1150450)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Path of Resurgence (451084 effect#4)
 #5 (id=1150722)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1151053)  : Apply Aura (6) | Dummy (4)
@@ -17082,12 +17136,14 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1151332)  : Apply Aura (6) | Dummy (4)
                    Base Value: 240 | Scaled Value: 240 | Target: Self (1)
+                   Modified By: Weapons of Order (1249625 effect#6), Weapons of Order (1249625 effect#12)
 #3 (id=1167368)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1167369)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1167370)  : Apply Aura (6) | Dummy (4)
                    Base Value: 625 | Scaled Value: 625 | Target: Self (1)
+                   Modified By: Weapons of Order (1249625 effect#5), Weapons of Order (1249625 effect#11)
 Description      : Every $<value> damage you deal generates a Flurry Charge. When you cast $?c3[Fists of Fury][Keg Smash], unleash all Flurry Charges, dealing $450617s1 Physical damage per charge. 
 Variables        : $value=${($AP*($450615s5/100)*(1+$@versadmg))}
 
@@ -17226,6 +17282,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667)
                    Family Flags: 36, 103
+                   Modified By: Coalescence (450529 effect#2)
 Description      : $@spelldesc450508
 Tooltip          : Dealing $w1 damage per second.
 
@@ -17251,6 +17308,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Coalescence (450529 effect#2)
 Description      : $@spelldesc450508
 Tooltip          : Healing $w1 per second.
 
@@ -17354,6 +17412,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
                    Family Flags: 27, 38, 58
+                   Modified By: Brewmaster Monk (1258153 effect#16)
 Description      : Chi Burst and Chi Wave deal $s1% increased damage and healing.
 
 Name             : Balanced Stratagem (id=450889) [Spell Family (53), Passive] 
@@ -17553,10 +17612,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Expel Harm (115129), Crackling Jade Lightning (117952), Keg Smash (121253), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10, 32, 57, 74
+                   Modified By: Windwalker Monk (1258122 effect#16)
 #2 (id=1151635)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Expel Harm (115129), Crackling Jade Lightning (117952), Keg Smash (121253), Tiger Palm (331433), Glyph of Tiger Palm (468605)
                    Family Flags: 10, 32, 57, 74
+                   Modified By: Windwalker Monk (1258122 effect#17)
 #3 (id=1151637)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #4 (id=1151638)  : Apply Aura (6) | Dummy (4)
@@ -17684,6 +17745,7 @@ Attributes       : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1151334)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Mistweaver Monk (1258138 effect#20), Brewmaster Monk (1258153 effect#15)
 #2 (id=1153571)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $?a137023[][Rising Sun Kick, ]Blackout Kick and Tiger Palm deal $s1% additional damage to enemies in a line in front of you. Damage reduced above $s2 targets.
@@ -18162,6 +18224,7 @@ Effects          :
 #1 (id=1152143)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Misc Value 2: 3566 (Label) | Target: Self (1)
                    Affected Spells (Label): Renewing Mist (115151), Soothing Mist (115175), Breath of Fire (115181), Revival (115310), Vivify (116670), Life Cocoon (116849), Crackling Jade Lightning (117952), Chi Burst (123986), Enveloping Mist (124682), Expel Harm (322101), Exploding Keg (325153), Jadefire Stomp (388193), Restoral (388615), Sheilun's Gift (399491), Chi Burst (461404), Jadefire Stomp (1248812)
+                   Modified By: Brewmaster Monk (1258153 effect#14)
 Description      : $@spelldesc450889
 Tooltip          : Healing and damage of your next Elemental spell or ability is increased by $s1%.
 
@@ -18185,6 +18248,7 @@ Effects          :
 #1 (id=1152151)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | Misc Value 2: 3567 (Label) | Target: Self (1)
                    Affected Spells (Label): Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rushing Jade Wind (116847), Keg Smash (121253), Rising Sun Kick (185099), Blackout Kick (205523), Spinning Crane Kick (322729), Ancient Teachings (388024), Glyph of Tiger Palm (468605)
+                   Modified By: Brewmaster Monk (1258153 effect#14)
 Description      : $@spelldesc450889
 Tooltip          : Healing and damage of your next Physical spell or ability is increased by $s1%.
 
@@ -18457,6 +18521,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Target: Self (1)
 #2 (id=1152791)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Tea of Plenty (388524 effect#1), Mistweaver Monk (1258138 effect#15)
 Description      : Expel negative chi from your body, healing for $s1 and dealing $s2% of the amount healed as Nature damage to an enemy within $115129A1 yards.$?s322102[
 
 Draws in the positive chi of all your Healing Spheres to increase the healing of Expel Harm.][]$?s342928[
@@ -19236,6 +19301,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1164724)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Invoke Xuen, the White Tiger (123904 effect#3), Fury of Xuen (396168 effect#6)
 #2 (id=1164725)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Critical Strike chance increased by $s1%. This effect is increased by $s2% while Xuen, the White Tiger is active.
@@ -20305,6 +20371,7 @@ Effects          :
 #1 (id=1232298)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value 2: 3560 (Label) | Target: Self (1)
                    Affected Spells (Label): Flurry Strike (450617)
+                   Modified By: Brewmaster Monk (1258153 effect#12)
 #2 (id=1233832)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=1233833)  : Apply Aura (6) | Dummy (4)
@@ -20325,8 +20392,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1232299)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
+                   Modified By: Brewmaster Monk (1258153 effect#11)
 #2 (id=1233895)  : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#18)
 Description      : Flurry charge generation is increased by $s1% and Flurry Strikes triggers every $s2 energy spent during $?c3[Storm, Earth, and Fire][Weapons of Order].
 
 Name             : Monk Conduit of the Celestials 11.2 Class Set 2pc (id=1236381) [Spell Family (53), Passive, Hidden] 
@@ -20346,6 +20415,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1232300)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+                   Modified By: Windwalker Monk (1258122 effect#19)
 #2 (id=1236299)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.33 | Target: Self (1)
 Description      : Heart of the Jade Serpent additionally triggers for ${$s1/1000} sec at $s2% effectiveness after you cast  $?c3[Slicing Winds][Thunder Focus Tea].
@@ -20406,6 +20476,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Awakened Jadefire (389325), Awakened Jadefire (389328), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443)
                    Family Flags: 48, 102
+                   Modified By: Lotus Infusion (458431 effect#1)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.$?a448392[
 
@@ -20444,7 +20515,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1236270)  : Summon Guardian (28) | Attributes: Position is facing relative (1)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: at Self (18)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 719 | Target: at Self (18)
 #2 (id=1236271)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Flying Serpent Kick (101545), Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179), Slicing Winds (1217407), Slicing Winds (1217408), Slicing Winds (1217409), Slicing Winds (1217412), Slicing Winds (1217413)
@@ -20939,6 +21010,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1251982)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: at Self (18) -> Back in Area (79)
+                   Modified By: Singularly Focused Jade (451573 effect#1)
 Description      : $@spelldesc457974
 
 Name             : Jadefire Stomp (id=1248815) [Spell Family (53)] 
@@ -21014,6 +21086,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1252146)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: chi | Target: Self (1)
+                   Modified By: Weapons of Order (1249625 effect#8)
 Description      : $@spelldesc1248833
 
 Name             : Celestial Conduit (id=1248989) [Spell Family (53), Passive] 
@@ -21213,7 +21286,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display Range (126), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1254603)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 250281 | Misc Value 2: 0x132b | Radius: 0 - 8 yards | Target: at Area (87) -> Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 250281 | Misc Value 2: 4907 | Radius: 0 - 8 yards | Target: at Area (87) -> Random in Area (86)
 Description      : $@spelldesc1250493
 
 Name             : Wisdom of the Wall (id=1250530) [Spell Family (53)] 
@@ -21296,7 +21369,7 @@ Effects          :
 #5 (id=1254939)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1254940)  : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 0x1008 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Misc Value 2: 4104 | Target: Self (1)
                    Affected School(s): All
 #7 (id=1254941)  : Apply Aura (6) | Modify Spell Speed% (65)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -21476,7 +21549,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 4196 (Label) | Target: Self (1)
                    Affected Spells (Label): Overwhelming Force (451024)
 #21 (id=1266542) : Apply Aura (6) | Unknown(648)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 5 | Misc Value 2: 0xc3d | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 5 | Misc Value 2: 3133 | Target: Self (1)
 #22 (id=1266543) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 3 | Misc Value 2: 3390 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Knowledge (443625)
@@ -21599,7 +21672,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Spiritfont (id=1260511) [Spell Family (53), Passive] 
@@ -21701,10 +21774,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 79
+                   Modified By: Spiritfont (1260670 effect#3)
 #2 (id=1270133)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
+                   Modified By: Spiritfont (1260670 effect#2)
 #3 (id=1270134)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Rising Sun Kick damage increased by $s2% and Enveloping Mist healing increased by $s1%. These bonuses are increased by $s3% while Spiritfont is active.
@@ -22107,6 +22182,7 @@ Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In S
 Effects          :
 #1 (id=1273780)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Invoke Niuzao, the Black Ox (132578 effect#6)
 Description      : Mastery increased by $s1%. Double this effect while Invoke Niuzao, the Black Ox is active.
 
 Name             : Swift as a Coursing River (id=1263345) [Spell Family (53)] 
@@ -22230,7 +22306,7 @@ Proc Flags       : Yellow Melee
 Triggered By     : Celestial Flames (1263353)
 Effects          :
 #1 (id=1274436)  : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 116847 | Misc Value 2: 0x13482d | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 116847 | Misc Value 2: 1263661 | Target: Self (1)
 #2 (id=1274450)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187)
@@ -22397,7 +22473,7 @@ Effects          :
 #1 (id=1276977)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=1277129)  : Apply Aura (6) | Override Spell Visual (403)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 121253 | Misc Value 2: 0x134ec7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 121253 | Misc Value 2: 1265351 | Target: Self (1)
 Description      : $@spelldesc1265129
 Tooltip          : Toss an Empty Barrel along with your next Keg Smash
 

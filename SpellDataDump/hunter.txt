@@ -40,6 +40,7 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=94)       : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2 | Target: Active Pet (5)
+                   Modified By: Wilderness Medicine (343242 effect#1)
 Description      : Heals your pet for $<total>% of its total health over $d.$?s343242[
 
 Each time Mend Pet heals your pet, it has a $343242s2% chance to dispel a harmful magic effect from your pet.][]
@@ -294,6 +295,7 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
 Effects          :
 #1 (id=800)      : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Refocus (24531 effect#1)
 #2 (id=101372)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.756 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Fires several missiles, hitting all nearby enemies within $A2 yds of your current target for $s2 Physical damage$?s115939[ and triggering Beast Cleave][]. Deals reduced damage beyond $s1 targets.$?s19434[
@@ -596,6 +598,7 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 7.5 | PvP Coefficient: 1.186 | Target: Targeted Enemy (6)
+                   Modified By: Refocus (24531 effect#1)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : A powerful aimed shot that deals $s1 Physical damage.
@@ -622,14 +625,17 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 0, 106
+                   Modified By: One With the Beast (339750 effect#1)
 #2 (id=10780)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
+                   Modified By: Scent of Blood (193532 effect#1)
 #3 (id=342782)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 0, 106
+                   Modified By: One With the Beast (339750 effect#2)
 Description      : Sends you and your pet into a rage, instantly dealing $344572s1 Physical damage to its target, and increasing all damage you both deal by $s1% for $d. Removes all crowd control effects from your pet. $?s193532[
 
 Activating Bestial Wrath grants $s2 $Lcharge:charges; of Barbed Shot.][]$?s231548&!s193532[.][]
@@ -1183,6 +1189,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=83780)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Alpha Predator (269737 effect#4)
 Description      : Give the command to kill, causing your pet to charge your target and savagely deal $83381s1 Physical damage to the enemy.
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -1569,6 +1576,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -2034,6 +2042,7 @@ Attributes       : Allow While Sitting (27), No Threat (42), Not an Attack (194)
 Effects          :
 #1 (id=68089)    : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Resource: focus | Target: Self (1)
+                   Modified By: Invigorating Pulse (450379 effect#3)
 Description      : Focus gained through use of Steady Shot.
 
 Name             : No Feather Fall (id=79636) [Hidden] 
@@ -2553,6 +2562,7 @@ Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not L
 Effects          :
 #1 (id=130467)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 2 | Target: Self (1)
+                   Modified By: Blighted Quiver (1264291 effect#5)
 #2 (id=1021255)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 8000 | Scaled Value: 8000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Beast Cleave (115939), Beast Cleave (118455), Beast Cleave (118459), Kill Cleave (389448), Shadow Thrash (1264485)
@@ -2616,6 +2626,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Ignore Li
 Effects          :
 #1 (id=134935)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Targeted Ally (21)
+                   Modified By: Blighted Quiver (1264291 effect#5)
 Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
@@ -2634,6 +2645,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failu
 Effects          :
 #1 (id=134941)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Modified By: Blighted Quiver (1264291 effect#5)
 #2 (id=899824)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Melee attacks also strike all nearby enemies. Deals reduced damage beyond $s2 targets.
@@ -2653,6 +2665,7 @@ Attributes       : Is Ability (4), Not an Action (92), Do Not Display Range (126
 Effects          :
 #1 (id=135672)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
+                   Modified By: Posthaste (109215 effect#1)
 Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
@@ -3834,8 +3847,10 @@ Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: One With the Beast (339750 effect#3)
 #2 (id=271165)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Ally (21)
+                   Modified By: Scent of Blood (193532 effect#1)
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
@@ -3871,6 +3886,7 @@ Effects          :
                    Family Flags: 17
 #4 (id=1267057)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
+                   Modified By: Catlike Reflexes (1258404 effect#1)
 Description      : Increases your movement speed by $s1%$?a1258404[ and your dodge chance by $s4%][] for $d. Upon expiring, increases your movement speed by $186258s1% for another $186258d.
 Tooltip          : Movement speed increased by $w1%$?a1258404[ and your dodge chance is increased by $w4%][].$?a459455[
 You cannot be slowed below $w2% of your normal movement speed.][]
@@ -3899,6 +3915,7 @@ Effects          :
                    Family Flags: 17
 #4 (id=1212211)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Catlike Reflexes (1258404 effect#1)
 Description      : $@spelldesc186257
 Tooltip          : Movement speed increased by $w1%.$?a459455[
 You cannot be slowed below $w2% of your normal movement speed.][]
@@ -3918,7 +3935,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=271178)   : Jump (41) | Attributes: Jump Charge Unit Melee Range (2)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Misc Value: 20 | Misc Value 2: 0x14 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Misc Value: 20 | Misc Value 2: 20 | Target: Targeted Enemy (6)
 Description      : $@spelldesc190925
 Tooltip          : Stunned.
 
@@ -3977,6 +3994,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=271205)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.86 | Target: Targeted Enemy (6)
+                   Modified By: Tip of the Spear (260285 effect#1)
 Description      : A vicious slash dealing $s1 Physical damage.$?a1259003[
 
 Has a chance to follow up with a Raptor Swipe, dealing $1262293s1 Physical damage to up to $1259003s2 additional enemies.][]
@@ -4415,6 +4433,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Poin
 Effects          :
 #1 (id=283928)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Steady Focus (193533 effect#1)
 Description      : $@spelldesc193533
 Tooltip          : Haste increased by $s1%.
 
@@ -4431,7 +4450,7 @@ Family Flags     : 1
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285379)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 104493 | Misc Value 2: 0xec6 | Radius: 0 - 3 yards | Target: at Self (18) -> Front Left in Area (85)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 104493 | Misc Value 2: 3782 | Radius: 0 - 3 yards | Target: at Self (18) -> Front Left in Area (85)
 Description      : $@spelldesc257891
 
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
@@ -4546,6 +4565,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Radius: 100 yards | Target: Self and Summons in Area (120)
 #5 (id=293562)   : Apply Aura (6) | Invisibility Detection (19)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Modified By: Scout's Vigil (1253892 effect#2)
 #6 (id=1260008)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self and Summons in Area (120)
 Description      : You and your pet blend into the surroundings and gain stealth for $d. While camouflaged, you will heal for $s4% of maximum health every $T5 sec.
@@ -4695,7 +4715,7 @@ Proc Chance      : 101%
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Threat (42), No Aura Icon (60), Suppress Target Procs (113), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296764)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 102199 | Misc Value 2: 0xea6 | Radius: 0 - 5 yards | Target: at Self (18) -> Back of Self (48)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 102199 | Misc Value 2: 3750 | Radius: 0 - 5 yards | Target: at Self (18) -> Back of Self (48)
 #2 (id=296765)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Summon a herd of stampeding animals from the wilds around you that deal ${$201594s1*3} Physical damage to your enemies over $d.
@@ -5323,7 +5343,7 @@ Family Flags     : 100
 Attributes       : Always Cast Log (255), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=326461)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 110063 | Misc Value 2: 0xca4 | Radius: 0 - 5 yards | Target: At Enemy (53) -> Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 110063 | Misc Value 2: 3236 | Radius: 0 - 5 yards | Target: At Enemy (53) -> Right of Self (49)
 Description      : Summons a powerful wild beast to assist you in combat for $d.  Each time the beast deals damage, you will gain $120694s1 Focus.
 
 Name             : Expansive Mind (desc=Racial Passive) (id=227057) [Passive] 
@@ -5334,7 +5354,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=341049)   : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: focus | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: focus | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum focus increased by $s1%.
 
 Name             : Trailblazer (id=231390) [Spell Family (9)] 
@@ -5352,6 +5372,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=348988)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Trailblazer (199921 effect#2)
 Description      : $@spelldesc199921
 Tooltip          : Movement speed increased by $w1%.
 
@@ -5626,7 +5647,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -5700,7 +5721,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -5838,6 +5859,7 @@ Channel Interrupt: Damage (2), Sheathing (10), Use Item (14)
 Effects          :
 #1 (id=479997)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
+                   Modified By: Double Tap (260402 effect#3), Rapid Reload (431156 effect#1), Ammo Conservation (459794 effect#4)
 #2 (id=738873)   : Apply Aura (6) | Periodic Dummy (226): every 0.333 seconds
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Enemy (6)
 #3 (id=1193565)  : Dummy (3)
@@ -5919,6 +5941,7 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
 Effects          :
 #1 (id=480918)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Refocus (24531 effect#1)
 #2 (id=1193792)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5076 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : Fires several missiles, hitting your current target and all enemies within $A2 yards for $s2 Physical damage. Deals reduced damage beyond $2643s1 targets.$?s260393[
@@ -5940,14 +5963,18 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook
 Effects          :
 #1 (id=480920)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Self (1)
+                   Modified By: Light Ammo (378913 effect#1)
 #2 (id=716810)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 9 | Target: Self (1)
 #3 (id=738672)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Self (1)
+                   Modified By: Light Ammo (378913 effect#2)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+                   Modified By: Deadly Chain (339973 effect#1), Blighted Quiver (1264291 effect#2)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+                   Modified By: Deadly Chain (339973 effect#2), Blighted Quiver (1264291 effect#3)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
@@ -6114,6 +6141,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Strike As One (1251779)
                    Family Flags: 71
+                   Modified By: Bloody Claws (385737 effect#1)
 Description      : $@spelldesc1252708
 Tooltip          : Raptor Strike damage increased by $s1%.
 
@@ -6198,8 +6226,10 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=484009)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Alpha Predator (269737 effect#2), Deadly Duo (397568 effect#1)
 #2 (id=484010)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Resource: focus | Target: Self (1)
+                   Modified By: Deadly Duo (397568 effect#2), Flanker's Advantage (459964 effect#1)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 
 |cFFFFFFFFGenerates $s2 Focus.|r
@@ -6260,6 +6290,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #3 (id=1099130)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Enemy (6)
+                   Modified By: Contained Explosion (426344 effect#1)
 Description      : Hurl a bomb at the target, exploding for $265157s1 Fire damage in a cone and coating enemies in wildfire, scorching them for $269747o1 Fire damage over $269747d. Deals reduced damage beyond $s2 targets.
 
 Deals $s3% increased damage to your primary target.
@@ -6484,10 +6515,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Multi-Shot (257620)
                    Family Flags: 12
+                   Modified By: Powerful Precision (340033 effect#1), Windrunner Quiver (473523 effect#3), Unmatched Precision (1232955 effect#1), Can't Miss, Won't Miss (1253830 effect#1)
 #2 (id=713795)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 39, 105
+                   Modified By: Powerful Precision (340033 effect#2), Windrunner Quiver (473523 effect#4), Unmatched Precision (1232955 effect#2), Can't Miss, Won't Miss (1253830 effect#5)
 #3 (id=737584)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
@@ -6496,6 +6529,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
                    Family Flags: 11
+                   Modified By: Headshot (471363 effect#1), Windrunner Quiver (473523 effect#5), Unmatched Precision (1232955 effect#3), Unmatched Precision (1232955 effect#4), Can't Miss, Won't Miss (1253830 effect#6)
 #5 (id=1193841)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 Description      : $@spelldesc260240
@@ -6633,6 +6667,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Steady Shot (56641), Arcane Shot (185358), Raptor Strike (186270), Hatchet Toss (193265), Butchery (212436), Mongoose Bite (259387), Flanking Strike (259516), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Flanking Strike (269752), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048), Kill Shot (320976), Chimaera Shot (342049), Coordinated Assault (360952), Spearhead (360966), Coordinated Assault (360969), Black Arrow (466930), Flamefang Pitch (1251595), Flamefang Pitch (1251614), Boomstick (1261193), Boomstick (1261215)
                    Family Flags: 11, 25, 27, 32, 38, 41, 62, 80, 94, 96, 105, 110, 116
+                   Modified By: Relentless Primal Ferocity (459962 effect#2)
 Description      : $@spelldesc260285
 Tooltip          : Your next non-Kill Command spell deals $w1% increased direct damage.
 
@@ -6863,17 +6898,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 106
+                   Modified By: Mastery: Spirit Bond (459722 effect#1), Mastery: Spirit Bond (459726 effect#1)
 #2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 106
+                   Modified By: Mastery: Spirit Bond (459722 effect#2), Mastery: Spirit Bond (459726 effect#3)
 #3 (id=1166751)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85 | Target: Self (1)
+                   Modified By: Mastery: Spirit Bond (459722 effect#3), Mastery: Spirit Bond (459726 effect#4)
 #4 (id=1167356)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Radius: 25 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
+                   Modified By: Mastery: Spirit Bond (459722 effect#4), Mastery: Spirit Bond (459726 effect#2)
 #5 (id=1168491)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.85 | Target: Self (1)
+                   Modified By: Mastery: Spirit Bond (459722 effect#5)
 #6 (id=1214780)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #7 (id=1214824)  : Apply Aura (6) | Dummy (4)
@@ -7358,8 +7398,10 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Aura Unique (43)
 Effects          :
 #1 (id=708348)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#3)
 #2 (id=708349)   : Apply Aura Owner in Area (143) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 8 | Scaled Value: 8 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#4)
 Description      : You and your pet gain $s1% increased movement speed.
 Tooltip          : Movement speed increased by $w2%.
 
@@ -7377,8 +7419,10 @@ Attributes       : Passive (6), Do Not Log (8), Aura Unique (43), Do Not Display
 Effects          :
 #1 (id=708365)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#3)
 #2 (id=708366)   : Apply Aura Owner in Area (143) | Increase Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#4)
 Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $w2%.
 
@@ -7396,8 +7440,10 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Aura Unique (43)
 Effects          :
 #1 (id=708367)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#3)
 #2 (id=708368)   : Apply Aura Owner in Area (143) | Modify Leech% (443)
                    Base Value: 4 | Scaled Value: 4 | Radius: 100 yards | Target: Self (1)
+                   Modified By: Aspect of the Beast (191384 effect#4)
 Description      : You and your pet gain $s1% Leech.
 Tooltip          : Leech increased by $w2%.
 
@@ -7448,9 +7494,11 @@ Effects          :
 #1 (id=708480)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.833333 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Shell Cover (472707 effect#1)
 #2 (id=708481)   : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Don't Fail Spell On Targeting Failure (20)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.833333 | Misc Value: 0x7f | Target: Active Pet (5)
                    Affected School(s): All
+                   Modified By: Shell Cover (472707 effect#2)
 Description      : Reduces all damage you and your pet take by $s1% for $d.
 Tooltip          : All damage taken reduced by $s1%.
 
@@ -7507,6 +7555,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.86 | Target: Targeted Enemy (6)
+                   Modified By: Tip of the Spear (260285 effect#1)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Fireblood (desc=Racial) (id=265221) 
@@ -7585,7 +7634,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -7932,6 +7981,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20988 | Target: Targeted Enemy (6)
 #2 (id=1272729)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Wildfire Tar (1262435 effect#1)
 Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8654,6 +8704,7 @@ Attributes       : No Aura Icon (60), Always Cast Log (255), Aura Points On Clie
 Effects          :
 #1 (id=723906)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Ally (21)
+                   Modified By: Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Description      : Increases the attack speed of your active pets by $s1%.
 
 Name             : Frenzy (id=272795) [Spell Family (9)] 
@@ -8673,6 +8724,7 @@ Attributes       : Do Not Log (8), No Aura Icon (60), Always Cast Log (255), All
 Effects          :
 #1 (id=723916)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Description      : $@spelldesc217200
 Tooltip          : Pet attack speed increased by $272790s1%.
 
@@ -9056,8 +9108,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 0, 106
+                   Modified By: Unerring Vision (474738 effect#1)
 #5 (id=1277010)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Unerring Vision (474738 effect#2)
 #6 (id=1277011)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
@@ -9297,8 +9351,10 @@ Effects          :
 #4 (id=837976)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Enfeebled Mark (339018 effect#1)
 #5 (id=837984)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Enfeebled Mark (339018 effect#2)
 Description      : $@spelldesc308491
 Tooltip          : Chance to suffer a critical strike from $@auracaster increased by $s1%.
 $@auracaster ignoring line of sight.
@@ -9411,7 +9467,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -9442,7 +9498,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -9582,7 +9638,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9597,7 +9653,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9650,7 +9706,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9662,7 +9718,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9674,7 +9730,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Holy Relic (id=315879) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9792,7 +9848,7 @@ Category Cooldown: 30 seconds
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=808672)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 164986 | Misc Value 2: 0x1264 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 164986 | Misc Value 2: 4708 | Target: at Area (87)
 Description      : $@spelldesc187650
 
 Name             : Freezing Trap (id=321177) [Spell Family (9)] 
@@ -9980,7 +10036,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9997,7 +10053,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10014,7 +10070,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10031,7 +10087,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -10047,7 +10103,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Flayed Shot (desc=Venthyr) (id=324149) [Spell Family (9)] 
@@ -10138,6 +10194,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 #4 (id=815070)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
+                   Modified By: Necrotic Barrage (339129 effect#2)
 Description      : Throw a deadly chakram at your current target that will rapidly deal $325037s1 Shadow damage $x times, bouncing to other targets if they are nearby. Enemies struck by Death Chakram take $361756s1% more Physical damage from you and your pet for $361756d.
 
 Each time the chakram deals damage, its damage is increased by $s3% and you generate $s4 Focus.
@@ -10250,7 +10307,7 @@ Family Flags     : 1
 Attributes       : No Aura Cancel (31), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=821093)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168904 | Misc Value 2: 0x1332 | Radius: 5 yards | Target: at Target Back (65)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 168904 | Misc Value 2: 4914 | Radius: 5 yards | Target: at Target Back (65)
 Description      : $@spelldesc328231
 
 Name             : Wild Spirits (desc=Night Fae) (id=328757) [Spell Family (9)] 
@@ -10467,7 +10524,7 @@ Triggered By     : Eagletalon's True Focus (336849)
 Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=834525)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Misc Value 2: 4 | Target: Self (1)
                    Affected School(s): All
 #2 (id=871729)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 14 | Target: Self (1)
@@ -11283,8 +11340,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=844891)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Improved Deathblow (378769 effect#4), Soul Drinker (469638 effect#3)
 #2 (id=1276213)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soul Drinker (469638 effect#4)
 Description      : $?c2[Aimed Shot][Kill Command] has a $?c1[$s2]?c2[$s1][$s3]% chance to grant Deathblow.
 
 $@spellicon378770 $@spellname378770
@@ -11478,7 +11537,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Ambuscade (id=346747) [Spell Family (9), Passive, Hidden] 
@@ -11527,7 +11586,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11542,7 +11601,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11703,6 +11762,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -11939,7 +11999,7 @@ Triggered By     : Bestial Pact (360955)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=898408)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Misc Value 2: 0x9940 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | Misc Value 2: 39232 | Target: Targeted Enemy (6)
 Description      : $@spelldesc360966
 
 Name             : Bleeding Gash (id=361049) [Spell Family (9)] 
@@ -12091,6 +12151,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Wildfire Bomb (259495), Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270323), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270335), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271045), Volatile Bomb (271048), Volatile Bomb (271049), Wildfire Bomb (1253171)
                    Family Flags: 22, 26
+                   Modified By: Mad Bombardier (363805 effect#1)
 #2 (id=903210)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
 #3 (id=913609)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -12470,6 +12531,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
+                   Modified By: Blighted Quiver (1264291 effect#6)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
@@ -12805,6 +12867,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Wind Arrow (191043), Hatchet Toss (193265), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Shadow Surge (444269), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Spearhead (1221386), Hemorrhaging Strikes (1251683), Sic 'Em (1253138), Wildfire Bomb (1253171), Lunar Storm (1253733), Takedown (1253859), Takedown (1253862), Rupturing Blow (1256931), Boomstick (1261215), Raptor Swipe (1262293), Sticky Bomb (1262390), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Twilight Requiem (1266096)
                    Family Flags: 106
+                   Modified By: Deadly Duo (378962 effect#2)
 Description      : $@spelldesc360966
 Tooltip          : Suffering $s1 damage every $t1 sec.
 $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $s3% increased damage.][.]
@@ -13202,6 +13265,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Incendiary Ammunition (471428 effect#1)
 Description      : $@spelldesc389019
 Tooltip          : Aimed Shot damage increased by $s1%. $?a471428[Aimed Shot critical strike damage increased by $s2%.][]
 
@@ -13220,6 +13284,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Report Spell Failu
 Effects          :
 #1 (id=1025710)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Modified By: Blighted Quiver (1264291 effect#5)
 #2 (id=1025711)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc378207
@@ -14592,7 +14657,7 @@ Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Si
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1137611)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225190 | Misc Value 2: 0x174c | Radius: 3 yards | Target: Back Left of Self (43)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225190 | Misc Value 2: 5964 | Radius: 3 yards | Target: Back Left of Self (43)
 Description      : $@spelldesc1264289
 
 Name             : Shadow Surge (id=444269) [Spell Family (9)] 
@@ -15329,7 +15394,7 @@ Triggered By     : Summon Fenryr (459735)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1166758)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228224 | Misc Value 2: 0x1783 | Target: Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228224 | Misc Value 2: 6019 | Target: Left of Self (50)
 #2 (id=1166759)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc459730
@@ -15383,7 +15448,7 @@ Triggered By     : Summon Hati (459738)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1166772)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228226 | Misc Value 2: 0x1783 | Target: Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 228226 | Misc Value 2: 6019 | Target: Left of Self (50)
 #2 (id=1166773)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc459730
@@ -15830,6 +15895,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Explosive Shot (212680), Explosive Shot (269850)
                    Family Flags: 73
+                   Modified By: Relentless Primal Ferocity (459962 effect#2)
 Description      : $@spelldesc260285
 Tooltip          : Your next Explosive Shot deals $s1% increased damage.
 
@@ -15993,10 +16059,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Avian Specialization (466867 effect#1), Arcane Talons (1253846 effect#1)
 #2 (id=1197714)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Arcane Talons (1253846 effect#2)
 Description      : $@spelldesc466867
 Tooltip          : Your next Aimed Shot deals $s1% increased damage to this target.
 
@@ -16093,6 +16161,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #3 (id=1179944)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Blighted Quiver (1264291 effect#7)
 #4 (id=1181481)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?c1[Bloodshed][Trueshot] causes you to surrender to darkness, granting you Withering Fire and Deathblow.
@@ -16117,6 +16186,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1179905)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Blighted Quiver (1236976 effect#1), Blighted Quiver (1264291 effect#1)
 #2 (id=1189972)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1189973)  : Dummy (3)
@@ -16585,6 +16655,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1186803)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Modified By: Light Ammo (378913 effect#3), Blighted Quiver (1264291 effect#4)
 #2 (id=1226132)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Aimed Shot, Rapid Fire, $?s466932[Black Arrow][Kill Shot], and Arcane Shot now hit $s2 additional $Ltarget:targets; for $s1% of their damage.
@@ -16712,6 +16783,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Fury of the Eagle (203413), Fury of the Eagle (203415)
                    Family Flags: 101
+                   Modified By: Relentless Primal Ferocity (459962 effect#2)
 Description      : $@spelldesc260285
 Tooltip          : Your next Explosive Shot deals $s1% increased damage.
 
@@ -16735,6 +16807,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1191058)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
+                   Modified By: Survival Hunter (137017 effect#8)
 Description      : While in combat, every $471877d your next Kill Command summons the aid of a Beast.
 
 $@spellicon471881 Wyvern
@@ -16881,7 +16954,7 @@ Triggered By     : Bear Summon (471993)
 Attributes       : No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=1189797)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Random (72)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 6125 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Random (72)
 
 Name             : Bear Summon (id=471993) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -17218,10 +17291,12 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
+                   Modified By: Hoof and Blade (1264797 effect#1)
 #2 (id=1190880)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Hatchet Toss (193265)
                    Family Flags: 41
+                   Modified By: Hoof and Blade (1264797 effect#2)
 #3 (id=1190881)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
@@ -17711,10 +17786,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Avian Specialization (466867 effect#1), Arcane Talons (1253846 effect#1)
 #2 (id=1197754)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Arcane Talons (1253846 effect#2)
 Description      : $@spelldesc466867
 Tooltip          : Your next Aimed Shot deals $s1% increased damage to this target.
 
@@ -18105,7 +18182,7 @@ Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1209495)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234170 | Misc Value 2: 0x1822 | Radius: 10 yards | Target: Back of Self (48)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234170 | Misc Value 2: 6178 | Radius: 10 yards | Target: Back of Self (48)
 Description      : $@spelldesc471876
 Tooltip          : Wyvern is summoned.
 
@@ -18165,6 +18242,7 @@ Effects          :
 #1 (id=1215326)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Beast Mastery Hunter (137015 effect#5), Survival Hunter (137017 effect#16), Lead From the Front (472743 effect#3), Hunter Pack Leader 11.2 Class Set 2pc (1236372 effect#3)
 
 Name             : Single-Button Assistant (id=1229376) 
 Class            : Arms Warrior, Fury Warrior, Protection Warrior, Holy Paladin, Protection Paladin, Retribution Paladin, Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Discipline Priest, Holy Priest, Shadow Priest, Blood Death Knight, Frost Death Knight, Unholy Death Knight, Elemental Shaman, Enhancement Shaman, Restoration Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Brewmaster Monk, Mistweaver Monk, Windwalker Monk, Balance Druid, Feral Druid, Guardian Druid, Restoration Druid, Havoc Demon Hunter, Vengeance Demon Hunter, Devastation Evoker, Preservation Evoker, Augmentation Evoker, Unknown Warrior (1480)
@@ -18507,6 +18585,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1233415)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.33 | Misc Value 2: 3557 (Label) | Target: Self (1)
+                   Modified By: Marksmanship Hunter (137016 effect#14)
 Description      : Sentinel's damage is increased by $s2%. The Boon of Elune is now active for the duration of Lunar Storm at $s1% effectiveness.
 
 Name             : Grizzled Fur (id=1236564) [Spell Family (9)] 
@@ -18758,6 +18837,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=1255471)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Flanked (1256938 effect#3)
 #5 (id=1255481)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1267297)  : Dummy (3)
@@ -19160,6 +19240,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20988 | Target: Targeted Enemy (6)
 #2 (id=1272728)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Wildfire Tar (1262435 effect#1)
 Description      : $@spelldesc259495
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -19235,6 +19316,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1259463)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Moon's Blessing (1253825 effect#1)
 Description      : $?c3[Raptor Strike has a $s2% chance to summon the aid of a Sentinel Owl that descends from the skies and applies Sentinel's Mark to your primary target][Your Eagle is replaced with a Sentinel Owl that applies an enhanced Sentinel's Mark].
 
 $@spellicon1253601$@spellname1253601
@@ -19259,10 +19341,12 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
                    Affected Spells: Aimed Shot (19434)
                    Family Flags: 17
+                   Modified By: Avian Specialization (466867 effect#1), Arcane Talons (1253846 effect#1)
 #2 (id=1259474)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
                    Affected Spells: Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048)
                    Family Flags: 25
+                   Modified By: Arcane Talons (1253846 effect#2)
 Description      : $@spelldesc1253599
 Tooltip          : Your next $?c2[Aimed Shot][Wildfire Bomb] deals $?c2[$s1][$s2]% increased damage to the marked target.
 
@@ -20000,7 +20084,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Lethality (id=1259922) [Spell Family (9), Passive, Hidden] 
@@ -20349,7 +20433,7 @@ Labels           : 16: Class Spells
 Attributes       : No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275651)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 255153 | Misc Value 2: 0x1996 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 255153 | Misc Value 2: 6550 | Radius: 0 - 5 yards | Target: at Self (18) -> Back Left in Area (84)
 
 Name             : Wild Thrash (id=1264355) [Spell Family (9)] 
 Class            : Hunter
@@ -20425,6 +20509,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Allow Class Ability Procs
 Effects          :
 #1 (id=1275877)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Blighted Quiver (1264291 effect#5)
 Description      : Command your pet to thrash all enemies within $1264355A1 yds, dealing $1264355s1 Physical damage to them. Damage is increased by $s1% if Wild Thrash hits $s2 or more $L enemy:enemies;.
 
 Deals reduced damage beyond $1264355s2 $Ltarget:targets;.
@@ -20626,6 +20711,7 @@ Attributes       : Passive (6), Do Not Display Range (126)
 Effects          :
 #1 (id=1276570)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Hunter Beast Mastery 11.0 Class Set 2pc (453654 effect#1)
 Description      : Increases the attack speed of your active pets by $s1%.
 
 Name             : Moonlight Chakram (id=1264946) [Spell Family (9), Hidden] 

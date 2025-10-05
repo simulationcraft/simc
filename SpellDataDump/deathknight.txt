@@ -460,6 +460,7 @@ Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49),
 Effects          :
 #1 (id=34352)    : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Modified By: Raise Abomination (1242608 effect#1)
 Description      : Summons a legion of $s1 Lesser Ghouls to swarm your enemies.
 Tooltip          : Summoning ghouls.
 
@@ -478,7 +479,7 @@ Effects          :
 #1 (id=34355)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: at Random (72)
 #2 (id=34356)    : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 0x2af | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 687 | Target: Random in Area (86)
 Description      : $@spelldesc42650
 
 Name             : Death and Decay (id=43265) [Spell Family (15)] 
@@ -507,6 +508,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Target: at Area (87) -> at Dynamic Enemy in Area (28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Toxic Accumulator (333388 effect#1)
 #4 (id=274827)   : Create Area Trigger (179)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Area (87)
 Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.$?s207311&c1[
@@ -604,7 +606,7 @@ Family Flags     : 12
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=38713)    : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26125 | Misc Value 2: 0x136d | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26125 | Misc Value 2: 4973 | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
 Description      : Raises a $?s58640[geist][ghoul] to fight by your side.  You can have a maximum of one $?s58640[geist][ghoul] at a time. Lasts $46585d.
 
 Name             : Risen Ghoul Self Stun (id=47466) [Hidden] 
@@ -835,6 +837,7 @@ Aura Interrupt   : Login (29)
 Effects          :
 #1 (id=40417)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 2 | Stat: Sta | Target: Self (1)
+                   Modified By: Frost Death Knight (137006 effect#7), Unholy Death Knight (137007 effect#6), Veteran of the Third War (316714 effect#1)
 #2 (id=40418)    : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Death Coil (47633), Unholy Strength (53365), Bonestorm (194844), Bonestorm (196528)
@@ -842,6 +845,7 @@ Effects          :
 #3 (id=884937)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Veteran of the Third War (316714 effect#2)
 Description      : Stamina increased by $s1%.
 $?s316714[Damage taken reduced by $s3%.][]
 
@@ -866,6 +870,7 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=40421)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=477160)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=477161)   : Apply Aura (6) | Creature Immunities (147)
@@ -898,15 +903,18 @@ Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Runic Barrier (280010 effect#3)
 #2 (id=40864)    : Apply Aura (6) | Immune Debuff Application from School (267)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1)
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #4 (id=879326)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Osmosis (454835 effect#1)
 #5 (id=879331)   : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #6 (id=1157768)  : Apply Aura (6) | Modify Resource Generation% (329)
@@ -1008,6 +1016,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Trigger Spell: 325461 | Target: Targeted Enemy (6)
 #5 (id=844534)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
+                   Modified By: Exterminate (441416 effect#3), Empower Rune Weapon (1230959 effect#4)
 #6 (id=1090799)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75
 #7 (id=1275178)  : Trigger Spell (64): Obliterate
@@ -1047,7 +1056,8 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=41134)    : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Modified By: Everlasting Bond (377668 effect#1)
 #2 (id=41135)    : Apply Aura (6) | Dummy (4)
                    Base Value: 50707 | Scaled Value: 50707 | Trigger Spell: 1206 | Target: Self (1)
 #3 (id=41136)    : Apply Aura (6) | Dummy (4)
@@ -1087,7 +1097,7 @@ Effects          :
 #6 (id=828634)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=844417)   : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25 | Misc Value 2: 0x7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25 | Misc Value 2: 7 | Target: Self (1)
 #8 (id=1026075)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -1186,7 +1196,7 @@ Effects          :
 #1 (id=41319)    : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Enemy (6)
 #2 (id=41320)    : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27829 | Misc Value 2: 0xca6 | Radius: 3 yards | Target: Front Left of Self (44)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 27829 | Misc Value 2: 3238 | Radius: 3 yards | Target: Front Left of Self (44)
 #3 (id=41321)    : Trigger Spell (64): Summon Gargoyle
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777 | Target: Self (1)
 #4 (id=728503)   : Dummy (3)
@@ -1232,7 +1242,7 @@ Family Flags     : 25
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow While Charmed (261), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=69702)    : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Radius: 3 yards | Target: at Target Front (64)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Radius: 3 yards | Target: at Target Front (64)
 Description      : $@spelldesc49576
 
 Name             : Death Grip (id=49576) [Spell Family (15)] 
@@ -1287,8 +1297,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.5312 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=42114)    : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
+                   Modified By: Voracious (273953 effect#2), Improved Death Strike (374277 effect#1)
 #3 (id=287354)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | Target: Targeted Enemy (6)
+                   Modified By: Voracious (273953 effect#3), Insatiable Appetite (338330 effect#1), Improved Death Strike (374277 effect#2)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 Description      : Focuses dark power into a strike$?s137006[ with both weapons, that deals a total of ${$s1+$66188s1}][ that deals $s1] Physical damage and heals you for ${$s2}.2% of all damage taken in the last $s4 sec, minimum ${$s3}.1% of maximum health.
@@ -1309,7 +1321,7 @@ Effects          :
 #1 (id=42597)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=42598)    : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25 | Misc Value 2: 0x7 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 25 | Misc Value 2: 7 | Target: Self (1)
 Description      : $@spelldesc49039
 
 Name             : Razorice (id=50401) [Spell Family (15)] 
@@ -1465,6 +1477,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388), Obliterate (1264082), Obliterate (1264084)
                    Family Flags: 7, 15
+                   Modified By: Killing Streak (1230153 effect#2)
 #4 (id=1222627)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15) | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388)
@@ -1515,6 +1528,7 @@ Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=43590)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.4 | Stat: Str | Target: Self (1)
+                   Modified By: Pillar of Frost (281214 effect#1)
 #2 (id=43591)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value: 1887 | Target: Self (1)
 #3 (id=337680)   : Apply Aura (6) | Dummy (4)
@@ -1554,6 +1568,7 @@ Attributes       : No Threat (42), Aura Points On Client (268), Allow Class Abil
 Effects          :
 #1 (id=43775)    : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 100 | Scaled Value: 100 | Resource: rune | Target: Self (1)
+                   Modified By: Festering Corruption (1242601 effect#1)
 #2 (id=98767)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1013385)  : Apply Aura (6) | Dummy (4)
@@ -1597,6 +1612,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Targeted Enemy (6)
                    Affected Spells: Empower Rune Weapon (47568), Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Chill Streak (204167), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Echoing Howl (275918), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Frostwhelp's Indignation (287320), Frost Strike (325464), Soul Reaper (343294), Soul Reaper (343295), Cold Heart (358109), Frostwhelp's Aid (377245), Frostwyrm's Fury (410790), Wave of Souls (435802), Reaper's Mark (436304), Icy Death Torrent (439539), Reaper's Mark (439843), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Cryogenic Chamber (456371), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Frostreaper (1233619), Frostscythe (1237388), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 120
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Target: Targeted Enemy (6)
 Description      : $@spelldesc53343
@@ -1666,7 +1682,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Item Spell In PvP (13), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=45979)    : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3370 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3370 | Misc Value 2: 11
 #2 (id=45980)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engrave your weapon with a rune that causes ${$max(($<coeff>*$AP),1)}% extra weapon damage as Frost damage and increases enemies' vulnerability to your Frost attacks by $51714s1%, stacking up to $51714u times. $?a332944[][
@@ -1688,7 +1704,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=45981)    : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3368 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3368 | Misc Value 2: 11
 #2 (id=133696)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engrave your weapon with a rune that has a chance to heal you for $53365s2% of your maximum health and increase total Strength by $53365s1% for $53365d.  
@@ -1716,8 +1732,10 @@ Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class 
 Effects          :
 #1 (id=46012)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 15 | Scaled Value: 15 | Stat: Str | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=46013)    : Direct Heal% (136)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : Affixes your rune weapon with a rune that has a chance to heal you for $53365s2% and increase total Strength by $53365s1% for $53365d.
 Tooltip          : Strength increased by $s1%.
 
@@ -1745,10 +1763,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645), Vampiric Strike (433895), Heart Strike (460501)
                    Family Flags: 24
+                   Modified By: Withering Plague (337884 effect#1)
 #4 (id=1026997)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Coagulopathy (391477 effect#1)
 #5 (id=1026998)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 #6 (id=1038126)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
@@ -1838,14 +1858,17 @@ Effects          :
 #1 (id=48161)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Improved Vampiric Blood (317133 effect#1)
 #2 (id=48162)    : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=359059)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Improved Vampiric Blood (317133 effect#2)
 #4 (id=734281)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=880877)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Vampiric Aura (334547 effect#3)
 Description      : Embrace your undeath, increasing your maximum health by $s4% and increasing all healing and absorbs received by $s1% for $d.
 Tooltip          : Maximum health increased by $s4%. Healing and absorbs received increased by $s1%.
 
@@ -1878,6 +1901,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -2053,6 +2077,7 @@ Effects          :
                    Base Value: 275 | Scaled Value: 275 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
+                   Modified By: Northwinds (1230284 effect#1)
 #3 (id=292146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 2 (34)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
@@ -2080,8 +2105,10 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Pr
 Effects          :
 #1 (id=52489)    : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Trigger Spell: 59052 | Target: Self (1)
+                   Modified By: Rage of the Frozen Champion (377076 effect#2)
 #2 (id=464145)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Modified By: Rage of the Frozen Champion (341724 effect#1), Rage of the Frozen Champion (377076 effect#1)
 Description      : Frost Strike and Glacial Advance have a $s2% chance to cause your next Howling Blast to consume no runes and deal $59052s2% additional damage.
 
 Name             : Shadow Resistance (desc=Racial Passive) (id=59221) [Passive] 
@@ -2291,6 +2318,7 @@ Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No AutoCast (AI) 
 Effects          :
 #2 (id=55941)    : Trigger Spell (64): Void-Touched
                    Base Value: 60 | Scaled Value: 60 | Trigger Spell: 97821
+                   Modified By: Newly Turned (433934 effect#1)
 Description      : Pours dark energy into a dead target, reuniting spirit and body to allow the target to reenter battle with $s2% health and at least $s1% mana.
 
 Name             : Avoidance (desc=Passive) (id=62137) [Spell Family (15), Passive] 
@@ -2336,8 +2364,10 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=56128)    : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=56129)    : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Stat: Str | Stat: Agi | Stat: Sta | Stat: Int | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 
 Name             : Rune of the Stoneskin Gargoyle (id=62158) [Hidden] 
 Class            : Death Knight
@@ -2352,7 +2382,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=56130)    : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3847 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3847 | Misc Value 2: 11
 #2 (id=56131)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engrave your weapon with a rune that increases Armor by $62157s1% and all stats by $62157s2%.
@@ -2680,9 +2710,11 @@ Effects          :
 #1 (id=68132)    : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+                   Modified By: Iron Heart (391395 effect#2)
 #2 (id=1028888)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+                   Modified By: Bloodshot (391398 effect#1)
 Description      : When you deal damage with Death Strike while in Blood Presence, you gain a percentage of your health gained as a physical absorption shield.
 Tooltip          : Absorbs $w1 Physical damage$?a391398 [ and Physical damage increased by $s2%][].
 
@@ -2865,6 +2897,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Necrotic Coil (1242172), Necrotic Coil (1242178)
                    Family Flags: 64
+                   Modified By: Embrace Death (337980 effect#1)
 #3 (id=1054853)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Necrotic Coil (1242172), Necrotic Coil (1242178)
@@ -3381,7 +3414,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127901)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x28 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 40 | Target: Self (1)
                    Affected School(s): All
 Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
 
@@ -3451,7 +3484,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Is Debuff (26), No Immunities (29), No Cast Log (128), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132120)   : Apply Aura (6) | Absorb Healing (301)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 20 | Target: Self (1)
 Description      : $@spelldesc114556
 Tooltip          : Absorbing the next ${$w1-1} healing received.
 If any amount of heal absorption remains when this effect expires, you die.
@@ -3625,10 +3658,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Glacial Advance (195975), Glacial Advance (232752)
                    Family Flags: 50
+                   Modified By: Grip of the Dead (273984 effect#1), Iron Heart (391395 effect#2)
 #2 (id=188986)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Path of Frost (3714), Empower Rune Weapon (47568), Obliterate (49020), Frost Strike (49143), Death Strike (49998), Pillar of Frost (51271), Scourge Strike (55090), Raise Ally (61999), Festering Strike (85948), Glacial Advance (194913), Marrowrend (195182), Heart Strike (206930), Frostscythe (207230), Obliteration (207256), Unholy Assault (207289), Clawing Shadows (207311), Wraith Walk (212552), Necrotic Strike (223829), Heart Strike (228645), Consumption (274156), Apocalypse (275699), Raise Abomination (288853), Swarming Mist (311648), Shackle the Unworthy (312202), Abomination Limb (315443), Rune Strike (316239), Soul Reaper (343294), Graveyard (383269), Vampiric Strike (433895), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Horn of Winter (1229709), Empower Rune Weapon (1230959), Empower Rune Weapon (1231100), Frostscythe (1237388), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Abomination Limb (1263569), Consumption (1263825)
                    Family Flags: 127
+                   Modified By: Bloodshot (391398 effect#1)
 #3 (id=191178)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1611 (Category) | Target: Self (1)
                    Affected Spells (Category): Blood Boil (50842)
@@ -3818,7 +3853,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 2 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=196268)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Targeted Ally (21)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 15 | Target: Targeted Ally (21)
 #3 (id=883610)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Targeted Ally (21)
 Description      : $@spelldesc51052
@@ -3913,6 +3948,7 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 1713 | Target: at Area (87)
 #3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Toxic Accumulator (333388 effect#1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: -20 | Target: Self (1)
                    Affected School(s): All
@@ -3958,7 +3994,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=214757)   : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: runic_power | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: runic_power | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum runic power increased by $s1%.
 
 Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 
@@ -4208,7 +4244,7 @@ Family Flags     : 5
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=239495)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 82521 | Misc Value 2: 0x3d | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 82521 | Misc Value 2: 61 | Target: at Area (87)
 Description      : $@spelldesc152280
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -4289,10 +4325,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645), Vampiric Strike (433895), Heart Strike (460501)
                    Family Flags: 24
+                   Modified By: Cleaving Strikes (316916 effect#1)
 #4 (id=871411)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024), Obliterate (325461), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 49
+                   Modified By: Death's Due (315442 effect#2), Essence of Ardenweald (331119 effect#3), Rampant Transference (353882 effect#3)
 #5 (id=885948)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
 Description      : $@spelldesc43265
@@ -4457,10 +4495,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Morbidity (377592 effect#1)
 #4 (id=1005521)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Morbidity (377592 effect#2)
 #5 (id=1038114)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Morbidity (377592 effect#3)
 Description      : An infectious plague that spreads to all nearby enemies, dealing $o Shadow damage over $d.
 Tooltip          : The infectious plague spreads through you, suffering $w1 Shadow damage every $t1 sec.
 
@@ -4718,12 +4759,15 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268) | Attributes: Suppress Points Stacking (6)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+                   Modified By: Rattlegore Bone Legplates (205816 effect#2)
 #2 (id=293376)   : Apply Aura (6) | Set Action Button Spell Count (408): Marrowrend
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Foul Bulwark (206974 effect#1)
 #4 (id=311785)   : Apply Aura (6) | Modify All Haste% (193) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Marrowrend (316746 effect#1), Improved Bone Shield (374715 effect#1)
 #5 (id=708241)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : Surrounds you with a barrier of whirling bones, increasing Armor by ${$s1*$STR/100}$?s316746[, and your Haste by $s4%][]. Each melee attack against you consumes a charge. Lasts $d or until all charges are consumed.
@@ -4938,7 +4982,7 @@ Triggered By     : Bloodworms (195679)
 Attributes       : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288211)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99773 | Misc Value 2: 0xe83 | Radius: 2 yards | Target: Back Left of Self (43)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99773 | Misc Value 2: 3715 | Radius: 2 yards | Target: Back Left of Self (43)
 Description      : $@spelldesc195679
 
 Name             : Bonestorm (id=196528) [Spell Family (15)] 
@@ -5002,6 +5046,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388)
                    Family Flags: 15
+                   Modified By: Cleaving Strikes (316916 effect#3)
 Description      : Drain the warmth of life from all nearby enemies within $196771A1 yards, dealing ${9*$196771s1*$<CAP>/$AP} Frost damage over $d and reducing their movement speed by $211793s1%.
 Tooltip          : Dealing $196771s1 Frost damage to enemies within $196771A1 yards each second.$?s316916[
 
@@ -5167,7 +5212,7 @@ Labels           : 16: Class Spells
 Attributes       : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295910)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 0x2af | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 687 | Target: At Enemy (53)
 #2 (id=296441)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc42650
@@ -5296,7 +5341,7 @@ Effects          :
 #1 (id=303455)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
 #2 (id=303456)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 0xebc | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 3772 | Target: Random in Area (86)
 Description      : $@spelldesc42650
 
 Name             : Red Thirst (id=205723) [Spell Family (15), Passive] 
@@ -5706,6 +5751,7 @@ Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not L
 Effects          :
 #1 (id=306445)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Modified By: Frost Death Knight (137006 effect#9), Unholy Death Knight (137007 effect#7)
 Description      : Your auto attack damage grants you an absorb shield equal to $s1% of the damage dealt.
 
 Name             : Frost Shield (id=207203) [Spell Family (15)] 
@@ -5754,6 +5800,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #4 (id=345076)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
+                   Modified By: Exterminate (441416 effect#4), Empower Rune Weapon (1230959 effect#3)
 #5 (id=818619)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #6 (id=1220540)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -6024,7 +6071,7 @@ Family Flags     : 52
 Attributes       : Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306658)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 4 yards | Target: Front Left of Self (44)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 3238 | Radius: 4 yards | Target: Front Left of Self (44)
 #2 (id=313813)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=313814)   : Trigger Spell (64): Summon Gargoyle
@@ -6145,7 +6192,7 @@ Family Flags     : 12
 Attributes       : Allow Cast While Dead (23), Allow While Sitting (27), Dismiss Pet First (32), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314162)   : Summon Pet (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 106848 | Misc Value 2: 0x1 | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 106848 | Misc Value 2: 1 | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
 Description      : $@spelldesc46584
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
@@ -6208,6 +6255,7 @@ Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=315117)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=315118)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 170 | Scaled Value: 170 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=315121)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -6295,7 +6343,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow While Charmed (261), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=322785)   : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Radius: 3 yards | Target: at Target Front (64)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Radius: 3 yards | Target: at Target Front (64)
 Description      : $@spelldesc49576
 
 Name             : Defile (id=218100) [Spell Family (15)] 
@@ -6466,7 +6514,7 @@ Effects          :
 #1 (id=329925)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
 #2 (id=329926)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 111101 | Misc Value 2: 0xebc | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 111101 | Misc Value 2: 3772 | Target: Random in Area (86)
 Description      : $@spelldesc42650
 
 Name             : Runic Attenuation (id=221322) [Spell Family (15)] 
@@ -6619,10 +6667,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=334783)   : School Damage (2): shadowstorm | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Morbidity (377592 effect#7)
 #3 (id=334784)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
+                   Modified By: Morbidity (377592 effect#8)
 #4 (id=334785)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
+                   Modified By: Morbidity (377592 effect#9)
 Description      : A vicious strike that deals $s2 Plague damage, and converts $s3 Festering $LWound:Wounds; into a Necrotic Wound, absorbing up to $s4% of the target's maximum health in healing received.
 
 Name             : Necrotic Wound (id=223929) [Spell Family (15)] 
@@ -7080,7 +7131,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -7154,7 +7205,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -7404,7 +7455,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -7603,6 +7654,7 @@ Attributes       : Do Not Log Immune Misses (3), Allow Cast While Dead (23), All
 Effects          :
 #1 (id=726036)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -90 | Scaled Value: -90 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Grip of the Dead (273984 effect#1)
 Description      : $@spelldesc273952
 Tooltip          : Movement speed reduced by $w1% from $?s152280[Defile][Death and Decay].
 
@@ -7801,7 +7853,7 @@ Effects          :
 #1 (id=728456)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
 #2 (id=728457)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237409 | Misc Value 2: 0xebc | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237409 | Misc Value 2: 3772 | Target: Random in Area (86)
 Description      : A mindless servant of the Scourge, raised to obey its master's commands for $d.
 
 Name             : Apocalypse (id=275699) [Spell Family (15)] 
@@ -8028,7 +8080,7 @@ Effects          :
 #1 (id=737998)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: at Random (72)
 #2 (id=737999)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 145897 | Misc Value 2: 0x2af | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 145897 | Misc Value 2: 687 | Target: Random in Area (86)
 Description      : $@spelldesc42650
 
 Name             : Cold Heart (id=281208) [Spell Family (15), Passive, Hidden] 
@@ -8573,7 +8625,7 @@ Family Flags     : 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Log on Learn (355)
 Effects          :
 #1 (id=752829)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 0x11d7 | Radius: 3 yards | Target: Front Left of Self (44)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 149555 | Misc Value 2: 4567 | Radius: 3 yards | Target: Front Left of Self (44)
 Description      : $@spelldesc1242608
 
 Name             : Disease Cloud (id=290577) 
@@ -8940,6 +8992,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 311730 | Target: Self (1)
 #2 (id=794097)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Impenetrable Gloom (338628 effect#2)
 #3 (id=794302)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=841298)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
@@ -9102,7 +9155,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Swarming Mist (id=312546) [Spell Family (15)] 
@@ -9147,7 +9200,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -9287,7 +9340,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9302,7 +9355,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9355,7 +9408,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9367,7 +9420,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9379,7 +9432,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Death's Due (desc=Night Fae) (id=315442) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -9394,7 +9447,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Required by Client (262), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=799201)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Death's Due overrides Death and Decay
-                   Base Value: 324128 | Scaled Value: 324128 | Misc Value: 43265 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 324128 | Scaled Value: 324128 | Misc Value: 43265 | Misc Value 2: 3 | Target: Self (1)
 #2 (id=871412)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Death and Decay (188290)
@@ -9664,7 +9717,7 @@ Effects          :
 #1 (id=803145)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: Back of Self (48)
 #2 (id=803146)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 0x1683 | Target: Random in Area (86)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 5763 | Target: Random in Area (86)
 Description      : $@spelldesc276837
 
 Name             : Shadow Bolt (id=317791) [Spell Family (15)] 
@@ -9990,7 +10043,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10007,7 +10060,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10024,7 +10077,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10041,7 +10094,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -10057,7 +10110,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Hypothermic Presence (id=321995) [Spell Family (15)] 
@@ -10074,7 +10127,7 @@ Stance Mask      : 0x01000000
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=810066)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 0x31 | Misc Value 2: 0x40 | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 0x31 | Misc Value 2: 64 | Target: Self (1)
                    Affected School(s): Frost, Shadow, Physical
 Description      : Embrace the ice in your veins, reducing the Runic Power cost of your abilities by $s1% for $d. Does not trigger the global cooldown.
 Tooltip          : The Runic Power cost of your abilities is reduced by $s1%.
@@ -10168,6 +10221,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87) -> at Dynamic Enemy in Area (28)
 #3 (id=813512)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Toxic Accumulator (333388 effect#1)
 #4 (id=813513)   : Create Area Trigger (179)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: at Area (87)
 Description      : Corrupts the targeted ground, causing ${$341340m1*11} Shadow damage over $d to targets within the area.$?!c2[
@@ -10206,6 +10260,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Death and Decay (52212), Defile (156000), Death's Due (341340), Desecrate (1232346)
                    Family Flags: 67
+                   Modified By: Toxic Accumulator (333388 effect#1)
 Description      : $@spelldesc324128
 Tooltip          : Weakened by Death's Due, damage dealt to $@auracaster reduced by $s1%.$?a333388[
 
@@ -10232,6 +10287,7 @@ Attributes       : Can't Crit (93), Not In Spellbook Until Learned (269), Allow 
 Effects          :
 #1 (id=813579)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 2 | Scaled Value: 2 | Stat: Str | Target: Self (1)
+                   Modified By: Rampant Transference (353882 effect#1)
 Description      : $@spelldesc324128
 Tooltip          : Strength increased by $s1%.
 
@@ -10321,7 +10377,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=817992)   : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6241 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6241 | Misc Value 2: 11
 #2 (id=817993)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engrave your weapon with a rune that causes your Death Strike to deal increased damage based on the target's missing health. When you fall below $326801s1% health, you heal for ${$326808s1*$326808d}% of your maximum health over $326808d. 
@@ -10342,6 +10398,7 @@ Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class 
 Effects          :
 #1 (id=817996)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6.25 | Scaled Value: 6.25 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=817998)   : Trigger Spell (64): Satiated
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 326809 | Target: Self (1)
 Description      : $@spelldesc326801
@@ -10379,7 +10436,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818066)   : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6242 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6242 | Misc Value 2: 11
 #2 (id=818067)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.4 | Target: Self (1)
 Description      : Engrave your weapon with a rune that deflects $326864s2% of all spell damage and taking magic damage has a chance to create a shield that absorbs magic damage equal to $s2% of your maximum health. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d. 
@@ -10426,8 +10483,10 @@ Effects          :
 #1 (id=818082)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=890165)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : $@spelldesc326864
 
 Tooltip          : Absorbs $w1 magic damage.
@@ -10450,6 +10509,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=818084)   : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : $@spelldesc326864
 
 Tooltip          : Casting speed reduced by $w1%.
@@ -10472,6 +10532,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 326918 | Target: Self (1)
 #2 (id=818163)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : Increases maximum Runic Power by ${$s2/10}.
 
 Your attacks have a chance to increase Runic Power generation by $326918s2% for $326918d.
@@ -10493,6 +10554,7 @@ Attributes       : Can't Crit (93), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818169)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : $@spelldesc326913
 
 Tooltip          : Runic Power generation increased by $s1%.
@@ -10510,7 +10572,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818253)   : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6244 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6244 | Misc Value 2: 11
 #2 (id=818254)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Engrave your weapon with a rune that increases your movement speed by $326982s2%. Additionally, when you kill an enemy that yields experience or honor you heal for $326984s2% of your maximum health and gain $326984s1% Haste and movement speed.
@@ -10534,6 +10596,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 326984 | Target: Self (1)
 #2 (id=818270)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : Your Movement speed while dead is increased by $s2%. When you kill an enemy that yields experience or honor, gain $326984s1% Haste and Movement Speed and heal for $326984s2% of your maximum health.
 
 Name             : Rune of Unending Thirst (id=326984) [Spell Family (15)] 
@@ -10554,10 +10617,13 @@ Attributes       : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class 
 Effects          :
 #1 (id=818265)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=818266)   : Direct Heal% (136)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 #3 (id=818267)   : Apply Aura (6) | Increase Movement Speed% (171)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Description      : $@spelldesc326982
 Tooltip          : Haste and Movement Speed increased by $s1%.
 
@@ -10574,7 +10640,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Tradeskill (5), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818411)   : Enchant Item (53)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6245 | Misc Value 2: 0xb
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6245 | Misc Value 2: 11
 #2 (id=818412)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Engrave your weapon with a rune that gives your ghoul's attacks a chance to apply one of the following debuffs to the target, Death: Healing Reduction, War: Increases damage taken from the Death Knight, Famine: Reduces damage dealt to the Death Knight, Pestilence: Slows the target and deals damage over time. 
@@ -10617,6 +10683,7 @@ Effects          :
 #1 (id=818428)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : Reduces damage dealt by $m1%.
 Tooltip          : Reduces damage dealt to $@auracaster by $m1%.
 
@@ -10637,8 +10704,10 @@ Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Periodic
 Effects          :
 #1 (id=818429)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25 | Target: Targeted Enemy (6)
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=818430)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -15 | Scaled Value: -15 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : Deals $o1 shadow damage over $d and slows the target by $m2%.
 Tooltip          : Suffering $o1 shadow damage over $d and slowed by $m2%.
 
@@ -10659,6 +10728,7 @@ Effects          :
 #1 (id=818435)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 Description      : Reduces healing done by $m1%.
 Tooltip          : Reduces healing done by $m1%.
 
@@ -10682,10 +10752,13 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Enemy (6)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Exacting Preparation (331580 effect#4), Unholy Bond (374261 effect#1), Attuned to the Aether (1242344 effect#2)
 #2 (id=868353)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Enemy (6)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 #3 (id=1259202)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
                    Base Value: 4 | Scaled Value: 4 | Target: Targeted Enemy (6)
+                   Modified By: Exacting Preparation (331580 effect#6), Unholy Bond (374261 effect#3), Attuned to the Aether (1242344 effect#4)
 Description      : Increases damage taken by $m1%.
 Tooltip          : Increases damage taken from $@auracaster by $m1%.
 
@@ -10713,9 +10786,9 @@ Labels           : 829
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Do Not Re-apply Area Aura if it Persists Through Update (391), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=825134)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): (331117) overrides (313347)
-                   Base Value: 331117 | Scaled Value: 331117 | Misc Value: 313347 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 331117 | Scaled Value: 331117 | Misc Value: 313347 | Misc Value 2: 3 | Target: Self (1)
 #2 (id=825135)   : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Death's Due overrides Death and Decay
-                   Base Value: 324128 | Scaled Value: 324128 | Misc Value: 43265 | Misc Value 2: 0x3 | Target: Self (1)
+                   Base Value: 324128 | Scaled Value: 324128 | Misc Value: 43265 | Misc Value 2: 3 | Target: Self (1)
 #3 (id=872759)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Death and Decay (188290)
@@ -10742,7 +10815,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=827707)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 127 | Misc Value 2: 15 | Target: Self (1)
 #3 (id=827708)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self (1)
 #4 (id=879426)   : Apply Aura (6) | Spell Reflection (28)
@@ -10787,6 +10860,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 326918 | Target: Self (1)
 #2 (id=828122)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
+                   Modified By: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2), Attuned to the Aether (1242344 effect#3)
 Description      : $@spelldesc326913
 
 Tooltip          : $@spelldesc326913
@@ -11097,7 +11171,7 @@ Family Flags     : 25
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=832114)   : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Radius: 3 yards | Target: at Target Front (64)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Radius: 3 yards | Target: at Target Front (64)
 Description      : $@spelldesc315443
 
 Name             : Will of the Berserker (id=335594) [Spell Family (15), Passive] 
@@ -11693,7 +11767,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Dark Transformation (id=344955) [Spell Family (15)] 
@@ -11726,7 +11800,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11741,7 +11815,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11912,6 +11986,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -11993,7 +12068,7 @@ Family Flags     : 25
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), No Cast Log (128), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Don't Cause Spell Pushback (230), Allow While Charmed (261), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=894924)   : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Target: at Target (63)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Target: at Target (63)
 Description      : $@spelldesc49576
 
 Name             : Familiar Skies (desc=Racial Passive) (id=360009) [Passive] 
@@ -12140,7 +12215,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=904037)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: at Target Front Right (68)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: at Target Front Right (68)
 #2 (id=904038)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc49028
@@ -12691,6 +12766,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1000492)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
+                   Modified By: Rune Mastery (374574 effect#1)
 Description      : $@spelldesc374574
 Tooltip          : Strength increased by $w1%.
 
@@ -13112,6 +13188,7 @@ Effects          :
 #1 (id=1004756)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10 | Target: Self (1)
                    Affected School(s): Frost
+                   Modified By: Bonegrinder (377098 effect#1)
 Description      : $@spelldesc377098
 Tooltip          : Frost damage increased by $s1%.
 
@@ -13175,6 +13252,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1004894)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Str | Target: Self (1)
+                   Modified By: Enduring Strength (377190 effect#3)
 Description      : $@spelldesc377190
 Tooltip          : Strength increased by $w1%.
 
@@ -13367,9 +13445,11 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005512)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Ghoulish Frenzy (377587 effect#1)
 #2 (id=1005513)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Ghoulish Frenzy (377587 effect#2)
 Description      : $@spelldesc377587
 Tooltip          : Damage and attack speed increased by $s1%.
 
@@ -13387,9 +13467,11 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005514)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Ghoulish Frenzy (377587 effect#1)
 #2 (id=1005515)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Ghoulish Frenzy (377587 effect#2)
 Description      : $@spelldesc377587
 Tooltip          : Damage and attack speed increased by $s1%.
 
@@ -13429,6 +13511,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005518)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.65 | Stat: Str | Target: Self (1)
+                   Modified By: Ancient Runes (377590 effect#1)
 Description      : $@spelldesc377590
 Tooltip          : Strength increased by ${$W1}.2%.
 
@@ -13605,6 +13688,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
+                   Modified By: Heartrend (377655 effect#1)
 Description      : $@spelldesc377655
 Tooltip          : Your next Death Strike deals an additional $s2% damage.
 
@@ -13644,7 +13728,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1005638)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
 #2 (id=1005639)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc377668
@@ -13834,7 +13918,7 @@ Family Flags     : 25
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1015151)  : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Radius: 3 yards | Target: at Target Front (64)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Radius: 3 yards | Target: at Target Front (64)
 Description      : $@spelldesc383269
 
 Name             : Surge Forward (id=386449) [Hidden] 
@@ -14025,8 +14109,10 @@ Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
                    Affected School(s): All
+                   Modified By: Commander of the Dead (390259 effect#2)
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: Self and Summons in Area (120)
+                   Modified By: Commander of the Dead (390259 effect#3)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
 
@@ -14690,7 +14776,7 @@ Mechanic         : Knockback
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Aura While Dead (116), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), No Jump Pathing (208), Allow While Charmed (261), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), JumpCharge - no facing control (311), Charge/JumpCharge - Use Absolute Speed (329), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1111567)  : Jump to Destiantion (213)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 0x96 | Radius: 3 yards | Target: at Target Front (64)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 63 | Misc Value 2: 150 | Radius: 3 yards | Target: at Target Front (64)
 Description      : $@spelldesc315443
 
 Name             : Death Knight Blood 10.1 Class Set 2pc (id=405499) [Spell Family (15), Passive, Hidden] 
@@ -15345,6 +15431,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1123520)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Modified By: Blood Death Knight (137008 effect#13)
 Description      : Your Death Coil$?a137007[, Epidemic][] and Death Strike have a $s1% chance to make your next $?a137008[Heart Strike]?s207311[Clawing Shadows][Scourge Strike] become Vampiric Strike.
 
 Vampiric Strike heals you for $?a137008[$434422s2][$434422s3]% of your maximum health and grants you Essence of the Blood Queen, increasing your Haste by ${$433925s1/10}.1%, up to ${$433925s1*$433925u/10}.1% for $433925d.
@@ -15365,12 +15452,15 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1123561)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Gift of the San'layn (434153 effect#1), Gift of the San'layn (434153 effect#4)
 #2 (id=1123822)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death Strike (49998), Death Strike Off-Hand (66188), Necrotic Coil (1242172), Necrotic Coil (1242178)
                    Family Flags: 4, 64
+                   Modified By: Frenzied Bloodthirst (434075 effect#2), Gift of the San'layn (434153 effect#2), Gift of the San'layn (434153 effect#5)
 #3 (id=1232986)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Gift of the San'layn (434153 effect#7), Gift of the San'layn (434153 effect#8)
 Description      : Essence of the Blood Queen empowers you, $?a434075[increasing your Haste by ${$s1/10}.1% up to ${$s1/10*$u}.1%, and increases the damage of your Death Coil and Death Strike by $s2% up to ${$s2*$U}%][increasing your Haste by ${$s1/10}.1% up to ${$s1*$U/10}.1%] for $d.
 Tooltip          : Haste increased by ${$W1}.1%.$?a434075[
 Damage of Death Strike and Death Coil increased by $W2%.][]$?a1236259[
@@ -15508,6 +15598,7 @@ Effects          :
 #2 (id=1123820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
+                   Modified By: Blood Death Knight (137008 effect#16)
 Description      : Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.
 
 Name             : Vampiric Aura (id=434100) [Spell Family (15), Passive] 
@@ -15523,6 +15614,7 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spel
 Effects          :
 #1 (id=1123857)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Vampiric Aura (434105 effect#1)
 #2 (id=1123914)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Your Leech is increased by $s1%.
@@ -15602,8 +15694,10 @@ Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spel
 Effects          :
 #1 (id=1123935)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Blood Death Knight (137008 effect#15), Death Knight San'layn 11.2 Class Set 4pc (1236260 effect#1), Death Knight San'layn 11.2 Class Set 4pc (1236260 effect#2)
 #2 (id=1124553)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Blood Death Knight (137008 effect#14), Death Knight San'layn 11.2 Class Set 4pc (1236260 effect#3), Death Knight San'layn 11.2 Class Set 4pc (1236260 effect#4)
 #3 (id=1124554)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=1249513)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -15742,7 +15836,7 @@ Stance Mask      : 0x01000000
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1124131)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 217228 | Misc Value 2: 0xebc | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 217228 | Misc Value 2: 3772 | Radius: 0 - 5 yards | Target: at Self (18) -> at Radius in Area (91)
 Description      : Raises a Blood Beast to fight by your side. You can have a maximum of one Blood Beast at a time. Lasts $d.
 
 Name             : The Blood is Life (id=434246) [Spell Family (15)] 
@@ -15933,6 +16027,7 @@ Attributes       : Aura Is Debuff (26), Active Threat (94), DoT Stacking Rule (1
 Effects          :
 #1 (id=1124958)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Enemy (6)
+                   Modified By: Death Knight Deathbringer 11.2 Class Set 4pc (1236254 effect#4), Death Knight Deathbringer 11.2 Class Set 4pc (1236254 effect#5)
 #2 (id=1136292)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
 Description      : $@spelldesc439843
@@ -16462,6 +16557,7 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=1134334)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Targeted Ally (21)
+                   Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1134337)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Targeted Ally (21)
 #3 (id=1134338)  : Apply Aura (6) | Resist Forced Movement% (485)
@@ -16634,6 +16730,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #3 (id=1161183)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Reaper's Onslaught (469870 effect#2)
 #4 (id=1161184)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #5 (id=1169219)  : Apply Aura (6) | Dummy (4)
@@ -16806,6 +16903,7 @@ Effects          :
 #1 (id=1139275)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3236 (Label) | Target: Targeted Enemy (6)
                    Affected Spells (Label): Empower Rune Weapon (47568), Soul Reaper (343294), Soul Reaper (343295), Wave of Souls (435802), Reaper's Mark (436304), Icy Death Torrent (439539), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Runic Overflow (440097), Blood Fever (440769), Exterminate (441424), Exterminate (441426), Soul Reaper (448229), Frostreaper (1233619)
+                   Modified By: Frost Death Knight (137006 effect#12)
 Description      : $@spelldesc434711
 Tooltip          : Taking $w1% increased Shadowfrost damage from $@auracaster.
 
@@ -16848,6 +16946,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1139564)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Frost Death Knight (137006 effect#10)
 Description      : If no enemies are struck by Soul Rupture, you gain $469169s1% Strength for $469169d.
 
 Wave of Souls is $s2% more effective on the main target of your Reaper's Mark.
@@ -17217,7 +17316,7 @@ Triggered By     : Summon Mograine (454393)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1140570)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221632 | Misc Value 2: 0x1743 | Target: Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221632 | Misc Value 2: 5955 | Target: Left of Self (50)
 #2 (id=1140571)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc444005
@@ -17235,7 +17334,7 @@ Triggered By     : Summon Whitemane (454389)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1140578)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221633 | Misc Value 2: 0x1743 | Target: Back Right of Self (42)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221633 | Misc Value 2: 5955 | Target: Back Right of Self (42)
 Description      : $@spelldesc444005
 
 Name             : Summon Nazgrim (id=444252) [Spell Family (15)] 
@@ -17251,7 +17350,7 @@ Triggered By     : Summon Nazgrim (454392)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1140581)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221634 | Misc Value 2: 0x1743 | Target: Back Left of Self (43)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221634 | Misc Value 2: 5955 | Target: Back Left of Self (43)
 #2 (id=1140582)  : Trigger Spell (64): Apocalyptic Conquest
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 444763 | Target: Self (1)
 #3 (id=1156923)  : Apply Aura (6) | Dummy (4)
@@ -17271,7 +17370,7 @@ Triggered By     : Summon Trollbane (454390)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202)
 Effects          :
 #1 (id=1140584)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221635 | Misc Value 2: 0x1743 | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 221635 | Misc Value 2: 5955 | Target: Right of Self (49)
 #2 (id=1156924)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc444005
@@ -17296,10 +17395,11 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No
 Effects          :
 #1 (id=1140727)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1140750)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1140751)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1140752)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1140753)  : Apply Aura (6) | Increase Speed% (31)
@@ -17343,6 +17443,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Self (18) -> at Dynamic Enemy in Area (28)
 #3 (id=1140944)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: No Immunity (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Toxic Accumulator (333388 effect#1)
 #4 (id=1140953)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 32961 | Target: Self (1)
 #5 (id=1178400)  : Trigger Spell (64): Death and Decay
@@ -17406,6 +17507,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Death Coil (47632), Necrotic Coil (1242172), Necrotic Coil (1242178)
                    Family Flags: 64
+                   Modified By: Death Knight Rider of the Apocalypse 11.2 Class Set 4pc (1236356 effect#3)
 Description      : A powerful disease that deals $s1 Shadowfrost damage per stack every $t1 sec for $d. Each time it deals damage, it gains $s3 $Lstack:stacks;.
 Tooltip          : Suffering $w1 Shadowfrost damage every $t1 sec.
 
@@ -17463,8 +17565,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Al
 Effects          :
 #1 (id=1141326)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Summoner (92)
+                   Modified By: Runic Barrier (280010 effect#3)
 #2 (id=1141327)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Summoner (92)
+                   Modified By: Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1)
 #3 (id=1141328)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Summoner (92)
 Description      : Surrounds your target in an Anti-Magic Shell for $444741d, absorbing up to $<shield> magic damage and preventing application of harmful magical effects.$?s207188[][ Damage absorbed generates Runic Power.]
@@ -17494,9 +17598,11 @@ Effects          :
 #1 (id=1141329)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Runic Barrier (280010 effect#3)
 #2 (id=1141330)  : Apply Aura (6) | Immune Debuff Application from School (267)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1)
 #3 (id=1141331)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Targeted Ally (21)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
@@ -17634,7 +17740,7 @@ Effects          :
 #2 (id=1141937)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1141938)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1141939)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1141940)  : Apply Aura (6) | Increase Speed% (31)
@@ -17908,7 +18014,7 @@ Effects          :
 #2 (id=1154223)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1154224)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1154225)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154226)  : Apply Aura (6) | Increase Speed% (31)
@@ -17939,7 +18045,7 @@ Effects          :
 #2 (id=1154237)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1154238)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1154239)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154240)  : Apply Aura (6) | Increase Speed% (31)
@@ -17970,7 +18076,7 @@ Effects          :
 #2 (id=1154249)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1154250)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1154251)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154252)  : Apply Aura (6) | Increase Speed% (31)
@@ -18001,7 +18107,7 @@ Effects          :
 #2 (id=1154260)  : Apply Aura (6) | Increase Mounted Speed% (172)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1154261)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 0xe6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
 #4 (id=1154262)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=1154263)  : Apply Aura (6) | Increase Speed% (31)
@@ -18325,6 +18431,7 @@ Effects          :
 #1 (id=1157778)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.6 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Frost Death Knight (137006 effect#8), Unholy Death Knight (137007 effect#8)
 #2 (id=1157779)  : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 0.29 | Misc Value: 1 | Target: Self (1)
 Description      : Magic damage taken is reduced by $s1% and the duration of harmful Magic effects against you are reduced by $s2%.
@@ -18362,8 +18469,10 @@ Effects          :
 #1 (id=1157813)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.25 | Misc Value: 0x7e | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Runic Barrier (280010 effect#3)
 #2 (id=1157816)  : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.6 | Radius: 0 - 12 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Modified By: Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1)
 Description      : $@spelldesc454851
 Tooltip          : Absorbing up to $w1 magic damage.
 Duration of harmful magic effects reduced by $s2%.
@@ -19340,6 +19449,7 @@ Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183338)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 10 | Scaled Value: 10 | Stat: Str | Target: Self (1)
+                   Modified By: Frost Death Knight (137006 effect#11)
 Description      : $@spelldesc443560
 Tooltip          : Strength increased by $w1%.
 
@@ -19521,6 +19631,7 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Epidemic (207317), Epidemic (212739), Epidemic (215969), Graveyard (383269), Graveyard (383313), Necrotic Coil (1242172), Necrotic Coil (1242178), Graveyard (1263602)
                    Family Flags: 64, 121
+                   Modified By: Winning Streak! (1216859 effect#1)
 Description      : $@spelldesc1215726
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%.
 
@@ -20190,18 +20301,22 @@ Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat 
 Effects          :
 #1 (id=1222712)  : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Resource: runic_power | Target: Self (1)
+                   Modified By: Rune Carved Weapon (1238281 effect#1)
 #2 (id=1235895)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 15, 49
+                   Modified By: Obliteration (207256 effect#1)
 #3 (id=1235896)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388)
                    Family Flags: 15
+                   Modified By: Obliteration (207256 effect#2), Accelerated Cold (337822 effect#1)
 #4 (id=1235897)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024), Obliterate (325461), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 49
+                   Modified By: Obliteration (207256 effect#3)
 Description      : $@spelldesc47568
 
 Name             : Howling Blades (id=1231082) [Spell Family (15)] 
@@ -20361,6 +20476,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623), Frostscythe (1237388)
                    Family Flags: 15
+                   Modified By: Cleaving Strikes (316916 effect#3)
 Description      : Drain the warmth of life from all nearby enemies within $196771A1 yards, dealing ${9*$196771s1*$<CAP>/$AP} Frost damage over $d and reducing their movement speed by $211793s1%.
 Tooltip          : Dealing $196771s1 Frost damage to enemies within $196771A1 yards each second.$?s316916[
 
@@ -20402,6 +20518,7 @@ Attributes       : Allow While Not Shapeshifted (caster form) (83), Can't Crit (
 Effects          :
 #1 (id=1226883)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Modified By: Vampiric Speed (434028 effect#1)
 #2 (id=1226884)  : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 90 | Scaled Value: 90 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=1226885)  : Apply Aura (6) | Creature Immunities (147)
@@ -20436,13 +20553,14 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Active Pet (5)
                    Affected School(s): All
 #2 (id=1226926)  : Apply Aura (6) | Change Model (56)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 141244 | Misc Value 2: 0x1 | Target: Active Pet (5)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 141244 | Misc Value 2: 1 | Target: Active Pet (5)
 #3 (id=1226927)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 #4 (id=1226928)  : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | Resource: energy | Target: Active Pet (5)
+                   Modified By: Dark Transformation (325554 effect#1)
 #5 (id=1226929)  : Apply Aura (6) | Change Model (56)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 205163 | Misc Value 2: 0x1 | Target: Active Pet (5)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 205163 | Misc Value 2: 1 | Target: Active Pet (5)
 Description      : $@spelldesc63560
 Tooltip          : $?$w2>0[Transformed into an undead monstrosity.][Gassy.]
 Damage dealt increased by $w1%.
@@ -20534,7 +20652,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Include In Advanced Combat Log (72), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1228889)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Misc Value 2: 0x4a | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Misc Value 2: 74 | Target: Self (1)
 #2 (id=1234732)  : Trigger Spell (64): Visceral Strength
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1237848
 Description      : $@spelldesc434143
@@ -20919,7 +21037,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1233541)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
 #2 (id=1233542)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc377668
@@ -20942,7 +21060,8 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1233718)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
+                   Modified By: Everlasting Bond (377668 effect#1)
 #2 (id=1233719)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc377668
@@ -20991,6 +21110,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #4 (id=1234134)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
+                   Modified By: Exterminate (441416 effect#4), Empower Rune Weapon (1230959 effect#3)
 #5 (id=1234135)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #6 (id=1234136)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -21237,10 +21357,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: at Target (63)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Morbidity (377592 effect#7)
 #3 (id=1239730)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381) | Attributes: Suppress Points Stacking (6), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: at Target (63)
+                   Modified By: Morbidity (377592 effect#8)
 #4 (id=1239731)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380) | Attributes: Suppress Points Stacking (6), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: at Target (63)
+                   Modified By: Morbidity (377592 effect#9)
 #5 (id=1277260)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Targeted Enemy (6)
 Description      : A malicious plague that seeps into the soul of its host, dealing $o Shadow damage over $d. Can only be applied to $s5 $Lhost:hosts; at a time.
@@ -21433,10 +21556,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Morbidity (377592 effect#4)
 #3 (id=1240987)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Morbidity (377592 effect#5)
 #4 (id=1240988)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Morbidity (377592 effect#6)
 Description      : $@spelldesc207272
 Tooltip          : Infected claws of $@auracaster's ghouls sicken you, suffering $w1 Shadow damage every $t1 sec.
 
@@ -21682,7 +21808,7 @@ Family Flags     : 96
 Attributes       : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241761)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 0x1683 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 163366 | Misc Value 2: 5763 | Target: at Area (87)
 Description      : $@spelldesc276837
 
 Name             : Rapid Variant (id=1242561) [Spell Family (15), Passive] 
@@ -21855,7 +21981,7 @@ Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points O
 Aura Interrupt   : Leave World (19), Change Specialization (38)
 Effects          :
 #1 (id=1242874)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 0x32 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 50 | Target: Self (1)
 #2 (id=1245544)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Tooltip          : Commanding $w1 lesser $lGhoul:Ghouls;.$?s377440[
@@ -21876,13 +22002,17 @@ Attributes       : Do Not Log (8), No Aura Cancel (31), No Threat (42), Allow Au
 Effects          :
 #1 (id=1244563)  : Apply Aura (6) | Dummy (4) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.2 | Target: Current Target (25)
+                   Modified By: Unholy Devotion (1241858 effect#6)
 #2 (id=1244597)  : Apply Aura (6) | Modify Melee Auto Attack Speed% (319)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+                   Modified By: Unholy Devotion (1241858 effect#2)
 #3 (id=1249293)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+                   Modified By: Unholy Devotion (1241858 effect#4)
 #4 (id=1260961)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x21 | Target: Current Target (25)
                    Affected School(s): Shadow, Physical
+                   Modified By: Unholy Devotion (1241858 effect#3)
 Tooltip          : Decaying.$?${$w2>0}[
 Attack speed increased by $w2%.][]
 
@@ -21970,6 +22100,7 @@ Attributes       : Allow Aura While Dead (116), Not In Spellbook (143), Aura Poi
 Effects          :
 #1 (id=1245681)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Unholy Aura (377440 effect#2)
 Description      : $spelldesc377440
 Tooltip          : Haste increased by ${$w1}.1%
 
@@ -22092,6 +22223,7 @@ Effects          :
 #1 (id=1254947)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Mastery: Dreadblade (77515 effect#6)
 
 Name             : Death and Decay (id=1251951) [Spell Family (15)] 
 Class            : Death Knight
@@ -22135,9 +22267,9 @@ Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points On Client (268)
 Effects          :
 #1 (id=1260598)  : Apply Aura (6) | Set Action Button Spell Count (408): Scourge Strike
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 0x32 | Trigger Spell: 55090 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 50 | Trigger Spell: 55090 | Target: Self (1)
 #2 (id=1260656)  : Apply Aura (6) | Set Action Button Spell Count (408): Vampiric Strike
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 0x32 | Trigger Spell: 433895 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 50 | Trigger Spell: 433895 | Target: Self (1)
 Tooltip          : $?a288848[ Scourge Strike leeches $288849s1% of the target's maximum health.
 ][Scourge Strike summons $s1 Lesser Ghoul.]
 
@@ -22215,6 +22347,7 @@ Attributes       : No Threat (42), Not In Spellbook (143), Allow While Riding Ve
 Effects          :
 #1 (id=1264145)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: runic_power | Target: Self (1)
+                   Modified By: Forbidden Knowledge (1256565 effect#1)
 Description      : $@spelldesc1256565
 
 Name             : Reanimation (id=1256813) [Spell Family (15), Passive] 
@@ -22279,7 +22412,7 @@ Effects          :
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
 #3 (id=1266208)  : Apply Aura (6) | Unknown(649)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 0x1060 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 6 | Misc Value 2: 4192 | Target: Self (1)
 #4 (id=1266209)  : Apply Aura (6) | Unknown(647)
                    Base Value: -30 | Scaled Value: -30 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
@@ -22316,7 +22449,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Abomination Limb (id=1263566) [Spell Family (15)] 
@@ -22770,7 +22903,7 @@ Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1275661)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 3242 | Radius: 2 yards | Target: Unknown(151)
 #2 (id=1275662)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc49028
@@ -22826,15 +22959,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Dance of Midnight (1264405 effect#1)
 #2 (id=1275751)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
                    Family Flags: 43
+                   Modified By: Dance of Midnight (1264405 effect#2)
 #3 (id=1275752)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Dance of Midnight (1264405 effect#3)
 #4 (id=1275767)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Dance of Midnight (1264405 effect#4)
 Description      : $@spelldesc49028
 Tooltip          : Damage dealt increased by $s1% and damage taken decreased by $s4%.
 

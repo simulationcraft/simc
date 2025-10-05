@@ -93,11 +93,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=756953)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #3 (id=1052535)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Earthen Harmony (382020 effect#3)
 Description      : Protects the target with an earthen shield, increasing your healing on them by $s1% and healing them for ${$379s1*(1+$s1/100)} when they take damage. This heal can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. $?a1217622[Lasts $d][Maximum $u charges].
 
 $?s383010[Earth Shield can only be placed on the Shaman and one other target at a time. The Shaman can have up to two Elemental Shields active on them.][Earth Shield can only be placed on one target at a time. Only one Elemental Shield can be active on the Shaman.]
@@ -156,7 +158,7 @@ Effects          :
 #1 (id=736)      : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87)
 #2 (id=276084)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 2630 | Misc Value 2: 0xd48 | Target: at Area (87)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 2630 | Misc Value 2: 3400 | Target: at Area (87)
 Description      : Summons a totem at the target location for $d that slows the movement speed of enemies within $3600A1 yards by $3600s1%.
 
 Name             : Ghost Wolf (id=2645) [Spell Family (11)] 
@@ -177,7 +179,7 @@ Family Flags     : 11
 Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), No Threat (42), No AutoCast (AI) (49), No shapeshift UI (65), Include In Advanced Combat Log (72), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=802)      : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 16 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 16 | Misc Value 2: 6 | Target: Self (1)
 #2 (id=803)      : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Target: Self (1)
 #3 (id=131668)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -187,7 +189,7 @@ Effects          :
 #5 (id=250398)   : Apply Aura (6) | Use Base Move Speed (191)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #6 (id=1052997)  : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 48 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 48 | Misc Value 2: 6 | Target: Self (1)
 Description      : Turn into a Ghost Wolf, increasing movement speed by $?s382215[${$s2+$382216s1}][$s2]% and preventing movement speed from being reduced below $s3%.
 Tooltip          : Increases movement speed by $?s382215[${$382216s1+$w2}][$w2]%.$?$w3!=0[
 Less hindered by effects that reduce movement speed.][]
@@ -297,7 +299,7 @@ Family Flags     : 6, 15, 19, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Can Be Multi Cast (229), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1925)     : Summon Guardian (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3527 | Misc Value 2: 0xd4a | Target: Back Right of Self (42)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3527 | Misc Value 2: 3402 | Target: Back Right of Self (42)
 Description      : Summons a totem at your feet for $d that heals $?s147074[two injured party or raid members][an injured party or raid member] within $52042A1 yards for $52042s1 every $5672t1 sec.
 
 If you already know $?s157153[$@spellname157153][$@spellname5394], instead gain $392915s1 additional $Lcharge:charges; of $?s157153[$@spellname157153][$@spellname5394].
@@ -415,6 +417,7 @@ Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.896 | Target: Targeted Ally (21)
+                   Modified By: Devout Spirit (319919 effect#1)
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.$?a410673[
 
 |cFFFFFFFFConsumes Stormweaver for increased cast speed and healing.|r][]
@@ -460,7 +463,7 @@ Family Flags     : 15, 29, 57
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), Can Be Multi Cast (229), Ignore Totem Requirements for Casting (293), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=3317)     : Summon Guardian (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5913 | Misc Value 2: 0xd4e | Target: Front Left of Self (44)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5913 | Misc Value 2: 3406 | Target: Front Left of Self (44)
 Description      : Summons a totem at your feet that shakes the ground around it for $d, removing Fear, Charm and Sleep effects from party and raid members within $8146a1 yards.
 
 Name             : Tremor Totem Effect (id=8146) [Spell Family (11)] 
@@ -572,6 +575,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 195573 | Target: Self (1)
 #4 (id=1160049)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Target: Self (1)
+                   Modified By: Elemental Assault (210853 effect#3)
 Description      : Energizes both your weapons with lightning and delivers a massive blow to your target, dealing a total of ${$32175sw1+$32176sw1} Physical damage.$?s210853[
 
 Stormstrike has a $s4% chance to generate $210853m2 $Lstack:stacks; of Maelstrom Weapon.][]
@@ -755,7 +759,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -835,6 +839,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=332743)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30
+                   Modified By: Astral Protection (337964 effect#1)
 Description      : Allows you to resurrect yourself upon death with $21169s1% health and mana. This effect can occur only once every $s2 minutes.
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -918,6 +923,7 @@ Effects          :
 #2 (id=1177796)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 1706 (Label) | Target: Self (1)
                    Affected Spells (Label): Nature's Guardian (31616)
+                   Modified By: Natural Harmony (443442 effect#3)
 Description      : When your health is brought below $s1%, you instantly heal for ${$31616s1*(1+$s2/100)}% of your maximum health. Cannot occur more than once every $445698d.
 
 Name             : Nature's Guardian (id=31616) [Spell Family (11)] 
@@ -1134,7 +1140,7 @@ Effects          :
 #1 (id=120544)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87)
 #2 (id=287855)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60561 | Misc Value 2: 0xd4c | Target: at Area (87)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60561 | Misc Value 2: 3404 | Target: at Area (87)
 Description      : Summons a totem at the target location for $d. The totem pulses every $116943t1 sec, rooting all enemies within $64695A1 yards for $64695d. Enemies previously rooted by the totem instead suffer $116947s1% movement speed reduction.
 
 Name             : Thunderstorm (id=51490) [Spell Family (11)] 
@@ -1190,6 +1196,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 285452 | Target: Targeted Enemy (6)
 #2 (id=845772)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Lava Surge (77762 effect#2), Maelstrom (343725 effect#3)
 Description      : Hurls molten lava at the target, dealing $285452s1 Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.$?a343725[
 
 |cFFFFFFFFGenerates $343725s3 Maelstrom.|r][]
@@ -1220,11 +1227,11 @@ Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heart
 Aura Interrupt   : Leave World (19), Damage (Script) (27)
 Effects          :
 #1 (id=43856)    : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 70495 | Misc Value 2: 0x9 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 70495 | Misc Value 2: 9 | Target: Targeted Enemy (6)
 #2 (id=43857)    : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Targeted Enemy (6)
 #3 (id=43858)    : Apply Aura (6) | Unknown(260)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Misc Value 2: 0x7 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Misc Value 2: 7 | Target: Targeted Enemy (6)
 #4 (id=756197)   : Apply Aura (6) | Disable Actions (321)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Transforms the enemy into a frog for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage may cancel the effect. Limit 1. Only works on Humanoids and Beasts.
@@ -1318,8 +1325,10 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=44554)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#5)
 #2 (id=44555)    : Apply Aura (6) | Restore Power (85) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 68.98976 (coefficient=0.526316) | PvP Coefficient: 1.75 | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#4)
 Description      : The caster is surrounded by globes of water, granting $s2 mana per 5 sec. When a melee attack hits the caster, the caster regains $?s382033[${($382033s5/100+1)*$52128s1}][$52128s1]% of their mana. This effect can only occur once every $?a462454[${$proccooldown+($462454s2/1000)}.1][$proccooldown] sec. 
 
 $?s383010[The Shaman can have up to two Elemental Shields active on them.][Only one of your Elemental Shields can be active on you at once.]
@@ -1339,6 +1348,7 @@ Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sit
 Effects          :
 #1 (id=44556)    : Energize Power% (137)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.2 | Resource: mana | Target: Self (1)
+                   Modified By: Therazane's Resilience (1217622 effect#5)
 Description      : $@spelldesc52127
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
@@ -1370,6 +1380,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -1785,6 +1796,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #3 (id=1033576)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Molten Assault (334033 effect#2)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $s1 Fire damage.
 
 Damage is increased by $s2% if your offhand weapon is imbued with Flametongue Weapon. $?s334033[Lava Lash will spread Flame Shock from your target to $s3 nearby targets.][]$?s334046[
@@ -1807,9 +1819,11 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Earthquake (77478), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Frost Shock (196840), Lightning Rod (197568), Control of Lava (204395), Icefury (210714), Lightning Bolt (214815), Lightning Bolt Overload (214816), Icefury Overload (219271), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lava Burst (285452), Lava Burst Overload (285466), Earthquake (298762), Earthquake Overload (298765), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Flametongue Weapon (318038), Flametongue Weapon (319778), Earthquake (329801), Fire Nova (333977), Earthquake (336740), Lightning Shield (344174), Elemental Blast (344645), Earth Shock Overload (381725), Magma Eruption (383061), Tempest (452201), Searing Volley (458147), Earthquake (462620), Tempest Overload (463351), Flametongue Attack (467386), Flametongue Attack (467390), Flame Shock (470411)
                    Family Flags: 0, 1, 2, 3, 10, 20, 21, 28, 30, 31, 44, 45, 50, 60, 79, 83, 98, 107, 119, 121
+                   Modified By: Primordial Fury (378193 effect#1)
 #2 (id=830842)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Misc Value 2: 3924 (Label) | Target: Self (1)
                    Affected Spells (Label): Earthen Rage (170374), Earthen Rage (170379), Awakening Storms (455130), Thunderstrike (462763), Storm's Eye (1235840)
+                   Modified By: Primordial Fury (378193 effect#2)
 Description      : Your damaging $?a343190[and healing ][]critical strikes deal ${$m1+200}% damage $?a343190[or healing ][]instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -2178,10 +2192,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Stormsurge (201845), Stormsurge (201846)
                    Family Flags: 114
+                   Modified By: Storm's Wrath (392352 effect#1)
 #4 (id=297948)   : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Windfury Weapon (33757), Windfury Weapon (319773)
                    Family Flags: 72
+                   Modified By: Storm's Wrath (392352 effect#2), Doom Winds (466772 effect#4)
 #5 (id=479847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Flametongue Attack (10444), Lava Burst (51505), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Lava Burst (285452), Lightning Lasso (305484), Lightning Lasso (305485), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Tempest Overload (463351), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
@@ -2340,6 +2356,7 @@ Effects          :
                    Family Flags: 0, 1, 7, 8, 11, 39, 41, 44, 47, 51, 62, 80, 83, 84, 92, 98, 111
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Graceful Spirit (192088 effect#2)
 #3 (id=772568)   : Apply Aura (6) | Allow Casting while Moving For Spells (Label) (307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 640 | Target: Self (1)
                    Affected Spells (Label): Azerite Essences (640)
@@ -2485,6 +2502,7 @@ Attributes       : Passive (6), Vehicle Immunity Category (218), Allow Class Abi
 Effects          :
 #1 (id=104830)   : Apply Aura Raid (65) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Radius: 10 yards | Target: Self (1)
+                   Modified By: Spouting Spirits (462383 effect#1)
 Description      : The Spirit Link Totem reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Every $98017t1 sec, the health of all affected players is redistributed, such that each player ends up with the same percentage of their maximum health.
 Tooltip          : Damage taken reduced by $s1%.
 Health periodically normalized among other affected party and raid members.
@@ -2514,7 +2532,7 @@ Effects          :
 #1 (id=104832)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Radius: 10 yards | Target: at Area (87)
 #2 (id=323958)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 53006 | Misc Value 2: 0xd47 | Target: at Area (87)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 53006 | Misc Value 2: 3399 | Target: at Area (87)
 Description      : Summons a totem at the target location for $d, which reduces damage taken by all party and raid members within $98007a1 yards by $98007s1%. Immediately and every $98017t1 sec, the health of all affected players is redistributed evenly.
 
 Name             : Spirit Link (id=98017) [Spell Family (11), Hidden] 
@@ -2636,6 +2654,7 @@ Effects          :
 #1 (id=119326)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Astral Shift (263786 effect#1), Astral Bulwark (377933 effect#1)
 Description      : Shift partially into the elemental planes, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $w1%.
 
@@ -2660,13 +2679,14 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Ext
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=119337)   : Summon Guardian (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 59764 | Misc Value 2: 0x1454 | Target: Back Right of Self (42)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 59764 | Misc Value 2: 5204 | Target: Back Right of Self (42)
 #2 (id=247825)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1045054)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #4 (id=1258516)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#3)
 Description      : Summons a totem at your feet for $d, which pulses every $t2 sec, healing all party or raid members within $114942A1 yards for $114942m1.
 
 Healing reduced beyond $s1 targets.
@@ -2733,7 +2753,7 @@ Labels           : 16: Class Spells
 Attributes       : No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119344)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 (delta=1) | Misc Value: 47319 | Misc Value 2: 0x759 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 (delta=1) | Misc Value: 47319 | Misc Value 2: 1881 | Target: at Area (87)
 #2 (id=204731)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
 Description      : Relocates your active totems to the specified location.
@@ -2780,11 +2800,13 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Cl
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=127154)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59347 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59347 | Misc Value 2: 6 | Target: Self (1)
+                   Modified By: Static Accumulation (384411 effect#1)
 #2 (id=127210)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 232186 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 232186 | Misc Value 2: 6 | Target: Self (1)
 #3 (id=129147)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #4 (id=305266)   : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=375209)   : Apply Aura (6) | Resist Dispel (235)
@@ -2807,11 +2829,11 @@ Effects          :
 #11 (id=1180320) : Trigger Spell (64): Ascendance
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 344548 | Target: Self (1)
 #12 (id=1187275) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233595 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233595 | Misc Value 2: 6 | Target: Self (1)
 #13 (id=1189100) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233843 | Misc Value 2: 6 | Target: Self (1)
 #14 (id=1189101) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233844 | Misc Value 2: 6 | Target: Self (1)
 #15 (id=1239481) : Apply Aura (6) | Cast Linked Spell w/ Value (285): Static Accumulation
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 384437 | Target: Self (1)
 #16 (id=1248799) : Trigger Spell (64): Doom Winds
@@ -2844,11 +2866,12 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Can Proc From Pro
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=127155)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 232187 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 232187 | Misc Value 2: 6 | Target: Self (1)
 #2 (id=127167)   : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59349 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 59349 | Misc Value 2: 6 | Target: Self (1)
 #3 (id=762230)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #4 (id=1103553)  : Apply Aura (6) | Modify Attack Power (104)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1172234)  : Apply Aura (6) | Resist Dispel (235)
@@ -2862,11 +2885,11 @@ Effects          :
 #9 (id=1180324)  : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
 #10 (id=1187274) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233593 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233593 | Misc Value 2: 6 | Target: Self (1)
 #11 (id=1189103) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233845 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233845 | Misc Value 2: 6 | Target: Self (1)
 #12 (id=1189104) : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233846 | Misc Value 2: 0x6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 233846 | Misc Value 2: 6 | Target: Self (1)
 Description      : Transform into a Water Ascendant, duplicating all healing you deal at $s9% effectiveness for $114051d and immediately healing for $294020s1. Ascendant healing is distributed evenly among allies within $114083A1 yds.
 Tooltip          : Transformed into a powerful Water Ascendant. Healing you deal is duplicated at $s9% effectiveness and distributed evenly among nearby allies.$?a462443[
 
@@ -3168,6 +3191,7 @@ Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scal
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Elemental Shaman (137040 effect#7), Earthshatter (468626 effect#2)
 Description      : Critical Strike increased by $s1%.
 Tooltip          : Critical Strike increased by $s1%.
 
@@ -3824,7 +3848,7 @@ Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Proc
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=219277)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 0xda1 | Radius: 5 yards | Target: Back Left of Self (43)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 3489 | Radius: 5 yards | Target: Back Left of Self (43)
 #2 (id=355422)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=706796)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3854,7 +3878,7 @@ Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Proc
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=219302)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 77942 | Misc Value 2: 0xda2 | Radius: 5 yards | Target: Front Left of Self (44)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 77942 | Misc Value 2: 3490 | Radius: 5 yards | Target: Front Left of Self (44)
 #2 (id=219303)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=713501)   : Apply Aura (6) | Proc Trigger Spell (42): Wind Gust
@@ -4071,6 +4095,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.875 | Misc Value: 18 | Target: Self (1)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Modified By: Echo Chamber (382032 effect#1), Ascendance (1219480 effect#8)
 #3 (id=307793)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.76 | PvP Coefficient: 1.3 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
@@ -4160,6 +4185,7 @@ Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scal
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Elemental Shaman (137040 effect#7), Earthshatter (468626 effect#2)
 Description      : Haste increased by $s1%.
 Tooltip          : Haste increased by $s1%.
 
@@ -4177,6 +4203,7 @@ Attributes       : Do Not Display Range (126), Use Target's Level for Spell Scal
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Elemental Shaman (137040 effect#7), Earthshatter (468626 effect#2)
 Description      : Mastery increased by ${$s1*$168534bc1}%.
 Tooltip          : Mastery increased by ${$s1*$168534bc1}%.
 
@@ -4285,6 +4312,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=829582)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Overflowing Maelstrom (384149 effect#2)
 #3 (id=1276992)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Maelstrom Weapon (187881)
@@ -4321,13 +4349,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 107
+                   Modified By: Maelstrom Weapon (187880 effect#5)
 #2 (id=811721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 0, 1, 107, 125
+                   Modified By: Bottle of Swirling Maelstrom (329580 effect#1), Maelstrom Weapon (187880 effect#3), Focused Lightning (338322 effect#1)
 #3 (id=871486)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+                   Modified By: Bottle of Swirling Maelstrom (329580 effect#2), Maelstrom Weapon (187880 effect#4), Focused Lightning (338322 effect#2)
 Description      : $@spelldesc187880
 
 Name             : Maelstrom Weapon (id=187890) [Spell Family (11), Hidden] 
@@ -4402,10 +4433,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #4 (id=1182047)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#11)
 #5 (id=1267945)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Earthquake (61882), Earthquake (77478), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740), Elemental Blast (344645), Earth Shock Overload (381725), Tempest (452201), Earthquake (462620), Tempest Overload (463351)
                    Family Flags: 0, 1, 20, 63, 64, 83, 96, 98, 107, 108
+                   Modified By: Inferno Arc (1259047 effect#1)
 Description      : Sears the target with fire, causing $s1 Volcanic damage and then an additional $o2 Volcanic damage over $d.
 
 Flame Shock can be applied to a maximum of $I targets.$?a137039[][
@@ -4488,7 +4521,7 @@ Family Flags     : 55
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=275512)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95061 | Misc Value 2: 0xc8d | Radius: 5 yards | Target: Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95061 | Misc Value 2: 3213 | Radius: 5 yards | Target: Left of Self (50)
 #2 (id=739139)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.52 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
@@ -4523,7 +4556,7 @@ Family Flags     : 54
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=275537)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95072 | Misc Value 2: 0xc8f | Radius: 5 yards | Target: Left of Self (50) -> Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 95072 | Misc Value 2: 3215 | Radius: 5 yards | Target: Left of Self (50) -> Self (1)
 Description      : $@spelldesc198103
 
 Name             : Shattered Earth (id=188912) [Spell Family (11)] 
@@ -4609,6 +4642,7 @@ Effects          :
                    Family Flags: 0
 #3 (id=1276341)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Stormwell (1264762 effect#2)
 Description      : Charge yourself with lightning, causing your next $n Lightning Bolts to deal $s2% more damage, and also causes your next $n Lightning Bolts or Chain Lightnings to be instant cast and trigger an Elemental Overload on every target.$?a1264762[
 
 |cFFFFFFFFGenerates $1264762s2 Maelstrom.|r][]
@@ -4724,7 +4758,7 @@ Effects          :
 #1 (id=281742)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Radius: 8 yards | Target: at Area (87)
 #2 (id=324844)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 61245 | Misc Value 2: 0xd4f | Target: at Area (87)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 61245 | Misc Value 2: 3407 | Target: at Area (87)
 Description      : Summons a totem at the target location that gathers electrical energy from the surrounding air and explodes after $s2 sec, stunning all enemies within $118905A1 yards for $118905d.
 
 Name             : Gust of Wind (id=192063) [Spell Family (11)] 
@@ -4771,7 +4805,7 @@ Family Flags     : 15, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281765)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 97285 | Misc Value 2: 0xe6f | Radius: 10 yards | Target: At Ally in Area (31)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 97285 | Misc Value 2: 3695 | Radius: 10 yards | Target: At Ally in Area (31)
 Description      : Summons a totem at the target location for $d, continually granting all allies who pass within $a1 yards $192082s1% increased movement speed for $192082d.
 
 Name             : Wind Rush Totem (id=192078) [Spell Family (11), Passive] 
@@ -4805,6 +4839,7 @@ Attributes       : Do Not Log Immune Misses (3), Do Not Display Range (126), No 
 Effects          :
 #1 (id=281771)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Ally (21)
+                   Modified By: Jet Stream (462817 effect#1)
 Description      : Movement speed increased by $s1%.
 Tooltip          : Movement speed increased by $w1%.
 
@@ -4852,10 +4887,12 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=830114)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Surging Shields (382033 effect#2)
 #4 (id=830115)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=868289)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Surging Shields (382033 effect#1)
 Description      : Surround yourself with a shield of lightning for $d.
 
 Melee attackers have a $h% chance to suffer $192109s1 Nature damage$?a137041[ and have a $s3% chance to generate a stack of Maelstrom Weapon]?a137040[ and have a $s4% chance to generate $s5 Maelstrom][].
@@ -4901,13 +4938,14 @@ Family Flags     : 12, 29
 Attributes       : Is Ability (4), Not Shapeshifted (16), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281997)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 97369 | Misc Value 2: 0xe71 | Target: at Area (87)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 97369 | Misc Value 2: 3697 | Target: at Area (87)
 #2 (id=281998)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Area (87)
 #3 (id=1035804)  : Trigger Spell w/ Value (142): Magma Eruption
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 395349 | Target: at Area (87)
 #4 (id=1259741)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#13)
 Description      : Summons a totem at the target location that erupts dealing $383061s1 Fire damage and applying Flame Shock to $383061s2 enemies within $383061A1 yards. Continues hurling liquid magma at a random nearby target every $192226t1 sec for $d, dealing ${$192231s1*(1+($137040s3/100))} Fire damage to all enemies within $192223A1 yards.$?a343725[
 
 |cFFFFFFFFGenerates $343725s13 Maelstrom.|r][]
@@ -5107,6 +5145,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #4 (id=1182039)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#10)
 Description      : Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d.$?a343725&a210714[
 
 |cFFFFFFFFGenerates ${$343725s10+$343725s7} Maelstrom.|r]?a343725[
@@ -5440,7 +5479,7 @@ Labels           : 83
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=291773)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -5498,7 +5537,8 @@ Effects          :
 #1 (id=324918)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Radius: 10 yards | Target: at Area (87)
 #2 (id=297108)   : Summon Guardian (28)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 100943 | Misc Value 2: 0xe99 | Target: at Area (87)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 100943 | Misc Value 2: 3737 | Target: at Area (87)
+                   Modified By: Oversized Totems (445026 effect#5)
 #3 (id=324917)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 Description      : Summons a totem at the target location with ${$m2*$MHP/100} health for $d. ${$m3*$SP/100} damage from each attack against allies within $?s382201[${$198839s1*(1+$382201s3/100)}.1][$198839s1] yards of the totem is redirected to the totem.
@@ -5644,6 +5684,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=294506)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
+                   Modified By: Deluge (200076 effect#2)
 Description      : $@spelldesc73920
 
 Name             : Deluge (id=200076) [Spell Family (11), Passive, Hidden] 
@@ -5944,7 +5985,7 @@ Effects          :
 #1 (id=306721)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 20 yards | Target: at Area (87)
 #2 (id=1176675)  : Summon Guardian (28)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 104818 | Misc Value 2: 0xecb | Target: at Area (87)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 104818 | Misc Value 2: 3787 | Target: at Area (87)
 Description      : Summons a totem at the target location for $d. All allies within $?s382201[${$207495s1*(1+$382201s3/100)}][$207495s1] yards of the totem gain $207498s1% increased health. If an ally dies, the totem will be consumed to allow them to Reincarnate with $207553s1% health and mana.
 
 Cannot reincarnate an ally who dies to massive damage.
@@ -5964,6 +6005,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=306723)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Modified By: Ancestral Vigor (207401 effect#2)
 Description      : $@spelldesc207401
 Tooltip          : Maximum health increased by $s1%.
 
@@ -6021,7 +6063,7 @@ Effects          :
 #1 (id=306879)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
 #2 (id=322959)   : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x32 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 50 | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
@@ -6151,6 +6193,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=341410)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Enhancement Shaman (137041 effect#12), Charged Conduit (468625 effect#2)
 Description      : $?s454009[Tempest, ][]$?s137040[Earth Shock, Elemental Blast, and Earthquake][Lightning Bolt and Chain Lightning] make your target a Lightning Rod for $197209d.
  
 Lightning Rods take $s2% of all damage you deal with $?s454009[Tempest, Lightning Bolt,][Lightning Bolt] and Chain Lightning.
@@ -6184,6 +6227,7 @@ Effects          :
                    Family Flags: 31
 #3 (id=845774)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#8), Primal Fracture (410018 effect#6)
 #4 (id=1173035)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next Frost Shock to deal $s2% increased damage, damage $s4 additional $Ltarget:targets;, and generate $343725s7 additional Maelstrom.
@@ -6342,10 +6386,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
+                   Modified By: Hot Hand (201900 effect#3)
 #2 (id=811659)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286) | Attributes: Ignore During Cooldown Time Rate Calculation (23)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
+                   Modified By: Hot Hand (201900 effect#2)
 Description      : $@spelldesc201900
 Tooltip          : Lava Lash damage increased by $w1% and cooldown reduced by ${100*(1-(100/(100+$w2)))}%.
 
@@ -6434,6 +6480,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.28695 | PvP Coefficient: 0.89 | Target: Targeted Enemy (6)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#9), Primal Fracture (410018 effect#7)
 Description      : Hurls frigid ice at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Frost damage.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -6617,7 +6664,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=344190)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: at Target Back (65)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 29264 | Misc Value 2: 1161 | Radius: 3 yards | Target: at Target Back (65)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -6917,7 +6965,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -6991,7 +7039,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -7210,6 +7258,7 @@ Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=486101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Master of the Elements (16166 effect#2)
 Description      : $@spelldesc16166
 Tooltip          : Your next Nature, Physical, or Frost spell will deal $s1% increased damage or healing.
 
@@ -7317,7 +7366,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=623979)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 100820 | Misc Value 2: 1161 | Target: Self (1)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -7523,7 +7573,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -7580,7 +7630,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=722305)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 138121 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 138121 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -7922,7 +7972,7 @@ Labels           : 292
 Attributes       : No Threat (42), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=728392)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140787 | Misc Value 2: 0x10f4 | Radius: 5 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140787 | Misc Value 2: 4340 | Radius: 5 yards | Target: Left of Self (50)
 Description      : $@spelldesc275381
 
 Name             : Spark Elemental (id=275386) [Spell Family (11)] 
@@ -7938,7 +7988,7 @@ Labels           : 292
 Attributes       : No Threat (42), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=728393)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140789 | Misc Value 2: 0x10f4 | Radius: 5 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140789 | Misc Value 2: 4340 | Radius: 5 yards | Target: Left of Self (50)
 Description      : $@spelldesc275381
 
 Name             : Lightning Conduit (id=275388) [Spell Family (11), Passive] 
@@ -8270,6 +8320,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Wellspring (197995), Wellspring (197997)
                    Family Flags: 7, 8, 51, 80, 84
+                   Modified By: Flash Flood (280614 effect#2)
 Description      : $@spelldesc280614
 Tooltip          : The cast time of your next heal is reduced by $w1%
 
@@ -8330,6 +8381,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38996 | Target: Targeted Enemy (6)
 #2 (id=845773)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#4)
 Description      : Hurls molten lava at the target, dealing $?a382032[${$s1*($382032s1+$168534s2)/100}][${$s1*$168534s2/100}] Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.
 
 Generates $343725s4 Maelstrom.|r
@@ -8459,6 +8511,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
 Effects          :
 #1 (id=753822)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#7), Primal Fracture (410018 effect#8)
 Description      : $@spelldesc196840
 
 Name             : Ride the Lightning (id=289874) [Spell Family (11), Passive, Hidden] 
@@ -8786,7 +8839,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -8817,7 +8870,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -8957,7 +9010,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8972,7 +9025,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9025,7 +9078,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9037,7 +9090,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9049,7 +9102,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Holy Relic (id=315879) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -9475,7 +9528,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9492,7 +9545,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9509,7 +9562,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9526,7 +9579,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -9542,7 +9595,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Vesper Totem (desc=Kyrian) (id=324386) [Spell Family (11)] 
@@ -9569,7 +9622,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60),
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=813920)   : Summon Guardian (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 166523 | Misc Value 2: 0x126b | Target: at Area (87)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 166523 | Misc Value 2: 4715 | Target: at Area (87)
 #2 (id=813921)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=813922)   : Dummy (3)
@@ -9655,6 +9708,7 @@ Effects          :
 #1 (id=815301)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Spouting Spirits (462383 effect#1)
 Description      : $@spelldesc98008
 Tooltip          : Damage taken reduced by $s1%.
 Health periodically normalized among other affected party and raid members.
@@ -9684,6 +9738,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Trigger Spell: 327161 | Target: Current Target (25)
 #2 (id=871499)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: Current Target (25)
+                   Modified By: Maelstrom (343725 effect#12)
 #3 (id=871500)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Current Target (25)
 #4 (id=871501)   : Dummy (3)
@@ -10703,6 +10758,7 @@ Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=836382)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Thunderous Paws (338033 effect#1)
 Description      : $@spelldesc338033
 Tooltip          : Movement speed increased by $w1%.
 
@@ -10931,6 +10987,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 80
+                   Modified By: Swirling Currents (338339 effect#1)
 Description      : $@spelldesc338339
 Tooltip          : Your next Healing Surge, Healing Wave, or Riptide will be $w1% more effective.
 
@@ -10971,6 +11028,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Rain (73921), Deluge (200075)
                    Family Flags: 87
+                   Modified By: Heavy Rainfall (338343 effect#1)
 Description      : $@spelldesc338343
 Tooltip          : Healing Rain is $w1% more effective.
 
@@ -11136,16 +11194,20 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=845763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Modified By: Primal Fracture (410018 effect#1)
 #2 (id=845764)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Modified By: Primal Fracture (410018 effect#3)
 #3 (id=845765)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
+                   Modified By: Primal Fracture (410018 effect#4)
 #4 (id=845766)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst Overload (285466)
                    Family Flags: 86
+                   Modified By: Primal Fracture (410018 effect#5)
 #5 (id=845767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #6 (id=845768)   : Apply Aura (6) | Dummy (4)
@@ -11288,7 +11350,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Pyroclastic Shock (id=345594) [Spell Family (11), Passive, Hidden] 
@@ -11376,7 +11438,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11391,7 +11453,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -11508,6 +11570,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -11669,7 +11732,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=903616)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184091 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184091 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -11687,7 +11750,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=903620)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184092 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184092 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -11705,7 +11768,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=903621)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184093 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 184093 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -11725,7 +11788,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=903636)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 29264 | Misc Value 2: 0x489 | Radius: 3 yards | Target: at Target Back (65)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 29264 | Misc Value 2: 1161 | Radius: 3 yards | Target: at Target Back (65)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -12054,6 +12117,7 @@ Attributes       : Aura Points On Client (268), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=1006340)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Thunderous Paws (378075 effect#1)
 Description      : $@spelldesc378075
 Tooltip          : Movement speed increased by $378075s1%.
 
@@ -12200,6 +12264,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 80
+                   Modified By: Elemental Shaman (137040 effect#8)
 Description      : Your Healing $?a137039[Wave][Surge] is $s1% more effective on yourself.
 
 
@@ -12245,6 +12310,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1006630)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+                   Modified By: Thorim's Invocation (384444 effect#6)
 #2 (id=1006631)  : Apply Aura (6) | Dummy (4)
                    Base Value: 11.6 | Scaled Value: 11.6 | Target: Self (1)
 #3 (id=1006632)  : Apply Aura (6) | Dummy (4)
@@ -12650,6 +12716,7 @@ Attributes       : Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1012832)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Searing Flames (381782 effect#1)
 Description      : $@spelldesc381782
 
 Name             : Totemic Surge (id=381867) [Spell Family (11), Passive, Hidden] 
@@ -12864,12 +12931,15 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Elemental Blast (117014), Elemental Blast Overload (120588), Flame Shock (188389), Lava Burst (285452), Lava Burst Overload (285466), Elemental Blast (344645), Flame Shock (470411)
                    Family Flags: 28, 44, 86, 98, 108
+                   Modified By: Enhanced Imbues (462796 effect#1)
 #2 (id=1013219)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
+                   Modified By: Enhanced Imbues (462796 effect#4)
 #3 (id=1014665)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 1678 (Label) | Target: Self (1)
+                   Modified By: Enhanced Imbues (462796 effect#5)
 Description      : $@spelldesc382027
 Tooltip          : Fire damage dealt increased by ${$W1}.1%.
 
@@ -12993,6 +13063,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1013243)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Surging Elements (382042 effect#1)
 Description      : $@spelldesc382042
 Tooltip          : Haste increased by $w1%.
 
@@ -13116,6 +13187,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1013481)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Winds of Al'Akir (382215 effect#3)
 Description      : $@spelldesc382215
 
 Name             : Winds of Al'Akir (id=382217) 
@@ -13132,6 +13204,7 @@ Aura Interrupt   : Leave World (19), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1013483)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Winds of Al'Akir (382215 effect#2)
 Description      : $@spelldesc382215
 Tooltip          : Movement speed increased by $w1%.
 
@@ -13334,7 +13407,7 @@ Effects          :
 #1 (id=1014656)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1014657)  : Summon Guardian (28)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5923 | Misc Value 2: 0x1534 | Target: Front Left of Self (44)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5923 | Misc Value 2: 5428 | Target: Front Left of Self (44)
 Description      : Summons a totem at your feet that removes all Poison effects from a nearby party or raid member within $403922a yards every $383014t1 sec for $d.
 
 Name             : Poison Cleansing (id=383014) [Spell Family (11)] 
@@ -13507,11 +13580,13 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Embrace of Earth (338329 effect#1)
 #2 (id=1015699)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #3 (id=1052536)  : Apply Aura (6) | Modify Damage Taken% (87) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+                   Modified By: Earthen Harmony (382020 effect#3)
 Description      : $@spelldesc974
 Tooltip          : $?$w3!=0[Damage taken reduced by $w3%.
 
@@ -14077,6 +14152,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1033570)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 117014 | Scaled Value: 117014 | Target: Self (1)
+                   Modified By: Elemental Shaman (137040 effect#8)
 Description      : $@spelldesc117014
 
 Name             : Elemental Blast (id=394152) [Spell Family (11), Hidden] 
@@ -14094,6 +14170,7 @@ Effects          :
                    Base Value: 117014 | Scaled Value: 117014 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
+                   Modified By: Elemental Shaman (137040 effect#8)
 #2 (id=1033573)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2077 (Category) | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
@@ -14975,7 +15052,7 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1105027)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 212489 | Misc Value 2: 0x489 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 212489 | Misc Value 2: 1161 | Target: Self (1)
 Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
@@ -15374,6 +15451,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1139370)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Modified By: Heed My Call (443444 effect#2)
 Description      : $?a137040[Primordial Wave calls an Ancestor to your side for $445624d.][Casting Healing Stream Totem calls an Ancestor to your side for $s1 sec.]
 
 Whenever you cast a healing or damaging spell, the Ancestor will cast a similar spell.
@@ -15498,7 +15576,7 @@ Family Flags     : 15, 29
 Attributes       : Not Shapeshifted (16), No 'Summon + Dest from Client' Targeting Pathing Requirement (277)
 Effects          :
 #1 (id=1141708)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225409 | Misc Value 2: 0x174f | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 225409 | Misc Value 2: 5967 | Target: at Area (87)
 #2 (id=1174985)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: at Area (87)
 Description      : $?a137039[Summons a totem at the target location that maintains Healing Rain with $455630s3% increased effectiveness for $d.
@@ -15801,7 +15879,7 @@ Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1142587)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 221177 | Misc Value 2: 0x1716 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 221177 | Misc Value 2: 5910 | Radius: 3 yards | Target: Left of Self (50)
 #2 (id=1145059)  : Trigger Spell (64): Call of the Ancestors
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 447206 | Target: Self (1)
 Description      : $@spelldesc443450
@@ -15941,7 +16019,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
 #1 (id=1147624)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ancestral Swiftness overrides Nature's Swiftness
-                   Base Value: 443454 | Scaled Value: 443454 | Misc Value: 378081 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 443454 | Scaled Value: 443454 | Misc Value: 378081 | Misc Value 2: 2 | Target: Self (1)
 Description      : $@spelldesc443454
 
 Name             : Nature's Swiftness (id=448898) [Spell Family (11), Passive, Hidden] 
@@ -16074,6 +16152,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.105 | PvP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1158656)  : Dummy (3)
                    Base Value: 65 | Scaled Value: 65 | Target: Targeted Enemy (6)
+                   Modified By: Enhancement Shaman (137041 effect#17)
 #3 (id=1184273)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Calls down a tremendous lightning strike that deals $s1 Nature damage to your target and ${$m1*$m2/100} Nature damage to enemies within $A1 yds of your target. Damage reduced beyond $s3 targets.$?a383303[
@@ -16271,6 +16350,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1156239)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Awakening Storms (455129 effect#3)
 #2 (id=1156240)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #3 (id=1156241)  : Apply Aura (6) | Dummy (4)
@@ -16319,12 +16399,14 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Earth Shock Overload (381725), Tempest (452201), Tempest Overload (463351), Flame Shock (470411), Primordial Storm (1218047), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433)
                    Family Flags: 0, 1, 3, 10, 20, 25, 28, 45, 63, 64, 82, 85, 96, 98, 107, 108, 118
+                   Modified By: Enhancement Shaman (137041 effect#15)
 #3 (id=1176169)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 7 | Misc Value 2: 4013 (Label) | Target: Self (1)
                    Affected Spells (Label): Earthen Rage (170379), Ascendance (344548), Awakening Storms (455130), Thunderstrike (462763), Ascendance (467263), Storm's Eye (1235840)
 #4 (id=1176170)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 15 | Misc Value 2: 4013 (Label) | Target: Self (1)
                    Affected Spells (Label): Earthen Rage (170379), Ascendance (344548), Awakening Storms (455130), Thunderstrike (462763), Ascendance (467263), Storm's Eye (1235840)
+                   Modified By: Enhancement Shaman (137041 effect#16)
 Description      : Increases the critical strike chance of your Nature damage spells by $s1% and the critical strike damage of your Nature spells by $s2%.
 
 Name             : Electroshock (id=454022) [Spell Family (11), Passive, Hidden] 
@@ -16532,6 +16614,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Earthquake (61882), Earthquake (77478), Crash Lightning (187874), Chain Lightning (188443), Crash Lightning (195592), Earthquake (298762), Earthquake Overload (298765), Earthquake (329801), Earthquake (336740), Earthquake (462620), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433)
                    Family Flags: 1, 63, 83, 85
+                   Modified By: Elemental Shaman (137040 effect#13), Enhancement Shaman (137041 effect#11)
 Description      : $?s137040[Earthquake][Crash Lightning] and Chain Lightning damage increased by $s1%.
 
 Name             : Storm Swell (id=455088) [Spell Family (11), Passive, Hidden] 
@@ -16653,6 +16736,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1158319)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Enhancement Shaman (137041 effect#12), Charged Conduit (468625 effect#2)
 Description      : $?s137040[Lightning Rod targets now also take $s2% of the damage that Tempest deals, and Tempest also applies Lightning Rod effect.][Gain the effects of the Lightning Rod talent:
 
 $@spellicon210689 $@spellname210689
@@ -16677,6 +16761,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 454015 | Target: Self (1)
 #2 (id=1158332)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Enhancement Shaman (137041 effect#13)
 #3 (id=1268073)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 5698 (Label) | Target: Self (1)
                    Affected Spells (Label): Tempest (454009)
@@ -16806,7 +16891,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
 Effects          :
 #1 (id=1160505)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Surging Totem overrides Healing Rain
-                   Base Value: 444995 | Scaled Value: 444995 | Misc Value: 73920 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 444995 | Scaled Value: 444995 | Misc Value: 73920 | Misc Value 2: 2 | Target: Self (1)
 
 Name             : Amplification Core (id=456369) [Spell Family (11)] 
 Class            : Shaman
@@ -16918,14 +17003,17 @@ Effects          :
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Healing Stream Totem (5394), Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Healing Stream Totem (392915), Healing Stream Totem (392916), Poison Cleansing (403922)
                    Family Flags: 6, 13, 120
+                   Modified By: Enhanced Imbues (462796 effect#6)
 #2 (id=1162727)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Enhanced Imbues (462796 effect#7)
 #3 (id=1162728)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Soothing Waters (273019), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Earthliving Weapon (382024), Overflowing Shores (383223), Tidal Reservoir (424464), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Reactive Warding (462479), Insurance! (1215539), Insurance! (1215540), Whispering Waves (1217600)
                    Family Flags: 41
+                   Modified By: Enhanced Imbues (462796 effect#8)
 Description      : $@spelldesc457481
 Tooltip          : Your healing done is increased by ${$w2}.1%.
 
@@ -17016,7 +17104,7 @@ Labels           : 16: Class Spells
 Triggered By     : Lively Totems (445034)
 Effects          :
 #1 (id=1163858)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2523 | Misc Value 2: 0xc8b | Radius: 3 yards | Target: at Random (72)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2523 | Misc Value 2: 3211 | Radius: 3 yards | Target: at Random (72)
 #2 (id=1169524)  : Trigger Spell (64): Lively Totems
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 461242 | Target: Self (1)
 Description      : $@spelldesc445034
@@ -17423,6 +17511,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ascendance (114050), Ascendance (114051), Ascendance (114052), Ascendance (344548), Ascendance (467263), Ascendance (1219480)
                    Family Flags: 102
+                   Modified By: Elemental Shaman (137040 effect#10)
 #3 (id=1258517)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Healing Tide Totem (108280)
@@ -18042,7 +18131,7 @@ Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Proc
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1173282)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 229798 | Misc Value 2: 0x17a9 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 229798 | Misc Value 2: 6057 | Target: at Area (87)
 #2 (id=1173283)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1173284)  : Apply Aura (6) | Proc Trigger Spell (42): Wind Gust
@@ -18073,7 +18162,7 @@ Family Flags     : 55
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1173297)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 229800 | Misc Value 2: 0x17a6 | Radius: 5 yards | Target: Left of Self (50)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 229800 | Misc Value 2: 6054 | Radius: 5 yards | Target: Left of Self (50)
 #2 (id=1173298)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.52 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
@@ -18109,7 +18198,7 @@ Attributes       : Dismiss Pet First (32), No Aura Icon (60), Can Proc From Proc
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1173302)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 229801 | Misc Value 2: 0x17a8 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 229801 | Misc Value 2: 6056 | Target: at Area (87)
 #2 (id=1173303)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1173304)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -18681,7 +18770,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183601)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233036 | Misc Value 2: 0x489 | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233036 | Misc Value 2: 1161 | Target: Right of Self (49)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc469314
 Tooltip          : Fire damage increased by $s2%.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
@@ -18716,7 +18806,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183623)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233039 | Misc Value 2: 0x489 | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233039 | Misc Value 2: 1161 | Target: Right of Self (49)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc469314
 Tooltip          : Physical damage increased by $s2%.
 
@@ -18750,7 +18841,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183627)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233038 | Misc Value 2: 0x489 | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233038 | Misc Value 2: 1161 | Target: Right of Self (49)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc469314
 Tooltip          : Frost damage increased by $s2%.
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
@@ -18785,7 +18877,8 @@ Family Flags     : 48
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183630)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233037 | Misc Value 2: 0x489 | Target: Right of Self (49)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233037 | Misc Value 2: 1161 | Target: Right of Self (49)
+                   Modified By: Shaman Enhancement 11.0 Class Set 4pc (453708 effect#1)
 Description      : $@spelldesc469314
 Tooltip          : Lightning damage increased by $s2%.
 
@@ -18825,8 +18918,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1185192)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
+                   Modified By: Fire Nova (1260666 effect#1)
 #3 (id=1267929)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#14)
 #4 (id=1267980)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 Description      : Instantly shocks the target and $s4 enemies within $A1 yds with blazing thunder, applying Flame Shock and dealing $1259101s1 Nature damage. Always critically strikes.$?a343725[
@@ -18960,7 +19055,7 @@ Effects          :
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
 #3 (id=1196252)  : Apply Aura (6) | Unknown(649)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 5 | Misc Value 2: 0xfce | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 5 | Misc Value 2: 4046 | Target: Self (1)
 #4 (id=1196253)  : Apply Aura (6) | Unknown(647)
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
@@ -19086,6 +19181,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198760)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Modified By: Everlasting Elements (462867 effect#2)
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that summons a $?s192249[Storm][Fire] Elemental for ${$m1/1000}.1 sec. Casting Ascendance always hits a |cFFFFFFFFJackpot!|r
 
 Name             : Shaman Elemental 11.1 Class Set 4pc (id=1215676) [Spell Family (11), Passive, Hidden] 
@@ -19194,10 +19290,12 @@ Effects          :
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+                   Modified By: Earthen Communion (443441 effect#4)
 #3 (id=1201819)  : Apply Aura (6) | Add Flat Modifier (107): Spell Doses (31)
                    Base Value: -99 | Scaled Value: -99 | Misc Value: 31 | Target: Self (1)
                    Affected Spells: Earth Shield (974), Earth Shield (383648)
                    Family Flags: 42
+                   Modified By: Earthen Communion (443441 effect#5)
 #4 (id=1201820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Water Shield (52127), Water Shield (52128)
@@ -19234,6 +19332,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218125 | Target: Self (1)
 #2 (id=1202858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.6666 | Trigger Spell: 1218125 | Target: Self (1)
+                   Modified By: Maelstrom (343725 effect#12)
 #3 (id=1206347)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Sundering transforms into a single use Primordial Storm for $1218125d after it is cast.
@@ -19486,6 +19585,7 @@ Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=1205233)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Preeminence (462443 effect#2)
 #5 (id=1205235)  : Apply Aura (6) | Resist Dispel (235)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1205236)  : Apply Aura (6) | Replace Animation (Set) (312)
@@ -19923,7 +20023,7 @@ Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1235406)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 245543 | Misc Value 2: 0x1716 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 245543 | Misc Value 2: 5910 | Radius: 3 yards | Target: Left of Self (50)
 #2 (id=1235407)  : Trigger Spell (64): Call of the Ancestors
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 447206 | Target: Self (1)
 Description      : $@spelldesc443450
@@ -20227,6 +20327,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)
 #2 (id=1257553)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Storm Unleashed (1252373 effect#3)
 Description      : $@spelldesc187874
 Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage split between up to $195592i targets in front of you.$?s1252373[
 
@@ -20558,6 +20659,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Storm's Eye (1235840), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 39
+                   Modified By: Storm Infusion (1258889 effect#3)
 Description      : All Elemental damage increased by $s1%.
 
 Name             : Tectonic Collapse (id=1258899) [Spell Family (11), Passive, Hidden] 
@@ -20682,7 +20784,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Totemic Momentum (id=1260644) [Spell Family (11), Passive, Hidden] 

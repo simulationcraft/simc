@@ -2559,6 +2559,18 @@ class SpellDataGenerator(DataGenerator):
           ( 409877, 2 ), # T30 4pc Recrimination buff
           ( 428595, 2 ), # Illuminated Sigils
 
+          # Devourer
+          ( 1225823, 2 ), # Reap Damage
+          ( 1239524, 2 ), # Eradicate Buff (?)
+          ( 1260013, 2 ), # Grim Focus (Drain Reduced)
+          ( 1245577, 2 ), # Soulfragment Tracker
+          ( 1242504, 2 ), # Emptiness Buff
+          ( 1221171, 2 ), # Collapsing Star Override
+          ( 1214595, 2 ), # Void Ray Damage - Meta
+          (  473671, 2 ), # Void Buildup - Meta Resource Spell
+
+          # Annihilator
+
           # Aldrachi Reaver
           ( 442294, 0 ), # Reaver's Glaive
           ( 442624, 0 ), # Reaver's Mark

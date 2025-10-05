@@ -68,6 +68,7 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=80)       : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.43125 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Targets in a cone in front of you take $s1 Frost damage and $?a386763[are frozen in place for $386770d][have movement slowed by $212792m1% for $212792d].
 Tooltip          : Movement slowed by $s1%.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -102,8 +103,10 @@ Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=83)       : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: Source (22) -> Enemy in Area (15)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=84)       : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.05149 | Radius: 0 - 12 yards | Target: Source (22) -> Enemy in Area (15)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Blasts enemies within $A2 yds of you for $s2 Frost damage and freezes them in place for $d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -137,6 +140,7 @@ Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targe
 Effects          :
 #1 (id=91)       : School Damage (2): fire | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | PvP Coefficient: 1.85 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -188,10 +192,13 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=457)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=281175)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.772 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=740027)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[
 
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
@@ -283,8 +290,10 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.989 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=630)      : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s2 targets.$?a205037[
 
 Leaves behind a patch of flames that burns enemies within it for ${$205470d*$205472s1} Fire damage over $205470d.][]
@@ -409,8 +418,10 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.526 | PvP Coefficient: 1.6632 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1243492)  : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.263 | PvP Coefficient: 1.6632 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc5143
 
 Name             : Will of the Forsaken (desc=Racial) (id=7744) 
@@ -456,6 +467,7 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.5975 | PvP Coefficient: 1.44 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -483,11 +495,14 @@ Effects          :
 #1 (id=4830)     : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=343726)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Improved Ice Barrier (1244069 effect#2)
 #3 (id=355654)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+                   Modified By: Glacial Insulation (235297 effect#1), Improved Ice Barrier (1244069 effect#1)
 #4 (id=1014264)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Ice Barrier (11426)
@@ -544,6 +559,7 @@ Attributes       : Do Not Log (8), No Redirection (35), No Reflection (39), Igno
 Effects          :
 #1 (id=5370)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Targeted Enemy (6)
+                   Modified By: Shivering Core (336472 effect#2), Frigid Winds (235224 effect#1)
 Description      : $@spelldesc190356
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -593,8 +609,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #4 (id=817843)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Ignition (1254756 effect#2)
 #5 (id=1261329)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Ignition (1254756 effect#1), Wildfire (1254828 effect#1)
 Description      : Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast,  Pyroblast$?s153561[, Meteor][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a1254756[
 
 Fire Blast causes your Ignites to spread to $s5 nearby $Lenemy:enemies;.][]
@@ -778,7 +796,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=11588)    : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: mana | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=20592) [Passive] 
@@ -939,8 +957,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Do Not Chain To Cr
 Effects          :
 #1 (id=20028)    : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Chain from Initial Target (7), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.66519 | PvP Coefficient: 1.595 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Impetus (383676 effect#1), Rollin' Hot (1219035 effect#2)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
 
 Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and reduces cast time by $36032s4%.
@@ -1002,8 +1022,10 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=21276)    : Apply Aura (6) | Confuse (5) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Disorient | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=21277)    : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6699 | Radius: 12 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Enemies in a cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.$?a235870[
 
 Always deals a critical strike and contributes to Hot Streak.][]
@@ -1136,14 +1158,17 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451), Arcane Pulse (1241462)
                    Family Flags: 18, 29
+                   Modified By: Mastery: Savant (190740 effect#2), Prodigious Savant (384612 effect#1)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 90 | Scaled Value: 90 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
+                   Modified By: Mastery: Savant (190740 effect#3), Prodigious Savant (384612 effect#2)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Targets (17)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
+                   Modified By: Arcing Cleave (231564 effect#1)
 #4 (id=186532)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
@@ -1198,8 +1223,10 @@ Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targe
 Effects          :
 #1 (id=36330)    : School Damage (2): arcane | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.625 | PvP Coefficient: 1.4812 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=726826)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Chain Multiplier: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 For each Arcane Charge, deals $36032s2% additional damage$?a321526[, grants you ${$321526s1/100}.1% of your maximum mana,][]$?a231564[ and hits $231564s1 additional nearby $Ltarget:targets; for $231564s2% of its damage][].
@@ -1258,8 +1285,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=324006)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.268 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1282,6 +1311,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=36475)    : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Icy Hand (1247775 effect#2)
 #2 (id=154771)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=164986)   : Apply Aura (6) | Set Action Button Spell Count (408): Ice Lance
@@ -1352,6 +1382,7 @@ Effects          :
                    Affected School(s): All
 #4 (id=223391)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Cryo-Freeze (337123 effect#1), Cryo-Freeze (382292 effect#1)
 #5 (id=809066)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #6 (id=809067)   : Apply Aura (6) | Use Base Move Speed (191)
@@ -1436,6 +1467,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -1928,6 +1960,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Power 
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Modified By: Illuminated Thoughts (384060 effect#1)
 #2 (id=1164131)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Casting Arcane spells has a $s2% chance to grant access to Arcane Missiles or make your next Arcane Explosion free.
@@ -1955,8 +1988,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Radius: 50000 yards | Target: Raid in Area (56)
 #3 (id=809126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Timebreaker's Paradox (320920 effect#2)
 #4 (id=809236)   : Apply Aura (6) | Modify Time Rate (399)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Echoes of Elisande (320919 effect#1)
 Description      : Warp the flow of time, increasing haste by $s1% $?a320919[and time rate by $s4% ][]for all party and raid members for $d.
 
 Allies will be unable to benefit from Bloodlust, Heroism, or Time Warp again for $57724d.$?a320920[
@@ -2053,8 +2088,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=85629)    : School Damage (2): frost | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.264 | PvP Coefficient: 1.75 | Radius: 9.5 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
@@ -2071,7 +2108,7 @@ Family Flags     : 42
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Instant Target Procs (115), Absorb Cannot Be Ignore (214), Ignore Healing Modifiers (219), Do Not Count For PvP Scoreboard (252), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=88723)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x1e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 30 | Target: Self (1)
                    Affected School(s): All
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
@@ -2380,6 +2417,7 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Casting (135), Do Not
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.31538 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Blasts the enemy for $s1 Fire damage.$?a137019[
 
 Castable while casting other spells. Always deals a critical strike.][|cFFFFFFFFFire:|r Castable while casting other spells. Always deals a critical strike.]
@@ -2402,7 +2440,7 @@ Family Flags     : 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=120234)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 58542 | Misc Value 2: 0xc75 | Target: at Self (18) -> at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 58542 | Misc Value 2: 3189 | Target: at Self (18) -> at Area (87)
 #2 (id=123139)   : Trigger Spell (64): Alter Time
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110909 | Target: Self (1)
 #3 (id=809037)   : Dummy (3)
@@ -2487,6 +2525,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=125628)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Frozen Touch (205030 effect#1)
 #2 (id=129889)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5
 #3 (id=133111)   : Dummy (3)
@@ -2522,7 +2561,7 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=126711)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 0xbca | Target: at Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 3018 | Target: at Area (87)
 #2 (id=126712)   : Trigger Spell (64): Ring of Frost
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 136511 | Target: Self (1)
 #3 (id=131422)   : Dummy (3)
@@ -2571,8 +2610,10 @@ Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Limit N (165), Sp
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.018803 | PvP Coefficient: 2.5 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and nearby enemies within 10 yds. Limit 1 target. Deals reduced damage to secondary targets.
 
 Damage increased by $36032s1% per Arcane Charge.
@@ -2594,6 +2635,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=128532)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.018803 | PvP Coefficient: 2.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc114923
 
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
@@ -2618,7 +2660,7 @@ Effects          :
 #2 (id=170598)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: at Ground (62)
 #3 (id=177659)   : Summon Guardian (28)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 0xc89 | Target: at Ground (62)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 60199 | Misc Value 2: 3209 | Target: at Ground (62)
 Description      : Places a Rune of Power on the ground for $116011d which increases your spell damage by $116014s1% while you stand within 8 yds.
 
 Casting $?a137021[Arcane Power]?a137019[Combustion][Icy Veins] will also create a Rune of Power at your location.
@@ -2912,6 +2954,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.566 | Target: Targeted Enemy (6)
 #2 (id=291212)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Crushing Jets (198146 effect#2)
 Description      : Channels a jet of icy water at the target, $?s198146[slowing the target by $m2% and ][]dealing $o1 Frost damage to the target over $d.
 Tooltip          : Taking $w1 damage every $t1 sec.
 
@@ -3121,7 +3164,7 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
 #1 (id=185658)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 0xbca | Target: at Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 44199 | Misc Value 2: 3018 | Target: at Area (87)
 #2 (id=185659)   : Trigger Spell (64): Ring of Frost
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 136511 | Target: Self (1)
 #3 (id=185660)   : Dummy (3)
@@ -3213,6 +3256,7 @@ Attributes       : Do Not Display Range (126), Always Line of Sight (185), Allow
 Effects          :
 #1 (id=201127)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.001 | Chain Multiplier: 0.9 | Chain Targets: 1 | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc76613
 
 Name             : Meteor (id=153561) [Spell Family (3)] 
@@ -3256,10 +3300,13 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=212829)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=215527)   : Trigger Missiles (32): Meteor Burn
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396 | Target: at Area (87)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=881234)   : Trigger Missiles (32): Meteor
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351140 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
@@ -3296,6 +3343,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=212872)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6875 | PvP Coefficient: 1.4 | Radius: 0 - 6 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) [Spell Family (3)] 
@@ -3343,10 +3391,13 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=212926)   : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.918 | PvP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=818465)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153626
 
 Name             : Arcane Acuity (desc=Racial Passive) (id=154742) [Passive] 
@@ -3483,6 +3534,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=215526)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.2 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
@@ -3627,10 +3679,13 @@ Attributes       : Not Shapeshifted (16), Allow Client Targeting (133), Use Spel
 Effects          :
 #1 (id=220357)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=220358)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.345 | Radius: 0 - 8 yards | Target: at Target (63) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=220359)   : Directional Knockback (144)
                    Base Value: 100 | Scaled Value: 100 | Radius: 0 - 8 yards | Mechanic: Knockback | Target: at Target (63) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Pulses arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yds, and knocking them upward. A primary enemy target will take $s1% increased damage.
 
 Name             : Blast Wave (id=157981) [Spell Family (3)] 
@@ -3650,8 +3705,10 @@ Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Show Mecha
 Effects          :
 #1 (id=220362)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.543375 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=220363)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Snare | Target: at Self (18) -> at Enemy in Area (16)
+                   Modified By: Frigid Winds (235224 effect#7), Rollin' Hot (1219035 effect#2)
 Description      : Causes an explosion around yourself, dealing $s1 Fire damage to all enemies within $A1 yds, knocking them back, and reducing movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -3676,10 +3733,13 @@ Attributes       : Not Shapeshifted (16), Can Proc From Procs (122), Use Spell B
 Effects          :
 #1 (id=220383)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=220384)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=220385)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Causes a whirl of icy wind around the enemy, dealing $s1 Frost damage to the target and all other enemies within $a2 yds, freezing them in place for $d. Damage reduced beyond $s3 targets.
 Tooltip          : Frozen.
 
@@ -3870,7 +3930,7 @@ Labels           : 107
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273302)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 94630 | Misc Value 2: 0xe48 | Radius: 3 yards | Target: at Random (72)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 94630 | Misc Value 2: 3656 | Radius: 3 yards | Target: at Random (72)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -3913,10 +3973,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Burn It All (1254512 effect#2)
 #4 (id=1087419)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Burn It All (1254512 effect#3)
 #5 (id=1155130)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Engulfs you in flames for $d, increasing your spells' critical strike chance by $s1%.$?a383967[
@@ -3994,6 +4056,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=278848)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2187 | Radius: 0 - 12 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc190356
 
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
@@ -4014,7 +4077,7 @@ Effects          :
 #4 (id=279064)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
                    Base Value: 4 | Scaled Value: 4 | Resource: none | Trigger Spell: 36032 | Target: Self (1)
 #5 (id=286703)   : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Arcane Charge
-                   Base Value: 0 | Scaled Value: 0 | Resource: none | Misc Value 2: 0x1 | Trigger Spell: 195302 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Resource: none | Misc Value 2: 1 | Trigger Spell: 195302 | Target: Self (1)
 
 Name             : Brain Freeze (id=190446) [Spell Family (3)] 
 Class            : Mage
@@ -4056,6 +4119,7 @@ Attributes       : Passive (6), Do Not Sheath (18), Not In Spellbook (143), Do N
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Modified By: Frozen Touch (205030 effect#2), Frostfire Infusion (431166 effect#1)
 Description      : Frostbolt has a $m1% chance to reset the remaining cooldown on Flurry and cause your next Flurry to deal $190446s2% increased damage.
 
 Name             : Mastery: Savant (id=190740) [Spell Family (3), Passive] 
@@ -4441,6 +4505,7 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Periodic Damage (3): frost every 0.625 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | Target: Targeted Enemy (6)
+                   Modified By: Ray of Frost (208141 effect#2), Frigid Winds (235224 effect#1), Rollin' Hot (1219035 effect#2)
 Description      : Channel an icy beam at the enemy for $d, dealing $s1 Frost damage every ${$t1}.2 sec.
 
 |CFFffffffApplies ${$d/$t1} $lstack:stacks; of Freezing over its duration.|R
@@ -4661,6 +4726,7 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303195)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.062876 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc205023
 
 Name             : Flame Patch (id=205470) [Spell Family (3)] 
@@ -4695,8 +4761,10 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=303428)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1096677)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Icicles (id=205473) [Spell Family (3), Hidden] 
@@ -4734,6 +4802,7 @@ Attributes       : Aura Is Debuff (26), No Threat (42), Do Not Display Range (12
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Current Target (25)
+                   Modified By: Frigid Winds (235224 effect#1)
 Description      : Chilled, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -5019,11 +5088,11 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Target: Self (1)
 #6 (id=315255)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991), Consume (473662), Void Metamorphosis (1217605), Devour (1217610), Reap (1226019), Void Nova (1234195), Voidblade (1241285), Cull (1245453), The Hunt (1246167), Spectral Sight (1251417), Predator's Wake (1259431)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991), Consume (473662), Void Metamorphosis (1217605), Devour (1217610), Eradicate (1225826), Reap (1226019), Void Nova (1234195), Voidblade (1241285), Cull (1245453), The Hunt (1246167), Spectral Sight (1251417), Predator's Wake (1259431)
                    Family Flags: 32
 #7 (id=315256)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
-                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Infernal Strike (189110), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Spirit Bomb (247454), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817), Throw Glaive (346665), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), A Fire Inside (427918), Consuming Fire (452487), Consuming Fire (456640), Consume (473662), Void Ray (473728), Void Ray (1213649), Devour (1217610), Reap (1226019), Voidblade (1241285), Soul Immolation (1241937), Voidblade (1245412), Cull (1245453), Pierce the Veil (1245483), Soul Immolation (1263610)
+                   Affected Spells: Throw Glaive (185123), Blade Dance (188499), Infernal Strike (189110), Shear (203782), Throw Glaive (204157), Death Sweep (210152), Felblade (213241), Felblade (232893), Spirit Bomb (247454), Immolation Aura (258920), Throw Glaive (337819), Glaive Tempest (342817), Throw Glaive (346665), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), A Fire Inside (427918), Consuming Fire (452487), Consuming Fire (456640), Consume (473662), Void Ray (473728), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Reap (1226019), Voidblade (1241285), Soul Immolation (1241937), Voidblade (1245412), Cull (1245453), Pierce the Veil (1245483), Soul Immolation (1263610)
                    Family Flags: 85
 #8 (id=315257)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1586 (Category) | Target: Self (1)
@@ -5111,6 +5180,7 @@ Attributes       : No Threat (42), Do Not Display Range (126), Aura Points On Cl
 Effects          :
 #1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Frigid Winds (235224 effect#1)
 Description      : Slowed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -5181,8 +5251,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Aura Is De
 Effects          :
 #1 (id=324014)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 Tooltip          : After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards, and spreading Living Bomb if it has not already spread.
 
@@ -5281,6 +5353,7 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337222)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.15 | PvP Coefficient: 2.5 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Name             : Conflagration (id=226757) [Spell Family (3)] 
@@ -5300,6 +5373,7 @@ Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173
 Effects          :
 #1 (id=340404)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.017597 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc205023
 Tooltip          : Deals $w1 Fire damage every $t1 sec.
 
@@ -5320,8 +5394,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=343734)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Frigid Winds (235224 effect#1), Rollin' Hot (1219035 effect#2)
 #2 (id=343735)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.7735 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $w1%.
 
@@ -5382,6 +5458,7 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.6 | PvP Coefficient: 2.5 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Spell Family (3)] 
@@ -5400,8 +5477,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=344285)   : School Damage (2): frost | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.9801 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=344286)   : School Damage (2): frost | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.49 | PvP Coefficient: 1.25 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc30455
 
 Name             : Ebonbolt (desc=Artifact) (id=228599) [Spell Family (3)] 
@@ -5437,8 +5516,10 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.54 | PvP Coefficient: 0.835 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=344290)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Root | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc199786
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -5639,11 +5720,13 @@ Effects          :
 #1 (id=355674)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75 | Target: Self (1)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+                   Modified By: Molten Skin (194315 effect#1)
 #4 (id=1014261)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Blazing Barrier (235313)
@@ -5672,6 +5755,7 @@ Attributes       : No Reflection (39), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=355677)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.14375 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc235313
 
 Name             : Blazing Soul (id=235365) [Spell Family (3), Passive] 
@@ -5712,13 +5796,16 @@ Effects          :
 #1 (id=355844)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=355845)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75 | Misc Value: 127 | Target: Self (1)
 #3 (id=355846)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | PvP Coefficient: 0.67 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Improved Prismatic Barrier (321745 effect#1)
 #4 (id=355854)   : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.6 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Improved Prismatic Barrier (321745 effect#2)
 #5 (id=731326)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Prismatic Barrier (235450), Merely a Setback (449336), Merely a Setback (1246023)
@@ -5897,6 +5984,7 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=365006)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.045375 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc238126
 
 Name             : Time and Space (id=240692) [Spell Family (3)] 
@@ -5947,8 +6035,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Aura Is De
 Effects          :
 #1 (id=372237)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=372238)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards.
 
@@ -6249,7 +6339,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -6323,7 +6413,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -6488,6 +6578,7 @@ Attributes       : Ignore Line of Sight (66), Not a Proc (105), Do Not Display R
 Effects          :
 #1 (id=480800)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.645 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc214634
 
 Name             : Entropic Embrace (id=259756) 
@@ -6585,7 +6676,7 @@ Effects          :
 #1 (id=707708)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Equipoise
                    Base Value: 70 | Scaled Value: 70 | Resource: mana | Trigger Spell: 264352 | Target: Self (1)
 #2 (id=707711)   : Apply Aura (6) | Trigger Spell Based on Resource% (328): Equipoise
-                   Base Value: 70 | Scaled Value: 70 | Resource: mana | Misc Value 2: 0x1 | Trigger Spell: 264353 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | Resource: mana | Misc Value 2: 1 | Trigger Spell: 264353 | Target: Self (1)
 Description      : $@spelldesc286027
 
 Name             : Equipoise (id=264352) [Spell Family (3)] 
@@ -6737,7 +6828,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -6775,6 +6866,7 @@ Attributes       : No Reflection (39), Do Not Display Range (126), Show Mechanic
 Effects          :
 #1 (id=715985)   : Knock Back (98)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 40 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc157981
 
 Name             : Blast Wave (id=268473) [Spell Family (3)] 
@@ -6793,6 +6885,7 @@ Attributes       : No Reflection (39), Do Not Display Range (126), Show Mechanic
 Effects          :
 #1 (id=715991)   : Knock Back (98)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 80 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc157981
 
 Name             : Blast Wave (id=268474) [Spell Family (3)] 
@@ -6811,6 +6904,7 @@ Attributes       : No Reflection (39), Do Not Display Range (126), Show Mechanic
 Effects          :
 #1 (id=715993)   : Knock Back (98)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 120 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc157981
 
 Name             : Blast Wave (id=268475) [Spell Family (3)] 
@@ -6829,6 +6923,7 @@ Attributes       : No Reflection (39), Do Not Display Range (126), Show Mechanic
 Effects          :
 #1 (id=715994)   : Knock Back (98)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 160 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc157981
 
 Name             : Searing Touch (id=269644) [Spell Family (3), Passive] 
@@ -7151,8 +7246,10 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=736466)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=736467)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279854
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc279854
 
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
@@ -7267,6 +7364,7 @@ Attributes       : Aura Is Debuff (26), No Threat (42), Do Not Display Range (12
 Effects          :
 #1 (id=753595)   : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | Target: Targeted Enemy (6)
+                   Modified By: Frigid Winds (235224 effect#1)
 Description      : $@spelldesc84714
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -7479,12 +7577,16 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=786039)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.912 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=786041)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.099 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=786058)   : Apply Aura (6) | Proc Trigger Spell (42): Radiant Spark Vulnerability
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 307454 | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #4 (id=797439)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Conjure a radiant spark that causes $s1 Arcane damage instantly, and an additional $o2 damage over $d.
 
 The target takes $307454s1% increased damage from your direct damage spells, stacking each time they are struck. This effect ends after $307454u spells.
@@ -7511,6 +7613,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
                    Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Charge (36032), Arcane Barrage (44425), Frozen Orb (84721), Fire Blast (108853), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Ray of Frost (205021), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Time and Space (240689), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Fire Blast (319836), Meteor (351140), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Meteor (438607), Meteor (438608), Comet Storm (438609), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Pyroblast (460475), Flamestrike (460476), Arcane Explosion (461508), Arcane Orb (463357), Frostfire Bolt (468655), Glacial Spike (1236209), Glacial Spike (1236211), Pyroblast (1236212), Icicles (1246832), Freezing Winds (1247554), Blizzard (1248829), Scorch (1254311), Flamestrike (1254851), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 0, 1, 2, 4, 5, 6, 7, 9, 11, 12, 17, 21, 22, 23, 28, 29, 34, 38, 41, 47, 56, 64, 66, 69, 71, 77, 78, 83, 96, 102, 115, 117, 119, 120, 121, 122, 125, 127
+                   Modified By: Ire of the Ascended (337058 effect#1)
 Description      : $@spelldesc307443
 Tooltip          : Damage taken from $@auracaster  increased by $w1%.
 
@@ -7604,7 +7707,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -7635,7 +7738,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -7775,7 +7878,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7790,7 +7893,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7819,6 +7922,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 325130 | Target: Self (1)
 #2 (id=815503)   : Apply Aura (6) | Dummy (4)
                    Base Value: -2500 | Scaled Value: -2500 | Target: Self (1)
+                   Modified By: Discipline of the Grove (336992 effect#1)
 #3 (id=843432)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #4 (id=843436)   : Apply Aura (6) | Periodic Trigger Spell (23): Fae Tendrils every 1 seconds
@@ -7915,7 +8019,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7927,7 +8031,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Mount Changer (id=315357) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7939,7 +8043,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Holy Relic (id=315879) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7970,10 +8074,13 @@ Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Heartbeat Resist 
 Effects          :
 #1 (id=802830)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.51 | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=802831)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=805341)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Silence | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc314793
 Tooltip          : Rooted and Silenced.
 
@@ -8047,6 +8154,7 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=806561)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.828 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Blasts the enemy for $s1 Fire damage.$?a231568[
 
 |cFFFFFFFFFire:|r Always deals a critical strike.][]
@@ -8070,11 +8178,14 @@ Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Heartbeat Resist 
 Effects          :
 #1 (id=806876)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=806877)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -15 | Scaled Value: -15 | Target: Current Target (25)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=806878)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 10 | Misc Value 2: 16 (Label) | Target: Current Target (25)
                    Affected Spells (Label): Class Spells (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc314793
 Tooltip          : Movement speed and cast speed slowed by $s3%.
 
@@ -8136,6 +8247,7 @@ Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection 
 Effects          :
 #1 (id=808930)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -65 | Scaled Value: -65 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Frigid Winds (235224 effect#8)
 Description      : $@spelldesc113724
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -8268,6 +8380,7 @@ Attributes       : Not Shapeshifted (16), Limit N (165), Allow Class Ability Pro
 Effects          :
 #1 (id=809255)   : Trigger Spell w/ Value (142): Touch of the Magi
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Trigger Spell: 210824 | Target: Targeted Enemy (6)
+                   Modified By: Touch of the Archmage (1257942 effect#1)
 #2 (id=843108)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | Resource: none | Target: Self (1)
 Description      : Applies Touch of the Magi to your current target, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and reduced damage to all nearby enemies.
@@ -8315,7 +8428,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8361,7 +8474,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8378,7 +8491,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -8395,7 +8508,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -8411,7 +8524,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Improved Blazing Barrier (id=321708) [Spell Family (3), Passive, Hidden] 
@@ -8442,7 +8555,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=809591)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x381 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 897 | Target: Self (1)
 Description      : Deals an additional $321712o2 Fire damage over $321712d.
 
 Name             : Pyroblast (id=321712) [Spell Family (3)] 
@@ -8463,6 +8576,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=809592)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.062 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc321711
 Tooltip          : Suffering $w1 Fire damage every $t2 sec.
 
@@ -8551,6 +8665,7 @@ Attributes       : Active Threat (94), Not a Proc (105), Do Not Display Range (1
 Effects          :
 #1 (id=815217)   : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.60996 | Radius: 0 - 18 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc314791
 
 Name             : Cold Front (id=327284) [Spell Family (3), Passive] 
@@ -9553,6 +9668,7 @@ Attributes       : Always Hit (114), Do Not Display Range (126), Only Proc From 
 Effects          :
 #1 (id=843144)   : School Damage (2): arcane | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc342231
 
 Name             : Time Warp (id=342242) 
@@ -9592,7 +9708,7 @@ Family Flags     : 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=843168)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 58542 | Misc Value 2: 0xc75 | Target: at Self (18) -> at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 58542 | Misc Value 2: 3189 | Target: at Self (18) -> at Area (87)
 #2 (id=843169)   : Trigger Spell (64): Alter Time
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 342246 | Target: Self (1)
 #3 (id=843170)   : Dummy (3)
@@ -9722,10 +9838,13 @@ Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), No Redirection 
 Effects          :
 #1 (id=843438)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.98 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=843439)   : Apply Aura (6) | Root (Respects Threat Table) (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=843440)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 8 yards | Mechanic: Silence | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc314793
 Tooltip          : Rooted and Silenced.
 
@@ -9804,7 +9923,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirrors of Torment (id=345417) [Spell Family (3)] 
@@ -9874,6 +9993,7 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=881233)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.772 | PvP Coefficient: 0.78 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 
 Name             : Visage (desc=Racial) (id=351239) 
@@ -9905,7 +10025,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9920,7 +10040,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -10041,6 +10161,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -10382,10 +10503,13 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=906196)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.1574 | PvP Coefficient: 1.4 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1015339)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1109604)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Expend all of your current mana to annihilate your enemy target and nearby enemies for up to $?a457521[${$s1*$s2*($457521s1/100+1)}][${$s1*$s2}] Arcane damage based on Mana spent. Deals reduced damage beyond $s3 targets.
 
 For the next $365362d, your Mana regeneration is increased by $365362s3% and spell damage is increased by $365362s1%.
@@ -10411,14 +10535,18 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.4286 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Overpowered (155147 effect#5), Mage Arcane 10.1 Class Set 2pc (405532 effect#1), Overpowered (155147 effect#1)
 #2 (id=906210)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.4286 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Overpowered (155147 effect#6), Mage Arcane 10.1 Class Set 2pc (405532 effect#2), Overpowered (155147 effect#2)
 #3 (id=906212)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 425 | Scaled Value: 425 | Resource: mana | Target: Self (1)
+                   Modified By: Overpowered (155147 effect#3), Wild Arcanist (184903 effect#3)
 #4 (id=1015344)  : Energize Power% (137)
                    Base Value: 0 | Scaled Value: 0 | Resource: mana | Target: Self (1)
+                   Modified By: Wild Arcanist (184903 effect#1)
 Description      : $@spelldesc365350
 Tooltip          : Spell damage increased by $w1% and Mana Regeneration increase $w3%.
 
@@ -10584,6 +10712,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1006852)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Winter's Whisper (1247769 effect#1)
 #2 (id=1248963)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Your Ice Lances fracture on impact, dealing $228598s2 Frost damage to up to $s1 additional Freezing $Lenemy:enemies;. Damage from Fractured Frost Shatters.
@@ -10654,8 +10783,10 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1007588)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.433 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1007601)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 378947
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc378947
 
 Name             : Visage Form (id=379034) 
@@ -11045,7 +11176,7 @@ Effects          :
 #1 (id=1014830)  : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1014831)  : Apply Aura (6) | Change Model (56)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 16372 | Misc Value 2: 0x9 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 16372 | Misc Value 2: 9 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : Transforms all enemies within $a yards into sheep, wandering around incapacitated for $d. While affected, the victims cannot take actions but will regenerate health very quickly. Damage will cancel the effect.
 
 Only works on Beasts, Humanoids and Critters.
@@ -11241,6 +11372,7 @@ Effects          :
 #1 (id=1015965)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Fevered Incantation (383810 effect#2)
 Description      : $@spelldesc383810
 Tooltip          : Your spells deal an additional $w1% critical hit damage.
 
@@ -11490,6 +11622,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #2 (id=1254378)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Expanded Mind (1243557 effect#1)
 Description      : Casting a damaging spell increases the damage of Arcane Barrage by $1242974s1%, up to ${$1242974s1*$1242974u}%.
 
 Name             : Arcane Harmony (id=384455) [Spell Family (3)] 
@@ -11801,6 +11934,7 @@ Attributes       : No Reflection (39), Do Not Display Range (126), Show Mechanic
 Effects          :
 #1 (id=1025985)  : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc157981
 
 Name             : Overflowing Energy (id=390218) [Spell Family (3), Passive] 
@@ -11980,6 +12114,7 @@ Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mount
 Effects          :
 #1 (id=1033745)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 80 | Scaled Value: 80 | Mechanic: Snare | Target: Current Target (25)
+                   Modified By: Frigid Winds (235224 effect#6)
 #2 (id=1033746)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc386763
@@ -12362,10 +12497,13 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1083383)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1083384)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.228684 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1083385)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[
 
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
@@ -12395,6 +12533,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=1083949)  : Apply Aura (6) | Periodic Heal% (20): every 0.6 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Cryo-Freeze (337123 effect#1), Cryo-Freeze (382292 effect#1)
 #5 (id=1083950)  : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #6 (id=1083951)  : Apply Aura (6) | Use Base Move Speed (191)
@@ -12424,7 +12563,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1083954)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Ice Cold overrides Ice Block
-                   Base Value: 414658 | Scaled Value: 414658 | Misc Value: 45438 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 414658 | Scaled Value: 414658 | Misc Value: 45438 | Misc Value 2: 2 | Target: Self (1)
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
@@ -12450,7 +12589,7 @@ Effects          :
 #2 (id=1083971)  : Apply Aura (6) | Unknown(335)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
 #3 (id=1083972)  : Apply Aura (6) | Unknown(260)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1421 | Misc Value 2: 0x7 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1421 | Misc Value 2: 7 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
 #4 (id=1083973)  : Sanctuary (176)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
 Description      : You and your allies within $A1 yards instantly become invisible for $d. Taking any action will cancel the effect.
@@ -12896,6 +13035,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Mage Fire 10.2 Class Set 4pc (424289 effect#1)
 Description      : $@spelldesc422882
 Tooltip          : Critical Strike damage increased by $w1%.
 
@@ -13174,6 +13314,7 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118762)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.6075 | PvP Coefficient: 0.667 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc431166
 
 Name             : Frostfire Empowerment (id=431176) [Spell Family (3), Passive, Hidden] 
@@ -13194,6 +13335,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1118782)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Modified By: Severe Temperatures (431189 effect#2)
 #3 (id=1250572)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=1254332)  : Apply Aura (6) | Dummy (4)
@@ -13398,6 +13540,7 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=1131321)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5 | PvP Coefficient: 0.667 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 
 Name             : Meteor (id=438608) [Spell Family (3)] 
@@ -13416,10 +13559,13 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=1131322)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1131323)  : Trigger Missiles (32): Meteor Burn
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396 | Target: at Area (87)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1131324)  : Trigger Missiles (32): Meteor
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 438607 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153561
 
 Name             : Comet Storm (id=438609) [Spell Family (3)] 
@@ -13437,6 +13583,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1131326)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.928 | Radius: 0 - 6 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153595
 
 Name             : Living Bomb (id=438671) [Spell Family (3)] 
@@ -13455,8 +13602,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Aura Is De
 Effects          :
 #1 (id=1131417)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1131418)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc438673
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $438674A2 yards.
 
@@ -13476,8 +13625,10 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Aura Is De
 Effects          :
 #1 (id=1131419)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1131420)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc438673
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $438674A2 yards, and spreading Living Bomb.
 
@@ -13518,8 +13669,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=1131422)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1131423)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc438673
 
 Name             : Arcane Orb (id=440552) 
@@ -13552,6 +13705,7 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Frost Splinters embed themselves into their target, dealing $443740o1 Frost damage over $443740d. This effect stacks.
@@ -13602,6 +13756,7 @@ Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking 
 Effects          :
 #1 (id=1139841)  : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.019 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc443722
 Tooltip          : Dealing $s1 Frost damage every $t1 sec.
 
@@ -13666,6 +13821,7 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1139848)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3432 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc443722
 
 Name             : Arcane Splinter (id=443763) [Spell Family (3)] 
@@ -13685,6 +13841,7 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=1139865)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.404 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Conjure raw Arcane magic into a sharp projectile that deals $s1 Arcane damage.
 
 Arcane Splinters embed themselves into their target, dealing $444735o1 Arcane damage over $444735d. This effect stacks.
@@ -13826,6 +13983,7 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1141282)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.404 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc443763
 
 Name             : Force of Will (id=444719) [Spell Family (3), Passive, Hidden] 
@@ -13879,6 +14037,7 @@ Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking 
 Effects          :
 #1 (id=1141320)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.022464 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc443763
 Tooltip          : Dealing $s1 Arcane damage every $t1 sec.
 
@@ -13991,6 +14150,7 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1141663)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc444968
 
 Name             : Volatile Magic (id=444967) [Spell Family (3)] 
@@ -14007,6 +14167,7 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=1141664)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc444968
 
 Name             : Volatile Magic (id=444968) [Spell Family (3), Passive, Hidden] 
@@ -14024,8 +14185,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1141665)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1141771)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Whenever an Embedded $?c1[Arcane][Frost] Splinter is removed, it explodes, dealing $?c1[$444966s1 Arcane][$444967s1 Frost] damage to nearby enemies. Deals reduced damage beyond $s2 targets.
 
 Name             : Spellfrost Teachings (id=444986) [Spell Family (3), Passive, Hidden] 
@@ -14089,14 +14252,17 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Mage Sunfury 11.2 Class Set 2pc (1235962 effect#1)
 #2 (id=1147193)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Mage Sunfury 11.2 Class Set 2pc (1235962 effect#2)
 #3 (id=1148939)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Combustion (190319), Arcane Surge (365362)
                    Family Flags: 51, 58
+                   Modified By: Mage Sunfury 11.2 Class Set 2pc (1235962 effect#3)
 Description      : Increases your spell damage by $?c1[${$s1}.1][${$s2}.1]%. Stacks up to $u times.
 Tooltip          : Spell damage increased by $W1%.
 
@@ -14130,7 +14296,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1147289)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 223453 | Misc Value 2: 0x1734 | Radius: 3 yards | Target: at Radius (73)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 223453 | Misc Value 2: 5940 | Radius: 3 yards | Target: at Radius (73)
 #2 (id=1147966)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1153377)  : Apply Aura (6) | Dummy (4)
@@ -14181,6 +14347,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1167414)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Mage Sunfury 11.2 Class Set 2pc (1235962 effect#7), Mage Sunfury 11.2 Class Set 2pc (1235962 effect#8)
 Description      : $@spelldesc449293
 Tooltip          : Haste increased by ${$W1}.1%
 
@@ -14202,6 +14369,7 @@ Effects          :
                    Base Value: 0.5 | Scaled Value: 0.5 | Target: Self (1)
 #2 (id=1186389)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Mage Sunfury 11.2 Class Set 2pc (1235962 effect#7), Mage Sunfury 11.2 Class Set 2pc (1235962 effect#8)
 Description      : $@spelldesc449293
 Tooltip          : Haste increased by ${$s2/10}.1%
 
@@ -14237,13 +14405,16 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1148372)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=1247360)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 127 | Target: Self (1)
 #3 (id=1247361)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | PvP Coefficient: 0.67 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Improved Prismatic Barrier (321745 effect#1)
 #4 (id=1247362)  : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.6 | Misc Value: 1 | Target: Self (1)
+                   Modified By: Improved Prismatic Barrier (321745 effect#2)
 #5 (id=1247363)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc449330
@@ -14364,6 +14535,7 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Allow Cast While Casti
 Effects          :
 #1 (id=1148821)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 4 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Calls down a meteorite which lands at the target location after $177345d, dealing $449569s1 Fire damage to all enemies hit, reduced beyond 8 targets.
 
 Name             : Meteorite (id=449560) [Spell Family (3)] 
@@ -14382,10 +14554,13 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=1148822)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1148823)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1148824)  : Trigger Missiles (32): Meteorite
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 449569 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc449559
 
 Name             : Meteorite Burn (id=449561) [Spell Family (3)] 
@@ -14406,6 +14581,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1148825)  : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.085387 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc449559
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
@@ -14458,6 +14634,7 @@ Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight 
 Effects          :
 #1 (id=1148836)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.02 | Radius: 0 - 4 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc449559
 
 Name             : Rondurmancy (id=449596) [Spell Family (3), Passive, Hidden] 
@@ -14492,6 +14669,7 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
 #2 (id=1151358)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+                   Modified By: Mage Sunfury 11.2 Class Set 4pc (1235965 effect#1)
 Description      : During $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.
 
 When your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}.1][${$s2/1000}.1] sec.
@@ -14534,6 +14712,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Po
 Effects          :
 #1 (id=1150309)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.8 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that deals up to $s1 Fire damage.
 
 Name             : Pyroblast (id=450461) [Spell Family (3)] 
@@ -14553,6 +14732,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Po
 Effects          :
 #1 (id=1150371)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.4 | PvP Coefficient: 2.4 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[
 
 Pyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]
@@ -14576,8 +14756,10 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1150372)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.3 | PvP Coefficient: 2.4 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1150373)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s2 targets.$?a205037[
 
 Leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]
@@ -14600,8 +14782,10 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Po
 Effects          :
 #1 (id=1150426)  : School Damage (2): arcane | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.3 | PvP Coefficient: 2.4 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1150427)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Chain Multiplier: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Name             : Scald (id=450746) [Spell Family (3), Passive] 
@@ -14634,10 +14818,12 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1151000)  : Apply Aura (6) | Modify Spell Crit% (57)
                    Base Value: 2.5 | Scaled Value: 2.5 | Target: Self (1)
+                   Modified By: Fire's Ire (453385 effect#1)
 #2 (id=1155225)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Fire's Ire (453385 effect#2)
 #3 (id=1155226)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | Target: Self (1)
 Description      : When you're not under the effect of Combustion, your critical strike chance is increased by ${$s3/1000}.1%.
@@ -14892,8 +15078,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=1154942)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1154943)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.268 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 
 Name             : Controlled Destruction (id=453268) [Spell Family (3)] 
@@ -14969,10 +15157,13 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Initiate Combat Po
 Effects          :
 #1 (id=1155095)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.2 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1155096)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1155097)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Expend all of your current mana to annihilate your enemy target and nearby enemies for up to ${$s1*$s2} Arcane damage based on Mana spent. Deals reduced damage beyond $s3 targets.
 
 For the next $365362d, your Mana regeneration is increased by $365362s3% and spell damage is increased by $365362s1%.
@@ -15323,6 +15514,7 @@ Attributes       : No Reflection (39), Initiate Combat Post-Cast (Enables Auto-A
 Effects          :
 #1 (id=1160130)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.87 | PvP Coefficient: 1.5 | Radius: 0 - 4 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 
 Name             : Mana Bomb (id=457521) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Arcane [tree=spec, row=5, col=3, max_rank=1, req_points=8]
@@ -15457,6 +15649,7 @@ Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Pe
 Effects          :
 #1 (id=1168176)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Flamestrike (id=460476) [Spell Family (3)] 
@@ -15475,8 +15668,10 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1168178)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1168179)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s2 targets.$?a205037[
 
 Leaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]
@@ -15531,6 +15726,7 @@ Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always 
 Effects          :
 #1 (id=1168454)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.3 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc453720
 
 Name             : Quiet Contemplation (id=461063) 
@@ -15686,10 +15882,13 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1170035)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1170036)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.386 | Radius: 0 - 10 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1170037)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[
 
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
@@ -15806,10 +16005,13 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=1173994)  : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.459 | PvP Coefficient: 1.3 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1173995)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1173996)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc153626
 
 Name             : Arcane Echo (id=464515) [Spell Family (3), Hidden] 
@@ -15848,8 +16050,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While D
 Effects          :
 #1 (id=1176445)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1176446)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc44457
 
 Name             : Frostfire Bolt (id=468655) [Spell Family (3)] 
@@ -15870,10 +16074,13 @@ Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While 
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.6 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Targeted Enemy (6)
+                   Modified By: Frigid Winds (235224 effect#9), Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc431044
 Tooltip          : Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.
 
@@ -16059,8 +16266,10 @@ Attributes       : Always Line of Sight (185)
 Effects          :
 #1 (id=1200608)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 (delta=0.4) | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1212297)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.4) | SP Coefficient: 1.2474 | PvP Coefficient: 0.5 | Radius: 0 - 15 yards | Target: at Target (63) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1215133
 
 Name             : Extended Bankroll (id=1216914) [Spell Family (3)] 
@@ -16130,8 +16339,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1201180)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Modified By: Draught of Power (1243926 effect#1)
 #3 (id=1201181)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Modified By: Draught of Power (1243926 effect#2)
 #4 (id=1201182)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x40 | Target: Self (1)
                    Affected School(s): Arcane
@@ -16758,6 +16969,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1231968)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.6624 | PvP Coefficient: 0.33 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
 
@@ -16782,6 +16994,7 @@ Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Pe
 Effects          :
 #1 (id=1231970)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.525 | PvP Coefficient: 0.33 | Chain Multiplier: 0.9 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Lesser Time Warp (id=1236231) [Spell Family (3)] 
@@ -16839,10 +17052,13 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1240465)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.4 | Radius: 0 - 2 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1240466)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
+                   Modified By: Impetus (383676 effect#1), Rollin' Hot (1219035 effect#2)
 #3 (id=1243579)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : A pulse of Arcane magic erupts from underneath your target, dealing $s1 Arcane damage to all enemies within $A1 yds. Damage reduced beyond $s3 targets.
 
 Each Arcane Charge increases damage by $36032s1%, radius by $36032s6 yds, and mana cost by $36032s5%.$?a137021[
@@ -16887,6 +17103,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
+                   Modified By: Arcane Singularity (1244001 effect#1)
 #2 (id=1244153)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc1242975
@@ -17235,6 +17452,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1247365)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Eldritch Warding (274379 effect#1)
 Description      : $@spelldesc449330
 Tooltip          : Dealing $235314s1 Fire damage to melee attackers.
 
@@ -17317,6 +17535,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=1250022)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Heart of Ice (1247799 effect#1), Polished Focus (1261082 effect#3)
 #5 (id=1252026)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Damage from Frostbolt and Flurry applies Freezing to their targets. Stacks up to $1221389u times.
@@ -17377,6 +17596,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1248791)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1246949
 
 Name             : Deep Shatter (id=1247025) [Spell Family (3), Passive] 
@@ -17486,6 +17706,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1249874)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1 | Radius: 0 - 12 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1216953
 
 Name             : Master Lancer (id=1247729) [Spell Family (3), Passive, Hidden] 
@@ -17522,6 +17743,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Shatter (1246949)
                    Family Flags: 35
+                   Modified By: Arcane Singularity (1244001 effect#1)
 Description      : $@spelldesc1247729
 Tooltip          : Shatter's damage is increased by $s1%.
 
@@ -17816,6 +18038,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1254357)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Modified By: Freezing Winds (1216953 effect#2)
 Description      : When Frostbolt critically strikes, it applies $s1 additional $Lstack:stacks; of Freezing.
 
 Damage from Blizzard has a $h% chance to apply $s2 $Lstack:stacks; of Freezing.
@@ -17926,6 +18149,7 @@ Effects          :
 #1 (id=1259589)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Misc Value 2: 5652 (Label) | Target: Self (1)
                    Affected Spells (Label): Voidfall (1256301), Voidfall (1256322)
+                   Modified By: Devourer Demon Hunter (1213636 effect#9)
 Description      : Each stack of Voidfall grants $s1% Haste.
 
 Name             : Cinderstorm (id=1254024) [Spell Family (3)] 
@@ -17944,6 +18168,7 @@ Attributes       : Allow Cast While Casting (135), Bouncy Chain Missiles (146), 
 Effects          :
 #1 (id=1260231)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.5) | SP Coefficient: 2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1254865
 
 Name             : Kindling (id=1254194) [Spell Family (3), Passive] 
@@ -18069,8 +18294,10 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Effects          :
 #1 (id=1261446)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.326 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1261447)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Calls down a pillar of fire on your target, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s2 targets.$?a205037[
 
 Leaves behind a patch of flames that burns enemies within it for ${$205470d*$205472s1} Fire damage over $205470d.][]
@@ -18174,10 +18401,13 @@ Effects          :
 #2 (id=1263754)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Phase Shift (1256245 effect#1)
 #3 (id=1263755)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Swift Erasure (1253668 effect#1)
 #4 (id=1263798)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Path to Oblivion (1253399 effect#1)
 Description      : $@spelldesc1253304
 Tooltip          : Building up to a meteor strike.
 $?a1253668[Haste increased by $s3%.][]
@@ -18273,10 +18503,13 @@ Effects          :
 #2 (id=1263800)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Phase Shift (1256245 effect#1)
 #3 (id=1263801)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Swift Erasure (1253668 effect#1)
 #4 (id=1263802)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Path to Oblivion (1253399 effect#1)
 Description      : $@spelldesc1253304
 Tooltip          : Haste increased by $s3%.
 $?a1256245[Damage taken reduced by $s2%.][]
@@ -18408,9 +18641,9 @@ Effects          :
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
 #7 (id=1264860)  : Apply Aura (6) | Unknown(648)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 0x131a | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 4890 | Target: Self (1)
 #8 (id=1264861)  : Apply Aura (6) | Unknown(648)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 7 | Misc Value 2: 0x131b | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 7 | Misc Value 2: 4891 | Target: Self (1)
 
 Name             : Frost Mage (id=1256913) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -18453,8 +18686,10 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1265222)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Fired Up (1257349 effect#1)
 #3 (id=1265235)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Fired Up (1257348 effect#2)
 Description      : While Combustion is active, consuming Hot Streak has a $s1% chance to grant you a stack of Fired Up, increasing your Fire damage by $1257350s1% until Combustion ends.
 
 Name             : Fired Up (id=1257348) [Spell Family (3), Passive] 
@@ -18534,6 +18769,7 @@ Effects          :
 #2 (id=1266124)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2449 (Category) | Target: Self (1)
                    Affected Spells (Category): Touch of the Magi (321507)
+                   Modified By: Fired Up (1257349 effect#1)
 Description      : Touch of the Magi accumulates an additional $s1% damage and has $s2 additional $Lcharge:charges;
 
 Name             : Touch of the Archmage (id=1257947) [Spell Family (3), Passive] 
@@ -18554,6 +18790,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
 #2 (id=1266137)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
+                   Modified By: Fired Up (1257349 effect#1)
 Description      : Arcane Charges further increase the damage of Arcane Blast, Arcane Pulse, and Arcane Barrage by $s1%.
 
 Name             : Touch of the Archmage (id=1257950) [Spell Family (3), Passive] 
@@ -18616,7 +18853,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Ashes of Inspiration (id=1260272) [Spell Family (3), Passive, Hidden] 
@@ -18782,6 +19019,7 @@ Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (
 Effects          :
 #1 (id=1273241)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.5) | SP Coefficient: 4 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc1262935
 
 Name             : Duality (id=1262843) [Spell Family (3), Passive, Hidden] 
@@ -18855,6 +19093,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1273365)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.6624 | PvP Coefficient: 0.33 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
 
@@ -18879,6 +19118,7 @@ Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Pe
 Effects          :
 #1 (id=1273366)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.525 | PvP Coefficient: 0.33 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ignite (id=1262887) [Spell Family (3)] 
@@ -18989,10 +19229,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Hand of Frost (1262981 effect#2)
 #2 (id=1273808)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Pyroblast (1236212), Arcane Pulse (1241462), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863)
                    Family Flags: 3
+                   Modified By: Hand of Frost (1262981 effect#3)
 Description      : $@spelldesc1262981
 Tooltip          : Spell damage is increased by $s1%.
 

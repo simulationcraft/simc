@@ -70,6 +70,8 @@ struct collapsing_void_damage_t;
 struct halo_t;
 struct horrific_vision_t;
 struct vision_of_nzoth_t;
+struct void_apparition_spell_t;
+struct void_bolt_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -388,6 +390,8 @@ public:
       // Apex
       player_talent_t void_apparitions_1;
       player_talent_t void_apparitions_2;
+      const spell_data_t* void_apparition;  // Damage event
+      const spell_data_t* void_bolt;
       player_talent_t void_apparitions_3;
     } shadow;
 
@@ -623,7 +627,6 @@ public:
     const spell_data_t* mind_flay;
     const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
-    const spell_data_t* void_bolt;
     const spell_data_t* voidform;
     const spell_data_t* hallucinations;
     const spell_data_t* dispersion;
@@ -750,6 +753,13 @@ public:
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
     propagate_const<proc_t*> depth_of_shadows;
+    propagate_const<proc_t*> void_apparition;
+    propagate_const<proc_t*> void_apparition_yshaarj;
+    propagate_const<proc_t*> void_apparition_horrific_vision;
+    propagate_const<proc_t*> void_apparition_vision_of_nzoth;
+    propagate_const<proc_t*> void_apparition_yogg;
+    propagate_const<proc_t*> void_apparition_cthun;
+    propagate_const<proc_t*> tentacle_slam_idol;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -766,6 +776,7 @@ public:
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
+    propagate_const<actions::spells::void_apparition_spell_t*> void_apparitions;
     propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
@@ -786,6 +797,7 @@ public:
     propagate_const<action_t*> echo_of_light;
     propagate_const<actions::spells::horrific_vision_t*> horrific_vision;
     propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
+    propagate_const<actions::spells::void_bolt_t*> void_bolt;
   } background_actions;
 
   // Items
@@ -979,6 +991,9 @@ public:
   void extend_entropic_rift();
   void expand_entropic_rift( int stacks = -1 );
   std::string blizzard_apl_action_replace( std::string options );
+  void trigger_random_idol( action_state_t* s );
+  void trigger_horrific_vision( player_t* target );
+  void trigger_vision_of_nzoth( player_t* target );
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1537,6 +1552,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         p().trigger_atonement( s, composite_atonement_multiplier( s ) );
       }
 
+      // TODO: need to re-test this logic
       if ( priest().talents.shadow.idol_of_yshaarj.enabled() && !priest().buffs.call_of_the_void->check() &&
            !priest().buffs.overburdened_mind->check() )
       {

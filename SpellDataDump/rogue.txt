@@ -22,6 +22,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.69 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#3), Backstab (245689 effect#1), The First of the Dead (248210 effect#3), The Rotten (341134 effect#2), The Rotten (394203 effect#2)
 #4 (id=297239)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
 Description      : Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].
@@ -103,6 +104,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=282)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Stealth (1784 effect#5), Shadow Blades (121471 effect#3)
 #4 (id=842003)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Mutilate (5374), Ambush (8676), Mutilate (27576), Ambush (385897), Ambush (430023)
@@ -145,6 +147,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=448)      : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2)
 #3 (id=449)      : Trigger Spell (64): Mutilate
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5374 | Target: Targeted Enemy (6)
 #4 (id=314319)   : Trigger Spell (64): Mutilate
@@ -271,6 +274,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=169690)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2)
 Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage may interrupt the effect.
 
 Must be in front of your target.
@@ -298,13 +302,15 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Ca
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
 Effects          :
 #1 (id=541)      : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=542)      : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 475 | Points Per Level: 5 | Target: Self (1)
 #3 (id=543)      : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowrunner (378807 effect#1)
 #4 (id=165804)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowheart (455131 effect#1)
 #5 (id=219899)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Garrote (703), Garrote (360830)
@@ -357,6 +363,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=565)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2)
 Description      : Stuns the target for $d.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -470,9 +477,11 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Al
 Effects          :
 #1 (id=595)      : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Mirrors (441250 effect#1)
 #2 (id=127075)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Elusiveness (79008 effect#1)
 #3 (id=1135544)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
 #4 (id=1204625)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
@@ -624,6 +633,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed 
 Effects          :
 #1 (id=895)      : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Modified By: Featherfoot (423683 effect#1)
 #2 (id=328458)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 1 | Scaled Value: 1
 Description      : Increases your movement speed by $s1% for $d. Usable while stealthed.$?s245751[
@@ -653,6 +663,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed 
 Effects          :
 #1 (id=1113)     : Apply Aura (6) | Proc Trigger Spell (42): Crippling Poison
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 3409 | Target: Self (1)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1), Superior Mixture (423701 effect#1)
 Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d. Each strike has a $3408h% chance to poison the enemy, slowing movement speed by $3409s1% for $3409d.
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing movement speed by $3409s1% for $3409d.
 
@@ -675,6 +686,7 @@ Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49
 Effects          :
 #1 (id=1114)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Targeted Enemy (6)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1), Superior Mixture (423701 effect#1)
 Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $3408h% chance of poisoning the enemy, slowing their movement speed by $3409s1% for $3409d.
 Tooltip          : Movement slowed by $w1%.
@@ -716,9 +728,11 @@ Effects          :
 #2 (id=1018820)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+                   Modified By: Elusiveness (79008 effect#2)
 #3 (id=1161687)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+                   Modified By: Bait and Switch (457034 effect#1)
 Description      : Increases your dodge chance by ${$s1/2}% for $d.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]
 Tooltip          : Dodge chance increased by ${$w1/2}%.$?a344363[ Dodging an attack while Evasion is active will trigger Mastery: Main Gauche.][]$?a457034[ Magical damage taken reduced by $w3%.][]
 
@@ -763,8 +777,10 @@ Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight
 Effects          :
 #1 (id=2042)     : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.533333 | Target: Targeted Enemy (6)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1)
 #2 (id=806027)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.533333 | Target: Targeted Enemy (6)
+                   Modified By: Master Poisoner (196864 effect#4), Master Poisoner (378436 effect#2)
 Description      : $@spelldesc5761
 Tooltip          : Attack and casting speed slowed by $s1%.
 
@@ -789,6 +805,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed 
 Effects          :
 #1 (id=2044)     : Apply Aura (6) | Proc Trigger Spell (42): Numbing Poison
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5760 | Target: Self (1)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1)
 Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d. Each strike has a $5761h% chance of poisoning the enemy, clouding their mind and slowing their attack and casting speed by $5760s1% for $5760d.
 Tooltip          : Each strike has a chance of poisoning the enemy, slowing their attack and spellcasting by $5760s1% for $5760d.
 
@@ -817,6 +834,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=806133)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#3), Broadside (193356 effect#3)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Targeted Enemy (6)
 Description      : Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[
@@ -916,6 +934,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Target: Targeted Enemy (6)
 #2 (id=3613)     : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Improved Ambush (381620 effect#1), Jackpot (1214937 effect#2)
 Description      : Ambush the target, causing $s1 Physical damage.$?s383281[
 
 Has a ${$279876s1*$383281s1/100}% chance to grant Opportunity.][]
@@ -966,9 +985,11 @@ Attributes       : No Active Defense (21), No Redirection (35), No Reflection (3
 Effects          :
 #1 (id=3617)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.0407 | Target: Targeted Enemy (6)
+                   Modified By: Poison Knives (192376 effect#2)
 #2 (id=133966)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Master Poisoner (196864 effect#4), Master Poisoner (378436 effect#2)
 #3 (id=870471)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc8679
@@ -995,17 +1016,20 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Ca
 Aura Interrupt   : Interacting (10), Looting (11), Use Item (13), Mount (17), Damage (Script) (27)
 Effects          :
 #1 (id=4766)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=4767)     : Apply Aura (6) | Stealth (16)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #3 (id=4768)     : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowrunner (378807 effect#1)
 #4 (id=165805)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Shadowheart (455131 effect#1)
 #5 (id=370947)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Garrote (703), Garrote (360830)
                    Family Flags: 8
+                   Modified By: Subterfuge (108208 effect#3)
 Description      : $@spelldesc1856
 Tooltip          : Improved stealth.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
@@ -1045,6 +1069,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Ambush (8676), Blade Flurry (22482), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Between the Eyes (315341), Blade Flurry (331850), Sinister Strike (341541), Ambush (385897), Killing Spree (424556), Ambush (430023), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Killing Spree (463781), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 9, 23, 55, 93, 98, 101, 111, 112
+                   Modified By: Celerity (340087 effect#1), Menacing Rush (1256630 effect#1)
 #6 (id=1158657)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Increases your Energy regeneration rate by $s1%, your maximum Energy by $s4, and your attack speed by $s2% for $d.$?$w5>0[
@@ -1082,6 +1107,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=136652)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Modified By: Fate Intertwined (1249215 effect#2), Grand Melee (1259469 effect#1)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=181788)   : Apply Aura (6) | Dummy (4)
@@ -1090,6 +1116,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self (1)
                    Affected Spells: Mastery: Main Gauche (76806)
                    Family Flags: 70
+                   Modified By: Ambidexterity (341542 effect#1)
 Description      : Strikes up to $?a272026[$331850i][${$331850i-3}] nearby targets for $331850s1 Physical damage$?a381878[ that generates 1 combo point per target][], and causes your single target attacks to also strike up to $?a272026[${$s3+$272026s3}][$s3] additional nearby enemies for $s2% of normal damage for $d.
 Tooltip          : Attacks striking nearby enemies.
 
@@ -1589,6 +1616,7 @@ Effects          :
 #3 (id=1161692)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
+                   Modified By: Bait and Switch (457034 effect#2)
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, causing you to resist harmful spells for $d.
 Tooltip          : Resisting all harmful spells.$?a457034[ Physical damage taken reduced by $w3%.][]
 
@@ -1604,10 +1632,10 @@ Family Flags     : 42
 Attributes       : Is Ability (4), Passive (6), Instant Target Procs (115), Not In Spellbook (143), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Overkill Damage From School (316)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 0x1e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: 30 | Target: Self (1)
                    Affected School(s): All
 #2 (id=789239)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 127 | Misc Value 2: 30 | Target: Self (1)
 Description      : Fatal attacks instead reduce you to $s2% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31665) [Spell Family (8)] 
@@ -1666,6 +1694,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Envenom (32645)
                    Family Flags: 35
+                   Modified By: Dashing Scoundrel (340081 effect#1), Rapid Injection (455072 effect#1)
 #4 (id=220587)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Mutilate (5374), Mutilate (27576), Blindside (111240)
@@ -1674,6 +1703,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Numbing Poison (5761), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Numbing Poison (359078), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Atrophic Poison (392388), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
                    Family Flags: 14, 16, 45, 51, 68, 74, 83, 120
+                   Modified By: Toxic Mutilator (184916 effect#1), Dashing Scoundrel (381797 effect#1)
 #6 (id=882804)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1035106)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -1907,6 +1937,7 @@ Effects          :
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Phantasmal Image (444784 effect#2)
 Description      : Creates $s2 copies of you nearby for $55342d, which cast spells and attack your enemies. While active, you generate significantly reduced threat.
 
 Taking direct damage will cause one of your images to dissipate
@@ -2483,6 +2514,7 @@ Attributes       : Passive (6), Do Not Sheath (18), No Immunities (29), No Aura 
 Effects          :
 #1 (id=68363)    : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.8 | Misc Value: 127 | Target: Self (1)
+                   Modified By: True Bearing (193359 effect#1), Jackpot (1214937 effect#4)
 Description      : Finishing moves reduce the remaining cooldown of many Rogue skills by $<cdr> sec per combo point spent.
 
 Affected skills: Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, Grappling Hook, Keep it Rolling, Killing Spree, Roll the Bones, and Sprint.
@@ -2766,6 +2798,7 @@ Attributes       : No Aura Cancel (31), Allow While Stealthed (37), No AutoCast 
 Effects          :
 #1 (id=119252)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Assassination Rogue (137037 effect#6), Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1)
 Description      : $@spelldesc280716
 Tooltip          : Leech increased by $s1%.
 
@@ -2827,7 +2860,7 @@ Family Flags     : 123
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Misc Value 2: 8 | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc108209
 Tooltip          : Energy cost of abilities reduced by $w1%.
@@ -2869,6 +2902,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.237838 | Target: Targeted Enemy (6)
 #2 (id=330872)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2)
 #3 (id=344591)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : Throws a shuriken at an enemy target for ${$s1*$<CAP>/$AP} Physical damage.
@@ -2897,6 +2931,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115834 | Target: Self (1)
 #2 (id=1034512)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shrouded in Darkness (382507 effect#1)
 Description      : Extend a cloak that shrouds party and raid members within $115834A1 yards in shadows, providing stealth for $d.
 Tooltip          : Concealing allies within $115834A1 yards in shadows.
 
@@ -2919,13 +2954,15 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Co
 Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
 Effects          :
 #1 (id=128890)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=128891)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 490 | Points Per Level: 5 | Target: Self (1)
 #3 (id=128892)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowrunner (378807 effect#1)
 #4 (id=219900)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowheart (455131 effect#1)
 Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3%. ]?s13975[Movement speed while stealthed is increased by $s3%. ][]$?s31223[Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]
 Tooltip          : Stealthed.
 
@@ -2946,8 +2983,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 450 | Points Per Level: 5 | Target: Self (1)
 #3 (id=339939)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowrunner (378807 effect#2)
 #4 (id=1158355)  : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowheart (455131 effect#2)
 Description      : $@spelldesc108208
 Tooltip          : Temporarily concealed in the shadows.
 
@@ -2967,6 +3006,7 @@ Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49
 Effects          :
 #1 (id=128900)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Target: Targeted Enemy (6)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1)
 Description      : An intense application of Crippling Poison reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -2988,6 +3028,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 850 | Points Per Level: 5 | Radius: 30 yards | Target: At Ally in Area (31)
 #2 (id=1015342)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Radius: 30 yards | Target: At Ally in Area (31)
+                   Modified By: Shrouded in Darkness (382507 effect#1)
 #3 (id=1104036)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 30 yards | Target: At Ally in Area (31)
 Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, concealing them from sight.
@@ -3479,7 +3520,7 @@ Spell Type       : None
 Attributes       : Is Ability (4), Passive (6)
 Effects          :
 #1 (id=214754)   : Apply Aura (6) | Increase Resource% (132)
-                   Base Value: 5 | Scaled Value: 5 | Resource: energy | Misc Value 2: 0x8 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Resource: energy | Misc Value 2: 8 | Target: Self (1)
 Description      : Maximum energy increased by $s1%.
 
 Name             : Touch of Elune (desc=Racial Passive) (id=154748) [Passive] 
@@ -3524,11 +3565,13 @@ Family Flags     : 110
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), No Aura Icon (60), No Aura Log (202), Ignore Healing Modifiers (219), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=220706)   : Apply Aura (6) | Shapeshift (36)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=295619)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soothing Darkness (200759 effect#1)
 #3 (id=466150)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soothing Darkness (200759 effect#2)
 Description      : $@spelldesc1784
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3680,6 +3723,7 @@ Attributes       : Not Shapeshifted (16), Not an Action (92), Can't Crit (93), I
 Effects          :
 #1 (id=269014)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Ephemeral Bond (426563 effect#3), Iron Stomach (193546 effect#1), Drink Up Me Hearties (354425 effect#2)
 Description      : Drink an alchemical concoction that heals you for $?a354425&a193546[${$O1}.1][$o1]% of your maximum health over $d.
 Tooltip          : Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.
 
@@ -3706,6 +3750,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Soothing Darkness (200759 effect#2)
 #4 (id=373905)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Sanguine Blades (423193), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Crimson Tempest (1247227), Killing Spree (1248603), Killing Spree (1248604), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Scoundrel Strike (1265918)
@@ -3737,6 +3782,7 @@ Effects          :
 #1 (id=269038)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1615 (Category) | Target: Self (1)
                    Affected Spells (Category): Shadow Dance (185313)
+                   Modified By: Enveloping Shadows (238104 effect#1)
 Description      : Haste affects the cooldown recovery rate of Shadow Dance.
 
 Name             : Shadow Dance (id=185422) [Spell Family (8)] 
@@ -3754,13 +3800,15 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Al
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=269222)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
 #2 (id=269223)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 465 | Points Per Level: 5 | Target: Self (1)
 #3 (id=269224)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Shadowrunner (378807 effect#1)
 #4 (id=269225)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Modified By: Shadowheart (455131 effect#1)
 #5 (id=269226)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ambush (8676), Ambush (385897), Ambush (430023)
@@ -3793,6 +3841,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5 | Target: Targeted Enemy (6)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), The First of the Dead (248210 effect#1), The Rotten (341134 effect#1), Improved Ambush (381620 effect#1), The Rotten (394203 effect#1)
 Description      : Strike the target, dealing $s1 Physical damage.
 
 While Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.
@@ -3819,6 +3868,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23232 | Target: Targeted Enemy (6)
 #2 (id=269457)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2)
 Description      : Throws a poison-coated knife, dealing $s1 damage and applying your active Lethal and Non-Lethal Poisons.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -3844,6 +3894,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing ${$s1*$<CAP>/$AP} Physical damage and reducing the target's movement speed by $s3% for $d.
@@ -3937,6 +3988,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Jackpot (1214937 effect#2)
 Description      : Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[
 
 Has a $279876s1% chance to hit an additional time and make your next Pistol Shot cost $279876s1% less Energy and deal $279876s2% increased damage.][]
@@ -4250,6 +4302,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Pistol Shot (185763)
                    Family Flags: 101
+                   Modified By: Quick Draw (196938 effect#1)
 #3 (id=1268861)  : Apply Party Aura (35) | Set Action Button Spell Count (408): Pistol Shot
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 185763 | Target: Self (1)
 Description      : $@spelldesc279876
@@ -4371,6 +4424,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
 #2 (id=368528)   : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | Resource: energy | Target: Self (1)
+                   Modified By: Improved Shadow Techniques (394023 effect#1)
 #3 (id=1105230)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc196912
@@ -4394,6 +4448,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1109358)  : Apply Aura (6) | Dummy (4)
                    Base Value: 28 | Scaled Value: 28 | Target: Self (1)
+                   Modified By: Improved Shadow Techniques (394023 effect#1)
 Description      : Your auto attacks have a $s2% chance to generate $196911s2 Energy and store $m1 combo $Lpoint:points;, up to $196911u.
 
 Attacks that generate combo points can expend those stored to generate additional combo points, up to your maximum.
@@ -4435,6 +4490,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.3232 | Target: Targeted Enemy (6)
 #2 (id=289166)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Broadside (193356 effect#2)
 #3 (id=289167)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Sanguine Blades (423193), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Crimson Tempest (1247227), Killing Spree (1248603), Killing Spree (1248604), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Scoundrel Strike (1265918)
@@ -4596,6 +4652,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 #2 (id=1265899)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Jackpot (1214937 effect#2)
 Description      : $@spelldesc193315
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
@@ -4707,6 +4764,7 @@ Effects          :
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Blind (2094), Blind (427773)
                    Family Flags: 24
+                   Modified By: Dancing Steel (272026 effect#4)
 #2 (id=1102512)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Blind (2094), Blind (427773)
@@ -4753,6 +4811,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.790759 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), The First of the Dead (248210 effect#2), The Rotten (341134 effect#1), The Rotten (394203 effect#1)
 Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -4912,6 +4971,7 @@ Attributes       : Allow Item Spell In PvP (13), Can't Crit (93), Ignore Healing
 Effects          :
 #1 (id=314567)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Modified By: Ephemeral Bond (426563 effect#3), Iron Stomach (193546 effect#1), Drink Up Me Hearties (354425 effect#2)
 Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
 Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 
@@ -4973,18 +5033,23 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rupture (1943), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 20, 32, 44
+                   Modified By: Death Perception (469642 effect#2)
 #2 (id=466105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 20, 32, 44
+                   Modified By: Death Perception (469642 effect#3)
 #3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Death Perception (469642 effect#4)
 #4 (id=479903)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Sanguine Blades (423193), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Crimson Tempest (1247227), Killing Spree (1248603), Killing Spree (1248604), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Scoundrel Strike (1265918)
                    Family Flags: 54
+                   Modified By: Planned Execution (341556 effect#1), Planned Execution (382508 effect#1)
 #5 (id=479904)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Warning Signs (426555 effect#1)
 #6 (id=1105121)  : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Resource: energy | Target: Self (1)
 Description      : Invoke ancient symbols, restoring $s6 Energy and increasing the damage of finishing moves by $s1% for $d.
@@ -5074,6 +5139,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Shiv (5938), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 29, 75, 82, 104, 109, 127
+                   Modified By: Death Perception (469642 effect#2)
 Description      : $@spelldesc212283
 Tooltip          : Your next combo point generator will critically strike.
 
@@ -5341,6 +5407,7 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Eviscerate (328082), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17
+                   Modified By: Death Perception (469642 effect#2)
 Description      : $@spelldesc212283
 Tooltip          : Your next Eviscerate has $s1% increased critical strike chance.
 
@@ -5619,7 +5686,7 @@ Cooldown         : 600 seconds
 Attributes       : Ignore Caster Modifiers (125)
 Effects          :
 #1 (id=477708)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 0x1036 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 129356 | Misc Value 2: 4150 | Radius: 0 - 3 yards | Target: at Self (18) -> Front of Self (47)
 Description      : Conjure up an Eldritch Grimoire, allowing you mail access for $d.
 
 Name             : Arcane Resistance (desc=Racial Passive) (id=255664) [Passive] 
@@ -5693,7 +5760,7 @@ Spell Type       : None
 Attributes       : Passive (6)
 Effects          :
 #1 (id=477718)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 Description      : Your spell casts are not delayed by taking damage. 
 
 Name             : Bull Rush (id=255723) 
@@ -6137,7 +6204,7 @@ Cooldown         : 1800 seconds
 Attributes       : Do Not Log (8), Only Outdoors (15), Do Not Sheath (18), Allow While Stealthed (37), No Aura Icon (60)
 Effects          :
 #1 (id=709245)   : Summon Guardian (28)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 0x1173 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 143925 | Misc Value 2: 4467 | Radius: 0 - 5 yards | Target: at Ground (62) -> Front Right in Area (82)
 Description      : While outdoors, summon a Mole Machine that tunnels through the earth.
 
 Name             : Fireblood (desc=Racial) (id=265226) [Hidden] 
@@ -6579,6 +6646,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=736488)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Target: Self (1)
+                   Modified By: Skull and Crossbones (199603 effect#1), Keep Your Wits About You (288988 effect#1), Rogue Outlaw 10.2 Class Set 2pc (422907 effect#1), Destiny Defined (454435 effect#2), Jackpot (1214937 effect#1), Find an Opening (1259457 effect#1)
 Description      : Sinister Strike has a $s1% chance to hit an additional time and grant Opportunity.
 
 $@spellicon195627 $@spellname195627
@@ -6725,7 +6793,7 @@ Triggered By     : Secret Technique (282438), Secret Technique (282439)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), No Aura Log (202), No Attack Parry (248), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742067)   : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 144961 | Misc Value 2: 0xe8e | Target: at Area (87)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 144961 | Misc Value 2: 3726 | Target: at Area (87)
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282448) [Spell Family (8), Hidden] 
@@ -7078,7 +7146,7 @@ Cooldown         : 300 seconds
 Attributes       : Is Ability (4), No AutoCast (AI) (49)
 Effects          :
 #1 (id=794078)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 0xdcf | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161818 | Misc Value 2: 3535 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 Description      : Change the contents of your Bag of Tricks. Now where did you put that...?
 
 Name             : Skeleton Pinkie (desc=Racial) (id=312890) 
@@ -7109,7 +7177,7 @@ Effects          :
 #3 (id=801605)   : Apply Aura (6) | Unknown(281)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
 #4 (id=801638)   : Apply Aura (6) | Unknown(356)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x166 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 358 | Target: Self (1)
 Description      : You function as a personal Blacksmithing Anvil, Cooking Fire, and Mining Forge. In addition, your limbs include every profession tool.
 
 Name             : Emergency Failsafe (desc=Racial Passive) (id=312916) [Passive] 
@@ -7249,7 +7317,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795887)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7264,7 +7332,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=795918)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 0x12aa | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161088 | Misc Value 2: 4778 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7317,7 +7385,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799002)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 0xf47 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161974 | Misc Value 2: 3911 | Radius: 0 - 2 yards | Target: at Self (18) -> Back in Area (79)
 
 Name             : Campfire (id=315335) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -7329,7 +7397,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799012)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 161980 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Front in Area (78)
 
 Name             : Between the Eyes (id=315341) [Spell Family (8)] 
 Class            : Outlaw Rogue
@@ -7359,10 +7427,12 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Sanguine Blades (423193), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Crimson Tempest (1247227), Killing Spree (1248603), Killing Spree (1248604), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Scoundrel Strike (1265918)
                    Family Flags: 54
+                   Modified By: Expert Duelist (1259498 effect#1)
 #3 (id=1264898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Sanguine Blades (423193), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Crimson Tempest (1247227), Killing Spree (1248603), Killing Spree (1248604), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Scoundrel Strike (1265918)
                    Family Flags: 54
+                   Modified By: Expert Duelist (1259498 effect#2)
 #4 (id=1267032)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Misc Value 2: 5691 (Label) | Target: Self (1)
                    Affected Spells (Label): Summarily Dispatched (381990)
@@ -7388,7 +7458,7 @@ Duration         : Aura (infinite)
 Triggered By     : Camping (315322)
 Effects          :
 #1 (id=799050)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 0xf47 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 162001 | Misc Value 2: 3911 | Radius: 0 - 1 yards | Target: at Self (18) -> Right in Area (80)
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
 Class            : Rogue
@@ -7411,8 +7481,10 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (4
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Swift Slasher (381988 effect#1), Thousand Cuts (441346 effect#1)
 #2 (id=840602)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 426605 | Target: Self (1)
+                   Modified By: Recuperator (341312 effect#1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
    1 point  : 12 seconds
    2 points: 18 seconds
@@ -7670,13 +7742,16 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Enemy (6)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Shiv (5938), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Amplifying Poison (381664), Amplifying Poison (383414), Kingsbane (385627), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Implacable Strikes (1265794)
                    Family Flags: 16, 28, 29, 35, 36, 68, 85, 86, 97, 118, 119
+                   Modified By: Well-Placed Steel (341537 effect#1)
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046107)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (394331), Deathmark (470679), Crimson Tempest (1247227)
                    Family Flags: 8, 20, 59, 81, 95, 115, 126
+                   Modified By: Arterial Precision (400783 effect#1)
 #4 (id=1173267)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3936 (Label) | Target: Targeted Enemy (6)
                    Affected Spells (Label): Deathstalker's Mark (457157), Hunt Them Down (457193), Singular Focus (457236)
@@ -7754,7 +7829,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809542)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47243 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7771,7 +7846,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809559)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47244 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7788,7 +7863,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809560)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 31216 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -7805,7 +7880,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809572)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165167 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Mirror Image (id=321701) 
@@ -7821,7 +7896,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809579)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 165169 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Echoing Reprimand (desc=Kyrian) (id=323547) [Spell Family (8)] 
@@ -7850,6 +7925,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7
 #3 (id=812798)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#3), Broadside (193356 effect#3)
 #4 (id=834337)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: energy | Target: Self (1)
 Description      : Deal $s1 Arcane damage to an enemy, extracting their anima to Animacharge a combo point for $323558d.
@@ -7959,6 +8035,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
 #2 (id=812722)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Blades (121471 effect#2), Lashing Scars (341310 effect#2)
 #3 (id=812729)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=881094)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -9473,7 +9550,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=869718)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175313 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Shadowstrike (id=345121) [Spell Family (8)] 
@@ -9613,7 +9690,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882640)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Right of Self (49)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Right of Self (49)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9628,7 +9705,7 @@ Labels           : 292
 Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882655)   : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 0x1422 | Radius: 3 yards | Target: Left of Self (50)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 178407 | Misc Value 2: 5154 | Radius: 3 yards | Target: Left of Self (50)
 Description      : $@spelldesc312924
 Variables        : $images=$?s63093[${$63093m1+$55342m2}][${$55342m2}]
 
@@ -9715,6 +9792,7 @@ Attributes       : Not Shapeshifted (16), Not an Action (92), Can't Crit (93), I
 Effects          :
 #1 (id=886927)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 15 yards | Target: Source (22) -> Ally in Area (30)
+                   Modified By: Ephemeral Bond (426563 effect#3), Iron Stomach (193546 effect#1), Drink Up Me Hearties (354425 effect#2)
 Description      : Drink an alchemical concoction that heals you for $o1% of your maximum health over $d.
 Tooltip          : Healing for ${$W1}.2% of maximum health every $t1 sec.
 
@@ -9774,6 +9852,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 #3 (id=887548)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#3), Broadside (193356 effect#3)
 #4 (id=887549)   : Apply Aura (6) | Set Power Point Charge (494)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : $@spelldesc323547
@@ -9866,6 +9945,7 @@ Attributes       : Not Shapeshifted (16), No Reflection (39), Show Mechanic as C
 Effects          :
 #1 (id=891606)   : Knock Back (98)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 150 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Modified By: Walloping Blow (387341 effect#1)
 #2 (id=1022082)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 15 yards | Mechanic: Snare | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : With a powerful flap of your wings, knock away enemies in front of you.
@@ -9934,6 +10014,7 @@ Attributes       : No Redirection (35), No Reflection (39), No AutoCast (AI) (49
 Effects          :
 #1 (id=894884)   : Apply Aura (6) | Modify Spell Haste% (355)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48 | Target: Targeted Enemy (6)
+                   Modified By: Master Poisoner (196864 effect#3), Master Poisoner (378436 effect#1), Superior Mixture (423701 effect#1)
 #2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48 | Target: Targeted Enemy (6)
 Description      : An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.
@@ -10888,6 +10969,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed 
 Effects          :
 #1 (id=1012605)  : Apply Aura (6) | Proc Trigger Spell (42): Atrophic Poison
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 392388 | Target: Self (1)
+                   Modified By: Master Poisoner (378436 effect#1)
 Description      : Coats your weapons with a Non-Lethal Poison that lasts for $d. Each strike has a $h% chance of poisoning the enemy, reducing their damage by ${$392388s1*-1}.1% for $392388d.
 Tooltip          : Each strike has a chance of poisoning the enemy, reducing their damage by ${$392388s1*-1}.1% for $392388d.
 
@@ -11287,6 +11369,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
                    Family Flags: 112
+                   Modified By: Between the Eyes (315341 effect#4)
 #3 (id=1021262)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Aura Points Stack (9)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Dispatch (2098), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Dispatch (467059)
@@ -11836,6 +11919,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | Target: Targeted Enemy (6)
 #2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+                   Modified By: Shadow Blades (121471 effect#2), Lashing Scars (341310 effect#2)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1017356)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -12074,6 +12158,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Target: Targeted Enemy (6)
 #2 (id=1019462)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Improved Ambush (381620 effect#1), Jackpot (1214937 effect#2)
 Description      : $@spelldesc8676
 
 Name             : Take 'em by Surprise (id=385907) [Spell Family (8)] 
@@ -12316,6 +12401,7 @@ Effects          :
 #1 (id=1030557)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Master Poisoner (378436 effect#1)
 Description      : $@spelldesc381637
 Tooltip          : Damage reduced by ${$W1*-1}.1%.
 
@@ -12491,6 +12577,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1033247)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Ephemeral Bond (426563 effect#2)
 Description      : You are healed for ${$393971s1*($393971d/$393971t)}% of your maximum health over $393971d after activating Vanish.
 
 Name             : Soothing Darkness (id=393971) [Spell Family (8)] 
@@ -12507,6 +12594,7 @@ Attributes       : Is Ability (4), Can't Crit (93), Not In Spellbook (143), Igno
 Effects          :
 #1 (id=1033248)  : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Modified By: Ephemeral Bond (426563 effect#2)
 Description      : $@spelldesc393970
 Tooltip          : Healing $w1% of max health every $t.
 
@@ -12669,6 +12757,7 @@ Attributes       : Do Not Display Range (126), Floating Combat Text On Cast (198
 Effects          :
 #1 (id=1033524)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Ace Up Your Sleeve (381828 effect#2)
 Description      : $@spelldesc381828
 
 Name             : The Rotten (id=394203) [Spell Family (8)] 
@@ -12877,9 +12966,11 @@ Attributes       : No Active Defense (21), No Redirection (35), Allow While Stea
 Effects          :
 #1 (id=1033874)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.0407 | Target: Targeted Enemy (6)
+                   Modified By: Poison Knives (192376 effect#2)
 #2 (id=1033875)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Master Poisoner (196864 effect#4), Master Poisoner (378436 effect#2)
 #3 (id=1033876)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc8679
@@ -13193,6 +13284,7 @@ Attributes       : Is Ability (4), Allow While Mounted (24), Allow While Sitting
 Effects          :
 #1 (id=1036859)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: energy | Target: Self (1)
+                   Modified By: Dashing Scoundrel (381797 effect#2)
 Description      : $@spelldesc381797
 
 Name             : Arterial Precision (id=400783) [Spell Family (8), Passive] 
@@ -13234,13 +13326,16 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Aura Is Debuff (26), No A
 Effects          :
 #1 (id=1046117)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Targeted Enemy (6)
+                   Modified By: Well-Placed Steel (341537 effect#1)
 #2 (id=1046118)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Hemotoxin (354124 effect#1)
 #3 (id=1046119)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Mutilated Flesh (394021), Rupture (394031), Deathmark (394331), Deathmark (470679), Crimson Tempest (1247227)
                    Family Flags: 8, 20, 59, 81, 95, 115, 126
+                   Modified By: Arterial Precision (400783 effect#1)
 Description      : $@spelldesc245388
 Tooltip          : $w3% increased Bleed damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
@@ -13638,6 +13733,7 @@ Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Not In Sp
 Effects          :
 #1 (id=1096991)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Targeted Enemy (6)
+                   Modified By: Fate Intertwined (1249215 effect#1)
 #2 (id=1096994)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #3 (id=1253597)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -14275,6 +14371,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Requires Off-Hand Weapon 
 Effects          :
 #1 (id=1105226)  : Energize Power (30) | Attributes: Suppress Points Stacking (6)
                    Base Value: 3 | Scaled Value: 3 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#4)
 #2 (id=1105227)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Kidney Shot (408), Rupture (1943), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
@@ -14353,6 +14450,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1105254)  : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Recuperator (378996 effect#1)
 Description      : $@spelldesc378996
 
 Name             : Blind (id=427773) [Spell Family (8)] 
@@ -14534,6 +14632,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Target: Targeted Enemy (6)
 #2 (id=1114701)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
+                   Modified By: Shadow Blades (121471 effect#2), Broadside (193356 effect#2), Improved Ambush (381620 effect#1), Jackpot (1214937 effect#2)
 Description      : Ambush the target, causing $s1 Physical damage.$?s383281[
 
 Has a $193315s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]
@@ -14687,14 +14786,17 @@ Effects          :
 #3 (id=1135582)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+                   Modified By: Smoke (441247 effect#1)
 #4 (id=1135627)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Backstab (53), Gouge (1776), Shiv (5938), Ambush (8676), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Sepsis (328305), Sepsis (328306), Sinister Strike (341541), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Ambush (385897), Goremaw's Bite (426591), Goremaw's Bite (426592), Ambush (430023), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 3, 9, 23, 26, 29, 67, 75, 82, 98, 101, 104, 109, 118, 127
+                   Modified By: Surprising Strikes (441273 effect#1)
 #5 (id=1168914)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
                    Affected Spells: Rupture (1943), Dispatch (2098), Killing Spree (51690), Killing Spree (57841), Killing Spree (57842), Eviscerate (196819), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Between the Eyes (315341), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Rupture (360826), Rupture (394031), Killing Spree (424556), Coup de Grace (441776), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Killing Spree (1235074), Killing Spree (1235097), Killing Spree (1235100), Killing Spree (1248603), Killing Spree (1248604)
                    Family Flags: 17, 20, 32, 44, 55, 92, 111, 112
+                   Modified By: No Scruples (441398 effect#1)
 #6 (id=1173190)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 Description      : $@spelldesc441146
@@ -14823,6 +14925,7 @@ Effects          :
 #3 (id=1172534)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2941 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (331850), Blade Flurry (429951)
+                   Modified By: Nimble Flurry (441367 effect#1)
 Description      : $@spelldesc441321
 Tooltip          : Finishing moves deal $s1% increased damage.
 
@@ -15706,6 +15809,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1179470)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2 | Misc Value: 1206 (Category) | Target: Self (1)
+                   Modified By: Outlaw Rogue (137036 effect#6)
 #3 (id=1179471)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2 | Misc Value: 2303 (Category) | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)
@@ -16085,6 +16189,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1161732)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Modified By: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
 #2 (id=1161758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s1247227[Crimson Tempest]$?s319175[Black Powder] deal $s1% additional damage while $s2 or more enemies are afflicted with Rupture.
@@ -16108,10 +16213,12 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Crimson Tempest (1247227)
                    Family Flags: 44, 50, 81, 127
+                   Modified By: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
 #2 (id=1177252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Crimson Tempest (1247227)
                    Family Flags: 44, 50, 81, 127
+                   Modified By: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
 Description      : $@spelldesc457067
 Tooltip          : Critical strike chance of $?s51723[Fan of Knives]$?s197835[Shuriken Storm] and $?s121411[Crimson Tempest]$?s319175[Black Powder] increased by $w1% and critical strike damage increased by $w2%.
 
@@ -16172,6 +16279,7 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.56 | Target: Self (1)
                    Affected Spells: Envenom (32645), Eviscerate (196819), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 35, 44
+                   Modified By: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
 Description      : $@spelldesc457062
 Tooltip          : Damage of your next $?a137037 [Envenom][Eviscerate or Black Powder] is increased by $w1%.
 
@@ -16228,9 +16336,11 @@ Effects          :
 #1 (id=1162160)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x8 | Target: Self (1)
                    Affected School(s): Nature
+                   Modified By: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
 #2 (id=1162161)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
+                   Modified By: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
 Description      : $@spelldesc457056
 Tooltip          : All $?c1[Nature][Shadow] damage dealt increased by $?c1[$w1][$w2]%.
 
@@ -16251,8 +16361,10 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Resource: energy | Target: Self (1)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.17 | Target: Self (1)
+                   Modified By: Death's Study (1239231 effect#3), Death's Study (1239232 effect#3)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Modified By: Death's Study (1239231 effect#4), Death's Study (1239232 effect#4)
 #4 (id=1162179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : $@spelldesc457058
@@ -16858,7 +16970,7 @@ Attributes       : Passive (6), Allow While Stealthed (37), Do Not Display Range
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1184332)  : Apply Aura (6) | Trigger Spell Based on Resource Amount (396): Thistle Tea
-                   Base Value: 30 | Scaled Value: 30 | Resource: energy | Misc Value 2: 0x1 | Trigger Spell: 381623 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Resource: energy | Misc Value 2: 1 | Trigger Spell: 381623 | Target: Self (1)
 #2 (id=1184346)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : $@spelldesc381623
@@ -17307,6 +17419,7 @@ Effects          :
 #1 (id=1197527)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 5679 (Label) | Target: Self (1)
                    Affected Spells (Label): Opportunity (279876)
+                   Modified By: Dragon-Bone Dice (1259481 effect#1)
 #2 (id=1197528)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Ambush (8676), Sinister Strike (193315), Sinister Strike (197834), Sinister Strike (341541), Ambush (385897), Ambush (430023)
@@ -17315,12 +17428,15 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Ambush (8676), Sinister Strike (193315), Sinister Strike (197834), Sinister Strike (341541), Ambush (385897), Ambush (430023)
                    Family Flags: 9, 98
+                   Modified By: Dragon-Bone Dice (1259481 effect#2)
 #4 (id=1197530)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Restless Blades (79096)
                    Family Flags: 77
+                   Modified By: Dragon-Bone Dice (1259481 effect#3)
 #5 (id=1258703)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Dragon-Bone Dice (1259481 effect#4)
 Description      : $@spelldesc1214774
 Tooltip          : Sinister Strike has a $w1% increased chance to strike twice and grant Opportunity.
 
@@ -17526,10 +17642,12 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Crimson Tempest (121411), Rupture (360826), Rupture (394031), Crimson Tempest (1247227)
                    Family Flags: 20, 35, 81
+                   Modified By: Cashout! (1219264 effect#1)
 #2 (id=1203310)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Crimson Tempest (121411), Rupture (360826), Rupture (394031), Crimson Tempest (1247227)
                    Family Flags: 20, 35, 81
+                   Modified By: Cashout! (1219264 effect#1)
 Description      : $@spelldesc1215719
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Envenom, Rupture, and Crimson Tempest damage increased by $w1%.
 
@@ -18038,6 +18156,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Backstab (53), Mutilate (5374), Ambush (8676), Mutilate (27576), Shadowstrike (185438), Gloomblade (200758), Shadowstrike (345121), Ambush (385897), Ambush (430023)
                    Family Flags: 2, 9, 33, 34, 104, 109
+                   Modified By: Death's Study (1239231 effect#2), Death's Study (1239232 effect#2)
 Description      : $@spelldesc1248774
 Tooltip          : Your next $?c1[Ambush or Mutilate]?s200758[Gloomblade or Shadowstrike][Backstab or Shadowstrike] deals $w1% additional damage.
 
@@ -18112,14 +18231,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Adrenaline Rush (13750), Adrenaline Rush (186286), Ghostly Strike (196937), Deathmark (360194), Kingsbane (385627), Deathmark (394331), Deathmark (470679), Adrenaline Rush (470680)
                    Family Flags: 26, 39, 59, 119
+                   Modified By: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#1)
 #3 (id=1252179)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Fatebound Coin (Tails) (452538)
                    Family Flags: 25
+                   Modified By: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#2)
 #4 (id=1252180)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Modified By: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#3)
 #5 (id=1252196)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Modified By: Rogue Fatebound 11.2 Class Set 4pc (1236403 effect#4)
 Description      : $@spelldesc1248970
 Tooltip          : Agility increased by $w1%. Damage and bonuses of Fatebound Coins increased by $w4%. Coin flips are $w5% more likely to match the same face as the last flip.
 
@@ -18858,7 +18981,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1269224)  : Summon Guardian (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 0x3fd | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 253759 | Misc Value 2: 1021 | Target: at Area (87)
 Description      : $@spelldesc55342
 
 Name             : Cold Blood (id=1264297) [Spell Family (8)] 
@@ -19174,7 +19297,7 @@ Proc Chance      : 101%
 Attributes       : Do Not Sheath (18), No Threat (42), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1278003)  : Apply Aura (6) | Trigger Spell on Aura Stack Count (542): Gravedigger
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Misc Value 2: 0x6 | Trigger Spell: 1265935 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Misc Value 2: 6 | Trigger Spell: 1265935 | Target: Self (1)
 #2 (id=1278078)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc1265863

@@ -2335,27 +2335,34 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
-  procs.shadowy_apparition_swm         = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
-  procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.shadowy_apparition_mfi         = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_yshaarj     = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
-  procs.shadowy_apparition_nzoth       = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
-  procs.shadowy_apparition_yogg        = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
-  procs.shadowy_apparition_cthun       = get_proc( "Shadowy Apparition from Idol of C'Thun" );
-  procs.mind_devourer                  = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
-  procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
-  procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.shadowy_insight                = get_proc( "Shadowy Insight procs" );
-  procs.shadowy_insight_overflow       = get_proc( "Shadowy Insight procs lost to overflow" );
-  procs.shadowy_insight_missed         = get_proc( "Shadowy Insight procs not consumed" );
-  procs.thing_from_beyond              = get_proc( "Thing from Beyond procs" );
-  procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
-  procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
-  procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
-  procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
-  procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.depth_of_shadows               = get_proc( "Depth of Shadows spawns of your main pet" );
+  procs.shadowy_apparition_swp          = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
+  procs.shadowy_apparition_swm          = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
+  procs.shadowy_apparition_mb           = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_mfi          = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_yshaarj      = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
+  procs.shadowy_apparition_nzoth        = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
+  procs.shadowy_apparition_yogg         = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
+  procs.shadowy_apparition_cthun        = get_proc( "Shadowy Apparition from Idol of C'Thun" );
+  procs.mind_devourer                   = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
+  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
+  procs.shadowy_insight                 = get_proc( "Shadowy Insight procs" );
+  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight procs lost to overflow" );
+  procs.shadowy_insight_missed          = get_proc( "Shadowy Insight procs not consumed" );
+  procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
+  procs.mind_flay_insanity_wasted       = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
+  procs.void_torrent_ticks_no_mastery   = get_proc( "Void Torrent ticks without full Mastery value" );
+  procs.mindgames_casts_no_mastery      = get_proc( "Mindgames casts without full Mastery value" );
+  procs.inescapable_torment_missed_mb   = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
+  procs.inescapable_torment_missed_swd  = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.depth_of_shadows                = get_proc( "Depth of Shadows spawns of your main pet" );
+  procs.void_apparition                 = get_proc( "Void Apparition procs" );
+  procs.void_apparition_yshaarj         = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
+  procs.void_apparition_horrific_vision = get_proc( "Horrific Vision from Tentacle Slam" );
+  procs.void_apparition_vision_of_nzoth = get_proc( "Vision of N'Zoth from Tentacle Slam" );
+  procs.void_apparition_yogg            = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
+  procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
+  procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -2692,6 +2699,16 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
     double wof_val = talents.archon.word_of_supremacy->effectN( 1 ).percent();
     mul /= 1.0 + pwf_val;
     mul *= 1.0 + pwf_val + wof_val;
+  }
+
+  if ( attr == ATTR_STAMINA && talents.strength_of_soul.enabled() )
+  {
+    mul *= talents.strength_of_soul->effectN( 1 ).percent();
+  }
+
+  if ( attr == ATTR_INTELLECT && talents.spiritual_guidance.enabled() )
+  {
+    mul *= 1.0 + talents.spiritual_guidance->effectN( 1 ).percent();
   }
 
   return mul;
@@ -3070,11 +3087,11 @@ void priest_t::init_spells()
   // Row 2
   talents.holy_nova          = CT( "Holy Nova" );
   talents.holy_nova_heal     = find_spell( 281265 );
-  talents.dispel_magic       = CT( "Dispel Magic" );        // NYI
-  talents.spiritual_guidance = CT( "Spiritual_Guidance" );  // NYI
+  talents.dispel_magic       = CT( "Dispel Magic" );  // NYI
+  talents.spiritual_guidance = CT( "Spiritual Guidance" );
   talents.psychic_scream     = CT( "Psychic Scream" );
   // Row 3
-  talents.lightburst         = CT( "Lightburst" );      // NYI
+  talents.lightburst         = CT( "Lightburst" );
   talents.leap_of_faith      = CT( "Leap of Faith" );   // NYI
   talents.purify_disease     = CT( "Purify Disease" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
@@ -3087,9 +3104,9 @@ void priest_t::init_spells()
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.mass_dispel                = CT( "Mass Dispel" );  // NYI
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
-  talents.strength_of_soul           = CT( "Strength of Soul" );  // NYI
-  talents.mind_control               = CT( "Mind Control" );      // NYI
-  talents.dominate_mind              = CT( "Dominant Mind" );     // NYI
+  talents.strength_of_soul           = CT( "Strength of Soul" );
+  talents.mind_control               = CT( "Mind Control" );   // NYI
+  talents.dominate_mind              = CT( "Dominant Mind" );  // NYI
   talents.psychic_voice              = CT( "Psychic Voice" );
   talents.void_tendrils              = CT( "Void Tendrils" );  // NYI
   // Row 5
@@ -3640,7 +3657,7 @@ void priest_t::init_blizzard_action_list()
         break;
       case PRIEST_SHADOW:
         cooldowns->add_action( "use_items,if=buff.voidform.up" );
-        cooldowns->add_action( "void_eruption" );
+        cooldowns->add_action( "voidform" );
         cooldowns->add_action( "power_infusion,if=buff.voidform.up" );
         break;
       default:
@@ -3686,10 +3703,10 @@ std::string priest_t::blizzard_apl_action_replace( std::string options )
       {
         return "mind_flay_insanity";
       }
-      // void_eruption into void_bolt
+      // void_eruption into void_volley
       if ( options.find( "buff.voidform.up" ) != std::string::npos )
       {
-        return "void_bolt";
+        return "void_volley";
       }
       break;
     default:
