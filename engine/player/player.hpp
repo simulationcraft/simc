@@ -282,6 +282,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX_PRIMARY> crit_damage_multiplier;
     double crit_healing_multiplier;
     double attack_speed_multiplier;
+    std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );

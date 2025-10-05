@@ -1308,12 +1308,14 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_damage_multiplier(),
   crit_healing_multiplier( 1.0 ),
   attack_speed_multiplier( 1.0 ),
+  damage_multiplier(),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
   range::fill( matching_armor_multiplier, 1.0 );
   range::fill( rating_multiplier, 1.0 );
   range::fill( crit_damage_multiplier, 1.0 );
+  range::fill( damage_multiplier, 1.0 );
 }
 
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
@@ -1364,8 +1366,12 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
   for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
+  {
+    fmt::format_to( out, " {}_damage_multiplier={}", util::school_type_string( school ),
+                    s.damage_multiplier[ school ] );
     fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
                     s.crit_damage_multiplier[ school ] );
+  }
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
   fmt::format_to( out, " position={}", s.position );
@@ -1532,10 +1538,15 @@ void player_t::init_base_stats()
     base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
     for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
     {
+      base.damage_multiplier[ school ] = get_passive_player_value(
+          base.damage_multiplier[ school ], fmt::format( "{}_damage_multiplier", util::school_type_string( school ) ) );
+      base.damage_multiplier[ school ] *=
+          get_passive_player_value( base.damage_multiplier[ school ], "all_damage_multiplier" );
       base.crit_damage_multiplier[ school ] =
           get_passive_player_value( base.crit_damage_multiplier[ school ],
                                     fmt::format( "{}_crit_damage_multiplier", util::school_type_string( school ) ) );
-      base.crit_damage_multiplier[ school ] += get_passive_player_value( base.crit_damage_multiplier[ school ], "all_crit_damage_multiplier" );
+      base.crit_damage_multiplier[ school ] *=
+          get_passive_player_value( base.crit_damage_multiplier[ school ], "all_crit_damage_multiplier" );
     }
     base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
 
@@ -5658,39 +5669,30 @@ double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool 
 
 double player_t::composite_player_multiplier( school_e school ) const
 {
-  double m = 1.0;
+  double m = current.damage_multiplier[ school ];
 
-  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
-    m *= 1.0 + buffs.legendary_aoe_ring->default_value;
+  if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->has_common_school( school ) )
+    m *= 1.0 + buffs.legendary_aoe_ring->check_value();
 
-  if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.taste_of_mana->default_value;
-  }
+  if ( buffs.taste_of_mana && buffs.taste_of_mana->has_common_school( school ) )
+    m *= 1.0 + buffs.taste_of_mana->check_value();
 
-  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
-  {
-    m *= 1.0 + buffs.torrent_of_elements->default_value;
-  }
+  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->has_common_school( school ) )
+    m *= 1.0 + buffs.torrent_of_elements->check_value();
 
   if ( buffs.damage_done && buffs.damage_done->check() )
-  {
     m *= 1.0 + buffs.damage_done->check_stack_value();
-  }
 
-  if ( school != SCHOOL_PHYSICAL )
-    m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
-
-  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->check() )
+  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->has_common_school( school ) )
     m *= 1 + buffs.echo_of_eonar->check_value();
 
   if ( buffs.volatile_solvent_damage && buffs.volatile_solvent_damage->has_common_school( school ) )
     m *= 1.0 + buffs.volatile_solvent_damage->check_value();
 
-  if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+  if ( buffs.battlefield_presence && buffs.battlefield_presence->has_common_school( school ) )
     m *= 1.0 + buffs.battlefield_presence->check_stack_value();
 
-  if ( buffs.coldhearted && buffs.coldhearted->check() )
+  if ( buffs.coldhearted && buffs.coldhearted->has_common_school( school ) )
     m *= 1.0 + buffs.coldhearted->check_value();
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
@@ -15240,6 +15242,14 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_MAX_TARGETS,                            "max_targets"                               }, // 40
   { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
+  { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "arcane_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "fire_damage_multiplier"                    }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "frost_damage_multiplier"                   }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "holy_damage_multiplier"                    }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "nature_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
+  { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
@@ -15554,6 +15564,12 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         field   = "crit_heal_multiplier";
         pct_val = modifying_eff.percent(); 
         break;
+      case A_MOD_DAMAGE_PERCENT_DONE:
+        misc_type = modifying_eff.affected_schools();
+        is_bitmap = true;
+        bit_type  = BITMAP_SCHOOL;
+        pct_val   = modifying_eff.percent();
+        break;
       default:
         return false;
     }
@@ -15565,18 +15581,20 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     // TODO: Refactor to cleanup repetitive debut output messages.
-    // Likely needs a template vector since types are unknown. 
+    // Likely needs a template vector since types are unknown.
     // So creating a vector of temporary types we can push back to, then once its done
     // iterating through all bit types, print from the vector?
     if ( is_bitmap )
     {
-      if( bit_type == BITMAP_NONE )
-        return false;
-
-      if ( bit_type == BITMAP_ATTRIBUTE )
+      std::string subtype_str = "";
+      switch ( bit_type )
       {
-        if ( modifying_eff.subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
-        {
+        case BITMAP_NONE:
+          break;
+        case BITMAP_ATTRIBUTE:
+          if ( modifying_eff.subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
+            subtype_str = "multiplier";
+
           for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
           {
             if ( misc_type & ( 1 << ( stat - 1 ) ) )
@@ -15586,12 +15604,12 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               {
                 auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
                 if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
-                  field = fmt::format( "matching_armor_{}_multiplier", util::stat_type_string( stat ) );
+                  field = fmt::format( "matching_armor_{}_{}", util::stat_type_string( stat ), subtype_str );
                 else
                   continue;
               }
               else
-                field = fmt::format( "{}_multiplier", util::stat_type_string( stat ) );
+                field = fmt::format( "{}_{}", util::stat_type_string( stat ), subtype_str );
 
               if ( field.empty() )
                 continue;
@@ -15609,18 +15627,17 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
             }
           }
-        }
-      }
-      if ( bit_type == BITMAP_RATING )
-      {
-        if ( modifying_eff.subtype() == A_MOD_RATING_MULTIPLIER )
-        {
+          break;
+        case BITMAP_RATING:
+          if ( modifying_eff.subtype() == A_MOD_RATING_MULTIPLIER )
+            subtype_str = "rating_multiplier";
+
           for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
           {
             auto mod = util::rating_to_rating_mod( i );
             if ( misc_type & mod )
             {
-              field = fmt::format( "{}_rating_multiplier", util::rating_type_string( i ) );
+              field = fmt::format( "{}_{}", util::rating_type_string( i ), subtype_str );
               if ( field.empty() )
                 continue;
               auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
@@ -15636,15 +15653,16 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
             }
           }
-        }
-      }
-      if ( bit_type == BITMAP_SCHOOL )
-      {
-        if ( modifying_eff.subtype() == A_MOD_CRIT_DAMAGE_BONUS )
-        {
+          break;
+        case BITMAP_SCHOOL:
+          if ( modifying_eff.subtype() == A_MOD_CRIT_DAMAGE_BONUS )
+            subtype_str = "crit_damage_multiplier";
+          if ( modifying_eff.subtype() == A_MOD_DAMAGE_PERCENT_DONE )
+            subtype_str = "damage_multiplier";
+
           if ( misc_type == 0x7f )
           {
-            field              = "all_crit_damage_multiplier";
+            field              = fmt::format( "all_{}", subtype_str );
             auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
                                                               misc_type, 0, flat_val, pct_val );
             std::string _tmp_full_message_tmp_ = fmt::format(
@@ -15657,15 +15675,13 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             sim->print_debug( "{}", _tmp_full_message_tmp_ );
             _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
           }
-          if ( field.empty() )
+          else
           {
             for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; ++i )
             {
               if ( misc_type & dbc::get_school_mask( i ) )
               {
-                field = fmt::format( "{}_crit_damage_multiplier", util::school_type_string( i ) );
-                if ( field.empty() )
-                  continue;
+                field              = fmt::format( "{}_{}", util::school_type_string( i ), subtype_str );
                 auto [ prev, now ] = add_passive_effect_modifier(
                     passive_player_modifiers_, get_type_from_field( field ), i, 0, flat_val, pct_val );
                 std::string _tmp_full_message_tmp_ = fmt::format(
@@ -15680,7 +15696,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
               }
             }
           }
-        }
+          break;
+        default:
+          return false;
+          break;
       }
       return true;
     }
