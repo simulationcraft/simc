@@ -10540,9 +10540,6 @@ double evoker_t::composite_player_multiplier( school_e s ) const
 {
   double m = player_t::composite_player_multiplier( s );
 
-  if ( talent.instinctive_arcana.ok() && talent.instinctive_arcana->effectN( 1 ).has_common_school( s ) )
-    m *= 1 + talent.instinctive_arcana->effectN( 1 ).percent();
-
   return m;
 }
 

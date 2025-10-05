@@ -4734,15 +4734,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // This also seems likely to be a bug: the spelldata says Fire, but the tooltip says Radiant
-  if ( dbc::is_school( school, SCHOOL_FIRE ) )
-  {
-    if ( talents.burning_crusade->ok() )
-    {
-      m *= 1.0 + talents.burning_crusade->effectN( 2 ).percent();
-    }
-  }
-
   return m;
 }
 

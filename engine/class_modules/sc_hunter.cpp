@@ -1791,8 +1791,6 @@ struct dire_critter_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
 
-    m *= 1 + o()->talents.dire_frenzy->effectN( 2 ).percent();
-
     if ( buffs.bestial_wrath->has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath->check_value();
 
