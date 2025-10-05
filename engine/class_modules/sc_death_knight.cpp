@@ -1111,7 +1111,6 @@ public:
       player_talent_t rapid_decomposition;
       // Row 7
       player_talent_t improved_bone_shield;
-      player_talent_t tightening_grasp;
       player_talent_t everlasting_bond;
       player_talent_t voracious;
       player_talent_t coagulopathy;
@@ -12836,7 +12835,6 @@ void death_knight_t::init_spells()
   talent.blood.rapid_decomposition = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Decomposition" );
   // Row 7
   talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
-  talent.blood.tightening_grasp     = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
   talent.blood.everlasting_bond     = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Bond" );
   talent.blood.voracious            = find_talent_spell( talent_tree::SPECIALIZATION, "Voracious" );
   talent.blood.coagulopathy         = find_talent_spell( talent_tree::SPECIALIZATION, "Coagulopathy" );
