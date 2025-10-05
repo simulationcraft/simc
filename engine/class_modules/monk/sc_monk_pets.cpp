@@ -9,16 +9,8 @@
 
 namespace monk
 {
-// ==========================================================================
-// Monk Pets & Statues
-// ==========================================================================
-
 namespace pets
 {
-// ==========================================================================
-// Base Monk Pet Action
-// ==========================================================================
-
 monk_pet_t::monk_pet_t( monk_t *owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
   : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
 {
@@ -117,10 +109,6 @@ struct pet_action_base_t : public BASE
   }
 };
 
-// ==========================================================================
-// Base Monk Pet Melee Attack
-// ==========================================================================
-
 struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
   bool trigger_mystic_touch;  // Some pets can trigger Mystic Touch debuff from attacks
@@ -182,10 +170,6 @@ struct pet_melee_t : pet_melee_attack_t
   }
 };
 
-// ==========================================================================
-// Generalized Auto Attack Action
-// ==========================================================================
-
 struct pet_auto_attack_t : public melee_attack_t
 {
   bool trigger_mystic_touch;  // Some pets can trigger Mystic Touch debuff from attacks
@@ -228,10 +212,6 @@ struct pet_auto_attack_t : public melee_attack_t
   }
 };
 
-// ==========================================================================
-// Base Monk Pet Spell
-// ==========================================================================
-
 struct pet_spell_t : public pet_action_base_t<spell_t>
 {
   pet_spell_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
@@ -240,10 +220,6 @@ struct pet_spell_t : public pet_action_base_t<spell_t>
   }
 };
 
-// ==========================================================================
-// Base Monk Heal Spell
-// ==========================================================================
-
 struct pet_heal_t : public pet_action_base_t<heal_t>
 {
   pet_heal_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
@@ -251,10 +227,6 @@ struct pet_heal_t : public pet_action_base_t<heal_t>
   {
   }
 };
-
-// ==========================================================================
-// Base Monk Absorb Spell
-// ==========================================================================
 
 struct pet_absorb_t : public pet_action_base_t<absorb_t>
 {
@@ -266,10 +238,6 @@ struct pet_absorb_t : public pet_action_base_t<absorb_t>
 
 namespace buffs
 {
-// ==========================================================================
-// Monk Buffs
-// ==========================================================================
-
 template <typename buff_t>
 struct monk_pet_buff_t : public buff_t
 {
@@ -299,9 +267,6 @@ public:
 };
 }  // namespace buffs
 
-// ==========================================================================
-// Xuen Pet
-// ==========================================================================
 struct xuen_pet_t : public monk_pet_t
 {
 private:
@@ -386,9 +351,6 @@ public:
   }
 };
 
-// ==========================================================================
-// Niuzao Pet
-// ==========================================================================
 namespace niuzao
 {
 struct melee_t : public pet_melee_t
@@ -482,9 +444,6 @@ struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
   }
 };
 
-// ==========================================================================
-// Chi-Ji Pet
-// ==========================================================================
 struct chiji_pet_t : public monk_pet_t
 {
 private:
@@ -534,9 +493,6 @@ public:
   }
 };
 
-// ==========================================================================
-// Yu'lon Pet
-// ==========================================================================
 struct yulon_pet_t : public monk_pet_t
 {
 public:
@@ -552,9 +508,6 @@ public:
   }
 };
 
-// ==========================================================================
-// White Tiger Statue
-// ==========================================================================
 struct white_tiger_statue_t : public monk_pet_t
 {
 private:
@@ -605,36 +558,5 @@ monk_t::pets_t::pets_t( monk_t *p )
     chiji( "chiji_the_red_crane", p, []( monk_t *p ) { return new pets::chiji_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } )
 {
-}
-
-// monk_t::create_pets ======================================================
-
-void monk_t::create_pets()
-{
-  base_t::create_pets();
-
-  /*  if ( talent.windwalker.invoke_xuen_the_white_tiger->ok() && ( find_action( "invoke_xuen" ) || find_action(
-    "invoke_xuen_the_white_tiger" ) ) )
-    {
-      pets.xuen = new pets::xuen_pet_t( this );
-    }
-
-    if ( spec.invoke_niuzao->ok() && ( find_action( "invoke_niuzao" ) || find_action( "invoke_niuzao_the_black_ox" ) ) )
-    {
-      pets.niuzao = new pets::niuzao_pet_t( this );
-    }
-
-    if ( talent.invoke_chi_ji->ok() && ( find_action( "invoke_chiji" ) || find_action( "invoke_chiji_the_red_crane" ) )
-    )
-    {
-      pets.chiji = new pets::chiji_pet_t( this );
-    }
-
-    if ( spec.invoke_yulon->ok() && !talent.invoke_chi_ji->ok() &&
-         ( find_action( "invoke_yulon" ) || find_action( "invoke_yulon_the_jade_serpent" ) ) )
-    {
-      pets.yulon = new pets::yulon_pet_t( this );
-    }
-  */
 }
 }  // namespace monk

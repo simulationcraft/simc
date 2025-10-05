@@ -42,7 +42,7 @@ struct monk_pet_t : public pet_t
   void init_assessors() override;
 };
 struct xuen_pet_t;
-namespace niuzao  // niuzao
+namespace niuzao
 {
 struct niuzao_pet_t : public monk_pet_t
 {
@@ -534,7 +534,7 @@ public:
     propagate_const<buff_t *> flow_of_battle_free_keg_smash;
   } buff;
 
-  struct gains_t
+  struct
   {
     propagate_const<gain_t *> black_ox_brew_energy;
     propagate_const<gain_t *> chi_refund;
@@ -557,7 +557,7 @@ public:
     propagate_const<gain_t *> touch_of_death_ww;
   } gain;
 
-  struct procs_t
+  struct
   {
     propagate_const<proc_t *> anvil__stave;
     propagate_const<proc_t *> blackout_combo_tiger_palm;
@@ -586,7 +586,7 @@ public:
     propagate_const<proc_t *> elusive_brawler_preserved;
   } proc;
 
-  struct cooldowns_t
+  struct
   {
     propagate_const<cooldown_t *> anvil__stave;
     propagate_const<cooldown_t *> blackout_kick;
@@ -1163,7 +1163,7 @@ public:
     int shado_pan_initial_charge_accumulator;
   } user_options;
 
-  // exterminate these structs
+  // TODO: exterminate these structs
   struct
   {
     const spell_data_t *teachings_of_the_monastery;
@@ -1171,8 +1171,6 @@ public:
 
   struct
   {
-    // General
-
     // Windwalker
     const spell_data_t *bok_proc;
     const spell_data_t *chi_explosion;
@@ -1217,16 +1215,13 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
-  void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
   void init_base_stats() override;
   void init_scaling() override;
   void init_gains() override;
   void init_procs() override;
-  void init_assessors() override;
   void init_special_effects() override;
-  void init_special_effect( special_effect_t &effect ) override;
   void init_finished() override;
   void create_buffs() override;
   action_t *create_action( util::string_view name, util::string_view options ) override;
@@ -1235,7 +1230,6 @@ public:
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   void reset() override;
   void copy_from( player_t * ) override;
-  void collect_resource_timeline_information() override;
 
   // Combat
   void combat_begin() override;
