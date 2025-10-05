@@ -754,7 +754,6 @@ public:
     propagate_const<buff_t*> ossuary;
     buff_t* ossified_vitriol;
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
-    propagate_const<buff_t*> rune_tap;
     propagate_const<buff_t*> sanguine_ground;
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
@@ -1112,7 +1111,6 @@ public:
       player_talent_t perseverance_of_the_ebon_blade;
       player_talent_t relish_in_blood;
       // Row 6
-      player_talent_t rune_tap;
       player_talent_t gorefiends_grasp;
       player_talent_t insatiable_blade;
       player_talent_t reinforced_bones;
@@ -10836,31 +10834,6 @@ struct mark_of_blood_t final : public death_knight_spell_t
   }
 };
 
-// Rune Tap =================================================================
-
-struct rune_tap_t final : public death_knight_spell_t
-{
-  rune_tap_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "rune_tap", p, p->talent.blood.rune_tap )
-  {
-    parse_options( options_str );
-    use_off_gcd = true;
-  }
-
-  void execute() override
-  {
-    // Sometimes due to queuing, off gcd casts that require runes will hit execute but have no runes, as when ready was
-    // called, runes were available. But in the interm, a foreground action fired that consumed them. This prevents the
-    // action from executing if we do not have enough runes to do so.
-    if ( p()->_runes.runes_full() == 0 )
-      return;
-
-    death_knight_spell_t::execute();
-
-    p()->buffs.rune_tap->trigger();
-  }
-};
-
 // Vampiric Blood ===========================================================
 struct vampiric_blood_t final : public death_knight_spell_t
 {
@@ -12370,8 +12343,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new mark_of_blood_t( this, options_str );
   if ( name == "marrowrend" )
     return new marrowrend_t( this, options_str );
-  if ( name == "rune_tap" )
-    return new rune_tap_t( this, options_str );
   if ( name == "vampiric_blood" )
     return new vampiric_blood_t( this, options_str );
 
@@ -12920,7 +12891,6 @@ void death_knight_t::init_spells()
       find_talent_spell( talent_tree::SPECIALIZATION, "Perseverance of the Ebon Blade" );
   talent.blood.relish_in_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Relish in Blood" );
   // Row 6
-  talent.blood.rune_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Rune Tap" );
   talent.blood.gorefiends_grasp    = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
   talent.blood.insatiable_blade    = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Blade" );
   talent.blood.reinforced_bones    = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
@@ -13944,9 +13914,6 @@ void death_knight_t::create_buffs()
     buffs.perseverance_of_the_ebon_blade =
         make_buff( this, "perseverance_of_the_ebon_blade", spell.perserverence_of_the_ebon_blade_buff );
 
-    buffs.rune_tap =
-        make_buff( this, "rune_tap", talent.blood.rune_tap )->set_cooldown( 0_ms );  // Handled by the action
-
     buffs.sanguine_ground = make_buff( this, "sanguine_ground", spell.sanguine_ground )
                                 ->set_default_value_from_effect( 1 )
                                 ->set_duration( 0_ms )  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
@@ -14520,9 +14487,6 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
 {
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     state->result_amount *= 1.0 + spec.blood_fortification->effectN( 2 ).percent();
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.rune_tap->up() )
-    state->result_amount *= 1.0 + buffs.rune_tap->data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude->up() )
     state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
