@@ -15303,21 +15303,21 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
-  { A_MOD_POWER_REGEN_PERCENT,                "health_regen"                              }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "rage_regen"                                }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "astral_power_regen"                        }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "energy_regen"                              }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "focus_regen"                               }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "rune_regen"                                }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "soul_shard_regen"                          }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "holy_power_regen"                          }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "chi_regen"                                 }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "combo_points_regen"                        }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "maelstrom_regen"                           }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "fury_regen"                                }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "pain_regen"                                }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "insanity_regen"                            }, // 105
-  { A_MOD_POWER_REGEN_PERCENT,                "essence_regen"                             }, // 105
+  { A_MOD_POWER_REGEN_PERCENT,                "health_regen"                              }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "rage_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "astral_power_regen"                        }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "energy_regen"                              }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "focus_regen"                               }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "rune_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "soul_shard_regen"                          }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "holy_power_regen"                          }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "chi_regen"                                 }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "combo_points_regen"                        }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "maelstrom_regen"                           }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "fury_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "pain_regen"                                }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "insanity_regen"                            }, // 110
+  { A_MOD_POWER_REGEN_PERCENT,                "essence_regen"                             }, // 110
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
   { A_INCREASE_RESOURCE_PCT,                  "health_multiplier"                         }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "mana_multiplier"                           }, // 119
