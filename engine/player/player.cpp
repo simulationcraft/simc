@@ -1366,7 +1366,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
                     s.matching_armor_multiplier[ i ] );
   }
   // rating_multiplier
-  for ( auto i = RATING_BLOCK; i < RATING_MAX; ++i )
+  for ( auto i = RATING_BLOCK; i < RATING_MAX; i++ )
     fmt::format_to( out, " {}_multiplier={}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
 
   fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
@@ -1513,7 +1513,7 @@ void player_t::init_base_stats()
           fmt::format( "matching_armor_{}_multiplier", util::attribute_type_string( stat ) ) );
     }
     // Rating Multipliers
-    for ( rating_e r = RATING_BLOCK; r < RATING_MAX; ++r )
+    for ( rating_e r = RATING_BLOCK; r < RATING_MAX; r++ )
     {
       base.rating_multiplier[ r ] = get_passive_player_value(
           base.rating_multiplier[ r ], fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );

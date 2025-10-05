@@ -8515,9 +8515,15 @@ void hunter_t::init_spells()
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
 
   // Register passives
+  register_passive_effect_mask( talents.better_together, 
+                                specialization() == HUNTER_BEAST_MASTERY
+                                                    ? effect_mask_t( true ).disable( 2, 4 )
+                                                    : effect_mask_t( true ).disable( 1, 3 ) );
 
-  deregister_passive_effects( talents.better_together );
-  deregister_passive_effects( tier_set.tww_s3_pack_leader_2pc );
+  register_passive_effect_mask( tier_set.tww_s3_pack_leader_2pc, 
+                                specialization() == HUNTER_BEAST_MASTERY
+                                                    ? effect_mask_t( true ).disable( 2 )
+                                                    : effect_mask_t( true ).disable( 1 ) );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -9589,18 +9595,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
     m *= 1 + buffs.harmonize->check_value();
     
     m *= 1 + buffs.the_bell_tolls->check_stack_value();
-
-    if ( specialization() == HUNTER_BEAST_MASTERY )
-    {
-      m *= 1 + talents.better_together->effectN( 1 ).percent();
-      m *= 1 + tier_set.tww_s3_pack_leader_2pc->effectN( 1 ).percent();
-    }
-
-    if ( specialization() == HUNTER_SURVIVAL )
-    {
-      m *= 1 + talents.better_together->effectN( 2 ).percent();
-      m *= 1 + tier_set.tww_s3_pack_leader_2pc->effectN( 2 ).percent();
-    }
   }
 
   return m;
