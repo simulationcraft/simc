@@ -630,7 +630,6 @@ struct death_knight_td_t : public actor_target_data_t
     propagate_const<buff_t*> brittle;
 
     // Blood
-    propagate_const<buff_t*> mark_of_blood;
 
     // Frost
     propagate_const<buff_t*> everfrost;
@@ -883,7 +882,6 @@ public:
 
     // Blood
     propagate_const<action_t*> bonestorm_tick;
-    propagate_const<action_t*> mark_of_blood_heal;
     action_t* heart_strike_bloodied_blade;
     propagate_const<action_t*> soul_reaper_execute_expired_drw;
 
@@ -1124,7 +1122,6 @@ public:
       player_talent_t bloodworms;
       // Row 8
       player_talent_t blood_feast;
-      player_talent_t mark_of_blood;
       player_talent_t consumption;
       player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
@@ -10803,37 +10800,6 @@ struct icebound_fortitude_t final : public death_knight_spell_t
   }
 };
 
-// Mark of Blood ============================================================
-
-struct mark_of_blood_heal_t final : public death_knight_heal_t
-{
-  mark_of_blood_heal_t( std::string_view n, death_knight_t* p )
-    :  // The data is removed and switched to the talent spell on PTR 8.3.0.32805
-      death_knight_heal_t( n, p, p->talent.blood.mark_of_blood )
-  {
-    may_crit = callbacks = false;
-    background = dual = true;
-    target            = p;
-    base_pct_heal     = data().effectN( 1 ).percent();
-  }
-};
-
-struct mark_of_blood_t final : public death_knight_spell_t
-{
-  mark_of_blood_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "mark_of_blood", p, p->talent.blood.mark_of_blood )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    get_td( target )->debuff.mark_of_blood->trigger();
-  }
-};
-
 // Vampiric Blood ===========================================================
 struct vampiric_blood_t final : public death_knight_spell_t
 {
@@ -12144,10 +12110,6 @@ void death_knight_t::create_actions()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    if ( talent.blood.mark_of_blood.ok() )
-    {
-      background_actions.mark_of_blood_heal = get_action<mark_of_blood_heal_t>( "mark_of_blood_heal", this );
-    }
     if ( talent.blood.bloodied_blade.ok() )
     {
       background_actions.heart_strike_bloodied_blade =
@@ -12339,8 +12301,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new gorefiends_grasp_t( this, options_str );
   if ( name == "heart_strike" )
     return new heart_strike_t( name, this, options_str );
-  if ( name == "mark_of_blood" )
-    return new mark_of_blood_t( this, options_str );
   if ( name == "marrowrend" )
     return new marrowrend_t( this, options_str );
   if ( name == "vampiric_blood" )
@@ -12904,7 +12864,6 @@ void death_knight_t::init_spells()
   talent.blood.bloodworms           = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodworms" );
   // Row 8
   talent.blood.blood_feast     = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
-  talent.blood.mark_of_blood   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.consumption     = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
@@ -13570,9 +13529,6 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
                        ->set_default_value_from_effect( 1 );
 
   // Blood
-  debuff.mark_of_blood =
-      make_debuff( p.talent.blood.mark_of_blood.ok(), *this, "mark_of_blood", p.talent.blood.mark_of_blood )
-          ->set_cooldown( 0_ms );  // Handled by the action
 
   // Frost
   debuff.razorice = buff_t::find( &target, "razorice", &p );
@@ -14467,13 +14423,6 @@ void death_knight_t::assess_damage_imminent( school_e, result_amount_type, actio
 void death_knight_t::do_damage( action_state_t* state )
 {
   player_t::do_damage( state );
-
-  if ( state->result_amount > 0 && talent.blood.mark_of_blood.ok() && !state->action->special )
-  {
-    const death_knight_td_t* td = get_target_data( state->action->player );
-    if ( td && td->debuff.mark_of_blood->check() )
-      background_actions.mark_of_blood_heal->execute();
-  }
 
   if ( talent.blood_draw.ok() && specialization() == DEATH_KNIGHT_BLOOD && background_actions.blood_draw->ready() )
   {
