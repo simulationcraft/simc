@@ -15392,21 +15392,6 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MAX_RESOURCE,                       "max_pain"                                  }, // 418
   { A_MOD_MAX_RESOURCE,                       "max_insanity"                              }, // 418
   { A_MOD_MAX_RESOURCE,                       "max_essence"                               }, // 418
-  { A_MOD_MAX_RESOURCE_PCT,                   "health_multiplier"                         }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "rage_multiplier"                           }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "focus_multiplier"                          }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "energy_multiplier"                         }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "astral_power_multiplier"                   }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "runic_power_multiplier"                    }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "soul_shard_multiplier"                     }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "holy_power_multiplier"                     }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "chi_multiplier"                            }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "combo_points_multiplier"                   }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "maelstrom_multiplier"                      }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "fury_multiplier"                           }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "pain_multiplier"                           }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "insanity_multiplier"                       }, // 419
-  { A_MOD_MAX_RESOURCE_PCT,                   "essence_multiplier"                        }, // 419
   { A_MOD_ABSORB_DONE_PERCENT,                "absorb_multiplier"                         }, // 421
   { A_MOD_ABSORB_RECEIVED_PERCENT,            "absorb_received_multiplier"                }, // 422
   { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
