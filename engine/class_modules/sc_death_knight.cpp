@@ -756,7 +756,6 @@ public:
     propagate_const<buff_t*> perseverance_of_the_ebon_blade;
     propagate_const<buff_t*> rune_tap;
     propagate_const<buff_t*> sanguine_ground;
-    propagate_const<buff_t*> tombstone;
     propagate_const<buff_t*> vampiric_blood;
     propagate_const<buff_t*> voracious;
 
@@ -960,7 +959,6 @@ public:
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
-    propagate_const<gain_t*> tombstone;
 
     // Frost
     propagate_const<gain_t*> breath_of_sindragosa;
@@ -1130,7 +1128,6 @@ public:
       // Row 8
       player_talent_t blood_feast;
       player_talent_t mark_of_blood;
-      player_talent_t tombstone;
       player_talent_t consumption;
       player_talent_t bloodied_blade;
       player_talent_t sanguine_ground;
@@ -10760,57 +10757,6 @@ struct scourge_strike_t final : public wound_spender_base_t
   }
 };
 
-// Tombstone ================================================================
-// Not with Defensive Abilities because of the reliable RP generation
-
-struct tombstone_t final : public death_knight_spell_t
-{
-  tombstone_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "tombstone", p, p->talent.blood.tombstone )
-  {
-    parse_options( options_str );
-
-    harmful = may_crit = false;
-    target             = p;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    int charges = std::min( p()->buffs.bone_shield->check(), as<int>( data().effectN( 5 ).base_value() ) );
-
-    double power  = charges * data().effectN( 3 ).base_value();
-    double shield = charges * data().effectN( 4 ).percent();
-
-    p()->resource_gain( RESOURCE_RUNIC_POWER, power, p()->gains.tombstone, this );
-    p()->buffs.tombstone->trigger( 1, shield * p()->resources.max[ RESOURCE_HEALTH ] );
-    p()->buffs.bone_shield->decrement( charges );
-
-    if ( p()->talent.blood.ossified_vitriol->ok() )
-      p()->buffs.ossified_vitriol->trigger( charges );
-
-    if ( p()->talent.blood.insatiable_blade->ok() )
-      p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
-                                                 charges );
-
-    if ( charges > 0 && p()->talent.blood.shattering_bone.ok() )
-    {
-      // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
-      debug_cast<shattering_bone_t*>( p()->background_actions.shattering_bone )->boneshield_charges_consumed = charges;
-      p()->background_actions.shattering_bone->execute_on_target( target );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !p()->buffs.bone_shield->check() )
-      return false;
-
-    return death_knight_spell_t::ready();
-  }
-};
-
 // ==========================================================================
 // Death Knight Defensive Abilities
 // ==========================================================================
@@ -12476,8 +12422,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
     return new marrowrend_t( this, options_str );
   if ( name == "rune_tap" )
     return new rune_tap_t( this, options_str );
-  if ( name == "tombstone" )
-    return new tombstone_t( this, options_str );
   if ( name == "vampiric_blood" )
     return new vampiric_blood_t( this, options_str );
 
@@ -13041,7 +12985,6 @@ void death_knight_t::init_spells()
   // Row 8
   talent.blood.blood_feast     = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Feast" );
   talent.blood.mark_of_blood   = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
-  talent.blood.tombstone       = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
   talent.blood.consumption     = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
   talent.blood.bloodied_blade  = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodied Blade" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
@@ -13606,7 +13549,6 @@ void death_knight_t::init_blizzard_action_list()
   {
     case DEATH_KNIGHT_BLOOD:
       cooldowns->add_action( "vampiric_blood" );
-      cooldowns->add_action( "tombstone,if=buff.bone_shield.stack>5" );
       cooldowns->add_action( "raise_dead" );
       break;
     case DEATH_KNIGHT_FROST:
@@ -14062,9 +14004,6 @@ void death_knight_t::create_buffs()
                                 ->set_duration( 0_ms )  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
                                 ->set_schools_from_effect( 1 );
 
-    buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
-                          ->set_cooldown( 0_ms );  // Handled by the action
-
     buffs.vampiric_blood =
         make_buff( this, "vampiric_blood", talent.blood.vampiric_blood )
             ->set_cooldown( 0_ms )
@@ -14294,7 +14233,6 @@ void death_knight_t::init_gains()
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
-  gains.tombstone        = get_gain( "Tombstone" );
 
   // Frost
   gains.breath_of_sindragosa        = get_gain( "Breath of Sindragosa" );
