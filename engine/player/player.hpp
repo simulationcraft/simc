@@ -274,6 +274,7 @@ struct player_t : public actor_t
     rating_t rating;
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
+    std::array<double, ATTRIBUTE_MAX> matching_armor_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     double crit_damage_multiplier, crit_healing_multiplier;
     double attack_speed_multiplier;
@@ -1320,7 +1321,7 @@ public:
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const;
   /// Player-wide school based multipliers
   virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution

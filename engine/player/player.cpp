@@ -1295,6 +1295,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   sleeping( false ),
   rating(),
   attribute_multiplier(),
+  matching_armor_multiplier(),
   spell_power_multiplier( 1.0 ),
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
@@ -1305,6 +1306,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
+  range::fill( matching_armor_multiplier, 1.0 );
 }
 
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
@@ -1336,6 +1338,12 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
   fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
+  for ( auto i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
+  {
+    fmt::format_to( out, " {}_multiplier={}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
+    fmt::format_to( out, " matching_armor_{}_multiplier={}", util::attribute_type_string( i ),
+                    s.matching_armor_multiplier[ i ] );
+  }
   fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
@@ -1467,12 +1475,12 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_STAMINA ] *= get_passive_player_value( 1.0, "stamina_multiplier" );
     base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "intellect_multiplier" );
     base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "spirit_multiplier" );
-    // Matching Armor Attribute Multipliers
-    base.stats.attribute[ STAT_STRENGTH ] *= get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
-    base.stats.attribute[ STAT_AGILITY ] *= get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
-    base.stats.attribute[ STAT_STAMINA ] *= get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
-    base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
-    base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
+    // Matching Armor Multipliers
+    base.matching_armor_multiplier[ ATTR_STRENGTH ] = get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
+    base.matching_armor_multiplier[ ATTR_AGILITY ]  = get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
+    base.matching_armor_multiplier[ ATTR_STAMINA ]  = get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
+    base.matching_armor_multiplier[ ATTR_INTELLECT ]= get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
+    base.matching_armor_multiplier[ ATTR_SPIRIT ]   = get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
 
     base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
                                     racials.viciousness->effectN( 1 ).percent() +
@@ -5439,6 +5447,11 @@ double player_t::composite_spell_power_multiplier() const
   return std::round( current.spell_power_multiplier * 1000 ) * 0.001;
 }
 
+double player_t::matching_gear_multiplier( attribute_e a ) const
+{
+  return current.matching_armor_multiplier[ a ];
+}
+
 double player_t::composite_spell_crit_chance() const
 {
   double sc = current.spell_crit_chance;
@@ -5890,7 +5903,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     return m;
 
   if ( ( true_level >= 27 ) && matching_gear )
-    m *= 1.0 + matching_gear_multiplier( attr );
+    m *= matching_gear_multiplier( attr );
 
   stat_pct_buff_type pct_type = STAT_PCT_BUFF_MAX;
   switch ( attr )

@@ -1041,19 +1041,6 @@ double parse_player_effects_t::composite_player_absorb_received_multiplier() con
   return ar;
 }
 
-double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  double mg = player_t::matching_gear_multiplier( attr );
-
-  assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
-
-  for ( const auto& i : matching_armor_attribute_multiplier_effects )
-    if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
-      mg += get_effect_value( i );
-
-  return mg;
-}
-
 double parse_player_effects_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
   auto tm = player_t::composite_player_target_multiplier( t, school );
@@ -1370,7 +1357,6 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
 
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
-    print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", &opt_strings::attributes );
     print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
     print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_type( os, player_multiplier_effects, "Player Multiplier", &opt_strings::school );
@@ -1405,7 +1391,6 @@ size_t parse_player_effects_t::total_effects_count()
 {
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
-         matching_armor_attribute_multiplier_effects.size() +
          rating_multiplier_effects.size() +
          versatility_effects.size() +
          player_multiplier_effects.size() +
