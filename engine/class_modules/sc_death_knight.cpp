@@ -1109,7 +1109,6 @@ public:
       // Row 6
       player_talent_t gorefiends_grasp;
       player_talent_t insatiable_blade;
-      player_talent_t reinforced_bones;
       player_talent_t rapid_decomposition;
       // Row 7
       player_talent_t improved_bone_shield;
@@ -12843,7 +12842,6 @@ void death_knight_t::init_spells()
   // Row 6
   talent.blood.gorefiends_grasp    = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
   talent.blood.insatiable_blade    = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Blade" );
-  talent.blood.reinforced_bones    = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
   talent.blood.rapid_decomposition = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Decomposition" );
   // Row 7
   talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
