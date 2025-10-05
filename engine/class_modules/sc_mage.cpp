@@ -9118,10 +9118,6 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  m *= 1.0 + spec.arcane_mage->effectN( guardian ? 6 : 3 ).percent();
-  m *= 1.0 + spec.fire_mage->effectN( guardian ? 4 : 3 ).percent();
-  m *= 1.0 + spec.frost_mage->effectN( guardian ? 5 : 3 ).percent();
-
   if ( !guardian )
   {
     m *= 1.0 + buffs.bone_chilling->check_stack_value();

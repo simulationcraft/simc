@@ -2631,20 +2631,6 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
-
-  if ( guardian )
-  {
-    m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
-    m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
-    m *= ( 1.0 + talents.shadow.subservient_shadows->effectN( 1 ).percent() );
-  }
-  else
-  {
-    m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-    m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
-  }
-
   // TWW1 Set Bonus for pet spells, this double dips with pet spells
   if ( buffs.devouring_chorus->check() )
   {

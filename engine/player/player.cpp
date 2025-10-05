@@ -1309,6 +1309,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_healing_multiplier( 1.0 ),
   attack_speed_multiplier( 1.0 ),
   damage_multiplier(),
+  pet_damage_multiplier( 1.0 ),
+  guardian_damage_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1374,6 +1376,8 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   }
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
+  fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
+  fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1511,10 +1515,9 @@ void player_t::init_base_stats()
           base.rating_multiplier[ r ], fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
     }
 
+    // Core Stats
     base.all_crit = dbc->all_crit_base( type, level() );
     base.all_crit = get_passive_player_value( base.all_crit, "all_crit" );
-
-    // Core Stats
     base.spell_crit_chance        = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance       = base.all_crit;
     if ( timeofday == DAY_TIME )
@@ -1552,6 +1555,11 @@ void player_t::init_base_stats()
 
     base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
 
+    // Base Pet Damage Modifiers
+    base.pet_damage_multiplier = get_passive_player_value( base.pet_damage_multiplier, "pet_damage_multiplier" );
+    base.guardian_damage_multiplier = get_passive_player_value( base.guardian_damage_multiplier, "guardian_damage_multiplier" );
+
+    // Resources
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
 
@@ -5645,18 +5653,17 @@ double player_t::composite_total_corruption() const
 
 double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
-  double m = 1.0;
+  double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
 
-  m *= 1.0 + racials.command->effectN(1).percent();
-
-  if (!guardian)
+  if ( !guardian )
   {
-    if (buffs.coldhearted && buffs.coldhearted->check())
+    if ( buffs.coldhearted && buffs.coldhearted->check() )
       m *= 1.0 + buffs.coldhearted->check_value();
 
     // By default effect 1 is used for the player modifier, effect 2 is for the pet modifier
-    if (buffs.battlefield_presence && buffs.battlefield_presence->check())
-      m *= 1.0 + (buffs.battlefield_presence->data().effectN(2).percent() * buffs.battlefield_presence->current_stack);
+    if ( buffs.battlefield_presence && buffs.battlefield_presence->check() )
+      m *= 1.0 +
+           ( buffs.battlefield_presence->data().effectN( 2 ).percent() * buffs.battlefield_presence->current_stack );
   }
 
   return m;
@@ -15303,8 +15310,10 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MAX_CHARGES,                        "charges"                                   }, // 411
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
   { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
+  { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 419
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
   { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
+  { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"                }, // 531
 };
 
 std::string_view get_field_from_type( unsigned type )
@@ -15569,6 +15578,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         is_bitmap = true;
         bit_type  = BITMAP_SCHOOL;
         pct_val   = modifying_eff.percent();
+        break;
+      case A_MOD_PET_DAMAGE_DONE:
+        field = "pet_damage_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_GUARDIAN_DAMAGE_DONE:
+        field   = "guardian_damage_multiplier";
+        pct_val = modifying_eff.percent();
         break;
       default:
         return false;

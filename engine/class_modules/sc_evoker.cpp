@@ -10806,19 +10806,6 @@ double evoker_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
-
-  if ( guardian )
-  {
-    m *= ( 1.0 + spec.augmentation->effectN( 7 ).percent() );
-    m *= ( 1.0 + spec.devastation->effectN( 7 ).percent() );
-  }
-  else
-  {
-    m *= ( 1.0 + spec.augmentation->effectN( 6 ).percent() );
-    m *= ( 1.0 + spec.devastation->effectN( 6 ).percent() );
-  }
-
   return m;
 }
 

@@ -10032,10 +10032,6 @@ double rogue_t::composite_player_pet_damage_multiplier( const action_state_t* s,
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
-  m *= 1.0 + spec.assassination_rogue->effectN( 6 ).percent();
-  m *= 1.0 + spec.outlaw_rogue->effectN( 3 ).percent();
-  m *= 1.0 + spec.subtlety_rogue->effectN( 8 ).percent();
-
   return m;
 }
 

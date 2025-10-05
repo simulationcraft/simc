@@ -8515,6 +8515,10 @@ void hunter_t::init_spells()
   cooldowns.no_mercy->duration = talents.no_mercy->internal_cooldown();
 
   // Register passives
+
+  deregister_passive_effects( talents.better_together );
+  deregister_passive_effects( tier_set.tww_s3_pack_leader_2pc );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -9570,10 +9574,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   if ( mastery.master_of_beasts->ok() )
     m *= 1.0 + cache.mastery_value();
 
-  m *= 1 + spell_data_t::find_spelleffect( *specs.beast_mastery_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-  m *= 1 + spell_data_t::find_spelleffect( *specs.survival_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-  m *= 1 + spell_data_t::find_spelleffect( *specs.marksmanship_hunter, E_APPLY_AURA, guardian ? A_MOD_GUARDIAN_DAMAGE_DONE : A_MOD_PET_DAMAGE_DONE ).percent();
-
   if ( !guardian )
   {
     if ( mastery.spirit_bond->ok() )
@@ -9581,17 +9581,12 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     if ( buffs.coordinated_assault->check() )
       m *= 1 + talents.coordinated_assault->effectN( 4 ).percent();
-    
-    m *= 1 + talents.training_expert->effectN( 1 ).percent();
 
     m *= 1 + buffs.summon_hati->check_value();
     m *= 1 + buffs.serpentine_blessing->check_value();
     m *= 1 + buffs.wyverns_cry->check_stack_value();
     m *= 1 + buffs.lead_from_the_front->check_value();
     m *= 1 + buffs.harmonize->check_value();
-
-    if ( talents.harmonize.ok() )
-      m *= 1 + talents.harmonize->effectN( 1 ).percent();
     
     m *= 1 + buffs.the_bell_tolls->check_stack_value();
 
