@@ -53,8 +53,6 @@ struct niuzao_pet_t : public monk_pet_t
   void init_spells() override;
 };
 }  // namespace niuzao
-struct chiji_pet_t;
-struct yulon_pet_t;
 struct white_tiger_statue_t;
 }  // namespace pets
 
@@ -646,16 +644,6 @@ public:
       const spell_data_t *aura;
       const spell_data_t *aura_2;
       const spell_data_t *aura_3;
-      const spell_data_t *expel_harm_rank_2;
-      const spell_data_t *teachings_of_the_monastery;
-    } mistweaver;
-
-    struct
-    {
-      const spell_data_t *mastery;
-      const spell_data_t *aura;
-      const spell_data_t *aura_2;
-      const spell_data_t *aura_3;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
       const spell_data_t *combo_breaker;
@@ -680,7 +668,7 @@ public:
       // Row 1
       player_talent_t soothing_mist;
       player_talent_t paralysis;
-      player_talent_t rising_sun_kick;  // Mistweaver and Windwalker
+      player_talent_t rising_sun_kick;  // Windwalker
       player_talent_t stagger;          // Brewmaster
       // Row 2
       player_talent_t elusive_mists;
@@ -693,8 +681,7 @@ public:
       player_talent_t bounding_agility;
       player_talent_t calming_presence;
       player_talent_t winds_reach;
-      player_talent_t detox;           // Brewmaster and Windwalker
-      player_talent_t improved_detox;  // Mistweaver
+      player_talent_t detox;  // Brewmaster and Windwalker
       // Row 4
       player_talent_t vivacious_vivification;
       player_talent_t jade_walk;
@@ -702,7 +689,7 @@ public:
       player_talent_t spear_hand_strike;
       player_talent_t ancient_arts;
       // Row 5
-      player_talent_t chi_wave;  // Brewmaster, Mistweaver and Windwalker
+      player_talent_t chi_wave;  // Brewmaster and Windwalker
       const spell_data_t *chi_wave_buff;
       const spell_data_t *chi_wave_driver;
       const spell_data_t *chi_wave_damage;
@@ -738,10 +725,8 @@ public:
       player_talent_t swift_art;
       player_talent_t strength_of_spirit;
       player_talent_t profound_rebuttal;
-      player_talent_t summon_black_ox_statue;      // Brewmaster
-      player_talent_t jade_infusion;               // Mistweaver
-      player_talent_t summon_jade_serpent_statue;  // Mistweaver
-      player_talent_t summon_white_tiger_statue;   // Windwalker
+      player_talent_t summon_black_ox_statue;     // Brewmaster
+      player_talent_t summon_white_tiger_statue;  // Windwalker
       const spell_data_t *claw_of_the_white_tiger;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
@@ -846,75 +831,6 @@ public:
       player_talent_t bring_me_another_2;
       player_talent_t bring_me_another_3;
     } brewmaster;
-
-    // Mistweaver
-    struct
-    {
-      // Row 1
-      player_talent_t enveloping_mist;
-      // Row 2
-      player_talent_t renewing_mist;
-      // Row 3
-      player_talent_t life_cocoon;
-      player_talent_t mana_tea;
-      player_talent_t invigorating_mists;
-      // Row 4
-      player_talent_t crane_style;
-      player_talent_t revival;
-      player_talent_t restoral;
-      player_talent_t healing_elixir;
-      // 8 Required
-      // Row 5
-      player_talent_t nourishing_chi;
-      player_talent_t calming_coalescence;
-      player_talent_t uplifting_spirits;
-      player_talent_t energizing_brew;
-      player_talent_t lifecycles;
-      player_talent_t zen_pulse;
-      // Row 6
-      player_talent_t mists_of_life;
-      player_talent_t overflowing_mists;
-      player_talent_t invoke_yulon_the_jade_serpent;
-      player_talent_t invoke_chi_ji_the_red_crane;
-      player_talent_t deep_clarity;
-      player_talent_t rapid_diffusion;
-      // Row 7
-      player_talent_t chrysalis;
-      player_talent_t burst_of_life;
-      player_talent_t yulons_whisper;
-      player_talent_t mist_wrap;
-      player_talent_t refreshing_jade_wind;
-      const spell_data_t *refreshing_jade_wind_tick;
-      player_talent_t celestial_harmony;
-      player_talent_t dancing_mists;
-      player_talent_t chi_harmony;
-      // 20 Required
-      // Row 8
-      player_talent_t jadefire_stomp;
-      player_talent_t peer_into_peace;
-      player_talent_t jade_bond;
-      player_talent_t gift_of_the_celestials;
-      player_talent_t focused_thunder;
-      // Row 9
-      player_talent_t ancient_teachings;
-      player_talent_t resplendent_mist;
-      player_talent_t misty_peaks;
-      player_talent_t peaceful_mending;
-      player_talent_t veil_of_pride;
-      player_talent_t shaohaos_lessons;
-      // Row 10
-      player_talent_t dance_of_chiji;
-      player_talent_t jade_empowerment;
-      const spell_data_t *jade_empowerment_buff;
-      player_talent_t tea_of_serenity;
-      player_talent_t tea_of_plenty;
-      player_talent_t unison;
-      player_talent_t mending_proliferation;
-      player_talent_t invokers_delight;
-      player_talent_t tear_of_morning;
-      player_talent_t rising_mist;
-      player_talent_t legacy_of_wisdom;
-    } mistweaver;
 
     // Windwalker
     struct
@@ -1147,8 +1063,6 @@ public:
   {
     spawner::pet_spawner_t<pet_t, monk_t> xuen;
     spawner::pet_spawner_t<pets::niuzao::niuzao_pet_t, monk_t> niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> yulon;
-    spawner::pet_spawner_t<pet_t, monk_t> chiji;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
 
     pets_t( monk_t *p );

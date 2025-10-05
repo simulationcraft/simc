@@ -444,70 +444,6 @@ struct invoke_niuzao_pet_t : public niuzao::niuzao_pet_t
   }
 };
 
-struct chiji_pet_t : public monk_pet_t
-{
-private:
-  struct melee_t : public pet_melee_t
-  {
-    melee_t( util::string_view n, chiji_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
-    {
-    }
-  };
-
-  struct auto_attack_t : public pet_auto_attack_t
-  {
-    auto_attack_t( chiji_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
-    {
-      parse_options( options_str );
-
-      player->main_hand_attack = new melee_t( "melee_main_hand", player, &( player->main_hand_weapon ) );
-      player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-    }
-  };
-
-public:
-  chiji_pet_t( monk_t *owner ) : monk_pet_t( owner, "chiji_the_red_crane", PET_CHIJI, false, true )
-  {
-    npc_id                      = (int)o()->find_spell( 325197 )->effectN( 1 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    owner_coeff.ap_from_ap      = o()->baseline.mistweaver.aura->effectN( 4 ).percent();
-  }
-
-  void init_action_list() override
-  {
-    action_list_str = "auto_attack";
-
-    monk_pet_t::init_action_list();
-  }
-
-  action_t *create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this, options_str );
-
-    return monk_pet_t::create_action( name, options_str );
-  }
-};
-
-struct yulon_pet_t : public monk_pet_t
-{
-public:
-  yulon_pet_t( monk_t *owner ) : monk_pet_t( owner, "yulon_the_jade_serpent", PET_YULON, false, true )
-  {
-    npc_id                      = (int)o()->find_spell( 322118 )->effectN( 1 ).misc_value1();
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap      = o()->baseline.mistweaver.aura->effectN( 4 ).percent();
-  }
-};
-
 struct white_tiger_statue_t : public monk_pet_t
 {
 private:
@@ -554,8 +490,6 @@ public:
 monk_t::pets_t::pets_t( monk_t *p )
   : xuen( "xuen_the_white_tiger", p, []( monk_t *p ) { return new pets::xuen_pet_t( p ); } ),
     niuzao( "niuzao_the_black_ox", p, []( monk_t *p ) { return new pets::invoke_niuzao_pet_t( p ); } ),
-    yulon( "yulon_the_jade_serpent", p, []( monk_t *p ) { return new pets::yulon_pet_t( p ); } ),
-    chiji( "chiji_the_red_crane", p, []( monk_t *p ) { return new pets::chiji_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } )
 {
 }
