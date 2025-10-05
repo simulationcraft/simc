@@ -2701,16 +2701,6 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
     mul *= 1.0 + pwf_val + wof_val;
   }
 
-  if ( attr == ATTR_STAMINA && talents.strength_of_soul.enabled() )
-  {
-    mul *= talents.strength_of_soul->effectN( 1 ).percent();
-  }
-
-  if ( attr == ATTR_INTELLECT && talents.spiritual_guidance.enabled() )
-  {
-    mul *= 1.0 + talents.spiritual_guidance->effectN( 1 ).percent();
-  }
-
   return mul;
 }
 
