@@ -1481,11 +1481,11 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "intellect_multiplier" );
     base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "spirit_multiplier" );
     // Matching Armor Multipliers
-    base.matching_armor_multiplier[ ATTR_STRENGTH ] = get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
-    base.matching_armor_multiplier[ ATTR_AGILITY ]  = get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
-    base.matching_armor_multiplier[ ATTR_STAMINA ]  = get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
-    base.matching_armor_multiplier[ ATTR_INTELLECT ]= get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
-    base.matching_armor_multiplier[ ATTR_SPIRIT ]   = get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
+    base.matching_armor_multiplier[ ATTR_STRENGTH ]  = get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
+    base.matching_armor_multiplier[ ATTR_AGILITY ]   = get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
+    base.matching_armor_multiplier[ ATTR_STAMINA ]   = get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
+    base.matching_armor_multiplier[ ATTR_INTELLECT ] = get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
+    base.matching_armor_multiplier[ ATTR_SPIRIT ]    = get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
     // Rating Multipliers
     for ( rating_e r = RATING_BLOCK; r < RATING_MAX; ++r )
       base.rating_multiplier[ r ] = get_passive_player_value( 1.0, fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
@@ -1504,8 +1504,7 @@ void player_t::init_base_stats()
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
     base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
-    base.versatility              = racials.mountaineer->effectN( 1 ).percent() +
-                                    racials.brush_it_off->effectN( 1 ).percent();
+    base.versatility              = get_passive_player_value( 0.0, "versatility" );
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
@@ -15260,6 +15259,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
   { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
+  { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
 };
 
 std::string_view get_field_from_type( unsigned type )
@@ -15488,6 +15488,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         is_bitmap = true;
         bit_type  = BITMAP_RATING;
         pct_val   = modifying_eff.percent();
+        break;
+      case A_MOD_VERSATILITY_PCT:
+        field   = "versatility";
+        flat_val = modifying_eff.percent();
         break;
       default:
         return false;
