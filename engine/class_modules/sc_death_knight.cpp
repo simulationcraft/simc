@@ -15197,8 +15197,6 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.blood_draw );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery );
-  parse_effects( talent.runic_protection );
-  parse_effects( talent.gloom_ward );
   parse_effects( buffs.antimagic_shell );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), spell.apocalypse_war_debuff );

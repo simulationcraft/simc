@@ -1312,6 +1312,9 @@ player_t::base_initial_current_t::base_initial_current_t() :
   damage_multiplier(),
   pet_damage_multiplier( 1.0 ),
   guardian_damage_multiplier( 1.0 ),
+  absorb_multiplier( 1.0 ),
+  absorb_received_multiplier( 1.0 ),
+  healing_received_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1543,6 +1546,7 @@ void player_t::init_base_stats()
 
     base.base_armor_multiplier    = get_passive_player_value( base.base_armor_multiplier, "base_armor_multiplier" );
     base.armor_multiplier         = get_passive_player_value( base.armor_multiplier, "armor_multiplier" );
+
     for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
     {
       base.damage_multiplier[ school ] = get_passive_player_value(
@@ -1555,11 +1559,15 @@ void player_t::init_base_stats()
       base.crit_damage_multiplier[ school ] *=
           get_passive_player_value( base.crit_damage_multiplier[ school ], "all_crit_damage_multiplier" );
     }
+
     base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
-
     base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
-
     base.attack_power_multiplier = get_passive_player_value( base.attack_power_multiplier, "attack_power_multiplier" );
+    base.absorb_multiplier       = get_passive_player_value( base.absorb_multiplier, "absorb_multiplier" );
+    base.absorb_received_multiplier =
+        get_passive_player_value( base.absorb_received_multiplier, "absorb_received_multiplier" );
+    base.healing_received_multiplier =
+        get_passive_player_value( base.healing_received_multiplier, "healing_received_multiplier" );
 
     // Base Pet Damage Modifiers
     base.pet_damage_multiplier = get_passive_player_value( base.pet_damage_multiplier, "pet_damage_multiplier" );
@@ -5798,12 +5806,22 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 double player_t::composite_player_absorb_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
+  double m = current.absorb_multiplier;
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
 
   return m;
+}
+
+double player_t::composite_player_healing_received_multiplier() const
+{
+  return current.healing_received_multiplier;
+}
+
+double player_t::composite_player_absorb_received_multiplier() const
+{
+  return current.absorb_received_multiplier;
 }
 
 double player_t::composite_player_target_crit_chance( player_t* t ) const
@@ -15269,6 +15287,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
+  { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               },
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
@@ -15326,8 +15345,10 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MAX_CHARGES,                        "charges"                                   }, // 411
   { A_HASTED_COOLDOWN,                        "hasted_cooldown"                           }, // 416
   { A_HASTED_GCD,                             "hasted_gcd"                                }, // 417
+  { A_MOD_ABSORB_DONE_PERCENT,                "absorb_multiplier"                         }, // 421
+  { A_MOD_ABSORB_RECEIVED_PERCENT,            "absorb_received_multiplier"                }, // 422
   { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
-  { A_MOD_LEECH_PERCENT,                       "leech"                                    }, // 443
+  { A_MOD_LEECH_PERCENT,                      "leech"                                     }, // 443
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
   { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
   { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"                }, // 531
@@ -15645,6 +15666,18 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_DODGE_PERCENT:
         field = "dodge";
         flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_ABSORB_DONE_PERCENT:
+        field = "absorb_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_ABSORB_RECEIVED_PERCENT:
+        field = "absorb_received_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_HEALING_RECEIVED_PCT:
+        field = "healing_received_multiplier";
+        pct_val = modifying_eff.percent();
         break;
       default:
         return false;

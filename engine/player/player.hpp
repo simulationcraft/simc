@@ -284,6 +284,7 @@ struct player_t : public actor_t
     double attack_speed_multiplier;
     std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
     double pet_damage_multiplier, guardian_damage_multiplier;
+    double absorb_multiplier, absorb_received_multiplier, healing_received_multiplier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
@@ -1340,10 +1341,8 @@ public:
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const;
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* ) const;
-  virtual double composite_player_healing_received_multiplier() const
-  { return 1.0; }
-  virtual double composite_player_absorb_received_multiplier() const
-  { return 1.0; }
+  virtual double composite_player_healing_received_multiplier() const;
+  virtual double composite_player_absorb_received_multiplier() const;
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;
