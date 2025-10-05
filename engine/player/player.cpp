@@ -15598,19 +15598,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     switch ( modifying_eff.subtype() )
     {
-      case A_INCREASE_RESOURCE_PCT:
-        field =
-            fmt::format( "{}_multiplier",
-                         util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
-                         subtype_str );
-        pct_val = modifying_eff.percent();
-        break;
       case A_MOD_MAX_RESOURCE:
         resource_e power_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
-        field = fmt::format(
-            "max_{}", util::resource_type_string( power_type ),
-            subtype_str );
-        flat_val = modifying_eff.resource( power_type );
+        field                 = fmt::format( "max_{}", util::resource_type_string( power_type ), subtype_str );
+        flat_val              = modifying_eff.resource( power_type );
+      case A_INCREASE_RESOURCE_PCT:
       case A_MOD_MAX_RESOURCE_PCT:
         field = fmt::format(
             "{}_multiplier", util::resource_type_string( util::translate_power_type( static_cast<power_e>( misc_type ) ) ),
