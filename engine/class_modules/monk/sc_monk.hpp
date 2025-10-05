@@ -499,7 +499,6 @@ public:
     propagate_const<buff_t *> chi_jis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> flight_of_the_red_crane;
-    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
     propagate_const<buff_t *> inner_compass_crane_stance;
@@ -646,12 +645,13 @@ public:
       const spell_data_t *aura_3;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
-      const spell_data_t *combo_breaker;
       const spell_data_t *combat_conditioning;
-      const spell_data_t *empowered_tiger_lightning;
       const spell_data_t *flying_serpent_kick;
       const spell_data_t *touch_of_death_rank_3;
       const spell_data_t *touch_of_karma;
+      const spell_data_t *touch_of_karma_tick;
+      const spell_data_t *empowered_tiger_lightning;
+      const spell_data_t *empowered_tiger_lightning_damage;
     } windwalker;
   } baseline;
 
@@ -728,6 +728,7 @@ public:
       player_talent_t summon_black_ox_statue;     // Brewmaster
       player_talent_t summon_white_tiger_statue;  // Windwalker
       const spell_data_t *claw_of_the_white_tiger;
+      const spell_data_t *summon_white_tiger_statue_npc;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;
@@ -837,6 +838,7 @@ public:
     {
       // Row 1
       player_talent_t fists_of_fury;
+      const spell_data_t *fists_of_fury_tick;
       // Row 2
       player_talent_t momentum_boost;
       player_talent_t combat_wisdom;
@@ -853,26 +855,33 @@ public:
       player_talent_t teachings_of_the_monastery;
       const spell_data_t *teachings_of_the_monastery_blackout_kick;
       player_talent_t glory_of_the_dawn;
+      const spell_data_t *glory_of_the_dawn_damage;
       // Row 5
       player_talent_t crane_vortex;
       player_talent_t meridian_strikes;
       player_talent_t rising_star;
       player_talent_t weapons_of_order;
       player_talent_t hit_combo;
+      const spell_data_t *hit_combo_buff;
       player_talent_t brawlers_intensity;
       // Row 6
       player_talent_t jade_ignition;
+      const spell_data_t *chi_explosion;
       player_talent_t cyclones_drift;
       player_talent_t crashing_fists;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
       player_talent_t obsidian_spiral;
       player_talent_t combo_breaker;
+      const spell_data_t *combo_breaker_buff;
       // Row 7
       player_talent_t dance_of_chiji;
+      const spell_data_t *dance_of_chiji_buff;
       player_talent_t shadowboxing_treads;
       player_talent_t strike_of_the_windlord;
       player_talent_t whirling_dragon_punch;
+      const spell_data_t *whirling_dragon_punch_aoe_tick;
+      const spell_data_t *whirling_dragon_punch_st_tick;
       const spell_data_t *whirling_dragon_punch_buff;
       player_talent_t energy_burst;
       player_talent_t inner_peace;
@@ -888,7 +897,10 @@ public:
       player_talent_t rushing_wind_kick;
       player_talent_t xuens_battlegear;
       player_talent_t thunderfist;
+      const spell_data_t *thunderfist_buff;
       player_talent_t invoke_xuen_the_white_tiger;
+      const spell_data_t *crackling_tiger_lightning_driver;
+      const spell_data_t *crackling_tiger_lightning;
       player_talent_t knowledge_of_the_broken_temple;
       player_talent_t slicing_winds;
       const spell_data_t *slicing_winds_damage;
@@ -898,6 +910,7 @@ public:
       player_talent_t skyfire_heel;
       player_talent_t harmonic_combo;
       player_talent_t flurry_of_xuen;
+      const spell_data_t *flurry_of_xuen_driver;
       player_talent_t xuens_bond;
       player_talent_t airborne_rhythm;
       player_talent_t hurricanes_vault;
@@ -1076,38 +1089,6 @@ public:
     int chi_burst_healing_targets;
     int shado_pan_initial_charge_accumulator;
   } user_options;
-
-  // TODO: exterminate these structs
-  struct
-  {
-    const spell_data_t *teachings_of_the_monastery;
-  } shared;
-
-  struct
-  {
-    // Windwalker
-    const spell_data_t *bok_proc;
-    const spell_data_t *chi_explosion;
-    const spell_data_t *crackling_tiger_lightning;
-    const spell_data_t *crackling_tiger_lightning_driver;
-    const spell_data_t *combat_wisdom_expel_harm;
-    const spell_data_t *cyclone_strikes;
-    const spell_data_t *dance_of_chiji;
-    const spell_data_t *empowered_tiger_lightning;
-    const spell_data_t *fists_of_fury_tick;
-    const spell_data_t *flurry_of_xuen_driver;
-    const spell_data_t *flying_serpent_kick_damage;
-    const spell_data_t *focus_of_xuen;
-    const spell_data_t *glory_of_the_dawn_damage;
-    const spell_data_t *hit_combo;
-    const spell_data_t *improved_touch_of_death;
-    const spell_data_t *summon_white_tiger_statue;
-    const spell_data_t *power_strikes_chi;
-    const spell_data_t *thunderfist;
-    const spell_data_t *touch_of_karma_tick;
-    const spell_data_t *whirling_dragon_punch_aoe_tick;
-    const spell_data_t *whirling_dragon_punch_st_tick;
-  } passives;
 
 public:
   monk_t( sim_t *sim, util::string_view name, race_e r );

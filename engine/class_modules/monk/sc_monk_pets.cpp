@@ -280,7 +280,7 @@ private:
   struct crackling_tiger_lightning_tick_t : public pet_spell_t
   {
     crackling_tiger_lightning_tick_t( xuen_pet_t *p )
-      : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning )
+      : pet_spell_t( "crackling_tiger_lightning_tick", p, p->o()->talent.windwalker.crackling_tiger_lightning )
     {
       background   = true;
       merge_report = false;
@@ -290,10 +290,10 @@ private:
   struct crackling_tiger_lightning_t : public pet_spell_t
   {
     crackling_tiger_lightning_t( xuen_pet_t *p, util::string_view options_str )
-      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning_driver )
+      : pet_spell_t( "crackling_tiger_lightning", p, p->o()->talent.windwalker.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
-      s_data_reporting = p->o()->passives.crackling_tiger_lightning;
+      s_data_reporting = p->o()->talent.windwalker.crackling_tiger_lightning;
 
       dot_duration = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();
       cooldown->duration =

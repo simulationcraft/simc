@@ -158,8 +158,9 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects(
       p()->buff.tiger_strikes,
       affect_list_t( 1 ).add_spell(
-          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(), p()->passives.fists_of_fury_tick->id(),
-          p()->passives.whirling_dragon_punch_aoe_tick->id(), p()->passives.whirling_dragon_punch_st_tick->id(),
+          p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(),
+          p()->talent.windwalker.fists_of_fury_tick->id(), p()->talent.windwalker.whirling_dragon_punch_aoe_tick->id(),
+          p()->talent.windwalker.whirling_dragon_punch_st_tick->id(),
           p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
           p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
           ) );
@@ -1048,7 +1049,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 struct glory_of_the_dawn_t : public monk_melee_attack_t
 {
   glory_of_the_dawn_t( monk_t *p, const std::string &name )
-    : monk_melee_attack_t( p, name, p->passives.glory_of_the_dawn_damage )
+    : monk_melee_attack_t( p, name, p->talent.windwalker.glory_of_the_dawn_damage )
   {
     background = true;
     ww_mastery = true;
@@ -1596,7 +1597,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 // Jade Ignition Talent
 struct chi_explosion_t : public monk_spell_t
 {
-  chi_explosion_t( monk_t *player ) : monk_spell_t( player, "chi_explosion", player->passives.chi_explosion )
+  chi_explosion_t( monk_t *player ) : monk_spell_t( player, "chi_explosion", player->talent.windwalker.chi_explosion )
   {
     dual = background = true;
     aoe               = -1;
@@ -1627,7 +1628,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     ap_type             = attack_power_type::WEAPON_BOTH;
 
     // dance of chiji is scripted
-    if ( const auto &effect = p->passives.dance_of_chiji->effectN( 2 ); effect.ok() )
+    if ( const auto &effect = p->talent.windwalker.dance_of_chiji_buff->effectN( 2 ); effect.ok() )
       add_parse_entry( da_multiplier_effects )
           .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
           .set_value( effect.percent() )
@@ -1751,7 +1752,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 struct fists_of_fury_tick_t : public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t *player, util::string_view name )
-    : monk_melee_attack_t( player, name, player->passives.fists_of_fury_tick )
+    : monk_melee_attack_t( player, name, player->talent.windwalker.fists_of_fury_tick )
   {
     background          = true;
     aoe                 = -1;
@@ -1921,14 +1922,14 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     for ( size_t i = 0; i < aoe_ticks.size(); ++i )
     {
       auto delay     = base_tick_time * i;
-      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
-                                                             p->passives.whirling_dragon_punch_aoe_tick, delay );
+      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t(
+          "whirling_dragon_punch_aoe_tick", p, p->talent.windwalker.whirling_dragon_punch_aoe_tick, delay );
 
       add_child( aoe_ticks[ i ] );
     }
 
     st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
-                                                   p->passives.whirling_dragon_punch_st_tick );
+                                                   p->talent.windwalker.whirling_dragon_punch_st_tick );
     add_child( st_tick );
   }
 
@@ -2088,7 +2089,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 struct thunderfist_t : public monk_spell_t
 {
   thunderfist_t( monk_t *player )
-    : monk_spell_t( player, "thunderfist", player->passives.thunderfist->effectN( 1 ).trigger() )
+    : monk_spell_t( player, "thunderfist", player->talent.windwalker.thunderfist_buff->effectN( 1 ).trigger() )
   {
     background = true;
     may_crit   = true;
@@ -2399,7 +2400,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     // talented into it or not
     if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > max_hp )
     {
-      amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
+      amount *= p()->talent.monk.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
 
       // Apply and parsed multipliers
       amount *= base_dd_multiplier;
@@ -2426,7 +2427,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t<spell_t>
 {
   using base_t = residual_action::residual_periodic_action_t<spell_t>;
-  touch_of_karma_dot_t( monk_t *p ) : base_t( "touch_of_karma", p, p->passives.touch_of_karma_tick )
+  touch_of_karma_dot_t( monk_t *p ) : base_t( "touch_of_karma", p, p->baseline.windwalker.touch_of_karma_tick )
   {
     may_miss = may_crit = false;
     dual                = true;
@@ -3416,14 +3417,14 @@ struct xuen_spell_t : public monk_spell_t
     p()->buff.courage_of_the_white_tiger->trigger();
 
     if ( p()->talent.monk.summon_white_tiger_statue->ok() )
-      p()->pets.white_tiger_statue.spawn( p()->passives.summon_white_tiger_statue->duration(), 1 );
+      p()->pets.white_tiger_statue.spawn( p()->talent.monk.summon_white_tiger_statue_npc->duration(), 1 );
   }
 };
 
 struct empowered_tiger_lightning_t : public monk_spell_t
 {
   empowered_tiger_lightning_t( monk_t *p )
-    : monk_spell_t( p, "empowered_tiger_lightning", p->passives.empowered_tiger_lightning )
+    : monk_spell_t( p, "empowered_tiger_lightning", p->baseline.windwalker.empowered_tiger_lightning_damage )
   {
     background = true;
     may_crit   = false;
@@ -3438,7 +3439,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 struct flurry_of_xuen_t : public monk_spell_t
 {
   flurry_of_xuen_t( monk_t *p )
-    : monk_spell_t( p, "flurry_of_xuen", p->passives.flurry_of_xuen_driver->effectN( 1 )._trigger_spell )
+    : monk_spell_t( p, "flurry_of_xuen", p->talent.windwalker.flurry_of_xuen_driver->effectN( 1 ).trigger() )
   {
     background = true;
     may_crit   = true;
@@ -4728,9 +4729,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     talent(),
     tier(),
     pets( this ),
-    user_options( options_t() ),
-    shared(),
-    passives()
+    user_options( options_t() )
 {
   cooldown.anvil__stave    = get_cooldown( "anvil__stave" );
   cooldown.blackout_kick   = get_cooldown( "blackout_kick" );
@@ -5139,12 +5138,13 @@ void monk_t::init_spells()
     baseline.windwalker.aura_3                    = find_specialization_spell( 1222923 );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
-    baseline.windwalker.combo_breaker             = find_specialization_spell( "Combo Breaker" );
     baseline.windwalker.combat_conditioning       = find_specialization_spell( "Combat Conditioning" );
     baseline.windwalker.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
     baseline.windwalker.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
     baseline.windwalker.touch_of_death_rank_3     = find_spell( 344361 );
     baseline.windwalker.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
+    baseline.windwalker.touch_of_karma_tick       = find_spell( 124280 );
+    baseline.windwalker.empowered_tiger_lightning_damage = find_spell( 335913 );
   }
 
   // monk_t::talent::monk
@@ -5212,7 +5212,10 @@ void monk_t::init_spells()
     talent.monk.summon_black_ox_statue    = _CT( "Summon Black Ox Statue" );
     talent.monk.summon_white_tiger_statue = _CT( "Summon White Tiger Statue" );
     if ( talent.monk.summon_white_tiger_statue->ok() )
-      talent.monk.claw_of_the_white_tiger = find_spell( 389541 );
+    {
+      talent.monk.summon_white_tiger_statue_npc = find_spell( 388686 );
+      talent.monk.claw_of_the_white_tiger       = find_spell( 389541 );
+    }
     talent.monk.ironshell_brew               = _CT( "Ironshell Brew" );
     talent.monk.expeditious_fortification    = _CT( "Expeditious Fortification" );
     talent.monk.diffuse_magic                = _CT( "Diffuse Magic" );
@@ -5308,6 +5311,7 @@ void monk_t::init_spells()
   if ( specialization() == MONK_WINDWALKER )
   {
     talent.windwalker.fists_of_fury              = _ST( "Fists of Fury" );
+    talent.windwalker.fists_of_fury_tick         = find_spell( 117418 );
     talent.windwalker.momentum_boost             = _ST( "Momentum Boost" );
     talent.windwalker.combat_wisdom              = _ST( "Combat Wisdom" );
     talent.windwalker.combat_wisdom_expel_harm   = find_spell( 451968 );
@@ -5319,9 +5323,12 @@ void monk_t::init_spells()
     talent.windwalker.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
     talent.windwalker.teachings_of_the_monastery_blackout_kick = find_spell( 228649 );
     talent.windwalker.glory_of_the_dawn                        = _ST( "Glory of the Dawn" );
-    talent.windwalker.jade_ignition                            = _STID( 392979 );  // _ST( "Jade Ignition" );
+    talent.windwalker.glory_of_the_dawn_damage                 = find_spell( 392959 );
+    talent.windwalker.jade_ignition                            = _ST( "Jade Ignition" );
+    talent.windwalker.chi_explosion                            = find_spell( 393056 );
     talent.windwalker.flurry_of_xuen                           = _ST( "Flurry of Xuen" );
     talent.windwalker.hit_combo                                = _ST( "Hit Combo" );
+    talent.windwalker.hit_combo_buff                           = find_spell( 196741 );
     talent.windwalker.brawlers_intensity                       = _ST( "Brawler's Intensity" );
     talent.windwalker.meridian_strikes                         = _ST( "Meridian Strikes" );
     talent.windwalker.dance_of_chiji                           = _ST( "Dance of Chi-Ji" );
@@ -5329,19 +5336,27 @@ void monk_t::init_spells()
     talent.windwalker.spiritual_focus                          = _ST( "Spiritual Focus" );
     talent.windwalker.strike_of_the_windlord                   = _ST( "Strike of the Windlord" );
     talent.windwalker.energy_burst                             = _ST( "Energy Burst" );
+    talent.windwalker.combo_breaker                            = _ST( "Combo Breaker" );
+    talent.windwalker.combo_breaker_buff                       = find_spell( 116768 );
     talent.windwalker.shadowboxing_treads                      = _STID( 392982 );
     talent.windwalker.invoke_xuen_the_white_tiger              = _ST( "Invoke Xuen, the White Tiger" );
+    talent.windwalker.crackling_tiger_lightning_driver         = find_spell( 123999 );
+    talent.windwalker.crackling_tiger_lightning                = find_spell( 123996 );
     talent.windwalker.inner_peace                              = _ST( "Inner Peace" );
     talent.windwalker.rushing_jade_wind                        = _ST( "Rushing Jade Wind" );
     talent.windwalker.thunderfist                              = _ST( "Thunderfist" );
+    talent.windwalker.thunderfist_buff                         = find_spell( 393565 );
     talent.windwalker.sequenced_strikes                        = _ST( "Sequenced Strikes" );
     talent.windwalker.rising_star                              = _ST( "Rising Star" );
     talent.windwalker.dual_threat                              = _ST( "Dual Threat" );
     talent.windwalker.dual_threat_damage                       = find_spell( 451839 );
     talent.windwalker.whirling_dragon_punch                    = _ST( "Whirling Dragon Punch" );
+    talent.windwalker.whirling_dragon_punch_aoe_tick           = find_spell( 158221 );
+    talent.windwalker.whirling_dragon_punch_st_tick            = find_spell( 451767 );
     talent.windwalker.whirling_dragon_punch_buff               = find_spell( 196742 );
     talent.windwalker.xuens_bond                               = _ST( "Xuen's Bond" );
     talent.windwalker.xuens_battlegear                         = _ST( "Xuen's Battlegear" );
+    talent.windwalker.flurry_of_xuen_driver                    = find_spell( 452117 );
     talent.windwalker.jadefire_stomp                           = _ST( "Jadefire Stomp" );
     talent.windwalker.jadefire_stomp_damage                    = find_spell( 388207 );
     talent.windwalker.communion_with_wind                      = _ST( "Communion With Wind" );
@@ -5464,29 +5479,9 @@ void monk_t::init_spells()
     tier.tww3.spm_4pc                                = sets->set( HERO_SHADOPAN, TWW3, B4 );
   }
 
-  // General
+  // Shared Talent Spells
   talent.shared_spell.rushing_jade_wind_buff = find_spell( 116847 );
   talent.shared_spell.rushing_jade_wind_tick = find_spell( 148187 );
-
-  // Windwalker
-  // TODO: Exterminate!
-  passives.bok_proc                         = find_spell( 116768 );
-  passives.chi_explosion                    = find_spell( 393056 );
-  passives.crackling_tiger_lightning        = find_spell( 123996 );
-  passives.crackling_tiger_lightning_driver = find_spell( 123999 );
-  passives.dance_of_chiji                   = find_spell( 325202 );
-  passives.empowered_tiger_lightning        = find_spell( 335913 );
-  passives.fists_of_fury_tick               = find_spell( 117418 );
-  passives.flurry_of_xuen_driver            = find_spell( 452117 );
-  passives.focus_of_xuen                    = find_spell( 252768 );
-  passives.glory_of_the_dawn_damage         = find_spell( 392959 );
-  passives.hit_combo                        = find_spell( 196741 );
-  passives.improved_touch_of_death          = find_spell( 322113 );
-  passives.summon_white_tiger_statue        = find_spell( 388686 );
-  passives.thunderfist                      = find_spell( 393565 );
-  passives.touch_of_karma_tick              = find_spell( 124280 );
-  passives.whirling_dragon_punch_aoe_tick   = find_spell( 158221 );
-  passives.whirling_dragon_punch_st_tick    = find_spell( 451767 );
 
   // Register passives
   // Aura adjustments that are only visual on tooltip and don't actually have an effect
@@ -5824,9 +5819,10 @@ void monk_t::create_buffs()
           ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
   // Windwalker
-  buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
-                      ->set_trigger_spell( baseline.windwalker.combo_breaker )
-                      ->set_chance( baseline.windwalker.combo_breaker->effectN( 1 ).percent() );
+  buff.bok_proc = make_buff_fallback( talent.windwalker.combo_breaker->ok(), this, "bok_proc",
+                                      talent.windwalker.combo_breaker_buff )
+                      ->set_trigger_spell( talent.windwalker.combo_breaker )
+                      ->set_chance( talent.windwalker.combo_breaker->effectN( 1 ).percent() );
 
   buff.chi_energy =
       make_buff_fallback( talent.windwalker.jade_ignition->ok(), this, "chi_energy", find_spell( 393057 ) )
@@ -5840,14 +5836,15 @@ void monk_t::create_buffs()
 
   // Create the buff even if untalented - it is possible to get a dance of chiji proc without the talent from other
   // sources.
-  buff.dance_of_chiji =
-      make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji", passives.dance_of_chiji )
-          ->set_trigger_spell( talent.windwalker.dance_of_chiji );
+  buff.dance_of_chiji = make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji",
+                                            talent.windwalker.dance_of_chiji_buff )
+                            ->set_trigger_spell( talent.windwalker.dance_of_chiji );
 
-  buff.dance_of_chiji_hidden = make_buff_fallback( specialization() != MONK_BREWMASTER, this, "dance_of_chiji_hidden" )
-                                   ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
-                                   ->set_duration( timespan_t::from_seconds( 1.5 ) )
-                                   ->set_quiet( true );
+  buff.dance_of_chiji_hidden =
+      make_buff_fallback( specialization() != MONK_BREWMASTER, this, "dance_of_chiji_hidden" )
+          ->set_default_value( talent.windwalker.dance_of_chiji_buff->effectN( 1 ).base_value() )
+          ->set_duration( timespan_t::from_seconds( 1.5 ) )
+          ->set_quiet( true );
 
   buff.ferociousness = make_buff_fallback( talent.windwalker.ferociousness->ok(), this, "ferociousness",
                                            talent.windwalker.ferociousness )
@@ -5865,12 +5862,13 @@ void monk_t::create_buffs()
                            ->set_freeze_stacks( true )
                            ->set_tick_behavior( buff_tick_behavior::CLIP );
 
-  buff.hit_combo = make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", passives.hit_combo )
-                       ->set_default_value_from_effect( 1 );
+  buff.hit_combo =
+      make_buff_fallback( talent.windwalker.hit_combo->ok(), this, "hit_combo", talent.windwalker.hit_combo_buff )
+          ->set_default_value_from_effect( 1 );
 
   buff.flurry_of_xuen =
       make_buff_fallback( talent.windwalker.flurry_of_xuen->ok(), this, "flurry_of_xuen",
-                          passives.flurry_of_xuen_driver )
+                          talent.windwalker.flurry_of_xuen_driver )
           ->set_tick_callback( [ this ]( buff_t * /* b */, int, timespan_t ) { action.flurry_of_xuen->execute(); } )
           ->set_tick_behavior( buff_tick_behavior::CLIP )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -5893,8 +5891,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
           ->set_trigger_spell( talent.windwalker.momentum_boost );
 
-  buff.thunderfist =
-      make_buff_fallback( talent.windwalker.thunderfist->ok(), this, "thunderfist", passives.thunderfist );
+  buff.thunderfist = make_buff_fallback( talent.windwalker.thunderfist->ok(), this, "thunderfist",
+                                         talent.windwalker.thunderfist_buff );
 
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( this, "touch_of_death_ww", spell_data_t::nil() );
 
@@ -6804,7 +6802,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
     return;
 
   // Proc cannot proc from itself
-  if ( s->action->id == passives.empowered_tiger_lightning->id() )
+  if ( s->action->id == baseline.windwalker.empowered_tiger_lightning->id() )
     return;
 
   auto td = get_target_data( s->target );
