@@ -95,10 +95,6 @@ public:
     base_t::parse_target_effects( std::forward<Ts>( args )... );
   }
 
-  const spelleffect_data_t *find_spelleffect( const spell_data_t *spell, effect_subtype_t subtype, int misc_value,
-                                              const spell_data_t *affected, effect_type_t type );
-  const spell_data_t *find_spell_override( const spell_data_t *base, const spell_data_t *passive );
-
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
   bool usable_moving() const override;
@@ -114,7 +110,6 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
-  void assess_damage( result_amount_type typ, action_state_t *s ) override;
   void trigger_mystic_touch( action_state_t *state );
 };
 
@@ -141,19 +136,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   using base_t = monk_action_t<melee_attack_t>;
   monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
-};
-
-struct summon_pet_t : public monk_spell_t
-{
-  timespan_t summoning_duration;
-  std::string_view pet_name;
-  pet_t *pet;
-
-  summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
-                const spell_data_t *spell_data = spell_data_t::nil() );
-  void init_finished() override;
-  void execute() override;
-  bool ready() override;
 };
 
 template <class base_action_t>
@@ -334,7 +316,6 @@ struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
 
 struct monk_td_t : public actor_target_data_t
 {
-public:
   struct dots_t
   {
     propagate_const<dot_t *> breath_of_fire;
@@ -352,9 +333,6 @@ public:
 
     // Windwalker
     propagate_const<buff_t *> empowered_tiger_lightning;
-
-    // Mistweaver
-    propagate_const<buff_t *> lesson_of_anger;
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
@@ -433,8 +411,6 @@ private:
   target_specific_t<monk_td_t> target_data;
 
 public:
-  // Special Auto-Attacks
-
   // For Debug reporting, used by create_proc_callback in init_special_effects
   std::map<std::string, std::vector<action_t *>> proc_tracking;
 
@@ -451,9 +427,6 @@ public:
     propagate_const<action_t *> walk_with_the_ox;
     propagate_const<accumulated_rng_t *> walk_with_the_ox_rng;
     propagate_const<action_t *> press_the_advantage;
-
-    // Mistweaver
-    propagate_const<action_t *> lesson_of_anger_damage;
 
     // Windwalker
     propagate_const<action_t *> dual_threat;
@@ -480,16 +453,13 @@ public:
   struct
   {
     // General
-    propagate_const<buff_t *> awakened_jadefire;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> fatal_touch;
     propagate_const<buff_t *> rushing_jade_wind;
-    propagate_const<buff_t *> spinning_crane_kick;
+    propagate_const<buff_t *> spinning_crane_kick;  // TODO: is this necessary?
     propagate_const<buff_t *> yulons_grace;
-    propagate_const<buff_t *> chi_burst;
 
     // Brewmaster
-    propagate_const<buff_t *> bladed_armor;
     propagate_const<buff_t *> blackout_combo;
     propagate_const<buff_t *> charred_passions;
     propagate_const<buff_t *> counterstrike;
@@ -505,39 +475,21 @@ public:
     propagate_const<buff_t *> training_of_niuzao;
     propagate_const<buff_t *> ox_stance;
 
-    // Mistweaver
-    propagate_const<buff_t *> dance_of_chiji_mw;
-    propagate_const<buff_t *> jade_empowerment;
-    propagate_const<buff_t *> secret_infusion_haste;
-    propagate_const<buff_t *> secret_infusion_crit;
-    propagate_const<buff_t *> secret_infusion_mastery;
-    propagate_const<buff_t *> secret_infusion_versatility;
-    propagate_const<buff_t *> sheiluns_gift;
-    propagate_const<buff_t *> lesson_of_anger;
-    propagate_const<buff_t *> lesson_of_despair;
-    propagate_const<buff_t *> lesson_of_doubt;
-    propagate_const<buff_t *> lesson_of_fear;
-    propagate_const<buff_t *> teachings_of_the_monastery;
-    propagate_const<buff_t *> thunder_focus_tea;
-
     // Windwalker
+    propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> bok_proc;
     propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
-    propagate_const<buff_t *> dance_of_chiji_ww;
+    propagate_const<buff_t *> dance_of_chiji;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
-    propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> ferociousness;
-    propagate_const<buff_t *> hidden_masters_forbidden_touch;
     propagate_const<buff_t *> hit_combo;
     propagate_const<buff_t *> flurry_of_xuen;
     propagate_const<buff_t *> invoke_xuen;
     propagate_const<buff_t *> memory_of_the_monastery;
     propagate_const<buff_t *> momentum_boost_damage;
     propagate_const<buff_t *> momentum_boost_speed;
-    propagate_const<buff_t *> pressure_point;
-    propagate_const<buff_t *> the_emperors_capacitor;
     propagate_const<buff_t *> thunderfist;
     propagate_const<buff_t *> touch_of_death_ww;
     propagate_const<buff_t *> touch_of_karma;
@@ -776,6 +728,7 @@ public:
       // Row 7
       player_talent_t vigorous_expulsion;
       player_talent_t yulons_grace;
+      const spell_data_t *yulons_grace_buff;
       player_talent_t peace_and_prosperity;
       player_talent_t fortifying_brew;
       const spell_data_t *fortifying_brew_buff;
@@ -900,7 +853,6 @@ public:
       // Row 1
       player_talent_t enveloping_mist;
       // Row 2
-      player_talent_t thunder_focus_tea;
       player_talent_t renewing_mist;
       // Row 3
       player_talent_t life_cocoon;
@@ -943,28 +895,14 @@ public:
       player_talent_t jade_bond;
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
-      player_talent_t sheiluns_gift;
-      const spell_data_t *sheiluns_gift_stacks;
       // Row 9
       player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
-      player_talent_t secret_infusion;
-      const spell_data_t *secret_infusion_haste_buff;
-      const spell_data_t *secret_infusion_crit_buff;
-      const spell_data_t *secret_infusion_mastery_buff;
-      const spell_data_t *secret_infusion_vers_buff;
       player_talent_t misty_peaks;
       player_talent_t peaceful_mending;
       player_talent_t veil_of_pride;
       player_talent_t shaohaos_lessons;
-      const spell_data_t *lesson_of_doubt_buff;
-      const spell_data_t *lesson_of_despair_buff;
-      const spell_data_t *lesson_of_fear_buff;
-      const spell_data_t *lesson_of_anger_buff;
-      const spell_data_t *lesson_of_anger_damage;
       // Row 10
-      player_talent_t awakened_jadefire;
-      const spell_data_t *awakened_jadefire_buff;
       player_talent_t dance_of_chiji;
       player_talent_t jade_empowerment;
       const spell_data_t *jade_empowerment_buff;
@@ -1243,14 +1181,12 @@ public:
     const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
-    const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;
     const spell_data_t *fists_of_fury_tick;
     const spell_data_t *flurry_of_xuen_driver;
     const spell_data_t *flying_serpent_kick_damage;
     const spell_data_t *focus_of_xuen;
     const spell_data_t *glory_of_the_dawn_damage;
-    const spell_data_t *hidden_masters_forbidden_touch;
     const spell_data_t *hit_combo;
     const spell_data_t *improved_touch_of_death;
     const spell_data_t *summon_white_tiger_statue;

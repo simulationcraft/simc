@@ -137,7 +137,6 @@ void monk_action_t<Base>::apply_buff_effects()
   }
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
-  parse_effects( p()->buff.pressure_point );
   parse_effects( p()->buff.bok_proc, affect_list_t( 1, 2, 3 ).remove_spell(
                                          p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
 
@@ -192,15 +191,6 @@ void monk_action_t<Base>::apply_debuff_effects()
 {
   parse_target_effects( td_fn( &monk_td_t::dots_t::aspect_of_harmony ),
                         p()->talent.master_of_harmony.aspect_of_harmony_damage );
-
-  if ( p()->talent.mistweaver.shaohaos_lessons->ok() )
-    parse_target_effects(
-        [ this ]( actor_target_data_t *td ) {
-          // linear interpolation of hp% from [1, 0.25] to coefficient of [0, 1]
-          double interpolate = std::min( 4.0 / 3.0 * ( 1.0 - td->target->health_percentage() / 100.0 ), 1.0 );
-          return p()->buff.lesson_of_doubt->check() ? interpolate : 0.0;
-        },
-        p()->talent.mistweaver.lesson_of_doubt_buff );
 }
 
 template <class Base>
@@ -441,7 +431,7 @@ void monk_action_t<Base>::consume_resource()
   }
 
   if ( current_resource() == RESOURCE_CHI )
-    p()->buff.dance_of_chiji_ww->trigger();
+    p()->buff.dance_of_chiji->trigger();
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -548,19 +538,6 @@ void monk_action_t<Base>::tick( dot_t *dot )
 }
 
 template <class Base>
-void monk_action_t<Base>::assess_damage( result_amount_type typ, action_state_t *s )
-{
-  base_t::assess_damage( typ, s );
-
-  if ( p()->buff.lesson_of_anger->check() && base_t::id != p()->talent.mistweaver.lesson_of_anger_damage->id() )
-  {
-    monk_td_t *td = p()->get_target_data( s->target );
-    double amount = td->debuff.lesson_of_anger->check_value() + s->result_total;
-    td->debuff.lesson_of_anger->trigger( 1, amount );
-  }
-}
-
-template <class Base>
 void monk_action_t<Base>::trigger_mystic_touch( action_state_t *s )
 {
   if ( base_t::sim->overrides.mystic_touch )
@@ -614,39 +591,6 @@ result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state
   {
     return base_t::amount_type( state, periodic );
   }
-}
-
-summon_pet_t::summon_pet_t( monk_t *player, std::string_view name, std::string_view pet_name,
-                            const spell_data_t *spell_data )
-  : monk_spell_t( player, name, spell_data ),
-    summoning_duration( timespan_t::zero() ),
-    pet_name( pet_name ),
-    pet( nullptr )
-{
-  harmful = false;
-}
-
-void summon_pet_t::init_finished()
-{
-  pet = player->find_pet( pet_name );
-  if ( !pet )
-    background = true;
-
-  monk_spell_t::init_finished();
-}
-
-void summon_pet_t::execute()
-{
-  pet->summon( summoning_duration );
-
-  monk_spell_t::execute();
-}
-
-bool summon_pet_t::ready()
-{
-  if ( !pet )
-    return false;
-  return monk_spell_t::ready();
 }
 
 struct monk_snapshot_stats_t : public snapshot_stats_t
@@ -1266,21 +1210,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     may_crit          = true;
   }
 
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(),
-                                             true );
-
-      p()->buff.secret_infusion_versatility->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
-    }
-  }
-
   void impact( action_state_t *s ) override
   {
     base_t::impact( s );
@@ -1399,9 +1328,9 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->shared.teachings_of_the_monastery->ok() )
+    if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
     {
-      double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+      double totm_reset_chance = p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent();
 
       if ( rng().roll( totm_reset_chance ) )
       {
@@ -1507,7 +1436,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( p->talent.brewmaster.charred_passions->ok() )
       add_child( base_t::chp_damage );
 
-    if ( p->shared.teachings_of_the_monastery->ok() )
+    if ( p->talent.windwalker.teachings_of_the_monastery->ok() )
     {
       bok_totm_proc = new blackout_kick_totm_proc_t( p );
       add_child( bok_totm_proc );
@@ -1581,7 +1510,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       p()->buff.bok_proc->decrement();
     }
 
-    // the `->up()` invocation is redundant logically, but incurs benefit tracking
     if ( p()->buff.teachings_of_the_monastery->check() )
     {
       int stacks = p()->buff.teachings_of_the_monastery->stack();
@@ -1620,9 +1548,9 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
               s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
               "staggering_strikes" );
 
-    if ( p()->shared.teachings_of_the_monastery->ok() )
+    if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
     {
-      double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+      double totm_reset_chance = p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent();
 
       if ( rng().roll( totm_reset_chance ) )
       {
@@ -1854,20 +1782,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.dance_of_chiji_ww->up() )
+      if ( p()->buff.dance_of_chiji->up() )
       {
-        p()->buff.dance_of_chiji_ww->decrement();
+        p()->buff.dance_of_chiji->decrement();
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
           p()->buff.bok_proc->increment();  // increment is used to directly trigger without rolling chance
       }
-    }
-
-    if ( p()->buff.dance_of_chiji_mw->up() )
-    {
-      p()->buff.dance_of_chiji_mw->decrement();
-      p()->buff.dance_of_chiji_hidden->trigger();
     }
 
     monk_melee_attack_t::execute();
@@ -1998,7 +1920,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     // Otherwise things trigger before the tick action happens; which is not intended.
     make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
       p()->tier.tww2.cashout->expire();
-      p()->buff.pressure_point->trigger();
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
 
@@ -2107,7 +2028,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // TODO: Check if this can proc without being talented into DoCJ
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-      p()->buff.dance_of_chiji_ww->increment();  // increment is used to not incur the rppm cooldown
+      p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
     p()->buff.tigers_ferocity->trigger();
   }
@@ -2115,6 +2036,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
   bool ready() override
   {
     // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
+    // TODO: Fix this, this is very wrong
     if ( p()->buff.whirling_dragon_punch->up() )
       return monk_melee_attack_t::ready();
 
@@ -3127,9 +3049,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     {
       dual = background = true;
       ww_mastery        = true;
-
-      parse_effects( player->buff.the_emperors_capacitor );
-      parse_effects( player->buff.jade_empowerment );
     }
 
     double cost_per_tick( resource_e ) const override
@@ -3153,9 +3072,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     min_gcd = timespan_t::from_millis( 750 );
 
-    parse_effects( player->buff.the_emperors_capacitor );
-    parse_effects( player->buff.jade_empowerment );
-
     if ( player->specialization() == MONK_MISTWEAVER )
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
@@ -3170,14 +3086,15 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->buff.jade_empowerment->up() )
+    // TODO: Implement Jade Flash
+    if ( false )
     {
       const auto &tl = target_list();
       int count      = 0;
 
       int cleave_targets = 0;
-      if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
-        cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
+      // if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
+      //   cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
 
       for ( auto &t : tl )
       {
@@ -3201,17 +3118,19 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p()->buff.jade_empowerment->up() )
+    // TODO: Implement Jade Flash
+    if ( false )
       // delay expiration so it occurs after final tick of cjl aoe
       make_event<events::delayed_cb_event_t>( *sim, p(), 1_ms, [ & ]() {
-        p()->buff.the_emperors_capacitor->expire();
-        p()->buff.jade_empowerment->expire();
+        // buff expire
         const auto &tl = target_list();
         for ( const auto &t : tl )
           get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
       } );
     else
-      p()->buff.the_emperors_capacitor->expire();
+    {
+    }
+    // buff expire
 
     // Reset swing timer
     if ( player->main_hand_attack )
@@ -3231,28 +3150,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
         player->off_hand_attack->schedule_execute();
       }
     }
-  }
-
-  double cost() const override
-  {
-    double cost = monk_spell_t::cost();
-
-    if ( current_resource() == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
-      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
-                        p()->buff.the_emperors_capacitor->check();
-
-    return cost;
-  }
-
-  double cost_per_tick( resource_e resource ) const override
-  {
-    double cost = monk_spell_t::cost_per_tick( resource );
-
-    if ( resource == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
-      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
-                        p()->buff.the_emperors_capacitor->check();
-
-    return cost;
   }
 };
 
@@ -3604,29 +3501,6 @@ struct mana_tea_t : public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
-  }
-};
-
-// ==========================================================================
-// Thunder Focus Tea
-// ==========================================================================
-
-struct thunder_focus_tea_t : public monk_spell_t
-{
-  thunder_focus_tea_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "thunder_focus_tea", p->talent.mistweaver.thunder_focus_tea )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->buff.thunder_focus_tea->trigger( p()->buff.thunder_focus_tea->max_stack() );
-    p()->buff.jade_empowerment->trigger();
   }
 };
 
@@ -4119,15 +3993,6 @@ struct jadefire_stomp_t : public monk_spell_t
     damage->execute_on_target( s->target );
   }
 };
-
-struct lesson_of_anger_t : public monk_spell_t
-{
-  lesson_of_anger_t( monk_t *player )
-    : monk_spell_t( player, "lesson_of_anger", player->talent.mistweaver.lesson_of_anger_damage )
-  {
-    background = true;
-  }
-};
 }  // namespace spells
 
 namespace heals
@@ -4145,27 +4010,6 @@ struct enveloping_mist_t : public monk_heal_t
 
     may_miss = false;
   }
-
-  double execute_time_pct_multiplier() const override
-  {
-    auto mul = monk_heal_t::execute_time_pct_multiplier();
-
-    mul *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 6 ).percent();  // saved as -100
-
-    return mul;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      p()->buff.secret_infusion_crit->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
-    }
-  }
 };
 
 // ==========================================================================
@@ -4179,18 +4023,6 @@ struct renewing_mist_t : public monk_heal_t
   {
     parse_options( options_str );
     may_crit = may_miss = false;
-  }
-
-  void execute() override
-  {
-    monk_heal_t::execute();
-
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      p()->buff.secret_infusion_haste->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
-    }
   }
 };
 
@@ -4210,101 +4042,11 @@ struct vivify_t : public monk_heal_t
     cast_during_sck = false;
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double c = monk_heal_t::cost_pct_multiplier();
-
-    if ( p()->buff.thunder_focus_tea->check() )
-      c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100
-
-    return c;
-  }
-
   void execute() override
   {
     monk_heal_t::execute();
 
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      p()->buff.secret_infusion_mastery->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
-    }
-
     p()->action.chi_wave->execute();
-  }
-};
-
-// ==========================================================================
-// Sheilun's Gift
-// ==========================================================================
-
-struct sheiluns_gift_t : public monk_heal_t
-{
-  enum shaohao_buff_e
-  {
-    SHAOHAO_BUFF_ANGER,
-    SHAOHAO_BUFF_DESPAIR,
-    SHAOHAO_BUFF_DOUBT,
-    SHAOHAO_BUFF_FEAR,
-  };
-
-  shuffled_rng_t *shaohao_rng;
-
-  sheiluns_gift_t( monk_t *player, util::string_view options_str )
-    : monk_heal_t( player, "sheiluns_gift", player->talent.mistweaver.sheiluns_gift ),
-      shaohao_rng( player->get_shuffled_rng( "shaohao_buff", {
-                                                                 { SHAOHAO_BUFF_ANGER, 1 },
-                                                                 { SHAOHAO_BUFF_DESPAIR, 1 },
-                                                                 { SHAOHAO_BUFF_DOUBT, 1 },
-                                                                 { SHAOHAO_BUFF_FEAR, 1 },
-                                                             } ) )
-  {
-    parse_options( options_str );
-
-    aoe = as<int>( data().effectN( 2 ).base_value() );
-  }
-
-  bool ready() override
-  {
-    return base_t::ready() && p()->buff.sheiluns_gift->stack() > 0;
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    auto stacks = p()->buff.sheiluns_gift->stack();
-    p()->buff.sheiluns_gift->expire();
-
-    p()->buff.heart_of_the_jade_serpent_stack_mw->increment( stacks );
-
-    if ( p()->talent.mistweaver.shaohaos_lessons->ok() )
-    {
-      timespan_t max_duration =
-          timespan_t::from_seconds( p()->talent.mistweaver.shaohaos_lessons->effectN( 1 ).base_value() );
-      double max_stacks   = as<double>( p()->buff.sheiluns_gift->max_stack() );
-      timespan_t duration = max_duration * as<double>( stacks ) / max_stacks;
-
-      switch ( shaohao_buff_e( shaohao_rng->trigger() ) )
-      {
-        case SHAOHAO_BUFF_ANGER:
-          p()->buff.lesson_of_anger->trigger( duration );
-          break;
-        case SHAOHAO_BUFF_DESPAIR:
-          p()->buff.lesson_of_despair->trigger( duration );
-          break;
-        case SHAOHAO_BUFF_DOUBT:
-          p()->buff.lesson_of_doubt->trigger( duration );
-          break;
-        case SHAOHAO_BUFF_FEAR:
-          p()->buff.lesson_of_fear->trigger( duration );
-          break;
-        default:
-          assert( "unknown shaohao buff drawn from deck" );
-          break;
-      }
-    }
   }
 };
 
@@ -4361,13 +4103,6 @@ struct expel_harm_t : monk_heal_t
       double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
       p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
       p()->proc.tranquil_spirit_expel_harm->occur();
-    }
-
-    if ( p()->buff.thunder_focus_tea->up() )
-    {
-      p()->buff.secret_infusion_versatility->trigger();
-
-      p()->buff.thunder_focus_tea->decrement();
     }
   }
 
@@ -5330,13 +5065,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                              ->set_trigger_spell( p->talent.brewmaster.exploding_keg )
                              ->set_cooldown( timespan_t::zero() );
 
-  // Mistweaver
-  debuff.lesson_of_anger = make_buff_fallback( p->talent.mistweaver.shaohaos_lessons->ok(), *this,
-                                               "lesson_of_anger_accumulator", spell_data_t::nil() )
-                               ->set_default_value( 0.0 )
-                               ->set_trigger_spell( p->talent.mistweaver.shaohaos_lessons )
-                               ->set_quiet( true );
-
   // Shado-Pan
 
   debuff.high_impact = make_buff_fallback( p->talent.shado_pan.high_impact->ok(), *this, "high_impact",
@@ -5444,14 +5172,6 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
-
-  // mistweaver talent auras
-  parse_effects( buff.secret_infusion_haste, USE_DEFAULT );
-  parse_effects( buff.secret_infusion_crit, USE_DEFAULT );
-  parse_effects( buff.secret_infusion_mastery, USE_DEFAULT );
-  parse_effects( buff.secret_infusion_versatility, USE_DEFAULT );
-  parse_effects( buff.lesson_of_despair );
-  parse_effects( buff.lesson_of_fear );
 
   // windwalker talent auras
   parse_effects( buff.memory_of_the_monastery );
@@ -5570,10 +5290,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new yulon_spell_t( this, options_str );
   if ( name == "renewing_mist" )
     return new renewing_mist_t( this, options_str );
-  if ( name == "sheiluns_gift" )
-    return new sheiluns_gift_t( this, options_str );
-  if ( name == "thunder_focus_tea" )
-    return new thunder_focus_tea_t( this, options_str );
 
   // Windwalker
   if ( name == "fists_of_fury" )
@@ -5911,8 +5627,10 @@ void monk_t::init_spells()
     talent.monk.tiger_tail_sweep        = _CT( "Tiger Tail Sweep" );
     talent.monk.improved_touch_of_death = _CT( "Improved Touch of Death" );
     // Row 7
-    talent.monk.vigorous_expulsion   = _CT( "Vigorous Expulsion" );
-    talent.monk.yulons_grace         = _CT( "Yu'lon's Grace" );
+    talent.monk.vigorous_expulsion = _CT( "Vigorous Expulsion" );
+    talent.monk.yulons_grace       = _CT( "Yu'lon's Grace" );
+    if ( talent.monk.yulons_grace->ok() )
+      talent.monk.yulons_grace_buff = find_spell( 414143 );
     talent.monk.peace_and_prosperity = _CT( "Peace and Prosperity" );
     talent.monk.fortifying_brew      = _CT( "Fortifying Brew" );
     if ( talent.monk.fortifying_brew->ok() )
@@ -6028,8 +5746,7 @@ void monk_t::init_spells()
     // Row 1
     talent.mistweaver.enveloping_mist = _ST( "Enveloping Mist" );
     // Row 2
-    talent.mistweaver.thunder_focus_tea = _ST( "Thunder Focus Tea" );
-    talent.mistweaver.renewing_mist     = _ST( "Renewing Mist" );
+    talent.mistweaver.renewing_mist = _ST( "Renewing Mist" );
     // Row 3
     talent.mistweaver.life_cocoon        = _ST( "Life Cocoon" );
     talent.mistweaver.mana_tea           = _ST( "Mana Tea" );
@@ -6069,40 +5786,25 @@ void monk_t::init_spells()
     talent.mistweaver.jade_bond              = _ST( "Jade Bond" );
     talent.mistweaver.gift_of_the_celestials = _ST( "Gift of the Celestials" );
     talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
-    talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
     // Row 9
-    talent.mistweaver.ancient_teachings            = _ST( "Ancient Teachings" );
-    talent.mistweaver.resplendent_mist             = _ST( "Resplendent Mist" );
-    talent.mistweaver.secret_infusion              = _ST( "Secret Infusion" );
-    talent.mistweaver.secret_infusion_haste_buff   = find_spell( 388497 );
-    talent.mistweaver.secret_infusion_crit_buff    = find_spell( 388498 );
-    talent.mistweaver.secret_infusion_mastery_buff = find_spell( 388499 );
-    talent.mistweaver.secret_infusion_vers_buff    = find_spell( 388500 );
-    talent.mistweaver.sheiluns_gift                = _ST( "Sheilun's Gift" );
-    talent.mistweaver.sheiluns_gift_stacks         = find_spell( 399497 );
-    talent.mistweaver.misty_peaks                  = _ST( "Misty Peaks" );
-    talent.mistweaver.peaceful_mending             = _ST( "Peaceful Mending" );
-    talent.mistweaver.veil_of_pride                = _ST( "Veil of Pride" );
-    talent.mistweaver.shaohaos_lessons             = _ST( "Shaohao's Lessons" );
-    talent.mistweaver.lesson_of_doubt_buff         = find_spell( 400097 );
-    talent.mistweaver.lesson_of_despair_buff       = find_spell( 400116 );
-    talent.mistweaver.lesson_of_fear_buff          = find_spell( 400103 );
-    talent.mistweaver.lesson_of_anger_buff         = find_spell( 400106 );
-    talent.mistweaver.lesson_of_anger_damage       = find_spell( 400145 );
+    talent.mistweaver.ancient_teachings = _ST( "Ancient Teachings" );
+    talent.mistweaver.resplendent_mist  = _ST( "Resplendent Mist" );
+    talent.mistweaver.misty_peaks       = _ST( "Misty Peaks" );
+    talent.mistweaver.peaceful_mending  = _ST( "Peaceful Mending" );
+    talent.mistweaver.veil_of_pride     = _ST( "Veil of Pride" );
+    talent.mistweaver.shaohaos_lessons  = _ST( "Shaohao's Lessons" );
     // Row 10
-    talent.mistweaver.awakened_jadefire      = _ST( "Awakened Jadefire" );
-    talent.mistweaver.awakened_jadefire_buff = find_spell( 389387 );
-    talent.mistweaver.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
-    talent.mistweaver.jade_empowerment       = _ST( "Jade Empowerment" );
-    talent.mistweaver.jade_empowerment_buff  = find_spell( 467317 );
-    talent.mistweaver.tea_of_serenity        = _ST( "Tea of Serenity" );
-    talent.mistweaver.tea_of_plenty          = _ST( "Tea of Plenty" );
-    talent.mistweaver.unison                 = _ST( "Unison" );
-    talent.mistweaver.mending_proliferation  = _ST( "Mending Proliferation" );
-    talent.mistweaver.invokers_delight       = _ST( "Invoker's Delight" );
-    talent.mistweaver.tear_of_morning        = _ST( "Tear of Morning" );
-    talent.mistweaver.rising_mist            = _ST( "Rising Mist" );
-    talent.mistweaver.legacy_of_wisdom       = _ST( "Legacy of Wisdom" );
+    talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
+    talent.mistweaver.jade_empowerment      = _ST( "Jade Empowerment" );
+    talent.mistweaver.jade_empowerment_buff = find_spell( 467317 );
+    talent.mistweaver.tea_of_serenity       = _ST( "Tea of Serenity" );
+    talent.mistweaver.tea_of_plenty         = _ST( "Tea of Plenty" );
+    talent.mistweaver.unison                = _ST( "Unison" );
+    talent.mistweaver.mending_proliferation = _ST( "Mending Proliferation" );
+    talent.mistweaver.invokers_delight      = _ST( "Invoker's Delight" );
+    talent.mistweaver.tear_of_morning       = _ST( "Tear of Morning" );
+    talent.mistweaver.rising_mist           = _ST( "Rising Mist" );
+    talent.mistweaver.legacy_of_wisdom      = _ST( "Legacy of Wisdom" );
   }
 
   // monk_t::talent::windwalker
@@ -6291,13 +5993,11 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.dance_of_chiji                   = find_spell( 325202 );
-  passives.dizzying_kicks                   = find_spell( 196723 );
   passives.empowered_tiger_lightning        = find_spell( 335913 );
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flurry_of_xuen_driver            = find_spell( 452117 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
-  passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.improved_touch_of_death          = find_spell( 322113 );
   passives.summon_white_tiger_statue        = find_spell( 388686 );
@@ -6313,13 +6013,6 @@ void monk_t::init_spells()
 
   // Returns first valid spell in argument list, pass highest priority to first argument
   // Returns spell_data_t::not_found() if none are valid
-
-  if ( talent.windwalker.teachings_of_the_monastery->ok() )
-    shared.teachings_of_the_monastery = talent.windwalker.teachings_of_the_monastery;
-  else if ( specialization() == MONK_MISTWEAVER && baseline.mistweaver.teachings_of_the_monastery->ok() )
-    shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
-  else
-    shared.teachings_of_the_monastery = spell_data_t::not_found();
 
   // Register passives
   // Aura adjustments that are only visual on tooltip and don't actually have an effect
@@ -6381,10 +6074,6 @@ void monk_t::init_background_actions()
     action.exploding_keg     = new actions::spells::exploding_keg_proc_t( this );
     action.walk_with_the_ox  = new actions::attacks::stomp_t( this );
   }
-
-  // Mistweaver
-  if ( specialization() == MONK_MISTWEAVER )
-    action.lesson_of_anger_damage = new actions::spells::lesson_of_anger_t( this );
 
   // Windwalker
   if ( specialization() == MONK_WINDWALKER )
@@ -6599,11 +6288,6 @@ void monk_t::create_buffs()
   base_t::create_buffs();
 
   // General
-  buff.chi_burst = make_buff_fallback( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER, this,
-                                       "chi_burst", talent.monk.chi_burst_buff );
-
-  buff.chi_wave = make_buff_fallback( talent.monk.chi_wave->ok(), this, "chi_wave", talent.monk.chi_wave_buff );
-
   buff.combat_wisdom =
       make_buff_fallback( talent.windwalker.combat_wisdom->ok(), this, "combat_wisdom", find_spell( 129914 ) )
           ->set_trigger_spell( talent.windwalker.combat_wisdom )
@@ -6625,13 +6309,13 @@ void monk_t::create_buffs()
                                  ->set_default_value_from_effect( 2 )
                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.teachings_of_the_monastery = make_buff_fallback( shared.teachings_of_the_monastery->ok(), this,
+  buff.teachings_of_the_monastery = make_buff_fallback( talent.windwalker.teachings_of_the_monastery->ok(), this,
                                                         "teachings_of_the_monastery", find_spell( 202090 ) )
-                                        ->set_trigger_spell( shared.teachings_of_the_monastery )
+                                        ->set_trigger_spell( talent.windwalker.teachings_of_the_monastery )
                                         ->set_default_value_from_effect( 1 );
 
-  buff.yulons_grace =
-      make_buff_fallback<absorb_buff_t>( talent.monk.yulons_grace->ok(), this, "yulons_grace", find_spell( 414143 ) );
+  buff.yulons_grace = make_buff_fallback<absorb_buff_t>( talent.monk.yulons_grace->ok(), this, "yulons_grace",
+                                                         talent.monk.yulons_grace_buff );
 
   // Brewmaster
   buff.training_of_niuzao = make_buff_fallback<training_of_niuzao_buff>( talent.brewmaster.training_of_niuzao->ok(),
@@ -6708,67 +6392,6 @@ void monk_t::create_buffs()
                           tier.tww1.brm_4pc_free_keg_smash_buff )
           ->set_trigger_spell( sets->set( MONK_BREWMASTER, TWW1, B4 ) );
 
-  // Mistweaver
-  buff.awakened_jadefire = make_buff_fallback( talent.mistweaver.awakened_jadefire->ok(), this, "ancient_concordance",
-                                               talent.mistweaver.awakened_jadefire_buff );
-
-  buff.jade_empowerment = make_buff_fallback( talent.mistweaver.jade_empowerment->ok(), this, "jade_empowerment",
-                                              talent.mistweaver.jade_empowerment_buff );
-
-  const auto make_secret_infusion_buff = [ this ]( std::string_view name, const spell_data_t *spell_data ) {
-    return make_buff_fallback( talent.mistweaver.secret_infusion->ok(), this, name, spell_data )
-        ->set_trigger_spell( talent.mistweaver.secret_infusion )
-        ->set_default_value( talent.mistweaver.secret_infusion->effectN( 1 ).percent() );
-  };
-
-  buff.secret_infusion_haste =
-      make_secret_infusion_buff( "secret_infusion_haste", talent.mistweaver.secret_infusion_haste_buff );
-
-  buff.secret_infusion_crit =
-      make_secret_infusion_buff( "secret_infusion_crit", talent.mistweaver.secret_infusion_crit_buff );
-
-  buff.secret_infusion_mastery =
-      make_secret_infusion_buff( "secret_infusion_mastery", talent.mistweaver.secret_infusion_mastery_buff );
-
-  buff.secret_infusion_versatility =
-      make_secret_infusion_buff( "secret_infusion_versatility", talent.mistweaver.secret_infusion_vers_buff );
-
-  buff.sheiluns_gift = make_buff_fallback( talent.mistweaver.sheiluns_gift->ok(), this, "sheiluns_gift",
-                                           talent.mistweaver.sheiluns_gift_stacks )
-                           ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
-
-  auto anger_callback = [ this ]( buff_t *, int, timespan_t ) {
-    for ( player_t *target : sim->target_non_sleeping_list )
-    {
-      monk_td_t *td = get_target_data( target );
-      double amount =
-          td->debuff.lesson_of_anger->value() * talent.mistweaver.lesson_of_anger_buff->effectN( 1 ).percent();
-      action.lesson_of_anger_damage->execute_on_target( target, amount );
-      td->debuff.lesson_of_anger->expire();
-    }
-  };
-
-  buff.lesson_of_anger = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_anger",
-                                             talent.mistweaver.lesson_of_anger_buff )
-                             ->set_trigger_spell( talent.mistweaver.sheiluns_gift )
-                             ->set_tick_callback( anger_callback )
-                             ->set_expire_callback( anger_callback );
-
-  buff.lesson_of_despair = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_despair",
-                                               talent.mistweaver.lesson_of_despair_buff )
-                               ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
-
-  buff.lesson_of_doubt = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_doubt",
-                                             talent.mistweaver.lesson_of_doubt_buff )
-                             ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
-
-  buff.lesson_of_fear = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_fear",
-                                            talent.mistweaver.lesson_of_fear_buff )
-                            ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
-
-  buff.thunder_focus_tea = make_buff_fallback( talent.mistweaver.thunder_focus_tea->ok(), this, "thunder_focus_tea",
-                                               talent.mistweaver.thunder_focus_tea );
-
   // Windwalker
   buff.bok_proc = make_buff_fallback( baseline.windwalker.combo_breaker->ok(), this, "bok_proc", passives.bok_proc )
                       ->set_trigger_spell( baseline.windwalker.combo_breaker )
@@ -6786,13 +6409,9 @@ void monk_t::create_buffs()
 
   // Create the buff even if untalented - it is possible to get a dance of chiji proc without the talent from other
   // sources.
-  buff.dance_of_chiji_ww =
+  buff.dance_of_chiji =
       make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji", passives.dance_of_chiji )
           ->set_trigger_spell( talent.windwalker.dance_of_chiji );
-
-  buff.dance_of_chiji_mw = make_buff_fallback( talent.mistweaver.dance_of_chiji->ok(), this, "dance_of_chiji",
-                                               talent.mistweaver.dance_of_chiji->effectN( 1 ).trigger() )
-                               ->set_trigger_spell( talent.mistweaver.dance_of_chiji );
 
   buff.dance_of_chiji_hidden = make_buff_fallback( specialization() != MONK_BREWMASTER, this, "dance_of_chiji_hidden" )
                                    ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
@@ -6842,11 +6461,6 @@ void monk_t::create_buffs()
   buff.momentum_boost_speed =
       make_buff_fallback( talent.windwalker.momentum_boost->ok(), this, "momentum_boost_speed", find_spell( 451298 ) )
           ->set_trigger_spell( talent.windwalker.momentum_boost );
-
-  buff.pressure_point =
-      make_buff_fallback( talent.windwalker.xuens_battlegear->ok(), this, "pressure_point", find_spell( 393053 ) )
-          ->set_default_value_from_effect( 1 )
-          ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.thunderfist =
       make_buff_fallback( talent.windwalker.thunderfist->ok(), this, "thunderfist", passives.thunderfist );
@@ -7393,13 +7007,6 @@ void monk_t::init_special_effects()
   if ( tier.tww2.brm_2pc->ok() )
     create_proc_callback( { tier.tww2.brm_2pc, static_cast<proc_flag>( 0ull ), PF2_ALL_HIT } );
 
-  if ( talent.mistweaver.dance_of_chiji.ok() )
-    create_proc_callback( { talent.mistweaver.dance_of_chiji.spell() } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm side affects
-          proc.dance_of_chiji->occur();
-        } );
-
   if ( tier.tww3.spm_2pc->ok() )
     create_proc_callback( { tier.tww3.spm_2pc_flurry_charge_data, static_cast<proc_flag>( 0ull ),
                             static_cast<proc_flag2>( 0ull ), tier.tww3.spm_2pc_flurry_strikes } )
@@ -7752,13 +7359,6 @@ void monk_t::combat_begin()
       make_repeating_event( sim, talent.windwalker.combat_wisdom->effectN( 2 ).period(),
                             [ this ]() { buff.combat_wisdom->trigger(); } );
     }
-  }
-
-  if ( talent.mistweaver.sheiluns_gift->ok() )
-  {
-    auto period = talent.mistweaver.sheiluns_gift->effectN( 1 ).period();
-
-    make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
   }
 }
 
