@@ -1829,6 +1829,40 @@ const char* util::spec_string_no_class( const player_t& p )
   }
 }
 
+// Rating Type Strings
+const char* util::rating_type_string( rating_e rating )
+{
+  switch ( rating )
+  {
+    case RATING_BLOCK:                  return "block";
+    case RATING_DODGE:                  return "dodge";
+    case RATING_PARRY:                  return "parry";
+    case RATING_MELEE_HIT:              return "melee_hit";
+    case RATING_RANGED_HIT:             return "ranged_hit";
+    case RATING_SPELL_HIT:              return "spell_hit";
+    case RATING_MELEE_CRIT:             return "melee_crit";
+    case RATING_RANGED_CRIT:            return "ranged_crit";
+    case RATING_SPELL_CRIT:             return "spell_crit";
+    case RATING_PVP_RESILIENCE:         return "pvp_resilience";
+    case RATING_LEECH:                  return "leech";
+    case RATING_MELEE_HASTE:            return "melee_haste";
+    case RATING_RANGED_HASTE:           return "ranged_haste";
+    case RATING_SPELL_HASTE:            return "spell_haste";
+    case RATING_EXPERTISE:              return "expertise";
+    case RATING_MASTERY:                return "mastery";
+    case RATING_PVP_POWER:              return "pvp_power";
+    case RATING_DAMAGE_VERSATILITY:     return "damage_versatility";
+    case RATING_HEAL_VERSATILITY:       return "heal_versatility";
+    case RATING_MITIGATION_VERSATILITY: return "mitigation_versatility";
+    case RATING_SPEED:                  return "speed";
+    case RATING_AVOIDANCE:              return "avoidance";
+    case RATING_CORRUPTION:             return "corruption";
+    case RATING_CORRUPTION_RESISTANCE:  return "corruption_resistance";
+    case RATING_MAX:                    return "max";
+    default:                            return "";
+  }
+}
+
 // parse_stat_type ==========================================================
 
 stat_e util::parse_stat_type( util::string_view name )

@@ -10533,9 +10533,6 @@ double evoker_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double am = player_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STAMINA )
-    am *= 1.0 + talent.draconic_legacy->effectN( 1 ).percent();
-
   return am;
 }
 

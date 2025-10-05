@@ -9879,12 +9879,6 @@ double rogue_t::composite_attribute_multiplier( attribute_e a ) const
 {
   double am = player_t::composite_attribute_multiplier( a );
 
-  if ( a == ATTR_STAMINA )
-  {
-    // TOCHECK -- This may be a base attribute multiplier now
-    am *= 1.0 + talent.outlaw.combat_stamina->effectN( 1 ).percent();
-  }
-
   return am;
 }
 

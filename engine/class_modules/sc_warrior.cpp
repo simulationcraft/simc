@@ -10187,18 +10187,6 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = parse_player_effects_t::composite_attribute_multiplier( attr );
 
-  if ( attr == ATTR_STRENGTH )
-  {
-    m *= 1.0 + talents.protection.focused_vigor->effectN( 1 ).percent();
-  }
-
-  // Protection has increased stamina from vanguard
-  if ( attr == ATTR_STAMINA )
-  {
-    m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
-    m *= 1.0 + talents.warrior.reinforced_plates -> effectN( 1 ).percent();
-  }
-
   return m;
 }
 

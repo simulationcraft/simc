@@ -9512,17 +9512,6 @@ double hunter_t::composite_rating_multiplier( rating_e r ) const
 {
   double rm = player_t::composite_rating_multiplier( r );
 
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      rm *= 1.0 + talents.serrated_tips -> effectN( 1 ).percent();
-      break;
-    default:
-      break;
-  }
-
   return rm;
 }
 

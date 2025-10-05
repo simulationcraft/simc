@@ -275,6 +275,7 @@ struct player_t : public actor_t
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     std::array<double, ATTRIBUTE_MAX> matching_armor_multiplier;
+    std::array<double, RATING_MAX> rating_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     double crit_damage_multiplier, crit_healing_multiplier;
     double attack_speed_multiplier;
@@ -285,9 +286,6 @@ struct player_t : public actor_t
   base, // Base values, from some database or overridden by user
   initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
   current; // Current values, reset to initial before every iteration
-
-  /// Passive combat rating multipliers
-  rating_t passive_rating_multiplier;
 
   gear_stats_t passive; // Passive stats from various passive auras (and similar effects)
 

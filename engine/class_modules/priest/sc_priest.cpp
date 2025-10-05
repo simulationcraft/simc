@@ -2704,6 +2704,7 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double mul = player_t::composite_attribute_multiplier( attr );
 
+  // TODO: Check if parsed DBC overrides properly apply this modifier
   if ( attr == ATTR_STAMINA && sim->auras.power_word_fortitude->check() )
   {
     double pwf_val = sim->auras.power_word_fortitude->current_value;

@@ -4755,12 +4755,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    if ( passives.aegis_of_light -> ok() )
-      m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
-
-    if ( talents.sanctified_plates->ok() )
-      m *= 1.0 + talents.sanctified_plates->effectN( 1 ).percent();
-
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
@@ -4774,8 +4768,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( talents.seal_of_might->ok() )
-      m *= 1.0 + talents.seal_of_might->effectN( 1 ).percent();
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
       m *= 1.0 + buffs.redoubt->stack_value();

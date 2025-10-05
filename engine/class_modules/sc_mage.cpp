@@ -9150,22 +9150,6 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
 {
   double rm = player_t::composite_rating_multiplier( r );
 
-  switch ( r )
-  {
-    case RATING_MELEE_CRIT:
-    case RATING_RANGED_CRIT:
-    case RATING_SPELL_CRIT:
-      rm *= 1.0 + talents.critical_mass->effectN( 2 ).percent();
-      break;
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-    case RATING_SPELL_HASTE:
-      rm *= 1.0 + talents.winters_blessing->effectN( 2 ).percent();
-      break;
-    default:
-      break;
-  }
-
   return rm;
 }
 
@@ -9173,6 +9157,7 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double mul = player_t::composite_attribute_multiplier( attr );
 
+  // TODO: Check if parsed DBC overrides properly apply this modifier
   if ( attr == ATTR_INTELLECT && sim->auras.arcane_intellect->check() )
   {
     double ai_val = sim->auras.arcane_intellect->current_value;
