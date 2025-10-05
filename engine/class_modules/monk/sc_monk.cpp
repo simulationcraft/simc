@@ -5382,6 +5382,7 @@ void monk_t::init_spells()
   }
 
   // monk_t::talent::conduit_of_the_celestials
+  if ( has_hero_tree( HERO_CONDUIT_OF_THE_CELESTIALS ) )
   {
     talent.conduit_of_the_celestials.celestial_conduit                      = _HT( "Celestial Conduit" );
     talent.conduit_of_the_celestials.celestial_conduit_dmg                  = find_spell( 443038 );
@@ -5394,6 +5395,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.restore_balance                        = _HT( "Restore Balance" );
     talent.conduit_of_the_celestials.yulons_knowledge                       = _HT( "Yu'lon's Knowledge" );
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the Jade Serpent" );
+    talent.conduit_of_the_celestials.chijis_swiftness                       = _HT( "Chi-Ji's Swiftness" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_absorb        = find_spell( 443113 );
     talent.conduit_of_the_celestials.strength_of_the_black_ox_damage        = find_spell( 443127 );
@@ -5402,16 +5404,18 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.flight_of_the_red_crane_heal           = find_spell( 443272 );
     talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg  = find_spell( 443611 );
     talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_heal = find_spell( 443614 );
+    talent.conduit_of_the_celestials.yulons_avatar                          = _HT( "Yu'lon's Avatar" );
     talent.conduit_of_the_celestials.niuzaos_protection                     = _HT( "Niuzao's Protection" );
     talent.conduit_of_the_celestials.jade_sanctuary                         = _HT( "Jade Sanctuary" );
-    talent.conduit_of_the_celestials.chi_jis_swiftness                      = _HT( "Chi-Ji's Swiftness" );
+    talent.conduit_of_the_celestials.stampede_of_the_ancients               = _HT( "Stampede of the Ancients" );
     talent.conduit_of_the_celestials.inner_compass                          = _HT( "Inner Compass" );
-    talent.conduit_of_the_celestials.august_dynasty                         = _HT( "August Dynasty" );
+    talent.conduit_of_the_celestials.flowing_wisdom                         = _HT( "Flowing Wisdom" );
     talent.conduit_of_the_celestials.unity_within                           = _HT( "Unity Within" );
     talent.conduit_of_the_celestials.unity_within_dmg_mult                  = find_spell( 443591 );
   }
 
   // monk_t::talent::master_of_harmony
+  if ( has_hero_tree( HERO_MASTER_OF_HARMONY ) )
   {
     talent.master_of_harmony.aspect_of_harmony             = _HT( "Aspect of Harmony" );
     talent.master_of_harmony.aspect_of_harmony_driver      = find_spell( 450567 );
@@ -5440,7 +5444,8 @@ void monk_t::init_spells()
     talent.master_of_harmony.coalescence                   = _HT( "Coalescence" );
   }
 
-  // monk_t::talent::shado-pan
+  // monk_t::talent::shado_pan
+  if ( has_hero_tree( HERO_SHADOPAN ) )
   {
     talent.shado_pan.flurry_strikes            = _HT( "Flurry Strikes" );
     talent.shado_pan.flurry_strikes_hit        = find_spell( 450617 );
@@ -5914,14 +5919,11 @@ void monk_t::create_buffs()
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   // Conduit of the Celestials
-  buff.august_dynasty = make_buff_fallback( talent.conduit_of_the_celestials.august_dynasty->ok(), this,
-                                            "august_dynasty", find_spell( 442850 ) );
-
   buff.celestial_conduit = make_buff_fallback( talent.conduit_of_the_celestials.celestial_conduit->ok(), this,
                                                "celestial_conduit", find_spell( 443028 ) );
 
-  buff.chi_jis_swiftness = make_buff_fallback( talent.conduit_of_the_celestials.chi_jis_swiftness->ok(), this,
-                                               "chi_jis_swiftness", find_spell( 443569 ) );
+  buff.chijis_swiftness = make_buff_fallback( talent.conduit_of_the_celestials.chijis_swiftness->ok(), this,
+                                              "chijis_swiftness", find_spell( 443569 ) );
 
   buff.courage_of_the_white_tiger =
       make_buff_fallback( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok(), this,

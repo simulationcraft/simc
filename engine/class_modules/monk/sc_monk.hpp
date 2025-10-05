@@ -496,7 +496,7 @@ public:
     // Conduit of the Celestials
     propagate_const<buff_t *> august_dynasty;
     propagate_const<buff_t *> celestial_conduit;
-    propagate_const<buff_t *> chi_jis_swiftness;
+    propagate_const<buff_t *> chijis_swiftness;
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> flight_of_the_red_crane;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
@@ -922,6 +922,44 @@ public:
       player_talent_t tigereye_brew_3;
     } windwalker;
 
+    // Conduit of the Celestials
+    struct
+    {
+      // Row 1
+      player_talent_t celestial_conduit;
+      const spell_data_t *celestial_conduit_dmg;
+      const spell_data_t *celestial_conduit_heal;
+      // Row 2
+      player_talent_t temple_training;
+      player_talent_t xuens_guidance;
+      player_talent_t courage_of_the_white_tiger;
+      const spell_data_t *courage_of_the_white_tiger_damage;
+      const spell_data_t *courage_of_the_white_tiger_heal;
+      player_talent_t restore_balance;
+      player_talent_t yulons_knowledge;
+      player_talent_t heart_of_the_jade_serpent;
+      // Row 3
+      player_talent_t chijis_swiftness;
+      player_talent_t strength_of_the_black_ox;
+      const spell_data_t *strength_of_the_black_ox_absorb;
+      const spell_data_t *strength_of_the_black_ox_damage;
+      player_talent_t flight_of_the_red_crane;
+      const spell_data_t *flight_of_the_red_crane_dmg;
+      const spell_data_t *flight_of_the_red_crane_heal;
+      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
+      const spell_data_t *flight_of_the_red_crane_celestial_heal;
+      player_talent_t yulons_avatar;
+      // Row 4
+      player_talent_t niuzaos_protection;
+      player_talent_t jade_sanctuary;
+      player_talent_t stampede_of_the_ancients;
+      player_talent_t inner_compass;
+      player_talent_t flowing_wisdom;
+      // Row 5
+      player_talent_t unity_within;
+      const spell_data_t *unity_within_dmg_mult;
+    } conduit_of_the_celestials;
+
     // Master of Harmony
     struct
     {
@@ -984,41 +1022,6 @@ public:
       const spell_data_t *wisdom_of_the_wall_flurry;
     } shado_pan;
 
-    // Conduit of the Celestials
-    struct
-    {
-      // Row 1
-      player_talent_t celestial_conduit;
-      const spell_data_t *celestial_conduit_dmg;
-      const spell_data_t *celestial_conduit_heal;
-      // Row 2
-      player_talent_t temple_training;
-      player_talent_t xuens_guidance;
-      player_talent_t courage_of_the_white_tiger;
-      const spell_data_t *courage_of_the_white_tiger_damage;
-      const spell_data_t *courage_of_the_white_tiger_heal;
-      player_talent_t restore_balance;
-      player_talent_t yulons_knowledge;
-      // Row 3
-      player_talent_t heart_of_the_jade_serpent;
-      player_talent_t strength_of_the_black_ox;
-      const spell_data_t *strength_of_the_black_ox_absorb;
-      const spell_data_t *strength_of_the_black_ox_damage;
-      player_talent_t flight_of_the_red_crane;
-      const spell_data_t *flight_of_the_red_crane_dmg;
-      const spell_data_t *flight_of_the_red_crane_heal;
-      const spell_data_t *flight_of_the_red_crane_celestial_dmg;
-      const spell_data_t *flight_of_the_red_crane_celestial_heal;
-      // Row 4
-      player_talent_t niuzaos_protection;
-      player_talent_t jade_sanctuary;
-      player_talent_t chi_jis_swiftness;
-      player_talent_t inner_compass;
-      player_talent_t august_dynasty;
-      // Row 5
-      player_talent_t unity_within;
-      const spell_data_t *unity_within_dmg_mult;
-    } conduit_of_the_celestials;
   } talent;
 
   struct
