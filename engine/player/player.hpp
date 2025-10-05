@@ -264,7 +264,9 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
     double hit, expertise, leech, avoidance;
-    double spell_crit_chance, attack_crit_chance, block_reduction, mastery, versatility;
+    double spell_crit_chance, attack_crit_chance, block_reduction;
+    double mastery, versatility, all_crit, all_haste;
+    double melee_haste, spell_haste, ranged_haste;
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
@@ -277,7 +279,8 @@ struct player_t : public actor_t
     std::array<double, ATTRIBUTE_MAX> matching_armor_multiplier;
     std::array<double, RATING_MAX> rating_multiplier;
     double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
-    double crit_damage_multiplier, crit_healing_multiplier;
+    std::array<double, SCHOOL_MAX_PRIMARY> crit_damage_multiplier;
+    double crit_healing_multiplier;
     double attack_speed_multiplier;
     position_e position;
 
@@ -1332,7 +1335,7 @@ public:
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
   virtual double composite_player_target_pet_damage_multiplier( player_t*, bool guardian ) const;
   virtual double composite_player_target_crit_chance( player_t* ) const;
-  virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
+  virtual double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const;
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* ) const;
   virtual double composite_player_healing_received_multiplier() const

@@ -332,12 +332,15 @@ public:
   util::span<const util::span<const dbc_item_data_t>> items() const
   { return dbc_item_data_t::data( ptr ); }
 
-  // Gametables removed in Legion
-  double melee_crit_base( player_e, unsigned ) const
+  double all_crit_base( player_e, unsigned ) const
   { return 0.05; }
 
-  double spell_crit_base( player_e, unsigned ) const
-  { return 0.05; }
+  // Gametables removed in Legion
+  double melee_crit_base( player_e p, unsigned i ) const
+  { return all_crit_base( p, i ); }
+
+  double spell_crit_base( player_e p, unsigned i ) const
+  { return all_crit_base( p, i ); }
 
   // Game data table access
   double combat_rating_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const;

@@ -1116,7 +1116,7 @@ public:
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
   double composite_melee_auto_attack_speed() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
@@ -2118,11 +2118,11 @@ struct hunter_main_pet_base_t : public stable_pet_t
     return cc;
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
-    double m = stable_pet_t::composite_player_critical_damage_multiplier( s );
+    double m = stable_pet_t::composite_player_critical_damage_multiplier( s, school );
 
-    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
+    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
@@ -2344,11 +2344,11 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     return m;
   }
 
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
   {
-    double m = hunter_main_pet_base_t::composite_player_critical_damage_multiplier( s );
+    double m = hunter_main_pet_base_t::composite_player_critical_damage_multiplier( s, school );
 
-    if ( buffs.spearhead->has_common_school( s->action->school ) )
+    if ( buffs.spearhead->has_common_school( school ) )
       m *= 1 + buffs.spearhead->check_value();
 
     return m;
@@ -9486,9 +9486,6 @@ double hunter_t::composite_melee_crit_chance() const
 {
   double crit = player_t::composite_melee_crit_chance();
 
-  crit += specs.critical_strikes -> effectN( 1 ).percent();
-  crit += talents.keen_eyesight -> effectN( 1 ).percent();
-
   if ( buffs.trueshot->check() )
     crit += talents.trueshot->effectN( 4 ).percent();
 
@@ -9498,9 +9495,6 @@ double hunter_t::composite_melee_crit_chance() const
 double hunter_t::composite_spell_crit_chance() const
 {
   double crit = player_t::composite_spell_crit_chance();
-
-  crit += specs.critical_strikes->effectN( 1 ).percent();
-  crit += talents.keen_eyesight->effectN( 1 ).percent();
 
   if ( buffs.trueshot->check() )
     crit += talents.trueshot->effectN( 4 ).percent();
@@ -9539,11 +9533,11 @@ double hunter_t::composite_melee_auto_attack_speed() const
   return s;
 }
 
-double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
+  double m = player_t::composite_player_critical_damage_multiplier( s, school );
 
-  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( s -> action -> school ) )
+  if ( talents.penetrating_shots -> effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + talents.penetrating_shots -> effectN( 2 ).percent() * cache.attack_crit_chance();
 
   return m;

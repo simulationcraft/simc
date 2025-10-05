@@ -9937,9 +9937,6 @@ double rogue_t::composite_melee_crit_chance() const
 {
   double crit = player_t::composite_melee_crit_chance();
 
-  crit += spell.critical_strikes->effectN( 1 ).percent();
-  crit += talent.rogue.lethality->effectN( 1 ).percent();
-
   if ( talent.subtlety.planned_execution->ok() && buffs.symbols_of_death->up() )
   {
     crit += talent.subtlety.planned_execution->effectN( 1 ).percent();
@@ -9953,9 +9950,6 @@ double rogue_t::composite_melee_crit_chance() const
 double rogue_t::composite_spell_crit_chance() const
 {
   double crit = player_t::composite_spell_crit_chance();
-
-  crit += spell.critical_strikes->effectN( 1 ).percent();
-  crit += talent.rogue.lethality->effectN( 1 ).percent();
 
   if ( talent.subtlety.planned_execution->ok() && buffs.symbols_of_death->up() )
   {
@@ -9971,8 +9965,6 @@ double rogue_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  cdv += talent.outlaw.thiefs_versatility->effectN( 1 ).percent();
-
   return cdv;
 }
 
@@ -9981,8 +9973,6 @@ double rogue_t::composite_damage_versatility() const
 double rogue_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
-
-  chv += talent.outlaw.thiefs_versatility->effectN( 1 ).percent();
 
   return chv;
 }

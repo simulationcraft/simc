@@ -510,12 +510,12 @@ double pet_t::composite_spell_cast_speed() const
   return current_pet_stats.composite_spell_cast_speed;
 }
 
-double pet_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double pet_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
+  double m = player_t::composite_player_critical_damage_multiplier( s, school );
 
-  // Pets inherit the owner's critical damage multiplier. 
-  m *= owner->composite_player_critical_damage_multiplier( s );
+  // Pets inherit the owner's critical damage multiplier.
+  m *= owner->composite_player_critical_damage_multiplier( s, school );
 
   // These effects apply to both the player and the pet via Apply Player/Pet Aura (202) and the pet inherits from the
   // player, effectively getting double the mod.

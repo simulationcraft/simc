@@ -980,7 +980,7 @@ public:
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double stacking_movement_modifier() const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
@@ -9092,11 +9092,9 @@ double mage_t::stacking_movement_modifier() const
   return ms;
 }
 
-double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier( s );
-
-  school_e school = s->action->get_school();
+  double m = player_t::composite_player_critical_damage_multiplier( s, school );
 
   if ( buffs.fevered_incantation->has_common_school( school ) )
     m *= 1.0 + buffs.fevered_incantation->check_stack_value();
@@ -9173,19 +9171,12 @@ double mage_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += talents.tome_of_rhonin->effectN( 1 ).percent();
-  c += talents.force_of_will->effectN( 1 ).percent();
-
   return c;
 }
 
 double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
-
-  c += talents.tome_of_rhonin->effectN( 1 ).percent();
-  c += talents.critical_mass->effectN( 1 ).percent();
-  c += talents.force_of_will->effectN( 1 ).percent();
 
   if ( !buffs.combustion->check() && talents.fires_ire.ok() )
   {
@@ -9208,18 +9199,12 @@ double mage_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
-  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
-
   return h;
 }
 
 double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
-  h /= 1.0 + talents.winters_blessing->effectN( 1 ).percent();
 
   return h;
 }

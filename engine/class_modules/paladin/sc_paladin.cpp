@@ -4809,20 +4809,12 @@ double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  if ( talents.seal_of_might->ok() )
-  {
-    m += talents.seal_of_might->effectN( 2 ).base_value();
-  }
-
   return m;
 }
 
 double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
-
-  if ( talents.holy_aegis->ok() )
-    h += talents.holy_aegis->effectN( 1 ).percent();
 
   if ( buffs.avenging_wrath -> up() )
     h += buffs.avenging_wrath->get_crit_bonus();
@@ -4836,9 +4828,6 @@ double paladin_t::composite_spell_crit_chance() const
 double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
-
-  if ( talents.holy_aegis->ok() )
-    h += talents.holy_aegis->effectN( 1 ).percent();
 
   if ( buffs.avenging_wrath -> up() )
     h += buffs.avenging_wrath -> get_crit_bonus();

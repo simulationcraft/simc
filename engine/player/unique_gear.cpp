@@ -2182,18 +2182,20 @@ void item::amplification( special_effect_t& effect )
 {
   maintenance_check( 528 );
 
-  player_t* p = effect.item -> player;
+  player_t* p      = effect.item->player;
   double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
   if ( !p->passive_values.amplification_1 )
   {
     p->passive_values.amplification_1 = amp_value;
-    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
     p->base.crit_healing_multiplier *= 1.0 + amp_value;
   }
   else
   {
     p->passive_values.amplification_2 = amp_value;
-    p->base.crit_damage_multiplier *= 1.0 + amp_value;
+    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
     p->base.crit_healing_multiplier *= 1.0 + amp_value;
   }
 }

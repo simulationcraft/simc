@@ -606,7 +606,9 @@ void culminating_blasphemite( special_effect_t& effect )
   if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
     pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
 
-  effect.player->base.crit_damage_multiplier *= 1.0 + pct;
+  for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    effect.player->base.crit_damage_multiplier[ school ] *= 1.0 + pct;
+
   effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
 
@@ -5833,7 +5835,17 @@ public:
 
   double composite_player_critical_multiplier( const action_state_t* s ) const override
   {
-    return p( s )->composite_player_critical_damage_multiplier( s );
+    double player_critical_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : ab::base_schools )
+    {
+      tmp = p( s )->composite_player_critical_damage_multiplier( s, base_school );
+      if ( tmp > player_critical_multiplier )
+        player_critical_multiplier = tmp;
+    }
+
+    return player_critical_multiplier;
   }
 
   double composite_target_crit_chance( const action_state_t* s ) const

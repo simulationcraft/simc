@@ -5010,9 +5010,19 @@ double action_t::composite_target_mitigation(player_t* t, school_e s) const
   return t->composite_mitigation_multiplier(s);
 }
 
-double action_t::composite_player_critical_multiplier(const action_state_t* s) const
+double action_t::composite_player_critical_multiplier( const action_state_t* s ) const
 {
-  return player->composite_player_critical_damage_multiplier(s);
+  double player_critical_multiplier = 0.0;
+  double tmp;
+
+  for ( auto base_school : base_schools )
+  {
+    tmp = player->composite_player_critical_damage_multiplier( s, base_school );
+    if ( tmp > player_critical_multiplier )
+      player_critical_multiplier = tmp;
+  }
+
+  return player_critical_multiplier;
 }
 
 bool action_t::has_movement_directionality() const

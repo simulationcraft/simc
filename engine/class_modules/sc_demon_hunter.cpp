@@ -1049,7 +1049,7 @@ public:
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t*, school_e ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double stacking_movement_modifier() const override;
 
@@ -8704,6 +8704,9 @@ void demon_hunter_t::init_spells()
   // Critical Chaos eff#2 (dummy script) overwrites the value of eff#1 (add flat: proc chance)
   register_passive_effect_mask( talent.havoc.critical_chaos, effect_mask_t( true ).disable( 1 ) );
 
+  // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
+  deregister_passive_effects( talent.havoc.know_your_enemy );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -9147,9 +9150,9 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
 // demon_hunter_t::composite_player_critical_damage_multiplier ==============
 
-double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double demon_hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
 {
-  double m = base_t::composite_player_critical_damage_multiplier( s );
+  double m = base_t::composite_player_critical_damage_multiplier( s, school );
 
   if ( talent.havoc.know_your_enemy->ok() )
   {

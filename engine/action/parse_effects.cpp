@@ -696,6 +696,12 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
     {
       tmp.simple = false;
     }
+
+    if ( tmp.simple && !tmp.buff )
+    {
+      throw_passive_error( pack.spell );
+      return false;
+    }
   }
 
   if ( pack.copy )
@@ -893,12 +899,14 @@ double parse_player_effects_t::composite_spell_crit_chance() const
   return scc;
 }
 
-double parse_player_effects_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double parse_player_effects_t::composite_player_critical_damage_multiplier( const action_state_t* s,
+                                                                            school_e school ) const
 {
-  auto cdm = player_t::composite_player_critical_damage_multiplier( s );
+  auto cdm = player_t::composite_player_critical_damage_multiplier( s, school );
 
   for ( const auto& i : crit_bonus_effects )
-    cdm *= 1.0 + get_effect_value( i );
+    if ( i.opt_enum & dbc::get_school_mask( school ) )
+      cdm *= 1.0 + get_effect_value( i );
 
   return cdm;
 }
@@ -1119,16 +1127,6 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
     case A_MOD_TOTAL_STAT_PERCENTAGE:
       tmp.opt_enum = eff.misc_value2();
       str          = opt_strings::attributes_invalidate( tmp );
-
-      if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
-      {
-        sim->error(
-            "Ignoring Spell `{}`: Matching Armor Multipliers are already applied automatically! Please remove this from "
-            "parse_effects()",
-            eff.spell()->name_cstr() );
-        return nullptr;
-      }
-
       return &attribute_multiplier_effects;
 
     case A_MOD_RATING_MULTIPLIER:
@@ -1164,6 +1162,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_CRIT_DAMAGE_BONUS:
       str = "crit damage bonus";
+      tmp.opt_enum = eff.misc_value1();
       return &crit_bonus_effects;
 
     case A_MOD_DAMAGE_PERCENT_DONE:
@@ -1286,6 +1285,14 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
     sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
                       s_data->id(), i );
   }
+}
+
+void parse_player_effects_t::throw_passive_error( const spell_data_t* s )
+{
+  sim->error( TRIVIAL,
+              "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
+              "parse_effects()",
+              s->name_cstr() );
 }
 
 bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
@@ -1632,6 +1639,14 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
     _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
                                s_data->name_cstr(), s_data->id(), i );
   }
+}
+
+void parse_action_base_t::throw_passive_error( const spell_data_t* s )
+{
+  _action->sim->error( TRIVIAL,
+                       "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove "
+                       "this from parse_effects()",
+                       s->name_cstr() );
 }
 
 bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) const

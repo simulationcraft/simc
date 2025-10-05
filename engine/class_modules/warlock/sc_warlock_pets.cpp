@@ -2316,8 +2316,8 @@ namespace diabolist
   }
 
   // NOTE: Overlord does not benefit from critical dmg multiplier effects (bug?)
-  double overlord_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
-  { return bugs ? 1.0 : warlock_pet_t::composite_player_critical_damage_multiplier( s ); }
+  double overlord_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
+  { return bugs ? 1.0 : warlock_pet_t::composite_player_critical_damage_multiplier( s, school ); }
 
   mother_of_chaos_t::mother_of_chaos_t( warlock_t* owner, util::string_view name )
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )

@@ -1282,8 +1282,13 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_chance(),
   attack_crit_chance(),
   block_reduction(),
-  mastery(),
+  mastery( 8.0 ),
   versatility( 0 ),
+  all_crit( 0 ),
+  all_haste( 1.0 ),
+  melee_haste( 1.0 ),
+  spell_haste( 1.0 ),
+  ranged_haste( 1.0 ),
   skill( 1.0 ),
   skill_debuff( 0.0 ),
   distance( 0 ),
@@ -1300,7 +1305,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_multiplier( 1.0 ),
   base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
-  crit_damage_multiplier( 1.0 ),
+  crit_damage_multiplier(),
   crit_healing_multiplier( 1.0 ),
   attack_speed_multiplier( 1.0 ),
   position( POSITION_BACK )
@@ -1308,6 +1313,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   range::fill( attribute_multiplier, 1.0 );
   range::fill( matching_armor_multiplier, 1.0 );
   range::fill( rating_multiplier, 1.0 );
+  range::fill( crit_damage_multiplier, 1.0 );
 }
 
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
@@ -1333,6 +1339,10 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block_reduction={}", s.block_reduction );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
+  fmt::format_to( out, " all_haste={}", s.all_haste );
+  fmt::format_to( out, " melee_haste={}", s.melee_haste );
+  fmt::format_to( out, " spell_haste={}", s.spell_haste );
+  fmt::format_to( out, " ranged_haste={}", s.ranged_haste );
   fmt::format_to( out, " leech={}", s.leech );
   fmt::format_to( out, " skill={}", s.skill );
   fmt::format_to( out, " distance={}", s.distance );
@@ -1353,7 +1363,9 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
   fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
-  fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
+  for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX; ++school )
+    fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
+                    s.crit_damage_multiplier[ school ] );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
   fmt::format_to( out, " position={}", s.position );
@@ -1488,14 +1500,17 @@ void player_t::init_base_stats()
     base.matching_armor_multiplier[ ATTR_SPIRIT ]    = get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
     // Rating Multipliers
     for ( rating_e r = RATING_BLOCK; r < RATING_MAX; ++r )
-      base.rating_multiplier[ r ] = get_passive_player_value( 1.0, fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
+    {
+      base.rating_multiplier[ r ] = get_passive_player_value(
+          base.rating_multiplier[ r ], fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
+    }
 
-    base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
-                                    racials.viciousness->effectN( 1 ).percent() +
-                                    racials.arcane_acuity->effectN( 1 ).percent();
-    base.attack_crit_chance       = dbc->melee_crit_base( type, level() ) +
-                                    racials.viciousness->effectN( 1 ).percent() +
-                                    racials.arcane_acuity->effectN( 1 ).percent();
+    base.all_crit = dbc->all_crit_base( type, level() );
+    base.all_crit = get_passive_player_value( base.all_crit, "all_crit" );
+
+    // Core Stats
+    base.spell_crit_chance        = get_passive_player_value( base.all_crit, "spell_crit" );
+    base.attack_crit_chance       = base.all_crit;
     if ( timeofday == DAY_TIME )
     {
       base.spell_crit_chance      += racials.touch_of_elune->effectN( 1 ).percent();
@@ -1503,18 +1518,26 @@ void player_t::init_base_stats()
     }
     base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
-    base.mastery                  = 8.0 + racials.awakened->effectN( 1 ).base_value();
-    base.versatility              = get_passive_player_value( 0.0, "versatility" );
+
+    base.mastery                  = get_passive_player_value( base.mastery, "mastery" );
+    base.versatility              = get_passive_player_value( base.versatility, "versatility" );
+    base.all_haste                /= get_passive_player_value( base.all_haste, "all_haste" );
+    base.melee_haste              = base.all_haste;
+    base.spell_haste              = base.all_haste;
+    base.ranged_haste             = base.all_haste;
+
     base.leech                    = 0.0;
     base.avoidance                = 0.0;
 
     base.base_armor_multiplier    *= ( 1.0 + racials.titanwrought_frame->effectN( 1 ).percent() );
-    base.crit_damage_multiplier   *= ( 1.0 + racials.brawn->effectN( 2 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 2 ).percent() ) *
-                                     ( 1.0 + racials.lash_out->effectN( 1 ).percent() );
-    base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
-                                     ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() ) *
-                                     ( 1.0 + racials.lash_out->effectN( 2 ).percent() );
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
+    {
+      base.crit_damage_multiplier[ school ] =
+          get_passive_player_value( base.crit_damage_multiplier[ school ],
+                                    fmt::format( "{}_crit_damage_multiplier", util::school_type_string( school ) ) );
+      base.crit_damage_multiplier[ school ] += get_passive_player_value( base.crit_damage_multiplier[ school ], "all_crit_damage_multiplier" );
+    }
+    base.crit_healing_multiplier  = get_passive_player_value( base.crit_healing_multiplier, "crit_heal_multiplier" );
 
     base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
 
@@ -1685,7 +1708,8 @@ void player_t::init_initial_stats()
     initial.stats += sim->enchant;
 
     // crit damage multiplier meta gems
-    initial.crit_damage_multiplier *= util::crit_multiplier( meta_gem );
+    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX; ++school )
+      initial.crit_damage_multiplier[ school ] *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -5004,6 +5028,8 @@ double player_t::composite_melee_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
+  h *= current.melee_haste;
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
@@ -5014,9 +5040,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5364,6 +5387,8 @@ double player_t::composite_spell_haste() const
 
   h = 1.0 / ( 1.0 + h );
 
+  h *= current.spell_haste;
+
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
     for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_HASTE ] )
@@ -5374,9 +5399,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    h *= 1.0 / ( 1.0 + racials.nimble_fingers->effectN( 1 ).percent() );
-    h *= 1.0 / ( 1.0 + racials.time_is_money->effectN( 1 ).percent() );
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
@@ -5785,22 +5807,22 @@ double player_t::composite_player_target_crit_chance( player_t* t ) const
   return c;
 }
 
-double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
+double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */, school_e school ) const
 {
-  double m = current.crit_damage_multiplier;
+  double m = current.crit_damage_multiplier[ school ];
 
-  if ( buffs.elemental_chaos_fire )
+  if ( buffs.elemental_chaos_fire && buffs.elemental_chaos_fire->has_common_school( school ) )
     m *= 1.0 + buffs.elemental_chaos_fire->check_value();
 
-  if ( buffs.incensed )
+  if ( buffs.incensed && buffs.incensed->has_common_school( school ) )
     m *= 1.0 + buffs.incensed->check_value();
 
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage_essence )
+  if ( buffs.seething_rage_essence && buffs.seething_rage_essence->has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
   // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter )
+  if ( buffs.fathom_hunter && buffs.fathom_hunter->has_common_school( school ) )
     m *= 1.0 + buffs.fathom_hunter->check_value();
 
   return m;
@@ -15216,6 +15238,8 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { P_MAX_STACKS,                             "max_stack"                                 }, // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                         }, // 38
   { P_MAX_TARGETS,                            "max_targets"                               }, // 40
+  { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
+  { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
@@ -15226,8 +15250,19 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_stamina_multiplier"         }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_intellect_multiplier"       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_spirit_multiplier"          }, // 137
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "all_crit_damage_multiplier"                }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "arcane_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "fire_crit_damage_multiplier"               }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "frost_crit_damage_multiplier"              }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "holy_crit_damage_multiplier"               }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "nature_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "shadow_crit_damage_multiplier"             }, // 163
+  { A_MOD_CRIT_DAMAGE_BONUS,                  "physical_crit_damage_multiplier"           }, // 163
   { A_MOD_MAX_MANA_PCT,                       "max_mana"                                  }, // 178
+  { A_HASTE_ALL,                              "all_haste"                                 }, // 193
   { A_MODIFY_SCHOOL,                          "school"                                    }, // 220
+  { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                                  }, // 290
+  { A_MOD_MASTERY_PCT,                        "mastery"                                   }, // 318
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                         }, // 341
   { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                              }, // 342
   { A_MOD_MANA_REGEN_PCT,                     "mana_regen"                                }, // 379
@@ -15493,6 +15528,32 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         field   = "versatility";
         flat_val = modifying_eff.percent();
         break;
+      case A_HASTE_ALL:
+        field   = "all_haste";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_MASTERY_PCT:
+        field   = "mastery";
+        flat_val = modifying_eff.base_value();
+        break;
+      case A_MOD_ALL_CRIT_CHANCE:
+        field   = "all_crit";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPELL_CRIT_CHANCE:
+        field   = "spell_crit";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_CRIT_DAMAGE_BONUS:
+        misc_type = modifying_eff.affected_schools();
+        is_bitmap = true;
+        bit_type  = BITMAP_SCHOOL;
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_CRITICAL_HEALING_AMOUNT:
+        field   = "crit_heal_multiplier";
+        pct_val = modifying_eff.percent(); 
+        break;
       default:
         return false;
     }
@@ -15503,55 +15564,89 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
     }
 
+    // TODO: Refactor to cleanup repetitive debut output messages.
+    // Likely needs a template vector since types are unknown. 
+    // So creating a vector of temporary types we can push back to, then once its done
+    // iterating through all bit types, print from the vector?
     if ( is_bitmap )
     {
+      if( bit_type == BITMAP_NONE )
+        return false;
+
       if ( bit_type == BITMAP_ATTRIBUTE )
       {
-        for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+        if ( modifying_eff.subtype() == A_MOD_TOTAL_STAT_PERCENTAGE )
         {
-          if ( misc_type & ( 1 << ( stat - 1 ) ) )
+          for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
           {
-            if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
-                 modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+            if ( misc_type & ( 1 << ( stat - 1 ) ) )
             {
-              auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
-              if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
-                field = fmt::format( "matching_armor_{}_multiplier", util::stat_type_string( stat ) );
+              if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
+                   modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+              {
+                auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+                if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
+                  field = fmt::format( "matching_armor_{}_multiplier", util::stat_type_string( stat ) );
+                else
+                  continue;
+              }
               else
+                field = fmt::format( "{}_multiplier", util::stat_type_string( stat ) );
+
+              if ( field.empty() )
                 continue;
+
+              auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                                stat, 0, flat_val, pct_val );
+              std::string _tmp_full_message_tmp_ = fmt::format(
+                  "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                  "now={:.7g}[{:.7g}/{:.7g}%])",
+                  modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                  remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                  flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                  now.pct * 100 );
+              sim->print_debug( "{}", _tmp_full_message_tmp_ );
+              _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
             }
-            else
-              field = fmt::format( "{}_multiplier", util::stat_type_string( stat ) );
-
-            if ( field.empty() )
-              continue;
-
-            auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
-                                                              stat, 0, flat_val, pct_val );
-            std::string _tmp_full_message_tmp_ = fmt::format(
-                "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
-                "now={:.7g}[{:.7g}/{:.7g}%])",
-                modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-                remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
-                flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
-                now.pct * 100 );
-            sim->print_debug( "{}", _tmp_full_message_tmp_ );
-            _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
           }
         }
       }
-      if( bit_type == BITMAP_RATING )
+      if ( bit_type == BITMAP_RATING )
       {
-        for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
+        if ( modifying_eff.subtype() == A_MOD_RATING_MULTIPLIER )
         {
-          auto mod = util::rating_to_rating_mod( i );
-          if ( misc_type & mod )
+          for ( rating_e i = RATING_BLOCK; i < RATING_MAX; i++ )
           {
-            field = fmt::format( "{}_rating_multiplier", util::rating_type_string( i ) );
-            if ( field.empty() )
-              continue;
+            auto mod = util::rating_to_rating_mod( i );
+            if ( misc_type & mod )
+            {
+              field = fmt::format( "{}_rating_multiplier", util::rating_type_string( i ) );
+              if ( field.empty() )
+                continue;
+              auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
+                                                                i, 0, flat_val, pct_val );
+              std::string _tmp_full_message_tmp_ = fmt::format(
+                  "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                  "now={:.7g}[{:.7g}/{:.7g}%])",
+                  modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                  remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                  flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                  now.pct * 100 );
+              sim->print_debug( "{}", _tmp_full_message_tmp_ );
+              _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+            }
+          }
+        }
+      }
+      if ( bit_type == BITMAP_SCHOOL )
+      {
+        if ( modifying_eff.subtype() == A_MOD_CRIT_DAMAGE_BONUS )
+        {
+          if ( misc_type == 0x7f )
+          {
+            field              = "all_crit_damage_multiplier";
             auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
-                                                              i, 0, flat_val, pct_val );
+                                                              misc_type, 0, flat_val, pct_val );
             std::string _tmp_full_message_tmp_ = fmt::format(
                 "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
                 "now={:.7g}[{:.7g}/{:.7g}%])",
@@ -15562,9 +15657,32 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
             sim->print_debug( "{}", _tmp_full_message_tmp_ );
             _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
           }
+          if ( field.empty() )
+          {
+            for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX_PRIMARY; i++ )
+            {
+              if ( misc_type & dbc::get_school_mask( i ) )
+              {
+                field = fmt::format( "{}_crit_damage_multiplier", util::school_type_string( i ) );
+                if ( field.empty() )
+                  continue;
+                auto [ prev, now ] = add_passive_effect_modifier(
+                    passive_player_modifiers_, get_type_from_field( field ), i, 0, flat_val, pct_val );
+                std::string _tmp_full_message_tmp_ = fmt::format(
+                    "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+                    "now={:.7g}[{:.7g}/{:.7g}%])",
+                    modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+                    remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+                    flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+                    now.pct * 100 );
+                sim->print_debug( "{}", _tmp_full_message_tmp_ );
+                _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+              }
+            }
+          }
         }
       }
-      return bit_type != BITMAP_NONE;
+      return true;
     }
 
     auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
@@ -16037,7 +16155,7 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force )
       continue;
 
     // filter out non-effect-modifying effects
-    if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
+    if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
       continue;
 
     success = register_passive_effect( eff );
@@ -16067,7 +16185,7 @@ void player_t::deregister_passive_effects( const spell_data_t* spell )
         continue;
 
       // filter out non-effect-modifying effects
-      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY )
+      if ( eff.type() != E_APPLY_AURA && eff.type() != E_APPLY_AREA_AURA_PARTY && eff.type() != E_APPLY_AURA_PLAYER_AND_PET )
         continue;
 
       register_passive_effect( eff, true );
@@ -16113,7 +16231,7 @@ void player_t::parse_all_class_passives()
 
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( 1U << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
+    if ( static_cast<uint64_t>( 1U ) << ( util::race_id( race ) - 1 ) & racial_spell.mask_race &&
          util::class_id_mask( type ) & racial_spell.mask_class )
     {
       auto spell = find_spell( racial_spell.spell_id );

@@ -142,7 +142,7 @@ public:
 
   double composite_spell_power( school_e school ) const override;
 
-  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
 
   // Assuming diminishing returns are transfered to the pet as well
   double composite_dodge() const override

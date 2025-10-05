@@ -616,7 +616,7 @@ namespace diabolist
     overlord_t( warlock_t*, util::string_view = "overlord" );
     void arise() override;
     action_t* create_action( util::string_view, util::string_view ) override;
-    double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+    double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   };
 
   struct mother_of_chaos_t : public warlock_pet_t

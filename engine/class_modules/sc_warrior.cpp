@@ -1435,12 +1435,23 @@ public:
 
     if ( ab::sim->log )
     {
+      // TODO: Sorry Arma, had to fix composite_player_critical_damage_multiplier - Tae
+      double player_critical_multiplier = 0.0;
+      double tmp;
+
+      for ( auto base_school : ab::base_schools )
+      {
+        tmp = p()->composite_player_critical_damage_multiplier( s, base_school );
+        if ( tmp > player_critical_multiplier )
+          player_critical_multiplier = tmp;
+      }
+
       ab::sim->out_debug.printf(
           "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, "
           "Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action "
           "Multiplier: %4.4f",
           p()->cache.strength(), p()->cache.attack_power() * p()->composite_attack_power_multiplier(),
-          p()->cache.attack_crit_chance() * 100, p()->composite_player_critical_damage_multiplier( s ),
+          p()->cache.attack_crit_chance() * 100, player_critical_multiplier,
           p()->cache.mastery_value() * 100, ( 1 / p()->cache.attack_haste() - 1 ) * 100,
           p()->cache.damage_versatility() * 100, p()->cache.bonus_armor(), s->composite_ta_multiplier(),
           s->composite_da_multiplier(), s->action->action_multiplier() );
@@ -1453,12 +1464,23 @@ public:
 
     if ( ab::sim->log )
     {
+      // TODO: Sorry Arma, had to fix composite_player_critical_damage_multiplier - Tae
+      double player_critical_multiplier = 0.0;
+      double tmp;
+
+      for ( auto base_school : ab::base_schools )
+      {
+        tmp = p()->composite_player_critical_damage_multiplier( d->state, base_school );
+        if ( tmp > player_critical_multiplier )
+          player_critical_multiplier = tmp;
+      }
+
       ab::sim->out_debug.printf(
           "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, "
           "Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action "
           "Multiplier: %4.4f",
           p()->cache.strength(), p()->cache.attack_power() * p()->composite_attack_power_multiplier(),
-          p()->cache.attack_crit_chance() * 100, p()->composite_player_critical_damage_multiplier( d->state ),
+          p()->cache.attack_crit_chance() * 100, player_critical_multiplier,
           p()->cache.mastery_value() * 100, ( 1 / p()->cache.attack_haste() - 1 ) * 100,
           p()->cache.damage_versatility() * 100, p()->cache.bonus_armor(), d->state->composite_ta_multiplier(),
           d->state->composite_da_multiplier(), d->state->action->action_ta_multiplier() );
