@@ -4930,9 +4930,6 @@ double paladin_t::composite_melee_auto_attack_speed() const
 {
   double s = player_t::composite_melee_auto_attack_speed();
 
-  if ( talents.zealots_fervor->ok() )
-    s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
-
   return s;
 }
 

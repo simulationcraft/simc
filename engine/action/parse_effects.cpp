@@ -1131,16 +1131,15 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
     case A_MOD_TOTAL_STAT_PERCENTAGE:
       tmp.opt_enum = eff.misc_value2();
-      str = opt_strings::attributes_invalidate( tmp );
+      str          = opt_strings::attributes_invalidate( tmp );
 
       if ( eff.spell()->equipped_class() == ITEM_CLASS_ARMOR && eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
       {
-        auto type_bit = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
-        if ( eff.spell()->equipped_subclass_mask() == type_bit )
-        {
-          str += "|with matching armor";
-          return &matching_armor_attribute_multiplier_effects;
-        }
+        sim->error(
+            "Ignoring Spell `{}`: Matching Armor Multipliers are already applied automatically! Please remove this from "
+            "parse_effects()",
+            eff.spell()->name_cstr() );
+        return nullptr;
       }
 
       return &attribute_multiplier_effects;

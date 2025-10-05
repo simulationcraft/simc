@@ -1301,6 +1301,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   armor_multiplier( 1.0 ),
   crit_damage_multiplier( 1.0 ),
   crit_healing_multiplier( 1.0 ),
+  attack_speed_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1341,6 +1342,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
   fmt::format_to( out, " crit_damage_multiplier={}", s.crit_damage_multiplier );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
+  fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1459,6 +1461,19 @@ void player_t::init_base_stats()
     // Endurance seems to be using ceiling
     base.stats.attribute[ STAT_STAMINA ]   += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
 
+    // Passive Attribute Multipliers
+    base.stats.attribute[ STAT_STRENGTH ] *= get_passive_player_value( 1.0, "strength_multiplier" );
+    base.stats.attribute[ STAT_AGILITY ] *= get_passive_player_value( 1.0, "agility_multiplier" );
+    base.stats.attribute[ STAT_STAMINA ] *= get_passive_player_value( 1.0, "stamina_multiplier" );
+    base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "intellect_multiplier" );
+    base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "spirit_multiplier" );
+    // Matching Armor Attribute Multipliers
+    base.stats.attribute[ STAT_STRENGTH ] *= get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
+    base.stats.attribute[ STAT_AGILITY ] *= get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
+    base.stats.attribute[ STAT_STAMINA ] *= get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
+    base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
+    base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
+
     base.spell_crit_chance        = dbc->spell_crit_base( type, level() ) +
                                     racials.viciousness->effectN( 1 ).percent() +
                                     racials.arcane_acuity->effectN( 1 ).percent();
@@ -1485,6 +1500,8 @@ void player_t::init_base_stats()
     base.crit_healing_multiplier  *= ( 1.0 + racials.brawn->effectN( 3 ).percent() ) *
                                      ( 1.0 + racials.might_of_the_mountain->effectN( 3 ).percent() ) *
                                      ( 1.0 + racials.lash_out->effectN( 2 ).percent() );
+
+    base.attack_speed_multiplier /= get_passive_player_value( 1.0, "attack_speed" );
 
     resources.base[ RESOURCE_HEALTH ] = dbc->health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
@@ -4999,6 +5016,8 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_auto_attack_speed() const
 {
   double h = composite_melee_haste();
+
+  h *= current.attack_speed_multiplier;
 
   if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
     h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
@@ -15165,34 +15184,52 @@ this directly manipulates the DBC without any processing, it should be called be
 */
 namespace
 {
+// Pseudocode:
+// - Locate the static constexpr array `field_type_map`.
+// - Reformat each initializer so columns align:
+//   - Align the first enum/value column.
+//   - Align the second string literal column.
+//   - Preserve trailing comment indices and existing values without changes.
+
 static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
-  { P_GENERIC,                    "base_dd"           },  // 0
-  { P_DURATION,                   "duration"          },  // 1
-  { P_RANGE,                      "max_range"         },  // 5
-  { P_RADIUS,                     "max_radius"        },  // 6
-  { P_CRIT,                       "crit"              },  // 7
-  { P_CAST_TIME,                  "cast_time"         },  // 10
-  { P_COOLDOWN,                   "cooldown"          },  // 11
-  { P_RESOURCE_COST_1,            "cost"              },  // 14
-  { P_CRIT_BONUS,                 "crit_bonus"        },  // 15
-  { P_CHAIN_TARGETS,              "chain_target"      },  // 17
-  { P_PROC_CHANCE,                "proc_chance"       },  // 18
-  { P_TICK_TIME,                  "period"            },  // 19
-  { P_CHAIN_MULTIPLIER,           "chain_multiplier"  },  // 20
-  { P_GCD,                        "gcd"               },  // 21
-  { P_TICK_DAMAGE,                "base_td"           },  // 22
-  { P_DOSES,                      "proc_charges"      },  // 31
-  { P_MAX_STACKS,                 "max_stack"         },  // 37
-  { P_PROC_COOLDOWN,              "internal_cooldown" },  // 38
-  { P_MAX_TARGETS,                "max_targets"       },  // 40
-  { A_MOD_MAX_MANA_PCT,           "max_mana"          },  // 178
-  { A_MODIFY_SCHOOL,              "school"            },  // 220
-  { A_MODIFY_CATEGORY_COOLDOWN,   "category_cooldown" },  // 341
-  { A_MOD_MANA_REGEN_PCT,         "mana_regen"        },  // 379
-  { A_MOD_MAX_CHARGES,            "charges"           },  // 411
-  { A_HASTED_COOLDOWN,            "hasted_cooldown"   },  // 416
-  { A_HASTED_GCD,                 "hasted_gcd"        },  // 417
-  { A_MOD_RECHARGE_TIME_CATEGORY, "charge_cooldown"   },  // 453
+  { P_GENERIC,                                "base_dd"                              }, // 0
+  { P_DURATION,                               "duration"                             }, // 1
+  { P_RANGE,                                  "max_range"                            }, // 5
+  { P_RADIUS,                                 "max_radius"                           }, // 6
+  { P_CRIT,                                   "crit"                                 }, // 7
+  { P_CAST_TIME,                              "cast_time"                            }, // 10
+  { P_COOLDOWN,                               "cooldown"                             }, // 11
+  { P_RESOURCE_COST_1,                        "cost"                                 }, // 14
+  { P_CRIT_BONUS,                             "crit_bonus"                           }, // 15
+  { P_CHAIN_TARGETS,                          "chain_target"                         }, // 17
+  { P_PROC_CHANCE,                            "proc_chance"                          }, // 18
+  { P_TICK_TIME,                              "period"                               }, // 19
+  { P_CHAIN_MULTIPLIER,                       "chain_multiplier"                     }, // 20
+  { P_GCD,                                    "gcd"                                  }, // 21
+  { P_TICK_DAMAGE,                            "base_td"                              }, // 22
+  { P_DOSES,                                  "proc_charges"                         }, // 31
+  { P_MAX_STACKS,                             "max_stack"                            }, // 37
+  { P_PROC_COOLDOWN,                          "internal_cooldown"                    }, // 38
+  { P_MAX_TARGETS,                            "max_targets"                          }, // 40
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                  }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                   }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                   }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "intellect_multiplier"                 }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "spirit_multiplier"                    }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_strength_multiplier"   }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_agility_multiplier"    }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_stamina_multiplier"    }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_intellect_multiplier"  }, // 137
+  { A_MOD_TOTAL_STAT_PERCENTAGE,              "matching_armor_spirit_multiplier"     }, // 137
+  { A_MOD_MAX_MANA_PCT,                       "max_mana"                             }, // 178
+  { A_MODIFY_SCHOOL,                          "school"                               }, // 220
+  { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                    }, // 341
+  { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                         }, // 342
+  { A_MOD_MANA_REGEN_PCT,                     "mana_regen"                           }, // 379
+  { A_MOD_MAX_CHARGES,                        "charges"                              }, // 411
+  { A_HASTED_COOLDOWN,                        "hasted_cooldown"                      }, // 416
+  { A_HASTED_GCD,                             "hasted_gcd"                           }, // 417
+  { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                      }, // 453
 };
 
 std::string_view get_field_from_type( unsigned type )
@@ -15268,7 +15305,7 @@ std::array<double, 3> player_t::get_passive_value( const spelleffect_data_t& eff
     return { it->orig, it->flat, it->pct };
 }
 
-double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type  ) const
+double player_t::get_passive_player_value( double base_val, std::string_view field, int misc_type ) const
 {
   assert( !is_pet() || get_owner_or_self() != this );
   if ( is_pet() )
@@ -15369,6 +15406,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
   auto sub_type = modifying_eff.subtype();
   auto success = false;
   auto property = false;
+  bool is_bitmap = false;
 
   // find all affected spells
   auto affected_spells = spells_affected_by_passive( modifying_eff, property );
@@ -15395,6 +15433,17 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         field = "mana_regen";
         pct_val = modifying_eff.percent();
         break;
+      case A_MOD_MELEE_AUTO_ATTACK_SPEED:
+      case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:
+        field = "attack_speed";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        // Stat type is in misc_value2
+        misc_type  = modifying_eff.misc_value2();
+        is_bitmap = true;
+        pct_val = modifying_eff.percent();
+        break;
       default:
         return false;
     }
@@ -15403,6 +15452,43 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       flat_val = -flat_val;
       pct_val = 1.0 / ( 1.0 + pct_val ) - 1.0;
+    }
+
+    if ( is_bitmap )
+    {
+      for ( auto stat : { STAT_STRENGTH, STAT_AGILITY, STAT_STAMINA, STAT_INTELLECT, STAT_SPIRIT } )
+      {
+        if ( misc_type & ( 1 << ( stat - 1 ) ) )
+        {
+          if ( modifying_eff.spell()->equipped_class() == ITEM_CLASS_ARMOR &&
+               modifying_eff.spell()->flags( SX_REQUIRES_EQUIPPED_ARMOR_TYPE ) )
+          {
+            auto bit_type = 1U << static_cast<unsigned>( util::matching_armor_type( type ) );
+            if ( modifying_eff.spell()->equipped_subclass_mask() == bit_type )
+              field = fmt::format( "matching_armor_{}_multiplier", util::stat_type_string( stat ) );
+            else
+              continue;
+          }
+          else
+            field = fmt::format( "{}_multiplier", util::stat_type_string( stat ) );
+
+          if ( field.empty() )
+            continue;
+
+          auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ), stat,
+                                                            0, flat_val, pct_val );
+          std::string _tmp_full_message_tmp_ = fmt::format(
+              "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] "
+              "now={:.7g}[{:.7g}/{:.7g}%])",
+              modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+              remove ? "reverting" : "modifying", *this, field, flat_val ? flat_val : pct_val * 100,
+              flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat,
+              now.pct * 100 );
+          sim->print_debug( "{}", _tmp_full_message_tmp_ );
+          _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+        }
+      }
+      return true;
     }
 
     auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, get_type_from_field( field ),
