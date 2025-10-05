@@ -282,6 +282,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX_PRIMARY> crit_damage_multiplier;
     double crit_healing_multiplier;
     double attack_speed_multiplier;
+    double healing_multiplier;
     std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
     double pet_damage_multiplier, guardian_damage_multiplier;
     double absorb_multiplier, absorb_received_multiplier, healing_received_multiplier;

@@ -1309,6 +1309,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_damage_multiplier(),
   crit_healing_multiplier( 1.0 ),
   attack_speed_multiplier( 1.0 ),
+  healing_multiplier( 1.0 ),
   damage_multiplier(),
   pet_damage_multiplier( 1.0 ),
   guardian_damage_multiplier( 1.0 ),
@@ -1358,7 +1359,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
   fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
-  for ( auto i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
+  for ( auto i : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
   {
     fmt::format_to( out, " {}_multiplier={}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
     fmt::format_to( out, " matching_armor_{}_multiplier={}", util::attribute_type_string( i ),
@@ -1379,6 +1380,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
     fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
                     s.crit_damage_multiplier[ school ] );
   }
+  fmt::format_to( out, " healing_multiplier={}", s.healing_multiplier );
   fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
   fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
   fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
@@ -1495,24 +1497,21 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_SPIRIT ]    = dbc->race_base( race ).spirit + dbc->attribute_base( type, level() ).spirit;
 
     // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
-    base.stats.attribute[ STAT_STRENGTH ]  += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
-    base.stats.attribute[ STAT_AGILITY ]   += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
+    base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
     // Endurance seems to be using ceiling
-    base.stats.attribute[ STAT_STAMINA ]   += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
+    base.stats.attribute[ STAT_STAMINA ] += util::ceil( racials.endurance->effectN( 1 ).average( this ) );
 
     // Passive Attribute Multipliers
-    base.stats.attribute[ STAT_STRENGTH ] *= get_passive_player_value( 1.0, "strength_multiplier" );
-    base.stats.attribute[ STAT_AGILITY ] *= get_passive_player_value( 1.0, "agility_multiplier" );
-    base.stats.attribute[ STAT_STAMINA ] *= get_passive_player_value( 1.0, "stamina_multiplier" );
-    base.stats.attribute[ STAT_INTELLECT ] *= get_passive_player_value( 1.0, "intellect_multiplier" );
-    base.stats.attribute[ STAT_SPIRIT ] *= get_passive_player_value( 1.0, "spirit_multiplier" );
-    // Matching Armor Multipliers
-    base.matching_armor_multiplier[ ATTR_STRENGTH ]  = get_passive_player_value( 1.0, "matching_armor_strength_multiplier" );
-    base.matching_armor_multiplier[ ATTR_AGILITY ]   = get_passive_player_value( 1.0, "matching_armor_agility_multiplier" );
-    base.matching_armor_multiplier[ ATTR_STAMINA ]   = get_passive_player_value( 1.0, "matching_armor_stamina_multiplier" );
-    base.matching_armor_multiplier[ ATTR_INTELLECT ] = get_passive_player_value( 1.0, "matching_armor_intellect_multiplier" );
-    base.matching_armor_multiplier[ ATTR_SPIRIT ]    = get_passive_player_value( 1.0, "matching_armor_spirit_multiplier" );
+    for ( auto stat : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
+    {
+      base.attribute_multiplier[ stat ] = get_passive_player_value(
+          base.attribute_multiplier[ stat ], fmt::format( "{}_multiplier", util::attribute_type_string( stat ) ) );
+      base.matching_armor_multiplier[ stat ] = get_passive_player_value(
+          base.matching_armor_multiplier[ stat ],
+          fmt::format( "matching_armor_{}_multiplier", util::attribute_type_string( stat ) ) );
+    }
     // Rating Multipliers
     for ( rating_e r = RATING_BLOCK; r < RATING_MAX; ++r )
     {
@@ -1568,6 +1567,7 @@ void player_t::init_base_stats()
         get_passive_player_value( base.absorb_received_multiplier, "absorb_received_multiplier" );
     base.healing_received_multiplier =
         get_passive_player_value( base.healing_received_multiplier, "healing_received_multiplier" );
+    base.healing_multiplier = get_passive_player_value( base.healing_multiplier, "healing_multiplier" );
 
     // Base Pet Damage Modifiers
     base.pet_damage_multiplier = get_passive_player_value( base.pet_damage_multiplier, "pet_damage_multiplier" );
@@ -1618,7 +1618,6 @@ void player_t::init_base_stats()
 
   // All classes get 3% dodge and miss
   base.dodge = 0.03;
-  base.dodge = get_passive_player_value( base.dodge, "dodge" );
   base.miss = 0.03;
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
@@ -1627,8 +1626,7 @@ void player_t::init_base_stats()
     base.dodge += (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
   }
 
-  // Night Elf dodge is additive
-  base.dodge += racials.quickness->effectN(1).percent();
+  base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
   // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
@@ -5786,9 +5784,7 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
-  double m = 1.0;
-
-  m *= 1.0 + racials.holy_providence->effectN( 2 ).percent();
+  double m = current.healing_multiplier;
 
   if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
@@ -15287,7 +15283,8 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_DAMAGE_PERCENT_DONE,                "shadow_damage_multiplier"                  }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "physical_damage_multiplier"                }, // 60
   { A_MOD_RESISTANCE_PCT,                     "armor_multiplier"                          }, // 101
-  { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               },
+  { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"               }, // 118
+  { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"                        }, // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "stamina_multiplier"                        }, // 137
@@ -15677,6 +15674,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_HEALING_RECEIVED_PCT:
         field = "healing_received_multiplier";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_HEALING_DONE_PERCENT:
+        field = "healing_multiplier";
         pct_val = modifying_eff.percent();
         break;
       default:
