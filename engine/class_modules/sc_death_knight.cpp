@@ -847,7 +847,6 @@ public:
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
-    cooldown_t* blood_tap;
     cooldown_t* consumption;
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
@@ -958,7 +957,6 @@ public:
 
     // Blood
     propagate_const<gain_t*> bonestorm;
-    propagate_const<gain_t*> blood_tap;
     propagate_const<gain_t*> consumption;
     propagate_const<gain_t*> drw_heart_strike;  // Blood Strike, Blizzard's hack to replicate HS rank 2 with DRW
     propagate_const<gain_t*> heartbreaker;
@@ -1123,7 +1121,6 @@ public:
       player_talent_t reinforced_bones;
       player_talent_t rapid_decomposition;
       // Row 7
-      player_talent_t blood_tap;
       player_talent_t improved_bone_shield;
       player_talent_t tightening_grasp;
       player_talent_t everlasting_bond;
@@ -1744,7 +1741,6 @@ public:
       last_target( this )
   {
     cooldown.army_of_the_dead    = get_cooldown( "army_of_the_dead" );
-    cooldown.blood_tap           = get_cooldown( "blood_tap" );
     cooldown.bone_shield_icd     = get_cooldown( "bone_shield_icd" );
     cooldown.consumption         = get_cooldown( "consumption" );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
@@ -7635,25 +7631,6 @@ struct blood_boil_t final : public death_knight_spell_t
   }
 };
 
-// Blood Tap ================================================================
-
-struct blood_tap_t final : public death_knight_spell_t
-{
-  blood_tap_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "blood_tap", p, p->talent.blood.blood_tap )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p()->replenish_rune( as<int>( p()->talent.blood.blood_tap->effectN( 1 ).resource( RESOURCE_RUNE ) ),
-                         p()->gains.blood_tap );
-  }
-};
-
 // Blood Draw =========================================================
 
 struct blood_draw_t final : public death_knight_spell_t
@@ -10817,12 +10794,6 @@ struct tombstone_t final : public death_knight_spell_t
       p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
                                                  charges );
 
-    if ( p()->talent.blood.blood_tap.ok() )
-    {
-      p()->cooldown.blood_tap->adjust(
-          -1.0 * timespan_t::from_seconds( p()->talent.blood.blood_tap->effectN( 2 ).base_value() ) * charges );
-    }
-
     if ( charges > 0 && p()->talent.blood.shattering_bone.ok() )
     {
       // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
@@ -12485,8 +12456,6 @@ action_t* death_knight_t::create_action( std::string_view name, std::string_view
   // Blood Actions
   if ( name == "blood_boil" )
     return new blood_boil_t( this, options_str );
-  if ( name == "blood_tap" )
-    return new blood_tap_t( this, options_str );
   if ( name == "bonestorm" )
     return new bonestorm_t( this, options_str );
   if ( name == "consumption" )
@@ -13063,7 +13032,6 @@ void death_knight_t::init_spells()
   talent.blood.reinforced_bones    = find_talent_spell( talent_tree::SPECIALIZATION, "Reinforced Bones" );
   talent.blood.rapid_decomposition = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Decomposition" );
   // Row 7
-  talent.blood.blood_tap            = find_talent_spell( talent_tree::SPECIALIZATION, "Blood Tap" );
   talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
   talent.blood.tightening_grasp     = find_talent_spell( talent_tree::SPECIALIZATION, "Tightening Grasp" );
   talent.blood.everlasting_bond     = find_talent_spell( talent_tree::SPECIALIZATION, "Everlasting Bond" );
@@ -14323,7 +14291,6 @@ void death_knight_t::init_gains()
 
   // Blood
   gains.bonestorm        = get_gain( "Bonestorm" );
-  gains.blood_tap        = get_gain( "Blood Tap" );
   gains.consumption      = get_gain( "Consumption" );
   gains.drw_heart_strike = get_gain( "Rune Weapon Heart Strike" );
   gains.heartbreaker     = get_gain( "Heartbreaker" );
@@ -14633,12 +14600,6 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
       buffs.ossified_vitriol->trigger();
   }
   cooldown.bone_shield_icd->start();
-  // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it
-  // reduces a cooldown
-  if ( talent.blood.blood_tap.ok() )
-  {
-    cooldown.blood_tap->adjust( -1.0 * timespan_t::from_seconds( talent.blood.blood_tap->effectN( 2 ).base_value() ) );
-  }
 
   if ( talent.blood.shattering_bone.ok() )
     background_actions.shattering_bone->execute_on_target( target );
