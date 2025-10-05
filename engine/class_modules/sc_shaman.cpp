@@ -14819,17 +14819,12 @@ bool shaman_t::validate_actor()
 void shaman_t::apply_player_effects()
 {
   // Shared
-  eff::source_eff_builder_t( spec.mail_specialization ).build( this );
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( spec.enhancement_shaman ).build( this );
-  eff::source_eff_builder_t( spec.enhancement_shaman2 ).build( this );
   eff::source_eff_builder_t( spec.critical_strikes ).build( this );
 
   // Elemental
-  eff::source_eff_builder_t( spec.elemental_shaman ).build( this );
-  eff::source_eff_builder_t( spec.elemental_shaman2 ).build( this );
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
   eff::source_eff_builder_t( buff.elemental_equilibrium )
     .set_effect_mask( effect_mask_t( true ).disable( 2 ) )

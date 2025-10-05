@@ -15192,8 +15192,6 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
 void death_knight_t::parse_player_effects()
 {
   // Shared
-  parse_effects( spec.death_knight );
-  parse_effects( spec.death_knight_2 );
   parse_effects( buffs.blood_draw );
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery );
@@ -15204,11 +15202,8 @@ void death_knight_t::parse_player_effects()
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    parse_effects( spec.blood_death_knight );
-    parse_effects( spec.blood_death_knight_2 );
-    parse_effects( spec.blood_fortification );
-    parse_effects( spec.riposte );
     parse_effects( mastery.blood_shield );
+    parse_effects( spec.riposte );
     parse_effects( buffs.blood_shield );
     parse_effects( buffs.voracious );
     parse_effects( buffs.dancing_rune_weapon );
@@ -15223,8 +15218,6 @@ void death_knight_t::parse_player_effects()
   // Frost
   if ( specialization() == DEATH_KNIGHT_FROST )
   {
-    parse_effects( spec.frost_death_knight );
-    parse_effects( spec.frost_death_knight_2 );
     parse_effects( buffs.bonegrinder_frost );
     parse_effects( buffs.bonegrinder_crit );
     parse_effects( buffs.frozen_dominion );
@@ -15235,8 +15228,6 @@ void death_knight_t::parse_player_effects()
   // Unholy
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    parse_effects( spec.unholy_death_knight );
-    parse_effects( spec.unholy_death_knight_2 );
     parse_effects( mastery.dreadblade );
     parse_effects( buffs.ghoulish_frenzy );
 

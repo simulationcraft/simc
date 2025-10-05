@@ -8688,6 +8688,10 @@ void warrior_t::init_spells()
     specialization() == WARRIOR_FURY ? effect_mask_t( true ).disable( 3 )
                                      : effect_mask_t( true ) );
 
+  // Armor Handled Manually for ATTT
+  register_passive_effect_mask( talents.protection.armor_specialization, effect_mask_t( false ).enable( 1, 2 ) );
+  register_passive_effect_mask( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -10683,44 +10687,28 @@ void warrior_t::copy_from( player_t* source )
 
 void warrior_t::parse_player_effects()
 {
-  parse_effects( spec.warrior );
-  parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
-  parse_effects( talents.warrior.cruel_strikes );
   parse_effects( buff.battle_stance );
   parse_effects( buff.defensive_stance );
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    parse_effects( spec.arms_warrior );
     parse_effects( buff.in_for_the_kill, USE_CURRENT );
     parse_effects( buff.pay_them_back );
-    parse_effects( talents.arms.critical_thinking );
-    parse_effects( talents.arms.valor_in_victory );
-    parse_effects( talents.arms.deft_experience, talents.arms.deft_experience->effectN( 1 ).base_value() );
   }
   else if ( specialization() == WARRIOR_FURY )
   {
-    parse_effects( spec.fury_warrior );
     parse_effects( buff.dancing_blades );
     parse_effects( buff.frenzy );
-    parse_effects( talents.fury.swift_strikes, effect_mask_t( false ).enable( 1 ) );
 
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
-
-    parse_effects( talents.fury.critical_thinking );
-    parse_effects( talents.fury.deft_experience );
   }
   else if ( specialization() == WARRIOR_PROTECTION )
   {
-    parse_effects( spec.protection_warrior );
     if ( sim->dbc->wowv() < wowv_t{ 11, 2, 0 } )
       parse_effects( buff.battering_ram );
-    parse_effects( talents.protection.enduring_alacrity, effect_mask_t( false ).enable( 1, 2 ) );
     parse_effects( buff.into_the_fray );
-    // Str and armor are handled manually.
-    parse_effects( talents.protection.focused_vigor, effect_mask_t( false ).enable( 2 ) );
   }
 
   // Colossus
@@ -10728,7 +10716,6 @@ void warrior_t::parse_player_effects()
   // Slayer
 
   // Mountain Thane
-  parse_effects( talents.mountain_thane.steadfast_as_the_peaks );
 }
 
 /* Report Extension Class

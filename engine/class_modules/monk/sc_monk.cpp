@@ -6353,39 +6353,15 @@ void monk_t::parse_player_effects()
    */
 
   // class and spec shared auras
-  parse_effects( baseline.monk.aura );
-  parse_effects( baseline.monk.critical_strikes );
-  parse_effects( baseline.monk.two_hand_adjustment );
-  /*
-   * 2024-5-14: 2-Hand adjustment was demonstrated to not work for BrM.
-   * Requires confirmation from WW to verify this is correct for both specs.
-   */
-  if ( matching_gear )
-    parse_effects( baseline.monk.leather_specialization );
 
   // brewmaster player auras
-  parse_effects( baseline.brewmaster.aura );
-  parse_effects( baseline.brewmaster.aura_2 );
-  parse_effects( baseline.brewmaster.brewmasters_balance );
-  parse_effects( baseline.brewmaster.celestial_fortune );
 
   // mistweaver player auras
-  parse_effects( baseline.mistweaver.aura );
-  parse_effects( baseline.mistweaver.aura_2 );
-  parse_effects( baseline.mistweaver.aura_3 );
 
   // windwalker player auras
-  parse_effects( baseline.windwalker.aura );
-  parse_effects( baseline.windwalker.aura_2 );
-  parse_effects( baseline.windwalker.aura_3 );
   parse_effects( buff.hit_combo, effect_mask_t( true ).disable( 4 ) );
 
   // class talent auras
-  parse_effects( talent.monk.grace_of_the_crane );
-  parse_effects( talent.monk.calming_presence );
-  parse_effects( talent.monk.ferocity_of_xuen );
-  parse_effects( talent.monk.chi_proficiency );
-  parse_effects( talent.monk.martial_instincts );
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
@@ -6442,8 +6418,6 @@ void monk_t::parse_player_effects()
   // TWW S2 Set Effects
 
   // TWW S3 Set Effects
-  parse_effects( tier.tww3.coc_4pc_jade_serpents_blessing );
-
   effect_mask_t em = tier.tww3.coc_4pc->ok() ? effect_mask_t( true ) : effect_mask_t( true ).disable( 8 );
   parse_effects( buff.heart_of_the_jade_serpent_cdr, em,
                  [ & ] { return !buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );

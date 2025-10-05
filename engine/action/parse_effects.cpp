@@ -697,7 +697,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       tmp.simple = false;
     }
 
-    if ( tmp.simple && !tmp.buff )
+    if ( tmp.simple && !tmp.buff  )
     {
       throw_passive_error( pack.spell );
       return false;
@@ -1289,10 +1289,16 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
 
 void parse_player_effects_t::throw_passive_error( const spell_data_t* s )
 {
-  sim->error( TRIVIAL,
-              "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
-              "parse_effects()",
-              s->name_cstr() );
+  if ( s->flags( SX_PASSIVE ) )
+    sim->error( TRIVIAL,
+                "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
+                "parse_effects() at line {}",
+                s->name_cstr(), __LINE__ );
+  else
+    sim->error( TRIVIAL,
+                "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
+                "incorrect, please report it.",
+                s->name_cstr() );
 }
 
 bool parse_player_effects_t::is_valid_target_aura( const spelleffect_data_t& eff ) const
@@ -1643,10 +1649,17 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
 
 void parse_action_base_t::throw_passive_error( const spell_data_t* s )
 {
-  _action->sim->error( TRIVIAL,
-                       "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove "
-                       "this from parse_effects()",
-                       s->name_cstr() );
+  if ( s->flags( SX_PASSIVE ) )
+    _action->sim->error(
+        TRIVIAL,
+        "Parse Effects: Spell `{}` ignored. Passive effects are applied automatically. Please remove this from "
+        "parse_effects() at line {}",
+        s->name_cstr(), __LINE__ );
+  else
+    _action->sim->error( TRIVIAL,
+                         "Parse Effects: Spell `{}` was ignored due to being detected as a passive effect. If this is "
+                         "incorrect, please report it.",
+                         s->name_cstr() );
 }
 
 bool parse_action_base_t::is_valid_target_aura( const spelleffect_data_t& eff ) const

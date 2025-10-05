@@ -15413,11 +15413,7 @@ void druid_t::parse_action_target_effects( action_t* action )
 
 void druid_t::parse_player_effects()
 {
-  parse_effects( spec_spell );
-  parse_effects( find_specialization_spell( "Leather Specialization" ) );
-
   parse_effects( mastery.natures_guardian_AP );
-  parse_effects( talent.ursocs_spirit );
   parse_effects( spec.bear_form_passive, [ this ] { return buff.bear_form->check(); } );
 
   if ( talent.lycaras_inspiration.ok() )

@@ -9797,16 +9797,10 @@ void demon_hunter_t::trigger_demonsurge( demonsurge_ability ability, timespan_t 
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
-  parse_effects( talent.demon_hunter.soul_rending );
-  parse_effects( talent.demon_hunter.aldrachi_design );
-  parse_effects( talent.demon_hunter.internal_struggle,
-                 talent.demon_hunter.internal_struggle->effectN( 1 ).base_value() );
-  parse_effects( spell.critical_strikes );
 
   // Havoc
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    parse_effects( talent.havoc.scars_of_suffering );
     parse_effects( buff.blur );
   }
 
@@ -9815,7 +9809,6 @@ void demon_hunter_t::parse_player_effects()
   {
     parse_effects( buff.demon_spikes );
     parse_effects( spec.riposte );
-    parse_effects( spec.thick_skin );
     parse_effects( mastery.fel_blood_rank_2 );
   }
 

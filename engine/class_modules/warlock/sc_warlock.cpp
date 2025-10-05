@@ -871,23 +871,14 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
 void warlock_t::parse_player_effects()
 {
   // Shared
-  parse_effects( warlock_base.nethermancy ); // 86091
-  parse_effects( talents.demonic_tactics ); // 452894
-  parse_effects( talents.demonic_embrace ); // 288843
-  parse_effects( talents.wrathful_minion ); // 386864
-  parse_effects( talents.demonic_fortitude ); // 386617
   if ( !demonology() )
   {
-    parse_effects( talents.summoners_embrace ); // 453105
     parse_effects( buffs.grimoire_of_sacrifice ); // 196099
   }
 
   // Affliction
   if ( affliction() )
   {
-    parse_effects( warlock_base.affliction_warlock ); // 137043
-    parse_effects( warlock_base.potent_afflictions ); // 77215
-
     // Affliction Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt ); // 48181
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::shadow_embrace ), talents.drain_soul.ok() ? talents.shadow_embrace_debuff_ds : talents.shadow_embrace_debuff_sb ); // 32390 / 453206
@@ -897,13 +888,6 @@ void warlock_t::parse_player_effects()
   // Demonology
   if ( demonology() )
   {
-    parse_effects( warlock_base.demonology_warlock ); // 137044
-    parse_effects( warlock_base.master_demonologist ); // 77219
-    parse_effects( talents.rune_of_shadows ); // 453744
-    parse_effects( talents.master_summoner ); // 1240189
-    parse_effects( talents.demonic_brutality ); // 453908
-    parse_effects( tier.hexflame_demo_2pc ); // 453644 // TWW1
-
     // Demonology Debuffs/DoTs
     parse_target_effects( d_fn( &warlock_td_t::debuffs_t::fel_sunder ), talents.fel_sunder_debuff  ); // 387402
   }
@@ -911,9 +895,6 @@ void warlock_t::parse_player_effects()
   // Destruction
   if ( destruction() )
   {
-    parse_effects( warlock_base.destruction_warlock ); // 137046
-    parse_effects( talents.backlash ); // 387384
-
     // Destruction Buffs
     parse_effects( buffs.rolling_havoc ); // 387570
 
@@ -925,8 +906,6 @@ void warlock_t::parse_player_effects()
   // Diabolist
   if ( diabolist() )
   {
-    parse_effects( hero.flames_of_xoroth ); // 429657
-
     // Diabolist Buffs
     parse_effects( buffs.abyssal_dominion ); // 456323
 
@@ -937,17 +916,6 @@ void warlock_t::parse_player_effects()
   // Hellcaller
   if ( hellcaller() )
   {
-    if ( destruction() )
-    {
-      parse_effects( hero.xalans_ferocity ); // 440044
-      parse_effects( hero.xalans_cruelty ); // 440040
-    }
-    else
-    {
-      parse_effects( hero.xalans_ferocity ); // 440044
-      parse_effects( hero.xalans_cruelty ); // 440040
-    }
-    parse_effects( hero.illhoofs_design ); // 440070
   }
 
   // Soul Harvester
