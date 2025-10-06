@@ -1521,9 +1521,10 @@ void player_t::init_base_stats()
           base.matching_armor_multiplier[ stat ],
           fmt::format( "matching_armor_{}_multiplier", util::attribute_type_string( stat ) ) );
     }
-    // Rating Multipliers
+
     for ( rating_e r = RATING_BLOCK; r < RATING_MAX; r++ )
     {
+      // Rating Multipliers
       base.rating_multiplier[ r ] = get_passive_player_value(
           base.rating_multiplier[ r ], fmt::format( "{}_multiplier", util::rating_type_string( r ) ) );
     }
@@ -1639,10 +1640,9 @@ void player_t::init_base_stats()
   base.miss = 0.03;
 
   // Dodge from base agility isn't affected by diminishing returns and is added here
-  if (base.dodge_per_agility > 0)
-  {
-    base.dodge += (dbc->race_base(race).agility + dbc->attribute_base(type, level()).agility) * base.dodge_per_agility;
-  }
+  if ( base.dodge_per_agility > 0 )
+    base.dodge +=
+        ( dbc->race_base( race ).agility + dbc->attribute_base( type, level() ).agility ) * base.dodge_per_agility;
 
   base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
@@ -1652,19 +1652,26 @@ void player_t::init_base_stats()
     // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
     // Further increased by mastery for both Protection specs
     base.block = 0.03;
+    base.block = get_passive_player_value( base.block, "block" );
 
-    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     switch ( type )
     {
-    case WARRIOR:
-    case PALADIN:
-      base.block_reduction = 0;
-      break;
-    default:
-      base.block_reduction = 0.30;
-      break;
+      case WARRIOR:
+      case PALADIN:
+        // Currently block reduction is 2.5x the armor value of the shield
+        if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
+          base.block_reduction = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+        else
+          base.block_reduction = 0;
+        break;
+      default:
+        base.block_reduction = 0.30;
+        break;
     }
   }
+
+  base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
+  base.rating.block = get_passive_player_value( base.rating.block, "block_rating" );
 
   // Only certain classes can parry, and get 3% base parry, default is 0
   // Parry from base strength isn't affected by diminishing returns and is added here
@@ -5418,13 +5425,6 @@ double player_t::composite_parry() const
 double player_t::composite_block_reduction( action_state_t* ) const
 {
   double b = current.block_reduction;
-
-  // Players have a base block reduction = 0, enemies have a fixed 0.30 damage reduction on block
-  if ( b == 0 )
-  {
-    // The block reduction rating is equal to 2.5 times the equipped shield's armor rating
-    return items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-  }
 
   return b;
 }
@@ -15309,6 +15309,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_PARRY_PERCENT,                      "parry"                                     }, // 47
   { A_MOD_DODGE_PERCENT,                      "dodge"                                     }, // 49
   { A_MOD_CRITICAL_HEALING_AMOUNT,            "crit_heal_multiplier"                      }, // 50
+  { A_MOD_BLOCK_PERCENT,                      "block"                                     }, // 51
   { A_MOD_SPELL_CRIT_CHANCE,                  "spell_crit"                                }, // 57
   { A_MOD_DAMAGE_PERCENT_DONE,                "all_damage_multiplier"                     }, // 60
   { A_MOD_DAMAGE_PERCENT_DONE,                "arcane_damage_multiplier"                  }, // 60
@@ -15379,6 +15380,8 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_HASTE_ALL,                              "all_haste"                                 }, // 193
   { A_MODIFY_SCHOOL,                          "school"                                    }, // 220
   { A_MOD_EXPERTISE,                          "expertise"                                 }, // 240
+  { A_MOD_BLOCK_PCT,                          "block_reduction"                           }, // 272
+  { A_MOD_BLOCK_FLAT,                         "block_rating"                              }, // 274
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                                  }, // 290
   { A_MOD_MASTERY_PCT,                        "mastery"                                   }, // 318
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                         }, // 341
@@ -15807,6 +15810,21 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_SPEED_NOT_STACK:
         field    = "non_stacking_move_speed_modifier";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BLOCK_FLAT:
+        field = "block_rating";
+        if ( modifying_eff.scaling_class() < 0 )
+          flat_val = modifying_eff.average( this );
+        else
+          flat_val = modifying_eff.base_value();
+        break;
+      case A_MOD_BLOCK_PCT:
+        field   = "block_reduction";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_BLOCK_PERCENT:
+        field   = "block";
         flat_val = modifying_eff.percent();
         break;
       default:

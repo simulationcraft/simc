@@ -14818,7 +14818,6 @@ void shaman_t::apply_player_effects()
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( spec.critical_strikes ).build( this );
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );

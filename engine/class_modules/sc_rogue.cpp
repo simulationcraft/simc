@@ -9997,10 +9997,7 @@ double rogue_t::composite_leech() const
 
 double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY )
-    return spell.leather_specialization->effectN( 1 ).percent();
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 // rogue_t::composite_player_multiplier =====================================

@@ -4825,12 +4825,6 @@ double paladin_t::composite_base_armor_multiplier() const
   if ( specialization() != PALADIN_PROTECTION )
     return a;
 
-  if ( passives.aegis_of_light -> ok() )
-    a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
-
-  if ( talents.holy_aegis -> ok() )
-    a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
-
   if ( talents.sanctified_plates->ok() )
     a *= 1.0 + talents.sanctified_plates->effectN( 3 ).percent();
 
@@ -4958,7 +4952,6 @@ double paladin_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * mastery.divine_bulwark->effectN( 1 ).mastery_value();
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
-  b += talents.holy_shield->effectN( 1 ).percent();
   b += buffs.faith_in_the_light->value();
   b += buffs.barricade_of_faith->value();
   b += buffs.inner_light->value();

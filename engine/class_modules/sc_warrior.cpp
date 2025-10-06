@@ -10297,10 +10297,6 @@ double warrior_t::composite_block() const
     b += spell.shield_block_buff -> effectN( 1 ).percent();
   }
 
-  // Not affected by DR
-  if ( talents.protection.shield_specialization->ok() )
-    b += talents.protection.shield_specialization->effectN( 1 ).percent();
-
   return b;
 }
 
@@ -10313,11 +10309,6 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
   if ( buff.brace_for_impact -> check() )
   {
     br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
-  }
-
-  if ( talents.protection.shield_specialization->ok() )
-  {
-      br += talents.protection.shield_specialization->effectN( 2 ).percent();
   }
 
   return br;

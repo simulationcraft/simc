@@ -14538,9 +14538,6 @@ void death_knight_t::do_damage( action_state_t* state )
 
 void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
 {
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    state->result_amount *= 1.0 + spec.blood_fortification->effectN( 2 ).percent();
-
   if ( buffs.icebound_fortitude->up() )
     state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
 
@@ -14686,14 +14683,12 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
 inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
+  rps *= resources.base_regen_per_second[ RESOURCE_RUNE ];
+
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
   {
     rps *= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
-  if ( talent.frost.runic_command->ok() )
-  {
-    rps *= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
   }
 
   return rps;
@@ -14702,14 +14697,12 @@ inline double death_knight_t::runes_per_second() const
 inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
+  coeff /= resources.base_regen_per_second[ RESOURCE_RUNE ];
+
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
   {
     coeff /= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
-  if ( talent.frost.runic_command->ok() )
-  {
-    coeff /= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
   }
 
   return coeff;
