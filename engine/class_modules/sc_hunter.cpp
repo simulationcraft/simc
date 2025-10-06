@@ -9691,10 +9691,7 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
 
 double hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY )
-    return 0.05;
-
-  return 0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 double hunter_t::stacking_movement_modifier() const

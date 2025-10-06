@@ -9302,13 +9302,7 @@ double demon_hunter_t::composite_player_critical_damage_multiplier( const action
 
 double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( ( specialization() == DEMON_HUNTER_HAVOC && attr == ATTR_AGILITY ) ||
-       ( specialization() == DEMON_HUNTER_VENGEANCE && attr == ATTR_STAMINA ) )
-  {
-    return spell.leather_specialization->effectN( 1 ).percent();
-  }
-
-  return 0.0;
+  return base_t::matching_gear_multiplier( attr );
 }
 
 // demon_hunter_t::stacking_movement_modifier ===============================

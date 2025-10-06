@@ -1480,7 +1480,7 @@ public:
     const spell_data_t* infliction_of_sorrow_damage;
     const spell_data_t* infliction_of_sorrow_buff;
     const spell_data_t* blood_beast_summon;
-    const spell_data_t* vampiric_strike_clawing_shadows;
+    const spell_data_t* vampiric_strike_range;
     const spell_data_t* incite_terror_debuff;
     const spell_data_t* visceral_strength_buff;
     const spell_data_t* visceral_strength_unholy_buff;
@@ -13171,12 +13171,19 @@ void death_knight_t::init_spells()
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_effects( spec.might_of_the_frozen_wastes );
 
+  // Handle Rune Regen Rate effects manually due to the unique nature of runes
+  deregister_passive_effects( talent.frost.runic_command );
+  // Handled elsewhere
+  deregister_passive_effects( mastery.dreadblade );
+  deregister_passive_effects( mastery.blood_shield );
+  deregister_passive_effects( mastery.frozen_heart );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
 
-  if ( talent.unholy.clawing_shadows.ok() )
-    parse_passive_effects( spell.vampiric_strike_clawing_shadows );
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    parse_passive_effects( spell.vampiric_strike_range );
 
   apply_effect_modifying_effects();
 }
@@ -13346,7 +13353,7 @@ void death_knight_t::spell_lookups()
   spell.infliction_of_sorrow_damage     = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 434144 );
   spell.infliction_of_sorrow_buff       = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 460049 );
   spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
-  spell.vampiric_strike_clawing_shadows =
+  spell.vampiric_strike_range =
       conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
@@ -14683,13 +14690,13 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
 inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
-  rps *= resources.base_regen_per_second[ RESOURCE_RUNE ];
 
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
-  {
     rps *= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
+
+  if ( talent.frost.runic_command->ok() )
+    rps *= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
 
   return rps;
 }
@@ -14697,13 +14704,13 @@ inline double death_knight_t::runes_per_second() const
 inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
-  coeff /= resources.base_regen_per_second[ RESOURCE_RUNE ];
 
   // Runic corruption doubles rune regeneration speed
   if ( buffs.runic_corruption->check() )
-  {
     coeff /= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
-  }
+
+  if ( talent.frost.runic_command->ok() )
+    coeff /= 1.0 + talent.frost.runic_command->effectN( 2 ).percent();
 
   return coeff;
 }

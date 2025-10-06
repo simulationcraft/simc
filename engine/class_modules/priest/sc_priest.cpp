@@ -2748,12 +2748,7 @@ void priest_t::analyze( sim_t& sim )
 
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_INTELLECT )
-  {
-    return 0.05;
-  }
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 action_t* priest_t::create_action( util::string_view name, util::string_view options_str )

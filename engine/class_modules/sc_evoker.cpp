@@ -10498,7 +10498,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 // Stat & Multiplier overrides ==============================================
 double evoker_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  return attr == ATTR_INTELLECT ? 0.05 : 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 double evoker_t::composite_base_armor_multiplier() const

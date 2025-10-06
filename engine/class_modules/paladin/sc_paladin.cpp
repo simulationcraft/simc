@@ -5038,26 +5038,7 @@ void paladin_t::invalidate_cache( cache_e c )
 
 double paladin_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  double mult = passives.plate_specialization->effectN( 1 ).percent();
-
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      if ( attr == ATTR_STAMINA )
-        return mult;
-      break;
-    case PALADIN_RETRIBUTION:
-      if ( attr == ATTR_STRENGTH )
-        return mult;
-      break;
-    case PALADIN_HOLY:
-      if ( attr == ATTR_INTELLECT )
-        return mult;
-      break;
-    default:
-      break;
-  }
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 // paladin_t::resource_gain =================================================

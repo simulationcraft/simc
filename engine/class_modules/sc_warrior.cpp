@@ -10208,17 +10208,7 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( ( attr == ATTR_STRENGTH ) && ( specialization() != WARRIOR_PROTECTION ) )
-  {
-    return 0.05;
-  }
-
-  if ( ( attr == ATTR_STAMINA ) && ( specialization() == WARRIOR_PROTECTION ) )
-  {
-    return 0.05;
-  }
-
-  return 0.0;
+  return parse_player_effects_t::matching_gear_multiplier( attr );
 }
 
 // warrior_t::composite_armor_multiplier ==========================================
@@ -10273,7 +10263,7 @@ double warrior_t::composite_bonus_armor() const
     auto current_str = util::floor( parse_player_effects_t::composite_attribute( ATTR_STRENGTH ) * parse_player_effects_t::composite_attribute_multiplier( ATTR_STRENGTH ) );
     // if there is anything else in warrior_t::composite_attribute_multiplier that applies to str, like focused_vigor for instance
     // it needs to be added here as well
-    ba += spec.vanguard -> effectN( 1 ).percent() * current_str * (1.0 + talents.protection.focused_vigor->effectN( 1 ).percent());
+    ba += spec.vanguard -> effectN( 1 ).percent() * current_str;
   }
 
   // If in the future if blizz changes behavior, and we want to go back to using the two caches, we can use the below code

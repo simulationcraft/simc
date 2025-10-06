@@ -5051,7 +5051,7 @@ double player_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = resources.base_regen_per_second[ r ];
 
-  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE )
+  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE || r == RESOURCE_RUNE )
   {
     if ( reg )
     {

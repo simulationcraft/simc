@@ -9045,7 +9045,8 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
+    // TODO: Double check that this is applied properly in player_t::resource_regen_per_second()
+    // reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 4 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )
@@ -9204,10 +9205,7 @@ double mage_t::composite_spell_haste() const
 
 double mage_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_INTELLECT )
-    return 0.05;
-
-  return 0.0;
+  return player_t::matching_gear_multiplier( attr );
 }
 
 void mage_t::reset()
