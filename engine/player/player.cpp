@@ -1269,6 +1269,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_per_spell_power( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
+  parry_rating_per_crit_rating( 0 ),
   health_per_stamina( 0 ),
   resource_reduction(),
   miss( 0 ),
@@ -1337,6 +1338,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
   fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
   fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
+  fmt::format_to( out, " parry_rating_per_crit_rating={}", s.parry_rating_per_crit_rating );
   fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
   // resource_reduction
   fmt::format_to( out, " miss={}", s.miss );
@@ -1579,7 +1581,7 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_MANA ]   = dbc->resource_base( type, level() );
     // 1% of base mana as mana regen per second for all classes.
     resources.base_regen_per_second[ RESOURCE_MANA ] = dbc->resource_base( type, level() ) * 0.01;
-    for ( auto power = POWER_HEALTH; power < POWER_MAX; ++power )
+    for ( auto power = POWER_HEALTH; power < POWER_MAX; power++ )
     {
       resource_e resource = util::translate_power_type( power );
       if ( resources.active_resource[ resource ] == false )
@@ -1612,14 +1614,8 @@ void player_t::init_base_stats()
     sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
   }
 
-  // initialize sp->ap and ap->sp overrides for hybrid specs
-  if ( is_player() && spec_spell->ok() )
-  {
-    base.attack_power_per_spell_power =
-        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_AP_PER_SP ).percent();
-    base.spell_power_per_attack_power =
-        spell_data_t::find_spelleffect( *spec_spell, E_APPLY_AURA, A_OVERRIDE_SP_PER_AP ).percent();
-  }
+  base.attack_power_per_spell_power = get_passive_player_value( base.attack_power_per_spell_power, "ap_per_sp" );
+  base.spell_power_per_attack_power = get_passive_player_value( base.spell_power_per_attack_power, "sp_per_ap" );
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN || type == DEMON_HUNTER )
@@ -1675,6 +1671,8 @@ void player_t::init_base_stats()
   {
     base.parry = 0.03;
   }
+
+  base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -5373,6 +5371,16 @@ double player_t::composite_dodge() const
   return total_dodge;
 }
 
+double player_t::composite_parry_rating() const
+{
+  double r = composite_rating( RATING_PARRY );
+
+  if ( current.parry_rating_per_crit_rating > 0 )
+    r += composite_melee_crit_rating() * current.parry_rating_per_crit_rating;
+
+  return r;
+}
+
 double player_t::composite_parry() const
 {
   // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry).
@@ -6205,6 +6213,11 @@ void player_t::invalidate_cache( cache_e c )
 
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
+      break;
+    
+    case CACHE_CRIT_CHANCE:
+      if( current.parry_rating_per_crit_rating > 0 )
+        invalidate_cache( CACHE_PARRY );
       break;
 
     case CACHE_ATTACK_CRIT_CHANCE:
@@ -15359,7 +15372,9 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_MASTERY_PCT,                        "mastery"                                   }, // 318
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                         }, // 341
   { A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED, "attack_speed"                              }, // 342
+  { A_OVERRIDE_SP_PER_AP,                     "sp_per_ap"                                 }, // 366
   { A_MOD_MANA_REGEN_PCT,                     "mana_regen"                                }, // 379
+  { A_OVERRIDE_AP_PER_SP,                     "ap_per_sp"                                 }, // 404
   { A_MOD_RATING_MULTIPLIER,                  "block_rating_multiplier"                   }, // 405
   { A_MOD_RATING_MULTIPLIER,                  "dodge_rating_multiplier"                   }, // 405
   { A_MOD_RATING_MULTIPLIER,                  "parry_rating_multiplier"                   }, // 405
@@ -15408,6 +15423,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_PET_DAMAGE_DONE,                    "pet_damage_multiplier"                     }, // 429
   { A_MOD_LEECH_PERCENT,                      "leech"                                     }, // 443
   { A_MOD_RECHARGE_TIME_CATEGORY,             "charge_cooldown"                           }, // 453
+  { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"                    }, // 463
   { A_MOD_VERSATILITY_PCT,                    "versatility"                               }, // 471
   { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"                }, // 531
 };
@@ -15612,8 +15628,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       case A_MOD_MAX_RESOURCE:
         resource_type = util::translate_power_type( static_cast<power_e>( misc_type ) );
-        field                 = fmt::format( "max_{}", util::resource_type_string( resource_type ), subtype_str );
-        flat_val              = modifying_eff.resource( resource_type );
+        field         = fmt::format( "max_{}", util::resource_type_string( resource_type ), subtype_str );
+        flat_val      = modifying_eff.resource( resource_type );
         break;
       case A_INCREASE_RESOURCE_PCT:
       case A_MOD_MAX_RESOURCE_PCT:
@@ -15758,6 +15774,19 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         subtype_str = "flat"; 
         bit_type    = BITMAP_ATTRIBUTE;
         flat_val    = modifying_eff.average( this );
+        break;
+      case A_OVERRIDE_AP_PER_SP:
+        field    = "ap_per_sp";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_OVERRIDE_SP_PER_AP:
+        field    = "sp_per_ap";
+        pct_val = modifying_eff.percent();
+        break;
+      case A_MOD_PARRY_FROM_CRIT_RATING:
+        field    = "parry_from_crit_rating";
+        flat_val = modifying_eff.percent();
+        break;
       default:
         return false;
     }

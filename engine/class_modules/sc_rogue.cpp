@@ -944,7 +944,7 @@ public:
       player_talent_t blinding_powder;
       player_talent_t float_like_a_butterfly;
       player_talent_t sting_like_a_bee;
-      player_talent_t riposte;                  // No implementation
+      player_talent_t riposte;
       player_talent_t precision_shot;
 
       player_talent_t heavy_hitter;

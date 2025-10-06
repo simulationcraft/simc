@@ -8874,10 +8874,6 @@ void demon_hunter_t::invalidate_cache( cache_e c )
       }
       break;
     case CACHE_CRIT_CHANCE:
-      if ( spec.riposte->ok() )
-      {
-        invalidate_cache( CACHE_PARRY );
-      }
       break;
     case CACHE_RUN_SPEED:
       adjust_movement();
@@ -9800,7 +9796,6 @@ void demon_hunter_t::parse_player_effects()
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
     parse_effects( buff.demon_spikes );
-    parse_effects( spec.riposte );
     parse_effects( mastery.fel_blood_rank_2 );
   }
 

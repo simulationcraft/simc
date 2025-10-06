@@ -10329,11 +10329,6 @@ double warrior_t::composite_parry_rating() const
 {
   double p = parse_player_effects_t::composite_parry_rating();
 
-  // TODO: remove the spec check once riposte is pulled from spelldata
-  if ( spec.riposte -> ok() || specialization() == WARRIOR_PROTECTION )
-  {
-    p += warrior_t::composite_melee_crit_rating();
-  }
   return p;
 }
 

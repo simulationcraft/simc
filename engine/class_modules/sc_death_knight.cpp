@@ -15203,7 +15203,6 @@ void death_knight_t::parse_player_effects()
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     parse_effects( mastery.blood_shield );
-    parse_effects( spec.riposte );
     parse_effects( buffs.blood_shield );
     parse_effects( buffs.voracious );
     parse_effects( buffs.dancing_rune_weapon );

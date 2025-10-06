@@ -259,7 +259,7 @@ struct player_t : public actor_t
 
     double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility, attack_power_per_spell_power;
-    double dodge_per_agility, parry_per_strength;
+    double dodge_per_agility, parry_per_strength, parry_rating_per_crit_rating;
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
@@ -1376,8 +1376,7 @@ public:
   { return composite_rating( RATING_EXPERTISE ); }
   virtual double composite_dodge_rating() const
   { return composite_rating( RATING_DODGE ); }
-  virtual double composite_parry_rating() const
-  { return composite_rating( RATING_PARRY ); }
+  virtual double composite_parry_rating() const;
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
   virtual double composite_damage_versatility_rating() const
