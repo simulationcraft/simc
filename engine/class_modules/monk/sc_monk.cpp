@@ -188,7 +188,7 @@ void monk_action_t<Base>::apply_debuff_effects()
 }
 
 template <class Base>
-std::unique_ptr<expr_t> monk_action_t<Base>::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> monk_action_t<Base>::create_expression( std::string_view name_str )
 {
   if ( name_str == "combo_strike" )
     return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
@@ -587,7 +587,7 @@ result_amount_type monk_melee_attack_t::amount_type( const action_state_t *state
 
 struct monk_snapshot_stats_t : public snapshot_stats_t
 {
-  monk_snapshot_stats_t( monk_t *player, util::string_view options ) : snapshot_stats_t( player, options )
+  monk_snapshot_stats_t( monk_t *player, std::string_view options ) : snapshot_stats_t( player, options )
   {
   }
 
@@ -939,7 +939,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   action_t *tigers_ferocity;
   action_t *harmonic_surge;
 
-  tiger_palm_t( monk_t *p, util::string_view options_str )
+  tiger_palm_t( monk_t *p, std::string_view options_str )
     : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ),
       face_palm( false ),
       tigers_ferocity( nullptr ),
@@ -1185,7 +1185,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 {
   glory_of_the_dawn_t *gotd;
 
-  rising_sun_kick_t( monk_t *p, util::string_view options_str )
+  rising_sun_kick_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick )
   {
     parse_options( options_str );
@@ -1362,7 +1362,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
   cooldown_t *keg_smash_cooldown;
   bool tier_tww2_opportunistic_strike;
 
-  blackout_kick_t( monk_t *p, util::string_view options_str )
+  blackout_kick_t( monk_t *p, std::string_view options_str )
     : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
                                                        : p->baseline.monk.blackout_kick ) ),
@@ -1556,7 +1556,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 {
   buff_t *buff;
 
-  rushing_jade_wind_t( monk_t *player, util::string_view options_str )
+  rushing_jade_wind_t( monk_t *player, std::string_view options_str )
     : monk_melee_attack_t( player, "rushing_jade_wind", player->talent.brewmaster.rushing_jade_wind ),
       buff( player->buff.rushing_jade_wind )
   {
@@ -1631,7 +1631,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 {
   chi_explosion_t *chi_x;
 
-  spinning_crane_kick_t( monk_t *p, util::string_view options_str )
+  spinning_crane_kick_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "spinning_crane_kick",
                            ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.spinning_crane_kick
                                                                     : p->baseline.monk.spinning_crane_kick ) ),
@@ -1729,7 +1729,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
 struct fists_of_fury_tick_t : public monk_melee_attack_t
 {
-  fists_of_fury_tick_t( monk_t *player, util::string_view name )
+  fists_of_fury_tick_t( monk_t *player, std::string_view name )
     : monk_melee_attack_t( player, name, player->talent.windwalker.fists_of_fury_tick )
   {
     background          = true;
@@ -1777,7 +1777,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
 struct fists_of_fury_t : public monk_melee_attack_t
 {
-  fists_of_fury_t( monk_t *p, util::string_view options_str )
+  fists_of_fury_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "fists_of_fury", p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
@@ -1839,7 +1839,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 {
   timespan_t delay;
-  whirling_dragon_punch_aoe_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
+  whirling_dragon_punch_aoe_tick_t( std::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
     : monk_melee_attack_t( p, name, s ), delay( delay )
   {
     ww_mastery = true;
@@ -1854,7 +1854,7 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
 
 struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
 {
-  whirling_dragon_punch_st_tick_t( util::string_view name, monk_t *p, const spell_data_t *s )
+  whirling_dragon_punch_st_tick_t( std::string_view name, monk_t *p, const spell_data_t *s )
     : monk_melee_attack_t( p, name, s )
   {
     ww_mastery = true;
@@ -1885,7 +1885,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     }
   };
 
-  whirling_dragon_punch_t( monk_t *p, util::string_view options_str )
+  whirling_dragon_punch_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "whirling_dragon_punch", p->talent.windwalker.whirling_dragon_punch )
   {
     parse_options( options_str );
@@ -2020,7 +2020,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
   strike_of_the_windlord_main_hand_t *mh_attack;
   strike_of_the_windlord_off_hand_t *oh_attack;
 
-  strike_of_the_windlord_t( monk_t *p, util::string_view options_str )
+  strike_of_the_windlord_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "strike_of_the_windlord", p->talent.windwalker.strike_of_the_windlord ),
       mh_attack( nullptr ),
       oh_attack( nullptr )
@@ -2097,7 +2097,7 @@ struct melee_t : public monk_melee_attack_t
   bool first;
   bool oh;
 
-  melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
+  melee_t( std::string_view name, monk_t *player, int sw, bool is_oh = false )
     : monk_melee_attack_t( player, name ), sync_weapons( sw ), first( true ), oh( is_oh )
   {
     background = repeating = may_glance = true;
@@ -2197,7 +2197,7 @@ struct auto_attack_t : public monk_melee_attack_t
 {
   int sync_weapons;
 
-  auto_attack_t( monk_t *player, util::string_view options_str )
+  auto_attack_t( monk_t *player, std::string_view options_str )
     : monk_melee_attack_t( player, "auto_attack" ), sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
@@ -2316,7 +2316,7 @@ struct stomp_t : monk_melee_attack_t
 
 struct touch_of_death_t : public monk_melee_attack_t
 {
-  touch_of_death_t( monk_t *p, util::string_view options_str )
+  touch_of_death_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "touch_of_death", p->baseline.monk.touch_of_death )
   {
     ww_mastery = true;
@@ -2438,7 +2438,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
   double interval_stddev_opt;
   double pct_health;
   touch_of_karma_dot_t *touch_of_karma_dot;
-  touch_of_karma_t( monk_t *p, util::string_view options_str )
+  touch_of_karma_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "touch_of_karma", p->baseline.windwalker.touch_of_karma ),
       interval( 100 ),
       interval_stddev( 0.05 ),
@@ -2518,7 +2518,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
 
 struct provoke_t : public monk_melee_attack_t
 {
-  provoke_t( monk_t *p, util::string_view options_str ) : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
+  provoke_t( monk_t *p, std::string_view options_str ) : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
   {
     parse_options( options_str );
     use_off_gcd           = true;
@@ -2536,7 +2536,7 @@ struct provoke_t : public monk_melee_attack_t
 
 struct spear_hand_strike_t : public monk_melee_attack_t
 {
-  spear_hand_strike_t( monk_t *p, util::string_view options_str )
+  spear_hand_strike_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "spear_hand_strike", p->talent.monk.spear_hand_strike )
   {
     parse_options( options_str );
@@ -2549,7 +2549,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
 
 struct leg_sweep_t : public monk_melee_attack_t
 {
-  leg_sweep_t( monk_t *p, util::string_view options_str )
+  leg_sweep_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "leg_sweep", p->baseline.monk.leg_sweep )
   {
     parse_options( options_str );
@@ -2561,7 +2561,7 @@ struct leg_sweep_t : public monk_melee_attack_t
 
 struct paralysis_t : public monk_melee_attack_t
 {
-  paralysis_t( monk_t *p, util::string_view options_str )
+  paralysis_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "paralysis", p->talent.monk.paralysis )
   {
     parse_options( options_str );
@@ -2573,7 +2573,7 @@ struct paralysis_t : public monk_melee_attack_t
 struct flying_serpent_kick_t : public monk_melee_attack_t
 {
   bool first_charge;
-  flying_serpent_kick_t( monk_t *p, util::string_view options_str )
+  flying_serpent_kick_t( monk_t *p, std::string_view options_str )
     : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ), first_charge( true )
   {
     parse_options( options_str );
@@ -2629,7 +2629,7 @@ struct slicing_winds_t : public monk_melee_attack_t
     }
   };
 
-  slicing_winds_t( monk_t *player, util::string_view options_str )
+  slicing_winds_t( monk_t *player, std::string_view options_str )
     : monk_melee_attack_t( player, "slicing_winds", player->talent.windwalker.slicing_winds )
   {
     parse_options( options_str );
@@ -2805,7 +2805,7 @@ struct special_delivery_t : public monk_spell_t
 
 struct black_ox_brew_t : public brew_t<monk_spell_t>
 {
-  black_ox_brew_t( monk_t *player, util::string_view options_str )
+  black_ox_brew_t( monk_t *player, std::string_view options_str )
     : brew_t<monk_spell_t>( player, "black_ox_brew", player->talent.brewmaster.black_ox_brew )
   {
     parse_options( options_str );
@@ -2838,7 +2838,7 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
 
 struct roll_t : public monk_spell_t
 {
-  roll_t( monk_t *player, util::string_view options_str )
+  roll_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "roll",
                     ( player->talent.monk.chi_torpedo->ok() ? spell_data_t::not_found() : player->baseline.monk.roll ) )
   {
@@ -2850,7 +2850,7 @@ struct roll_t : public monk_spell_t
 
 struct chi_torpedo_t : public monk_spell_t
 {
-  chi_torpedo_t( monk_t *player, util::string_view options_str )
+  chi_torpedo_t( monk_t *player, std::string_view options_str )
     : monk_spell_t(
           player, "chi_torpedo",
           ( player->talent.monk.chi_torpedo->ok() ? player->talent.monk.chi_torpedo : spell_data_t::not_found() ) )
@@ -2880,7 +2880,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
   aoe_dot_t *aoe_dot;
 
-  crackling_jade_lightning_t( monk_t *player, util::string_view options_str )
+  crackling_jade_lightning_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "crackling_jade_lightning", player->baseline.monk.crackling_jade_lightning ),
       aoe_dot( nullptr )
   {
@@ -3056,7 +3056,7 @@ public:
   bool no_bof_hit;
   bool blackout_combo;
 
-  breath_of_fire_t( monk_t *player, util::string_view options_str )
+  breath_of_fire_t( monk_t *player, std::string_view options_str )
     : monk_spell_t( player, "breath_of_fire", player->talent.brewmaster.breath_of_fire ),
       dragonfire_brew( nullptr ),
       no_bof_hit( false ),
@@ -3143,7 +3143,7 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 
   niuzaos_protection_t *absorb;
 
-  fortifying_brew_t( monk_t *p, util::string_view options_str )
+  fortifying_brew_t( monk_t *p, std::string_view options_str )
     : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
       absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
   {
@@ -3177,7 +3177,7 @@ struct exploding_keg_proc_t : public monk_spell_t
 
 struct exploding_keg_t : public monk_spell_t
 {
-  exploding_keg_t( monk_t *p, util::string_view options_str )
+  exploding_keg_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "exploding_keg", p->talent.brewmaster.exploding_keg )
   {
     parse_options( options_str );
@@ -3224,7 +3224,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 
   gai_plins_imperial_brew_t *gai_plins;
 
-  purifying_brew_t( monk_t *player, util::string_view options_str )
+  purifying_brew_t( monk_t *player, std::string_view options_str )
     : brew_t<monk_spell_t>( player, "purifying_brew", player->talent.brewmaster.purifying_brew ),
       gai_plins( new gai_plins_imperial_brew_t( player ) )
   {
@@ -3354,7 +3354,7 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
 
 struct xuen_spell_t : public monk_spell_t
 {
-  xuen_spell_t( monk_t *p, util::string_view options_str )
+  xuen_spell_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "invoke_xuen_the_white_tiger", p->talent.windwalker.invoke_xuen_the_white_tiger )
   {
     parse_options( options_str );
@@ -3494,7 +3494,7 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
 
 struct niuzao_spell_t : public monk_spell_t
 {
-  niuzao_spell_t( monk_t *p, util::string_view options_str )
+  niuzao_spell_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "invoke_niuzao_the_black_ox", p->talent.brewmaster.invoke_niuzao_the_black_ox )
   {
     parse_options( options_str );
@@ -3518,7 +3518,7 @@ struct niuzao_spell_t : public monk_spell_t
 
 struct unity_within_t : public monk_spell_t
 {
-  unity_within_t( monk_t *p, util::string_view options_str )
+  unity_within_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "unity_within", p->talent.conduit_of_the_celestials.unity_within )
   {
     parse_options( options_str );
@@ -3593,7 +3593,7 @@ struct celestial_conduit_t : public monk_spell_t
   celestial_conduit_dmg_t *damage;
   celestial_conduit_heal_t *heal;
 
-  celestial_conduit_t( monk_t *p, util::string_view options_str )
+  celestial_conduit_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit ),
       damage( new celestial_conduit_dmg_t( p ) ),
       heal( new celestial_conduit_heal_t( p ) )
@@ -3662,7 +3662,7 @@ struct jadefire_stomp_damage_t : public monk_spell_t
 struct jadefire_stomp_t : public monk_spell_t
 {
   jadefire_stomp_damage_t *damage;
-  jadefire_stomp_t( monk_t *p, util::string_view options_str )
+  jadefire_stomp_t( monk_t *p, std::string_view options_str )
     : monk_spell_t( p, "jadefire_stomp", p->talent.windwalker.jadefire_stomp )
   {
     parse_options( options_str );
@@ -3688,7 +3688,7 @@ namespace heals
 {
 struct vivify_t : public monk_heal_t
 {
-  vivify_t( monk_t *p, util::string_view options_str ) : monk_heal_t( p, "vivify", p->baseline.monk.vivify )
+  vivify_t( monk_t *p, std::string_view options_str ) : monk_heal_t( p, "vivify", p->baseline.monk.vivify )
   {
     parse_options( options_str );
 
@@ -4143,7 +4143,7 @@ struct fortifying_brew_t : public monk_buff_t<>
 
 struct touch_of_karma_buff_t : public monk_buff_t<>
 {
-  touch_of_karma_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  touch_of_karma_buff_t( monk_t *p, std::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
     default_value = 0;
     set_cooldown( timespan_t::zero() );
@@ -4281,7 +4281,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<>
     }
   }
 
-  invoke_xuen_the_white_tiger_buff_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  invoke_xuen_the_white_tiger_buff_t( monk_t *p, std::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
     set_duration( s->duration() );
@@ -4689,7 +4689,7 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   dot.aspect_of_harmony            = target->get_dot( "aspect_of_harmony_damage", p );
 }
 
-monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
+monk_t::monk_t( sim_t *sim, std::string_view name, race_e r )
   : base_t( sim, MONK, name, r ),
     action(),
     efficient_training_energy( 0 ),
@@ -4818,7 +4818,7 @@ void monk_t::parse_player_effects()
   // TWW S4 Set Effects
 }
 
-action_t *monk_t::create_action( util::string_view name, util::string_view options_str )
+action_t *monk_t::create_action( std::string_view name, std::string_view options_str )
 {
   using namespace actions;
   using namespace actions::attacks;
@@ -6866,9 +6866,9 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
   }
 }
 
-std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> monk_t::create_expression( std::string_view name_str )
 {
-  auto splits = util::string_split<util::string_view>( name_str, "." );
+  auto splits = util::string_split<std::string_view>( name_str, "." );
 
   if ( splits.size() >= 3 && splits[ 1 ] == "celestial_brew" && talent.brewmaster.celestial_infusion->ok() )
   {
@@ -6971,7 +6971,7 @@ struct monk_module_t : public module_t
   {
   }
 
-  player_t *create_player( sim_t *sim, util::string_view name, race_e race ) const override
+  player_t *create_player( sim_t *sim, std::string_view name, race_e race ) const override
   {
     monk_t *player           = new monk_t( sim, name, race );
     player->report_extension = std::make_unique<monk_report_t>( *player );

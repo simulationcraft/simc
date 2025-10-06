@@ -11,7 +11,7 @@ namespace monk
 {
 namespace pets
 {
-monk_pet_t::monk_pet_t( monk_t *owner, util::string_view name, pet_e pet_type, bool guardian, bool dynamic )
+monk_pet_t::monk_pet_t( monk_t *owner, std::string_view name, pet_e pet_type, bool guardian, bool dynamic )
   : pet_t( owner->sim, owner, name, pet_type, guardian, dynamic )
 {
 }
@@ -38,7 +38,7 @@ struct pet_action_base_t : public BASE
   using base_t  = pet_action_base_t<BASE>;
   bool merge_report;
 
-  pet_action_base_t( util::string_view n, PET_TYPE *p, const spell_data_t *data = spell_data_t::nil() )
+  pet_action_base_t( std::string_view n, PET_TYPE *p, const spell_data_t *data = spell_data_t::nil() )
     : BASE( n, p, data ), merge_report( true )
   {
     // No costs are needed either
@@ -113,7 +113,7 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 {
   bool trigger_mystic_touch;  // Some pets can trigger Mystic Touch debuff from attacks
 
-  pet_melee_attack_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
+  pet_melee_attack_t( std::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
   }
@@ -143,7 +143,7 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
 
 struct pet_melee_t : pet_melee_attack_t
 {
-  pet_melee_t( util::string_view name, monk_pet_t *player, weapon_t *weapon )
+  pet_melee_t( std::string_view name, monk_pet_t *player, weapon_t *weapon )
     : pet_melee_attack_t( name, player, spell_data_t::nil() )
   {
     background = repeating = may_crit = may_glance = true;
@@ -214,7 +214,7 @@ struct pet_auto_attack_t : public melee_attack_t
 
 struct pet_spell_t : public pet_action_base_t<spell_t>
 {
-  pet_spell_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
+  pet_spell_t( std::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data )
   {
   }
@@ -222,15 +222,14 @@ struct pet_spell_t : public pet_action_base_t<spell_t>
 
 struct pet_heal_t : public pet_action_base_t<heal_t>
 {
-  pet_heal_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
-    : base_t( n, p, data )
+  pet_heal_t( std::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() ) : base_t( n, p, data )
   {
   }
 };
 
 struct pet_absorb_t : public pet_action_base_t<absorb_t>
 {
-  pet_absorb_t( util::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
+  pet_absorb_t( std::string_view n, monk_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
     : base_t( n, p, data )
   {
   }
@@ -244,7 +243,7 @@ struct monk_pet_buff_t : public buff_t
 public:
   using base_t = monk_pet_buff_t;
 
-  monk_pet_buff_t( monk_pet_t &p, util::string_view name, const spell_data_t *s = spell_data_t::nil(),
+  monk_pet_buff_t( monk_pet_t &p, std::string_view name, const spell_data_t *s = spell_data_t::nil(),
                    const item_t *item = nullptr )
     : buff_t( &p, name, s, item )
   {
@@ -272,7 +271,7 @@ struct xuen_pet_t : public monk_pet_t
 private:
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, xuen_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
+    melee_t( std::string_view n, xuen_pet_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
     {
     }
   };
@@ -289,7 +288,7 @@ private:
 
   struct crackling_tiger_lightning_t : public pet_spell_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t *p, util::string_view options_str )
+    crackling_tiger_lightning_t( xuen_pet_t *p, std::string_view options_str )
       : pet_spell_t( "crackling_tiger_lightning", p, p->o()->talent.windwalker.crackling_tiger_lightning_driver )
     {
       parse_options( options_str );
@@ -310,7 +309,7 @@ private:
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( xuen_pet_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( xuen_pet_t *player, std::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
@@ -339,7 +338,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t *create_action( util::string_view name, util::string_view options_str ) override
+  action_t *create_action( std::string_view name, std::string_view options_str ) override
   {
     if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_t( this, options_str );
@@ -449,7 +448,7 @@ struct white_tiger_statue_t : public monk_pet_t
 private:
   struct claw_of_the_white_tiger_t : public pet_spell_t
   {
-    claw_of_the_white_tiger_t( white_tiger_statue_t *p, util::string_view options_str )
+    claw_of_the_white_tiger_t( white_tiger_statue_t *p, std::string_view options_str )
       : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->talent.monk.claw_of_the_white_tiger )
     {
       parse_options( options_str );
@@ -476,7 +475,7 @@ public:
     pet_t::init_action_list();
   }
 
-  action_t *create_action( util::string_view name, util::string_view options_str ) override
+  action_t *create_action( std::string_view name, std::string_view options_str ) override
   {
     if ( name == "claw_of_the_white_tiger" )
       return new claw_of_the_white_tiger_t( this, options_str );

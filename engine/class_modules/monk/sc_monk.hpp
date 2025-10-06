@@ -1100,7 +1100,7 @@ public:
   } user_options;
 
 public:
-  monk_t( sim_t *sim, util::string_view name, race_e r );
+  monk_t( sim_t *sim, std::string_view name, race_e r );
 
   // APL
   std::string default_potion() const override;
@@ -1128,10 +1128,10 @@ public:
   void init_special_effects() override;
   void init_finished() override;
   void create_buffs() override;
-  action_t *create_action( util::string_view name, util::string_view options ) override;
+  action_t *create_action( std::string_view name, std::string_view options ) override;
   void create_actions() override;
   void create_options() override;
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
   void reset() override;
   void copy_from( player_t * ) override;
 
