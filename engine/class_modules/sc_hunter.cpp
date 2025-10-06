@@ -8525,6 +8525,9 @@ void hunter_t::init_spells()
                                                     ? effect_mask_t( true ).disable( 2 )
                                                     : effect_mask_t( true ).disable( 1 ) );
 
+  deregister_passive_effects( talents.trigger_finger );
+  deregister_passive_effects( talents.penetrating_shots );
+
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();

@@ -4818,7 +4818,6 @@ struct abomination_pet_t : public death_knight_pet_t
     affected_by_grave_mastery         = true;
     owner_coeff.ap_from_ap            = 3.12;
     resource_regeneration             = regen_type::DISABLED;
-    base_movement_speed               = 7.5;
 
     register_on_combat_state_callback( [ this ]( player_t* /* p */, bool in_combat ) {
       if ( in_combat && dk()->pets.abomination.active_pet() != nullptr )

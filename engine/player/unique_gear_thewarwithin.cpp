@@ -763,7 +763,7 @@ void twisted_appendage( special_effect_t& effect )
     {
       parent_action       = parent;
       use_auto_attack     = false;
-      base_movement_speed = 0.0;
+      base.movement_speed = 0.0;
     }
 
     void init_action_list() override

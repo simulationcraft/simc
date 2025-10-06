@@ -1120,9 +1120,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     auto_attack_base_modifier( 0.0 ),
     auto_attack_multiplier( 1.0 ),
     scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
-    // Movement & Position
-    base_movement_speed( 7.0 ),
-    passive_modifier( 0 ),
+    // Position
     x_position( 0.0 ),
     y_position( 0.0 ),
     default_x_position( std::numeric_limits<double>::lowest() ),
@@ -1317,6 +1315,9 @@ player_t::base_initial_current_t::base_initial_current_t() :
   absorb_multiplier( 1.0 ),
   absorb_received_multiplier( 1.0 ),
   healing_received_multiplier( 1.0 ),
+  movement_speed( 0 ),
+  stacking_movement_speed_modifier( 1.0 ),
+  non_stacking_movement_speed_modifier( 1.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1387,6 +1388,12 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
   fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
   fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
+  fmt::format_to( out, " absorb_multiplier={}", s.absorb_multiplier );
+  fmt::format_to( out, " absorb_received_multiplier={}", s.absorb_received_multiplier );
+  fmt::format_to( out, " healing_received_multiplier={}", s.healing_received_multiplier );
+  fmt::format_to( out, " movement_speed={}_yards/s", s.movement_speed );
+  fmt::format_to( out, " stacking_movement_speed_modifier={}", s.stacking_movement_speed_modifier );
+  fmt::format_to( out, " non_stacking_movement_speed_modifier={}", s.non_stacking_movement_speed_modifier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1673,6 +1680,12 @@ void player_t::init_base_stats()
   }
 
   base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
+
+  // Movement Speed
+  base.movement_speed = 7.0;  // yards per second
+  base.stacking_movement_speed_modifier = get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
+  base.non_stacking_movement_speed_modifier =
+      get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -5893,7 +5906,7 @@ double player_t::composite_player_critical_healing_multiplier() const
  */
 double player_t::non_stacking_movement_modifier() const
 {
-  double speed = 0.0;
+  double speed = current.non_stacking_movement_speed_modifier;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
@@ -5936,12 +5949,10 @@ double player_t::non_stacking_movement_modifier() const
  */
 double player_t::stacking_movement_modifier() const
 {
-  double speed = passive_modifier;
+  double speed = current.stacking_movement_speed_modifier;
 
   // speed tertiary rating
   speed += composite_run_speed();
-
-  speed += racials.quickness->effectN( 2 ).percent();
 
   if ( buffs.windwalking_movement_aura )
     speed += buffs.windwalking_movement_aura->check_value();
@@ -5957,7 +5968,7 @@ double player_t::stacking_movement_modifier() const
 
 double player_t::composite_movement_speed() const
 {
-  double speed = base_movement_speed;
+  double speed = current.movement_speed;
 
   double non_stacking = non_stacking_movement_modifier();
 
@@ -15342,6 +15353,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_INCREASE_RESOURCE_PCT,                  "pain_multiplier"                           }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "insanity_multiplier"                       }, // 119
   { A_INCREASE_RESOURCE_PCT,                  "essence_multiplier"                        }, // 119
+  { A_MOD_SPEED_ALWAYS,                       "stacking_move_speed_modifier"              }, // 129
   { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"                        }, // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "strength_multiplier"                       }, // 137
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "agility_multiplier"                        }, // 137
@@ -15363,6 +15375,7 @@ static constexpr std::pair<unsigned, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_BONUS,                  "shadow_crit_damage_multiplier"             }, // 163
   { A_MOD_CRIT_DAMAGE_BONUS,                  "physical_crit_damage_multiplier"           }, // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",                  }, // 166
+  { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier"          }, // 171
   { A_MOD_MAX_MANA_PCT,                       "mana_multiplier"                           }, // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                            }, // 187
   { A_HASTE_ALL,                              "all_haste"                                 }, // 193
@@ -15785,6 +15798,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MOD_PARRY_FROM_CRIT_RATING:
         field    = "parry_from_crit_rating";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPEED_ALWAYS:
+        field = "stacking_move_speed_modifier";
+        flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_SPEED_NOT_STACK:
+        field = "non_stacking_move_speed_modifier";
         flat_val = modifying_eff.percent();
         break;
       default:

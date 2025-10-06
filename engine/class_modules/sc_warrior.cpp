@@ -3646,7 +3646,7 @@ struct charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override
@@ -5190,7 +5190,7 @@ struct heroic_leap_t : public warrior_attack_t
     if ( p()->current.distance_to_move > 0 && !p()->buff.heroic_leap_movement->check() )
     {
       double speed = std::min( p()->current.distance_to_move, base_teleport_distance ) /
-                     ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() ) ) /
+                     ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() ) ) /
                      travel_time().total_seconds();
       p()->buff.heroic_leap_movement->trigger( 1, speed, 1, travel_time() );
     }
@@ -5296,7 +5296,7 @@ struct intervene_t : public warrior_attack_t
           1, movement_speed_increase, 1,
           timespan_t::from_seconds(
               p()->current.distance_to_move /
-              ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) );
+              ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
     }
   }
@@ -6801,7 +6801,7 @@ struct shield_charge_t : public warrior_attack_t
   timespan_t calc_charge_time( double distance )
   {
     return timespan_t::from_seconds( distance /
-      ( p()->base_movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
+      ( p()->current.movement_speed * ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) );
   }
 
   void execute() override

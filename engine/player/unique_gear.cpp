@@ -3460,7 +3460,7 @@ void racial::zandalari_loa( special_effect_t& effect )
   }
   else if ( effect.player->zandalari_loa == player_t::GONK )
   {
-    effect.player->passive_modifier += effect.player->find_spell( 292362 )->effectN( 1 ).percent();
+    effect.player->base.stacking_movement_speed_modifier += effect.player->find_spell( 292362 )->effectN( 1 ).percent();
   }
   else if ( effect.player->zandalari_loa == player_t::BWONSAMDI )
   {

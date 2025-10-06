@@ -10410,7 +10410,7 @@ void echoing_thunder_stone( special_effect_t& effect )
       // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
       // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
       // TODO: Check more data points to make sure this model is correct.
-      int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+      int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->current.movement_speed ) );
       counter->trigger( num_stacks );
     }
   };

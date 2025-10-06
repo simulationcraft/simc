@@ -286,6 +286,8 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
     double pet_damage_multiplier, guardian_damage_multiplier;
     double absorb_multiplier, absorb_received_multiplier, healing_received_multiplier;
+
+    double movement_speed, stacking_movement_speed_modifier, non_stacking_movement_speed_modifier;
     position_e position;
 
     friend void sc_format_to( const base_initial_current_t&, fmt::format_context::iterator );
@@ -478,9 +480,7 @@ struct player_t : public actor_t
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
 
-  // Movement & Position
-  double base_movement_speed;
-  double passive_modifier; // _PASSIVE_ movement speed modifiers
+  // Position
   double x_position, y_position, default_x_position, default_y_position;
 
   struct consumables_t {

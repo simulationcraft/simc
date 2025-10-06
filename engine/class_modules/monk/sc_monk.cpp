@@ -3210,7 +3210,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
           1, movement_speed_increase, 1,
           timespan_t::from_seconds(
               std::min( 1.5, p()->current.distance_to_move /
-                                 ( p()->base_movement_speed *
+                                 ( p()->current.movement_speed *
                                    ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) ) );
       p()->current.moving_away = 0;
     }
