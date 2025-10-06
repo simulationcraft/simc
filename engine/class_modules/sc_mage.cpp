@@ -9149,7 +9149,6 @@ double mage_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double mul = player_t::composite_attribute_multiplier( attr );
 
-  // TODO: Check if parsed DBC overrides properly apply this modifier
   if ( attr == ATTR_INTELLECT && sim->auras.arcane_intellect->check() )
   {
     double ai_val = sim->auras.arcane_intellect->current_value;
