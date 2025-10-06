@@ -913,7 +913,7 @@ public:
       player_talent_t celestial_conduit;
       const spell_data_t *celestial_conduit_action;
       const spell_data_t *celestial_conduit_buff;
-      const spell_data_t *celestial_conduit_dmg;
+      const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       // Row 2
       player_talent_t temple_training;

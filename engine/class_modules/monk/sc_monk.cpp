@@ -3514,62 +3514,50 @@ struct unity_within_t : public monk_spell_t
 
 struct celestial_conduit_t : public monk_spell_t
 {
-  // TODO: convert to template
-  struct celestial_conduit_dmg_t : public monk_spell_t
+  template <typename TBase>
+  struct tick_action_t : TBase
   {
-    celestial_conduit_dmg_t( monk_t *p )
-      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
-    {
-      background       = true;
-      aoe              = -1;
-      split_aoe_damage = true;
-      ww_mastery       = true;
-    }
-
-    double composite_aoe_multiplier( const action_state_t *state ) const override
-    {
-      double cam = monk_spell_t::composite_aoe_multiplier( state );
-
-      if ( state->n_targets > 0 )
-        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
-                     std::min(
-                         as<double>( state->n_targets ),
-                         p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
-
-      return cam;
-    }
-  };
-
-  struct celestial_conduit_heal_t : public monk_heal_t
-  {
-    celestial_conduit_heal_t( monk_t *p )
-      : monk_heal_t( p, "celestial_conduit_heal", p->talent.conduit_of_the_celestials.celestial_conduit_heal )
+    tick_action_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : TBase( player, name, spell_data )
     {
       background = true;
-      target     = p;
+
+      if constexpr ( std::is_same_v<TBase, monk_spell_t> )
+      {
+        aoe              = -1;
+        split_aoe_damage = true;
+        ww_mastery       = true;
+      }
+
+      if constexpr ( std::is_same_v<TBase, monk_heal_t> )
+        target = player;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
     {
-      double cam = monk_heal_t::composite_aoe_multiplier( state );
+      double cam = TBase::composite_aoe_multiplier( state );
 
-      if ( state->n_targets > 0 )
-        cam *= 1 + ( p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
-                     std::min(
-                         (double)state->n_targets,
-                         p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
+      if ( state->n_targets )
+        cam *=
+            1 +
+            ( TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 1 ).percent() *
+              std::min(
+                  as<double>( state->n_targets ),
+                  TBase::p()->talent.conduit_of_the_celestials.celestial_conduit_action->effectN( 3 ).base_value() ) );
 
       return cam;
     }
   };
 
-  celestial_conduit_dmg_t *damage;
-  celestial_conduit_heal_t *heal;
+  action_t *damage;
+  action_t *heal;
 
-  celestial_conduit_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "celestial_conduit", p->talent.conduit_of_the_celestials.celestial_conduit_action ),
-      damage( new celestial_conduit_dmg_t( p ) ),
-      heal( new celestial_conduit_heal_t( p ) )
+  celestial_conduit_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "celestial_conduit", player->talent.conduit_of_the_celestials.celestial_conduit_action ),
+      damage( new tick_action_t<monk_spell_t>( player, "celestial_conduit_damage",
+                                               player->talent.conduit_of_the_celestials.celestial_conduit_damage ) ),
+      heal( new tick_action_t<monk_heal_t>( player, "celestial_conduit_heal",
+                                            player->talent.conduit_of_the_celestials.celestial_conduit_heal ) )
   {
     parse_options( options_str );
 
@@ -5341,7 +5329,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.celestial_conduit                        = _HT( "Celestial Conduit" );
     talent.conduit_of_the_celestials.celestial_conduit_action                 = find_spell( 443028 );
     talent.conduit_of_the_celestials.celestial_conduit_buff                   = find_spell( 443028 );
-    talent.conduit_of_the_celestials.celestial_conduit_dmg                    = find_spell( 443038 );
+    talent.conduit_of_the_celestials.celestial_conduit_damage                 = find_spell( 443038 );
     talent.conduit_of_the_celestials.celestial_conduit_heal                   = find_spell( 443039 );
     talent.conduit_of_the_celestials.temple_training                          = _HT( "Temple Training" );
     talent.conduit_of_the_celestials.xuens_guidance                           = _HT( "Xuen's Guidance" );
