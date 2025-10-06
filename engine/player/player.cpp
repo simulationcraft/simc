@@ -1613,6 +1613,7 @@ void player_t::init_base_stats()
     base.hit       = 0.075;
     base.expertise = 0.075;
     base.expertise = get_passive_player_value( base.expertise, "expertise" );
+    base.armor_penetration = get_passive_player_value( base.armor_penetration, "armor_penetration" );
 
     if ( base.distance < 1 )
       base.distance = 5;
@@ -6151,7 +6152,11 @@ double player_t::composite_player_vulnerability( school_e school ) const
 
 double player_t::composite_player_target_armor( player_t* t ) const
 {
-  return t->cache.armor();
+  double a = t->cache.armor();
+
+  a *= current.armor_penetration;
+
+  return a;
 }
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
@@ -15826,6 +15831,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_BLOCK_PERCENT:
         field   = "block";
         flat_val = modifying_eff.percent();
+        break;
+      case A_MOD_TARGET_ARMOR_PCT:
+        field   = "armor_penetration";
+        pct_val = -modifying_eff.percent();
         break;
       default:
         return false;

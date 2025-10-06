@@ -6521,8 +6521,6 @@ double monk_t::composite_player_target_armor( player_t *target ) const
 {
   double armor = player_t::composite_player_target_armor( target );
 
-  armor *= ( 1.0f - talent.shado_pan.martial_precision->effectN( 1 ).percent() );
-
   return armor;
 }
 

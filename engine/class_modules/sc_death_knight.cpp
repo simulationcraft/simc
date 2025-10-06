@@ -13354,7 +13354,7 @@ void death_knight_t::spell_lookups()
   spell.infliction_of_sorrow_buff       = conditional_spell_lookup( talent.sanlayn.infliction_of_sorrow.ok(), 460049 );
   spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
   spell.vampiric_strike_range =
-      conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
+      conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && spec.unholy_death_knight->ok(), 445669 );
   spell.incite_terror_debuff          = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
   spell.visceral_strength_buff        = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );

@@ -286,6 +286,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX_PRIMARY> damage_multiplier;
     double pet_damage_multiplier, guardian_damage_multiplier;
     double absorb_multiplier, absorb_received_multiplier, healing_received_multiplier;
+    double armor_penetration;
 
     double movement_speed, stacking_movement_speed_modifier, non_stacking_movement_speed_modifier;
     position_e position;

@@ -10505,9 +10505,6 @@ double evoker_t::composite_base_armor_multiplier() const
 {
   double a = player_t::composite_base_armor_multiplier();
 
-  if ( spec.tempered_scales )
-    a *= 1.0 + spec.tempered_scales->effectN( 1 ).percent();
-
   return a;
 }
 
