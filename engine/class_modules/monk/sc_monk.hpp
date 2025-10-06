@@ -618,6 +618,7 @@ public:
       const spell_data_t *aura;
       const spell_data_t *aura_2;
       const spell_data_t *aura_3;
+      const spell_data_t *aura_4;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
       const spell_data_t *combat_conditioning;

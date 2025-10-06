@@ -2393,7 +2393,7 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     monk_melee_attack_t::impact( s );
 
-    if ( p()->baseline.brewmaster.stagger->ok() )
+    if ( p()->talent.monk.stagger->ok() )
     {
       p()->find_stagger( "Stagger" )
           ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
