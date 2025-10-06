@@ -6990,23 +6990,6 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2025-08-03", "Manually revert TWW3-SPM-2p hotfixes (effect#3).", 1233833 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 100 )
-        .verification_value( 70 );
-
-    hotfix::register_effect( "Monk", "2025-08-03", "Manually revert TWW3-SPM-4p hotfixes (effect#1).", 1232299 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 100 )
-        .verification_value( 50 );
-
-    hotfix::register_effect( "Monk", "2025-08-03", "Manually revert TWW3-SPM-4p hotfixes (effect#2).", 1233895 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 120 )
-        .verification_value( 150 );
   }
 
   void combat_begin( sim_t * ) const override
