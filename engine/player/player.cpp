@@ -15786,7 +15786,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_STAT:
         subtype_str = "flat"; 
         bit_type    = BITMAP_ATTRIBUTE;
-        flat_val    = modifying_eff.average( this );
+        if ( modifying_eff.scaling_class() < 0 )
+          flat_val = modifying_eff.average( this );
+        else
+          flat_val = modifying_eff.base_value();
         break;
       case A_OVERRIDE_AP_PER_SP:
         field    = "ap_per_sp";
@@ -15801,11 +15804,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_SPEED_ALWAYS:
-        field = "stacking_move_speed_modifier";
+        field    = "stacking_move_speed_modifier";
         flat_val = modifying_eff.percent();
         break;
       case A_MOD_SPEED_NOT_STACK:
-        field = "non_stacking_move_speed_modifier";
+        field    = "non_stacking_move_speed_modifier";
         flat_val = modifying_eff.percent();
         break;
       default:
