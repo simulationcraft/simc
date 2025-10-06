@@ -14855,6 +14855,7 @@ void death_knight_t::apply_target_action_effects( action_t* a, bool pet )
     // Unholy
     action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
     action->parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+    action->parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
 
     // Rider of the Apocalypse
 
@@ -14909,6 +14910,7 @@ void death_knight_t::parse_player_effects()
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::virulent_plague ), spell.virulent_plague );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::dread_plague ), spell.dread_plague );
     parse_target_effects( d_fn( &death_knight_td_t::dots_t::infected_claws ), spell.infected_claws_dot );
+    parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::disease_cloud ), spell.disease_cloud_debuff );
   }
 
   // Rider of the Apocalypse
